@@ -1,0 +1,3433 @@
+{
+  "schema": "preservation-first-pr-queue-cleanup-v1",
+  "checkedAt": "2026-10-15T19:32:16.151987+00:00",
+  "scope": "Metadata-only disposition and existing navigation/issue/ownership records; continue same #65 objective. No new management system.",
+  "before": {
+    "totalPRs": 66,
+    "openPRs": 65,
+    "openDrafts": 63,
+    "remoteBranches": 106
+  },
+  "after": {
+    "totalPRs": 67,
+    "openPRs": 23,
+    "closedThisPass": 43,
+    "newPRs": [
+      67
+    ],
+    "remoteBranches": 107
+  },
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "defaultBranch": "claude/football-sim-engine",
+  "closedPRs": [
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    30,
+    31,
+    32,
+    33,
+    35,
+    37,
+    38,
+    39,
+    40,
+    42,
+    43,
+    44,
+    45,
+    46,
+    48,
+    49,
+    53,
+    54,
+    59,
+    62
+  ],
+  "retainedOpenPRs": [
+    1,
+    2,
+    4,
+    13,
+    29,
+    34,
+    36,
+    41,
+    47,
+    50,
+    51,
+    52,
+    55,
+    56,
+    57,
+    58,
+    60,
+    61,
+    63,
+    64,
+    65,
+    66,
+    67
+  ],
+  "prRecords": [
+    {
+      "number": 1,
+      "title": "Improve run blocking, defensive decisions, pursuit and tackle physics",
+      "state": "open",
+      "merged": false,
+      "head": "codex/run-blocking-decision-dynamics",
+      "head_sha": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "base": "claude/football-sim-engine",
+      "base_sha": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+      "bodySha256": "98e910d1bc8926716d15963216856db64d40fd998807361040b5f7f7cdea4c23",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "owner/reference decision",
+        "owner": "Legacy owner",
+        "nextDecision": "Legacy PR outside this cleanup; no merge/closure decision supplied.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 2,
+      "title": "Establish a reproducible shared run-game integration baseline",
+      "state": "open",
+      "merged": false,
+      "head": "codex/run-game-integration",
+      "head_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "base": "claude/engine-priorities",
+      "base_sha": "862258c5b41f3cf6e7475e8ae24adf076c3e3e60",
+      "bodySha256": "2bb37b509e7da908882028b7131b12399e57f126ca81aef6aa91ded1fd3ac30b",
+      "childrenBefore": [
+        14,
+        8,
+        6,
+        4,
+        3
+      ],
+      "disposition": {
+        "class": "owner/reference decision",
+        "owner": "Legacy owner / Integration",
+        "nextDecision": "Historical comparison retained; legacy disposition remains separate.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 3,
+      "title": "Correct experimental grip timing and fatigue accounting",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/contact-foundations",
+      "head_sha": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "base": "codex/run-game-integration",
+      "base_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "bodySha256": "2488e5475c995ad3328047da7be230bc3123bcb2db1120ee59ee763995d0b38d",
+      "childrenBefore": [
+        7
+      ],
+      "disposition": {
+        "disposition": "Completed research milestone",
+        "finding": "Timing/physical-time effort prototype remains impractical; censored and adverse outcomes and the nine patch failures remain.",
+        "successors": [
+          7
+        ],
+        "returnCondition": "Resume only for a distinct unresolved timing/effort question; current solver work continues on the successor branches.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/WORKBOARD.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/8e36cce80e138133acd6afc7aba0befc21d5a746/docs/WORKBOARD.md",
+            "gitBlobSha256": "c6dd5e9cba8986aeec00521d3b3ac4647b388277318ff55ccc9b2044dc1be12e"
+          },
+          {
+            "path": "docs/reviews/grip-timing-effort.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/8e36cce80e138133acd6afc7aba0befc21d5a746/docs/reviews/grip-timing-effort.md",
+            "gitBlobSha256": "06600655e75db71c025deac91732c133ac40d7ffc2502a747820659a021011a0"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/8e36cce80e138133acd6afc7aba0befc21d5a746",
+        "childrenBefore": [
+          7
+        ],
+        "successorHeads": [
+          {
+            "pr": 7,
+            "head": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 3,
+        "status": "closed",
+        "head": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+        "commentId": 6200424819,
+        "closedHead": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+        "branch": "codex/contact-foundations",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/3#issuecomment-6200424819"
+    },
+    {
+      "number": 4,
+      "title": "Trial run-contact motion and handover; diagnose hand protection",
+      "state": "open",
+      "merged": false,
+      "head": "codex/coupled-run-contact",
+      "head_sha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "base": "codex/run-game-integration",
+      "base_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "bodySha256": "20573bacbf1d1e66a0724e88108a574c82ea39df5ca099e3c95b4387dee3311f",
+      "childrenBefore": [
+        9,
+        5
+      ],
+      "disposition": {
+        "class": "owner clarification",
+        "owner": "Run Game / original handover owner",
+        "nextDecision": "Confirm live handover review objective versus parked trial; component subset is already incorporated.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 5,
+      "title": "Trace run protection and combination collection failures",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/run-hand-coherence",
+      "head_sha": "916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+      "base": "codex/coupled-run-contact",
+      "base_sha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "bodySha256": "6c145facd24bc6a8c084643def581efc2552134b85f130286ada08445a5c23d4",
+      "childrenBefore": [
+        11
+      ],
+      "disposition": {
+        "disposition": "Completed diagnostic",
+        "finding": "Protection/collection traces and withdrawn release trial are preserved; no production improvement was retained.",
+        "successors": [
+          11,
+          13,
+          64
+        ],
+        "returnCondition": "Reopen for new evidence on this same collection diagnosis; do not merge its experimental parent.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/combination-collection.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/916e5a267a1709ac5fcc809c7e26de5bbae50dbf/docs/reviews/combination-collection.md",
+            "gitBlobSha256": "0a4b5b83ed693fd6de91927594c2007b9a66944a197a3e6fec2d5170370a1ebe"
+          },
+          {
+            "path": "docs/reviews/run-protection-principles.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/916e5a267a1709ac5fcc809c7e26de5bbae50dbf/docs/reviews/run-protection-principles.md",
+            "gitBlobSha256": "1d4c632905d8634182f04e6b72e64b216a9d437334dd41455c25e1a176e44a1c"
+          },
+          {
+            "path": "docs/reviews/combination-collection-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/916e5a267a1709ac5fcc809c7e26de5bbae50dbf/docs/reviews/combination-collection-receipt.json",
+            "gitBlobSha256": "51f15a52d2aef2136177932543026549cd6c501e2206bebaf06c631d1bce505c"
+          },
+          {
+            "path": "docs/reviews/combination-keeper-world-witness.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/916e5a267a1709ac5fcc809c7e26de5bbae50dbf/docs/reviews/combination-keeper-world-witness.json",
+            "gitBlobSha256": "e6b32834f408153949f000b9dca9dc0d6d68fee9ddfc55cbe0244df02cee1491"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+        "childrenBefore": [
+          11
+        ],
+        "successorHeads": [
+          {
+            "pr": 64,
+            "head": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 13,
+            "head": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 11,
+            "head": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 5,
+        "status": "closed",
+        "head": "916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+        "commentId": 6200426876,
+        "closedHead": "916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+        "branch": "codex/run-hand-coherence",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/5#issuecomment-6200426876"
+    },
+    {
+      "number": 6,
+      "title": "Audit roster capabilities and add bounded behavior review",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/roster-capability-audit",
+      "head_sha": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "base": "codex/run-game-integration",
+      "base_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "bodySha256": "6ec1247c410e620686aeccec2466d5c2323565ac9d25b7140928b63e25b46bfb",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Incorporated",
+        "finding": "Exact head is an ancestor of accepted develop a1b16e6; roster/cost/behavior-review tooling is already present through #8/#12.",
+        "successors": [
+          12,
+          65
+        ],
+        "returnCondition": "Continue policy bookkeeping in #65; numerical roster proposals remain separate.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/roster-capability-audit.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/f9617dde9456c0ead2d66b46d4b42608adcd3585/docs/reviews/roster-capability-audit.md",
+            "gitBlobSha256": "e81c91596dc6a00569613b0aef728dd403be11d97654327a6996195938dc8124"
+          },
+          {
+            "path": "data/reviews/current/roster-screen-validation.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/f9617dde9456c0ead2d66b46d4b42608adcd3585/data/reviews/current/roster-screen-validation.json",
+            "gitBlobSha256": "fd78ebe0bb8e6e7761f7d7ff920ae023789b0686363a50e277e1dced26313862"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/f9617dde9456c0ead2d66b46d4b42608adcd3585",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 65,
+            "head": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 12,
+            "head": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 6,
+        "status": "closed",
+        "head": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+        "commentId": 6200401405,
+        "closedHead": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+        "branch": "codex/roster-capability-audit",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/6#issuecomment-6200401405"
+    },
+    {
+      "number": 7,
+      "title": "Experimental grip timing with bounded attachment and slip-event validation",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-fast-integration",
+      "head_sha": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+      "base": "codex/contact-foundations",
+      "base_sha": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "bodySha256": "0e206ac6609d18f794a1f57b81cc8f1a5e73846e13840cc6ad508ae88131a39b",
+      "childrenBefore": [
+        15
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Fast/resolved timing and its accuracy/cost limitations are preserved; the next convergence gate was continued in #15.",
+        "successors": [
+          15
+        ],
+        "returnCondition": "Reopen only for a specific original-kernel question not covered by the successors.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-fast.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/62f1f0e344c84e6501bb15257519f367eda9d58d/docs/reviews/grip-fast.md",
+            "gitBlobSha256": "ff28289fde57a49f0517bf3c67353cd31dafc283c4073dd44c3d49d908a38080"
+          },
+          {
+            "path": "docs/reviews/grip-bounded-feasibility.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/62f1f0e344c84e6501bb15257519f367eda9d58d/docs/reviews/grip-bounded-feasibility.md",
+            "gitBlobSha256": "988a220bcc424f4bd6269b4beab50d01b54b237eb278f02e8b32584fb5089b34"
+          },
+          {
+            "path": "docs/reviews/grip-supported-feasibility.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/62f1f0e344c84e6501bb15257519f367eda9d58d/docs/reviews/grip-supported-feasibility.md",
+            "gitBlobSha256": "722918a8a92add7021428ac8d1e2f2f5b8967f0bc232784d0e6c468b51479d07"
+          },
+          {
+            "path": "data/reviews/current/grip-bounded-feasibility.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/62f1f0e344c84e6501bb15257519f367eda9d58d/data/reviews/current/grip-bounded-feasibility.json",
+            "gitBlobSha256": "66b2dccc0d3ed02d868023e8ab9c98a977fd08cb3e568a83e674bdb925a0ac45"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/62f1f0e344c84e6501bb15257519f367eda9d58d",
+        "childrenBefore": [
+          15
+        ],
+        "successorHeads": [
+          {
+            "pr": 15,
+            "head": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 7,
+        "status": "closed",
+        "head": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+        "commentId": 6200425874,
+        "closedHead": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+        "branch": "codex/grip-fast-integration",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/7#issuecomment-6200425874"
+    },
+    {
+      "number": 8,
+      "title": "Shared development adoption: testing policy and accepted run/catch corrections",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/shared-candidate-verification",
+      "head_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "base": "codex/run-game-integration",
+      "base_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "bodySha256": "94e8024a9b5b906fc48167578df3bccb88bf581405d3de54b4798b5803b22f54",
+      "childrenBefore": [
+        12,
+        10
+      ],
+      "disposition": {
+        "disposition": "Completed adoption",
+        "finding": "Head exactly equals accepted develop a1b16e6; #12 was merged and the user-authorized develop adoption is complete. This comparison PR must not merge develop back into historical 4ded6b6.",
+        "successors": [
+          12,
+          65
+        ],
+        "returnCondition": "Use accepted develop for new work; historical/default decisions remain separate.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "data/reviews/current/github-branch-audit.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/a1b16e666a9ee7d1bc1d2aecba141fc535863b24/data/reviews/current/github-branch-audit.json",
+            "gitBlobSha256": "1bbf8778c3ff0fefeb2b888d22bdf776561cabc42310e8558c2f6806f135d586"
+          },
+          {
+            "path": "data/reviews/current/controller-combined-verification.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/a1b16e666a9ee7d1bc1d2aecba141fc535863b24/data/reviews/current/controller-combined-verification.json",
+            "gitBlobSha256": "e6016ff3d8dd4c2e32b980b1cec600e5157be191a1f33638280bca523055b9c2"
+          },
+          {
+            "path": "data/reviews/current/controller-integration-extraction.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/a1b16e666a9ee7d1bc1d2aecba141fc535863b24/data/reviews/current/controller-integration-extraction.json",
+            "gitBlobSha256": "ef43dc84a61834d4af0f6d3370b7230fcbaaa5d7e8d388645715d143828027cd"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+        "childrenBefore": [
+          12,
+          10
+        ],
+        "successorHeads": [
+          {
+            "pr": 65,
+            "head": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 12,
+            "head": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 8,
+        "status": "closed",
+        "head": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+        "commentId": 6200403686,
+        "closedHead": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+        "branch": "codex/shared-candidate-verification",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/8#issuecomment-6200403686"
+    },
+    {
+      "number": 9,
+      "title": "Prepare component-only run contact promotion",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/run-contact-components-candidate",
+      "head_sha": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+      "base": "codex/coupled-run-contact",
+      "base_sha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "bodySha256": "cdf584ea35e24744685851fa62162304b75c1dd5282d162213bad85965c3bb57",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Incorporated correction; packaging superseded",
+        "finding": "The component helper/test match accepted develop byte-for-byte; clean extraction #10 and accepted #12 delivered this correction. PR #4 handover/other ancestry was not imported wholesale.",
+        "successors": [
+          10,
+          12
+        ],
+        "returnCondition": "Further changes require a new scoped correction; do not use this stacked PR to import excluded experiments.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/run-contact-components-candidate.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-candidate.md",
+            "gitBlobSha256": "509fe38f745df93e9542e00d5019c1faaf84d9e339c8caff1abca17f9e17e89c"
+          },
+          {
+            "path": "docs/reviews/run-contact-components-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-receipt.json",
+            "gitBlobSha256": "3658bac525448da5b877e953295a18f4ee638952371ae7a1755d684afdd5285c"
+          },
+          {
+            "path": "docs/reviews/run-contact-components-inputs.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-inputs.json",
+            "gitBlobSha256": "7b441c80d27487fe63d6c47b10ae9c33cd5bc8a0d67c489681e386d4a8654980"
+          },
+          {
+            "path": "docs/reviews/run-contact-components-settings.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-settings.json",
+            "gitBlobSha256": "aa651603523525d4ef858ba19a5dfc6f0dcf88cffd69968394e069f31ab63dbd"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/7a04ad6c65d9268bb332147411baacc27ebe20e0",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 12,
+            "head": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 10,
+            "head": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 9,
+        "status": "closed",
+        "head": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+        "commentId": 6200406478,
+        "closedHead": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+        "branch": "codex/run-contact-components-candidate",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/9#issuecomment-6200406478"
+    },
+    {
+      "number": 10,
+      "title": "Extract reviewed stretch contact correction onto shared tree",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/contact-components-extracted",
+      "head_sha": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+      "base": "codex/shared-candidate-verification",
+      "base_sha": "a9d5e10ede693978d243e5dff4a6b8f4b0f7a085",
+      "bodySha256": "6d6adab79adee8c6f28c09c06e28ffd4179f6c823c325bd8cfa885d0ec22cbc7",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Incorporated correction",
+        "finding": "The component helper, engagement hook and test match accepted develop byte-for-byte through accepted #12. The entire #10 commit is not claimed as an ancestor.",
+        "successors": [
+          12
+        ],
+        "returnCondition": "Reuse its source-specific receipts; do not repeat verification for this bookkeeping closure.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/contact-components-extraction.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/84490bd32b4bca48d4a4f36213a513794ad4a623/docs/reviews/contact-components-extraction.md",
+            "gitBlobSha256": "fcb4cabedb6ef02a43e8b0df1afdbfcb12b0549ef3a47d53a42484663598816d"
+          },
+          {
+            "path": "data/reviews/current/contact-components-extraction.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/84490bd32b4bca48d4a4f36213a513794ad4a623/data/reviews/current/contact-components-extraction.json",
+            "gitBlobSha256": "6ba5dfcd145c68b3b77484ecaf533469f3053a543347aa47b886b60f15767de2"
+          },
+          {
+            "path": "data/reviews/current/contact-components-combined-verification.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/84490bd32b4bca48d4a4f36213a513794ad4a623/data/reviews/current/contact-components-combined-verification.json",
+            "gitBlobSha256": "fd5fb89b20a987e3b0490440a3ba41495473ed6e80819a086346396269cc2b54"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/84490bd32b4bca48d4a4f36213a513794ad4a623",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 12,
+            "head": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 10,
+        "status": "closed",
+        "head": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+        "commentId": 6200408797,
+        "closedHead": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+        "branch": "codex/contact-components-extracted",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/10#issuecomment-6200408797"
+    },
+    {
+      "number": 11,
+      "title": "Diagnose keeper runoff and acquired RB reads in under-center wide zone",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/under-center-zone",
+      "head_sha": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+      "base": "codex/run-hand-coherence",
+      "base_sha": "7eec40c699a8ba45425bcbef3eb8eacb201957a8",
+      "bodySha256": "34d8f7362b1d62866e9e571d618d405bfc645834de097e1d9be3f8613a98e717",
+      "childrenBefore": [
+        13
+      ],
+      "disposition": {
+        "disposition": "Completed diagnostic",
+        "finding": "Keeper runoff/acquired live-aim mismatch and angular witness are preserved; controller assessment and isolated law moved to separately reviewed successors.",
+        "successors": [
+          13,
+          66
+        ],
+        "returnCondition": "Reopen if the original saved diagnosis needs a material correction; no endpoint rescue was established.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/under-center-zone.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e238d391db58305a31054731c45a7ff53ab3cd8/docs/reviews/under-center-zone.md",
+            "gitBlobSha256": "79ae59046c622c5d0af4f898623ab458c149c960103e0e581a96c5b1d601dffe"
+          },
+          {
+            "path": "docs/reviews/under-center-zone-runner.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e238d391db58305a31054731c45a7ff53ab3cd8/docs/reviews/under-center-zone-runner.md",
+            "gitBlobSha256": "39c029ba4b18a8dfd914fbc4c7be16e28c2e5c17137897d7ed4557a5d5b4041c"
+          },
+          {
+            "path": "docs/reviews/under-center-zone-runner-trace.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e238d391db58305a31054731c45a7ff53ab3cd8/docs/reviews/under-center-zone-runner-trace.json",
+            "gitBlobSha256": "bdb291352ee9ba34ca65f6fada8726889cf69b8b64f875c04b357dabba4cac4b"
+          },
+          {
+            "path": "docs/reviews/under-center-zone-runner-validation.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e238d391db58305a31054731c45a7ff53ab3cd8/docs/reviews/under-center-zone-runner-validation.json",
+            "gitBlobSha256": "49c131f875e89b576a435df9718c7adb7034093c298717dedc0edaa1f0605167"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/7e238d391db58305a31054731c45a7ff53ab3cd8",
+        "childrenBefore": [
+          13
+        ],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 13,
+            "head": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 11,
+        "status": "closed",
+        "head": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+        "commentId": 6200430007,
+        "branch": "codex/under-center-zone",
+        "closedHead": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+        "merged": false,
+        "retry": "Initial API response did not complete closure; exact head/state rechecked and retried without duplicate comment."
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/11#issuecomment-6200430007"
+    },
+    {
+      "number": 12,
+      "title": "Prepare verified minimal run and moving-catch controller integration",
+      "state": "closed",
+      "merged": true,
+      "head": "codex/controller-integration-review",
+      "head_sha": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+      "base": "codex/shared-candidate-verification",
+      "base_sha": "545d9b89afd01118df6646a439f9516448e9dfd5",
+      "bodySha256": "b99b3c052086caa43195d5ee6c6325a1c90df476fda528957b2c83b0d1693517",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "already merged",
+        "action": "unchanged"
+      }
+    },
+    {
+      "number": 13,
+      "title": "Correct designed RB assessment reference; preserve three Ace controls",
+      "state": "open",
+      "merged": false,
+      "head": "codex/rb-live-aim-assessment",
+      "head_sha": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+      "base": "codex/under-center-zone",
+      "base_sha": "45a35bbe1b09554e874370604c83df47fca809f6",
+      "bodySha256": "7c387c32f03c0735f92452d3ca97a1f5012534dc19a74240d2f1fa93fc3d25b8",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "independent candidate",
+        "owner": "Run Game / Integration",
+        "nextDecision": "Review/extract four-line live-aim assessment consistency on current accepted tree; experimental #54 inclusion is not production acceptance.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 14,
+      "title": "Replay keeper angular defect and preserve football controls",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/keeper-contact-law",
+      "head_sha": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+      "base": "codex/run-game-integration",
+      "base_sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "bodySha256": "680dc50304b9112467422d6a953ee72ca013440a1510223f5c8f717851bc898c",
+      "childrenBefore": [
+        17
+      ],
+      "disposition": {
+        "disposition": "Completed law diagnostic",
+        "finding": "Keeper angular replay and adverse patch/ground transfer remain; no full patch promotion is inferred.",
+        "successors": [
+          17,
+          66
+        ],
+        "returnCondition": "Use the isolated current-develop law review for promotion, preserving the original football controls.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/keeper-contact-law.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/22d3b34df18124ffad1a5eebd30d6f41bbb67d57/docs/reviews/keeper-contact-law.md",
+            "gitBlobSha256": "d78053197bdf0d0bcbada5a7314fcbeb8b3d4cdadca47667916105a9a660a556"
+          },
+          {
+            "path": "data/reviews/current/keeper-contact-law.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/22d3b34df18124ffad1a5eebd30d6f41bbb67d57/data/reviews/current/keeper-contact-law.json",
+            "gitBlobSha256": "9437bf7ee588ed81d1a547a1e642b07575e2802997e28bc16518917f30b7157c"
+          },
+          {
+            "path": "config/keeper-contact-law.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/22d3b34df18124ffad1a5eebd30d6f41bbb67d57/config/keeper-contact-law.json",
+            "gitBlobSha256": "97f7d083dceebe26f1482a2275564877bbc07b928da459141cbf0ff81dfb78bc"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+        "childrenBefore": [
+          17
+        ],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 17,
+            "head": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 14,
+        "status": "closed",
+        "head": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+        "commentId": 6200431228,
+        "closedHead": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+        "branch": "codex/keeper-contact-law",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/14#issuecomment-6200431228"
+    },
+    {
+      "number": 15,
+      "title": "Reject grip refinement before share and foot state converge",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-state-convergence",
+      "head_sha": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+      "base": "codex/grip-fast-integration",
+      "base_sha": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+      "bodySha256": "7bd01c19dcdc1149c32f500d348c6079cc2ab91ec9e7f19e8589a8c0b033d56a",
+      "childrenBefore": [
+        16
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Convergence acceptance now includes persistent share/foot state and phase uncertainty; high cost remains documented.",
+        "successors": [
+          16
+        ],
+        "returnCondition": "Reopen for a specific acceptance defect in the saved original reference, not to duplicate successor work.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-state-convergence.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/3bd8d5eb4bcbb82d0f739da818906eaa1898b60d/docs/reviews/grip-state-convergence.md",
+            "gitBlobSha256": "21e5fcf7e7a05ec0d38e4592874389d9d013e718f7539e2a651b4de2ff7af535"
+          },
+          {
+            "path": "data/reviews/current/grip-state-convergence.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/3bd8d5eb4bcbb82d0f739da818906eaa1898b60d/data/reviews/current/grip-state-convergence.json",
+            "gitBlobSha256": "d668a4c73b4da78caa0140e82e50e5027b052386d5e313e93fb9993742994711"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+        "childrenBefore": [
+          16
+        ],
+        "successorHeads": [
+          {
+            "pr": 16,
+            "head": "c641f2b102594a7c906116bf7c167270a71c3b04",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 15,
+        "status": "closed",
+        "head": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+        "commentId": 6200432889,
+        "closedHead": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+        "branch": "codex/grip-state-convergence",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/15#issuecomment-6200432889"
+    },
+    {
+      "number": 16,
+      "title": "Evaluate implicit grip-tail accuracy and reject its cost",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-event-integration",
+      "head_sha": "c641f2b102594a7c906116bf7c167270a71c3b04",
+      "base": "codex/grip-state-convergence",
+      "base_sha": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+      "bodySha256": "6db12c672a420139e2dc2da182839520270d90b0f09ed5a5675b2ae68773762f",
+      "childrenBefore": [
+        19
+      ],
+      "disposition": {
+        "disposition": "Rejected completed trial",
+        "finding": "Implicit Gauss/Radau variants are retained as diagnostics and rejected for integration on measured cost.",
+        "successors": [
+          19
+        ],
+        "returnCondition": "Reopen only with a decision-changing implicit-method question; no candidate is promoted.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-event-feasibility.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/c641f2b102594a7c906116bf7c167270a71c3b04/docs/reviews/grip-event-feasibility.md",
+            "gitBlobSha256": "4d428a490e4892b2bbdcce598dcddd8b0ea8ad29cae40eee96f5a34762cecb2b"
+          },
+          {
+            "path": "data/reviews/current/grip-event-feasibility.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/c641f2b102594a7c906116bf7c167270a71c3b04/data/reviews/current/grip-event-feasibility.json",
+            "gitBlobSha256": "1f5ba945355f926e854ce9ad72b4d09e58659991ec5921b2cbeda7e5bbf00f0b"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/c641f2b102594a7c906116bf7c167270a71c3b04",
+        "childrenBefore": [
+          19
+        ],
+        "successorHeads": [
+          {
+            "pr": 19,
+            "head": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 16,
+        "status": "closed",
+        "head": "c641f2b102594a7c906116bf7c167270a71c3b04",
+        "commentId": 6200436519,
+        "closedHead": "c641f2b102594a7c906116bf7c167270a71c3b04",
+        "branch": "codex/grip-event-integration",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/16#issuecomment-6200436519"
+    },
+    {
+      "number": 17,
+      "title": "Isolate common-point contact from ground movement and preserve adverse controls",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/contact-law-isolation",
+      "head_sha": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+      "base": "codex/keeper-contact-law",
+      "base_sha": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+      "bodySha256": "fd30a158e44bff3c0dc67770abfa045e515d6a8ea142c2df30e5713dc852f6fc",
+      "childrenBefore": [
+        27,
+        18
+      ],
+      "disposition": {
+        "disposition": "Superseded review vehicle",
+        "finding": "The isolated common-point/legacy-ground proposal and native adverse evidence are preserved. Current-develop extraction #66 is the active review vehicle and remains unpromoted.",
+        "successors": [
+          66
+        ],
+        "returnCondition": "Review the current-develop extraction and its explicit seven contract failures; no old-head incorporation is claimed.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/contact-law-isolation.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/92743c0a58804d1bc78551bda9a057d79a0845b2/docs/reviews/contact-law-isolation.md",
+            "gitBlobSha256": "aae95f39f84da5d137794188d67005139c7fe202e2b87d92fee1275aa257332d"
+          },
+          {
+            "path": "data/reviews/current/contact-law-isolation.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/92743c0a58804d1bc78551bda9a057d79a0845b2/data/reviews/current/contact-law-isolation.json",
+            "gitBlobSha256": "b72f0b599e0579fbf93ad37d841b1de4337213caaae0c53593b2d9e3768ff4a6"
+          },
+          {
+            "path": "docs/reviews/contact-law-isolation-first-contact.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/92743c0a58804d1bc78551bda9a057d79a0845b2/docs/reviews/contact-law-isolation-first-contact.json",
+            "gitBlobSha256": "15a9cd10ef0182ae2037f453ccd15322975802015740eac14495f4239ec2afcc"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/92743c0a58804d1bc78551bda9a057d79a0845b2",
+        "childrenBefore": [
+          27,
+          18
+        ],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 17,
+        "status": "closed",
+        "head": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+        "commentId": 6200434936,
+        "closedHead": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+        "branch": "codex/contact-law-isolation",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/17#issuecomment-6200434936"
+    },
+    {
+      "number": 18,
+      "title": "Trace Ace keeper reach and interior access; hand retention controls to physics",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/ace-protection-traces",
+      "head_sha": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+      "base": "codex/contact-law-isolation",
+      "base_sha": "61596bd78e21cf4aa7443a8d44eca4370db21470",
+      "bodySha256": "059e6ba6114e65533d495e492617497dd2648d1f2c35711e9c5b90b37bcd541e",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed diagnostic and handoff",
+        "finding": "Ace keeper/interior access and contact-retention witnesses were delivered; bounded retention ruling is recorded on this PR. No controller candidate is pending here.",
+        "successors": [
+          26,
+          66
+        ],
+        "returnCondition": "Use the shared accepted-source replay and current law review; retain synthetic stale-input limitations.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/ace-protection-traces.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b30284c1b3b19eace5c7b9e023208818d6e8ea78/docs/reviews/ace-protection-traces.md",
+            "gitBlobSha256": "b19384bb5cad655c02a617f98d9769c06c6f765c80e52f2f2bf3aaab4fb9a4c5"
+          },
+          {
+            "path": "docs/reviews/ace-protection-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b30284c1b3b19eace5c7b9e023208818d6e8ea78/docs/reviews/ace-protection-receipt.json",
+            "gitBlobSha256": "8f8f745c6641ef5cd6aac46a116694f9208e7583dc67e403a9c522a2865cbe8d"
+          },
+          {
+            "path": "docs/reviews/ace-lateral-retention-controls.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b30284c1b3b19eace5c7b9e023208818d6e8ea78/docs/reviews/ace-lateral-retention-controls.json",
+            "gitBlobSha256": "c1651510629569d3693bf2db0a7c51135688db6e8ab2293d1190aaca5340203c"
+          },
+          {
+            "path": "docs/reviews/ace-protection-spacing-controls.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b30284c1b3b19eace5c7b9e023208818d6e8ea78/docs/reviews/ace-protection-spacing-controls.json",
+            "gitBlobSha256": "6efe1cf657b4c5f6302cc8d058c9f689c3645d94f6fc4d8154608b3c3db7f28f"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 26,
+            "head": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 18,
+        "status": "closed",
+        "head": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+        "commentId": 6200440674,
+        "closedHead": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+        "branch": "codex/ace-protection-traces",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/18#issuecomment-6200440674"
+    },
+    {
+      "number": 19,
+      "title": "Eliminate passive grip velocity iterations and isolate capped work error",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-analytic-tail",
+      "head_sha": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+      "base": "codex/grip-event-integration",
+      "base_sha": "c641f2b102594a7c906116bf7c167270a71c3b04",
+      "bodySha256": "9a26e4f4d365fdde8d1d60b5f6e38403ea9a97242ce1f87df3422f50a1dc2546",
+      "childrenBefore": [
+        20
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Analytic tail cost/accuracy and capped-work error were measured; the specific capped-stage correction continued in #20.",
+        "successors": [
+          20
+        ],
+        "returnCondition": "Reopen only for a new issue in this frozen analytic witness; cost regressions remain evidence.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-analytic-feasibility.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2/docs/reviews/grip-analytic-feasibility.md",
+            "gitBlobSha256": "c2dbaf3a484041364043a80099a4a8b63834ec85b88cf06fb4f8a1d8790857ee"
+          },
+          {
+            "path": "data/reviews/current/grip-analytic-feasibility.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2/data/reviews/current/grip-analytic-feasibility.json",
+            "gitBlobSha256": "3ed46660390a05192c87ac43860e9e61b41dbd8b768c066820ddfdce2725de0b"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+        "childrenBefore": [
+          20
+        ],
+        "successorHeads": [
+          {
+            "pr": 20,
+            "head": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 19,
+        "status": "closed",
+        "head": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+        "commentId": 6200439644,
+        "closedHead": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+        "branch": "codex/grip-analytic-tail",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/19#issuecomment-6200439644"
+    },
+    {
+      "number": 20,
+      "title": "Preserve capped grip work with consistent moving stages",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-cap-work",
+      "head_sha": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "base": "codex/grip-analytic-tail",
+      "base_sha": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+      "bodySha256": "f22427e6aff5eb85d79a83114bb17811d923193945f143b090a95fa0dc8e3cb3",
+      "childrenBefore": [
+        21
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Moving-stage capped work accounting completed its bounded witness; changing-share mixed budgets continued separately.",
+        "successors": [
+          21
+        ],
+        "returnCondition": "No production promotion or broader contact claim follows this closure.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-cap-work.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a/docs/reviews/grip-cap-work.md",
+            "gitBlobSha256": "170d8cd82e9669165278726d13b9329616c3fef274e4531a2d782c9fb5547a44"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+        "childrenBefore": [
+          21
+        ],
+        "successorHeads": [
+          {
+            "pr": 21,
+            "head": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 20,
+        "status": "closed",
+        "head": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+        "commentId": 6200445273,
+        "closedHead": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+        "branch": "codex/grip-cap-work",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/20#issuecomment-6200445273"
+    },
+    {
+      "number": 21,
+      "title": "Validate bounded mixed grip budgets and isolate allocation corner cost",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-mixed-budget",
+      "head_sha": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+      "base": "codex/grip-cap-work",
+      "base_sha": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "bodySha256": "58c84304a3c1074889dadcd3a487818f556303809eac10941a647c10105f6b4b",
+      "childrenBefore": [
+        25
+      ],
+      "disposition": {
+        "disposition": "Completed/rejected research strategy",
+        "finding": "Uniform mixed-budget reference is preserved; the adaptive strategy is explicitly stopped, with event-local work continued in #25.",
+        "successors": [
+          25
+        ],
+        "returnCondition": "Do not silently revive the rejected adaptive strategy or relax its work/motion gates.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-mixed-budget.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c/docs/reviews/grip-mixed-budget.md",
+            "gitBlobSha256": "a6630816fc5b79f331d272fde82b3ccbca9e54f445949b65f4e7764913cca017"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+        "childrenBefore": [
+          25
+        ],
+        "successorHeads": [
+          {
+            "pr": 25,
+            "head": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 21,
+        "status": "closed",
+        "head": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+        "commentId": 6200444051,
+        "branch": "codex/grip-mixed-budget",
+        "closedHead": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+        "merged": false,
+        "retry": "Initial API response did not complete closure; exact head/state rechecked and retried without duplicate comment."
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/21#issuecomment-6200444051"
+    },
+    {
+      "number": 22,
+      "title": "Audit Ace line technique and reproduce assigned defender access",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/ol-technique-audit",
+      "head_sha": "9f00393e16c81fa071c7b78ff708be61e9e38039",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "c5c08fcf5562a0d297848377e34a847e66ca6d03e88cd03ccf6ba117b29b82ea",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed audit",
+        "finding": "Ace line dispatch/responsibility audit delivered its reports and witnesses; TE and stalk questions moved to specific successors.",
+        "successors": [
+          23,
+          29,
+          47
+        ],
+        "returnCondition": "Use saved measurements; new controller proposals need their own supported mechanism.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/ol-technique-audit.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/9f00393e16c81fa071c7b78ff708be61e9e38039/docs/reviews/ol-technique-audit.md",
+            "gitBlobSha256": "fe78e069f1b5b0fcd922f7431b37a74b9e25a189d4091375069d936980c5403d"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/9f00393e16c81fa071c7b78ff708be61e9e38039",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 47,
+            "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 29,
+            "head": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 23,
+            "head": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 22,
+        "status": "closed",
+        "head": "9f00393e16c81fa071c7b78ff708be61e9e38039",
+        "commentId": 6200446478,
+        "closedHead": "9f00393e16c81fa071c7b78ff708be61e9e38039",
+        "branch": "codex/ol-technique-audit",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/22#issuecomment-6200446478"
+    },
+    {
+      "number": 23,
+      "title": "Measure attached-TE base action before loaded technique changes",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/te-approach-support",
+      "head_sha": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "4cb91ffdd90fc4c27a74d5a0b24169b0375cf1ec3185395cd927931542281ff4",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed mechanical study",
+        "finding": "Unloaded TE base costs less than .001 yard; no loaded protection improvement was established. Loaded production transfer is separately parked.",
+        "successors": [
+          27,
+          28
+        ],
+        "returnCondition": "Reopen only for a distinct base-action measurement; retain loaded/adverse controls.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/te-approach-support.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1782788e23c2132825948e4cb3bcb310cc2f961d/docs/reviews/te-approach-support.md",
+            "gitBlobSha256": "35e1a03954d2a5c4d2a8dcbac3921b670e0e061a81a74ed9bf29a9f18f40f884"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/1782788e23c2132825948e4cb3bcb310cc2f961d",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 28,
+            "head": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 27,
+            "head": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 23,
+        "status": "closed",
+        "head": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+        "commentId": 6200448385,
+        "closedHead": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+        "branch": "codex/te-approach-support",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/23#issuecomment-6200448385"
+    },
+    {
+      "number": 24,
+      "title": "Prepare stalk visual-input repair with an information witness",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/stalk-information-witness",
+      "head_sha": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "9214fef369acc2ecaaad53d98ec870a57d352b7065d59a7bdb0c52df95d420f5",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Superseded diagnostic",
+        "finding": "Shadow stalk information witness/proposed patch was not an installed repair; #29 contains the actual isolated controller correction, still not accepted develop.",
+        "successors": [
+          29
+        ],
+        "returnCondition": "Review #29 rather than treating shadow formulas as production validation.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/stalk-information.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/765c25c3bc781ed572fdb5d4f39531453d58b31a/docs/reviews/stalk-information.md",
+            "gitBlobSha256": "c1a22cb16f17653660a5155ad975464f36624048cc7054d6e38cc5e9e9a672b8"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/765c25c3bc781ed572fdb5d4f39531453d58b31a",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 29,
+            "head": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 24,
+        "status": "closed",
+        "head": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+        "commentId": 6200411127,
+        "closedHead": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+        "branch": "codex/stalk-information-witness",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/24#issuecomment-6200411127"
+    },
+    {
+      "number": 25,
+      "title": "Evaluate passive grip saturation with a force-angle clock",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-saturation-event",
+      "head_sha": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+      "base": "codex/grip-mixed-budget",
+      "base_sha": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+      "bodySha256": "6504e8cc76bc73975bbfec671debf88d8c49182bacd1194c8b9ee5a160da3bfb",
+      "childrenBefore": [
+        31
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Force-angle saturation/event timing and refusal tails are preserved; shared-foot composition continued in #31.",
+        "successors": [
+          31
+        ],
+        "returnCondition": "No World/full-patch promotion is implied.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-saturation-event.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254/docs/reviews/grip-saturation-event.md",
+            "gitBlobSha256": "8ad3596ff06064020ee0de6c38e6ecfb250eb066d5d649b2942c303948fe9770"
+          },
+          {
+            "path": "data/reviews/current/grip-saturation-event.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254/data/reviews/current/grip-saturation-event.json",
+            "gitBlobSha256": "1f2057f2ec8a50e5ad5a9abc6309635c7f36dc83b5ded1c506bc4b7eb6bc5ea8"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+        "childrenBefore": [
+          31
+        ],
+        "successorHeads": [
+          {
+            "pr": 31,
+            "head": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 25,
+        "status": "closed",
+        "head": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+        "commentId": 6200453760,
+        "closedHead": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+        "branch": "codex/grip-saturation-event",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/25#issuecomment-6200453760"
+    },
+    {
+      "number": 26,
+      "title": "Publish shared three-Ace replay on accepted develop",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/ace-production-replay",
+      "head_sha": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "de8b50f6444f2f2b7e11ff589addd1829f2a64bf3150b5f3e5cf96efbf15ac5e",
+      "childrenBefore": [
+        28
+      ],
+      "disposition": {
+        "disposition": "Completed shared reference publication",
+        "finding": "The three accepted-source Ace inputs and shared outcomes/observations were published once and remain reusable.",
+        "successors": [
+          36,
+          47
+        ],
+        "returnCondition": "Do not rerun the reference merely because this evidence PR is closed.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/ace-production-replay.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/ba9544f23029c634cb6e22b14ecad617fcdd3470/docs/reviews/ace-production-replay.md",
+            "gitBlobSha256": "b563b371ea1a7d90568afa9b005be0f6fc1d4eb50bb8743fa7e3a6b1f7fac8e1"
+          },
+          {
+            "path": "data/reviews/current/ace-production-replay.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/ba9544f23029c634cb6e22b14ecad617fcdd3470/data/reviews/current/ace-production-replay.json",
+            "gitBlobSha256": "cf5daefad37e757b3b97506f1a926758865a49b5a867ba57aa81bbe36b6291c5"
+          },
+          {
+            "path": "data/reviews/current/ace-production-observations.json.gz",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/ba9544f23029c634cb6e22b14ecad617fcdd3470/data/reviews/current/ace-production-observations.json.gz",
+            "gitBlobSha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/ba9544f23029c634cb6e22b14ecad617fcdd3470",
+        "childrenBefore": [
+          28
+        ],
+        "successorHeads": [
+          {
+            "pr": 47,
+            "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 26,
+        "status": "closed",
+        "head": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+        "commentId": 6200451185,
+        "closedHead": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+        "branch": "codex/ace-production-replay",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/26#issuecomment-6200451185"
+    },
+    {
+      "number": 27,
+      "title": "Isolate loaded TE support and retain adverse production transfer",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/te-loaded-base",
+      "head_sha": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+      "base": "codex/contact-law-isolation",
+      "base_sha": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+      "bodySha256": "b1a4fd949f4beed13457def8e1bff82beb1ddc3834aeaf4a03d4e4c904a1f78b",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed/parked study",
+        "finding": "Historical loaded TE support effect is preserved; accepted-production transfer #28 parked adoption after adverse protection.",
+        "successors": [
+          28
+        ],
+        "returnCondition": "Return only for a named new TE mechanism, not gain rescue or stronger hands.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/te-loaded-base.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b469095eec9ec99d4ebc20355e60d16d522a3484/docs/reviews/te-loaded-base.md",
+            "gitBlobSha256": "51e54aa5873faad77752bef9bb66e30af1bca9fa3299ccbe2e1ba2ddfa07e29e"
+          },
+          {
+            "path": "docs/reviews/te-loaded-base-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b469095eec9ec99d4ebc20355e60d16d522a3484/docs/reviews/te-loaded-base-receipt.json",
+            "gitBlobSha256": "5039802230285f0d8095fe13c3ae22683ae7519f217f1d2b482f44fabdf643e7"
+          },
+          {
+            "path": "docs/reviews/te-loaded-base-fixed-contact.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/b469095eec9ec99d4ebc20355e60d16d522a3484/docs/reviews/te-loaded-base-fixed-contact.json",
+            "gitBlobSha256": "b1e61e63c5b1e52baf486020a570356394f36f867a12a269e6d1d97d8704f4e9"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/b469095eec9ec99d4ebc20355e60d16d522a3484",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 28,
+            "head": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 27,
+        "status": "closed",
+        "head": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+        "commentId": 6200452431,
+        "closedHead": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+        "branch": "codex/te-loaded-base",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/27#issuecomment-6200452431"
+    },
+    {
+      "number": 28,
+      "title": "Park TE base adoption after adverse production protection transfer",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/te-base-production",
+      "head_sha": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+      "base": "codex/ace-production-replay",
+      "base_sha": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+      "bodySha256": "cfd136a31d0c2bfcb37494b198e8a938b4f670796c163ea8837e62047afcfb7e",
+      "childrenBefore": [
+        30
+      ],
+      "disposition": {
+        "disposition": "Parked proposal",
+        "finding": "The accepted-source TE-base transfer loses Y protection; the report explicitly parks adoption. Better gain does not clear that result.",
+        "successors": [],
+        "returnCondition": "Unresolved issue RUN-003 remains; reopen when a supported different mechanism changes that decision.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/te-base-production.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/82cfdf26654cf12178e1eae930fe74b691dd5c28/docs/reviews/te-base-production.md",
+            "gitBlobSha256": "45bc427411a1297d77bd3ed390f91b1580165b00ac8bd3de533f79024790f473"
+          },
+          {
+            "path": "docs/reviews/te-base-production-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/82cfdf26654cf12178e1eae930fe74b691dd5c28/docs/reviews/te-base-production-receipt.json",
+            "gitBlobSha256": "9d3886350601830e9b6d16ebadd5c2109baecb469ead6fbd855e3a3c5eac1bc7"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/82cfdf26654cf12178e1eae930fe74b691dd5c28",
+        "childrenBefore": [
+          30
+        ],
+        "successorHeads": []
+      },
+      "action": {
+        "pr": 28,
+        "status": "closed",
+        "head": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+        "commentId": 6200460515,
+        "closedHead": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+        "branch": "codex/te-base-production",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/28#issuecomment-6200460515"
+    },
+    {
+      "number": 29,
+      "title": "Use acquired defender position for the stalk movement request",
+      "state": "open",
+      "merged": false,
+      "head": "codex/stalk-visual-request",
+      "head_sha": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "2dc832570f2680b50060b5a9e0342155aeca956144088b316223e10955496c7d",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "independent candidate",
+        "owner": "Run Game / Integration",
+        "nextDecision": "Isolated stalk acquired-input correction is ready for review; #34 coverage blockers do not certify or forbid standalone extraction.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 30,
+      "title": "Explain loaded protection and runner timing in one-time D01\u2013D03 drills",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/run-diagnostic-drills",
+      "head_sha": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+      "base": "codex/te-base-production",
+      "base_sha": "c2ab674ac1b19db5e315f9de7cc0bc3a338015a5",
+      "bodySha256": "0c5e8b2e79965cb36d1ac9fde14c60791ac1374665f694b789616b79fb2e7c41",
+      "childrenBefore": [
+        32
+      ],
+      "disposition": {
+        "disposition": "Completed requested diagnosis",
+        "finding": "One-time D01-D03 explanations are complete; no production feature or universal recovery policy was proposed.",
+        "successors": [
+          32,
+          36,
+          64
+        ],
+        "returnCondition": "Reuse the three explanations; pending information/protection questions have named active owners.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/run-drills/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1fbc013008faaa8ab0f677328d81c183c0b8c032/docs/reviews/run-drills/README.md",
+            "gitBlobSha256": "513914e4a4351171530dbfdf97e580e5c68a6c2992b8f58f90a157df68165fae"
+          },
+          {
+            "path": "docs/reviews/run-drills/receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1fbc013008faaa8ab0f677328d81c183c0b8c032/docs/reviews/run-drills/receipt.json",
+            "gitBlobSha256": "09319b353971f6e79bab3e79ac8e6bccaa079269072d186f48f33446242af73b"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/1fbc013008faaa8ab0f677328d81c183c0b8c032",
+        "childrenBefore": [
+          32
+        ],
+        "successorHeads": [
+          {
+            "pr": 64,
+            "head": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 32,
+            "head": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 30,
+        "status": "closed",
+        "head": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+        "commentId": 6200457519,
+        "closedHead": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+        "branch": "codex/run-diagnostic-drills",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/30#issuecomment-6200457519"
+    },
+    {
+      "number": 31,
+      "title": "Diagnose shared-foot grip work and add a bounded correction",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-shared-foot",
+      "head_sha": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+      "base": "codex/grip-saturation-event",
+      "base_sha": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+      "bodySha256": "df535e59f071260ba3f67972e4b7c22df2af09f0f113894d58b16565cdba48ea",
+      "childrenBefore": [
+        33
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Shared-foot coupled work diagnostic completed its bounded graph cases; transition/effort scope continued in #33.",
+        "successors": [
+          33
+        ],
+        "returnCondition": "Keep unsupported phase refusals and no-native-promotion limitations.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/WORKBOARD.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/bf4d6b60122c8eed940c02f0b6188079fa6ffa47/docs/WORKBOARD.md",
+            "gitBlobSha256": "fa7f97268c2e50acbcaeeecef69455ef2b96fd060c3548136f3fb6a73bc21462"
+          },
+          {
+            "path": "docs/reviews/grip-shared-work.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/bf4d6b60122c8eed940c02f0b6188079fa6ffa47/docs/reviews/grip-shared-work.md",
+            "gitBlobSha256": "82a7a86c7359c9946becea4c8785d51aca455f2569a26f99eeaff0da67c6dff3"
+          },
+          {
+            "path": "data/reviews/current/grip-shared-work.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/bf4d6b60122c8eed940c02f0b6188079fa6ffa47/data/reviews/current/grip-shared-work.json",
+            "gitBlobSha256": "bf84d9b338aba6b0853cbc917f4dfb1def3c95a25f0a35a8f3e52cc888bc9f87"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+        "childrenBefore": [
+          33
+        ],
+        "successorHeads": [
+          {
+            "pr": 33,
+            "head": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 31,
+        "status": "closed",
+        "head": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+        "commentId": 6200462252,
+        "closedHead": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+        "branch": "codex/grip-shared-foot",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/31#issuecomment-6200462252"
+    },
+    {
+      "number": 32,
+      "title": "Reject two acquired RT recovery alternatives with native runner traffic",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/rt-recovery-counterfactual",
+      "head_sha": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+      "base": "codex/run-diagnostic-drills",
+      "base_sha": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+      "bodySha256": "de85ede74dfdf244be18b1f3c2ee826e0be0571c6f583b8e5466561268a0fa29",
+      "childrenBefore": [
+        35
+      ],
+      "disposition": {
+        "disposition": "Rejected completed trials",
+        "finding": "Both acquired RT recovery alternatives remain rejected; diagnostic runtime is unchanged and further variants were paused.",
+        "successors": [
+          35,
+          36,
+          64
+        ],
+        "returnCondition": "Use the information/loaded-foot-objective questions rather than repeating rejected variants.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/rt-recovery/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f/docs/reviews/rt-recovery/README.md",
+            "gitBlobSha256": "6bf28f35c255ead6f5856752957833954d8f46fb0247e9aa532874c64edc0da2"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+        "childrenBefore": [
+          35
+        ],
+        "successorHeads": [
+          {
+            "pr": 64,
+            "head": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 35,
+            "head": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 32,
+        "status": "closed",
+        "head": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+        "commentId": 6200464905,
+        "closedHead": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+        "branch": "codex/rt-recovery-counterfactual",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/32#issuecomment-6200464905"
+    },
+    {
+      "number": 33,
+      "title": "Resolve shared-foot cap, slip and effort transitions experimentally",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-phase-transition",
+      "head_sha": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+      "base": "codex/grip-shared-foot",
+      "base_sha": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+      "bodySha256": "b6fdc77575793ad6619769f98d4d286e1b26e81d2ee32a6b22faf9a9f346cdb3",
+      "childrenBefore": [
+        38
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Shared-foot cap/slip/effort transition study completed; full World span-energy work continued in #38.",
+        "successors": [
+          38
+        ],
+        "returnCondition": "No experimental physics default or broad promotion is authorized.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-phase-transition.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6/docs/reviews/grip-phase-transition.md",
+            "gitBlobSha256": "293f6a1d57e68750cfda0245361cf27139a5ee341098fce1f5421def414235e8"
+          },
+          {
+            "path": "data/reviews/current/grip-phase-transition.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6/data/reviews/current/grip-phase-transition.json",
+            "gitBlobSha256": "eac98228bfa3fc26c67d31c2ae5df649f9acdcb4a8d56a193717ff87ac490a05"
+          },
+          {
+            "path": "config/grip-phase-inputs.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6/config/grip-phase-inputs.json",
+            "gitBlobSha256": "7a8f23b85721d3a9ba534aca3c0e166095fd454ad8cae8a4f4f6040a55354843"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+        "childrenBefore": [
+          38
+        ],
+        "successorHeads": [
+          {
+            "pr": 38,
+            "head": "03700539089162b7d667d6d836d34c88cebb9806",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 33,
+        "status": "closed",
+        "head": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+        "commentId": 6200467616,
+        "closedHead": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+        "branch": "codex/grip-phase-transition",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/33#issuecomment-6200467616"
+    },
+    {
+      "number": 34,
+      "title": "Review stalk and coverage extraction; preserve two integration blockers",
+      "state": "open",
+      "merged": false,
+      "head": "codex/pass-controller-integration",
+      "head_sha": "306579fda9d496d45606445fd542239cf2f5acf4",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "7c37fc491a8b4685cd133256c66b7bde86c5405321c386d1c8af0180776488ab",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "blocked",
+        "owner": "Pass Game / Pursuit",
+        "nextDecision": "Resolve seam-gap and native scramble test contracts; retain 1698 pass /2 failures and skipped Python.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 35,
+      "title": "Prepare D01 and Y for an observer-memory-aware information comparison",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/ace-awareness-comparison",
+      "head_sha": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+      "base": "codex/rt-recovery-counterfactual",
+      "base_sha": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+      "bodySha256": "898a90f8c236247e533a67639101641b5629055716ceb53e0eab13e7e8aa7b40",
+      "childrenBefore": [
+        39
+      ],
+      "disposition": {
+        "disposition": "Completed comparison preparation",
+        "finding": "Pinned D01/Y accepted inputs, memory limitations and exact command replay were prepared; #36/#39 consume the resulting information/geometry questions.",
+        "successors": [
+          36,
+          39
+        ],
+        "returnCondition": "Reopen only for a material correction to the saved preparation; no new baseline replay requested.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/ace-awareness/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/fed330a8d2c82b7735c0979958f0b86511d5d434/docs/reviews/ace-awareness/README.md",
+            "gitBlobSha256": "6e9cb90ab446f0a5deee43d7a073b8906266aa70c427fee1a5dc48a3452a8f0c"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/fed330a8d2c82b7735c0979958f0b86511d5d434",
+        "childrenBefore": [
+          39
+        ],
+        "successorHeads": [
+          {
+            "pr": 39,
+            "head": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 35,
+        "status": "closed",
+        "head": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+        "commentId": 6200468481,
+        "closedHead": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+        "branch": "codex/ace-awareness-comparison",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/35#issuecomment-6200468481"
+    },
+    {
+      "number": 36,
+      "title": "Use observer-owned teammate information for spacing",
+      "state": "open",
+      "merged": false,
+      "head": "codex/teammate-information",
+      "head_sha": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "51756ed9bf565bfabe0304cd4ee0e3ad8a68305295dba692e294305b72bef0e1",
+      "childrenBefore": [
+        42,
+        41
+      ],
+      "disposition": {
+        "class": "blocked",
+        "owner": "Run Game + Awareness",
+        "nextDecision": "Adjudicate real rear collision and bounded post-mesh coordination before information-host promotion.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 37,
+      "title": "Track current priorities, integration blockers, and parked issues",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/project-tracking",
+      "head_sha": "0b6c35317c3d89e99265e93a756ece5053e71e77",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "6af8d734b324359075d2617101eb68d9ae4a9803d19e946a9ea7b2ba7fb64005",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Superseded documentation proposal",
+        "finding": "Its existing issue register/history are retained in the current #63 tracking and carried into #65; #65 is the current queue/navigation review vehicle, not a claim of accepted adoption.",
+        "successors": [
+          63,
+          65
+        ],
+        "returnCondition": "Continue the same tracking objective in #65; retain original historical status and evidence.",
+        "action": "proposed_close",
+        "evidence": [],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/0b6c35317c3d89e99265e93a756ece5053e71e77",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 65,
+            "head": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 63,
+            "head": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 37,
+        "status": "closed",
+        "head": "0b6c35317c3d89e99265e93a756ece5053e71e77",
+        "commentId": 6200473152,
+        "closedHead": "0b6c35317c3d89e99265e93a756ece5053e71e77",
+        "branch": "codex/project-tracking",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/37#issuecomment-6200473152"
+    },
+    {
+      "number": 38,
+      "title": "Diagnose stored grip-span energy in complete World accounting",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-world-accounting",
+      "head_sha": "03700539089162b7d667d6d836d34c88cebb9806",
+      "base": "codex/grip-phase-transition",
+      "base_sha": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+      "bodySha256": "fbbdfdc087c24df0417e5f153b484ddfaf240d5cec95e36c851b3fbe2146ed95",
+      "childrenBefore": [
+        40
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Stored spring-energy and whole-World cross-work diagnosis completed its narrow reference; mixed-span accounting continued in #40.",
+        "successors": [
+          40
+        ],
+        "returnCondition": "Retain the 1us-only accuracy/cost limits; no full-length certificate is invented.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-world-accounting.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/03700539089162b7d667d6d836d34c88cebb9806/docs/reviews/grip-world-accounting.md",
+            "gitBlobSha256": "0d14fa513252d0cf47f6f69e1722e97cbd0585425803fae89735f54b50ac5dbd"
+          },
+          {
+            "path": "data/reviews/current/grip-world-accounting.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/03700539089162b7d667d6d836d34c88cebb9806/data/reviews/current/grip-world-accounting.json",
+            "gitBlobSha256": "0bc4d1686e829a99bf85a8a220afe3b13006bf1435749d09328e0b0f0a650a90"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/03700539089162b7d667d6d836d34c88cebb9806",
+        "childrenBefore": [
+          40
+        ],
+        "successorHeads": [
+          {
+            "pr": 40,
+            "head": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 38,
+        "status": "closed",
+        "head": "03700539089162b7d667d6d836d34c88cebb9806",
+        "commentId": 6200474753,
+        "closedHead": "03700539089162b7d667d6d836d34c88cebb9806",
+        "branch": "codex/grip-world-accounting",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/38#issuecomment-6200474753"
+    },
+    {
+      "number": 39,
+      "title": "Audit accepted Ace offensive-line geometry against NFL tracking",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/run-nfl-line-audit",
+      "head_sha": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+      "base": "codex/ace-awareness-comparison",
+      "base_sha": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+      "bodySha256": "6a95fc0a54976764283879999071d87855e2993edf8e781c83300c5e3e39233e",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed geometry audit",
+        "finding": "NFL/accepted Ace geometry audit is a preserved measurement, not a controller correction or new calibration requirement.",
+        "successors": [
+          36
+        ],
+        "returnCondition": "Reuse pinned datasets/figures; remaining information acquisition questions remain with Awareness/Run Game.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/run-nfl-line-audit/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/aaa0163c5083ca71da8425797ff5b6a68cbefb4f/docs/reviews/run-nfl-line-audit/README.md",
+            "gitBlobSha256": "d13d262b05e1379de414489aeb9497b6400260a2af41b6f62f383a846270646c"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 39,
+        "status": "closed",
+        "head": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+        "commentId": 6200476946,
+        "closedHead": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+        "branch": "codex/run-nfl-line-audit",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/39#issuecomment-6200476946"
+    },
+    {
+      "number": 40,
+      "title": "Close passive mixed grip spring-energy accounting",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-mixed-span",
+      "head_sha": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+      "base": "codex/grip-world-accounting",
+      "base_sha": "03700539089162b7d667d6d836d34c88cebb9806",
+      "bodySha256": "2277ce611c9ef136e5b5164ee4eae358d24d5f55a81cba3873d52c8fcaea1b34",
+      "childrenBefore": [
+        43
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Mixed-span spring accounting preserves the ordinary-length refusal and high costs; reversal handling continued in #43.",
+        "successors": [
+          43
+        ],
+        "returnCondition": "Do not label the old failed ordinary-length budget passing.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-mixed-span.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134/docs/reviews/grip-mixed-span.md",
+            "gitBlobSha256": "6e164af2caddbc854912369a8b712e0cf2e0753072cd2fe067636efb85efa982"
+          },
+          {
+            "path": "data/reviews/current/grip-mixed-span.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134/data/reviews/current/grip-mixed-span.json",
+            "gitBlobSha256": "e76ca5f2a9275c30645065e473f5f7151a620132bcdd20be60726fb8c58ae789"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+        "childrenBefore": [
+          43
+        ],
+        "successorHeads": [
+          {
+            "pr": 43,
+            "head": "938810c40554a42add66600e770ffad0e6b0d8da",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 40,
+        "status": "closed",
+        "head": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+        "commentId": 6200477192,
+        "closedHead": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+        "branch": "codex/grip-mixed-span",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/40#issuecomment-6200477192"
+    },
+    {
+      "number": 41,
+      "title": "Model player awareness and diagnose costly run-lane glances",
+      "state": "open",
+      "merged": false,
+      "head": "codex/run-awareness-model",
+      "head_sha": "66001360bd03a842679433805d88bc20fc8b689e",
+      "base": "codex/teammate-information",
+      "base_sha": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "bodySha256": "c8e442a71999becec78e2e1b6c8ca74dabbee23e0cb94978b55ce5d56fc08411",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "owner clarification",
+        "owner": "Awareness",
+        "nextDecision": "Confirm live next action versus parked disabled attention pilot; no fresh transfer requested to classify.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 42,
+      "title": "Trace wide-zone opening and hand off the traffic forecast blocker",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/wide-zone-opening",
+      "head_sha": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "base": "codex/teammate-information",
+      "base_sha": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "bodySha256": "20635ca490571760e7fd300a54d52df9e6c47741f7d111eaa2a610ef6e70e554",
+      "childrenBefore": [
+        47,
+        45
+      ],
+      "disposition": {
+        "disposition": "Completed opening diagnostic",
+        "finding": "All-OL opening forecast diagnosis and rejected raw bypass were handed to the owner; bounded implementation questions continued in #47/#50.",
+        "successors": [
+          47,
+          50
+        ],
+        "returnCondition": "Original report/900-row timeline remain; #36 host and controller promotion are still separate.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/wide-zone-opening/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/f2dd5611bff80ff7e4415ea9777848218f4c01e0/docs/reviews/wide-zone-opening/README.md",
+            "gitBlobSha256": "88d517bfe0a16e54b47e0de21bea4dacd4efb74861c79314d6502498f8abf998"
+          },
+          {
+            "path": "docs/reviews/wide-zone-opening/receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/f2dd5611bff80ff7e4415ea9777848218f4c01e0/docs/reviews/wide-zone-opening/receipt.json",
+            "gitBlobSha256": "7860ce3f316f9bba38609781a805eea73bee7ff06456b58a1ca8f4f9f896c256"
+          },
+          {
+            "path": "docs/reviews/wide-zone-opening/first-breakdown.json.gz",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/f2dd5611bff80ff7e4415ea9777848218f4c01e0/docs/reviews/wide-zone-opening/first-breakdown.json.gz",
+            "gitBlobSha256": "746eaedb617109773496e1cd8455d1b66372820f6f4797046db81855be0e8b6a"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+        "childrenBefore": [
+          47,
+          45
+        ],
+        "successorHeads": [
+          {
+            "pr": 50,
+            "head": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 47,
+            "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 42,
+        "status": "closed",
+        "head": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+        "commentId": 6200481212,
+        "closedHead": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+        "branch": "codex/wide-zone-opening",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/42#issuecomment-6200481212"
+    },
+    {
+      "number": 43,
+      "title": "Resolve grip reversal accuracy; retain runtime gate",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-span-events",
+      "head_sha": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "base": "codex/grip-mixed-span",
+      "base_sha": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+      "bodySha256": "da80ba2a05222d642f813a72a9578141d7929e09c7d22d0599b47c4bf352b439",
+      "childrenBefore": [
+        49,
+        46
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Reversal accuracy and cost tails were established; affordable kernel/World work continued in #46.",
+        "successors": [
+          46
+        ],
+        "returnCondition": "Keep original uniform modes and failures; no historical World/native promotion is implied.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-span-events.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/938810c40554a42add66600e770ffad0e6b0d8da/docs/reviews/grip-span-events.md",
+            "gitBlobSha256": "bdb2f84749ca222d94f9c7abc8fc78e0ed46bc87b4b5b1dc1d4649915682d9db"
+          },
+          {
+            "path": "data/reviews/current/grip-span-events.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/938810c40554a42add66600e770ffad0e6b0d8da/data/reviews/current/grip-span-events.json",
+            "gitBlobSha256": "6ed5836dffb8103b8dcbdc000cf570f59967f398952846fdc6c7b29ed5ece2a9"
+          },
+          {
+            "path": "config/grip-mixed-span-inputs.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/938810c40554a42add66600e770ffad0e6b0d8da/config/grip-mixed-span-inputs.json",
+            "gitBlobSha256": "b3412a7f6369963a4682f02be3d838148c0f75f123c4eb1daa3fd83abfec5305"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/938810c40554a42add66600e770ffad0e6b0d8da",
+        "childrenBefore": [
+          49,
+          46
+        ],
+        "successorHeads": [
+          {
+            "pr": 46,
+            "head": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 43,
+        "status": "closed",
+        "head": "938810c40554a42add66600e770ffad0e6b0d8da",
+        "commentId": 6200485650,
+        "closedHead": "938810c40554a42add66600e770ffad0e6b0d8da",
+        "branch": "codex/grip-span-events",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/43#issuecomment-6200485650"
+    },
+    {
+      "number": 44,
+      "title": "Audit information ownership and future football awareness work",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/awareness-audit",
+      "head_sha": "917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "314f1b3281e648a6c7a760793940ccfe4f5c8d8614962a8b295d8db2104efd91",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Completed awareness audit",
+        "finding": "The docs-only information inventory expands INFO-003; it is not a production feature or an instruction to reopen every parked consumer.",
+        "successors": [
+          36,
+          41
+        ],
+        "returnCondition": "Keep INFO-003's scoped migrations in the existing issue register.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/awareness-audit.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/917521d11a76c9b6eb12daf94fa298f7ebadfa82/docs/reviews/awareness-audit.md",
+            "gitBlobSha256": "b16387b94e4e3301df8973ffee6910231ac94a84072db4936b110f0016f8c732"
+          },
+          {
+            "path": "docs/reviews/awareness-audit/probe-receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/917521d11a76c9b6eb12daf94fa298f7ebadfa82/docs/reviews/awareness-audit/probe-receipt.json",
+            "gitBlobSha256": "0a0e6f4ee2c0008fc951d6da8a4fa41559d4e5cb7ed5fae9804a59cbf6eef4b3"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 41,
+            "head": "66001360bd03a842679433805d88bc20fc8b689e",
+            "containsExactOldHead": false
+          },
+          {
+            "pr": 36,
+            "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 44,
+        "status": "closed",
+        "head": "917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+        "commentId": 6200484311,
+        "closedHead": "917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+        "branch": "codex/awareness-audit",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/44#issuecomment-6200484311"
+    },
+    {
+      "number": 45,
+      "title": "Correct achievable wide-zone forecasts and retain the weak-opening blocker",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/wide-zone-execution",
+      "head_sha": "aaae54033ea0a102f2173e85410e21ac0a59a476",
+      "base": "codex/wide-zone-opening",
+      "base_sha": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "bodySha256": "24d98a3485aa6b2e2fbeede520ed7f23928c031578c4f287148b72bf6a725ede",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Rejected completed candidate",
+        "finding": "The full achievable-forecast candidate is explicitly rejected after weak RT-Y impact and lost LT access; no fresh-front expansion followed.",
+        "successors": [
+          47
+        ],
+        "returnCondition": "Retain adverse evidence; #47 excludes this rejected spacing logic.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/wide-zone-execution/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/aaae54033ea0a102f2173e85410e21ac0a59a476/docs/reviews/wide-zone-execution/README.md",
+            "gitBlobSha256": "05ea6ade44c43fa337b76bbf940ec6b15d92998612b5c500cacf58e432144682"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/aaae54033ea0a102f2173e85410e21ac0a59a476",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 47,
+            "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 45,
+        "status": "closed",
+        "head": "aaae54033ea0a102f2173e85410e21ac0a59a476",
+        "commentId": 6200484382,
+        "closedHead": "aaae54033ea0a102f2173e85410e21ac0a59a476",
+        "branch": "codex/wide-zone-execution",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/45#issuecomment-6200484382"
+    },
+    {
+      "number": 46,
+      "title": "Prototype affordable passive grip in World (experimental)",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-span-kernel",
+      "head_sha": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+      "base": "codex/grip-span-events",
+      "base_sha": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "bodySha256": "8faad4af26d624fd492dbf9c6074fda064fb893cd12d906e45939fface8a2b9c",
+      "childrenBefore": [
+        48
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Passive World prototype and inherited validation failures remain pinned; existing native reel/ground scope continued in #48.",
+        "successors": [
+          48
+        ],
+        "returnCondition": "No inherited failure is cleared by closing this PR; broader promotion remains held.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-passive-world.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/baf7ed5686ecb6ad152ffde0b0af6b410c74a340/docs/reviews/grip-passive-world.md",
+            "gitBlobSha256": "0c476ea7cff3989ba80514fb23d0f0f8a37f16508f3091e12382d1db5faa51b1"
+          },
+          {
+            "path": "data/reviews/current/grip-span-kernel.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/baf7ed5686ecb6ad152ffde0b0af6b410c74a340/data/reviews/current/grip-span-kernel.json",
+            "gitBlobSha256": "7e5be28fda528d4166e758fc55f640369d1ad4df6cc241ce563e6f5d474b0225"
+          },
+          {
+            "path": "data/reviews/current/grip-passive-world.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/baf7ed5686ecb6ad152ffde0b0af6b410c74a340/data/reviews/current/grip-passive-world.json",
+            "gitBlobSha256": "d5a442a5325a43b42ec299a58151cee3c92fc92ceca531716a7e6abc91c0fab7"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+        "childrenBefore": [
+          48
+        ],
+        "successorHeads": [
+          {
+            "pr": 48,
+            "head": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 46,
+        "status": "closed",
+        "head": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+        "commentId": 6200490318,
+        "closedHead": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+        "branch": "codex/grip-span-kernel",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/46#issuecomment-6200490318"
+    },
+    {
+      "number": 47,
+      "title": "Correct wide-zone help reads, attached technique and opening forecasts",
+      "state": "open",
+      "merged": false,
+      "head": "codex/wide-zone-help-read",
+      "head_sha": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "base": "codex/wide-zone-opening",
+      "base_sha": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "bodySha256": "f55f119712f9ac6cd1e67fb5f98bb08fc5716e5f0bb62598e1bdb72790c68431",
+      "childrenBefore": [
+        50
+      ],
+      "disposition": {
+        "class": "dependent candidate",
+        "owner": "Run Game + Awareness",
+        "nextDecision": "Acquired help/technique candidate needs explicitly reviewed #36/#42 host; no whole experimental ancestry.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 48,
+      "title": "Integrate existing native reel and ground forces in an experimental World callback",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-native-forces",
+      "head_sha": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+      "base": "codex/grip-span-kernel",
+      "base_sha": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+      "bodySha256": "56408d59f38c9ba3e05f5ca22669de1d80a1a9a05db5e4829961705b5e061b0f",
+      "childrenBefore": [
+        51
+      ],
+      "disposition": {
+        "disposition": "Superseded research milestone",
+        "finding": "Default-off native reel/ground integration and its cost/reference failures remain; cap/slip and recovery follow-ups are separate active successors.",
+        "successors": [
+          51,
+          55,
+          56
+        ],
+        "returnCondition": "Preserve fallback/refusal limits; this is not a full-patch or accepted-runtime promotion.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-native-forces.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/d19656db4964559dd7952c23ccd3388cc0e6058c/docs/reviews/grip-native-forces.md",
+            "gitBlobSha256": "afd5d6895c19304d105345e6f33aa1f68b3a7a8e30bc5e90773dba571228dbc9"
+          },
+          {
+            "path": "data/reviews/current/grip-native-forces.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/d19656db4964559dd7952c23ccd3388cc0e6058c/data/reviews/current/grip-native-forces.json",
+            "gitBlobSha256": "ce20a0448f354e282e8dd6d3938548b5ff75a669bb2dcc55d3e209a0e4abdfc7"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/d19656db4964559dd7952c23ccd3388cc0e6058c",
+        "childrenBefore": [
+          51
+        ],
+        "successorHeads": [
+          {
+            "pr": 56,
+            "head": "e494076fdab93c93de5135412855655fcfab5c97",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 55,
+            "head": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+            "containsExactOldHead": true
+          },
+          {
+            "pr": 51,
+            "head": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 48,
+        "status": "closed",
+        "head": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+        "commentId": 6200489986,
+        "closedHead": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+        "branch": "codex/grip-native-forces",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/48#issuecomment-6200489986"
+    },
+    {
+      "number": 49,
+      "title": "Isolate opt-in material attachment ownership from grip solver work",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/grip-material-ownership",
+      "head_sha": "cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+      "base": "codex/grip-span-events",
+      "base_sha": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "bodySha256": "5f8028598ff7abbd5dbf2f44158a7da0995720879ab1da1f3d84503a50a73d76",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Superseded review vehicle",
+        "finding": "The isolated material ownership guard is now explicitly part of current-develop candidate #66. Legacy ownership/native evidence remains; #66 is not merged or promoted.",
+        "successors": [
+          66
+        ],
+        "returnCondition": "Review the current host and guard there; do not duplicate transport logic.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/grip-material-ownership.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3/docs/reviews/grip-material-ownership.md",
+            "gitBlobSha256": "935db3444d442cdfd034cf67fce43ddc80a79d67dfcedf84682fd0d115a37736"
+          },
+          {
+            "path": "data/reviews/current/grip-material-ownership.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3/data/reviews/current/grip-material-ownership.json",
+            "gitBlobSha256": "fc3994c86693e615885d33a4d9e04e9660ae68addf04c5d78e8c0afefe77a25d"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 49,
+        "status": "closed",
+        "head": "cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+        "commentId": 6200490822,
+        "closedHead": "cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+        "branch": "codex/grip-material-ownership",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/49#issuecomment-6200490822"
+    },
+    {
+      "number": 50,
+      "title": "Sustain wide-zone combination footwork and correct the moving mesh",
+      "state": "open",
+      "merged": false,
+      "head": "codex/wide-zone-flow",
+      "head_sha": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "base": "codex/wide-zone-help-read",
+      "base_sha": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "bodySha256": "d384c482bfec207f2c6b90dc40fc46977f5b99349ca59f3a5d5a6a0b6dd3fe17",
+      "childrenBefore": [
+        53,
+        52
+      ],
+      "disposition": {
+        "class": "dependent candidate",
+        "owner": "Run Game + Awareness",
+        "nextDecision": "Wide-zone footwork/mesh candidate depends on #47/#36; retained second-level misses and rejected route remain.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 51,
+      "title": "Integrate native tangent cap/slip with matched contact evidence",
+      "state": "open",
+      "merged": false,
+      "head": "codex/grip-native-slip",
+      "head_sha": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "base": "codex/grip-native-forces",
+      "base_sha": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+      "bodySha256": "3c68286cc8b2e4570ce8da9e5ff1ffa0f709a449aa4ca397c2fe031fa94b8c80",
+      "childrenBefore": [
+        56,
+        55
+      ],
+      "disposition": {
+        "class": "owner clarification",
+        "owner": "Primary Physics",
+        "nextDecision": "Confirm active cap/slip callback review versus parked historical patch host; keep native/cost limitations.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 52,
+      "title": "Keep inside-zone TEs in their physical base and document release transfer limits",
+      "state": "open",
+      "merged": false,
+      "head": "codex/joined-release-transfer",
+      "head_sha": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "base": "codex/wide-zone-flow",
+      "base_sha": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "bodySha256": "adf89fcaff5523f80016ec2efe468afe6c44df7ea5ba48cec871eb007fec34f9",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "dependent candidate",
+        "owner": "Run Game + Integration",
+        "nextDecision": "Review minimal TE-base correction separately from #50 stack; rejected joined-release trial excluded.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 53,
+      "title": "Audit combination departure without promoting rejected contact minimization",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/combination-departure-execution",
+      "head_sha": "2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+      "base": "codex/wide-zone-flow",
+      "base_sha": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "bodySha256": "1abc3381556b4fb87ddcec3b77d69a0842155e597062c38a0b1eb681ded6198a",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Rejected completed trials",
+        "finding": "Hard veto and gather variants are rejected; final runtime restores #50 and no production improvement is pending here.",
+        "successors": [
+          50
+        ],
+        "returnCondition": "RUN-007 retains the departure/collection question; do not integrate contact-minimization trials.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/combination-departure/README.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/2c36bb9e78becf742fd5fd1b9710a1738057c7ff/docs/reviews/combination-departure/README.md",
+            "gitBlobSha256": "e2de34e82a6a66c6fe3eb867b6b2583caf88eaff0b0981fd3415b1d84039b02a"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 50,
+            "head": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 53,
+        "status": "closed",
+        "head": "2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+        "commentId": 6200498194,
+        "closedHead": "2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+        "branch": "codex/combination-departure-execution",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/53#issuecomment-6200498194"
+    },
+    {
+      "number": 54,
+      "title": "Experimental run/pass checkpoint: full games, regressions and native film",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/experimental-game-checkpoint",
+      "head_sha": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "f3e84e2a9c15380692813e9622ce0d428258dc8b3bff557bd8aacce14bcc096f",
+      "childrenBefore": [
+        57
+      ],
+      "disposition": {
+        "disposition": "Completed experimental checkpoint",
+        "finding": "Four experimental/four accepted games, full film and adverse outcomes were published. The full bundle is not recommended for develop; only minimal independently reviewed fixes proceed.",
+        "successors": [
+          63
+        ],
+        "returnCondition": "Branch remains the parent of #57; film and all eight-game evidence remain available without any new campaign.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/experimental-game-checkpoint-2026-10-14.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/4ae667e29b3ce085f43c5cb911b294349cda2b8f/docs/reviews/experimental-game-checkpoint-2026-10-14.md",
+            "gitBlobSha256": "ec6b54dd54e233ce925f67b7adcf0938d368f21707e637ae0a148967678c5d3c"
+          },
+          {
+            "path": "data/reviews/current/experimental-game-checkpoint/receipt.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/4ae667e29b3ce085f43c5cb911b294349cda2b8f/data/reviews/current/experimental-game-checkpoint/receipt.json",
+            "gitBlobSha256": "d3b67b7240f926d294e11643a4b9318c6923642fa3852fc33f74f6ca679bb0ef"
+          },
+          {
+            "path": "data/reviews/current/experimental-game-checkpoint/verification/combined-final.json",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/4ae667e29b3ce085f43c5cb911b294349cda2b8f/data/reviews/current/experimental-game-checkpoint/verification/combined-final.json",
+            "gitBlobSha256": "0451ef3a7fa62836fb6c8d98c98a6406f541a8c9b4da3f7b08d06a6be57a270d"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+        "childrenBefore": [
+          57
+        ],
+        "successorHeads": [
+          {
+            "pr": 63,
+            "head": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 54,
+        "status": "closed",
+        "head": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+        "commentId": 6200499518,
+        "closedHead": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+        "branch": "codex/experimental-game-checkpoint",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/54#issuecomment-6200499518"
+    },
+    {
+      "number": 55,
+      "title": "Prototype corrective-foot grip integration with bounded work accounting",
+      "state": "open",
+      "merged": false,
+      "head": "codex/grip-recovery-work",
+      "head_sha": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+      "base": "codex/grip-native-slip",
+      "base_sha": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "bodySha256": "2a3c05f559f4822b2a780daf740a752f7cefad29c7bb78751331ffefd1632ac8",
+      "childrenBefore": [
+        59
+      ],
+      "disposition": {
+        "class": "owner clarification",
+        "owner": "Primary Physics",
+        "nextDecision": "Confirm distinct corrective-foot callback review versus parked research; retained dry-cap failure is not cleared.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 56,
+      "title": "Preserve native reel stop with atomic experimental fallback",
+      "state": "open",
+      "merged": false,
+      "head": "codex/grip-reel-stop",
+      "head_sha": "e494076fdab93c93de5135412855655fcfab5c97",
+      "base": "codex/grip-native-slip",
+      "base_sha": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "bodySha256": "1dbc61ae137780e1180e51aa3f15a4e5801ff8120939c6b4c92881e9172af754",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "owner clarification",
+        "owner": "Primary Physics",
+        "nextDecision": "Confirm independent reel-stop helper review versus parked research; no callback combination implied.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 57,
+      "title": "Repair moving shotgun exchange cadence; preserve failed recovery evidence",
+      "state": "open",
+      "merged": false,
+      "head": "codex/designed-run-game-diagnosis",
+      "head_sha": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "base": "codex/experimental-game-checkpoint",
+      "base_sha": "3617df38070f23aa0a813e8f5014225b77dd7210",
+      "bodySha256": "d9c86e21181339942ee4ad4f6c1983aa3e9e7459fdae64866ad25123c292b995",
+      "childrenBefore": [
+        64
+      ],
+      "disposition": {
+        "class": "included in unmerged #63",
+        "owner": "Integration",
+        "nextDecision": "Minimal cadence extracted in verified #63; retain its original branch for active #64 child.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 58,
+      "title": "Read receiver blocking from observed posture and contact",
+      "state": "open",
+      "merged": false,
+      "head": "codex/receiver-blocking-evidence",
+      "head_sha": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "a675e1b961bf1c2adfbd0aa579f7d33b1fd8b202e330c887482a9c7e5b1d5aae",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "included in unmerged #63",
+        "owner": "Controller / Integration",
+        "nextDecision": "Controller owner approved revised zone-key contract and recognition at 6200453995; final combined integration decision remains.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 59,
+      "title": "Isolate support-history divergence to the runner half-turn choice",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/support-command-audit",
+      "head_sha": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+      "base": "codex/grip-recovery-work",
+      "base_sha": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+      "bodySha256": "37a956fd0ac5b85a972d57ceca3ec90323571f2eaad044ef2dbb97ab0c8a2b1f",
+      "childrenBefore": [
+        62
+      ],
+      "disposition": {
+        "disposition": "Completed causal diagnostic",
+        "finding": "Support-history apparent amplification was isolated to antipodal turn choice, without proving a bad recovery law; controller exploration moved to #62.",
+        "successors": [
+          62
+        ],
+        "returnCondition": "Turn-choice follow-up is parked; support/grip accuracy questions remain separately scoped.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/support-command-audit.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/4db2ffa77298a00dd475a6565c4f427cabb03634/docs/reviews/support-command-audit.md",
+            "gitBlobSha256": "488611c7563d5ddd21674697aeb5dccfdc109594b352cc49ec3643f5f2084005"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/4db2ffa77298a00dd475a6565c4f427cabb03634",
+        "childrenBefore": [
+          62
+        ],
+        "successorHeads": [
+          {
+            "pr": 62,
+            "head": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+            "containsExactOldHead": true
+          }
+        ]
+      },
+      "action": {
+        "pr": 59,
+        "status": "closed",
+        "head": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+        "commentId": 6200496871,
+        "closedHead": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+        "branch": "codex/support-command-audit",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/59#issuecomment-6200496871"
+    },
+    {
+      "number": 60,
+      "title": "Correct holding enforcement and retain actual possession credit",
+      "state": "open",
+      "merged": false,
+      "head": "codex/game-bookkeeping-review",
+      "head_sha": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "09d1750dcab334e7be03af80200353b810943dc629b3627203b8f4ef71cf8d52",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "included in unmerged #63",
+        "owner": "Integration",
+        "nextDecision": "Bookkeeping extraction verified in #63; holding value policy stays unresolved.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 61,
+      "title": "Require acquired flight before incidental offensive catch attempts",
+      "state": "open",
+      "merged": false,
+      "head": "codex/eligible-catch-acquisition",
+      "head_sha": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "3d3cf016dfd19dd295245c578649cab523a5d7de30b015359e4d93a92b39eb3f",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "included in unmerged #63",
+        "owner": "Integration",
+        "nextDecision": "Incidental acquisition extraction verified in #63; attention/targeted-tracking limits remain.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 62,
+      "title": "Prototype momentum-aware half-turn choice with unchanged physical limits",
+      "state": "closed",
+      "merged": false,
+      "head": "codex/momentum-turn-choice",
+      "head_sha": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+      "base": "codex/support-command-audit",
+      "base_sha": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+      "bodySha256": "c11d1ac0d2f06d85b38938a1575099a897b24d66eb33ffa1df1cc5858aaa6217",
+      "childrenBefore": [],
+      "disposition": {
+        "disposition": "Parked completed research",
+        "finding": "The report explicitly parks this historical patch-host turn-choice/cost work and defers its timing exercise. Primary Physics's current production target is #66.",
+        "successors": [
+          66
+        ],
+        "returnCondition": "Reopen only with a specified reviewed host and concrete turn-choice integration decision; cost/adverse evidence stays pinned.",
+        "action": "proposed_close",
+        "evidence": [
+          {
+            "path": "docs/reviews/turn-planner-cost.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1f071b9568f3fcc790aff71ddf5ea032cca5cf16/docs/reviews/turn-planner-cost.md",
+            "gitBlobSha256": "a50b3a93f5d78c34dc79429b3d85e0fe3f8337c12fa69fab37673e1db912ba4d"
+          },
+          {
+            "path": "docs/reviews/momentum-turn-choice.md",
+            "url": "https://github.com/tannerthardy/football-simulation-/blob/1f071b9568f3fcc790aff71ddf5ea032cca5cf16/docs/reviews/momentum-turn-choice.md",
+            "gitBlobSha256": "8d033ef082af77216b9713ed26bab838702a6d27851144dc63b2466d7d358b17"
+          }
+        ],
+        "preservedTree": "https://github.com/tannerthardy/football-simulation-/tree/1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+        "childrenBefore": [],
+        "successorHeads": [
+          {
+            "pr": 66,
+            "head": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+            "containsExactOldHead": false
+          }
+        ]
+      },
+      "action": {
+        "pr": 62,
+        "status": "closed",
+        "head": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+        "commentId": 6200502475,
+        "closedHead": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+        "branch": "codex/momentum-turn-choice",
+        "merged": false
+      },
+      "closureComment": "https://github.com/tannerthardy/football-simulation-/pull/62#issuecomment-6200502475"
+    },
+    {
+      "number": 63,
+      "title": "Correct gap identity, exchange cadence, blocking reads and catch accounting",
+      "state": "open",
+      "merged": false,
+      "head": "codex/departed-center-integration",
+      "head_sha": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "6cc56f54f371e7921edc89c6445a80ce411dca01bf984b89311dc56eae0768cc",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "ready for integration decision",
+        "owner": "Integration under existing authority",
+        "nextDecision": "Controller contract approved; exact combined verification reused. Final five-contribution acceptance/merge decision, no scope expansion.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 64,
+      "title": "Diagnose pass cutoff prediction against P040 and P019 controls",
+      "state": "open",
+      "merged": false,
+      "head": "codex/pass-set-opening-diagnosis",
+      "head_sha": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+      "base": "codex/designed-run-game-diagnosis",
+      "base_sha": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "bodySha256": "2e6245a117c2350462edf751d300a0d9eb1a033b480eb0a66cb1b28c0b1d082e",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "active research / diagnostic",
+        "owner": "Run Game / contact owner",
+        "nextDecision": "Keep loaded foot-objective contract question here; #67 is a separate independently reviewable approach correction.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 65,
+      "title": "Align agent work with accepted develop and track the integration queue",
+      "state": "open",
+      "merged": false,
+      "head": "codex/integration-queue",
+      "head_sha": "007f7f6caec72ca2562a83ad44bed000e94acf16",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "a34b4feb0ed2ece69c0e5bda4cfddf352f53da6d9979307b0a9de56ef733b403",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "active bookkeeping/navigation",
+        "owner": "Integration",
+        "nextDecision": "Continue this PR for the queue/agent/reference documentation objective; no runtime merge or suite required.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 66,
+      "title": "Isolate common-point contact law and correct material ownership on develop",
+      "state": "open",
+      "merged": false,
+      "head": "codex/contact-law-current",
+      "head_sha": "29b00905edee16f00651317364b729c1b377eb5b",
+      "base": "develop",
+      "base_sha": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "bodySha256": "a2441bc12065763cba7ff864aff3f18381a4daec33dcc33c44223995efceca90",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "blocked independent physics candidate",
+        "owner": "Run Game + Physics + Integration",
+        "nextDecision": "Adjudicate five Run helper contracts and two center-history compatibility failures; do not combine with #63 or enable defaults. Latest 29b0090 diagnostic closes the bounded missing-temporal-moment hypothesis as force-selection sensitivity; no converged native-accuracy or runtime correction is claimed.",
+        "action": "keep open"
+      }
+    },
+    {
+      "number": 67,
+      "title": "Approach edge cutoff points with the forecast kick-slide budget",
+      "state": "open",
+      "merged": false,
+      "head": "codex/pass-loaded-objective",
+      "head_sha": "e33ac769929fb1134729c20d083e9e50ed6658da",
+      "base": "codex/pass-set-opening-diagnosis",
+      "base_sha": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+      "bodySha256": "ff1c12c234f2d1d02064a3f1974ec0cc15ac5e98c3623d2269c44dca4b8a40d3",
+      "childrenBefore": [],
+      "disposition": {
+        "class": "incoming independent runtime candidate",
+        "owner": "Run Game + Integration",
+        "nextDecision": "Review/extract only free pass-cutoff approach and controls onto accepted tree; #64/#57/#54 ancestry excluded; retain adverse P040 RT/P019 RG and censored limits.",
+        "action": "keep open"
+      }
+    }
+  ],
+  "concurrentPRHeadUpdates": [
+    {
+      "pr": 66,
+      "before": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "after": "29b00905edee16f00651317364b729c1b377eb5b",
+      "status": "independent owner progress; not modified here"
+    },
+    {
+      "pr": 65,
+      "before": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+      "after": "007f7f6caec72ca2562a83ad44bed000e94acf16",
+      "status": "own docs progress"
+    }
+  ],
+  "incorporationProof": {
+    "6": {
+      "head": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "ancestorOfAccepted": true
+    },
+    "8": {
+      "head": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "ancestorOfAccepted": true
+    },
+    "10": {
+      "head": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+      "ancestorOfAccepted": false,
+      "filesEqualAccepted": {
+        "src/sim/contact-motion.ts": true,
+        "test/contact-motion.test.ts": true,
+        "src/sim/engagement.ts": true
+      }
+    },
+    "9": {
+      "filesEqualAccepted": {
+        "src/sim/contact-motion.ts": true,
+        "test/contact-motion.test.ts": true
+      }
+    }
+  },
+  "controllerApproval": {
+    "pr": 63,
+    "comment": "https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200453995",
+    "publication": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+    "tested": "a862a05713d0b8bbd22683ce8a70d5ac16eb18e2",
+    "scope": "Zone-key contract/recognition contribution approved; no recognition blocker. Other scope acceptance and existing merge authority remain separate.",
+    "reruns": 0
+  },
+  "ownerRequests": [
+    {
+      "pr": 4,
+      "comment": "https://github.com/tannerthardy/football-simulation-/pull/4#issuecomment-6200398123"
+    },
+    {
+      "pr": 41,
+      "comment": "https://github.com/tannerthardy/football-simulation-/pull/41#issuecomment-6200399198"
+    },
+    {
+      "pr": 66,
+      "comment": "https://github.com/tannerthardy/football-simulation-/pull/66#issuecomment-6200400133",
+      "affectedPRs": [
+        51,
+        55,
+        56
+      ]
+    }
+  ],
+  "branchPreservation": {
+    "before": {
+      "refs/heads/claude/contact-stability": "916f3c6b3fa61224b54a193c37c2b7107a520472",
+      "refs/heads/claude/easy-gains": "10f00a569992c948cea8d2e4a5814e927940618f",
+      "refs/heads/claude/engine-priorities": "862258c5b41f3cf6e7475e8ae24adf076c3e3e60",
+      "refs/heads/claude/football-sim-engine": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+      "refs/heads/claude/ground-finish": "6c87169bbddac8dcdce949c10b33086f83cc9633",
+      "refs/heads/claude/in-stride-catch": "83e514ab399b8fdac0928a8f207ec2a3350b7231",
+      "refs/heads/claude/live-gaps": "448313e82e6c8d6a1d19e4abe20b3029a5d592fa",
+      "refs/heads/claude/pass-rush-hands": "724a94cf4cf821d22dd30d3ed8cf2bfeadc737b9",
+      "refs/heads/claude/physics-world-wip": "e8d6b0220c3220eacd0d661d10658b3df58fd0b1",
+      "refs/heads/claude/pursuit-coverage": "576581b41158c8dbeff05cd7d0da0cc19b1799f2",
+      "refs/heads/claude/run-blocking": "88bfc45147f58f670444f3d1159c288bafff1521",
+      "refs/heads/claude/trench-investigation": "b6a48f1dafa1ed747290edc22111ef99abeb508a",
+      "refs/heads/codex/ace-awareness-comparison": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+      "refs/heads/codex/ace-production-replay": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+      "refs/heads/codex/ace-protection-traces": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+      "refs/heads/codex/awareness-audit": "917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+      "refs/heads/codex/catch-pursuit-diagnosis": "c12c613bbd419b804d56cf2aa9cc68ee44c65bb3",
+      "refs/heads/codex/combination-departure-execution": "2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+      "refs/heads/codex/contact-components-extracted": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+      "refs/heads/codex/contact-foundations": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "refs/heads/codex/contact-law-current": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "refs/heads/codex/contact-law-isolation": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+      "refs/heads/codex/controller-integration-review": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+      "refs/heads/codex/coupled-run-contact": "b64910ee7975e679beca2590369714ff33994aa0",
+      "refs/heads/codex/coverage-threat-selection": "b0b197ff3b68b5bb9e65811728868ff5cf76cf15",
+      "refs/heads/codex/defensive-flow": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+      "refs/heads/codex/departed-center-gap": "132c27a8f1d9ce9a4366b92f0ede0df42a0dac52",
+      "refs/heads/codex/departed-center-integration": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+      "refs/heads/codex/designed-run-game-diagnosis": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "refs/heads/codex/eligible-catch-acquisition": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "refs/heads/codex/experimental-game-checkpoint": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+      "refs/heads/codex/experimental-game-controls": "cdb632d710df86fb83168639ac803c6d1a81b732",
+      "refs/heads/codex/game-bookkeeping-review": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "refs/heads/codex/grip-analytic-tail": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+      "refs/heads/codex/grip-cap-work": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "refs/heads/codex/grip-event-integration": "c641f2b102594a7c906116bf7c167270a71c3b04",
+      "refs/heads/codex/grip-fast-integration": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+      "refs/heads/codex/grip-material-ownership": "cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+      "refs/heads/codex/grip-mixed-budget": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+      "refs/heads/codex/grip-mixed-span": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+      "refs/heads/codex/grip-native-forces": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+      "refs/heads/codex/grip-native-slip": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "refs/heads/codex/grip-phase-transition": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+      "refs/heads/codex/grip-recovery-work": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+      "refs/heads/codex/grip-reel-stop": "e494076fdab93c93de5135412855655fcfab5c97",
+      "refs/heads/codex/grip-saturation-event": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+      "refs/heads/codex/grip-shared-foot": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+      "refs/heads/codex/grip-span-events": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "refs/heads/codex/grip-span-kernel": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+      "refs/heads/codex/grip-state-convergence": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+      "refs/heads/codex/grip-world-accounting": "03700539089162b7d667d6d836d34c88cebb9806",
+      "refs/heads/codex/integration-queue": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+      "refs/heads/codex/joined-release-transfer": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "refs/heads/codex/keeper-contact-law": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+      "refs/heads/codex/momentum-turn-choice": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+      "refs/heads/codex/nfl-catch-approach": "d0ebac7750c25b5a6ab708cf33454f62b0da0a5f",
+      "refs/heads/codex/ol-technique-audit": "9f00393e16c81fa071c7b78ff708be61e9e38039",
+      "refs/heads/codex/option-route-agreement": "f77b54010e3a6c233eacba0320e41f81844ca15f",
+      "refs/heads/codex/pass-controller-integration": "306579fda9d496d45606445fd542239cf2f5acf4",
+      "refs/heads/codex/pass-rush-timing-audit": "9b50f329c9572024a0cc3a302b34976e10ba7db9",
+      "refs/heads/codex/pass-set-opening-diagnosis": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+      "refs/heads/codex/project-tracking": "0b6c35317c3d89e99265e93a756ece5053e71e77",
+      "refs/heads/codex/qb-contact-danger": "2f080ec3b072de3b7f6a6c8ef597168571cd1aa8",
+      "refs/heads/codex/rb-gather-release": "fb505d0f279f5af3330bec0b93a0911c5d382b4e",
+      "refs/heads/codex/rb-live-aim-assessment": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+      "refs/heads/codex/reach-contact-closure": "d4ec81c5e8738e118dfce5cac3b3324975509a45",
+      "refs/heads/codex/reach-contact-physics": "fda39f724b8abc957e080eda7b8a4fcace668077",
+      "refs/heads/codex/reach-wrap-transition": "182f01c2640618de67b565d9e0a2a8a0dae074a3",
+      "refs/heads/codex/receiver-blocking-evidence": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43",
+      "refs/heads/codex/roster-capability-audit": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "refs/heads/codex/rt-recovery-counterfactual": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+      "refs/heads/codex/run-awareness-model": "66001360bd03a842679433805d88bc20fc8b689e",
+      "refs/heads/codex/run-blocking-decision-dynamics": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "refs/heads/codex/run-contact-components-candidate": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+      "refs/heads/codex/run-diagnostic-drills": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+      "refs/heads/codex/run-entry-admission": "75dbf46b12a4d186a7da6ebc463b9fba228f0b50",
+      "refs/heads/codex/run-entry-approach": "e1d788a2ff4c4c315a8630ce3e250020ac08764e",
+      "refs/heads/codex/run-entry-cues": "f5618d09f8a25e230217a5a0661098d15eeb5e9b",
+      "refs/heads/codex/run-game-contact": "e4788263eaf4d187a08ba4c3eea1689d154b2629",
+      "refs/heads/codex/run-game-integration": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "refs/heads/codex/run-hand-coherence": "916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+      "refs/heads/codex/run-lanes": "e8defa02d5bcdee0098ecef67a99cb241f939a76",
+      "refs/heads/codex/run-nfl-line-audit": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+      "refs/heads/codex/run-tempo-climb": "377d375005008554fadda9320983271cd44fc026",
+      "refs/heads/codex/seam-middle-read": "b890686a507a06959337bb9425e2550337d5a1a3",
+      "refs/heads/codex/shared-candidate-verification": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "refs/heads/codex/slow-rear-contact": "23de24f4fd1c624dec207d11301185778ce6ac44",
+      "refs/heads/codex/stalk-information-witness": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+      "refs/heads/codex/stalk-visual-request": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+      "refs/heads/codex/stretch-helper-check-trial": "4074038c4cd966e1c213e204ca47d528e7260968",
+      "refs/heads/codex/support-command-audit": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+      "refs/heads/codex/te-approach-support": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+      "refs/heads/codex/te-base-production": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+      "refs/heads/codex/te-loaded-base": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+      "refs/heads/codex/teammate-information": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "refs/heads/codex/under-center-zone": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+      "refs/heads/codex/wide-zone-execution": "aaae54033ea0a102f2173e85410e21ac0a59a476",
+      "refs/heads/codex/wide-zone-flow": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "refs/heads/codex/wide-zone-help-read": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "refs/heads/codex/wide-zone-opening": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "refs/heads/codex/wrap-binding-physics": "11298d3d0bff97af1baf6cb9f3bb997645e4e520",
+      "refs/heads/codex/wrap-force-point": "67301d24ef56a72b4a205185fb6c76b6dd845c7b",
+      "refs/heads/codex/y-coordination-review": "176b585433de812e5b784ed20cfe1e1b362db1a8",
+      "refs/heads/codex/yac-approach-objective": "8b47d9e0187574d96fe9bbc8a4955b9af6595881",
+      "refs/heads/codex/yac-containment-repair": "89ffc068e9a400a102b37301c3bb64fcc123c159",
+      "refs/heads/develop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24"
+    },
+    "after": {
+      "refs/heads/claude/contact-stability": "916f3c6b3fa61224b54a193c37c2b7107a520472",
+      "refs/heads/claude/easy-gains": "10f00a569992c948cea8d2e4a5814e927940618f",
+      "refs/heads/claude/engine-priorities": "862258c5b41f3cf6e7475e8ae24adf076c3e3e60",
+      "refs/heads/claude/football-sim-engine": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+      "refs/heads/claude/ground-finish": "6c87169bbddac8dcdce949c10b33086f83cc9633",
+      "refs/heads/claude/in-stride-catch": "83e514ab399b8fdac0928a8f207ec2a3350b7231",
+      "refs/heads/claude/live-gaps": "448313e82e6c8d6a1d19e4abe20b3029a5d592fa",
+      "refs/heads/claude/pass-rush-hands": "724a94cf4cf821d22dd30d3ed8cf2bfeadc737b9",
+      "refs/heads/claude/physics-world-wip": "e8d6b0220c3220eacd0d661d10658b3df58fd0b1",
+      "refs/heads/claude/pursuit-coverage": "576581b41158c8dbeff05cd7d0da0cc19b1799f2",
+      "refs/heads/claude/run-blocking": "88bfc45147f58f670444f3d1159c288bafff1521",
+      "refs/heads/claude/trench-investigation": "b6a48f1dafa1ed747290edc22111ef99abeb508a",
+      "refs/heads/codex/ace-awareness-comparison": "fed330a8d2c82b7735c0979958f0b86511d5d434",
+      "refs/heads/codex/ace-production-replay": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+      "refs/heads/codex/ace-protection-traces": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+      "refs/heads/codex/awareness-audit": "917521d11a76c9b6eb12daf94fa298f7ebadfa82",
+      "refs/heads/codex/catch-pursuit-diagnosis": "c12c613bbd419b804d56cf2aa9cc68ee44c65bb3",
+      "refs/heads/codex/combination-departure-execution": "2c36bb9e78becf742fd5fd1b9710a1738057c7ff",
+      "refs/heads/codex/contact-components-extracted": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+      "refs/heads/codex/contact-foundations": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "refs/heads/codex/contact-law-current": "29b00905edee16f00651317364b729c1b377eb5b",
+      "refs/heads/codex/contact-law-isolation": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+      "refs/heads/codex/controller-integration-review": "32955361f30b5dafcaf82aa54c7c7cebf83aab08",
+      "refs/heads/codex/coupled-run-contact": "b64910ee7975e679beca2590369714ff33994aa0",
+      "refs/heads/codex/coverage-threat-selection": "b0b197ff3b68b5bb9e65811728868ff5cf76cf15",
+      "refs/heads/codex/defensive-flow": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+      "refs/heads/codex/departed-center-gap": "132c27a8f1d9ce9a4366b92f0ede0df42a0dac52",
+      "refs/heads/codex/departed-center-integration": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+      "refs/heads/codex/designed-run-game-diagnosis": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "refs/heads/codex/eligible-catch-acquisition": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "refs/heads/codex/experimental-game-checkpoint": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+      "refs/heads/codex/experimental-game-controls": "cdb632d710df86fb83168639ac803c6d1a81b732",
+      "refs/heads/codex/game-bookkeeping-review": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "refs/heads/codex/grip-analytic-tail": "7e64731a5aba7b6bf0f2f882ee10aed4f0e199a2",
+      "refs/heads/codex/grip-cap-work": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "refs/heads/codex/grip-event-integration": "c641f2b102594a7c906116bf7c167270a71c3b04",
+      "refs/heads/codex/grip-fast-integration": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+      "refs/heads/codex/grip-material-ownership": "cfd185fc2b34e45a16f2b92ff0d2b74b090fb2e3",
+      "refs/heads/codex/grip-mixed-budget": "9e1ac9e66c2bc8cf1a6f6b5e777eecc5854a949c",
+      "refs/heads/codex/grip-mixed-span": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+      "refs/heads/codex/grip-native-forces": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+      "refs/heads/codex/grip-native-slip": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "refs/heads/codex/grip-phase-transition": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+      "refs/heads/codex/grip-recovery-work": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+      "refs/heads/codex/grip-reel-stop": "e494076fdab93c93de5135412855655fcfab5c97",
+      "refs/heads/codex/grip-saturation-event": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+      "refs/heads/codex/grip-shared-foot": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+      "refs/heads/codex/grip-span-events": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "refs/heads/codex/grip-span-kernel": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+      "refs/heads/codex/grip-state-convergence": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+      "refs/heads/codex/grip-world-accounting": "03700539089162b7d667d6d836d34c88cebb9806",
+      "refs/heads/codex/integration-queue": "007f7f6caec72ca2562a83ad44bed000e94acf16",
+      "refs/heads/codex/joined-release-transfer": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "refs/heads/codex/keeper-contact-law": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+      "refs/heads/codex/momentum-turn-choice": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+      "refs/heads/codex/nfl-catch-approach": "457c5f6ca1f099cc1f21521274197ce88b3c9fcd",
+      "refs/heads/codex/ol-technique-audit": "9f00393e16c81fa071c7b78ff708be61e9e38039",
+      "refs/heads/codex/option-route-agreement": "f77b54010e3a6c233eacba0320e41f81844ca15f",
+      "refs/heads/codex/pass-controller-integration": "306579fda9d496d45606445fd542239cf2f5acf4",
+      "refs/heads/codex/pass-loaded-objective": "e33ac769929fb1134729c20d083e9e50ed6658da",
+      "refs/heads/codex/pass-rush-timing-audit": "9b50f329c9572024a0cc3a302b34976e10ba7db9",
+      "refs/heads/codex/pass-set-opening-diagnosis": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+      "refs/heads/codex/project-tracking": "0b6c35317c3d89e99265e93a756ece5053e71e77",
+      "refs/heads/codex/qb-contact-danger": "2f080ec3b072de3b7f6a6c8ef597168571cd1aa8",
+      "refs/heads/codex/rb-gather-release": "fb505d0f279f5af3330bec0b93a0911c5d382b4e",
+      "refs/heads/codex/rb-live-aim-assessment": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+      "refs/heads/codex/reach-contact-closure": "d4ec81c5e8738e118dfce5cac3b3324975509a45",
+      "refs/heads/codex/reach-contact-physics": "fda39f724b8abc957e080eda7b8a4fcace668077",
+      "refs/heads/codex/reach-wrap-transition": "182f01c2640618de67b565d9e0a2a8a0dae074a3",
+      "refs/heads/codex/receiver-blocking-evidence": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43",
+      "refs/heads/codex/roster-capability-audit": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "refs/heads/codex/rt-recovery-counterfactual": "7f5999c91d1ed57edd3c5a7de2dc3f04be6a0a7f",
+      "refs/heads/codex/run-awareness-model": "66001360bd03a842679433805d88bc20fc8b689e",
+      "refs/heads/codex/run-blocking-decision-dynamics": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "refs/heads/codex/run-contact-components-candidate": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+      "refs/heads/codex/run-diagnostic-drills": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+      "refs/heads/codex/run-entry-admission": "75dbf46b12a4d186a7da6ebc463b9fba228f0b50",
+      "refs/heads/codex/run-entry-approach": "e1d788a2ff4c4c315a8630ce3e250020ac08764e",
+      "refs/heads/codex/run-entry-cues": "f5618d09f8a25e230217a5a0661098d15eeb5e9b",
+      "refs/heads/codex/run-game-contact": "e4788263eaf4d187a08ba4c3eea1689d154b2629",
+      "refs/heads/codex/run-game-integration": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "refs/heads/codex/run-hand-coherence": "916e5a267a1709ac5fcc809c7e26de5bbae50dbf",
+      "refs/heads/codex/run-lanes": "e8defa02d5bcdee0098ecef67a99cb241f939a76",
+      "refs/heads/codex/run-nfl-line-audit": "aaa0163c5083ca71da8425797ff5b6a68cbefb4f",
+      "refs/heads/codex/run-tempo-climb": "377d375005008554fadda9320983271cd44fc026",
+      "refs/heads/codex/seam-middle-read": "b890686a507a06959337bb9425e2550337d5a1a3",
+      "refs/heads/codex/shared-candidate-verification": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "refs/heads/codex/slow-rear-contact": "23de24f4fd1c624dec207d11301185778ce6ac44",
+      "refs/heads/codex/stalk-information-witness": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+      "refs/heads/codex/stalk-visual-request": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+      "refs/heads/codex/stretch-helper-check-trial": "4074038c4cd966e1c213e204ca47d528e7260968",
+      "refs/heads/codex/support-command-audit": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+      "refs/heads/codex/te-approach-support": "1782788e23c2132825948e4cb3bcb310cc2f961d",
+      "refs/heads/codex/te-base-production": "82cfdf26654cf12178e1eae930fe74b691dd5c28",
+      "refs/heads/codex/te-loaded-base": "b469095eec9ec99d4ebc20355e60d16d522a3484",
+      "refs/heads/codex/teammate-information": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "refs/heads/codex/under-center-zone": "7e238d391db58305a31054731c45a7ff53ab3cd8",
+      "refs/heads/codex/wide-zone-execution": "aaae54033ea0a102f2173e85410e21ac0a59a476",
+      "refs/heads/codex/wide-zone-flow": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "refs/heads/codex/wide-zone-help-read": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "refs/heads/codex/wide-zone-opening": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "refs/heads/codex/wrap-binding-physics": "11298d3d0bff97af1baf6cb9f3bb997645e4e520",
+      "refs/heads/codex/wrap-force-point": "67301d24ef56a72b4a205185fb6c76b6dd845c7b",
+      "refs/heads/codex/y-coordination-review": "176b585433de812e5b784ed20cfe1e1b362db1a8",
+      "refs/heads/codex/yac-approach-objective": "8b47d9e0187574d96fe9bbc8a4955b9af6595881",
+      "refs/heads/codex/yac-containment-repair": "89ffc068e9a400a102b37301c3bb64fcc123c159",
+      "refs/heads/develop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24"
+    },
+    "missing": [],
+    "added": [
+      "refs/heads/codex/pass-loaded-objective"
+    ],
+    "moved": {
+      "refs/heads/codex/nfl-catch-approach": {
+        "before": "d0ebac7750c25b5a6ab708cf33454f62b0da0a5f",
+        "after": "457c5f6ca1f099cc1f21521274197ce88b3c9fcd"
+      },
+      "refs/heads/codex/contact-law-current": {
+        "before": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+        "after": "29b00905edee16f00651317364b729c1b377eb5b"
+      },
+      "refs/heads/codex/integration-queue": {
+        "before": "1b5116e93dd77c9d917fb5f39f250edb35e99cb8",
+        "after": "007f7f6caec72ca2562a83ad44bed000e94acf16"
+      }
+    },
+    "allInitialBranchesRetained": true,
+    "allClosedPRHeadRefsStillExact": true,
+    "allExistingPRBasesUnchanged": true,
+    "ownBranchOnlyNormalDocPush": "codex/integration-queue",
+    "otherMovedRefs": "Recorded concurrent owner progress; no writes to their branches."
+  },
+  "verification": {
+    "newSimulations": 0,
+    "newCodeSuites": 0,
+    "newRuntimeTests": 0,
+    "method": "PR metadata/ref/ancestry/blob equality, child-base and Markdown checks only. Existing #63 exact pass reused.",
+    "localDestinationsChecked": 190,
+    "brokenLocalDestinations": [],
+    "runtimeTestsScriptsSettingsDependenciesUnchanged": true,
+    "existingCommittedDataEvidenceUnchanged": true
+  },
+  "recovery": "Reopen the same closed PR through GitHub when its original objective resumes. Existing branches and immutable commit trees remain; no ref restoration is needed.",
+  "nextDecision": "Final acceptance/merge of exact verified #63 under existing authority; current docs #65 independent. #66/67 and all experimental defaults remain separate.",
+  "documentationHashes": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "750d41d2a4e2d5059ab01683c8a56623d31a2ba9eb6161daf3cbec35f0a6e995"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha256": "c1f666bdd12597ad5b9d830e654b13920989c8a86cfd5d0c1e31a31dd133986f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "dc8b9062c7c47af1153b73e3e15974888726ef3db6f0a966a01368ebade326f3"
+    },
+    {
+      "path": "docs/INTEGRATION.md",
+      "sha256": "1036318be0402479952999fa508fe547e160c400e248b07cb81bcbb02a34254a"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "sha256": "27fe109a679af0bdc5c9874153e931e17abe7d67e6f97da349d3c995b5fc90c6"
+    },
+    {
+      "path": "docs/WORKBOARD.md",
+      "sha256": "8d651342c1f45dd5ecd01f5dad5e39848f923ae6fdce8b2d6cd0970fdb4aa1ff"
+    },
+    {
+      "path": "docs/BRANCHES.md",
+      "sha256": "dc3e489f4afe55c8273f5f697cff59a465d8be3a5266a2277332a98808617861"
+    },
+    {
+      "path": "docs/ISSUES.md",
+      "sha256": "c9227e3cf2345c6ea1175c52cd732a059f326f0713b281131d6941c6d5bb87b9"
+    },
+    {
+      "path": "docs/TESTING_COSTS.md",
+      "sha256": "a0469b94edb7578bdc304dd0aee895197382d5f0db03ccdf1d1563ac3120cd92"
+    }
+  ]
+}

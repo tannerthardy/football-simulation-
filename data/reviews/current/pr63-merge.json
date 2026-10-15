@@ -1,0 +1,100 @@
+{
+  "schema": "pr63-merge-compatibility-v1",
+  "checkedAt": "2026-10-15T19:39:32.616813+00:00",
+  "decision": "User accepted the unchanged reviewed candidate; #63 merged with expected-head guard. Actual merged tree equals verified publication exactly. Historical baseline/default unchanged.",
+  "acceptedBefore": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "publication": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+  "preview": "c8052e0e6a6872b1dcf9e4513db5f33904d34ac5",
+  "receipt": "data/reviews/current/departed-center-integration/receipt.json",
+  "launcher": "data/reviews/current/departed-center-integration/combined-final.json",
+  "commits": {
+    "tested": {
+      "commit": "a862a05713d0b8bbd22683ce8a70d5ac16eb18e2",
+      "tree": "f7ed7920e27033014a6f4c24dfbf5a698c73d837",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "bd503123ac660bf6e07e061dd5d74e832309390187aa822b5d6289cb1dfbc495"
+    },
+    "published": {
+      "commit": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+      "tree": "079befb79e34eccbf52a7f780de6e1872f591575",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "bd503123ac660bf6e07e061dd5d74e832309390187aa822b5d6289cb1dfbc495"
+    },
+    "mergePreview": {
+      "commit": "c8052e0e6a6872b1dcf9e4513db5f33904d34ac5",
+      "tree": "079befb79e34eccbf52a7f780de6e1872f591575",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "bd503123ac660bf6e07e061dd5d74e832309390187aa822b5d6289cb1dfbc495"
+    }
+  },
+  "sourceFileCount": 94,
+  "validationFileCount": 566,
+  "flagCount": 44,
+  "flagMapSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "artifactHashesVerified": 26,
+  "changedSourceTestScriptHashesVerified": 22,
+  "documentationHashesVerified": 6,
+  "productionFiles": [
+    "src/game/game.ts",
+    "src/sim/assign.ts",
+    "src/sim/catch-readiness.ts",
+    "src/sim/catching.ts",
+    "src/sim/coverage-cues.ts",
+    "src/sim/live-gaps.ts",
+    "src/sim/playsim.ts",
+    "src/sim/recognition.ts",
+    "src/sim/types.ts"
+  ],
+  "combinedOutcomes": [
+    {
+      "name": "typecheck",
+      "result": "pass"
+    },
+    {
+      "name": "build",
+      "result": "pass"
+    },
+    {
+      "name": "TypeScript complete suite",
+      "result": "pass",
+      "files": 143,
+      "passed": 1720,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Python data checks",
+      "result": "pass",
+      "passed": 145
+    }
+  ],
+  "launcherPassAndInputsUnchanged": true,
+  "controllerApproval": "https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200453995",
+  "newRuntimeTests": 0,
+  "newSimulations": 0,
+  "elapsedSeconds": 4.03105534700444,
+  "mergedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "mergedTree": "079befb79e34eccbf52a7f780de6e1872f591575",
+  "mergedTreeEqualsPublication": true,
+  "postMergeCheckedAt": "2026-10-15T19:40:17.125684+00:00",
+  "reviewThreads": [],
+  "formalReviews": [],
+  "commitStatuses": [],
+  "newComments": "Controller approval retained. Later #66 adjudication and run-entry interface handoffs explicitly separate, with no blocker for #63.",
+  "reconciliationBase": "47bb034f069d5b23f6992274962084d167e9df96",
+  "mergedPublication": "https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200751483",
+  "includedFixes": [
+    "gap identity",
+    "mesh departure cadence",
+    "acquired blocking recognition and zone-key contract",
+    "possession/holding/catch-depth bookkeeping",
+    "incidental acquired-flight gating"
+  ],
+  "excluded": [
+    "#66",
+    "#67",
+    "experimental physics",
+    "run-entry/Awareness proposals",
+    "earlier zone/Duo ancestry"
+  ]
+}

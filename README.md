@@ -7,20 +7,22 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
 
 ## Where to find things
 
-- **Development reference:** `develop` at accepted
-  `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`, including merged #12.
-  [Current status](docs/STATUS.md) and [issue register](docs/ISSUES.md) distinguish
-  that tree from pending integration candidates and historical evidence.
+- **Development reference:** use the exact accepted `develop` commit in the
+  [shared integration queue](docs/INTEGRATION.md#accepted-development). Merged
+  #12 includes the run-contact component and moving-catch repair; merged #63
+  adds gap identity, mesh cadence, blocking recognition, bookkeeping and
+  incidental catch acquisition. The queue pins the exact accepted commit and
+  distinguishes implemented code, review-pending candidates and experiments.
 - **Historical comparisons:** [baseline/profile and known failures](docs/BASELINE.md)
-  pin `4ded6b6`; the historical comparison remains unchanged.
+  retain `4ded6b6`; it is not the new-task development starting point.
 - **Simulation:** [single play](scripts/sim-play.ts), [game](scripts/sim-game.ts),
   [replay exporter](scripts/export-replay.ts); football execution in
   [src/sim](src/sim), shared movement/contact in [src/physics](src/physics),
   [players](src/players), [playbook](src/playbook), [game](src/game) and [league](src/league).
 - **Integration and ownership:** [scope, flags and receipts](docs/INTEGRATION.md),
-  [workboard](docs/WORKBOARD.md), [agent instructions](CLAUDE.md).
-  The [current candidate ledger](docs/INTEGRATION.md#current-candidate-2026-10-15)
-  records exact extractions, dependencies, verification and remaining decisions.
+  [workboard](docs/WORKBOARD.md), [agent instructions](AGENTS.md).
+  Follow the [safe update/handoff workflow](docs/INTEGRATION.md#agent-workflow);
+  contributors keep independent branches and supply focused evidence.
 - **Testing:** [tiny decision-driven loop and cost policy](docs/TESTING_COSTS.md),
   [interpret improvement/regression](docs/BEHAVIOR_REVIEW.md),
   [validation](docs/VALIDATION.md). Contributors supply focused receipts;
@@ -38,7 +40,7 @@ Requires Node 22.23.3. Record the exact source and settings before comparisons.
 
 ```sh
 npm ci
-npm run baseline:info -- --candidate
+npm run baseline:info -- --candidate --flag RUN_CONTACT_COMPONENTS=1
 npm run sim:game -- 7 --pbp
 npm run replay -- 7 --games 6 --doc
 ```
@@ -67,5 +69,6 @@ owns profiles; `src/game` owns the game; `scripts` contains labs and exporters.
 experiments. `npm test` keeps production contracts in the normal development
 loop when relevant; `npm run test:all` retains every TypeScript assertion.
 
-Start assigned feature work from the shared baseline and push its feature
-branch. Primary retains physics promotion ownership. Do not touch main or PR #1.
+Start new feature work from accepted develop and push its feature branch.
+Reconcile ongoing work at clean checkpoints using the shared queue. Primary
+retains physics promotion ownership. Do not touch main or PR #1.
