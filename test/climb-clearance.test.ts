@@ -7,14 +7,14 @@ import {CONTACT_SCALE,World,type Intent} from '../src/physics/world.js';
 import {RUN_BY_ID} from '../src/playbook/concepts.js';
 import {COVERAGE_BY_ID,FRONT_BY_ID} from '../src/playbook/defense.js';
 import {FORMATION_BY_ID} from '../src/playbook/formations.js';
-import {clearClimbStep,climbLookahead,type ClimbObstacle} from '../src/sim/climb-clearance.js';
+import {clearMovementStep,movementLookahead,type MovementObstacle} from '../src/sim/movement-clearance.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import {PlaySim} from '../src/sim/playsim.js';
 
 const fixture=JSON.parse(readFileSync('test/fixtures/climb-clearance.json','utf8'));
 function saved() {
  const f=structuredClone(fixture);f.body.support.since=-Infinity;
- return {...f,horizon:climbLookahead(f.body,f.command,f.horizon)};
+ return {...f,horizon:movementLookahead(f.body,f.command,f.horizon)};
 }
 function path(body:Body,command:Intent,horizon:number) {
  const copy=structuredClone(body),world=new World([copy]);world.time=.45;
@@ -25,7 +25,7 @@ function path(body:Body,command:Intent,horizon:number) {
  }
  return states;
 }
-function clearance(states:Body[],peer:ClimbObstacle) {
+function clearance(states:Body[],peer:MovementObstacle) {
  let min=Infinity;
  for(let k=0;k<states.length;k++) {
   const p=states[k].pos,t=k*.05;
@@ -34,7 +34,7 @@ function clearance(states:Body[],peer:ClimbObstacle) {
  }
  return min;
 }
-const choose=(f:ReturnType<typeof saved>)=>clearClimbStep(f.body,f.command,f.goal,f.peers,.45,f.horizon,1,'center');
+const choose=(f:ReturnType<typeof saved>)=>clearMovementStep(f.body,f.command,f.goal,f.peers,.45,f.horizon,1,'center');
 
 describe('a free climb clears acquired first-level bodies',()=>{
  it('changes the exact saved LG request before spending its stopping room',()=>{
@@ -54,7 +54,7 @@ describe('a free climb clears acquired first-level bodies',()=>{
  });
  it('accounts for the neighboring route together with the down man',()=>{
   const f=saved(),first=choose(f),states=path(f.body,first.command,f.horizon),p=states.at(-1)!.pos;
-  const neighbor:ClimbObstacle={id:91,pos:{...p},vel:{x:0,y:0},radius:.34};
+  const neighbor:MovementObstacle={id:91,pos:{...p},vel:{x:0,y:0},radius:.34};
   expect(clearance(states,neighbor)).toBeLessThan(0);f.peers.push(neighbor);
   const next=choose(f);expect(next.command).not.toEqual(first.command);
   expect(next.minimumGap).toBeGreaterThanOrEqual(0);
@@ -79,7 +79,7 @@ describe('a free climb clears acquired first-level bodies',()=>{
     else if(k!=='profile')reflect(value,k);
    }
   };
-  reflect(left);const r=choose(right),l=clearClimbStep(left.body,left.command,left.goal,left.peers,.45,left.horizon,-1,'center');
+  reflect(left);const r=choose(right),l=clearMovementStep(left.body,left.command,left.goal,left.peers,.45,left.horizon,-1,'center');
   expect(l.kind).toBe(r.kind);expect(l.command.vel.x).toBeCloseTo(r.command.vel.x,10);
   expect(l.command.vel.y).toBeCloseTo(-r.command.vel.y,10);
   const rp=path(right.body,r.command,right.horizon),lp=path(left.body,l.command,left.horizon);

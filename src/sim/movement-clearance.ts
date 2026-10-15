@@ -1,4 +1,4 @@
-/** A free climber's first action past the near surface, using acquired bodies.
+/** A free player's achievable first action around acquired bodies.
  * This is local navigation through the ordinary movement World, not a block
  * win, a new view of the front, or a promise about future contact forces. */
 import type { Vec2 } from '../core/vec.js';
@@ -6,7 +6,7 @@ import { followAccel, type Body } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { CONTACT_SCALE, type Intent } from '../physics/world.js';
 
-export interface ClimbObstacle {
+export interface MovementObstacle {
   id: number;
   pos: Vec2;
   vel: Vec2;
@@ -21,16 +21,16 @@ export interface ClimbObstacle {
   horizon?: number;
 }
 
-export interface ClimbStep {
+export interface MovementStep {
   kind: 'direct' | 'around' | 'gather' | 'blocked';
   command: Intent;
   minimumGap: number;
   blockedBy: number[];
 }
 
-/** Look far enough to notice a body before this climber spends the stopping
+/** Look far enough to notice a body before the player spends the stopping
  * room. The read interval alone can declare a clear step just before impact. */
-export function climbLookahead(body: Body, command: Intent, readInterval: number, capacity = 1): number {
+export function movementLookahead(body: Body, command: Intent, readInterval: number, capacity = 1): number {
   const speed = Math.hypot(body.vel.x, body.vel.y);
   if (speed < 1e-9) return readInterval;
   const ux = body.vel.x / speed, uy = body.vel.y / speed;
@@ -39,9 +39,9 @@ export function climbLookahead(body: Body, command: Intent, readInterval: number
   return readInterval + speed / deceleration;
 }
 
-function peerAt(peer: ClimbObstacle, t: number): Vec2 {
+function peerAt(peer: MovementObstacle, t: number): Vec2 {
   const route = peer.route;
-  if (!route?.length) return { x: peer.pos.x + peer.vel.x * t, y: peer.pos.y + peer.vel.y * t };
+  if (!route || route.length < 2) return { x: peer.pos.x + peer.vel.x * t, y: peer.pos.y + peer.vel.y * t };
   const index = route.findIndex(s => s.t >= t - 1e-9);
   const hi = route[index < 0 ? route.length - 1 : index];
   const lo = route[Math.max(0, (index < 0 ? route.length - 1 : index) - 1)];
@@ -49,12 +49,12 @@ function peerAt(peer: ClimbObstacle, t: number): Vec2 {
   return { x: lo.pos.x + (hi.pos.x - lo.pos.x) * u, y: lo.pos.y + (hi.pos.y - lo.pos.y) * u };
 }
 
-/** Keep an ordinary clear climb exact. A detour must clear every acquired
+/** Keep an ordinary clear request exact. A detour must clear every acquired
  * neighbor together and make the most progress toward the read meeting point.
  * Only the first held read-beat is certified, in empty space. */
-export function clearClimbStep(body: Body, original: Intent, goal: Vec2,
-  peers: readonly ClimbObstacle[], now: number, horizon: number,
-  playSide: number, handContact: 'center' | 'patch'): ClimbStep {
+export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
+  peers: readonly MovementObstacle[], now: number, horizon: number,
+  playSide: number, handContact: 'center' | 'patch'): MovementStep {
   const steps = Math.max(1, Math.ceil(horizon / .05));
   const evaluate = (command: Intent) => {
     const path = previewFreeMovement(body, command, now, steps, handContact);

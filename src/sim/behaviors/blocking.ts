@@ -31,7 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
-import { clearClimbStep, climbLookahead, type ClimbObstacle, type ClimbStep } from '../climb-clearance.js';
+import { clearMovementStep, movementLookahead, type MovementObstacle, type MovementStep } from '../movement-clearance.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -748,7 +748,7 @@ export class RunBlocker implements Behavior {
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2;
-    clearance?: ClimbStep } | null = null;
+    clearance?: MovementStep } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   /** Own acquired half-man fit, retained across approach and actual contact. */
@@ -949,8 +949,8 @@ export class RunBlocker implements Behavior {
         const r = this.climbRead;
         const command = { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
           facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
-        r.clearance = clearClimbStep(a.body, command, r.meet, this.climbObstacles(a, sim, target),
-          sim.t, climbLookahead(a.body, command, a.mind.decisionInterval, capacity), playSideSign(sim, run), sim.world.handContact);
+        r.clearance = clearMovementStep(a.body, command, r.meet, this.climbObstacles(a, sim, target),
+          sim.t, movementLookahead(a.body, command, a.mind.decisionInterval, capacity), playSideSign(sim, run), sim.world.handContact);
         if (r.clearance.kind !== 'direct') r.attainable = false;
       }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
@@ -972,8 +972,8 @@ export class RunBlocker implements Behavior {
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
   }
 
-  private climbObstacles(a: Agent, sim: PlaySim, target: Agent): ClimbObstacle[] {
-    const peers: ClimbObstacle[] = [];
+  private climbObstacles(a: Agent, sim: PlaySim, target: Agent): MovementObstacle[] {
+    const peers: MovementObstacle[] = [];
     for (const d of sim.defense) {
       const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
       // Installed front membership is public. Locate that body only through

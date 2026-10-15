@@ -15,6 +15,7 @@ import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
 import type {TeammateForecast} from './teammate-information.js';
+import {clearMovementStep} from './movement-clearance.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -34,6 +35,8 @@ export interface SpacingContext {
   constrained?: ReadonlySet<Body>;
   /** Own installed first-level stretch duty, never a peer's next command. */
   openingTrack?: ReadonlySet<Body>;
+  /** Own post-exchange run duty. This carries no peer intentions. */
+  runCarrier?: Body;
   handContact?: 'center' | 'patch';
 }
 
@@ -46,6 +49,8 @@ interface PeerPicture extends SpacingPicture {
   pos: {x:number;y:number};
   vel: {x:number;y:number};
   touch: number;
+  radius: number;
+  maxSpeed: number;
 }
 
 function peerAt(peer:PeerPicture,t:number,route:boolean):{x:number;y:number} {
@@ -168,7 +173,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
       const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
-      const peer:PeerPicture={pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch};
+      const peer:PeerPicture={pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch,
+        radius:b.profile.radius,maxSpeed:b.profile.vmax};
       peers.push(peer);
       const gap = d - touch;
       if (d < 1e-6) continue;
@@ -201,6 +207,22 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
       }
+    }
+    // A free runner can choose space around a teammate instead of repeating a
+    // requested straight ray followed by a speed-only correction. Test the
+    // curved achieved path from this exact body, including residual momentum,
+    // against all acquired neighbors together. There is no speed gate and no
+    // live-body fallback. Loaded/contact movement keeps the ordinary controller.
+    const s=a.body.support;
+    if(context?.runCarrier===a.body&&!context.constrained?.has(a.body)&&!a.engagement
+      &&!ia.lunge&&!(ia.push??0)&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6){
+      const choice=clearMovementStep(a.body,ia,{x:a.pos.x+ia.vel.x,y:a.pos.y+ia.vel.y},
+        peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
+          ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
+        context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
+      intents[i]=choice.command;
+      continue;
     }
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
