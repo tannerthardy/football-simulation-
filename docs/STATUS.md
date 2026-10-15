@@ -4,7 +4,7 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Accepted develop: `4679a3c260188143bcc66f6f20534327c78d7eaa`**, merged #72 with #63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
+- **Accepted develop: `8ca8deebe4afa91c3021bdd119bed8976cf00e47`**, merged #74 with #72/#63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -23,8 +23,9 @@ Do not use the historical sections below as a current starting-reference pin.
   `4679a3c260188143bcc66f6f20534327c78d7eaa`. Its actual tree equals reviewed1675478;
   reuse1,724 TS/145 Python/typecheck/build passing verification. No reruns.
   Native adverse outcomes and forecast/contact limits remain; [merge receipt](../data/reviews/current/pr72-merge.json).
-- User accepted the risk-only information scope. Frozen86a8816 passes
-  1,726 TS/145 Python/typecheck/build; explicit merge authorization remains pending.
+- User authorized and merged risk-only #74 as8ca8dee. Its entire tree matches
+  reviewed publicationa8dabec; reuse1,726 TS/145 Python/typecheck/build passing
+  receipt without reruns. [Merge receipt](../data/reviews/current/pr74-merge.json).
   Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69 stays with Do-It-All's independent review and physics remains separate.

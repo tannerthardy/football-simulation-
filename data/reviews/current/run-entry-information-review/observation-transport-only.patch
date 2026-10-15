@@ -1,0 +1,243 @@
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 49e7f25..59e480e 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -26,6 +26,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall,
+ import { resolveCatchOpportunities } from './catching.js';
+ import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
+ import { PerceptionBuffer, type Perceived } from './perception.js';
++import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
+ import { IncidentalCatchReadiness } from './catch-readiness.js';
+ import { spaceTeammates } from './spacing.js';
+ import { prepareJoinedCombinations } from './behaviors/blocking.js';
+@@ -113,6 +114,7 @@ export class PlaySim {
+   readonly events: PlayEvent[] = [];
+   readonly frames: Frame[] = [];
+   readonly perception: PerceptionBuffer;
++  readonly teammateAwareness: TeammateInformation;
+   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
+   readonly trace: ReplayTrace;
+   private readonly record: boolean;
+@@ -245,6 +247,8 @@ export class PlaySim {
+     const expected = setup.scouting ? setup.scouting.passLogOdds(this.snapContext) : leaguePassLogOdds(this.snapContext);
+     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
+     assignBehaviors(this);
++    // Observation-only extraction: no installed-call builder or touch writer.
++    this.teammateAwareness = new TeammateInformation(this.agents, new Map());
+     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
+   }
+ 
+@@ -317,6 +321,11 @@ export class PlaySim {
+   teammates(a: Agent): Agent[] {
+     return a.team === 'O' ? this.offense : this.defense;
+   }
++  /** Pure acquired-picture query; unavailable never falls back to live state. */
++  teammateInformation(observer: Agent, target: Agent): TeammatePicture {
++    if (observer === target || observer.team !== target.team) return { source: 'unavailable' };
++    return this.teammateAwareness.query(observer.idx, target.idx, this.t, this.dt);
++  }
+   slot(name: string): Agent | undefined {
+     return this.bySlot.get(name);
+   }
+@@ -550,6 +559,7 @@ export class PlaySim {
+       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
+     }
+     this.incidentalCatchReadiness.sense(this);
++    this.teammateAwareness.sense(this.agents, t, this.dt);
+     for (const d of this.defense) d.recog?.update(d, this);
+ 
+     this.prepareJoinedRunBlocks();
+diff --git a/src/sim/teammate-information.ts b/src/sim/teammate-information.ts
+new file mode 100644
+index 0000000..2f2e0bb
+--- /dev/null
++++ b/src/sim/teammate-information.ts
+@@ -0,0 +1,144 @@
++/** Observer-owned teammate information. Sensing writes; queries only read.
++ * These coarse limits are declared model assumptions, not measured gaze or
++ * NFL calibration. No live target state or randomness is consulted by query.
++ */
++import type { Vec2 } from '../core/vec.js';
++import type { Agent } from './agent.js';
++
++export const TEAMMATE_INFORMATION_LIMITS = Object.freeze({
++  visualRange: 25,
++  fieldHalfAngle: 100 * Math.PI / 180,
++  occupiedHalfAngle: 75 * Math.PI / 180,
++  prediction: .30,
++  memory: 1.00,
++  tactile: .10,
++  alignmentExpectation: .60,
++  zoneExpectation: .60,
++});
++
++/** A rehearsed nominal track, installed once from alignment and the call.
++ * Availability ends on its installed clock, never on a private live branch.
++ */
++export interface InstalledTeammateExpectation {
++  origin: Vec2;
++  velocity: Vec2;
++  startsAt: number;
++  until: number;
++  label: string;
++}
++
++export type TeammatePicture = {
++  source: 'observed' | 'remembered' | 'called' | 'tactile';
++  pos: Vec2;
++  vel: Vec2;
++  sampledAt: number;
++  availableAt: number;
++  age: number;
++  predictedFor: number;
++  label?: string;
++} | { source: 'unavailable' };
++
++interface Sighting {
++  pos: Vec2;
++  vel: Vec2;
++  sampledAt: number;
++  availableAt: number;
++}
++interface ObserverState {
++  seen: Map<number, Sighting>;
++  pending: Map<number, Sighting[]>;
++  touch: Map<number, Sighting>;
++  calls: Map<number, InstalledTeammateExpectation>;
++}
++
++export class TeammateInformation {
++  private readonly observers = new Map<number, ObserverState>();
++  private lastSenseAt = -Infinity;
++
++  constructor(agents: readonly Agent[], calls: ReadonlyMap<number, InstalledTeammateExpectation>) {
++    for (const a of agents) {
++      const installed = new Map<number, InstalledTeammateExpectation>();
++      for (const b of agents) if (b !== a && b.team === a.team) {
++        const call = calls.get(b.idx);
++        if (call) installed.set(b.idx, { ...call, origin: { ...call.origin }, velocity: { ...call.velocity } });
++      }
++      this.observers.set(a.idx, { seen: new Map(), pending: new Map(), touch: new Map(), calls: installed });
++    }
++  }
++
++  /** One opportunity per simulation boundary, independent of consumers and
++   * recording. Facing defines a coarse field of regard, not an eye direction.
++   * An occupied blocker/tackler has a narrower peripheral opportunity. We do
++   * not yet model occlusion or deliberate head scans. Latency belongs to the
++   * acquired sample; losing sight cannot fetch a newer historical snapshot.
++   */
++  sense(agents: readonly Agent[], now: number, dt: number): void {
++    if (now <= this.lastSenseAt) return;
++    this.lastSenseAt = now;
++    for (const a of agents) {
++      const state = this.observers.get(a.idx)!;
++      for (const b of agents) {
++        if (b === a || b.team !== a.team) continue;
++        const queue = state.pending.get(b.idx) ?? [];
++        const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y;
++        const angle = Math.abs(Math.atan2(Math.sin(Math.atan2(dy, dx) - a.facing),
++          Math.cos(Math.atan2(dy, dx) - a.facing)));
++        const halfAngle = a.engagement ? TEAMMATE_INFORMATION_LIMITS.occupiedHalfAngle
++          : TEAMMATE_INFORMATION_LIMITS.fieldHalfAngle;
++        if (!a.isDown(now) && Math.hypot(dx, dy) <= TEAMMATE_INFORMATION_LIMITS.visualRange && angle <= halfAngle) {
++          const peripheral = a.eyes && !a.eyes.keys.includes(b) ? a.eyes.peripheral : 0;
++          const delay = a.mind.observationDelay(a.profile.reactionTime) + peripheral;
++          // Quantize delivery upward, so a sub-tick delay cannot arrive early.
++          const availableAt = now + Math.ceil((delay - 1e-9) / dt) * dt;
++          queue.push({ pos: { ...b.pos }, vel: { ...b.vel }, sampledAt: now, availableAt });
++        }
++        const waiting: Sighting[] = [];
++        for (const sample of queue) {
++          if (sample.availableAt <= now + 1e-9) {
++            if (sample.sampledAt > (state.seen.get(b.idx)?.sampledAt ?? -Infinity)) state.seen.set(b.idx, sample);
++          } else waiting.push(sample);
++        }
++        state.pending.set(b.idx, waiting);
++      }
++    }
++  }
++
++  /** Local cue from an actual resolved teammate impact. The caller supplies
++   * a contact-distance bearing and the observer's velocity, not the target's
++   * remote COM/velocity. It cannot reveal subsequent movement or intentions.
++   */
++  touched(observer: number, target: number, pos: Vec2, ownVelocity: Vec2, now: number): void {
++    const state = this.observers.get(observer);
++    if (!state || now <= (state.touch.get(target)?.sampledAt ?? -Infinity)) return;
++    state.touch.set(target, { pos: { ...pos }, vel: { ...ownVelocity }, sampledAt: now, availableAt: now });
++  }
++
++  query(observer: number, target: number, now: number, dt: number): TeammatePicture {
++    const state = this.observers.get(observer);
++    if (!state) return { source: 'unavailable' };
++    const touch = state.touch.get(target);
++    if (touch && now + 1e-9 >= touch.availableAt && now - touch.sampledAt <= TEAMMATE_INFORMATION_LIMITS.tactile + 1e-9)
++      return this.picture(touch, now, 'tactile');
++    const seen = state.seen.get(target);
++    if (seen && now + 1e-9 >= seen.availableAt && now - seen.sampledAt <= TEAMMATE_INFORMATION_LIMITS.memory + 1e-9)
++      return this.picture(seen, now, now - seen.availableAt <= dt + 1e-9 ? 'observed' : 'remembered');
++    const call = state.calls.get(target);
++    if (call && now + 1e-9 >= call.startsAt && now <= call.until + 1e-9) {
++      const elapsed = Math.max(0, Math.min(now, call.until) - call.startsAt);
++      return { source: 'called', pos: { x: call.origin.x + call.velocity.x * elapsed,
++        y: call.origin.y + call.velocity.y * elapsed }, vel: { ...call.velocity },
++        sampledAt: call.startsAt, availableAt: call.startsAt, age: elapsed, predictedFor: elapsed, label: call.label };
++    }
++    return { source: 'unavailable' };
++  }
++
++  private picture(sample: Sighting, now: number, source: 'observed' | 'remembered' | 'tactile'): TeammatePicture {
++    const age = Math.max(0, now - sample.sampledAt);
++    const predictedFor = Math.min(age, TEAMMATE_INFORMATION_LIMITS.prediction);
++    return { source, pos: { x: sample.pos.x + sample.vel.x * predictedFor,
++      y: sample.pos.y + sample.vel.y * predictedFor },
++      // Beyond the prediction horizon we know a location, not current speed.
++      vel: age <= TEAMMATE_INFORMATION_LIMITS.prediction + 1e-9 ? { ...sample.vel } : { x: 0, y: 0 },
++      sampledAt: sample.sampledAt, availableAt: sample.availableAt, age, predictedFor };
++  }
++}
+diff --git a/test/teammate-information-transport.test.ts b/test/teammate-information-transport.test.ts
+new file mode 100644
+index 0000000..f070665
+--- /dev/null
++++ b/test/teammate-information-transport.test.ts
+@@ -0,0 +1,38 @@
++import {describe,expect,it,vi} from 'vitest';
++import {Rng} from '../src/core/rng.js';
++import {generateTeam,pickDefense,pickOffense} from '../src/league/team.js';
++import {PASS_BY_ID} from '../src/playbook/concepts.js';
++import {COVERAGE_BY_ID,FRONT_BY_ID} from '../src/playbook/defense.js';
++import {FORMATION_BY_ID} from '../src/playbook/formations.js';
++import type {Agent} from '../src/sim/agent.js';
++import {PlaySim} from '../src/sim/playsim.js';
++import {TeammateInformation} from '../src/sim/teammate-information.js';
++describe('observation-only teammate information transport',()=>{
++  it('preserves acquisition latency, stale unknown semantics, expiry and pure copied queries',()=>{
++    const actor=(idx:number,x:number)=>({idx,team:'O',pos:{x,y:0},vel:{x:0,y:1},facing:0,engagement:null,eyes:null,
++      profile:{reactionTime:.3},mind:{observationDelay:()=>.3},isDown:()=>false});
++    const a=actor(0,0),b=actor(1,5),agents=[a,b]as unknown as Agent[],info=new TeammateInformation(agents,new Map());
++    info.sense(agents,0,.05);expect(info.query(0,1,.25,.05)).toEqual({source:'unavailable'});
++    b.pos={x:-10,y:50};b.vel={x:9,y:-9};info.sense(agents,.3,.05);
++    expect(info.query(0,1,.3,.05)).toMatchObject({source:'observed',vel:{x:0,y:1}});
++    const stale=info.query(0,1,.35,.05);expect(stale).toMatchObject({source:'observed',vel:{x:0,y:0},age:.35,predictedFor:.3});
++    if(stale.source==='unavailable')throw Error('Acquired memory expected');
++    stale.pos.x=999;
++    Object.defineProperty(b,'pos',{get(){throw Error('No live query fallback');}});
++    Object.defineProperty(b,'vel',{get(){throw Error('No live query fallback');}});
++    for(let i=0;i<3;i++)expect(info.query(0,1,.4,.05)).toMatchObject({source:'remembered',pos:{x:5,y:.3}});
++    expect(info.query(0,1,1.05,.05)).toEqual({source:'unavailable'});
++  });
++  it('preserves guarded queries and catch-readiness sensing alongside one teammate sensing hook',()=>{
++    const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(11),'O','OFF'),'11'),
++      defense:pickDefense(generateTeam(new Rng(12),'D','DEF'),'nickel'),
++      offCall:{formation:FORMATION_BY_ID.gun_doubles_11,flip:false,kind:'pass',pass:PASS_BY_ID.smash,label:'transport'},
++      defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover1,pressure:null,label:'transport'},
++      los:40,ballY:26,firstDownX:50,seed:77,record:false});
++    const rb=sim.slot('RB')!,lg=sim.slot('LG')!,rng=JSON.stringify(sim.rng);
++    const sense=vi.spyOn(sim.teammateAwareness,'sense'),catchSense=vi.spyOn(sim.incidentalCatchReadiness,'sense');
++    for(const target of [lg,rb,sim.defense[0]])expect(sim.teammateInformation(rb,target)).toEqual({source:'unavailable'});
++    expect(sense).not.toHaveBeenCalled();expect(JSON.stringify(sim.rng)).toBe(rng);
++    sim.tick();expect(sense).toHaveBeenCalledTimes(1);expect(catchSense).toHaveBeenCalledTimes(1);
++  });
++});

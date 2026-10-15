@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Approved risk-only final verification — 2026-10-15
+## Completed risk-only verification and adoption — 2026-10-15
 
 Integration owns this review branch from accepted4679a3c (#72 merged). Extract
 only Do-It-All's byte-identical carrier opponent-risk correction and its two
@@ -16,7 +16,9 @@ no skipped phases/input drift,188.504s.
 [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json). The initial missing
 it import and both failed receipts are retained. No World steps, full suite
 or games for scope selection. No extra game campaign or repeated focused
-loop for the final run. Verification approval does not authorize merging.
+loop for the final run. Later explicit user merge approval adopted #74 as
+`8ca8deebe4afa91c3021bdd119bed8976cf00e47`; actual tree equals reviewed publicationa8dabec.
+No new tests, simulations or additional merge authority.
 
 ## Earlier information-only dependency/scope review — completed stage
 
@@ -27,8 +29,8 @@ typecheck pass; retained initial missing-it-import failures;23.675s total,
 zero World steps/games/shared suite. [Published review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
 Observation-only transport is separately portable and already owner-approved;
 no production consumer yet. Navigation is parked. This earlier scope decision
-is now accepted by user and all combined phases pass at86a8816; merge
-authorization remains separate. Do-It-All supplies independent #69 controller review;
+was accepted by user, all combined phases passed at86a8816, and later explicit
+merge approval adopted only the risk correction via #74. Do-It-All supplies independent #69 controller review;
 no additional candidate was appended to #67/#72 verification.
 
 ## Completed #67 portability review — accepted via #72
@@ -49,13 +51,14 @@ no other merge, reference, default or historical-baseline authority follows.
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
 #63 runtime and #65 documentation remain included; user-authorized #72 advances
-accepted develop to `4679a3c260188143bcc66f6f20534327c78d7eaa`. #69 and physics remain separate.
+accepted develop through #72 and now user-authorized #74 at
+`8ca8deebe4afa91c3021bdd119bed8976cf00e47`. #69 and physics remain separate.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
-queue branch `codex/integration-queue` includes accepted #72 through a normal
+queue branch `codex/integration-queue` includes accepted #74 through a normal
 merge, preserving newer tracking and reviewed evidence histories. Its follow-up diff against
 accepted develop updates only queue/status/ownership and adds new review/merge
 receipts; it is not a further authorized merge. Source, tests, flags, dependencies and existing receipts
@@ -74,8 +77,9 @@ use the current queue and affected owner for live branch/readiness information.
 
 ## Post-adoption queue ownership — 2026-10-15
 
-Integration records accepted develop4679a3c after user-authorized #72;
-source/tests/settings and prior receipts match reviewed publication1675478.
+Integration records accepted develop8ca8dee after user-authorized #74;
+source/tests/settings and prior receipts match reviewed publicationa8dabec.
+Earlier #72 verification/adoption details below preserve their original stage.
 User accepted Run's #67 ordinary-fixture adjudication. Integration installed
 only the approved coverage-job test filter and froze `6417748` on accepted7d1451b.
 All phases passed:1,724 TS/145 Python/typecheck/build,44 flags/components=1,

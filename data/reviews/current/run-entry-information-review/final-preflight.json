@@ -1,0 +1,33 @@
+{
+  "schema": "opponent-risk-final-freeze-preflight-v1",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "approvedRiskCode": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+  "reviewedPublication": "cfcbf6b60325ff3fe4dd722f9310d135fae49576",
+  "trackingReconciled": "1ef22746de0874eb50b61e785377243a3a3aacad",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "protectedInputsUnchangedSinceFocusedPass": true,
+  "changedProtectedPaths": [
+    "src/sim/behaviors/carrier.ts",
+    "test/fixtures/run-entry-information.json.gz",
+    "test/run-entry-opponent-information.test.ts"
+  ],
+  "priorCurrentReceiptFilesPreserved": {
+    "4679a3c260188143bcc66f6f20534327c78d7eaa": 129,
+    "cfcbf6b60325ff3fe4dd722f9310d135fae49576": 141,
+    "1ef22746de0874eb50b61e785377243a3a3aacad": 132
+  },
+  "settingsUnchanged": true,
+  "scopeAccepted": true,
+  "verificationAuthorized": true,
+  "mergeAuthorized": false,
+  "excluded": [
+    "observation-only transport",
+    "navigation/admission/ranking tuning",
+    "sampledVel/historical motion",
+    "#69",
+    "experimental physics"
+  ],
+  "verificationQuestion": "Does the exact accepted-develop plus approved acquired opponent-risk correction preserve all required type/build/TS/Python contracts under accepted settings?",
+  "extraGameOrRosterCampaign": false
+}
