@@ -34,8 +34,10 @@ describe('delivered historical teammate velocity',()=>{
     s.b.pos={x:6,y:0};s.b.vel={x:2,y:-1};s.info.sense(s.agents,.4,.05);
     expect(s.query(.65)).toMatchObject({sampledAt:0,sampledVel:{x:0,y:1},vel:{x:0,y:0}});
     s.b.pos={x:-10,y:50};s.info.sense(s.agents,.70,.05);
-    expect(s.query(.70)).toMatchObject({source:'observed',sampledAt:.4,availableAt:.7,
+    expect(s.query(.70)).toMatchObject({source:'observed',sampledAt:.4,
       sampledVel:{x:2,y:-1},vel:{x:2,y:-1}});
+    const fresh=s.query(.70);if(fresh.source==='unavailable')throw Error('Reacquisition expected');
+    expect(fresh.availableAt).toBeCloseTo(.70,12);
   });
   it('does not label installed or tactile velocity as a measured visual sample',()=>{
     const s=scene(),called=new TeammateInformation(s.agents,new Map([[1,{origin:{x:5,y:0},velocity:{x:1,y:0},startsAt:0,until:1,label:'nominal'}]]));
