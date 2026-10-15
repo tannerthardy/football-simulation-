@@ -15,7 +15,7 @@ const saved = JSON.parse(readFileSync(new URL('./fixtures/incidental-catch-windo
 function stage(play = 24, record = false) {
   const f = saved.cases.find((c: { play: number }) => c.play === play);
   const offense = pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11');
-  offense[f.actor.slot] = f.player as Player;
+  offense[f.actor.slot as keyof typeof offense] = f.player as Player;
   const sim = new PlaySim({ offense,
     defense: pickDefense(generateTeam(new Rng(19), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.slant_flat, label: '' },

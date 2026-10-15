@@ -25,7 +25,11 @@ regression protects the matching current-source control. No accepted existing
 assertion is removed or relaxed. Exact receipts and per-path patches will be
 published with the frozen candidate.
 
-One full combined verification is pending. It will use Node22.23.3, all44
+The first frozen run at `c412d3a` stopped at strict typecheck: #61's JSON
+slot index lacked an explicit offense-key type. Build, TypeScript suites and
+Python were skipped by fail-fast. The extracted test adds only that static
+annotation; no runtime or expectation changes. The failed receipt is retained.
+A refrozen verification is pending. It will use Node22.23.3, all44
 accepted flags including `RUN_CONTACT_COMPONENTS=1`, and existing center hands /
 centered integration / legacy support / per-solve work / speculative impacts /
 mean support / bounded attachment / adaptive substeps. Settings, dependencies,
