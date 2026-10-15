@@ -26,6 +26,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
@@ -113,6 +114,7 @@ export class PlaySim {
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
+  readonly teammateAwareness: TeammateInformation;
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   readonly trace: ReplayTrace;
   private readonly record: boolean;
@@ -245,6 +247,8 @@ export class PlaySim {
     const expected = setup.scouting ? setup.scouting.passLogOdds(this.snapContext) : leaguePassLogOdds(this.snapContext);
     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
+    // Observation-only extraction: no installed-call builder or touch writer.
+    this.teammateAwareness = new TeammateInformation(this.agents, new Map());
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
   }
 
@@ -316,6 +320,11 @@ export class PlaySim {
   }
   teammates(a: Agent): Agent[] {
     return a.team === 'O' ? this.offense : this.defense;
+  }
+  /** Pure acquired-picture query; unavailable never falls back to live state. */
+  teammateInformation(observer: Agent, target: Agent): TeammatePicture {
+    if (observer === target || observer.team !== target.team) return { source: 'unavailable' };
+    return this.teammateAwareness.query(observer.idx, target.idx, this.t, this.dt);
   }
   slot(name: string): Agent | undefined {
     return this.bySlot.get(name);
@@ -550,6 +559,7 @@ export class PlaySim {
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
     this.incidentalCatchReadiness.sense(this);
+    this.teammateAwareness.sense(this.agents, t, this.dt);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();

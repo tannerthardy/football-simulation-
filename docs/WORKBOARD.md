@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Portable run-entry information only — 2026-10-15
+
+Do-It-All owns a minimal extraction on accepted `7d1451b2c31786e075550183a6a93bbda23da29b`: original approved teammate-information core; PlaySim construction/sensing/guarded pure query preserving catch readiness; carrier opponent-risk acquired-information correction. Existing Awareness owner approval6201016808 and original review6200878215 apply. [Integration coordination6201744560](https://github.com/tannerthardy/football-simulation-/pull/65#issuecomment-6201744560). Navigation, sampledVel research, spacing, physics, installed calls, pass and accepted gap fix excluded. Four focused independent contracts then one typecheck; no snaps beyond one transport tick, games or shared suite. Integration owns acceptance and exact combined verification.
+
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
