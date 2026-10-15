@@ -28,43 +28,47 @@ export function selectMotorEvents(field:MotorField):MotorSchedule|Failure {
     G:Pair=[0,0],GM:Pair=[0,0],GA:Pair=[0,0],GW:Pair=[0,0],direction:Pair=[0,0],alpha:Pair=[0,0];
   if(h>0&&bs.some(b=>b.yaw)&&h>=remaining)return {ok:false,reason:'controller-deadline'};
   if(error.some(e=>Math.abs(e)>=Math.PI))return {ok:false,reason:'heading-branch'};
+  // Prepare invariant numeric coefficients once. The event loop does not
+  // revisit nested body/yaw objects or rebuild a full pose at every phase.
+  const inertia:Pair=[bs[0].inertia,bs[1].inertia],caps:Pair=bs.map(b=>b.yaw?.accelerationLimit??0) as Pair,
+    turnRate:Pair=bs.map(b=>b.yaw?.turnRate??0) as Pair,target:Pair=bs.map(b=>b.yaw?.targetHeading??0) as Pair;
   const tx=(bs[1].velocity.x-bs[0].velocity.x)*t.x,ty=(bs[1].velocity.y-bs[0].velocity.y)*t.y,
     ta=-arms[0]*spin[0],tb=-arms[1]*spin[1],
     slipEps=32*Number.EPSILON*(1+Math.abs(tx)+Math.abs(ty)+Math.abs(ta)+Math.abs(tb)),
     mobility=(t.x*t.x+t.y*t.y)*(1/bs[0].mass+1/bs[1].mass),
     external=(bs[1].groundAcceleration.x-bs[0].groundAcceleration.x)*t.x+(bs[1].groundAcceleration.y-bs[0].groundAcceleration.y)*t.y;
   let u=((tx+ty)+ta)+tb,elapsed=0,J=0,M=0,A=0,W=0;
-  const ground=(i:number,F:number)=>{const y=bs[i].yaw;return !y?0:direction[i]?direction[i]*y.accelerationLimit:clamp(arms[i]*F/bs[i].inertia,-y.accelerationLimit,y.accelerationLimit);};
-  const rate=(F:number)=>external+mobility*F-arms[0]*(ground(0,F)-arms[0]*F/bs[0].inertia)-arms[1]*(ground(1,F)-arms[1]*F/bs[1].inertia);
+  const ground=(i:number,F:number)=>direction[i]?direction[i]*caps[i]:clamp(arms[i]*F/inertia[i],-caps[i],caps[i]);
+  const rate=(F:number)=>external+mobility*F-arms[0]*(ground(0,F)-arms[0]*F/inertia[0])-arms[1]*(ground(1,F)-arms[1]*F/inertia[1]);
   while(elapsed<h){
     if(phases.length>=8)return {ok:false,reason:'event-limit'};
     const r=remaining-elapsed,left=h-elapsed;
-    for(let i=0;i<2;i++){const y=bs[i].yaw;if(!y){direction[i]=0;continue;}
-      const target=clamp(error[i]/r,-y.turnRate,y.turnRate),d=target-spin[i],
+    for(let i=0;i<2;i++){if(turnRate[i]===0){direction[i]=0;continue;}
+      const requested=clamp(error[i]/r,-turnRate[i],turnRate[i]),d=requested-spin[i],
         // Keep the reference's floating classification bound, including its
         // equivalent-heading representation allowance; no behavioral deadband.
-        eps=32*Number.EPSILON*(1+Math.abs(spin[i])+(Math.abs(y.targetHeading)+Math.abs(y.targetHeading-error[i]))/r);
+        eps=32*Number.EPSILON*(1+Math.abs(spin[i])+(Math.abs(target[i])+Math.abs(target[i]-error[i]))/r);
       direction[i]=Math.abs(d)<=eps?0:Math.sign(d);
     }
     let F:number;
     if(limit===0)F=0;else if(Math.abs(u)>slipEps)F=-Math.sign(u)*limit;
     else if(rate(-limit)>=0)F=-limit;else if(rate(limit)<=0)F=limit;
-    else {const cuts=[-limit,limit];for(let i=0;i<2;i++){const y=bs[i].yaw;if(y&&!direction[i]&&arms[i]>0)for(let s=-1;s<=1;s+=2){const x=s*y.accelerationLimit*bs[i].inertia/arms[i];if(x>-limit&&x<limit)cuts.push(x);}}
+    else {const cuts=[-limit,limit];for(let i=0;i<2;i++){if(turnRate[i]>0&&!direction[i]&&arms[i]>0)for(let s=-1;s<=1;s+=2){const x=s*caps[i]*inertia[i]/arms[i];if(x>-limit&&x<limit)cuts.push(x);}}
       if(cuts.length>2)cuts.sort((a,b)=>a-b);F=0;
       for(let k=1;k<cuts.length;k++){const lo=cuts[k-1],hi=cuts[k],vl=rate(lo),vh=rate(hi);if(vl<=0&&vh>=0){F=clamp(lo-vl*(hi-lo)/(vh-vl),lo,hi);break;}}
     }
-    const g:Pair=[ground(0,F),ground(1,F)],du=rate(F);for(let i=0;i<2;i++)alpha[i]=g[i]-arms[i]*F/bs[i].inertia;
+    const g:Pair=[ground(0,F),ground(1,F)],du=rate(F);for(let i=0;i<2;i++)alpha[i]=g[i]-arms[i]*F/inertia[i];
     let d=left;
     if(limit>0&&Math.abs(u)>slipEps&&u*du<0)d=Math.min(d,-u/du);
-    for(let i=0;i<2;i++){const y=bs[i].yaw,a=alpha[i];if(!y||a===0)continue;
-      const q=error[i]-r*spin[i];if(q*a>0){const ratio=q/a,disc=r*r-2*ratio;if(disc>=0){const hit=2*ratio/(r+Math.sqrt(disc)),w=spin[i]+a*hit;if(hit>0&&hit<=left&&Math.abs(w)<=y.turnRate&&direction[i]!==0)d=Math.min(d,hit);}}
-      for(let s=-1;s<=1;s+=2){const hit=(s*y.turnRate-spin[i])/a;if(hit>0&&hit<=left&&s*(error[i]-spin[i]*hit-.5*a*hit*hit)/(r-hit)>=y.turnRate)d=Math.min(d,hit);}
+    for(let i=0;i<2;i++){const a=alpha[i];if(turnRate[i]===0||a===0)continue;
+      const q=error[i]-r*spin[i];if(q*a>0){const ratio=q/a,disc=r*r-2*ratio;if(disc>=0){const hit=2*ratio/(r+Math.sqrt(disc)),w=spin[i]+a*hit;if(hit>0&&hit<=left&&Math.abs(w)<=turnRate[i]&&direction[i]!==0)d=Math.min(d,hit);}}
+      for(let s=-1;s<=1;s+=2){const hit=(s*turnRate[i]-spin[i])/a;if(hit>0&&hit<=left&&s*(error[i]-spin[i]*hit-.5*a*hit*hit)/(r-hit)>=turnRate[i])d=Math.min(d,hit);}
     }
     if(!(d>0)||!Number.isFinite(d))return {ok:false,reason:'event-limit'};
     const phaseW=F*(u*d+.5*du*d*d);
-    for(let i=0;i<2;i++){const angle=spin[i]*d+.5*alpha[i]*d*d,y=bs[i].yaw,turning=alpha[i]===0?-1:-spin[i]/alpha[i];
-      if(y&&(Math.abs(error[i]-angle)>=Math.PI||(turning>0&&turning<d&&Math.abs(error[i]-spin[i]*turning-.5*alpha[i]*turning*turning)>=Math.PI)))return {ok:false,reason:'heading-branch'};
-      const torque=bs[i].inertia*g[i];G[i]+=torque*d;GM[i]+=torque*d*(h-elapsed-.5*d);GA[i]+=Math.abs(torque)*d;GW[i]+=torque*angle;
+    for(let i=0;i<2;i++){const angle=spin[i]*d+.5*alpha[i]*d*d,turning=alpha[i]===0?-1:-spin[i]/alpha[i];
+      if(turnRate[i]>0&&(Math.abs(error[i]-angle)>=Math.PI||(turning>0&&turning<d&&Math.abs(error[i]-spin[i]*turning-.5*alpha[i]*turning*turning)>=Math.PI)))return {ok:false,reason:'heading-branch'};
+      const torque=inertia[i]*g[i];G[i]+=torque*d;GM[i]+=torque*d*(h-elapsed-.5*d);GA[i]+=Math.abs(torque)*d;GW[i]+=torque*angle;
       error[i]-=angle;spin[i]+=alpha[i]*d;
     }
     phases.push({duration:d,force:F,groundAcceleration:g,slipBefore:u,slipAfter:u+du*d,work:phaseW});
