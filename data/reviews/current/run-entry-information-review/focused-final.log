@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit 71d98fcddc3c76764f36f438f9f4921d365c9ad4, source f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/run-entry-opponent-information.test.ts test/run-system.test.ts -t does not use private opponent|preserves the saved contrasting entry|moves a Duo read away
+
+ RUN  v3.2.4 /workspace/football-entry-information-review
+
+ ✓ |core| test/run-entry-opponent-information.test.ts (2 tests) 9ms
+ ✓ |core| test/run-system.test.ts (26 tests | 25 skipped) 15ms
+
+ Test Files  2 passed (2)
+      Tests  3 passed | 25 skipped (28)
+   Start at  21:01:18
+   Duration  1.31s (transform 684ms, setup 0ms, collect 947ms, tests 24ms, environment 0ms, prepare 111ms)
+
+Validation receipt: out/entry-risk-review/focused-final.json; exit 0
