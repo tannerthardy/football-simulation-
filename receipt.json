@@ -1,0 +1,23 @@
+{
+  "consumer": "Run Game second-level access A018/A030, useful access A027/A042",
+  "sourceRuntime": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "sourceEvidenceCommit": "58303d6e22a42a5dce78b6ad0b967229140a59e1",
+  "fullOriginalArchiveSha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+  "subsetBytes": 1947618,
+  "subsetSha256": "9941dd1103186ff98e1d726971650138bbb1aaeb1ff763c1f243835714af2e77",
+  "caseIds": [
+    "A018",
+    "A027",
+    "A030",
+    "A042"
+  ],
+  "originalCaseSha256": {
+    "A018": "72d6d9b5837d74fc469411a46c73936509cc6f739c32cc316354f1ceae6f0c42",
+    "A027": "40ad8eb8ac8a0da88c193615abaedd736f47c5933cbe0e9d92e32dbe06cddadc",
+    "A030": "7d60bf3e23dd5b023b7dfe7a2f9071168776181983e2fbe517b58f8b8cb05dd1",
+    "A042": "fbee9a2d1b1dea734687aafa5bb1733c67c0782d0a5712d81b33997c184daa4b"
+  },
+  "selection": "Named comparison in Integration comment6203355802. No new simulations or query filters.",
+  "retention": "Keep immutable artifact/ref with audit. Data-only tree; never merge into develop.",
+  "currentSourceLimit": "Accepted90edc525 changes RunBlocker; original8ca tapes require compatibility check before current claims."
+}
