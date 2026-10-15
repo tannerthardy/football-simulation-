@@ -1,0 +1,52 @@
+{
+  "cases": [
+    "A020",
+    "A032",
+    "A044"
+  ],
+  "until": [
+    3.75,
+    4.35,
+    5.6
+  ],
+  "executions": 3,
+  "question": "Correct the demonstrated research-selector comparison of clear bends against unsafe fast requests; reuse accepted arms and unchanged A008.",
+  "batchWallCapMs": 20000,
+  "angleDegrees": 30,
+  "forecastSteps": 12,
+  "limitedTo": "LB_M/NB/SS free man/zone commands, from original named observation windows; football objectives unchanged.",
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "rows": [
+    {
+      "caseId": "A020",
+      "intervention": true,
+      "stoppedAt": 3.75,
+      "changes": 5,
+      "elapsedMs": 452.865326,
+      "path": "out/mesh-attribution/bend-v2/A020-bend.json.gz",
+      "sha256": "ebf5a6f9d747b63feea72c65938c288dfdcca0a489606855250be9f3d3b53c1d"
+    },
+    {
+      "caseId": "A032",
+      "intervention": true,
+      "stoppedAt": 4.25,
+      "changes": 5,
+      "elapsedMs": 473.539259,
+      "path": "out/mesh-attribution/bend-v2/A032-bend.json.gz",
+      "sha256": "cecbc704e58e077bd0b9d9ffac70189309b3700389ed9e710b4b08a9a6de6e1d"
+    },
+    {
+      "caseId": "A044",
+      "intervention": true,
+      "stoppedAt": 5.6,
+      "changes": 3,
+      "elapsedMs": 424.11164099999996,
+      "path": "out/mesh-attribution/bend-v2/A044-bend.json.gz",
+      "sha256": "9dacfa035267d25d34f593e89fcb66087ac1088d4338e1a76cbb0b422aabed61"
+    }
+  ],
+  "elapsedMs": 1578.722424,
+  "cpuMs": 3570.984
+}

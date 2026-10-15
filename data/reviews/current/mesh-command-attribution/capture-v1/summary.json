@@ -1,0 +1,203 @@
+{
+  "question": "Attribute A020 prethrow stop and A044 convergence; retain useful A008/A032 defense.",
+  "accepted": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "savedSource": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "cases": [
+    {
+      "id": "A008",
+      "from": 1.75,
+      "until": 2.65,
+      "input": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229"
+    },
+    {
+      "id": "A020",
+      "from": 1.95,
+      "until": 2.6,
+      "input": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688"
+    },
+    {
+      "id": "A032",
+      "from": 1.95,
+      "until": 3,
+      "input": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d"
+    },
+    {
+      "id": "A044",
+      "from": 1.95,
+      "until": 3,
+      "input": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5"
+    }
+  ],
+  "executions": 8,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "batchWallCapMs": 20000,
+  "interventions": "Observer off/on only; no controller changes. Selected actors LB_M/NB/SS.",
+  "timing": "Tick t is the command/pre-physics clock; after is t+.05. Native frame t labels the enclosing tick after physics.",
+  "provenance": {
+    "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+    "commit": "90edc52530caa71efdebf257f17d954a8a629ea0",
+    "fixtureSha256": "80d5f4e834cb27ac09d204d6acda44f35965de04b3878af04544e41d059c8787",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "rows": [
+    {
+      "id": "A008",
+      "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "2bb43add33b7d42c0ee8f9cf19e5260f5e357b887f210a96c948580b04fbbf6f",
+          "draws": 493,
+          "reads": 32978,
+          "elapsedMs": 304.261314,
+          "ticks": 53,
+          "stoppedAt": 2.65
+        },
+        {
+          "observed": true,
+          "digest": "2bb43add33b7d42c0ee8f9cf19e5260f5e357b887f210a96c948580b04fbbf6f",
+          "draws": 493,
+          "reads": 32978,
+          "elapsedMs": 233.39406799999995,
+          "ticks": 53,
+          "stoppedAt": 2.65
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A020",
+      "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "5c40d8c6d8a1f6ece808bcc75e0fbf524b550d331223e997391aca39b88a1bdc",
+          "draws": 492,
+          "reads": 32953,
+          "elapsedMs": 157.08256200000005,
+          "ticks": 52,
+          "stoppedAt": 2.6
+        },
+        {
+          "observed": true,
+          "digest": "5c40d8c6d8a1f6ece808bcc75e0fbf524b550d331223e997391aca39b88a1bdc",
+          "draws": 492,
+          "reads": 32953,
+          "elapsedMs": 159.11843599999997,
+          "ticks": 52,
+          "stoppedAt": 2.6
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A032",
+      "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "d9635612cb4632ff7f8ad0ac836e3f2d4511f80bec9fe58d5f79e2fc16b2940e",
+          "draws": 513,
+          "reads": 37447,
+          "elapsedMs": 128.62136299999997,
+          "ticks": 60,
+          "stoppedAt": 3
+        },
+        {
+          "observed": true,
+          "digest": "d9635612cb4632ff7f8ad0ac836e3f2d4511f80bec9fe58d5f79e2fc16b2940e",
+          "draws": 513,
+          "reads": 37447,
+          "elapsedMs": 190.831903,
+          "ticks": 60,
+          "stoppedAt": 3
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A044",
+      "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "f6f916850951cf84106db021da2ff9431dfed6ec2c4b08f3023854cf6fd898ee",
+          "draws": 516,
+          "reads": 37371,
+          "elapsedMs": 155.884542,
+          "ticks": 60,
+          "stoppedAt": 3
+        },
+        {
+          "observed": true,
+          "digest": "f6f916850951cf84106db021da2ff9431dfed6ec2c4b08f3023854cf6fd898ee",
+          "draws": 516,
+          "reads": 37371,
+          "elapsedMs": 233.38557200000014,
+          "ticks": 60,
+          "stoppedAt": 3
+        }
+      ],
+      "neutral": true
+    }
+  ],
+  "elapsedMs": 1681.7664659999998,
+  "cpuMs": 3803.769
+}

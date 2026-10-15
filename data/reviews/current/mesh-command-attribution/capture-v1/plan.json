@@ -1,0 +1,99 @@
+{
+  "question": "Attribute A020 prethrow stop and A044 convergence; retain useful A008/A032 defense.",
+  "accepted": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "savedSource": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "cases": [
+    {
+      "id": "A008",
+      "from": 1.75,
+      "until": 2.65,
+      "input": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229"
+    },
+    {
+      "id": "A020",
+      "from": 1.95,
+      "until": 2.6,
+      "input": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688"
+    },
+    {
+      "id": "A032",
+      "from": 1.95,
+      "until": 3,
+      "input": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d"
+    },
+    {
+      "id": "A044",
+      "from": 1.95,
+      "until": 3,
+      "input": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5"
+    }
+  ],
+  "executions": 8,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "batchWallCapMs": 20000,
+  "interventions": "Observer off/on only; no controller changes. Selected actors LB_M/NB/SS.",
+  "timing": "Tick t is the command/pre-physics clock; after is t+.05. Native frame t labels the enclosing tick after physics.",
+  "provenance": {
+    "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+    "commit": "90edc52530caa71efdebf257f17d954a8a629ea0",
+    "fixtureSha256": "80d5f4e834cb27ac09d204d6acda44f35965de04b3878af04544e41d059c8787",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  }
+}

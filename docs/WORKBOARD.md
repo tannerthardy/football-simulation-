@@ -818,3 +818,15 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+## Do-It-All mesh attribution checkpoint — 2026-10-15
+
+From accepted90edc525, `codex/mesh-command-attribution` / implementation4fe2342
+owns the user's A020 prethrow stop and A044 man/robber convergence, with A008/A032
+controls. [Report and precise limitation](reviews/mesh-command-attribution-2026-10-15.md).
+Spacing produces A020's zero requests; an achieved-motion release shortcut and
+failed coupled bend trials remain. Submit passive diagnostic only; reject tested
+behavior. Catching wrapper/keyed-fit and Run PassProtector scopes are separate;
+#76 stays frozen and broad RB-jam tuning stays deferred. Three focused observer
+checks/four neutral pairs/final typecheck pass;20 short native executions,
+zero games/new rosters, no shared suite. Integration owns review/adoption.

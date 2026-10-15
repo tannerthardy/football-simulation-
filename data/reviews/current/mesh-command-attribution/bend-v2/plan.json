@@ -1,0 +1,21 @@
+{
+  "cases": [
+    "A020",
+    "A032",
+    "A044"
+  ],
+  "until": [
+    3.75,
+    4.35,
+    5.6
+  ],
+  "executions": 3,
+  "question": "Correct the demonstrated research-selector comparison of clear bends against unsafe fast requests; reuse accepted arms and unchanged A008.",
+  "batchWallCapMs": 20000,
+  "angleDegrees": 30,
+  "forecastSteps": 12,
+  "limitedTo": "LB_M/NB/SS free man/zone commands, from original named observation windows; football objectives unchanged.",
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0
+}

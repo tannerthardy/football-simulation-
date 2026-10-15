@@ -1,0 +1,30 @@
+{
+  "cases": [
+    "A044"
+  ],
+  "until": [
+    2.75
+  ],
+  "executions": 1,
+  "question": "Attribute the first failed transition of the already rejected A044 bend; reuse the saved baseline/probe comparison.",
+  "batchWallCapMs": 20000,
+  "angleDegrees": 30,
+  "forecastSteps": 12,
+  "limitedTo": "LB_M/NB/SS free man/zone commands, from original named observation windows; football objectives unchanged.",
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "rows": [
+    {
+      "caseId": "A044",
+      "intervention": true,
+      "stoppedAt": 2.75,
+      "changes": 2,
+      "elapsedMs": 400.26688800000005,
+      "path": "out/mesh-attribution/failed-transition/A044-bend.json.gz",
+      "sha256": "5646315e53d70a6dd88e535da9db63f2446cafbcc81093cc2c1d39fd31dc7778"
+    }
+  ],
+  "elapsedMs": 451.028374,
+  "cpuMs": 744.323
+}

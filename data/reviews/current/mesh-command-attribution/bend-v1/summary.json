@@ -1,0 +1,99 @@
+{
+  "cases": [
+    "A008",
+    "A020",
+    "A032",
+    "A044"
+  ],
+  "until": [
+    3.4,
+    3.75,
+    4.35,
+    5.6
+  ],
+  "executions": 8,
+  "question": "Does one fixed peer-directed bend improve a naturally reacting local approach while retaining useful controls/block?",
+  "batchWallCapMs": 20000,
+  "angleDegrees": 30,
+  "forecastSteps": 12,
+  "limitedTo": "LB_M/NB/SS free man/zone commands, from original named observation windows; football objectives unchanged.",
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "rows": [
+    {
+      "caseId": "A008",
+      "intervention": false,
+      "stoppedAt": 3.4,
+      "changes": 0,
+      "elapsedMs": 398.485223,
+      "path": "out/mesh-attribution/bend-v1/A008-accepted.json.gz",
+      "sha256": "5d0637646c985b633e5b9b04a3e4d6a66d1871949a6d38c2762a5f80a230ffd0"
+    },
+    {
+      "caseId": "A008",
+      "intervention": true,
+      "stoppedAt": 3.4,
+      "changes": 0,
+      "elapsedMs": 299.179537,
+      "path": "out/mesh-attribution/bend-v1/A008-bend.json.gz",
+      "sha256": "29860d037604bfc44c31a2155c8758be50af699ca859397c76601b03e417370d"
+    },
+    {
+      "caseId": "A020",
+      "intervention": false,
+      "stoppedAt": 3.75,
+      "changes": 0,
+      "elapsedMs": 265.01060600000005,
+      "path": "out/mesh-attribution/bend-v1/A020-accepted.json.gz",
+      "sha256": "c07ea39ba4a49ae29876f796b7a8307e7e4969b49d9779c657dc743acd0a20af"
+    },
+    {
+      "caseId": "A020",
+      "intervention": true,
+      "stoppedAt": 3.75,
+      "changes": 5,
+      "elapsedMs": 280.94755699999996,
+      "path": "out/mesh-attribution/bend-v1/A020-bend.json.gz",
+      "sha256": "8766da0ef75f741dc090f7613edad8c03fd0aa1298b598e4bb812e0a0766fbdf"
+    },
+    {
+      "caseId": "A032",
+      "intervention": false,
+      "stoppedAt": 4.35,
+      "changes": 0,
+      "elapsedMs": 254.3766059999998,
+      "path": "out/mesh-attribution/bend-v1/A032-accepted.json.gz",
+      "sha256": "db107ae27c606fc6aa47e8bad911fa3056984aef8b9facbbf7e8eacf8dcfe25b"
+    },
+    {
+      "caseId": "A032",
+      "intervention": true,
+      "stoppedAt": 4.25,
+      "changes": 5,
+      "elapsedMs": 300.3795960000002,
+      "path": "out/mesh-attribution/bend-v1/A032-bend.json.gz",
+      "sha256": "3b3469f072c199eb17f845f3db7b17933d2e7043fe73729d7159e6fc2ab939d9"
+    },
+    {
+      "caseId": "A044",
+      "intervention": false,
+      "stoppedAt": 5.6,
+      "changes": 0,
+      "elapsedMs": 278.70025699999997,
+      "path": "out/mesh-attribution/bend-v1/A044-accepted.json.gz",
+      "sha256": "c6a16b98d21bf1819b6ed03f1ffa5fc32edd47cd817ec4971cf23c4feff79d57"
+    },
+    {
+      "caseId": "A044",
+      "intervention": true,
+      "stoppedAt": 5.6,
+      "changes": 2,
+      "elapsedMs": 270.3422899999996,
+      "path": "out/mesh-attribution/bend-v1/A044-bend.json.gz",
+      "sha256": "27546ecad951360fa0af07535866a7a9ef9d1c168ad76e1976e7d0a083722fd7"
+    }
+  ],
+  "elapsedMs": 2409.460884,
+  "cpuMs": 4819.868
+}

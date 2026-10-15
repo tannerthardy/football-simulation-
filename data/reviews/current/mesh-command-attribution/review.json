@@ -1,0 +1,1061 @@
+{
+  "schema": "mesh-attribution-review-v1",
+  "savedRuntime": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "savedSourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "acceptedBase": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "diagnosticSourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+  "savedWindowSha256": "11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191",
+  "compatibility": [
+    {
+      "caseId": "A008",
+      "rawSha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+      "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "checkedFrameClocks": [
+        1.8,
+        1.85,
+        1.9,
+        1.95,
+        2,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35
+      ],
+      "actorFrames": 704,
+      "fieldDifferences": [],
+      "interiorNativeEventsEqual": true,
+      "limit": "Positions at0.1yd, velocities/requests at0.01yd/s only; not a bit-exact full-state claim."
+    },
+    {
+      "caseId": "A020",
+      "rawSha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+      "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+      "checkedFrameClocks": [
+        1.95,
+        2,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45,
+        3.5,
+        3.55,
+        3.6,
+        3.65,
+        3.7
+      ],
+      "actorFrames": 792,
+      "fieldDifferences": [],
+      "interiorNativeEventsEqual": true,
+      "limit": "Positions at0.1yd, velocities/requests at0.01yd/s only; not a bit-exact full-state claim."
+    },
+    {
+      "caseId": "A032",
+      "rawSha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+      "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+      "checkedFrameClocks": [
+        2,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45,
+        3.5,
+        3.55,
+        3.6,
+        3.65,
+        3.7,
+        3.75,
+        3.8,
+        3.85,
+        3.9,
+        3.95,
+        4,
+        4.05,
+        4.1,
+        4.15,
+        4.2,
+        4.25,
+        4.3
+      ],
+      "actorFrames": 1034,
+      "fieldDifferences": [],
+      "interiorNativeEventsEqual": true,
+      "limit": "Positions at0.1yd, velocities/requests at0.01yd/s only; not a bit-exact full-state claim."
+    },
+    {
+      "caseId": "A044",
+      "rawSha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+      "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+      "checkedFrameClocks": [
+        1.95,
+        2,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        4.5,
+        4.55,
+        4.6,
+        4.65,
+        4.7,
+        4.75,
+        4.8,
+        4.85,
+        4.9,
+        4.95,
+        5,
+        5.05,
+        5.1,
+        5.15,
+        5.2,
+        5.25,
+        5.3,
+        5.35,
+        5.4,
+        5.45,
+        5.5,
+        5.55
+      ],
+      "actorFrames": 1144,
+      "fieldDifferences": [],
+      "interiorNativeEventsEqual": true,
+      "limit": "Positions at0.1yd, velocities/requests at0.01yd/s only; not a bit-exact full-state claim."
+    }
+  ],
+  "observerNeutrality": [
+    {
+      "id": "A008",
+      "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "2bb43add33b7d42c0ee8f9cf19e5260f5e357b887f210a96c948580b04fbbf6f",
+          "draws": 493,
+          "reads": 32978,
+          "elapsedMs": 304.261314,
+          "ticks": 53,
+          "stoppedAt": 2.65
+        },
+        {
+          "observed": true,
+          "digest": "2bb43add33b7d42c0ee8f9cf19e5260f5e357b887f210a96c948580b04fbbf6f",
+          "draws": 493,
+          "reads": 32978,
+          "elapsedMs": 233.39406799999995,
+          "ticks": 53,
+          "stoppedAt": 2.65
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A020",
+      "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "5c40d8c6d8a1f6ece808bcc75e0fbf524b550d331223e997391aca39b88a1bdc",
+          "draws": 492,
+          "reads": 32953,
+          "elapsedMs": 157.08256200000005,
+          "ticks": 52,
+          "stoppedAt": 2.6
+        },
+        {
+          "observed": true,
+          "digest": "5c40d8c6d8a1f6ece808bcc75e0fbf524b550d331223e997391aca39b88a1bdc",
+          "draws": 492,
+          "reads": 32953,
+          "elapsedMs": 159.11843599999997,
+          "ticks": 52,
+          "stoppedAt": 2.6
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A032",
+      "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "d9635612cb4632ff7f8ad0ac836e3f2d4511f80bec9fe58d5f79e2fc16b2940e",
+          "draws": 513,
+          "reads": 37447,
+          "elapsedMs": 128.62136299999997,
+          "ticks": 60,
+          "stoppedAt": 3
+        },
+        {
+          "observed": true,
+          "digest": "d9635612cb4632ff7f8ad0ac836e3f2d4511f80bec9fe58d5f79e2fc16b2940e",
+          "draws": 513,
+          "reads": 37447,
+          "elapsedMs": 190.831903,
+          "ticks": 60,
+          "stoppedAt": 3
+        }
+      ],
+      "neutral": true
+    },
+    {
+      "id": "A044",
+      "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+      "arms": [
+        {
+          "observed": false,
+          "digest": "f6f916850951cf84106db021da2ff9431dfed6ec2c4b08f3023854cf6fd898ee",
+          "draws": 516,
+          "reads": 37371,
+          "elapsedMs": 155.884542,
+          "ticks": 60,
+          "stoppedAt": 3
+        },
+        {
+          "observed": true,
+          "digest": "f6f916850951cf84106db021da2ff9431dfed6ec2c4b08f3023854cf6fd898ee",
+          "draws": 516,
+          "reads": 37371,
+          "elapsedMs": 233.38557200000014,
+          "ticks": 60,
+          "stoppedAt": 3
+        }
+      ],
+      "neutral": true
+    }
+  ],
+  "coupledComparison": [
+    {
+      "caseId": "A008",
+      "accepted": {
+        "stoppedAt": 3.4,
+        "outcome": "tackle",
+        "changes": 0,
+        "firstChangedTick": null,
+        "SS_LBM_contacts": [],
+        "footballEvents": [
+          {
+            "t": 2,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.13,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "carrier_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.45,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.24,
+              "y": 27.38
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.25,
+              "y": 32.52
+            }
+          }
+        ],
+        "zeroSSRequests": [],
+        "SS_H_gaps": {
+          "2.25": 2.3523586475326637,
+          "2.4": 2.1806505687559543,
+          "2.5": 2.084980706583595,
+          "2.7": 2.1325015259117155,
+          "2.9": 2.414340757084968,
+          "3.35": 3.3944678127567776
+        }
+      },
+      "rejectedBend": {
+        "stoppedAt": 3.4,
+        "outcome": "tackle",
+        "changes": 0,
+        "firstChangedTick": null,
+        "SS_LBM_contacts": [],
+        "footballEvents": [
+          {
+            "t": 2,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.13,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "carrier_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.45,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.24,
+              "y": 27.38
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.25,
+              "y": 32.52
+            }
+          }
+        ],
+        "zeroSSRequests": [],
+        "SS_H_gaps": {
+          "2.25": 2.3523586475326637,
+          "2.4": 2.1806505687559543,
+          "2.5": 2.084980706583595,
+          "2.7": 2.1325015259117155,
+          "2.9": 2.414340757084968,
+          "3.35": 3.3944678127567776
+        }
+      },
+      "allTicksEqual": true,
+      "allEventsEqual": true
+    },
+    {
+      "caseId": "A020",
+      "accepted": {
+        "stoppedAt": 3.75,
+        "outcome": null,
+        "changes": 0,
+        "firstChangedTick": null,
+        "SS_LBM_contacts": [],
+        "footballEvents": [
+          {
+            "t": 2.5,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.35,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 41.75,
+              "y": 20.38
+            }
+          }
+        ],
+        "zeroSSRequests": [
+          2.25,
+          2.3,
+          2.35,
+          2.4
+        ],
+        "SS_H_gaps": {
+          "2.25": 2.512236520445696,
+          "2.4": 2.758476965443979,
+          "2.5": 2.9959054770056373,
+          "2.7": 3.440974045894063,
+          "2.9": 3.832432490804993,
+          "3.35": 4.608076308949353,
+          "3.7": 4.918361979807236
+        }
+      },
+      "rejectedBend": {
+        "stoppedAt": 3.75,
+        "outcome": null,
+        "changes": 5,
+        "firstChangedTick": 2.1,
+        "SS_LBM_contacts": [],
+        "footballEvents": [
+          {
+            "t": 2.5,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.35,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 41.75,
+              "y": 20.38
+            }
+          }
+        ],
+        "zeroSSRequests": [
+          2.35,
+          2.4,
+          2.45
+        ],
+        "SS_H_gaps": {
+          "2.25": 2.464020548200258,
+          "2.4": 2.525877772305215,
+          "2.5": 2.649645832119241,
+          "2.7": 3.104743906193902,
+          "2.9": 3.682937551009178,
+          "3.35": 4.842665677746921,
+          "3.7": 5.346338281730639
+        }
+      },
+      "allTicksEqual": false,
+      "allEventsEqual": true
+    },
+    {
+      "caseId": "A032",
+      "accepted": {
+        "stoppedAt": 4.35,
+        "outcome": "tackle",
+        "changes": 0,
+        "firstChangedTick": null,
+        "SS_LBM_contacts": [
+          {
+            "tick": 3.8,
+            "i": 15,
+            "j": 21,
+            "impulse": 89.4640206536425,
+            "closing": 1.3134225384470253
+          },
+          {
+            "tick": 4.1,
+            "i": 15,
+            "j": 21,
+            "impulse": 45.56416495154792,
+            "closing": 0.5260776475334865
+          },
+          {
+            "tick": 4.15,
+            "i": 15,
+            "j": 21,
+            "impulse": 0.6497956169906238,
+            "closing": 0
+          },
+          {
+            "tick": 4.25,
+            "i": 15,
+            "j": 21,
+            "impulse": 17.15440332255957,
+            "closing": 0.10244464353707085
+          },
+          {
+            "tick": 4.3,
+            "i": 15,
+            "j": 21,
+            "impulse": 20.451391223437405,
+            "closing": 0.017958327440020763
+          }
+        ],
+        "footballEvents": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 27.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.8,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 37.7,
+              "y": 25.41
+            }
+          },
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 37.7,
+              "y": 25.41
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 38.17,
+              "y": 25.6
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.6,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 7,
+            "pos": {
+              "x": 39.09,
+              "y": 27.43
+            },
+            "note": "assist"
+          },
+          {
+            "t": 4.3,
+            "type": "tackle",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 37.55,
+              "y": 28.14
+            }
+          }
+        ],
+        "zeroSSRequests": [
+          2.2,
+          2.9,
+          3
+        ],
+        "SS_H_gaps": {
+          "2.25": 2.2105113111104653,
+          "2.4": 2.2909185495783486,
+          "2.5": 2.3773965623693254,
+          "2.7": 2.6086120886222095,
+          "2.9": 2.999439916314654,
+          "3.35": 4.271151653263428,
+          "3.7": 4.8937650641627135
+        }
+      },
+      "rejectedBend": {
+        "stoppedAt": 4.25,
+        "outcome": "tackle",
+        "changes": 5,
+        "firstChangedTick": 2.15,
+        "SS_LBM_contacts": [
+          {
+            "tick": 3.7,
+            "i": 15,
+            "j": 21,
+            "impulse": 109.36012213635281,
+            "closing": 1.60248130244951
+          },
+          {
+            "tick": 3.75,
+            "i": 15,
+            "j": 21,
+            "impulse": 19.81891060849398,
+            "closing": 0.005200352721989293
+          },
+          {
+            "tick": 3.8,
+            "i": 15,
+            "j": 21,
+            "impulse": 9.757233016346445,
+            "closing": 0.010943512693418533
+          },
+          {
+            "tick": 3.85,
+            "i": 15,
+            "j": 21,
+            "impulse": 15.246433475800458,
+            "closing": 0.014228136687472567
+          },
+          {
+            "tick": 3.9,
+            "i": 15,
+            "j": 21,
+            "impulse": 0,
+            "closing": 0
+          },
+          {
+            "tick": 3.95,
+            "i": 15,
+            "j": 21,
+            "impulse": 2.224747094033709,
+            "closing": 0.02313036809289375
+          },
+          {
+            "tick": 4,
+            "i": 15,
+            "j": 21,
+            "impulse": 0.016389891985630633,
+            "closing": 0.0005730614943872531
+          }
+        ],
+        "footballEvents": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 27.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.8,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 37.7,
+              "y": 25.41
+            }
+          },
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 37.7,
+              "y": 25.41
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 38.17,
+              "y": 25.6
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.65,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 7,
+            "pos": {
+              "x": 38.88,
+              "y": 27.49
+            },
+            "note": "assist"
+          },
+          {
+            "t": 4.2,
+            "type": "tackle",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 37.46,
+              "y": 28.15
+            }
+          }
+        ],
+        "zeroSSRequests": [
+          2.35,
+          2.85
+        ],
+        "SS_H_gaps": {
+          "2.25": 2.1632868136555476,
+          "2.4": 2.1761188407159766,
+          "2.5": 2.2184361322288018,
+          "2.7": 2.3818989552337153,
+          "2.9": 2.7763862598850646,
+          "3.35": 4.055929808619375,
+          "3.7": 4.737141068626239
+        }
+      },
+      "allTicksEqual": false,
+      "allEventsEqual": false
+    },
+    {
+      "caseId": "A044",
+      "accepted": {
+        "stoppedAt": 5.6,
+        "outcome": null,
+        "changes": 0,
+        "firstChangedTick": null,
+        "SS_LBM_contacts": [
+          {
+            "tick": 2.7,
+            "i": 15,
+            "j": 21,
+            "impulse": 173.92153974265005,
+            "closing": 3.494879852572515
+          },
+          {
+            "tick": 2.75,
+            "i": 15,
+            "j": 21,
+            "impulse": 0,
+            "closing": 0
+          }
+        ],
+        "footballEvents": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.9,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 40.12,
+              "y": 24.35
+            }
+          },
+          {
+            "t": 5.05,
+            "type": "block_contact",
+            "a": 9,
+            "b": 17,
+            "pos": {
+              "x": 49.282261474017865,
+              "y": 13.71921773282691
+            },
+            "note": "run"
+          }
+        ],
+        "zeroSSRequests": [],
+        "SS_H_gaps": {
+          "2.25": 2.2774129991030647,
+          "2.4": 2.3267926755385684,
+          "2.5": 2.349785524168971,
+          "2.7": 2.5300713012519043,
+          "2.9": 3.109436196103049,
+          "3.35": 4.04738507133409,
+          "3.7": 4.30650880822278,
+          "5": 5.314019970209662
+        }
+      },
+      "rejectedBend": {
+        "stoppedAt": 5.6,
+        "outcome": null,
+        "changes": 3,
+        "firstChangedTick": 2.2,
+        "SS_LBM_contacts": [
+          {
+            "tick": 2.7,
+            "i": 15,
+            "j": 21,
+            "impulse": 191.5561474032541,
+            "closing": 3.8353585891501316
+          }
+        ],
+        "footballEvents": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 27.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.9,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 40.12,
+              "y": 24.35
+            }
+          },
+          {
+            "t": 5.05,
+            "type": "block_contact",
+            "a": 9,
+            "b": 17,
+            "pos": {
+              "x": 49.28175808655719,
+              "y": 13.719348004076057
+            },
+            "note": "run"
+          }
+        ],
+        "zeroSSRequests": [],
+        "SS_H_gaps": {
+          "2.25": 2.26205576417879,
+          "2.4": 2.2456712129389373,
+          "2.5": 2.2247937659205403,
+          "2.7": 2.3497915792651662,
+          "2.9": 2.770085729229026,
+          "3.35": 3.367589060160289,
+          "3.7": 3.7124966942912723,
+          "5": 6.855479161740951
+        }
+      },
+      "allTicksEqual": false,
+      "allEventsEqual": false
+    }
+  ],
+  "decision": "Reject bend behavior; submit passive attribution diagnostic only. Specific release/forecast limitation remains.",
+  "nativeExecutions": 20,
+  "maxNativeClock": 5.6,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "costs": [
+    {
+      "path": "out/mesh-attribution/failed-transition-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.893353836
+    },
+    {
+      "path": "out/mesh-attribution/probe-receipt.json",
+      "exitCode": 0,
+      "seconds": 2.697636848
+    },
+    {
+      "path": "out/mesh-attribution/failed-alternatives-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.538639607
+    },
+    {
+      "path": "out/mesh-attribution/portable-alternatives-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.999604334
+    },
+    {
+      "path": "out/mesh-attribution/capture-receipt.json",
+      "exitCode": 0,
+      "seconds": 2.083040755
+    },
+    {
+      "path": "out/mesh-attribution/alternatives-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.646363645
+    },
+    {
+      "path": "out/mesh-attribution/safety-first-receipt.json",
+      "exitCode": 0,
+      "seconds": 1.9433963029999999
+    },
+    {
+      "path": "out/mesh-attribution/v2-release-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.6306418119999999
+    },
+    {
+      "path": "out/mesh-attribution/typecheck.json",
+      "exitCode": 0,
+      "seconds": 11.407352647
+    },
+    {
+      "path": "out/mesh-attribution/observer-tests.json",
+      "exitCode": 0,
+      "seconds": 1.0616010649999998
+    },
+    {
+      "path": "out/mesh-attribution/final-typecheck.json",
+      "exitCode": 1,
+      "seconds": 11.409234289
+    },
+    {
+      "path": "out/mesh-attribution/final-typecheck-pass.json",
+      "exitCode": 0,
+      "seconds": 10.792568177
+    }
+  ],
+  "totalRecordedLauncherSeconds": 45.103433318,
+  "files": {
+    "failed-transition-receipt.json": "9efd2696672c980e609e07240aff4b165381f54ac6b572fb126b052a43b0e296",
+    "panel-config.json": "75b53f8074b26e2d8d32ef15266dbb60a1bebef8dc874be7756ee3004790fe4d",
+    "typecheck.json": "750166612ea98614d00613d12987f265c8327ec1280c80de17d044e61786c3aa",
+    "probe-receipt.json": "f3ce663013ce424d425f7f7e56cb74304fc303cb06a88bd8618daf3a674d3657",
+    "failed-alternatives.json": "e21c56f366def3999e72c1c1dfb014383cd82edb0e84fca78fb86c411e7a853b",
+    "failed-alternatives-receipt.json": "0ae4499af097956f4e877e0b6a5857da18fedbd1fa30c7d6ef9ca6ee014419c0",
+    "same-state-alternatives.json": "93baf749ceb5ba7d17a520fab37d41ef1896691e0f6b79e62d46aa0ab79e48b2",
+    "portable-alternatives-receipt.json": "8ee01749011dbec79a560ea9f08161dbd1eee79055d7836f3c6df09f2936579c",
+    "v2-release-alternatives.json": "6fae2616cb3f7cbe1981d2e1dccaa1ab57186c00d85d5def8947e803a217f53f",
+    "alternatives-v1.json": "c9cbd854fbb8258712bb0933b797629fb682860bc76c559070f689f235893ca8",
+    "capture-receipt.json": "88d9acc57a5557a4d5d3990198f01fd07ea0b99e4e060d3828601c63a46f20b3",
+    "pass-review.json": "08a2dbc1052dfea3a515c300add627ff8a48392e0cd8e70edd86c35fb2f62241",
+    "flex-windows.json.gz": "11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191",
+    "alternatives-receipt.json": "1a1bfa957443031b8250a54e7a6af0e195b13d80624f1328c71b0818a19cb069",
+    "collection.json": "b7634120c327843f93a3e2e3cb6ebc45297cdf2aa13d4fbbf4de9f0f653d35a6",
+    "safety-first-receipt.json": "3d0a8279acc6d757e270a768a4dc0c9705552c2ffc4279f6b62646c12bfee15b",
+    "final-typecheck-pass.json": "be8b442de52d341a611c4cc21ecd4cdc34a85d44f916b3ba5e389a8b7b560492",
+    "observer-tests.json": "9b18b8e185c41dad99b18213f70ac4028b4090a94c11aae497b260940512ea25",
+    "v2-release-receipt.json": "c71a159ef2b2490fc1a6511ac0be1e4c8aab58d3f112a68d26c91dcf79e4e80a",
+    "transfer-receipt.json": "d4fe24abc84cda62ad9294b55e76b1faeb2d7fc03ec7ee608886854483add272",
+    "final-typecheck.json": "03f011f8bcb9ae3fef75d8d824042337d5b354112fb0407a38be1ddf3de85322",
+    "bend-v1/A020-accepted.json.gz": "c07ea39ba4a49ae29876f796b7a8307e7e4969b49d9779c657dc743acd0a20af",
+    "bend-v1/A032-bend.json.gz": "3b3469f072c199eb17f845f3db7b17933d2e7043fe73729d7159e6fc2ab939d9",
+    "bend-v1/plan.json": "4513331bc77b0287d154f99cb7129f69f34854e7970696bd1d3a88ebb0a9a3e6",
+    "bend-v1/A008-bend.json.gz": "29860d037604bfc44c31a2155c8758be50af699ca859397c76601b03e417370d",
+    "bend-v1/summary.json": "55514d5ed2385651179105ccc8ee4a05cd4c0696cc1171db0fd4d25773f346de",
+    "bend-v1/A044-bend.json.gz": "27546ecad951360fa0af07535866a7a9ef9d1c168ad76e1976e7d0a083722fd7",
+    "bend-v1/A020-bend.json.gz": "8766da0ef75f741dc090f7613edad8c03fd0aa1298b598e4bb812e0a0766fbdf",
+    "bend-v1/A008-accepted.json.gz": "5d0637646c985b633e5b9b04a3e4d6a66d1871949a6d38c2762a5f80a230ffd0",
+    "bend-v1/A032-accepted.json.gz": "db107ae27c606fc6aa47e8bad911fa3056984aef8b9facbbf7e8eacf8dcfe25b",
+    "bend-v1/A044-accepted.json.gz": "c6a16b98d21bf1819b6ed03f1ffa5fc32edd47cd817ec4971cf23c4feff79d57",
+    "failed-transition/plan.json": "1d3b3ffae0c4717f1b99c68dd4e8501a6e11bcb76964a3846788f74bf35eefcd",
+    "failed-transition/summary.json": "64763c3ce13b49196ccc422d13d810fd9fabc1953258637b852c2da1e19baf5a",
+    "failed-transition/A044-bend.json.gz": "5646315e53d70a6dd88e535da9db63f2446cafbcc81093cc2c1d39fd31dc7778",
+    "bend-v2/A032-bend.json.gz": "cecbc704e58e077bd0b9d9ffac70189309b3700389ed9e710b4b08a9a6de6e1d",
+    "bend-v2/plan.json": "1befa2c70e5f436774dd5d4160ab24387b4f247355b7cf4bf99ba1cb05040f47",
+    "bend-v2/summary.json": "5553788a8b141a0a817ed4cc17d90590ba30d953fcfee06574ea7b31d57ea35b",
+    "bend-v2/A044-bend.json.gz": "9dacfa035267d25d34f593e89fcb66087ac1088d4338e1a76cbb0b422aabed61",
+    "bend-v2/A020-bend.json.gz": "ebf5a6f9d747b63feea72c65938c288dfdcca0a489606855250be9f3d3b53c1d",
+    "capture-v1/A032.json.gz": "8e6fcb7643239daf7c3eda43c3fcb0a20d9c7db21750f27b3552d17df30f9f15",
+    "capture-v1/A020.json.gz": "dba93f7dfd118458ee0ca551de7294969f5fe2096870140221298d1a79636cab",
+    "capture-v1/plan.json": "1ff7f89e787ec4806ec1eed87b65714593adcae08113b772f02e25ab08e4fc52",
+    "capture-v1/A008.json.gz": "f5d7e9e1898e0de16d4ae6ea131904731c5c9c9d0d951de9f1b7b1e7b17c7bb6",
+    "capture-v1/summary.json": "c6fe637adf15dd9a05fedf1730366e0f0bbbbd6248e53d534fb1372c6ad61dac",
+    "capture-v1/A044.json.gz": "12c55219ebb03531f39ce9040c1464890b48a206dcd6bd09c159f2e490411ad8"
+  }
+}
