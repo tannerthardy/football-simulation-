@@ -3,7 +3,7 @@
 # Master issue register
 
 Updated **2026-10-15 (America/Phoenix)**. Accepted development reference:
-`develop` at `8ca8deebe4afa91c3021bdd119bed8976cf00e47` (merged risk-only #74; #72/#63/#65 retained).
+`develop` at `90edc52530caa71efdebf257f17d954a8a629ea0` (merged #78 / bounded #69; #74/#72/#63/#65 retained).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -42,13 +42,15 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | --- | --- | --- | --- | --- |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
-| [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Active bounded owner follow-up | Do-It-All! + Run Game; no earlier zone/Duo/detour ancestry imported |
+| [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
 | [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 scope independently accepted; #78 exact verification passes | Integration; final ref/tree check then routine adoption; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
+| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Independent #80 acceptance; #82 combined verification passes | Integration + Catching/Run; current acquired support, no permanent run latch |
+| [PASS-007](#PASS-007) | Mesh prethrow stop and converging man/robber approach | Saved observations; producing stage and avoidability unresolved | Diagnosis published in #81; tested bend rejected | Flex/Do-It-All; next feasible approach/continuation question, no ready behavioral fix |
 | [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
-| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; adjacent run-fit contracts conflict | #75 isolated verification held: two preserved assertions | Catching + Run Game: acquired insertion/alley before recognition versus recognized-ball priority; Integration owns subsequent verification |
+| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Independent #75 acceptance; #82 combined verification passes | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -84,7 +86,10 @@ complete four-file correction preserves installation, acquired torso-loss/cleara
 cadence, own contact and physical hand eligibility. Integration owns extraction
 onto8ca8dee. Exact40be568 passes1,729 TS/146 files,145 Python,typecheck/build
 in191.361s under44 flags/components1;64 focused passes/typecheck reused.
-Routine adoption through #78 awaits only final ref/tree checks, not another suite.
+Adopted through merged #78 as90edc525 after exact ref/tree checks; no suite repeat.
+[Actual merge and owner handoff](../data/reviews/current/pr78-merge.json).
+Contribution #69 is closed as incorporated through #78, with original branch,
+focused evidence and adverse history preserved. [Consolidated handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
 Controlled collection parks the runner: live arrival/yardage benefit, fast-motion
 clearance and broader RunBlocker information correctness remain unproved. Retain
 rejected variants, expected-red and the three adjudicated #66-host failures with
@@ -117,8 +122,63 @@ is not a current-source golden: the matched current-source rollback control
 preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 **Accepted bounded correction via merged #63.**
 
+<a id="COV-003"></a>
+### COV-003 — Run support through coverage reassignment
+
+Current: #80 head25a73a3/code5e18fac has independent acceptance for only the
+wrapper and nine existing controls. Requires current run belief, installed
+insert/alley and positive personally acquired backfield RB/FB carrying on each
+decision; recognized flight wins. Compatible with reconciled #75; exact #82 combined
+verification passes. The Gun Trey first whole-play fork is CB_W at1.30, not
+LB_W's later1.70 reassignment. Earlier LB_M fall is unchanged; opposing SS gap
+worsens2.806→2.894. Both native windows are unfinished. No gain/tackle benefit
+is established. [Exact review](../data/reviews/current/coverage-contract-integration/independent-review.json).
+
+Original diagnosis retained:
+
+The saved8ca8dee audit shows eight of eight selected Quarters runs returning to
+receiver-directed requests after zone→man replacement despite established run
+belief and an acquired carrying-RB picture. This identifies routing, not eight
+caused missed tackles or outcome loss. Catching owns the smallest continuity
+contract in the existing architecture; consult Run on insertion/alley duties.
+Preserve alley leverage, vertical responsibilities and legitimate PA uncertainty;
+no hidden possession or permanent run-belief latch. Keep #75's separate airborne
+contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audit-priorities-and-access).
+
+<a id="PASS-007"></a>
+### PASS-007 — Mesh approach coordination and request attribution
+
+Current: shared subsets are delivered and independently byte-verified; access
+is resolved. #81 headcb3823e supplies producer-stage diagnosis and a rejected
+behavioral bend (A020 gap4.608→4.843; A044 impact173.922→191.556). No ready
+behavioral correction. Passive observer/tooling is not part of this batch.
+Flex keeps #76 head4cf253e frozen: not rejected, not adopted, and not an
+integration dependency. Preserve all controls, failed selector and later Z
+physical block. Next question is achievable approach/continuation, not broader
+RB-jam tuning. Existing saved-only final intents do not recover discarded stages.
+
+Original attribution question retained:
+
+Flex/Do-It-All needs exact saved **A020/A044, with A008/A032 controls**, not a
+recollection. A020 has a prethrow final-request stop; A044 has converging man/robber
+contact before the catch. Neither final intent nor the touchdown alone identifies
+an avoidable controller cause. Follow stable actors through legitimate pictures,
+original requests, modifiers and achieved movement. Preserve earned separation,
+useful contained mesh controls and A044's later offensive block. If the saved
+record lacks discarded stages, one small opt-in observation-only diagnostic can
+be coordinated with Run; no extra perception calls, RNG draws or behavior changes.
+Archive distribution is Measurement's job; [exact checksum/access status](../data/reviews/current/accepted-broad-audit-access.json).
+
 <a id="RUN-007"></a>
-### RUN-007 — Remaining lane, spacing and collection boundaries
+### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
+
+Run Game now prioritizes saved A018/A030 and a successful access contrast. Trace
+installed job→takeover security→release cue→original interception→later modifiers
+→achieved protection when the runner arrives. Check #69 compatibility before
+calling8ca8dee observations current90edc525 evidence. Nine unachieved jobs across
+24 runs are not nine defects; preserve A027's achieved block and A006/A042's useful
+access, upstream losses and legitimate defensive wins. No stronger force or
+automatically earlier release. Earlier lane/P037 and rejected trials remain below.
 
 The five-play review does not certify the earlier RB bounce, unify the legacy
 lane picture with owned spacing, or repair Will protection and P037's puller
@@ -140,6 +200,15 @@ No new native replay or shared suite is justified while that contract is open.
 <a id="PASS-006"></a>
 ### PASS-006 — Man technique before throw recognition
 
+Current: Catching and Run agreed ec4a3a1's mirrored held/unrecognized equivalence
+and recognized-ball priority contracts. Independent review accepts the exact
+three-file #75 extraction with #80; exact #82 combined verification passes.
+The original failed receipt below stays failed and unchanged; its former
+contract blocker is resolved by explicit owner adjudication, not weakening
+opposing football controls. No overall coverage improvement is claimed.
+
+Historical first-attempt record:
+
 Independent review supports #75's narrow information correction, separately from
 overall coverage quality. Isolated `0f349ef0735402a79d916cff7c9ad496f9424380`
 on accepted8ca8dee retains only the authored defense hunk and eight direct tests.
@@ -147,7 +216,7 @@ on accepted8ca8dee retains only the authored defense hunk and eight direct tests
 All eight direct tests pass, but the unchanged insertion/alley fixtures at
 `back-man-run-fit.test.ts:255/390` require generic ball-in-flight ownership while
 the defender has not recognized the throw and still holds a positive runner
-picture. Catching and Run Game must adjudicate that boundary before changing
+picture. Catching owns that disposition, consulting Run, before changing
 assertions or recommending adoption. All four phases ran:1,732 TS pass/two fail,
 145 Python,typecheck/build pass;188.094 command seconds, no extra games/replays.
 
@@ -155,7 +224,8 @@ P006's later contact and Smash's +1.245YAC/changed finishing defender remain
 source-pinned adverse evidence; P045 still scores. The current47-source comeback
 control is a sack, not native plant transfer. No overall coverage improvement,
 new8ca native result or grip conclusion is claimed. Broader PASS-004 findings,
-parked P045 variants and experimental physics remain separate. No merge authority.
+parked P045 variants and experimental physics remain separate. Standing routine
+merge authority does not clear the unresolved material contract risk.
 
 <a id="PASS-005"></a>
 ### PASS-005 — Pass tackle station-keeps toward an interception point

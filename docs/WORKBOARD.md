@@ -1,6 +1,47 @@
 # Current work ownership
 
-## Standing queue and next controller checkpoint — 2026-10-15
+## Verified #75/#80 integration boundary — 2026-10-15
+
+Integration owns `codex/coverage-contract-integration`, starting at accepted
+`90edc52530caa71efdebf257f17d954a8a629ea0` plus queue metadata255d1c4.
+Extract only #75's `src/sim/behaviors/defense.ts`,
+`test/man-throw-recognition.test.ts`, `test/back-man-run-fit.test.ts` and #80's
+`src/sim/coverage/defender.ts`, `test/coverage-run-support.test.ts`.
+Independent review accepts these exact extractions and their recognition/support
+priority; Integration owns one frozen combined verification, with existing
+focused evidence reused. Frozen e788ccc completed 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
+Final ref/adoption checks remain; no unchanged rerun. Catching retains diagnosis and Run's agreed contract
+context. No extra native cases or games. #76 stays frozen; #81 is diagnosis,
+with its behavioral trial rejected; transport/navigation/P045 variants and
+experimental Physics remain separate. Update these four shared records and
+the existing archive-access record, preserving all earlier receipts and history.
+
+## Audit-led investigations and evidence distribution — updated 2026-10-15
+
+Integration owns this docs/access-only update from accepted90edc525 plus published
+queue4bca231 in `codex/audit-access-integration`. Source, tests, fixtures, settings
+and prior receipts stay unchanged. #69/#78 is completed, not another review task.
+
+| Owner | Current bounded task | Boundary and evidence |
+| --- | --- | --- |
+| Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile accepted #69 effects first. No automatic earlier release or added force. |
+| Catching, consulting Run | Run-support continuity and #75 disposition | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching owns the two #75 contracts; Run supplies installation context. |
+| Flex/Do-It-All | Mesh approach attribution | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
+| Measurement | Saved subset distribution completed; checkpoint comparison owner | Both immutable Flex/Run subsets delivered; Integration independently verified archive hashes and all eight original raw case hashes. No recollection. Full48 archive remains local. After accepted #75/#80 batch, coordinate one frozen-panel comparison under existing budget; four games require a separate CEO call. |
+
+These are task/coordination boundaries, not a blanket claim over each source
+file; owners name their actual functions before edits and preserve active work.
+Experimental Physics keeps its own law/geometry/accounting/cost review and is
+independent of these controller investigations. Direct ready submissions,
+independent review, compatible checkpoint batches and one exact combined check
+remain unchanged. [Cases, owner questions and archive status](INTEGRATION.md#audit-priorities-and-access).
+
+After a meaningful accepted controller batch, Integration/Measurement coordinate
+one frozen-panel comparison using compatible saved baseline evidence. The separate
+four-game packet is available only for a CEO-called context evaluation. Neither
+runs per patch; no evaluation or new code suite starts for this documentation pass.
+
+## Standing queue, accepted controller batch and next game checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
 queue at resumed/working checkpoints, minimal assembly on accepted develop,
@@ -9,31 +50,38 @@ merges under the user's standing authority. Contributors own fetchable code,
 focused checks and known risks; readiness is not approval. No background monitor
 or user relay is required. [Policy and exclusions](INTEGRATION.md#standing-integration-workflow).
 
-Current boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
+Completed runtime boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
 plus queue metadata67e9b9b. Extract #69's reviewed `blocking.ts` RunBlocker hunk,
 `collection-approach.ts` and two tests only. Preserve accepted PassProtector and
 carrier risk, no #75/runtime ancestry, transport/navigation or experimental physics.
 Do-It-All's exact cdd55b9 re-review is accepted; reuse focused receipts. Integration
 froze40be568 and completed all four phases once:1,729 TS/146 files,145 Python,
 typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json).
-Final ref/tree checks and routine adoption through #78 follow; no unchanged rerun.
-#75's two back-man assertions stay held with Catching + Run; no assertion edit or
-unchanged rerun. A blocked patch holds itself; do not wait for all agents.
+Final ref/tree checks passed; #78 adopted as90edc525 under standing routine authority.
+Entire merged tree equals publicationfed46a1; no unchanged rerun. [Actual merge receipt](../data/reviews/current/pr78-merge.json).
+#75's earlier hold is reconciled by Catching + Run in ec4a3a1; current minimal
+#75/#80 composition is independently accepted, combined verification pending.
+The original failed receipt below remains historical evidence.
 
-Measurement owns one subsequent game collector/film/results packet; Integration
-freezes the accepted source/settings and coordinates the question/budget with CEO.
+Earlier four-game preparation is retained below; execution now requires a CEO
+call for game context, separately from the post-batch frozen-panel comparison.
+Measurement owns any called collector; Integration freezes source/settings.
 Ceiling four full games/240 launcher seconds,60s per game, existing declared inputs,
-no duplicate collection. [Checkpoint conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
+no duplicate collection. [Exact frozen handoff](../data/reviews/current/accepted-controller-game-checkpoint.json)
+uses the same424 players/four inputs/seeds701–704. Measurement/CEO ownership and
+spend acknowledgement pending; zero new evaluation games. [Conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
 Physical laws/capabilities/defaults, experimental activation, unresolved material
 correctness risks, historical baselines/defaults and destructive cleanup escalate.
 Earlier per-merge authority paragraphs below describe their dated stages.
+[Consolidated accepted-pin and Measurement/CEO handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618)
+is posted; contributor #69 is closed as incorporated and its branch is preserved.
 
-## Independent #75 man-recognition integration — 2026-10-15
+## Historical first #75 man-recognition integration — 2026-10-15
 
-**Held after one complete combined run.** Tested
+**Historical hold, subsequently reconciled above.** Tested
 `0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
 assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
-new direct contracts pass. Catching + Run Game own the specific insertion/alley
+new direct contracts pass. Catching owns, consulting Run, the specific insertion/alley
 versus recognized-ball boundary; Integration retains verification ownership.
 [Question and receipt](INTEGRATION.md#man-recognition-review). Existing tests
 remain unchanged; no new panel, unchanged rerun or merge is requested.

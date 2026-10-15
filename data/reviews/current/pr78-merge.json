@@ -1,0 +1,201 @@
+{
+  "schema": "pr78-adoption-v1",
+  "pr": 78,
+  "routineMergeAuthority": "User standing instruction: routine corrections within approved scope after independent review and required verification.",
+  "previousAcceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "reviewedPublication": "fed46a18fdf3f197c51ddacf0050d8466b13a1ab",
+  "testedCommit": "40be568d9fa19c8361384c677e3ab87ba1321255",
+  "entireMergedTreeEqualsPublication": true,
+  "mergedTree": "be32b700adac2d4bb7ade26486189f817d01502e",
+  "protectedTreeMatchesPassingReceipt": true,
+  "sourceSha256": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+  "validationSha256": "b33f8da879717dfcd835c33f7250a6b9aad9d29a8cf0886bdb9ee17f507f1340",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1729,
+    "typescriptFiles": 146,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 69,
+      "code": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+      "evidence": "084122c16264962801fab963bcc35023d3104a64",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/collection-approach.ts",
+        "test/collection-approach.test.ts",
+        "test/zone-helper-check.test.ts"
+      ],
+      "independentReview": "https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202748101",
+      "contract": "Original-check helper chooses an acquired clear first-strike surface after visible owner torso loss; production approach ignores remote private engagement state.",
+      "limits": [
+        "Controlled collection runner remains parked; no native runner-arrival or yardage claim.",
+        "The counterfactual uses a detached real rep as hidden-state poison; it is a no-step information test, not a claimed physical continuation.",
+        "Existing broader target-selection/join/release live-state contracts are not rewritten or certified by this narrow hook fix.",
+        "Physics, three adjudicated law-host failures, history and accuracy limits remain separate.",
+        "Local six-direction/now-next-read clearance is approximate, not a fast-motion or between-read crossing guarantee.",
+        "Three adjudicated #66-host failures and rejected variants remain in original history."
+      ]
+    }
+  ],
+  "cost": {
+    "combinedCommandSeconds": 191.36095178,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.284975648
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.982736874999999
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 168.34099387
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7522453870000027
+      }
+    ],
+    "newStandaloneNativeReplays": 0,
+    "newGameCampaigns": 0,
+    "newRosterScreens": 0,
+    "suiteGames": "Only existing preserved full-suite assertions ran once.",
+    "noRepeatToPublishOrMergeIdenticalTree": true
+  },
+  "premerge": {
+    "base": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+    "publication": "fed46a18fdf3f197c51ddacf0050d8466b13a1ab",
+    "testedFreeze": "40be568d9fa19c8361384c677e3ab87ba1321255",
+    "preview": "96e2a9e829187d9a1ec830ad0c8368e28faddd1b",
+    "tree": "be32b700adac2d4bb7ade26486189f817d01502e",
+    "previewParentsMatchExpected": true,
+    "previewTreeEqualsPublication": true,
+    "protectedTreeEqualsPassingTestedFreeze": true,
+    "reviewedContributorHeadUnchanged": true,
+    "previousPreview": "c2dc1b9a39e82fe624d5fc8a1123821e553db787",
+    "previousPreviewExplanation": "GitHub initially still exposed the earlier40be568 head preview after the docs/receipt publication. That stale preview was rejected and never merged. The refreshed preview now contains fed46a1 and matches its entire tree."
+  },
+  "preservation": {
+    "allAcceptedCurrentEvidenceUnchanged": 150,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "defaultBranchUnchanged": true,
+    "noBranchesDeletedOrRewritten": true,
+    "noExperimentalActivation": true
+  },
+  "held": [
+    {
+      "pr": 75,
+      "reason": "Two preserved back-man insertion/alley recognition contracts require Catching/Run adjudication.",
+      "receipt": "https://github.com/tannerthardy/football-simulation-/blob/149741c3b1a35f5ff966d5d453e45d3d3f36142f/data/reviews/current/man-recognition-integration/review-receipt.json"
+    },
+    {
+      "pr": 76,
+      "reason": "Carrier navigation/traffic remains separate; not independently accepted for this batch."
+    },
+    {
+      "item": "Unused observation transport",
+      "reason": "No reviewed production query consumer."
+    },
+    {
+      "item": "Experimental physics",
+      "reason": "Law/accuracy/history and promotion decisions remain separate."
+    }
+  ],
+  "affectedOwners": {
+    "Run Game": "Use accepted collection hook/new helper while retaining installed cadence, own contact, physical hand eligibility and source-specific law/runner-parking limits.",
+    "Do-It-All": "Independent #69 acceptance adopted; preserve this bounded RunBlocker hook in shared-file composition. #76 carrier traffic stays separate.",
+    "Catching": "Reconcile #75 on accepted90edc52 after the narrow back-man adjudication; do not repeat its unchanged failed suite. Defense source is unchanged by #78.",
+    "Measurement and CEO": "One accepted-controller checkpoint, four existing fixed fixtures/one arm only,4 games maximum/240 launcher seconds/60 seconds per game; no baseline rerun. Ownership and execution acknowledgement pending on the durable handoff."
+  },
+  "verificationReceipt": "controller-checkpoint-integration/final-receipt.json",
+  "noNewVerificationToMerge": true
+}
