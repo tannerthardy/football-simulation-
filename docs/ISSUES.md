@@ -43,14 +43,14 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
-| [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 scope independently accepted; #78 exact verification passes | Integration; final ref/tree check then routine adoption; retain stationary-runner/approximate-clearance limits; no Physics dependency |
+| [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 accepted via #78 at90edc525, preserved by #82 | Integration/Run; complete, no repeat review; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
-| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Independent #80 acceptance; #82 combined verification passes | Integration + Catching/Run; current acquired support, no permanent run latch |
+| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Bounded #80 correction accepted via #82; final support leverage still unproved | Integration + Catching/Run; current acquired support, no permanent run latch |
 | [PASS-007](#PASS-007) | Mesh prethrow stop and converging man/robber approach | Saved observations; producing stage and avoidability unresolved | Diagnosis published in #81; tested bend rejected | Flex/Do-It-All; next feasible approach/continuation question, no ready behavioral fix |
 | [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
-| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Independent #75 acceptance; #82 combined verification passes | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
+| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Bounded #75 information correction accepted via #82; broader coverage open | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -129,7 +129,7 @@ Current: #80 head25a73a3/code5e18fac has independent acceptance for only the
 wrapper and nine existing controls. Requires current run belief, installed
 insert/alley and positive personally acquired backfield RB/FB carrying on each
 decision; recognized flight wins. Compatible with reconciled #75; exact #82 combined
-verification passes. The Gun Trey first whole-play fork is CB_W at1.30, not
+verification passes and accepted develop7eb2554 contains the bounded correction. The Gun Trey first whole-play fork is CB_W at1.30, not
 LB_W's later1.70 reassignment. Earlier LB_M fall is unchanged; opposing SS gap
 worsens2.806→2.894. Both native windows are unfinished. No gain/tackle benefit
 is established. [Exact review](../data/reviews/current/coverage-contract-integration/independent-review.json).
@@ -202,7 +202,7 @@ No new native replay or shared suite is justified while that contract is open.
 
 Current: Catching and Run agreed ec4a3a1's mirrored held/unrecognized equivalence
 and recognized-ball priority contracts. Independent review accepts the exact
-three-file #75 extraction with #80; exact #82 combined verification passes.
+three-file #75 extraction with #80; exact #82 combined verification passes; adopted as7eb2554.
 The original failed receipt below stays failed and unchanged; its former
 contract blocker is resolved by explicit owner adjudication, not weakening
 opposing football controls. No overall coverage improvement is claimed.

@@ -10,7 +10,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `90edc52530caa71efdebf257f17d954a8a629ea0`**, merged #78 with reviewed #69 collection; #74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr78-merge.json).
+- **Accepted develop: `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`**, merged #82 with independently reviewed #75/#80 continuity; prior #78/#74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr82-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -40,7 +40,7 @@ Do not use the historical sections below as a current starting-reference pin.
   exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
 - #75's Catching/Run contract reconciliation and #80's acquired run-support
-  continuity have independent controller acceptance for the minimal five files.
+  continuity are adopted via #82 for the independently reviewed minimal five files.
   Exact freezee788ccc passes 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
   Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
@@ -55,12 +55,14 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop remains90edc525. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop is7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
-The access blocker is resolved. No panel recollection, #69 re-review or new games.
+The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
+Measurement owns the one frozen48 comparison now that #82 is accepted;90s/5s
+ceilings, preserved baseline, no duplicate collector. Four games require CEO call.
 The exact #75/#80 candidate completed combined verification once.
 [Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json);
-final adoption/ref checks pending, no extra game evaluation.
+actual #82 merge equals verified publication, no extra game evaluation.
 
 After a meaningful accepted controller batch, coordinate [one frozen-panel
 comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline

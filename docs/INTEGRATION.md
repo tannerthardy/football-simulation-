@@ -49,6 +49,43 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@7eb2554f5dbb497cff169f386704a5b0f4cf43fe`** is the accepted shared
+tree after routine [#82](https://github.com/tannerthardy/football-simulation-/pull/82)
+adoption under standing user authority. Its entire tree equals publication
+`a9e33f65248d77bbdd886505e6d94277791bf130`.
+[Actual merge/preservation receipt](../data/reviews/current/pr82-merge.json).
+
+Included: minimal #75 technique-until-recognition and #80 acquired insert/alley
+support through receiver reassignment; two production files and three tests.
+Catching/Run reconciled the old contracts; independent review accepted production,
+expiry/contradiction/attainable-flight controls and the exact test-order correction.
+Accepted #69/#78, carrier risk, pass cutoff, gap/cadence/recognition/bookkeeping/
+catch acquisition and moving-catch behavior remain preserved.
+
+Tested freeze `e788ccc8a78e49281e4dd1a4256da2bc7ce9d143`: **1,753 TS/148 files,
+145 Python,typecheck/build pass**,44 flags/components1,Node22.23.3,192.061s,
+no skips or input drift. [Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json).
+Source `78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965`;
+validation `819e6ab368739ce79a14e7cbe446d112d6c2831e632dc0f67a73d73f6b3343b0`.
+No unchanged verification rerun to publish/merge. New evaluation games/replays:0;
+existing game assertions ran only within the preserved suite.
+
+Original #75 failed receipt, P006/Smash/P045 adverse outcomes and #80 unfinished
+windows/earlier fall/adverse SS gap remain. Controller correctness does not prove
+overall coverage or statistical improvement. #76 frozen; #81 diagnosis with rejected
+behavior; transport/navigation/P045 variants and experimental Physics excluded.
+Historical `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`, GitHub default, physical laws,
+capabilities and settings unchanged. No branch deletion/history rewrite.
+
+Measurement now owns the one budgeted frozen48-case candidate comparison against
+saved8ca8dee; source/settings frozen above,90s batch/5s case ceiling, preserve
+partial failures/unrun tail and compatible operator evidence. No baseline
+recollection. The independent four-game packet requires a CEO call. Contributors
+reconcile relevant accepted changes at clean checkpoints, not forced rebases.
+
+<details>
+<summary>Previous accepted #78 /90edc525 record — historical</summary>
+
 **`develop@90edc52530caa71efdebf257f17d954a8a629ea0`** is the accepted shared tree
 after routine [#78](https://github.com/tannerthardy/football-simulation-/pull/78)
 adoption under the user's standing authority. Its entire tree equals publication
@@ -82,18 +119,20 @@ retains its dated pins/dependencies; the current record is above. Recheck mutabl
 refs and PR review state before acting. An unaccepted remote push does not
 silently become approval; investigate a disagreement with this ledger.
 
+</details>
+
 <a id="audit-priorities-and-access"></a>
 ## Current investigations and saved audit access
 
-Accepted development remains90edc525; #69 is complete through #78. Do not repeat
+Accepted development is7eb2554 after #82; #69 is complete through #78. Do not repeat
 that review or its unchanged combined verification. The saved audit is a separate
 **8ca8dee** observation, not newly measured90edc525 behavior.
 [Published diagnosis and caveats](https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md).
 
 | Investigation | Accountable owner / smallest next question | Saved evidence and controls |
 | --- | --- | --- |
-| Second-level blocking access | Run Game: trace installed next job, takeover security, release cue, original interception request, later modifiers and achieved access when the runner arrives. Check whether accepted #69 affects the selected older sequence before current-build claims. | Start A018/A030 and a useful successful contrast such as A027 or A006/A042. Nine unachieved jobs in24 runs are not nine proven defects; distinguish unsafe release, unavailable approach, wrong path, upstream loss and a legitimate defender win. |
-| Run-support continuity | Catching owns continuity through zone-to-man replacement; consult Run on installed insertion/alley responsibility. Preserve useful acquired support or identify a legitimate cancellation/handoff inside existing architecture. | Eight of eight selected Quarters runs reverse support requests after reassignment; outcome cost is not isolated. Preserve alley leverage, vertical responsibility and legitimate PA uncertainty; no permanent run-belief latch or hidden possession. Catching also owns #75's separate two-contract disposition, consulting Run. |
+| Second-level blocking access | Run Game: trace installed next job, takeover security, release cue, original interception request, later modifiers and achieved access when the runner arrives. Check whether accepted #69/#82 changes the selected older sequence before current-build claims. | Start A018/A030 and a useful successful contrast such as A027 or A006/A042. Nine unachieved jobs in24 runs are not nine proven defects; distinguish unsafe release, unavailable approach, wrong path, upstream loss and a legitimate defender win. |
+| Run-support continuity | Catching owns continuity through zone-to-man replacement; consult Run on installed insertion/alley responsibility. Preserve useful acquired support or identify a legitimate cancellation/handoff inside existing architecture. | Eight of eight selected Quarters runs reverse support requests after reassignment; outcome cost is not isolated. Preserve alley leverage, vertical responsibility and legitimate PA uncertainty; no permanent run-belief latch or hidden possession. #75 contracts are reconciled and #75/#80 adopted; remaining support leverage/outcomes need source-pinned evidence, not a latch. |
 | Mesh approach coordination | Flex/Do-It-All: attribute A020's prethrow stop and A044's converging man/robber approach before choosing a correction. Coordinate coverage edits with Catching. | **Immediate archive consumer: A020/A044, controls A008/A032.** Trace consumed receiver/peer pictures and original→modified request→achieved motion. Final intents cannot recover discarded stages. If necessary, one small opt-in observation-only diagnostic, without extra perception, RNG or behavior, can serve Flex and Run. Preserve earned separation and A044's later offensive block. |
 
 Measurement supports saved-data distribution/validation and a named remaining
@@ -141,8 +180,8 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 | **Current physics candidate held** | [#66](https://github.com/tannerthardy/football-simulation-/pull/66) `29b00905edee16f00651317364b729c1b377eb5b`; Run adjudication evidence `4f90b6428b98224774bbd63a4adad6bb3e354b53` | [Run-owner adjudication](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200709352) identifies mirrored missed feasible collection and unsupported compulsory-climb expectations; no runtime/assertion was changed. Hold promotion for collection dependency. Integration still owns two center-history compatibility questions after reconciling accepted #63. Preserve seven original failures and yaw force-selection sensitivity/accuracy limits; no new suite/default promotion here. |
 | **Accepted and merged #72 / isolated #67** | Develop `4679a3c260188143bcc66f6f20534327c78d7eaa`; reviewed publication `167547807a23052e04af2199104fc16b9850a501`, tested `64177487272b7e0b2d51460e23ccdb6447508e39`; [merge receipt](../data/reviews/current/pr72-merge.json) | Explicit user merge authority exercised after unchanged source/tests/settings, artifact and review checks. Entire merged tree equals reviewed publication. Existing full passing receipt reused; no reruns. Native RT/RG/LT losses, C/LG traffic, forecast/contact limits and prior failures remain. #69, information/navigation and experimental physics are excluded. |
 | **Accepted and merged #74** | Develop `8ca8deebe4afa91c3021bdd119bed8976cf00e47`; reviewed `a8dabeca3030a9760aafb21bd4a4af6e9af303e3`, tested `86a8816bb685a521f60400c6a3fe12e12d02e32f`; [merge receipt](../data/reviews/current/pr74-merge.json) | Explicit user authority exercised after source/tests/settings, artifact, review and conflict checks. Entire merged tree equals reviewed publication. Reused1,726 TS/145 Python/typecheck/build pass; no reruns. Only opponent-risk calculation changes; transport/navigation/#69/physics excluded. Preserve adverse collision and broader legacy carrier-information limits. No additional merge authority follows. |
-| **#75 verified in #82; adoption pending** | Reconciled head `43ac5e1835467cbc0914df0df1c82ea74740d1b4` (production unchanged fromec4a3a1); [owner disposition](https://github.com/tannerthardy/football-simulation-/blob/ec4a3a18785513d8016047a9a416c42ca9b2faa4/docs/reviews/man-recognition-back-man-disposition.md) | Catching + Run resolve the old hidden-flight assertion conflict: acquired insertion/alley and installed man technique continue until recognition; recognized ball priority remains. Exact three-file extraction independently accepted. Reuse44 initial focused checks plus38 strengthened back-man controls; preserve failed0f349ef and P006/Smash/P045 adverse evidence. |
-| **#80 verified in #82; adoption pending** | Head `0fce2a085ea9f28cbaac65a388b7d3220c36e6d8` (production unchanged from25a73a3), code `5e18fac098b067441e823205d0628a673e9c35c7`; [evidence](https://github.com/tannerthardy/football-simulation-/blob/25a73a3fdf5046c8ed682001458d5fda46bb3c59/docs/reviews/coverage-run-support-continuity.md) | Exact wrapper/test extraction requires current run belief and acquired positive backfield RB/FB picture; no latch. Independent review accepts composition with #75. Reuse53 initial focused checks/typecheck plus11 strengthened wrapper controls and unfinished native controls; preserve adverse SS gap and prior fall. No final-gain or coverage-quality claim. |
+| **#75 accepted via merged #82** | Reconciled head `43ac5e1835467cbc0914df0df1c82ea74740d1b4` (production unchanged fromec4a3a1); [owner disposition](https://github.com/tannerthardy/football-simulation-/blob/ec4a3a18785513d8016047a9a416c42ca9b2faa4/docs/reviews/man-recognition-back-man-disposition.md) | Catching + Run resolve the old hidden-flight assertion conflict: acquired insertion/alley and installed man technique continue until recognition; recognized ball priority remains. Exact three-file extraction independently accepted. Reuse44 initial focused checks plus38 strengthened back-man controls; preserve failed0f349ef and P006/Smash/P045 adverse evidence. |
+| **#80 accepted via merged #82** | Head `0fce2a085ea9f28cbaac65a388b7d3220c36e6d8` (production unchanged from25a73a3), code `5e18fac098b067441e823205d0628a673e9c35c7`; [evidence](https://github.com/tannerthardy/football-simulation-/blob/25a73a3fdf5046c8ed682001458d5fda46bb3c59/docs/reviews/coverage-run-support-continuity.md) | Exact wrapper/test extraction requires current run belief and acquired positive backfield RB/FB picture; no latch. Independent review accepts composition with #75. Reuse53 initial focused checks/typecheck plus11 strengthened wrapper controls and unfinished native controls; preserve adverse SS gap and prior fall. No final-gain or coverage-quality claim. |
 | **#76 parked/frozen, not rejected or adopted** | `codex/rb-local-traffic@4cf253efead2cac450abe0bc74aa5e0db0306126`, code `2e1dfa343a77f142b02a3a23fa49a88c0b40ef13`, based on8ca8dee | Flex explicitly freezes broad carrier-jam work in #81 handoff. Focused evidence is preserved, but there is no current independent adoption approval. Resume only for a named carrier-preview priority and portable review on accepted develop; no dependency on #75/#80. Keep PR/branch/evidence. |
 | **#81 diagnosis; no ready behavioral fix** | `codex/mesh-command-attribution@cb3823ee749a50ab51e4024b3cdc0dd4ce45341c` | Flex's passive observer attributes A020/A044 stages; tested bend is rejected (A020 gap4.608→4.843, A044 impact173.922→191.556). Preserve A008/A032 controls and later Z block. Next is approach/continuation diagnosis, not promotion; observer/tooling also excluded from this batch. |
 | **Observation transport approved; integration deferred** | Original60223a8/80c9fa4; unchanged owner core6828467; [separate portable core/PlaySim/test patch](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/observation-transport-only.patch) | Independent of opponent risk. No production query consumer exists; avoid adding per-tick sensing solely for this fix. Original four focused/typecheck receipts and owner approval6201016808 reused. No correctness rejection or new approval wait. Integrate with a reviewed consumer when needed; clocks, stale unknown semantics, catch readiness and spacing contracts remain. |
@@ -153,7 +192,8 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 Latest decision: independently accept only the five-file #75/#80 extraction
 on accepted90edc525. Exact freezee788ccc completed all four phases once: 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s. Neither depends on
-#76, #81 or experimental Physics. Routine adoption now needs only final ref/tree checks. No contributor suite or native replay
+#76, #81 or experimental Physics. Final ref/tree checks passed; routine #82 is merged as7eb2554, with its entire
+tree equal to publicationa9e33f6 and protected tree equal to the passing freeze. No contributor suite or native replay
 repeat is requested. [Independent review](../data/reviews/current/coverage-contract-integration/independent-review.json)
 and [extraction/evidence checks](../data/reviews/current/coverage-contract-integration/extraction-review.json).
 [Final combined receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json)
@@ -229,9 +269,10 @@ merge authority does not clear these unresolved contract failures.
 ### One frozen-panel comparison after a meaningful accepted controller batch
 
 Use the existing48-case panel once at a meaningful accepted controller checkpoint,
-after the next supported corrections are independently reviewed, combined and
-accepted. This is not a per-patch requirement and is not triggered now merely by
-#69's completed review or this documentation update. Integration coordinates one
+after a meaningful independently reviewed controller batch. #82 is now that
+accepted checkpoint:7eb2554/source78183dc, unchanged44flags/components1.
+Measurement handoff is requested; no duplicate collection runs in Integration.
+This is not a per-patch requirement or a new trigger on every documentation update. Integration coordinates one
 comparison with Measurement; contributors supply focused evidence and do not
 duplicate the panel or combined suite.
 

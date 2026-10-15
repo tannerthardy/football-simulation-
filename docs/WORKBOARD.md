@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Verified #75/#80 integration boundary — 2026-10-15
+## Completed #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
 `90edc52530caa71efdebf257f17d954a8a629ea0` plus queue metadata255d1c4.
@@ -10,7 +10,7 @@ Extract only #75's `src/sim/behaviors/defense.ts`,
 Independent review accepts these exact extractions and their recognition/support
 priority; Integration owns one frozen combined verification, with existing
 focused evidence reused. Frozen e788ccc completed 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
-Final ref/adoption checks remain; no unchanged rerun. Catching retains diagnosis and Run's agreed contract
+Merged #82 as7eb2554; exact final tree verified, boundary released. No unchanged rerun. Catching retains diagnosis and Run's agreed contract
 context. No extra native cases or games. #76 stays frozen; #81 is diagnosis,
 with its behavioral trial rejected; transport/navigation/P045 variants and
 experimental Physics remain separate. Update these four shared records and
@@ -18,14 +18,14 @@ the existing archive-access record, preserving all earlier receipts and history.
 
 ## Audit-led investigations and evidence distribution — updated 2026-10-15
 
-Integration owns this docs/access-only update from accepted90edc525 plus published
-queue4bca231 in `codex/audit-access-integration`. Source, tests, fixtures, settings
-and prior receipts stay unchanged. #69/#78 is completed, not another review task.
+The earlier docs/access-only coordination is complete; #82 now adopts the
+bounded continuity correction at7eb2554. Source edit ownership above is released.
+#69/#78 is completed, not another review task; prior receipts stay unchanged.
 
 | Owner | Current bounded task | Boundary and evidence |
 | --- | --- | --- |
-| Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile accepted #69 effects first. No automatic earlier release or added force. |
-| Catching, consulting Run | Run-support continuity and #75 disposition | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching owns the two #75 contracts; Run supplies installation context. |
+| Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile relevant accepted #69 and #82 effects before current-build claims. No automatic earlier release or added force. |
+| Catching, consulting Run | Remaining support/leverage and recognition questions | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching/Run reconciled #75; #75/#80 adopted via #82. Next support/leverage claims use accepted7eb2554 or state older source limits. |
 | Flex/Do-It-All | Mesh approach attribution | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
 | Measurement | Saved subset distribution completed; checkpoint comparison owner | Both immutable Flex/Run subsets delivered; Integration independently verified archive hashes and all eight original raw case hashes. No recollection. Full48 archive remains local. After accepted #75/#80 batch, coordinate one frozen-panel comparison under existing budget; four games require a separate CEO call. |
 
@@ -41,7 +41,7 @@ one frozen-panel comparison using compatible saved baseline evidence. The separa
 four-game packet is available only for a CEO-called context evaluation. Neither
 runs per patch; no evaluation or new code suite starts for this documentation pass.
 
-## Standing queue, accepted controller batch and next game checkpoint — 2026-10-15
+## Standing queue and completed #78 checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
 queue at resumed/working checkpoints, minimal assembly on accepted develop,
@@ -60,7 +60,7 @@ typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/cu
 Final ref/tree checks passed; #78 adopted as90edc525 under standing routine authority.
 Entire merged tree equals publicationfed46a1; no unchanged rerun. [Actual merge receipt](../data/reviews/current/pr78-merge.json).
 #75's earlier hold is reconciled by Catching + Run in ec4a3a1; current minimal
-#75/#80 composition is independently accepted, combined verification pending.
+#75/#80 composition is independently accepted, combined verification passed; adopted via #82 as7eb2554.
 The original failed receipt below remains historical evidence.
 
 Earlier four-game preparation is retained below; execution now requires a CEO
