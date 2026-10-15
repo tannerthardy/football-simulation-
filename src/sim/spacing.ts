@@ -158,10 +158,9 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
   const n = agents.length;
   for (let i = 0; i < n; i++) {
     const a = agents[i];
-    const ia = intents[i];
+    let ia = intents[i];
     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
-    let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     let installedOnly=true,restrictedByRoute=false;
     for (let j = 0; j < n; j++) {
@@ -170,12 +169,29 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       if (b.team !== a.team) continue;
       const seen=observe(a,b);
       if (!seen) continue; // Unavailable information is not a live-body fallback.
-      const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
-      const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
-      const peer:PeerPicture={pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch,
-        radius:b.profile.radius,maxSpeed:b.profile.vmax};
-      peers.push(peer);
+      peers.push({pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch,
+        radius:b.profile.radius,maxSpeed:b.profile.vmax});
+    }
+    // A free runner can choose space around a teammate instead of repeating a
+    // requested straight ray followed by a speed-only correction. Test the
+    // curved achieved path from this exact body, including residual momentum,
+    // against all acquired neighbors together. There is no speed gate and no
+    // live-body fallback. Loaded/contact movement keeps the ordinary controller.
+    const s=a.body.support;
+    if(context?.runCarrier===a.body&&!context.constrained?.has(a.body)&&!a.engagement
+      &&!ia.lunge&&!(ia.push??0)&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6){
+      const choice=clearMovementStep(a.body,ia,{x:a.pos.x+ia.vel.x,y:a.pos.y+ia.vel.y},
+        peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
+          ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
+        context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
+      ia=choice.command;
+    }
+    let vx = ia.vel.x, vy = ia.vel.y;
+    for (const peer of peers) {
+      const seen=peer,touch=peer.touch;
+      const dx=seen.pos.x-a.pos.x,dy=seen.pos.y-a.pos.y,d=Math.hypot(dx,dy);
       const gap = d - touch;
       if (d < 1e-6) continue;
       const nx = dx / d, ny = dy / d;
@@ -207,22 +223,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
       }
-    }
-    // A free runner can choose space around a teammate instead of repeating a
-    // requested straight ray followed by a speed-only correction. Test the
-    // curved achieved path from this exact body, including residual momentum,
-    // against all acquired neighbors together. There is no speed gate and no
-    // live-body fallback. Loaded/contact movement keeps the ordinary controller.
-    const s=a.body.support;
-    if(context?.runCarrier===a.body&&!context.constrained?.has(a.body)&&!a.engagement
-      &&!ia.lunge&&!(ia.push??0)&&!s.foot&&!s.strike
-      &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6){
-      const choice=clearMovementStep(a.body,ia,{x:a.pos.x+ia.vel.x,y:a.pos.y+ia.vel.y},
-        peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
-          ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
-        context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
-      intents[i]=choice.command;
-      continue;
     }
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
