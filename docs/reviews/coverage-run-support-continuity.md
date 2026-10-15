@@ -152,3 +152,48 @@ gaze/occlusion approximations, multi-back ambiguous pictures, physics and broad
 support coordination remain separate. No new sensing or whole-engine awareness
 repair is claimed. Review this boundary before expanding football evaluation;
 no further P045 variants or broad tuning are justified here.
+
+## Review support checkpoint: no production change
+
+The user requested support for independent #75/#80 review, then a pause. At the
+checkpoint there were no independent review comments on #80; this author audit
+and its focused checks support review, rather than approving our own patch.
+Do-It-All owns mesh spacing and no shared coverage/spacing behavior is changed.
+
+The missing control was controller-level replacement of a formerly positive
+picture through advancing perception snapshots. Test-only commit
+`641f6a44ead2823cb9d06283bd22bac4a91d4c10` adds insertion/alley cases using production `PlaySim.see` and
+`PerceptionBuffer.record`, a controlled .10s observation delay and fixed current
+run belief. The positive picture persists through that latency; new known-unheld
+or unavailable-possession snapshots then remove its authorization. Repeated
+queries change neither buffer nor RNG. Hidden current RB possession cannot fill
+the resulting false/unknown picture. The existing previously-active-fit controls
+also prove cancellation by current pass/unsure belief, independently of carrying.
+
+Throw-recognition controls now assert an actual `onBall` attainable contest in
+both insertion and alley roles, despite the positive RB picture and run belief.
+Before recognition, held and hidden-flight requests remain equal; after it,
+the existing ball controller owns the request. No new observation/throw timing,
+support priority or persistence rule is introduced.
+
+**11 updated wrapper checks pass**, including the prior9;2.019 command seconds.
+[Exact new receipt](../../data/reviews/current/coverage-run-support-review-support.json).
+Earlier53-check/typecheck and eight short native-execution receipts retain their
+original tested revisions. Only tests changed; runtime source remains
+`257c603e417ec491b04ae911688c319bb9b60aa9ab9845f77147f562482b0f3d`.
+No new native opening, game or contributor combined verification ran.
+
+Current expiry is replacement by the delayed snapshot stream. The24-frame
+history at20Hz bounds the selected lag at1.15s while live snapshots advance.
+This does not establish confidence decay after gaze/occlusion loss: that model
+does not yet exist in this opponent query. Arbitrarily expiring a still-positive
+supplied picture would add a policy beyond this correction. The review must not
+interpret this as a global awareness repair or an enduring possession memory.
+
+#75's separate test-only review support is published at
+`43ac5e1835467cbc0914df0df1c82ea74740d1b4`:38 updated back-man checks pass;
+the original eight ManCoverage/World controls are reused. No #75 ancestry is
+imported here, and its old failed combined receipt stays failed. Original
+unfinished/adverse native evidence remains unchanged on both branches.
+Integration owns independent review/composition/verification. Catching starts
+no further behavior change and waits after this handoff.
