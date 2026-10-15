@@ -61,7 +61,7 @@ export function integrateSlipMotor(field:MotorField):MotorResult {
     }
     const g:[number,number]=[ground(0,F),ground(1,F)],alpha=bs.map((b,i)=>g[i]-arms[i]*F/b.inertia),du=rate(F);
     let d=left;
-    if(Math.abs(u)>slipEps&&u*du<0)d=Math.min(d,-u/du);
+    if(limit>0&&Math.abs(u)>slipEps&&u*du<0)d=Math.min(d,-u/du);
     for(let i=0;i<2;i++){
       const b=bs[i],y=b.yaw,a=alpha[i];if(!y||a===0)continue;
       const e=y.targetHeading-b.facing,q=e-r*b.spin;

@@ -49,7 +49,7 @@ def solve(field):
         ground=motors(force);alpha=[g-a*force/b['inertia'] for b,a,g in zip(bs,arms,ground)]
         event=left;events=[]
         du=rate(force)
-        if abs(u)>EPS and u*du<0:
+        if cap>0 and abs(u)>EPS and u*du<0:
             hit=-u/du
             if hit>EPS and hit<event:event=hit
         for b,a in zip(bs,alpha):
