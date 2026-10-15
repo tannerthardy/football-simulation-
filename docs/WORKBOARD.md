@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Latest entry-admission result, 2026-10-15
+
+The information correction remains independently justified; an impact alone did
+not establish bad football. The older complete navigation trial was held pending
+approach uncertainty. New separate info code `f8ce858`, clean approach code
+`cfcb7db0ba17c978fd02fb179c61f4e8b1d66752`, evidence
+`75dbf46b12a4d186a7da6ebc463b9fba228f0b50` on `codex/run-entry-admission`.
+Pacing alone stalled; one saved-state diagnostic showed a traversable alternative
+entry. Admitting moving approaches before ranking destinations yields P032
+0.15s gather, LOS2.85s,0 offensive teammate impacts through3s, retaining loaded
+RG work. P019 opening reports/bodies/requests/load and full finish identical.
+40 focused checks/typecheck pass. Two bounded prefixes20.619s,50 physical
+scrimmages,0 completed games. No roster/full-game campaign. Advance for
+Integration's component review, with explicit existing Awareness-interface
+combination and combined verification. Gap `d63bf45`/`92566b3` remains independent;
+earlier `6122fb0` unadopted stack stays separate. No run-lanes runtime change.
+
 ## Portable gap and completed entry-risk trial, 2026-10-15
 
 The narrow `73b9441` correction is independently portable from accepted develop
