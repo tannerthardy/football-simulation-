@@ -424,4 +424,19 @@ describe('Duo keeps the surface while its acquired backer belongs to the other h
     readCombination(f.helper, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
   });
+
+  it.each([-1, 1])('admits an acquired backer crossing onto the climber half before the next read, side %s', side => {
+    const f = ready(fixture(side, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
+    const down = f.sim.see(f.helper, f.defender);
+    const age = f.sim.see(f.helper, f.backer).age!;
+    f.backer.body.vel = { x: 0, y: side * 2 };
+    f.backer.body.pos.y = down.pos.y - side * .2 - f.backer.vel.y * age;
+    f.observe();
+    const backer = f.sim.see(f.helper, f.backer);
+    expect((backer.pos.y - down.pos.y) * side).toBeLessThan(0);
+    expect((backer.pos.y - down.pos.y + (backer.vel.y - down.vel.y) * f.helper.mind.decisionInterval) * side)
+      .toBeGreaterThan(0);
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(true);
+  });
 });
