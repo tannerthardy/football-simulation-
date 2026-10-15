@@ -193,11 +193,11 @@ the same machine without competing collectors before claiming speed gains.
 ## One owner for shared integration checks
 
 Record the integration owner in [WORKBOARD.md](WORKBOARD.md) before the combined
-run. The current run/catch integration assignment is the Codex integration owner
-in this chat, as recorded in [the controller handoff](reviews/controller-integration.md).
-The earlier #6-only pass remains in [INTEGRATION.md](INTEGRATION.md). Local agents hand off compatible
-focused receipts, limitations and candidate commits; they do not repeat the
-shared suite. Historical integration-lead rows describe their original stage.
+run. Integration in this chat owns the [current queue](INTEGRATION.md#ready-blocked-experimental)
+and the exact combined check. Contributors supply compatible focused receipts,
+limitations and fetchable candidate commits; they do not repeat the shared
+suite. A new handoff, branch update or docs-only change does not trigger a
+verification job. Historical owner rows/receipts describe their original stage.
 
 The owner freezes the combined candidate and settings, runs the preserved full
 code checks once, and publishes one receipt linked by all contributors. Record

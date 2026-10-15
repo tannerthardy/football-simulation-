@@ -1,5 +1,11 @@
 # GitHub branch map and preservation record
 
+Current accepted develop, candidate readiness and owner dependencies live in
+[the integration queue](INTEGRATION.md#accepted-development). The counts, old
+adoption decisions and cleanup checks below are dated preservation snapshots,
+not today's branch inventory or permission for new deletions. Active branches,
+research originals and historical `4ded6b6` remain preserved.
+
 ## Bounded cleanup execution
 
 The user authorized only the eight milestone names in the original manifest,

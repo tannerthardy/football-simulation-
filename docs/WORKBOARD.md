@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Current queue ownership — 2026-10-15
+
+Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
+verification and accepted-pin publication under existing authority. This
+separate documentation branch `codex/integration-queue` starts at accepted
+develop `a1b16e6`; it changes agent/reference/navigation records only. PR #63
+remains an independently verified, review-pending runtime candidate. No source,
+test, flag, dependency, worker branch or receipt is changed by this doc pass.
+
+Run Game retains exchange and PassProtector/cutoff; Do-It-All! retains run
+blocking/climb and carrier/spacing navigation; Catching/Pursuit owns recognition
+and coverage; Awareness owns acquired teammate-information boundaries; Physics
+retains contact-law and experimental promotion. Shared-file overlap calls for
+function/contract coordination, not a blanket subsystem lock. If behavior is
+ambiguous, involve the affected owner rather than choosing the newest branch.
+
+Read [safe checkpoint/handoff guidance](INTEGRATION.md#agent-workflow). Existing
+completed-stage and historical claims below retain their own stage/evidence;
+use the current queue and affected owner for live branch/readiness information.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

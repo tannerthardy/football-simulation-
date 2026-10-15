@@ -6,30 +6,26 @@ their bodies and make decisions. **We are not tuning toward NFL numbers.** Many
 wrong mechanisms can produce 4.4 yards per carry. NFL game statistics are the
 final exam, not the objective function.
 
-The shared development baseline is `codex/run-game-integration`, described in
-[BASELINE.md](docs/BASELINE.md) and `config/baseline.json`. Fetch it and record
-the exact commit before comparing results; use `npm run baseline:run` so ambient
-flags cannot change the experiment. Start new work from this baseline. Existing
-feature branches must reconcile it before claiming comparable results.
+Use the **accepted `develop` commit in [the shared integration queue](docs/INTEGRATION.md#accepted-development)**.
+Fetch and compare the full pin before starting or handing off work; GitHub's
+default branch and historical `4ded6b6` are not the current starting point.
+Follow the [start/update/handoff workflow](docs/INTEGRATION.md#agent-workflow).
+A historical research host may remain pinned deliberately, with its limitations
+stated. Ongoing feature owners reconcile relevant accepted changes at clean
+checkpoints; do not force rebases or abandon valid dependency stacks.
 
-`claude/engine-priorities` remains the primary physics owner's branch and PR #2's
-target; it is not the current combined test baseline. Commit coherent steps on
-the assigned feature branch and push only that branch. Keep PR #2 draft and do
-not merge it until explicitly instructed. Experimental code can be preserved
-with its flag off; promotion requires its law and football controls.
-Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
-Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
-and coordinate before editing another session's subsystem.
+Commit coherent steps on the assigned feature branch and push only that branch.
+Read [work ownership](docs/WORKBOARD.md) and claim bounded files/functions before
+crossing another owner's boundary. Preserve all branch and evidence history;
+do not reset/clean another checkout or force-push. Primary retains physics
+promotion; main and legacy PRs #1/#2 remain outside routine integration authority.
 
-The current pass prepares the reviewed run/catch corrections on approved #8
-`c98c2fa`; follow [controller integration](docs/reviews/controller-integration.md).
-The Codex integration owner in this chat owns one exact combined verification.
-Reuse #10's compatible run-only receipt and contributors' focused evidence.
-Actual candidate settings are 44 flags/components=1, with the original 43 values
-retained and no new catch flag. Historical `4ded6b6` stays unchanged; unrelated
-hands/grip/helper experiments and #3/#4/#5/#7/#11 ancestry remain excluded.
-No merge or reference/baseline designation is authorized. The earlier #6-only
-receipt remains in [integration ownership/evidence](docs/INTEGRATION.md).
+Integration in this chat owns queue triage, minimal extraction and exact combined
+verification. Contributors supply compatible focused receipts. Current #63 is
+verified and review-pending, not adopted. See the queue rather than an old task
+paragraph for current pins, included code, flags and remaining decisions.
+Historical comparison, GitHub default, experimental promotion and merge authority
+remain separate. This instruction change does not grant additional authority.
 
 ## Model rules
 
@@ -95,10 +91,16 @@ they are not blind holdouts. The reserved final exam is described in validation.
 
 ## Run checks
 
-Requires Node 22. Run `npm ci` once, then:
+Requires Node 22.23.3 from `.nvmrc`. Run `npm ci` once, then:
 
-The integration owner uses `npm run baseline:verify` for the combined report;
-it applies the recorded profile and runs all checks in sequence. Local work uses
+For a ready combined candidate, the integration owner uses the command below
+with pinned settings; it preserves skipped evidence.
+
+```sh
+npm run baseline:verify -- --candidate --flag RUN_CONTACT_COMPONENTS=1 --fail-fast
+```
+
+It applies recorded flags. Local work uses
 `npm run baseline:run -- --candidate -- <focused command>`. Commands below are
 available checks, not a per-agent checklist; record feature settings explicitly.
 
@@ -133,3 +135,37 @@ in ignored `out/`, not new giant files under `viewer/` or `data/reviews/`.
 
 Historical reviews live in `docs/archive/`. Consult them for a specific
 mechanism or evidence pin, not as a sequential reading assignment.
+
+<details>
+<summary>Historical reference and #8/#12 preparation instructions — preserved</summary>
+
+These paragraphs retain their then-current task context; they do not override
+the accepted-reference queue above.
+
+The shared development baseline is `codex/run-game-integration`, described in
+[BASELINE.md](docs/BASELINE.md) and `config/baseline.json`. Fetch it and record
+the exact commit before comparing results; use `npm run baseline:run` so ambient
+flags cannot change the experiment. Start new work from this baseline. Existing
+feature branches must reconcile it before claiming comparable results.
+
+`claude/engine-priorities` remains the primary physics owner's branch and PR #2's
+target; it is not the current combined test baseline. Commit coherent steps on
+the assigned feature branch and push only that branch. Keep PR #2 draft and do
+not merge it until explicitly instructed. Experimental code can be preserved
+with its flag off; promotion requires its law and football controls.
+Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
+Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
+and coordinate before editing another session's subsystem.
+
+The current pass prepares the reviewed run/catch corrections on approved #8
+`c98c2fa`; follow [controller integration](docs/reviews/controller-integration.md).
+The Codex integration owner in this chat owns one exact combined verification.
+Reuse #10's compatible run-only receipt and contributors' focused evidence.
+Actual candidate settings are 44 flags/components=1, with the original 43 values
+retained and no new catch flag. Historical `4ded6b6` stays unchanged; unrelated
+hands/grip/helper experiments and #3/#4/#5/#7/#11 ancestry remain excluded.
+No merge or reference/baseline designation is authorized. The earlier #6-only
+receipt remains in [integration ownership/evidence](docs/INTEGRATION.md).
+
+
+</details>

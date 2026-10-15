@@ -1,3 +1,27 @@
+# Current project status
+
+Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
+short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
+Do not use the historical sections below as a current starting-reference pin.
+
+- Accepted develop includes merged #12; historical `4ded6b6` stays separate.
+- #63's five narrow corrections are verified and ready for required review;
+  they are not merged. Reuse its exact receipt; no suite rerun is requested.
+- The gap correction is portable; earlier zone/Duo work and the rejected
+  entry-risk trial remain separate. Its latest information-versus-navigation
+  clarification is recorded without promoting it. #34 coverage and #36 awareness retain
+  their named blockers/owners. #54 and physics packages remain experimental.
+- New entry-admission work has a real owned-information interface dependency;
+  it stays separate from #63 pending Awareness/Run Game review.
+- New work starts from accepted develop. Existing owners check relevant
+  accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
+
+<details>
+<summary>Historical status retained from accepted develop a1b16e6</summary>
+
+The original source/counts and then-current instructions below are preserved.
+The queue above supersedes their live-status claims.
+
 # Current status
 
 Current shared baseline: [BASELINE.md](BASELINE.md), `codex/run-game-integration`.
@@ -249,3 +273,5 @@ random-film review, the two-attempt stopping rule and the future untouched exam.
 Research probes stay outside production/default tests; generated films and
 traces go to ignored `out/`. Old large evidence remains recoverable at `663193d`
 through [the retrieval guide](../data/README.md). History was not rewritten.
+
+</details>
