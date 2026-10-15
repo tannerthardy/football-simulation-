@@ -175,7 +175,9 @@ function physicalControl(side: number, mode: 'brace' | 'outward' | 'inward' | 'o
 describe('the moving contact fit keeps ordinary opposing responses physical', () => {
   it.each([-1, 1])('initiates a reachable lateral request against a bracing DL, side=%s', side => {
     const f = physicalControl(side, 'brace');
-    expect(f.plan.phase).toBe('stretch');
+    // A direct chord to the contact-circle shoulder clips the torso. The
+    // recovery must still initiate real lateral loaded work around it.
+    expect(f.plan.phase).toBe('recover');
     expect(f.velocity.y * side).toBeGreaterThan(0);
     expect((f.b.pos.y - f.start[0].pos.y) * side).toBeGreaterThan(0);
     expect(f.b.support!.state).toBe('up');
@@ -184,7 +186,7 @@ describe('the moving contact fit keeps ordinary opposing responses physical', ()
 
   it.each([-1, 1])('works with an outward-flowing DL through the same loaded law, side=%s', side => {
     const f = physicalControl(side, 'outward');
-    expect(f.plan.phase).toBe('stretch');
+    expect(f.plan.phase).toBe('recover');
     expect((f.b.pos.y - f.start[0].pos.y) * side).toBeGreaterThan(0);
     expect((f.d.pos.y - f.start[1].pos.y) * side).toBeGreaterThan(0);
     expect(f.b.support!.state).toBe('up');
