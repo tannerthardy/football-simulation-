@@ -1390,5 +1390,12 @@
     "review": "https://github.com/tannerthardy/football-simulation-/blob/4f90b6428b98224774bbd63a4adad6bb3e354b53/docs/reviews/helper-contact-adjudication.md",
     "status": "Reviewed. Two demonstrated collection-route errors remain controller-owned; three guaranteed expectations are invalid. Original seven assertions unchanged. No combined verification or helper-law promotion claimed."
   },
-  "decision": "Keep default-off feasibility candidate separately reviewable, not an accepted numerical correction. Motion/median cost criteria pass, hand-work convergence worsens and ordered-work cross term is demonstrated. Stop after two methods. Next question is the first local slip transition with consistent work gating, not recovery retuning or broader football evaluation."
+  "decision": "Keep default-off feasibility candidate separately reviewable, not an accepted numerical correction. Motion/median cost criteria pass, hand-work convergence worsens and ordered-work cross term is demonstrated. Stop after two methods. Next question is the first local slip transition with consistent work gating, not recovery retuning or broader football evaluation.",
+  "adoptionReady": false,
+  "acceptance": {
+    "motionSensitivity": "improved",
+    "sharedBudgetAndRepresentedLedgerChecks": "passed",
+    "localMedianCostTarget": "passed",
+    "handWorkConvergence": "adverse; blocks acceptance as complete numerical correction"
+  }
 }
