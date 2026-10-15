@@ -179,7 +179,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
-    if(acquiredComplete)spaced=retainAchievableCarrierRequest(a,ia,spaced,acquiredPeers,context);
+    if(acquiredComplete&&spaced!==ia
+      &&retainAchievableCarrierRequest(a,ia,spaced,acquiredPeers,context)===ia){
+      // This exact request was already previewed against the acquired motion.
+      // Do not replace that evidence with the legacy called-track forecast.
+      intents[i]=ia;
+      continue;
+    }
     intents[i]=gatherForTurn(a,spaced,peers,context);
   }
 }
