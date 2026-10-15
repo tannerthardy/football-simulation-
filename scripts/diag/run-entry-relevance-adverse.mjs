@@ -1,13 +1,19 @@
-// One same-state diagnostic of the first adverse P019 decision. No native rerun.
+// One same-state diagnostic if the opposing opening changed. No native rerun.
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {chooseRunApproach} from '../../src/sim/run-approach.js';
-const start=performance.now(),trace=JSON.parse(gunzipSync(readFileSync('out/run-entry-relevance/native.json.gz')));
+const start=performance.now(),trace=JSON.parse(gunzipSync(readFileSync(process.argv[2]??'out/run-entry-relevance/native.json.gz')));
 const baseline=trace.rows.find(r=>r.play===19&&r.arm==='information-only');
 const candidate=trace.rows.find(r=>r.play===19&&r.arm==='portable-admission');
 const first=trace.comparisons.find(c=>c.play===19).firstChangedRequest;
-assert(first,'Opposing opening must expose an adverse decision to diagnose');
+if(!first){
+  const report={schema:'run-entry-first-adverse-v1',status:'not-applicable',reason:'Opposing opening is exactly unchanged; no adverse decision to diagnose.',
+    newNativeTicks:0,elapsedSeconds:(performance.now()-start)/1000};
+  writeFileSync('out/run-entry-relevance/adverse.json',JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report));
+  process.exit(0);
+}
 const frame=baseline.frames.find(f=>f.t===first.t),other=candidate.frames.find(f=>f.t===first.t);
 assert.deepEqual(frame.before,other.before);
 const peers=candidate.cues.filter(c=>c.t===frame.t).map(c=>({id:c.target,picture:c.picture,
