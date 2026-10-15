@@ -987,7 +987,7 @@ export class RunBlocker implements Behavior {
       const seen = sim.teammateInformation(a, b);
       if (seen.source === 'unavailable') continue;
       peers.push({ id: b.idx, pos: { ...seen.pos }, vel: { ...seen.vel }, radius: b.profile.radius, maxSpeed: b.profile.vmax,
-        horizon: a.mind.decisionInterval,
+        ...(seen.source === 'called' ? { horizon: a.mind.decisionInterval } : {}),
         ...(seen.source === 'called' ? { route: seen.forecast?.samples,
           validFor: Math.max(0, seen.forecast?.validFor ?? 0) } : {}) });
     }

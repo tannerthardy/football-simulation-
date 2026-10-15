@@ -126,11 +126,7 @@ export function assignBehaviors(sim: PlaySim): void {
   } else {
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ride,
       mesh.ride ? -playSideSign(sim, concept) : undefined);
-    // Inside/split-zone exchanges also receive on the run. The back's
-    // executable track keeps moving through the same exchange landmark;
-    // the QB's pivot, mesh clock and physical handoff reach stay unchanged.
-    const rollingBack = mesh.ride || concept.scheme === 'insideZone' || concept.scheme === 'splitZone';
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, rollingBack);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
