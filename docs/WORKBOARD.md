@@ -38,6 +38,13 @@ deferred for the acquisition/usage decision: noncommercial research terms,
 redistribution restrictions, identity/visibility gaps. No engine adapter/tuning,
 new BDB query or simulation; the independent P045 expansion status is above.
 
+[Isolated pass-protection access assessment](reviews/amf-protection-access-2026-10-15.md)
+now reuses that same game. Four valid local contrasts and identity/timing/frame
+checks support descriptive engagement/trajectory research, but not a validated
+first-usable-access clock or causal blocker delay. Frequent release-aligned
+engagement ends and radius-sensitive corridor onsets remain material limits.
+No acquisition, production calibration, general framework or BDB query was added.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

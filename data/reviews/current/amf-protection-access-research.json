@@ -1,0 +1,1054 @@
+{
+  "schema": "amf-protection-access-sample-v1",
+  "source_commit": "0ef19db20d768f34ad0e260c9c19b85c30ab8984",
+  "game": "2022_01_TB_DAL",
+  "pins": {
+    "data/tracking/SB_tracking_20220911_TB_DAL.json.gz": {
+      "bytes": 7752122,
+      "sha256": "d3bf9cb93f64c53145674ecfe0f1049c7fd1191db6c2f8c8fcfbe41504309224"
+    },
+    "data/plays/tb12_plays_dataset_2022_2023.csv": {
+      "bytes": 3186814,
+      "sha256": "c1237992db9c1398efc63a55de28864ececce9ab24371462300d2367a8b81fd0"
+    },
+    "data/events/tb12_events_dataset_2022_2023.csv": {
+      "bytes": 43823584,
+      "sha256": "2723d8eaf2127c5add45b759239ce1d2feebb270a5fed95e4f692a83ecd00327"
+    },
+    "data/lft/lft_1501094.csv": {
+      "bytes": 17194884,
+      "sha256": "531cfeb83895952c8bca75cc7d17308e2ce859425e5f5e45c3c262e4d8799c52"
+    }
+  },
+  "counts": {
+    "hf_pass_type_plays": 75,
+    "all_hf_pass_engagement_starts": 387,
+    "snap_receiver_qb_id_populated": 9,
+    "admitted_qb_dropbacks": 72,
+    "snap_aligned_edge_candidates": 176,
+    "edge_pair_intervals": 133,
+    "full_offense_and_trio_valid_edges": 34,
+    "passer_not_unique_qb": 1,
+    "not_unique_own_qb": 2,
+    "trio_valid_edge_intervals": 60,
+    "full_offense_and_trio_valid_intervals": 39,
+    "full_offense_and_trio_valid_distinct_plays": 20
+  },
+  "engagement_identity_timing_audit": {
+    "reciprocal_temporal_same_pair": 387,
+    "both_ids_present_hf": 367,
+    "both_start_samples_finite_unflagged_within_17ms": 367,
+    "pair_ids_present_lft_at_start": 265,
+    "pair_ids_missing_hf": 20
+  },
+  "engagement_start_base_types": {
+    "{\"Engagement Start\"}": 105,
+    "no_base_event": 282
+  },
+  "pressure_identity_audit": {
+    "pressure_events": 51,
+    "pressure_actor_id_in_hf": 48,
+    "pressure_actor_on_defense": 48,
+    "opponent_id_populated": 0,
+    "linked_pressured_event_resolves": 34
+  },
+  "pass_engagement_end_minus_release_s": {
+    "n": 355,
+    "summary": {
+      "min": -3.4000220000000354,
+      "median": 0.049999999999954525,
+      "max": 0.050009000000159176
+    },
+    "after_release": 251,
+    "within_67ms_of_release": 254,
+    "exactly_50ms_after_release_tolerance_20us": 193
+  },
+  "engagement_start_hf_body_gap_yd": {
+    "summary": {
+      "min": 0.5303772242470397,
+      "median": 1.3265368445693475,
+      "max": 3.912198870200747
+    },
+    "n": 367,
+    "over_1p5yd": 85,
+    "over_2yd": 7
+  },
+  "lft_hf_same_player_start_residual_yd": {
+    "n": 530,
+    "summary": {
+      "min": 0.03632415418156385,
+      "median": 0.49868580301189847,
+      "max": 3.367528561853702
+    }
+  },
+  "overlapping_trio_quality_reasons_by_actor_interval": {
+    "camera_ratio_below_1_somewhere_in_track": 163,
+    "nonfinite_xy": 11,
+    "missing_or_duplicate_tick": 6
+  },
+  "selected_examples": [
+    {
+      "play": 65,
+      "play_uuid": "aac099f8-87db-4d48-8c12-298b812621bb",
+      "qb_id": "1023911",
+      "rusher": {
+        "player_id": 1024499,
+        "name": "Shaquil Barrett",
+        "position_code": "LB",
+        "jersey_number": 58,
+        "gsis_player_id": 41915
+      },
+      "blockers": [
+        {
+          "player_id": 1009181,
+          "name": "Tyler Smith",
+          "position_code": "OL",
+          "jersey_number": 73,
+          "gsis_player_id": 54489
+        }
+      ],
+      "terminal_type": "pass",
+      "terminal_s": 1.749996000000003,
+      "kinematic_analysis_last_sample_s": 1.717659999999995,
+      "first_labeled_qb_contact_s": null,
+      "qb_contact_events": [],
+      "terminal_event_rows": [
+        {
+          "uuid": "a92f0fab-ba20-47ff-9ec8-02a026f7453c",
+          "actor_id": "1023911",
+          "opponent_id": null,
+          "tags": [
+            "Pass"
+          ],
+          "base_event_uuid": "",
+          "preceding_tackle_attempt_uuid": ""
+        }
+      ],
+      "engagements": [
+        {
+          "play": 65,
+          "rusher_id": "1024499",
+          "blocker_id": "1009181",
+          "start_uuid": "5b517fc1-0953-4940-828f-2f458a42d2c6",
+          "end_uuid": "2fb35c95-097b-4589-b115-3d6a7e6537ba",
+          "start_s": 1.5409959999999998,
+          "end_s": 1.7909929999999932,
+          "end_at_or_after_terminal": true,
+          "trio_quality_reasons": {
+            "1024499": {},
+            "1009181": {},
+            "1023911": {}
+          },
+          "all_offense_quality_pass": true,
+          "trio_quality_pass": true
+        }
+      ],
+      "named_pressure_times_s": [],
+      "other_pressure_events": [],
+      "label_active_at_terminal": true,
+      "first_2yd_proximity_s": null,
+      "clear_closing_corridor_sensitivity": {
+        "0.75": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        },
+        "1.0": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        },
+        "1.25": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        }
+      },
+      "observations": {
+        "first_engagement_start": {
+          "event_time_s": 1.5409959999999998,
+          "max_nearest_frame_offset_s": 0.00999699999999848,
+          "rusher_qb_gap_yd": 4.766015106984027,
+          "original_tracking_timestamps": {
+            "1023911": 36233333,
+            "1024499": 36233333,
+            "1009181": 36233333
+          },
+          "position_sample_time_range_s": [
+            1.5509929999999983,
+            1.5509929999999983
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1009181",
+              "rusher_blocker_gap_yd": 1.445890728928024,
+              "projection_u": 0.29652342735385245,
+              "lateral_to_rusher_qb_segment_yd": 0.30555924966875925
+            }
+          ]
+        },
+        "terminal": {
+          "event_time_s": 1.749996000000003,
+          "max_nearest_frame_offset_s": 0.0009969999999910328,
+          "rusher_qb_gap_yd": 4.448550325667904,
+          "original_tracking_timestamps": {
+            "1023911": 36433333,
+            "1024499": 36433333,
+            "1009181": 36433333
+          },
+          "position_sample_time_range_s": [
+            1.750992999999994,
+            1.750992999999994
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1009181",
+              "rusher_blocker_gap_yd": 1.329360748630711,
+              "projection_u": 0.28689816873509366,
+              "lateral_to_rusher_qb_segment_yd": 0.3718964334188107
+            }
+          ]
+        }
+      },
+      "path_bend_during_labels_before_qb_contact": [
+        {
+          "blocker_id": "1009181",
+          "sampled_interval_s": [
+            1.5509933333333308,
+            1.717659999999995
+          ],
+          "rusher_path_length_yd": 0.6477907862085571,
+          "rusher_net_displacement_yd": 0.6477653896280666,
+          "rusher_transverse_displacement_to_initial_qb_line_yd": 0.5727636062252109,
+          "qb_displacement_same_interval_yd": 0.05656854249492762,
+          "interposed_fraction_at_1yd_center_radius": 1.0
+        }
+      ],
+      "context": {
+        "play_action_pass": "False",
+        "play_qb_pressure": "",
+        "play_qb_exit_pocket_clock": "",
+        "play_yards_net": "7.390000000000001",
+        "play_pass_outcome": "True"
+      }
+    },
+    {
+      "play": 1457,
+      "play_uuid": "4a4bc08f-504a-4fea-8b8a-cb665901b98b",
+      "qb_id": "1003198",
+      "rusher": {
+        "player_id": 1023916,
+        "name": "Micah Parsons",
+        "position_code": "LB",
+        "jersey_number": 11,
+        "gsis_player_id": 53441
+      },
+      "blockers": [
+        {
+          "player_id": 1024506,
+          "name": "Josh Wells",
+          "position_code": "OL",
+          "jersey_number": 72,
+          "gsis_player_id": 41667
+        }
+      ],
+      "terminal_type": "sack",
+      "terminal_s": 3.080903000000035,
+      "kinematic_analysis_last_sample_s": 2.6975230000000465,
+      "first_labeled_qb_contact_s": 2.7309060000000045,
+      "qb_contact_events": [
+        {
+          "uuid": "f63883a8-19b9-4f81-8fcd-8887609da5ae",
+          "time_s": 2.7309060000000045,
+          "actor_id": "1023916",
+          "opponent_id": "1003198",
+          "tags": [
+            "Tackle Attempt"
+          ],
+          "contact": "True"
+        }
+      ],
+      "terminal_event_rows": [
+        {
+          "uuid": "e7c72c0b-93ea-4f47-8541-22c8c02e2ae2",
+          "actor_id": "1023916",
+          "opponent_id": "1003198",
+          "tags": [
+            "Sack",
+            "Tackle"
+          ],
+          "base_event_uuid": "",
+          "preceding_tackle_attempt_uuid": "f63883a8-19b9-4f81-8fcd-8887609da5ae"
+        },
+        {
+          "uuid": "d09cfc93-5d6d-4af6-a62a-4a974599eff0",
+          "actor_id": "1023916",
+          "opponent_id": "1003198",
+          "tags": [
+            "Sack",
+            "Tackle"
+          ],
+          "base_event_uuid": "e7c72c0b-93ea-4f47-8541-22c8c02e2ae2",
+          "preceding_tackle_attempt_uuid": "f63883a8-19b9-4f81-8fcd-8887609da5ae"
+        },
+        {
+          "uuid": "ca309bc4-6990-4e17-84f1-c220dee82fe1",
+          "actor_id": "1003198",
+          "opponent_id": "1023916",
+          "tags": [
+            "Player Grounded",
+            "Sacked",
+            "Tackled"
+          ],
+          "base_event_uuid": "e7c72c0b-93ea-4f47-8541-22c8c02e2ae2",
+          "preceding_tackle_attempt_uuid": "f63883a8-19b9-4f81-8fcd-8887609da5ae"
+        }
+      ],
+      "engagements": [
+        {
+          "play": 1457,
+          "rusher_id": "1023916",
+          "blocker_id": "1024506",
+          "start_uuid": "63283b88-a628-4f7f-8166-d78e6a269823",
+          "end_uuid": "925693fe-1ad7-49df-8ca5-86bbc24cb65c",
+          "start_s": 1.0999940000000379,
+          "end_s": 3.0309030000000803,
+          "end_at_or_after_terminal": false,
+          "trio_quality_reasons": {
+            "1023916": {},
+            "1024506": {},
+            "1003198": {}
+          },
+          "all_offense_quality_pass": true,
+          "trio_quality_pass": true
+        }
+      ],
+      "named_pressure_times_s": [
+        1.7830619999999726
+      ],
+      "other_pressure_events": [],
+      "label_active_at_terminal": false,
+      "first_2yd_proximity_s": 2.3641896666666753,
+      "clear_closing_corridor_sensitivity": {
+        "0.75": {
+          "first_clear_closing_frame_s": 1.430856333333395,
+          "first_time_bracket_s": [
+            1.3975230000000616,
+            1.430856333333395
+          ],
+          "gap_yd": 5.2777362571466195,
+          "active_engagement_uuids": [
+            "63283b88-a628-4f7f-8166-d78e6a269823"
+          ]
+        },
+        "1.0": {
+          "first_clear_closing_frame_s": 1.5641896666667208,
+          "first_time_bracket_s": [
+            1.5308563333333873,
+            1.5641896666667208
+          ],
+          "gap_yd": 4.968551096647797,
+          "active_engagement_uuids": [
+            "63283b88-a628-4f7f-8166-d78e6a269823"
+          ]
+        },
+        "1.25": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        }
+      },
+      "observations": {
+        "first_engagement_start": {
+          "event_time_s": 1.0999940000000379,
+          "max_nearest_frame_offset_s": 0.002471000000014101,
+          "rusher_qb_gap_yd": 5.985048036565783,
+          "original_tracking_timestamps": {
+            "1003198": 556000000,
+            "1023916": 556000000,
+            "1024506": 556000000
+          },
+          "position_sample_time_range_s": [
+            1.0975230000000238,
+            1.0975230000000238
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1024506",
+              "rusher_blocker_gap_yd": 1.4445068362593465,
+              "projection_u": 0.23675629801679401,
+              "lateral_to_rusher_qb_segment_yd": 0.2805658350176838
+            }
+          ]
+        },
+        "terminal": {
+          "event_time_s": 3.080903000000035,
+          "max_nearest_frame_offset_s": 0.016713999999979023,
+          "rusher_qb_gap_yd": 1.6443843832875547,
+          "original_tracking_timestamps": {
+            "1003198": 557966666,
+            "1023916": 557966666,
+            "1024506": 557966666
+          },
+          "position_sample_time_range_s": [
+            3.064189000000056,
+            3.064189000000056
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": true,
+          "blockers": [
+            {
+              "id": "1024506",
+              "rusher_blocker_gap_yd": 1.1723907198540957,
+              "projection_u": 0.15458579881656972,
+              "lateral_to_rusher_qb_segment_yd": 1.1445012608532497
+            }
+          ]
+        },
+        "engagement_0_end": {
+          "event_time_s": 3.0309030000000803,
+          "max_nearest_frame_offset_s": 4.700000010871008e-05,
+          "rusher_qb_gap_yd": 1.5086417732516817,
+          "original_tracking_timestamps": {
+            "1003198": 557933333,
+            "1023916": 557933333,
+            "1024506": 557933333
+          },
+          "position_sample_time_range_s": [
+            3.0308559999999716,
+            3.0308559999999716
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": true,
+          "blockers": [
+            {
+              "id": "1024506",
+              "rusher_blocker_gap_yd": 1.0733126291998984,
+              "projection_u": 0.14762741652020975,
+              "lateral_to_rusher_qb_segment_yd": 1.049951040786764
+            }
+          ]
+        },
+        "pressure_0": {
+          "event_time_s": 1.7830619999999726,
+          "max_nearest_frame_offset_s": 0.014461000000096647,
+          "rusher_qb_gap_yd": 4.308526430231106,
+          "original_tracking_timestamps": {
+            "1003198": 556700000,
+            "1023916": 556700000,
+            "1024506": 556700000
+          },
+          "position_sample_time_range_s": [
+            1.7975230000000693,
+            1.7975230000000693
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1024506",
+              "rusher_blocker_gap_yd": 1.4205632685663772,
+              "projection_u": 0.18814441320016867,
+              "lateral_to_rusher_qb_segment_yd": 1.1665705389975682
+            }
+          ]
+        },
+        "first_labeled_qb_contact": {
+          "event_time_s": 2.7309060000000045,
+          "max_nearest_frame_offset_s": 4.999999998744897e-05,
+          "rusher_qb_gap_yd": 0.802620707432855,
+          "original_tracking_timestamps": {
+            "1003198": 557633333,
+            "1023916": 557633333,
+            "1024506": 557633333
+          },
+          "position_sample_time_range_s": [
+            2.730856000000017,
+            2.730856000000017
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": true,
+          "blockers": [
+            {
+              "id": "1024506",
+              "rusher_blocker_gap_yd": 0.34409301068170767,
+              "projection_u": 0.03601366035393237,
+              "lateral_to_rusher_qb_segment_yd": 0.3428767753578396
+            }
+          ]
+        }
+      },
+      "path_bend_during_labels_before_qb_contact": [
+        {
+          "blocker_id": "1024506",
+          "sampled_interval_s": [
+            1.1308563333333268,
+            2.6975230000000465
+          ],
+          "rusher_path_length_yd": 8.993922091912747,
+          "rusher_net_displacement_yd": 7.9339397527331945,
+          "rusher_transverse_displacement_to_initial_qb_line_yd": 1.1381579253447307,
+          "qb_displacement_same_interval_yd": 2.0223748416156657,
+          "interposed_fraction_at_1yd_center_radius": 0.5416666666666666
+        }
+      ],
+      "context": {
+        "play_action_pass": "",
+        "play_qb_pressure": "True",
+        "play_qb_exit_pocket_clock": "",
+        "play_yards_net": "-7.670000000000002",
+        "play_pass_outcome": ""
+      }
+    },
+    {
+      "play": 1587,
+      "play_uuid": "d74a784f-2390-4685-8922-bb913e8f9e6d",
+      "qb_id": "1023911",
+      "rusher": {
+        "player_id": 1024469,
+        "name": "Joe Tryon-Shoyinka",
+        "position_code": "LB",
+        "jersey_number": 9,
+        "gsis_player_id": 53461
+      },
+      "blockers": [
+        {
+          "player_id": 1023943,
+          "name": "Terence Steele",
+          "position_code": "OL",
+          "jersey_number": 78,
+          "gsis_player_id": 52938
+        }
+      ],
+      "terminal_type": "pass",
+      "terminal_s": 3.4097399999999425,
+      "kinematic_analysis_last_sample_s": 3.4013886666665485,
+      "first_labeled_qb_contact_s": null,
+      "qb_contact_events": [],
+      "terminal_event_rows": [
+        {
+          "uuid": "fd0acb81-e753-48e3-b4db-4eb505632495",
+          "actor_id": "1023911",
+          "opponent_id": null,
+          "tags": [
+            "Defender Touched",
+            "Hit",
+            "Hurried",
+            "Pass"
+          ],
+          "base_event_uuid": "",
+          "preceding_tackle_attempt_uuid": ""
+        }
+      ],
+      "engagements": [
+        {
+          "play": 1587,
+          "rusher_id": "1024469",
+          "blocker_id": "1023943",
+          "start_uuid": "5ff5ee6c-cff8-4c27-ba67-14e77838b30a",
+          "end_uuid": "dc74e472-2129-4613-89f4-8c524bedb5ec",
+          "start_s": 1.2499919999999065,
+          "end_s": 2.149979999999914,
+          "end_at_or_after_terminal": false,
+          "trio_quality_reasons": {
+            "1024469": {},
+            "1023943": {},
+            "1023911": {}
+          },
+          "all_offense_quality_pass": true,
+          "trio_quality_pass": true
+        }
+      ],
+      "named_pressure_times_s": [],
+      "other_pressure_events": [
+        {
+          "actor_id": "1024514",
+          "time_s": 3.2097389999998995
+        }
+      ],
+      "label_active_at_terminal": false,
+      "first_2yd_proximity_s": null,
+      "clear_closing_corridor_sensitivity": {
+        "0.75": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        },
+        "1.0": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        },
+        "1.25": {
+          "first_clear_closing_frame_s": null,
+          "first_time_bracket_s": null,
+          "gap_yd": null,
+          "active_engagement_uuids": []
+        }
+      },
+      "observations": {
+        "first_engagement_start": {
+          "event_time_s": 1.2499919999999065,
+          "max_nearest_frame_offset_s": 0.015269999999986794,
+          "rusher_qb_gap_yd": 6.887089370699352,
+          "original_tracking_timestamps": {
+            "1023911": 715100000,
+            "1024469": 715100000,
+            "1023943": 715100000
+          },
+          "position_sample_time_range_s": [
+            1.2347219999999197,
+            1.2347219999999197
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023943",
+              "rusher_blocker_gap_yd": 1.4612323566086252,
+              "projection_u": 0.21168831168831156,
+              "lateral_to_rusher_qb_segment_yd": 0.09838699100998585
+            }
+          ]
+        },
+        "terminal": {
+          "event_time_s": 3.4097399999999425,
+          "max_nearest_frame_offset_s": 0.008352000000058979,
+          "rusher_qb_gap_yd": 9.342205307099606,
+          "original_tracking_timestamps": {
+            "1023911": 717266666,
+            "1024469": 717266666,
+            "1023943": 717266666
+          },
+          "position_sample_time_range_s": [
+            3.4013879999998835,
+            3.4013879999998835
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023943",
+              "rusher_blocker_gap_yd": 1.6592166826548023,
+              "projection_u": 0.17031788516535912,
+              "lateral_to_rusher_qb_segment_yd": 0.47038144159179257
+            }
+          ]
+        },
+        "engagement_0_end": {
+          "event_time_s": 2.149979999999914,
+          "max_nearest_frame_offset_s": 0.015258000000017091,
+          "rusher_qb_gap_yd": 9.2215508457092,
+          "original_tracking_timestamps": {
+            "1023911": 716000000,
+            "1024469": 716000000,
+            "1023943": 716000000
+          },
+          "position_sample_time_range_s": [
+            2.134721999999897,
+            2.134721999999897
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023943",
+              "rusher_blocker_gap_yd": 1.7172361514946077,
+              "projection_u": 0.18115290990980426,
+              "lateral_to_rusher_qb_segment_yd": 0.3978614943827108
+            }
+          ]
+        }
+      },
+      "path_bend_during_labels_before_qb_contact": [
+        {
+          "blocker_id": "1023943",
+          "sampled_interval_s": [
+            1.2680553333332227,
+            2.134721999999897
+          ],
+          "rusher_path_length_yd": 1.3247984002639737,
+          "rusher_net_displacement_yd": 0.8713208364316807,
+          "rusher_transverse_displacement_to_initial_qb_line_yd": 0.8679477319070329,
+          "qb_displacement_same_interval_yd": 4.030446625375403,
+          "interposed_fraction_at_1yd_center_radius": 1.0
+        }
+      ],
+      "context": {
+        "play_action_pass": "True",
+        "play_qb_pressure": "",
+        "play_qb_exit_pocket_clock": "127600.0",
+        "play_yards_net": "0.0",
+        "play_pass_outcome": "False"
+      }
+    },
+    {
+      "play": 1631,
+      "play_uuid": "442fe3f2-e604-4f1a-a00b-6e73052047de",
+      "qb_id": "1023911",
+      "rusher": {
+        "player_id": 1024499,
+        "name": "Shaquil Barrett",
+        "position_code": "LB",
+        "jersey_number": 58,
+        "gsis_player_id": 41915
+      },
+      "blockers": [
+        {
+          "player_id": 1023920,
+          "name": "Tony Pollard",
+          "position_code": "RB",
+          "jersey_number": 20,
+          "gsis_player_id": 47911
+        },
+        {
+          "player_id": 1023939,
+          "name": "Matt Farniok",
+          "position_code": "OL",
+          "jersey_number": 68,
+          "gsis_player_id": 53667
+        }
+      ],
+      "terminal_type": "pass",
+      "terminal_s": 2.6499860000000126,
+      "kinematic_analysis_last_sample_s": 2.514238999999975,
+      "first_labeled_qb_contact_s": 2.5499869999999873,
+      "qb_contact_events": [
+        {
+          "uuid": "c27ac393-2631-4344-a3e6-deea735e9bb7",
+          "time_s": 2.5499869999999873,
+          "actor_id": "1024499",
+          "opponent_id": "1023911",
+          "tags": [
+            "Tackle Attempt"
+          ],
+          "contact": "True"
+        }
+      ],
+      "terminal_event_rows": [
+        {
+          "uuid": "1bbfaefd-53b6-4fbd-8006-d3dda93f5c0b",
+          "actor_id": "1023911",
+          "opponent_id": null,
+          "tags": [
+            "Hit",
+            "Hurried",
+            "Pass"
+          ],
+          "base_event_uuid": "",
+          "preceding_tackle_attempt_uuid": ""
+        }
+      ],
+      "engagements": [
+        {
+          "play": 1631,
+          "rusher_id": "1024499",
+          "blocker_id": "1023920",
+          "start_uuid": "7b25c31d-9734-4f3d-ac8e-a10ad1e10966",
+          "end_uuid": "13e74756-38ae-4f1f-9a8a-9d328093698f",
+          "start_s": 2.3499850000000606,
+          "end_s": 2.6999889999999596,
+          "end_at_or_after_terminal": true,
+          "trio_quality_reasons": {
+            "1024499": {},
+            "1023920": {},
+            "1023911": {}
+          },
+          "all_offense_quality_pass": true,
+          "trio_quality_pass": true
+        },
+        {
+          "play": 1631,
+          "rusher_id": "1024499",
+          "blocker_id": "1023939",
+          "start_uuid": "e08220f4-2bd7-40b3-9ad8-c8310c8ed3c8",
+          "end_uuid": "30a91a25-b222-4171-84ac-0f73f02c98e7",
+          "start_s": 1.199999000000048,
+          "end_s": 1.6999959999999419,
+          "end_at_or_after_terminal": false,
+          "trio_quality_reasons": {
+            "1024499": {},
+            "1023939": {},
+            "1023911": {}
+          },
+          "all_offense_quality_pass": true,
+          "trio_quality_pass": true
+        }
+      ],
+      "named_pressure_times_s": [
+        2.099982999999952
+      ],
+      "other_pressure_events": [],
+      "label_active_at_terminal": true,
+      "first_2yd_proximity_s": 2.3142390000000432,
+      "clear_closing_corridor_sensitivity": {
+        "0.75": {
+          "first_clear_closing_frame_s": 1.1809056666667175,
+          "first_time_bracket_s": [
+            1.147572333333384,
+            1.1809056666667175
+          ],
+          "gap_yd": 5.421475813835198,
+          "active_engagement_uuids": []
+        },
+        "1.0": {
+          "first_clear_closing_frame_s": 1.480905666666672,
+          "first_time_bracket_s": [
+            1.4475723333333386,
+            1.480905666666672
+          ],
+          "gap_yd": 4.959032163638384,
+          "active_engagement_uuids": [
+            "e08220f4-2bd7-40b3-9ad8-c8310c8ed3c8"
+          ]
+        },
+        "1.25": {
+          "first_clear_closing_frame_s": 1.7142390000000205,
+          "first_time_bracket_s": [
+            1.680905666666687,
+            1.7142390000000205
+          ],
+          "gap_yd": 4.395600072800068,
+          "active_engagement_uuids": []
+        }
+      },
+      "observations": {
+        "first_engagement_start": {
+          "event_time_s": 1.199999000000048,
+          "max_nearest_frame_offset_s": 0.014239999999972497,
+          "rusher_qb_gap_yd": 5.364643510989338,
+          "original_tracking_timestamps": {
+            "1023911": 765600000,
+            "1024499": 765600000,
+            "1023920": 765600000,
+            "1023939": 765600000
+          },
+          "position_sample_time_range_s": [
+            1.2142390000000205,
+            1.2142390000000205
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023920",
+              "rusher_blocker_gap_yd": 5.1611335964107745,
+              "projection_u": 0.7860518287386122,
+              "lateral_to_rusher_qb_segment_yd": 2.9757615706054534
+            },
+            {
+              "id": "1023939",
+              "rusher_blocker_gap_yd": 1.2300406497347964,
+              "projection_u": 0.17646650034399616,
+              "lateral_to_rusher_qb_segment_yd": 0.7853643939936291
+            }
+          ]
+        },
+        "terminal": {
+          "event_time_s": 2.6499860000000126,
+          "max_nearest_frame_offset_s": 0.002414000000044325,
+          "rusher_qb_gap_yd": 0.9476286192385706,
+          "original_tracking_timestamps": {
+            "1023911": 767033333,
+            "1024499": 767033333,
+            "1023920": 767033333,
+            "1023939": 767033333
+          },
+          "position_sample_time_range_s": [
+            2.6475719999999683,
+            2.6475719999999683
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": true,
+          "blockers": [
+            {
+              "id": "1023920",
+              "rusher_blocker_gap_yd": 1.0520931517693657,
+              "projection_u": 0.18797327394209087,
+              "lateral_to_rusher_qb_segment_yd": 1.0369040994029164
+            },
+            {
+              "id": "1023939",
+              "rusher_blocker_gap_yd": 3.064245420980505,
+              "projection_u": -1.2690423162583542,
+              "lateral_to_rusher_qb_segment_yd": 2.8184036929425087
+            }
+          ]
+        },
+        "engagement_1_end": {
+          "event_time_s": 1.6999959999999419,
+          "max_nearest_frame_offset_s": 0.01424300000007861,
+          "rusher_qb_gap_yd": 4.395600072800068,
+          "original_tracking_timestamps": {
+            "1023911": 766100000,
+            "1024499": 766100000,
+            "1023920": 766100000,
+            "1023939": 766100000
+          },
+          "position_sample_time_range_s": [
+            1.7142390000000205,
+            1.7142390000000205
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023920",
+              "rusher_blocker_gap_yd": 2.748472302934852,
+              "projection_u": 0.39102958910632324,
+              "lateral_to_rusher_qb_segment_yd": 2.1447128591920923
+            },
+            {
+              "id": "1023939",
+              "rusher_blocker_gap_yd": 1.081896483033382,
+              "projection_u": -0.22351498087602822,
+              "lateral_to_rusher_qb_segment_yd": 0.4530211955182516
+            }
+          ]
+        },
+        "pressure_0": {
+          "event_time_s": 2.099982999999952,
+          "max_nearest_frame_offset_s": 0.014256000000045788,
+          "rusher_qb_gap_yd": 2.7748333283280275,
+          "original_tracking_timestamps": {
+            "1023911": 766500000,
+            "1024499": 766500000,
+            "1023920": 766500000,
+            "1023939": 766500000
+          },
+          "position_sample_time_range_s": [
+            2.1142389999999978,
+            2.1142389999999978
+          ],
+          "nearest_position_sample_after_event": true,
+          "at_or_after_labeled_qb_contact": false,
+          "blockers": [
+            {
+              "id": "1023920",
+              "rusher_blocker_gap_yd": 1.571559734785796,
+              "projection_u": 0.13690143771835242,
+              "lateral_to_rusher_qb_segment_yd": 1.5249564565918219
+            },
+            {
+              "id": "1023939",
+              "rusher_blocker_gap_yd": 2.2500888871331317,
+              "projection_u": -0.7752509838045653,
+              "lateral_to_rusher_qb_segment_yd": 0.6597513376066756
+            }
+          ]
+        },
+        "first_labeled_qb_contact": {
+          "event_time_s": 2.5499869999999873,
+          "max_nearest_frame_offset_s": 0.0024150000000418004,
+          "rusher_qb_gap_yd": 1.1160645142642982,
+          "original_tracking_timestamps": {
+            "1023911": 766933333,
+            "1024499": 766933333,
+            "1023920": 766933333,
+            "1023939": 766933333
+          },
+          "position_sample_time_range_s": [
+            2.5475719999999455,
+            2.5475719999999455
+          ],
+          "nearest_position_sample_after_event": false,
+          "at_or_after_labeled_qb_contact": true,
+          "blockers": [
+            {
+              "id": "1023920",
+              "rusher_blocker_gap_yd": 1.0373041983911937,
+              "projection_u": 0.036608863198458526,
+              "lateral_to_rusher_qb_segment_yd": 1.0364992213398654
+            },
+            {
+              "id": "1023939",
+              "rusher_blocker_gap_yd": 2.970269348055828,
+              "projection_u": -1.5910404624277463,
+              "lateral_to_rusher_qb_segment_yd": 2.3810451510966093
+            }
+          ]
+        }
+      },
+      "path_bend_during_labels_before_qb_contact": [
+        {
+          "blocker_id": "1023920",
+          "sampled_interval_s": [
+            2.3809056666666493,
+            2.514238999999975
+          ],
+          "rusher_path_length_yd": 0.6333557870302051,
+          "rusher_net_displacement_yd": 0.6332456079595049,
+          "rusher_transverse_displacement_to_initial_qb_line_yd": 0.3884397122802753,
+          "qb_displacement_same_interval_yd": 0.1627882059609974,
+          "interposed_fraction_at_1yd_center_radius": 0.0
+        },
+        {
+          "blocker_id": "1023939",
+          "sampled_interval_s": [
+            1.2142390000000205,
+            1.6809056666667175
+          ],
+          "rusher_path_length_yd": 2.179577776310669,
+          "rusher_net_displacement_yd": 2.1678791479231507,
+          "rusher_transverse_displacement_to_initial_qb_line_yd": 0.05392716205790418,
+          "qb_displacement_same_interval_yd": 1.4342245291445828,
+          "interposed_fraction_at_1yd_center_radius": 0.5333333333333333
+        }
+      ],
+      "context": {
+        "play_action_pass": "False",
+        "play_qb_pressure": "True",
+        "play_qb_exit_pocket_clock": "",
+        "play_yards_net": "0.0",
+        "play_pass_outcome": "False"
+      }
+    }
+  ],
+  "selection": "Fixed research witnesses: 65/Barrett quick clean release; 1587/Tryon contained edge with other pressure; 1457/Parsons sack; 1631/Barrett guard-to-RB sequence. No outcome-rate claim.",
+  "method": {
+    "edge_alignment": "Opposing DL/LB at snap, normalized x from LOS -0.5..3 yd, outside outer OL lateral range. Candidate alignment, not edge assignment.",
+    "quality": "Exact identity/team joins, one own QB matching passer (or sole QB on sack); one finite unflagged 30Hz tick from snap to terminal; provider camera ratio=1. Trio plus all offense screened for corridor geometry.",
+    "corridor": "At t>=0.5, shrinking rusher-QB distance over trailing .2 s, no other offensive body center within .75/1/1.25 yd of open rusher-QB segment. Instantaneous geometry only, not physical usable access. Kinematics exclude the frame nearest explicit actor-linked QB contact and all later frames, and stop at pass/sack; later outcome positions flagged separately.",
+    "proximity": "First rusher within 2 yd of QB at t>=.5 before pass/sack, same distance threshold as existing pass metric, sampled at native 30Hz here.",
+    "contact": "Engagement Start/End is provider-labeled state, not inferred 1.5yd proximity; no blocking-contact boolean, hands/load or validated disengagement timestamp supplied."
+  },
+  "usage": "Isolated noncommercial research. No raw redistribution or commercial use of derived analysis without source permission; published analysis requires StatsBomb credit/logo.",
+  "bulk_downloads": 0,
+  "engine_imports": 0,
+  "simulations": 0,
+  "bdb_queries": 0,
+  "elapsed_s": 2.3443442410007265,
+  "script_sha256": "592b8cc3fcbbb74a49706e1e477dbbeb0ae6d3db154e6ae7bcd4004a97aeaf7f",
+  "full_local_research_result": {
+    "path": "/workspace/football-simulation-/out/amf-protection/access-research.json",
+    "bytes": 117813,
+    "sha256": "729a070f255a6a5eea8efdc1959db8ff5b1bab42506d42480046aee2a5f888c2",
+    "scientific_content_sha256": "7d4adb6a530a9042aa1b70def0fa49ec9d8dbb62c08de27518f83814ff29d7e2",
+    "includes": "Full interval/identity rejection ledger; no raw tracking trajectories."
+  },
+  "conclusion": "Supports selected identity-checked label/kinematic comparisons; does not establish validated first usable QB access or causal blocker delay. Engagement labels, geometric proximity and explicit rusher-to-QB contact labels remain separate.",
+  "checks": [
+    "Four original input size/SHA256 pins",
+    "387 reciprocal same-pair nonnegative engagement intervals",
+    "Unique own QB and matching passer, with ambiguous/trick cases excluded",
+    "Native tick continuity/nonfinite/calibration/camera screens, no added imputation",
+    "3-4-5 segment projection and mirror invariance",
+    "Selected full-offense/trio quality and exclusion of the frame nearest QB contact",
+    "Corridor-radius onset monotonicity; no conversion to physical reach",
+    "Nearest-event sample offsets/original timestamps retained, including after-event positions",
+    "Play1587 other-pressure actor 1024514 joins a defensive HF track",
+    "No engine imports, source acquisition, BDB queries or production metric changes"
+  ]
+}
