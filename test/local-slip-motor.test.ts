@@ -14,7 +14,7 @@ describe('saved local ground-motor transition, no World integration',()=>{
   const f:MotorField=input[key].field,before=JSON.stringify(f),r=solve(f),ref=numeric(reference.cases[key]);
   bodies(r.bodies,ref.after);scalars(r,ref);expect(r.phases).toHaveLength(ref.phases.length);expect(JSON.stringify(f)).toBe(before);
   for(let j=0;j<r.phases.length;j++){const p=r.phases[j],e=ref.phases[j];near(p.duration,e.duration);near(p.force,e.force);near(p.work,e.work);
-   expect(p.work).toBeLessThanOrEqual(1e-12);expect(Math.abs(p.force)).toBeLessThanOrEqual(f.forceLimit);
+   expect(p.work).toBeLessThanOrEqual(1e-14);expect(Math.abs(p.force)).toBeLessThanOrEqual(f.forceLimit);
    for(let i=0;i<2;i++){near(p.groundAcceleration[i],e.groundAcceleration[i]);expect(Math.abs(p.groundAcceleration[i])).toBeLessThanOrEqual(f.bodies[i].yaw!.accelerationLimit);}}
   expect(Math.abs(r.workResidual)).toBeLessThan(1e-11);expect(r.absoluteImpulse).toBeLessThanOrEqual(f.forceLimit*f.duration+1e-14);
   for(let i=0;i<2;i++)expect(r.absoluteGroundYawImpulse[i]).toBeLessThanOrEqual(f.bodies[i].inertia*f.bodies[i].yaw!.accelerationLimit*f.duration+1e-14);

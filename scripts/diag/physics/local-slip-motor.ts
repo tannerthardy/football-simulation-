@@ -22,8 +22,8 @@ function errors(a:any,b:any){const residuals:Record<string,number>={};for(const 
 const results=[];
 for(const [key,f] of Object.entries(fields)){
  const r=solve(f),ref=numeric(reference.cases[key]),residuals={...errors(r,ref),motion:motion(r.bodies,ref.after)};for(const x of Object.values(residuals))assert(x<1e-11);
- assert(Math.abs(r.workResidual)<1e-11);assert(r.handWork<=1e-12);assert(r.absoluteImpulse<=f.forceLimit*f.duration+1e-14);
- for(const p of r.phases){assert(Math.abs(p.force)<=f.forceLimit&&p.work<=1e-12);for(let i=0;i<2;i++)assert(Math.abs(p.groundAcceleration[i])<=f.bodies[i].yaw!.accelerationLimit);}
+ assert(Math.abs(r.workResidual)<1e-11);assert(r.handWork<=1e-14);assert(r.absoluteImpulse<=f.forceLimit*f.duration+1e-14);
+ for(const p of r.phases){assert(Math.abs(p.force)<=f.forceLimit&&p.work<=1e-14);for(let i=0;i<2;i++)assert(Math.abs(p.groundAcceleration[i])<=f.bodies[i].yaw!.accelerationLimit);}
  const partitions=[];
  for(const weights of [[.23,.41,.36],[.5,.5],[.7,.2,.1]]){
   const copy=structuredClone(f),T=f.duration,sum:any={impulse:0,temporalMoment:0,absoluteImpulse:0,handWork:0,energyChange:0,groundYawImpulse:[0,0],groundYawTemporalMoment:[0,0],absoluteGroundYawImpulse:[0,0],groundYawWork:[0,0],legWork:[0,0]};let elapsed=0;
