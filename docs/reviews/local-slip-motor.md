@@ -7,7 +7,8 @@ the unchanged cost budget; retain it as a reference, not a World candidate.**
 One bounded allocation refactor produced too little benefit. Stop arithmetic
 micro-tuning here; no recovery change or broader mechanics package follows.
 
-Final runtime/tests/diagnostics: `cbe8a8818be2638758adbbebf7374a50f52f0622`,
+Runtime: `cbe8a8818be2638758adbbebf7374a50f52f0622`; final tests/diagnostics
+`8d84f69d089dbf5408621b4042f77df9b60ea629`,
 source `dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa`.
 Branch `codex/slip-motor-event`, from PR70 `1ee42fe`; PR70 and PR68 remain
 preserved. [Exact inputs, settings, checks and all costs](../../data/reviews/current/local-slip-motor.json).
@@ -66,7 +67,7 @@ control:
   discrepancy is **4.48e-14**. Total kinetic-energy/work closure residual
   stays below **5.05e-14**.
 - Three unequal partitions agree in motion, signed/absolute impulse, temporal
-  moments and work within **5.69e-14**. Phase hand work is passive to rounding;
+  moments and work within **5.69e-14**. The preserved1e-14 per-phase passive-work gate holds;
   every ground acceleration and tangent force obeys the supplied cap.
 - The unloaded opposing control reaches the requested spin and stops using
   ground torque. The original sliding control and first slip event retain
@@ -133,7 +134,7 @@ its observed maximum reached **2.420 ms**. Restore the simpler implementation.
 All runs and the rejected commit `1406664` remain indexed; no tolerances or
 budgets changed to manufacture a pass.
 
-Indexed launcher commands cost **57.921 s**, including profiling, refactor,
+Indexed launcher commands cost **59.689 s**, including profiling, refactor,
 checks after the demonstrated guard correction and all benchmark runs.
 Independent Python generation and report/Git work are outside that subtotal.
 

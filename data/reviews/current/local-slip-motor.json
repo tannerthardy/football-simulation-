@@ -8,7 +8,7 @@
     "recommendation": "Retain as local diagnostic reference. Stop arithmetic micro-tuning; measure event-selection versus body/accounting cost before choosing a different integration interface. No World adapter under current evidence."
   },
   "branch": "codex/slip-motor-event",
-  "testedRevision": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+  "testedRevision": "8d84f69d089dbf5408621b4042f77df9b60ea629",
   "source": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
   "initialKernelRevision": "9ab771ff0f942159c1d21011844189b0aba4f899",
   "initialSource": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
@@ -151,7 +151,7 @@
     },
     {
       "path": "scripts/diag/physics/local-slip-motor.ts",
-      "sha256": "fedbba923064a3b16fc40dd758d5eeb8992b3e08fa44c0caf88df5628cf58730"
+      "sha256": "bdf9bdb30cf939dfaf3de452bdd55e2838463c9e66d4b868537540380fe86557"
     },
     {
       "path": "scripts/diag/physics/compiled-slip-motor-cost.mjs",
@@ -159,7 +159,7 @@
     },
     {
       "path": "test/local-slip-motor.test.ts",
-      "sha256": "471cd065bb7ca07880a61764178b09d883b092b72e13eecb60d1a46c0abf4897"
+      "sha256": "6dd88fb74ec956888ce31414ae3de7378b3cb7eb3e5f5b8090e49cccc7763ff7"
     },
     {
       "path": "scripts/source-version.ts",
@@ -1645,9 +1645,60 @@
       ],
       "inputsUnchanged": true,
       "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/passivity-tests.receipt.json",
+      "commit": "8d84f69d089dbf5408621b4042f77df9b60ea629",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "a091722a2d8ee43c5201973ea338f8a4b6ba4ae96a4bd3bf8820f78cb1aa7fbc",
+      "startedAt": "2026-10-15T20:50:05.450Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-motor.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.473171956
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/passivity-validation.receipt.json",
+      "commit": "8d84f69d089dbf5408621b4042f77df9b60ea629",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "a091722a2d8ee43c5201973ea338f8a4b6ba4ae96a4bd3bf8820f78cb1aa7fbc",
+      "startedAt": "2026-10-15T20:50:07.037Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-motor.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.295228116
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
     }
   ],
-  "indexedLauncherSeconds": 57.920815325,
+  "indexedLauncherSeconds": 59.689215397,
   "unreceiptedDevelopment": "Independent Python generation, an initial failed literal-zero-tail equality assertion and old-guard witness inspection are outside launcher subtotal, as are report/Git work. No physical tolerance was changed and no simulations omitted.",
-  "nextDecision": "Measure event-selection versus body/accounting application cost on the same fields. Decide whether a schedule-only interface reusing existing World updates can meet unchanged gates; do not assume copy removal suffices, broaden mechanics, or promote the reference."
+  "nextDecision": "Measure event-selection versus body/accounting application cost on the same fields. Decide whether a schedule-only interface reusing existing World updates can meet unchanged gates; do not assume copy removal suffices, broaden mechanics, or promote the reference.",
+  "runtimeRevision": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+  "criteria": {
+    "motionIntegralAndEnergyAgreement": 1e-11,
+    "phasePassiveWorkMaximum": 1e-14,
+    "absoluteImpulseOverCapRoundingAllowance": 1e-14,
+    "referenceZeroTailAgreement": 1e-60,
+    "costBudgetUnchanged": true
+  }
 }
