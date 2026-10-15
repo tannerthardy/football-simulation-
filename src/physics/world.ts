@@ -41,7 +41,7 @@ import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import {passiveGripResultValid,type PassiveGripInput,type PassiveGripResult,type PassiveGripSolver,type PassiveGripReport} from './passive-grip.js';
 import {activeGripResultValid,type ActiveGripInput,type ActiveGripResult,type ActiveGripSolver} from './active-grip.js';
 import {correctiveGripResultValid,type CorrectiveGripInput,type CorrectiveGripResult,type CorrectiveGripSolver} from './corrective-grip.js';
-import {turnRoute,servoCruiseRate} from './turn-route.js';
+import {turnRouteDelta,servoCruiseRate} from './turn-route.js';
 import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -976,7 +976,9 @@ export class World {
     const tr = turnRateOf(b);
     const delta=this.facingDelta(b.facing,commandFacing(b,intent));
     let facing = b.facing + clamp(delta, -tr * dt, tr * dt);
-    if(this.turnChoice){
+    // At rest, settled arrival time is symmetric and grows with angular
+    // distance. The existing shortest route (including ties) is already best.
+    if(this.turnChoice&&(b.spin??0)!==0){
       // Forecast from the body's own last delivered ground force. This only
       // chooses an orientation route; feet still allocates and executes the
       // current shared force/torque budget, with no promised displacement.
@@ -985,8 +987,8 @@ export class World {
         acceleration=Math.min(tr/YAW_RESPONSE*(.3+.7*a),torque/sp.yawInertia),
         // Forecast the servo's sustained travel, not travel at its rate cap.
         // This never changes the rate/torque limits used by turnBodyResponse.
-        route=turnRoute(delta,b.spin??0,acceleration,servoCruiseRate(tr,dt,YAW_RESPONSE));
-      if(route.delta!==route.shortest)facing=b.facing+clamp(route.delta,-tr*dt,tr*dt);
+        route=turnRouteDelta(delta,b.spin??0,acceleration,servoCruiseRate(tr,dt,YAW_RESPONSE));
+      if(route!==delta)facing=b.facing+clamp(route,-tr*dt,tr*dt);
     }
     // Pad level costs a little speed when he plays low.
     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);

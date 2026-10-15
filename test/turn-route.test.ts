@@ -4,6 +4,7 @@ import {integrateYaw} from '../src/physics/yaw-response.js';
 import {turnTask,turnTasks} from '../scripts/diag/physics/turn-route-task.js';
 import {recoveryFixture} from '../scripts/diag/physics/grip-recovery-input.js';
 import {World} from '../src/physics/world.js';
+import {turnRouteDelta} from '../src/physics/turn-route.js';
 describe('experimental minimum-time orientation route, unchanged yaw law',()=>{
   it('forecasts the existing servo cruise from its periodic flow, without lowering the executed rate cap',()=>{
     for(const h of [.01,.05,.1]){
@@ -15,6 +16,13 @@ describe('experimental minimum-time orientation route, unchanged yaw law',()=>{
   it('matches an independent reachable-velocity envelope across acceleration, reversal and rate phases',()=>{
     for(const d of [-6.4,-3.14,-.1,0,.1,3.14,6.4])for(const w of [-3,-1.3,0,1.3,3])for(const a of [5,60])
       expect(Math.abs(boundedArrival(d,w,a,8)-arrivalReference(d,w,a,8))).toBeLessThan(1e-12);
+  });
+  it('selects exactly the same lift without diagnostic records, including ties and unsupported inputs',()=>{
+    for(const d of [-20,-2*Math.PI,-Math.PI-.01,-Math.PI,-.01,-0,0,.01,Math.PI,Math.PI+.01,20,NaN,Infinity])
+      for(const w of [-8,-1.3,-Number.MIN_VALUE,-0,0,Number.MIN_VALUE,1.3,8,9,NaN])for(const a of [0,.01,60,Infinity]){
+        const expected=turnRoute(d,w,a,8).delta;
+        expect(Object.is(turnRouteDelta(d,w,a,8),expected)).toBe(true);
+      }
   });
   it('respects mirrors and equivalent angles, preserves zero-spin shortest turns, and falls back without authority or at overspeed',()=>{
     for(const d of [-Math.PI-.01,-.3,0,.3,Math.PI+.01])for(const w of [-2,0,2]){
