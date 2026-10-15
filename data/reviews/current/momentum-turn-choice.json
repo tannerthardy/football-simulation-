@@ -1,0 +1,776 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeRevision": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+  "runtimeSource": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+  "meta": {
+    "commit": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+    "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "hashes": {
+      "src/physics/world.ts": "528277d7a03affb608fc4fd95a0671e9b407bb37e87248614de0f1c4db7326a2",
+      "src/physics/turn-route.ts": "d8a4ad65f526a633f3a5fc17e3f57b9277430cf09fe8102ae3265b54687edea6",
+      "scripts/diag/physics/turn-route-model.ts": "62a05f785d2a03705a0ac9428466aacf84f14712031bacb658372f2254e2ac83",
+      "scripts/diag/physics/turn-route-task.ts": "3aa60ce2189de31d575f3215d960e3bebe253a12d986626cdc5a12e6207849fd",
+      "scripts/diag/physics/turn-route-evidence.ts": "5134231837fbb10d46dbde226cd0f11de62a5bdd09ed1e79939560d7bdc7491b",
+      "test/turn-route.test.ts": "8f18cb7c3225878a5993d87a7d7d0bc89a083b20f9e4fe52165425e499263ab1",
+      "config/grip-native-support-packets.json": "96c96ec4c7c414b2d72c320346b60c721a8593b1a7edec85284b7e80061fe358"
+    },
+    "node": "v22.23.3",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "timestamp": "2026-10-15T17:59:18.068Z",
+    "parent": "4db2ffa77298a00dd475a6565c4f427cabb03634",
+    "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "settings": {
+      "turnChoice": "arrival-time only in candidate arms; absent otherwise",
+      "handContact": "patch",
+      "gripTiming": "midpoint",
+      "constraintWork": "per-solve",
+      "materialTransport": "owned",
+      "nativeSubsteps": 96,
+      "correctiveGrip": "same PR55 callback only; earlier active/tangent callback absent"
+    },
+    "interpretation": "Reach requested orientation and settle under existing limits. Route ranking uses a bounded-motion surrogate with cruise derived from the existing short-target servo, not its motor rate cap. This is not a predicted exact servo finish time, guaranteed speed, matched trajectory or football win.",
+    "instrumentedSeconds": 1.3159162780000002
+  },
+  "objective": "Reach requested orientation and settle through unchanged existing yaw law. Default-off turn route forecast; no physics capacity, grip or recovery change.",
+  "retained": [
+    "Old dry-cap numerical certificate",
+    "Nine earlier43/52 experimental patch failures",
+    "Keeper and older.24yd support history",
+    "Older active helper reel-stop omission remains separate PR56",
+    "Seed5001 earlier-prototype delay remains separate",
+    "Initial candidate two71.35ms mechanical regressions and censored4001 result",
+    "Final4001+.543732yd/+.10s; candidate planning p95 fails.25ms in both runs"
+  ],
+  "recommendation": "Keep experimental/default-off; narrow orientation benefit demonstrated, no broad football/physics promotion. Next reduce allocation/tail cost without changing selected decisions, then review independently of PR56.",
+  "evidence": [
+    {
+      "path": "out/momentum-turn-choice/tasks-final.json",
+      "sha256": "c7abd43c1c9c2b33333387ddd932914d86a200a1d243d7b395c9ca8e3c73834b"
+    },
+    {
+      "path": "out/momentum-turn-choice/tasks-final.raw.json",
+      "sha256": "5d1c30d91689763a291a35487a9302237d07357b3604253f7995f79e41dadda9"
+    },
+    {
+      "path": "out/momentum-turn-choice/football-final.json",
+      "sha256": "a3e2813e1186591927f46e11ed4f1ef89d5df20d0449c66f7588c75c423cf1c1"
+    },
+    {
+      "path": "out/momentum-turn-choice/cost-a.json",
+      "sha256": "63c4b1987d433fd7281f8dc4b43b966c48421cba3e0aa20b03883b42e2282d82"
+    },
+    {
+      "path": "out/momentum-turn-choice/cost-a.raw.json",
+      "sha256": "3687c183c0f1925466da9e61247eadbeda0a159486b67651948ed24bb16e77d6"
+    },
+    {
+      "path": "out/momentum-turn-choice/cost-b.json",
+      "sha256": "0b4d80d32a9826f2d5da4880b6450e88db9dcab5644a5a270e253a81ba8fdc4c"
+    },
+    {
+      "path": "out/momentum-turn-choice/cost-b.raw.json",
+      "sha256": "fbaf6d3c92c0e363d13f6ef65342e216f9c0b28dc2f3672c332f167e869c68f5"
+    },
+    {
+      "path": "out/momentum-turn-choice/initial-42aaf87/tasks.json",
+      "sha256": "117588ed378e0158bc2d9060d709f876af945d2f8f1e0e0aa9933370c7552d80"
+    },
+    {
+      "path": "out/momentum-turn-choice/initial-42aaf87/tasks.raw.json",
+      "sha256": "665d92a2b3e7fe5b2845daaaf391201b28b90b0c4a480701892ae41b3d570a2b"
+    },
+    {
+      "path": "out/momentum-turn-choice/initial-42aaf87/football.json",
+      "sha256": "a9a2398a30a1cfb711dab89c77a0b1148f649e1122bc0e24b5eeb5a3e54365b8"
+    },
+    {
+      "path": "out/momentum-turn-choice/initial-42aaf87/adverse.log",
+      "sha256": "fab550910104fbc3a6a4a3fed8bf30fff7b08a8035eb110eedaa6382c15f319e"
+    },
+    {
+      "path": "out/momentum-turn-choice/receipt.json",
+      "sha256": "729047440cfbe2edf1c64cafa2798b46e4d3c27a8e68a7635f05746a801ed25c"
+    }
+  ],
+  "taskSummary": {
+    "count": 34,
+    "improved": 5,
+    "unchanged": 29,
+    "regressed": 0,
+    "operator": {
+      "tick": 0.05,
+      "settledAngle": 0.01,
+      "settledSpin": 0.02,
+      "heldFor": 0.1,
+      "censorAt": 5,
+      "substeps": 96
+    },
+    "improvements": [
+      {
+        "id": "saved-previous",
+        "existing": 1.4114583333333335,
+        "candidate": 1.375,
+        "seconds": -0.03645833333333348
+      },
+      {
+        "id": "mirror-previous",
+        "existing": 1.4114583333333335,
+        "candidate": 1.375,
+        "seconds": -0.03645833333333348
+      },
+      {
+        "id": "low-torque",
+        "existing": 1.475,
+        "candidate": 1.35,
+        "seconds": -0.125
+      },
+      {
+        "id": "fresh--0.1-2.5",
+        "existing": 1.4171875,
+        "candidate": 1.3932291666666667,
+        "seconds": -0.023958333333333304
+      },
+      {
+        "id": "fresh-0.1--2.5",
+        "existing": 1.4171875,
+        "candidate": 1.3932291666666667,
+        "seconds": -0.023958333333333304
+      }
+    ],
+    "partition": [
+      {
+        "id": "saved-previous",
+        "finish96": 1.375,
+        "finish192": 1.3752604166666667
+      },
+      {
+        "id": "normal",
+        "finish96": 0.5770833333333334,
+        "finish192": 0.5770833333333334
+      },
+      {
+        "id": "changed-command",
+        "finish96": 1.0729166666666667,
+        "finish192": 1.0731770833333334
+      }
+    ],
+    "referenceQueries": 70,
+    "referenceError": 1.687538997430238e-14,
+    "candidateGripRefs": [
+      {
+        "history": "previous",
+        "error": 0.00022545260931573302,
+        "refinement": 5.175738405482582e-05,
+        "bodyWork": 0.12271235940054855,
+        "motorWork": 0.12271235940054834
+      },
+      {
+        "history": "transition",
+        "error": 0.0007194311623378951,
+        "refinement": 1.6008110949399966e-05,
+        "bodyWork": 0.1250616686861654,
+        "motorWork": 0.12506166868616547
+      }
+    ]
+  },
+  "loaded": [
+    {
+      "history": "previous",
+      "enabled": false,
+      "runnerPlan": -2.731028494103289,
+      "runnerFinal": {
+        "pos": {
+          "x": 63.672772549729785,
+          "y": 26.707372032951554
+        },
+        "facing": -3.189646932668607,
+        "spin": -1.3433623553324108,
+        "xi": {
+          "x": 0.6435989485721558,
+          "y": 0.0073386072478512625
+        }
+      },
+      "accepted": 96,
+      "fallbacks": 0
+    },
+    {
+      "history": "previous",
+      "enabled": true,
+      "runnerPlan": -3.5172507163255116,
+      "runnerFinal": {
+        "pos": {
+          "x": 63.67598514274066,
+          "y": 26.708837877276636
+        },
+        "facing": -3.2318149228346975,
+        "spin": -2.661584255206172,
+        "xi": {
+          "x": 0.5695522586799779,
+          "y": -0.013499807176794524
+        }
+      },
+      "accepted": 95,
+      "fallbacks": 1
+    },
+    {
+      "history": "transition",
+      "enabled": false,
+      "runnerPlan": -3.5385329359335134,
+      "runnerFinal": {
+        "pos": {
+          "x": 63.67518393193348,
+          "y": 26.708346304168057
+        },
+        "facing": -3.256521922998115,
+        "spin": -2.695223815454287,
+        "xi": {
+          "x": 0.5732570298830464,
+          "y": -0.012434636920115882
+        }
+      },
+      "accepted": 95,
+      "fallbacks": 1
+    },
+    {
+      "history": "transition",
+      "enabled": true,
+      "runnerPlan": -3.5385329359335134,
+      "runnerFinal": {
+        "pos": {
+          "x": 63.67518393193348,
+          "y": 26.708346304168057
+        },
+        "facing": -3.256521922998115,
+        "spin": -2.695223815454287,
+        "xi": {
+          "x": 0.5732570298830464,
+          "y": -0.012434636920115882
+        }
+      },
+      "accepted": 95,
+      "fallbacks": 1
+    }
+  ],
+  "native": {
+    "inputs": [
+      {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-3001-1"
+      },
+      {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": -1,
+        "id": "patch-45-8-0-3001--1"
+      },
+      {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      {
+        "id": "patch-45-8-0-5001-1",
+        "name": "declared new angle",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "side": 1,
+        "seed": 5001
+      },
+      {
+        "id": "patch-45-8-0-6001-1",
+        "name": "declared fresh angle",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "side": 1,
+        "seed": 6001
+      }
+    ],
+    "prior": {
+      "path": "data/reviews/current/grip-recovery-work.json",
+      "sha256": "9d179031778836974bf8df9f099c5c0389fdd49270f79ee10cfc3c5bedf2e65a"
+    },
+    "rows": [
+      {
+        "id": "patch-45-8-0-3001-1",
+        "existing": {
+          "ending": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4
+        },
+        "candidate": {
+          "ending": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4
+        },
+        "defaultReproduced": true,
+        "changedPlans": 0,
+        "firstChangedPlan": null,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "attempts": [
+          "grip"
+        ],
+        "maximumWorkResidual": 2.4070967441502944e-11,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-45-8-0-3001-1-arrival.changes.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      {
+        "id": "patch-45-8-0-3001--1",
+        "existing": {
+          "ending": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4
+        },
+        "candidate": {
+          "ending": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4
+        },
+        "defaultReproduced": true,
+        "changedPlans": 0,
+        "firstChangedPlan": null,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "attempts": [
+          "grip"
+        ],
+        "maximumWorkResidual": 2.4070967441502944e-11,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-45-8-0-3001--1-arrival.changes.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      {
+        "id": "patch-0-3-0-3001-1",
+        "existing": {
+          "ending": "tackled",
+          "advanceAfterGrip": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001
+        },
+        "candidate": {
+          "ending": "tackled",
+          "advanceAfterGrip": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001
+        },
+        "defaultReproduced": true,
+        "changedPlans": 0,
+        "firstChangedPlan": null,
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "attempts": [
+          "grip"
+        ],
+        "maximumWorkResidual": 3.410605131648481e-12,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-0-3-0-3001-1-arrival.changes.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      {
+        "id": "patch-45-8-0-4001-1",
+        "existing": {
+          "ending": "tackled",
+          "advanceAfterGrip": 14.405070747703945,
+          "contactToEnd": 2.9
+        },
+        "candidate": {
+          "ending": "tackled",
+          "advanceAfterGrip": 14.94880273021856,
+          "contactToEnd": 2.9999999999999996
+        },
+        "defaultReproduced": true,
+        "changedPlans": 1,
+        "firstChangedPlan": {
+          "time": 4.05,
+          "i": 6,
+          "facing": -3.0725123289506064,
+          "spin": -1.3372684859229695,
+          "shortest": -2.6794012178394953,
+          "chosen": -3.4656234400617176
+        },
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "attempts": [
+          "grip"
+        ],
+        "maximumWorkResidual": 3.5427660804998595e-11,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-45-8-0-4001-1-arrival.changes.json",
+          "sha256": "9072b1fc4994dbbc67bde21a4d8d901c74c1f2c10470fb8ad10df5e9409cee33"
+        }
+      },
+      {
+        "id": "patch-45-8-0-5001-1",
+        "existing": {
+          "ending": "tackled",
+          "advanceAfterGrip": 11.675658647315743,
+          "contactToEnd": 3.15
+        },
+        "candidate": {
+          "ending": "tackled",
+          "advanceAfterGrip": 11.66046660433669,
+          "contactToEnd": 3.15
+        },
+        "defaultReproduced": true,
+        "changedPlans": 1,
+        "firstChangedPlan": {
+          "time": 5,
+          "i": 6,
+          "facing": -3.058921886765923,
+          "spin": -1.7749968678882957,
+          "shortest": -2.665810775654812,
+          "chosen": -3.4520329978770343
+        },
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "attempts": [
+          "grip"
+        ],
+        "maximumWorkResidual": 2.858513425962883e-11,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-45-8-0-5001-1-arrival.changes.json",
+          "sha256": "3b7fdb6b4657ee9709acdf9e83c4a521454dbb0a420b35c050e8e304b35215c6"
+        }
+      },
+      {
+        "id": "patch-45-8-0-6001-1",
+        "existing": {
+          "ending": "escaped",
+          "advanceAfterGrip": 10.278737531835247,
+          "contactToEnd": 1.4
+        },
+        "candidate": {
+          "ending": "escaped",
+          "advanceAfterGrip": 10.278737531835247,
+          "contactToEnd": 1.4
+        },
+        "defaultReproduced": false,
+        "changedPlans": 0,
+        "firstChangedPlan": null,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "attempts": [
+          "grip",
+          "rolled dive miss"
+        ],
+        "maximumWorkResidual": 6.94910795573378e-12,
+        "changesEvidence": {
+          "path": "out/momentum-turn-choice/patch-45-8-0-6001-1-arrival.changes.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    ]
+  },
+  "cost": [
+    {
+      "scope": "22 frozen-body World.plan calls, preparation outside clock, no physical World stepping",
+      "warm": 11,
+      "repeats": 101,
+      "medianBudget": 0.1,
+      "p95Budget": 0.25,
+      "rows": [
+        {
+          "id": "loaded-half-turn",
+          "enabled": false,
+          "median": 0.04600900000002639,
+          "p95": 0.14131300000008196,
+          "maximum": 0.958611000000019
+        },
+        {
+          "id": "loaded-half-turn",
+          "enabled": true,
+          "median": 0.08110199999998713,
+          "p95": 0.27874900000006164,
+          "maximum": 1.4995739999999387
+        },
+        {
+          "id": "normal",
+          "enabled": false,
+          "median": 0.040510999999924024,
+          "p95": 0.16460700000004636,
+          "maximum": 0.4370370000000321
+        },
+        {
+          "id": "normal",
+          "enabled": true,
+          "median": 0.07716600000003382,
+          "p95": 0.3529909999999745,
+          "maximum": 1.7035009999999602
+        }
+      ]
+    },
+    {
+      "scope": "22 frozen-body World.plan calls, preparation outside clock, no physical World stepping",
+      "warm": 11,
+      "repeats": 101,
+      "medianBudget": 0.1,
+      "p95Budget": 0.25,
+      "rows": [
+        {
+          "id": "loaded-half-turn",
+          "enabled": false,
+          "median": 0.03133699999989403,
+          "p95": 0.1714880000000676,
+          "maximum": 0.23507299999994302
+        },
+        {
+          "id": "loaded-half-turn",
+          "enabled": true,
+          "median": 0.07576400000016292,
+          "p95": 0.36377700000002733,
+          "maximum": 2.5169899999998506
+        },
+        {
+          "id": "normal",
+          "enabled": false,
+          "median": 0.028933000000051834,
+          "p95": 0.13976999999999862,
+          "maximum": 1.2724329999998645
+        },
+        {
+          "id": "normal",
+          "enabled": true,
+          "median": 0.07778699999994387,
+          "p95": 0.3466610000000401,
+          "maximum": 0.8985589999999775
+        }
+      ]
+    }
+  ],
+  "initialRejected": {
+    "commit": "42aaf871628dabd4450661df149dca9b676932f7",
+    "source": "ee1b169d9832592aaffcc71317f7d18cfbf388d5c163bb639ec68cf9c15f784d",
+    "adverseTasks": [
+      {
+        "input": {
+          "id": "fresh--0.25-2.5",
+          "facing": -3.391592653589793,
+          "spin": 2.5,
+          "target": 0
+        },
+        "seconds": 0.07135416666666661,
+        "finishes": [
+          1.3692708333333334,
+          1.440625
+        ]
+      },
+      {
+        "input": {
+          "id": "fresh-0.25--2.5",
+          "facing": -2.891592653589793,
+          "spin": -2.5,
+          "target": 0
+        },
+        "seconds": 0.07135416666666661,
+        "finishes": [
+          1.3692708333333334,
+          1.440625
+        ]
+      }
+    ],
+    "seed4001": [
+      {
+        "enabled": false,
+        "result": {
+          "ending": "tackled",
+          "advanceAfterGrip": 14.405070747703945,
+          "contactToEnd": 2.9
+        }
+      },
+      {
+        "enabled": true,
+        "result": {
+          "ending": "censored",
+          "advanceAfterGrip": 22.176984763924025,
+          "contactToEnd": 4.4
+        }
+      }
+    ],
+    "reason": "Physical motor rate was not the achieved cruise of the short-target servo. Derived periodic critical-flow forecast removes mechanical loss without tuning force or outcomes.96/192/384 partition keeps original71.354ms loss."
+  },
+  "validation": {
+    "focused": {
+      "path": "out/baseline/run-1792087117722-364216.json",
+      "sha256": "764e2a888632124fdf21baa97930b37b4c6d148555c3e0fed2b31e6e9f874596",
+      "exitCode": 0,
+      "commit": "42aaf871628dabd4450661df149dca9b676932f7",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true,
+      "passed": 47,
+      "new": 13
+    },
+    "typecheck": {
+      "path": "out/baseline/run-1792087119040-364280.json",
+      "sha256": "5764b42fd4f6e039fe58aa6d635c71092f09fd3f95e39451ea6d03062f9a7e3b",
+      "exitCode": 0,
+      "commit": "42aaf871628dabd4450661df149dca9b676932f7",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    },
+    "build": {
+      "path": "out/baseline/run-1792087332398-364969.json",
+      "sha256": "4cdb897d4587543ed059062ebd987d57ef3b0dc7ae1809e77684c3dd0bdac7ae",
+      "exitCode": 0,
+      "commit": "bea90de6d257a112cac0991c544fb9a192471da7",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    },
+    "python": {
+      "path": "out/baseline/run-1792087332390-364956.json",
+      "sha256": "6a30c72af52727657a3ca74fc4715a2d3d1f593c4b295e835a25887a44e27bd6",
+      "exitCode": 0,
+      "commit": "bea90de6d257a112cac0991c544fb9a192471da7",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true,
+      "passed": 145
+    },
+    "fullSuite": {
+      "path": "out/baseline/run-1792087279279-364841.json",
+      "sha256": "4c6c210a59bbd1b85bdf1fb1099d97a5a989378418138f206dcf77891510a023",
+      "exitCode": 1,
+      "commit": "bea90de6d257a112cac0991c544fb9a192471da7",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true,
+      "passed": 1952,
+      "failed": 1,
+      "seconds": 331.23,
+      "retainedFailure": "test/grip-fast.test.ts dry cap-stop numerical certificate; expected limited0/actual1"
+    },
+    "tasks": {
+      "path": "out/baseline/run-1792087157392-364452.json",
+      "sha256": "b8fd337fc9c09c9bea6e7050d91b442ed64baed1513dafc4e563078a6cdf327d",
+      "exitCode": 0,
+      "commit": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    },
+    "native": {
+      "path": "out/baseline/run-1792087158656-364504.json",
+      "sha256": "33f28bc6bf2ac38239771b71f3074b5705ac570a804424e66551c944b3ff3c96",
+      "exitCode": 0,
+      "commit": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    },
+    "costA": {
+      "path": "out/baseline/run-1792087203935-364562.json",
+      "sha256": "1683ca759f7093b655f716a9829421c59bb981dd2a1eebb16701477a3e61787e",
+      "exitCode": 0,
+      "commit": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    },
+    "costB": {
+      "path": "out/baseline/run-1792087239968-364741.json",
+      "sha256": "57e2f77b7d0489cb0b2561f275045dd13e933d1ea0152732cfde350f9fea08b5",
+      "exitCode": 0,
+      "commit": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "inputsUnchanged": true
+    }
+  }
+}
