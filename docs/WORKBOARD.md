@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Independent opponent-information extraction — 2026-10-15
+
+Integration owns this review branch from accepted4679a3c (#72 merged). Extract
+only Do-It-All's byte-identical carrier opponent-risk correction and its two
+existing scene controls/fixture from60223a8. Observation-only transport remains
+a separately preserved patch; no navigation, sampledVel, spacing, capacities,
+physics, #69 or new flag. Question: can the active information fix compose with
+accepted develop without unused teammate transport? Reuse the author packet;
+run the two extracted contracts, existing Duo declaration control and typecheck.
+No full suite or games merely to select this scope. No merge authorization.
+
 ## Independent #67 portability review — 2026-10-15
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
