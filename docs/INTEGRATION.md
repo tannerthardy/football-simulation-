@@ -214,7 +214,7 @@ One targeted diagnostic of its three original lanes preserves commands, actual
 contact-free motion and physical budgets; preview calls are15/0/14. The cost
 contract is with Run consulting Do-It-All; no assertion has been changed.
 
-**#85 now advances only independently accepted #84.** Its final protected diff is
+**#85 adopted only independently accepted #84 as86250bb.** Its final protected diff is
 blocking.ts + combo-transfer.test.ts, exactly the reviewed blobs/source dcebbee.
 #81 runtime/test/fixture are removed by a normal revert; original candidate,
 failed receipt, diagnostic and portable patch remain fetchable in history.
@@ -239,6 +239,13 @@ included. #84 preserves simultaneously loaded DT/LB work without extra informati
 or a capability boost; A018 still misses the LB. #81 adds the missing attainable
 forecast without repairing current A044's collision. No blanket football benefit
 or unchanged per-case randomness claim.
+
+[Consolidated #85 accepted-pin and owner handoff](https://github.com/tannerthardy/football-simulation-/pull/85#issuecomment-6204783778)
+is posted. [#84 is closed as incorporated by extraction](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204784817),
+with its branch/evidence preserved. #81 remains open but `integration-ready` is
+removed; its original author body is preserved beneath an explicit Integration
+HOLD notice. [Current #81 next decision](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204786315).
+No further unchanged verification, panel or games are requested for publication.
 
 **Measurement's requested #82 comparison is complete**, not awaiting collection.
 [Immutable report and full-arm distribution](https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md).
