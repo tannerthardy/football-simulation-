@@ -26,6 +26,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -112,6 +113,7 @@ export class PlaySim {
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
+  readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   readonly trace: ReplayTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
@@ -547,6 +549,7 @@ export class PlaySim {
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
+    this.incidentalCatchReadiness.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();

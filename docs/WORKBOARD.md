@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Incidental offensive catch readiness
+
+| Item | Owner | Branch | Files / boundary | Status |
+| --- | --- | --- | --- | --- |
+| P024 protection-only incidental catch versus P034 check-release | Codex catch/pursuit owner, user supplied spread/air handoff | `codex/eligible-catch-acquisition` from accepted `a1b16e6` | `catching.ts` readiness filter, new observer-owned catch-flight acquisition and one sensing hook in `PlaySim.tick`; focused fixtures/tests and evidence. No edits to `blocking.ts`, QB, assignment/release policy, movement, World or capacities. PR #58 remains separate. | 2026-10-15 UTC: claimed. Saved evidence packet `4ae667e`, recorded engine `f62511a` / `dd173a3e…`; catch resolver unchanged on accepted develop. Evaluate acquired flight before incidental attempts, retain emergency catches and targeted controls. Integration owns any eventual combined verification. |
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
