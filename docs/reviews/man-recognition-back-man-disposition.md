@@ -53,3 +53,45 @@ and [portable test-only reconciliation](../../data/reviews/current/man-recogniti
 (apply with `git apply --unidiff-zero`).
 Integration owns independent review and the next exact combined verification.
 The separate run-support reassignment change is not bundled into #75.
+
+## Review support: expiry, contradiction and priority
+
+User-requested review support adds **tests only** at
+`16ba1d6caa154d5132c38ec272d12fa7da5c01b2`; production source remains
+`2c90810d2d4051d2ef7dab818312b3ea6c1622619846c9eff728ecdf3b97c981`.
+The prior 44-check and native/adverse evidence retains its original scope.
+No independent reviewer comments were posted at this checkpoint; these author
+checks support review and do not constitute independent approval.
+
+The evidence gap was controller-level expiry with advancing snapshots, rather
+than replacement of a fixed unit-test picture. Two new insertion/alley cases
+now use production `PlaySim.see` and `PerceptionBuffer.record`, with a controlled
+.10s observation delay and fixed run belief. A held RB image persists through
+that delay, then newer known-unheld or omitted-possession snapshots replace it
+with false or unknown. Support ceases in both cases, even when hidden current
+possession names the RB. Repeated queries leave the buffer/RNG unchanged.
+Changing current belief to pass cancels a previously active fit despite the
+still-positive picture; restoring run belief permits support again.
+
+The mirrored insertion/alley throw tests now provide an attainable ball window
+and assert `onBall`, in addition to equality with unchanged `playBall`. Recognized
+flight therefore defeats the positive back picture and run belief, rather than
+merely matching an unreachable ball fallback. Before recognition, the held/air
+request and RNG invariance contracts remain intact.
+
+**38 back-man checks pass**,1.928 command seconds, accepted44flags/components1.
+The unchanged eight direct ManCoverage/World controls reuse their original
+receipt. No new native opening, game, combined suite, physics or behavior change.
+[New exact receipt](../../data/reviews/current/man-recognition-contract/review-support.json).
+The portable test patch now includes these review controls; apply with
+`git apply --unidiff-zero`.
+
+Expiry here means replacement by the next delayed sampling picture. The
+24-frame buffer advances every live tick; its maximum selected lag is1.15s at
+20Hz. It is not gaze/occlusion memory with confidence expiry. An arbitrary TTL
+on a still-positive supplied picture would be a new policy, not a repair to
+this recognition boundary. Upstream recognition's hidden clock/possession debt
+and other existing truth consumers remain separate and disclosed. The original
+failed combined receipt is not relabeled. Integration retains exact composition
+and verification ownership; Do-It-All owns mesh spacing. Catching pauses further
+behavior work after publishing this review support.

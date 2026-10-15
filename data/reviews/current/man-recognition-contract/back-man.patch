@@ -1,5 +1,5 @@
 diff --git a/test/back-man-run-fit.test.ts b/test/back-man-run-fit.test.ts
-index 108c750..4c07993 100644
+index 108c750..9264fa5 100644
 --- a/test/back-man-run-fit.test.ts
 +++ b/test/back-man-run-fit.test.ts
 @@ -12 +12 @@ import type { Gap } from '../src/playbook/types.js';
@@ -10,26 +10,74 @@ index 108c750..4c07993 100644
 -    const f = stage(), expected = stage();
 +  it.each([-1, 1])('retains acquired insertion until throw recognition then transfers to the ball, side=%s', side => {
 +    const held = stage(true, side), f = stage(true, side), expected = stage(true, side);
-@@ -254,0 +255,7 @@ describe('inside man players insert from their acquired back possession', () =>
+@@ -254,0 +255,11 @@ describe('inside man players insert from their acquired back possession', () =>
 +    // The fixtures' old .20-second flight is still unrecognized. Hidden
 +    // release does not cancel positive acquired possession and run belief.
 +    expect(sawThrow(f.a, f.sim, f.r)).toBe(false);
 +    expect(f.update()).toEqual(held.update());
 +    expect(f.sim.rng).toEqual(held.sim.rng);
 +    f.sim.throwAt = expected.sim.throwAt = .1;
++    for (const item of [f, expected]) {
++      item.a.tags.add('looking');
++      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
++    }
 +    expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
-@@ -372 +379 @@ describe('back man markers preserve their installed alley support instead of rec
+@@ -255,0 +267 @@ describe('inside man players insert from their acquired back possession', () =>
++    expect(f.a.tags.has('onBall')).toBe(true);
+@@ -372 +384 @@ describe('back man markers preserve their installed alley support instead of rec
 -  it('supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership', () => {
 +  it('supports a known backfield FB without reading live possession', () => {
-@@ -382 +389,4 @@ describe('back man markers preserve their installed alley support instead of rec
+@@ -382 +394,4 @@ describe('back man markers preserve their installed alley support instead of rec
 -    const air = alleyStage(), expected = alleyStage();
 +  });
 +
 +  it.each([-1, 1])('retains acquired alley support until throw recognition then transfers to the ball, side=%s', side => {
 +    const held = alleyStage(true, side), air = alleyStage(true, side), expected = alleyStage(true, side);
-@@ -389,0 +400,5 @@ describe('back man markers preserve their installed alley support instead of rec
+@@ -389,0 +405,9 @@ describe('back man markers preserve their installed alley support instead of rec
 +    expect(sawThrow(air.a, air.sim, air.r)).toBe(false);
 +    expect(air.update()).toEqual(held.update());
 +    expect(air.sim.rng).toEqual(held.sim.rng);
 +    air.sim.throwAt = expected.sim.throwAt = .1;
++    for (const item of [air, expected]) {
++      item.a.tags.add('looking');
++      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
++    }
 +    expect(sawThrow(air.a, air.sim, air.r)).toBe(true);
+@@ -390,0 +415 @@ describe('back man markers preserve their installed alley support instead of rec
++    expect(air.a.tags.has('onBall')).toBe(true);
+@@ -412,0 +438,35 @@ describe('back man markers preserve their installed alley support instead of rec
++
++describe('acquired back-man support has no private positive-picture latch', () => {
++  it.each(['insert', 'alley'] as const)('uses new sensing and contradictory belief after a positive %s choice', kind => {
++    for (const replacement of [null, undefined]) {
++      const f = kind === 'insert' ? stage() : alleyStage();
++      f.sim.see = PlaySim.prototype.see;
++      f.a.mind.observationDelay = () => .1;
++      f.a.eyes = { keys: [f.r], peripheral: .15 };
++      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.r.idx);
++      expect(f.sim.see(f.a, f.r).carrying).toBe(true);
++      const positive = f.update();
++      f.a.recog!.read = 'pass';
++      const pass = f.update();
++      expect(pass).not.toEqual(positive);
++      f.a.recog!.read = 'run';
++      expect(f.update()).toEqual(positive);
++
++      for (let i = 0; i < 3; i++) {
++        f.sim.t += f.sim.dt;
++        f.sim.perception.record(f.sim.agents, replacement);
++        const cue = f.sim.see(f.a, f.r);
++        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
++        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.r)).toEqual(cue);
++        expect(f.sim.perception).toEqual(buffer);
++        expect(f.sim.rng).toEqual(rng);
++        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
++        if (i < 2) f.update();
++      }
++      expect(f.a.recog!.read).toBe('run');
++      f.sim.ball = { kind: 'held', carrier: f.r };
++      expect(f.update()).toEqual(new ManCoverage(f.a, f.sim, f.r, false, 'B', 1).update(f.a, f.sim));
++      expect(f.sim.see(f.a, f.r).carrying).toBe(replacement === null ? false : null);
++    }
++  });
++});
