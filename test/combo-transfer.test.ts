@@ -381,3 +381,21 @@ describe('a combo responds to the filling backer that the observer actually saw'
     expect(f.sim.events.filter(e => e.type === 'block_climb')).toHaveLength(1);
   });
 });
+
+
+describe('joined departure admission and execution use one first command', () => {
+  it.each([-1, 1])('executes the checked clear-helper request without moving bodies in the read, side %s', side => {
+    const f=ready(fixture(side,true),'helper');
+    const behavior=f.helper.behavior as RunBlocker;
+    const prepared=vi.spyOn(behavior,'joinedDepartureCommand');
+    const before=f.sim.agents.map(a=>structuredClone(a.body));
+    readCombination(f.helper,f.sim,f.combination);
+    expect(f.combination.released).toBe(true);
+    expect(f.sim.agents.map(a=>a.body)).toEqual(before);
+    const command=prepared.mock.results.at(-1)!.value;
+    const execute=vi.spyOn(f.sim.world,'step');
+    step(f,true);
+    expect(execute.mock.calls[0][0][f.helper.idx]).toEqual(command);
+    prepared.mockRestore(); execute.mockRestore();
+  });
+});

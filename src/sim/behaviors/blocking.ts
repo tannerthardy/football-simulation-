@@ -31,6 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
+import { checkJoinedDeparture } from '../joined-departure.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -367,7 +368,7 @@ export interface CombinationProposal {
   phi: number;
   cost: number;
   /** The reader's first achievable step off the double, not a promised block. */
-  departure?: { exit: Vec2 | null; flow: Vec2; backer: Perceived };
+  departure?: { exit: Vec2 | null; flow: Vec2; backer: Perceived; command?: Intent };
 }
 
 export interface CombinationRead {
@@ -741,6 +742,7 @@ export class RunBlocker implements Behavior {
   private pullCleared = false;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
     flow: Vec2; backer: Perceived } | null = null;
+  private initialDeparture: { at: number; target: Agent; command: Intent } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
@@ -840,6 +842,10 @@ export class RunBlocker implements Behavior {
       delete plan.departure;
       this.departureRead = null;
     }
+    const initial = this.initialDeparture;
+    this.initialDeparture = null;
+    if (initial?.at === sim.t && plan.kind === 'climb' && target === initial.target)
+      return { ...initial.command, vel: { ...initial.command.vel } };
     if (plan.kind === 'climb' && plan.departure && target === plan.departure.backer) {
       const leaving = this.leaveCombination(a, sim);
       if (leaving) return leaving;
@@ -1099,10 +1105,27 @@ export class RunBlocker implements Behavior {
   /** Keep the cue that authorized departure until the next ordinary read. */
   startDeparture(a: Agent, sim: PlaySim, defender: Agent, keeper: Agent, backer: Agent,
     picture: NonNullable<CombinationProposal['departure']>): void {
+    if (picture.command) this.initialDeparture = { at: sim.t, target: backer,
+      command: { ...picture.command, vel: { ...picture.command.vel } } };
     if (!picture.exit) return;
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
       exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+  }
+
+  /** Plan exactly the existing first action from this read, before releasing
+   * hands. No new route, observation, physics or teammate request is supplied. */
+  joinedDepartureCommand(a: Agent, sim: PlaySim, target: Agent,
+    route: NonNullable<CombinationProposal['departure']>): Intent {
+    if (route.exit) return this.exitCommand(a, route.exit, route.flow, route.backer);
+    const strike = a.profile.radius+target.profile.radius+.1+a.player.measurables.armIn/36*.45;
+    return this.plannedClimb(a, sim, target, strike, route.backer)!;
+  }
+
+  private exitCommand(a: Agent, exit: Vec2, flow: Vec2, backer: Perceived): Intent {
+    const goal = { x: exit.x, y: exit.y+a.mind.placementError*(1-.5*a.r('runBlock')) };
+    return track(a, goal, flow, { speed: 1, gain: 3,
+      facing: Math.atan2(backer.pos.y-a.pos.y,backer.pos.x-a.pos.x) });
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
@@ -1124,10 +1147,8 @@ export class RunBlocker implements Behavior {
     const read = this.departureRead;
     if (!read?.exit) return stand();
     const dt = sim.t - read.at;
-    const goal = { x: read.exit.x + read.flow.x * dt,
-      y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
-    return track(a, goal, read.flow, { speed: 1, gain: 3,
-      facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
+    const exit = { x: read.exit.x+read.flow.x*dt, y: read.exit.y+read.flow.y*dt };
+    return this.exitCommand(a,exit,read.flow,read.backer);
   }
 
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
@@ -1624,10 +1645,22 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   if (!filling && !arriving) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
+  const departure = { ...route, backer } as NonNullable<CombinationProposal['departure']>;
+  if (CLIMB_PLAN && observer.behavior instanceof RunBlocker) {
+    const command = observer.behavior.joinedDepartureCommand(observer,sim,combo.backer!,departure);
+    const peers = [{ ...surface.down, radius: combo.defender.profile.radius },
+      { ...surface.covered, radius: candidate.keeper.profile.radius }];
+    if (!checkJoinedDeparture(observer.body,command,peers,sim.t,
+      observer.mind.decisionInterval,sim.world.handContact).clear) {
+      observer.tags.add('combo-held');
+      return;
+    }
+    departure.command = command;
+  }
   const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
     + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
     : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);
-  read.proposal = { ...candidate, t: sim.t, departure: { ...route, backer },
+  read.proposal = { ...candidate, t: sim.t, departure,
     cost: cost + (observer === e.blocker ? .30 : 0) };
   if (!defer) {
     const valid = revalidateJoinedProposal(read.proposal, sim, combo);
