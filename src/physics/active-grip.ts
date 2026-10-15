@@ -1,6 +1,7 @@
-/** Experimental extension of the passive boundary for native issued reel and
- * ground forces. One below-slip attachment; no changed force or support law. */
+/** Experimental boundary for native reel/ground and a separate zero-tension
+ * tangent cap/slip contract. No changed force or support law. */
 import {boundedAttachment} from './bounded-attachment.js';
+import {LEG_SLIDE} from './grip-sliding.js';
 import type {PassiveGripParticle} from './passive-grip.js';
 import type {Vec2} from '../core/vec.js';
 import type {PassiveGripInput,PassiveGripResult} from './passive-grip.js';
@@ -11,6 +12,8 @@ export interface ActiveGripInput extends PassiveGripInput {
 export interface ActiveGripResult extends PassiveGripResult {
   groundWork:number[];groundYawImpulse:number[];groundYawMoment:number[];groundYawWork:number[];
   reelWork:number;reelDose:number;armCost:number;externalAngularImpulse:number;
+  /** Separate opt-in zero-tension tangent transition contract. */
+  tangentSlip?:{time:number;legImpulse:Vec2};
 }
 export type ActiveGripSolver=(input:ActiveGripInput)=>ActiveGripResult|undefined;
 
@@ -28,11 +31,17 @@ export function activeGripResultValid(q:ActiveGripInput,r:ActiveGripResult):bool
       ...r.angularImpulse,...r.angularMoment,...r.groundWork,...r.groundYawImpulse,...r.groundYawMoment,...r.groundYawWork,r.reelWork,r.reelDose,r.armCost,r.externalAngularImpulse,r.legs,r.hold,r.dose,r.bodyWork,r.motorWork,r.springEnergy,r.initialSpringEnergy,r.dampingLoss,
       r.workResidual,r.spanResidual,r.energyResidual,r.angularResidual,r.representationError,r.motorCompositionResidual,
       r.maximumTargetResidual,r.maximumCapacityRatio,r.elapsed];
+  const slip=r.tangentSlip;
+  if(slip&&(![slip.time,slip.legImpulse.x,slip.legImpulse.y].every(Number.isFinite)||slip.time<0||slip.time>q.duration+1e-15
+    ||Math.abs(r.legs-(1-(1-q.legs)*Math.exp(-slip.time/LEG_SLIDE)))>1e-12
+    ||r.slipping&&Math.abs(slip.time-q.duration)>1e-15||r.legs<q.legs-1e-15||r.legs>1
+    ||Math.hypot(slip.legImpulse.x,slip.legImpulse.y)>r.dose+1e-12||q.desired.x!==0||q.desired.y!==0
+    ||r.reelDose!==0||r.reelWork!==0||r.armCost!==0||r.initialSpringEnergy!==0||r.springEnergy!==0))return false;
   if(!values.every(Number.isFinite)||r.angularImpulse.length!==2||r.angularMoment.length!==2||r.groundWork.length!==2||r.groundYawImpulse.length!==2||r.groundYawMoment.length!==2||r.groundYawWork.length!==2
-    ||r.armCost<0||r.armCost>q.armWorkRemaining+1e-12||r.armCost<Math.max(0,r.reelWork)-1e-12||r.reelDose<0||r.reelDose>q.armCapacity*q.duration+1e-12||r.slipping||r.hold!==q.hold||r.legs!==q.legs
+    ||r.armCost<0||r.armCost>q.armWorkRemaining+1e-12||r.armCost<Math.max(0,r.reelWork)-1e-12||r.reelDose<0||r.reelDose>q.armCapacity*q.duration+1e-12||!slip&&(r.slipping||r.legs!==q.legs)||r.hold!==q.hold
     ||r.a.mass!==q.a.mass||r.b.mass!==q.b.mass||r.a.inertia!==q.a.inertia||r.b.inertia!==q.b.inertia
     ||r.dose<0||r.dose>q.capacity*q.duration+1e-12||Math.hypot(r.impulse.x,r.impulse.y)>r.dose+1e-12
-    ||r.maximumCapacityRatio>=.98||r.maximumCapacityRatio<0||r.maximumTargetResidual>1e-11
+    ||(slip?r.maximumCapacityRatio>1+1e-14:r.maximumCapacityRatio>=.98)||r.maximumCapacityRatio<0||r.maximumTargetResidual>1e-11
     ||Math.abs(r.elapsed-q.duration)>1e-12||Math.hypot(r.footOffset.x,r.footOffset.y)>q.attachmentReach
     ||Math.hypot(end.x-r.point.x,end.y-r.point.y)>5e-10||Math.hypot(r.b.pos.x-r.a.pos.x,r.b.pos.y-r.a.pos.y)<=q.minimumDistance
     ||Math.hypot(end.x-r.a.pos.x,end.y-r.a.pos.y)>q.reach)

@@ -11,12 +11,13 @@ const pairs=[[0,5e-10],[2,2.5e-8],[6,5e-10],[8,2.5e-8],[12,5e-10],[14,5e-10],[16
  * needed at intermediate stages. Every ledger still gets its original final
  * quadrature and embedded error, with original summation order. */
 const dynamics=[...Array.from({length:16},(_v,i)=>i),32];
-export function spanKernelTrial(y:number[],h:number,derivative:(y:number[])=>number[],start?:number[]){
+export function spanKernelTrial(y:number[],h:number,derivative:(y:number[])=>number[],start?:number[],dynamicShare=false){
   const {A,B}=DOP853_TABLE,f:number[][]=[];
   for(let i=0;i<A.length;i++){
     if(i===0&&start){f.push(start);continue;}
     const z=y.slice();
     for(let j=0;j<i;j++)if(A[i][j]!==0)for(const k of dynamics)z[k]+=h*A[i][j]*f[j][k];
+    if(dynamicShare)for(let j=0;j<i;j++)if(A[i][j]!==0)z[27]+=h*A[i][j]*f[j][27];
     f.push(derivative(z));
   }
   const z=y.slice();for(let j=0;j<B.length;j++)if(B[j]!==0)for(let k=0;k<y.length;k++)z[k]+=h*B[j]*f[j][k];

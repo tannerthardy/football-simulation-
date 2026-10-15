@@ -1399,7 +1399,7 @@ export class World {
       } else j.hold = held;
       // Arms dragged along a running body slide down it, to the thighs and
       // ankles: a slipping hold becomes a hold on his legs.
-      if (j.slipping) j.legs += (1 - j.legs) * (1 - Math.exp(-h / LEG_SLIDE));
+      if (j.slipping&&!(passive?.joint===j&&'slideIntegrated' in passive&&passive.slideIntegrated)) j.legs += (1 - j.legs) * (1 - Math.exp(-h / LEG_SLIDE));
       // A holder pulled off his feet hangs on stretched out behind his arms.
       const reach = j.a.support!.state === 'up' ? j.reach : Math.max(j.reach, j.ground ?? j.reach + GROUND_STRETCH);
       if ((j.hold ?? d) > reach) j.broken = true;
@@ -1479,7 +1479,7 @@ export class World {
    * Unsupported geometry/phase falls back before any contact mutation. Native
    * support, release and fatigue still run once in their existing lifecycle. */
   private tryActiveGrip(ids:number[],starts:PassiveGripInput['a'][],plans:Plan[],h:number,report:StepReport,
-    groundStarts:Array<{work:number;yawWork:number;yawImpulse:number}>):{joint:GraspJoint}|undefined{
+    groundStarts:Array<{work:number;yawWork:number;yawImpulse:number}>):{joint:GraspJoint;slideIntegrated?:boolean}|undefined{
     const audit=report.activeGrip??={accepted:0,fallbacks:0,reasons:{},dose:0,bodyWork:0,motorWork:0,armCost:0,reelDose:0},
       refuse=(reason:string)=>{audit.fallbacks++;audit.reasons[reason]=(audit.reasons[reason]??0)+1;return undefined;};
     if(this.materialTransport!=='owned'||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve')return refuse('scope:host');
@@ -1510,6 +1510,8 @@ export class World {
     if(!r)return refuse('solver:unsupported');
     try{if(!activeGripResultValid(input,r))return refuse('solver:invalid-result');}
     catch(e){if(e instanceof RangeError||e instanceof TypeError)return refuse('solver:invalid-result');throw e;}
+    if(r.tangentSlip&&LEG_BRACE)return refuse('scope:sliding-leg-brace');
+    if(r.tangentSlip&&jt.height===undefined&&this.comHeight[j]>Math.min(a.profile.heightYd,b.profile.heightYd))return refuse('scope:sliding-height-clamp');
     for(const [k,idx,p,body] of [[0,i,r.a,a],[1,j,r.b,b]] as const){
       body.pos={...p.pos};body.vel={...p.vel};body.facing=p.facing;body.spin=p.spin;
       const old=groundStarts[ids.indexOf(idx)];report.groundWork[idx]=old.work+r.groundWork[k];
@@ -1517,12 +1519,19 @@ export class World {
     }
     this.footImpulseX[j]=(r.footOffset.x-input.footOffset.x)/input.mobility;this.footImpulseY[j]=(r.footOffset.y-input.footOffset.y)/input.mobility;
     foot.offset={...r.footOffset};attachment.material={...r.material};attachment.geometry=undefined;
-    this.addLoad(i,j,1,0,r.impulse.x,r.impulse.y,jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1)),true);
+    if(r.tangentSlip&&jt.height===undefined){
+      // Height changes while sliding. Integrate z*F, rather than applying the
+      // complete impulse at its initial or final height. No new support law.
+      this.addLoad(i,j,1,0,r.impulse.x,r.impulse.y,0,true);
+      const zx=this.comHeight[j]*(r.impulse.x-.55*r.tangentSlip.legImpulse.x),zy=this.comHeight[j]*(r.impulse.y-.55*r.tangentSlip.legImpulse.y),
+        ki=-this.comHeight[i]/this.sp[i].pitchRadiusSq/this.mass[i],kj=this.comHeight[j]/this.sp[j].pitchRadiusSq/this.mass[j];
+      this.tipX[i]+=zx*ki;this.tipY[i]+=zy*ki;this.tripX[j]+=zx*kj;this.tripY[j]+=zy*kj;
+    }else this.addLoad(i,j,1,0,r.impulse.x,r.impulse.y,jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1)),true);
     report.work.grasps+=r.bodyWork;report.passiveGraspWork+=r.bodyWork-r.motorWork-r.reelWork;
     report.supportMotorWork[j]+=r.motorWork;report.armWork[i]+=r.armCost;report.armImpulse[i]+=r.reelDose;
-    jt.force=(jt.force??0)+r.dose;jt.slipping=false;
+    jt.force=(jt.force??0)+r.dose;jt.slipping=r.slipping;if(r.tangentSlip)jt.legs=r.legs;
     audit.accepted++;audit.dose+=r.dose;audit.bodyWork+=r.bodyWork;audit.motorWork+=r.motorWork;audit.armCost+=r.armCost;audit.reelDose+=r.reelDose;
-    return {joint:jt};
+    return {joint:jt,slideIntegrated:Boolean(r.tangentSlip)};
   }
 
   private feet(i: number, intent: Intent, plan: Plan, h: number, remaining: number, report: StepReport): void {
