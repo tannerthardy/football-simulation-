@@ -1,5 +1,16 @@
 # Current work ownership
 
+## A020 first difference, with A042 causal check — 2026-10-15
+
+Catching owns saved-data interpretation on `codex/a020-a042-first-difference`,
+from accepted `7eb2554f5dbb497cff169f386704a5b0f4cf43fe` (#82; explicit
+Integration acceptance6203895704). Start with Measurement's frozen paired/native
+recordings at40af332. Identify the first consequential positioning/responsibility/
+execution difference in A020, then check A042 for that same cause. No new
+simulation or behavior edit is presumed. Do-It-All retains mesh spacing;
+Run retains blocking-access and Physics retains contact laws. Name and coordinate
+any narrower follow-up before crossing those boundaries.
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
