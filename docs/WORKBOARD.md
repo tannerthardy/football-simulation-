@@ -19,6 +19,14 @@ Own achieved-path previews use existing movement physics. No mesh/World/
 capacity/default/reference change or automatic game/prefix/shared-suite rerun.
 This row acknowledges only this owner's scope, not another worker's acceptance.
 
+The native P033 prefix now matches all 33 stored log/film entries (25 physical
+scrimmages, 6.507 s). The demonstrated correction claims only `linePicture`'s
+departed-center vacancy bookkeeping in `live-gaps.ts`, plus its focused saved-cue
+test. Existing gap geometry consumes the same acquired pictures; leaving C's
+spot cannot insert another outward lineman and rename B as A. No acquisition,
+forecast, controller job, teammate clock, mesh or movement law changes. Run Game
+retains the exchange/protection regions; no shared full-suite verification here.
+
 ## Continued run-lane execution, 2026-10-15
 
 Final engine candidate `6ac628b` / `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.
