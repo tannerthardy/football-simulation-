@@ -1,0 +1,89 @@
+{
+  "schema": "mesh-lateral-artifacts-v1",
+  "executedCandidate": "7f1776066786a0a6a093a306ccfc3ac4eabf653e",
+  "earlierOffline": "8e7bee92d9739bf42479fc9a28ba9984db455bdf",
+  "typedDiagnostic": "bb54e65c17550d2412751ff14606e6037b8d1a41",
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "artifacts": [
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/earlier-offline/plan.json",
+      "bytes": 2359,
+      "sha256": "8e2ac14fcb4b9e5e4e1400ea667c718c0763f22ef9def32be82d154dadfcb923"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/earlier-offline/summary.json",
+      "bytes": 23225,
+      "sha256": "9aee1fe93cf5a4c4e750173ca1bb922f1bf4f431927349cf426c5e4c898056be"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/earlier-offline-launcher.json",
+      "bytes": 2364,
+      "sha256": "ca9e2c6973ee5f5b7b287513663b343a7570b52ff896c3caa01c7806c445b9a6"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/offline/plan.json",
+      "bytes": 2323,
+      "sha256": "3f1aea1cef96f2535de104a5d75c4950b9fdafd5942b9e9b69a718489b3c1b68"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/offline/summary.json",
+      "bytes": 7493,
+      "sha256": "7e504d9d9e20d2e80aad4ea7cfcf7e0950b3a33420615fb6d8fc81d490c15cc6"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/offline-launcher.json",
+      "bytes": 2314,
+      "sha256": "d1b6a212412e750ff244c16fd87e8413f8b520daeb6676038fd0238275f972cf"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/paths.png",
+      "bytes": 94720,
+      "sha256": "00e564c5d1fa591e5fa6ac96613a685730fbd7da6d0e79c51a6a5a8f02eef3b3"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/review-launcher.json",
+      "bytes": 2267,
+      "sha256": "4e6c572b46055302e0c06ffe01322c66f52b1c06e4d0a092504ebb8b4ef1d5a9"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/review.json",
+      "bytes": 16070,
+      "sha256": "06bb00a4307fbe0f43de04a53a18f9c188c6112033216dff73c40fa96964bb0a"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/typecheck-corrected-launcher.json",
+      "bytes": 2212,
+      "sha256": "14b79fd7ab4d4fac9c054b9b290f63ff469df22fd688b4c42a6463591140562c"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/typecheck-launcher.json",
+      "bytes": 2165,
+      "sha256": "eaed14d0e8a94289a41a6b502712bf5f0943f0ca8af2454a98d22a696884c6e4"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/v1/A008.json.gz",
+      "bytes": 738375,
+      "sha256": "78b71dc6378f0559178575afc0117390950bb4e2014b654e42164a083ae76eed"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/v1/A044.json.gz",
+      "bytes": 731734,
+      "sha256": "ff5d6f0821818d888b0d2da7e87803cfe0f4cc3266a696743918fd529bbbf5d7"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/v1/plan.json",
+      "bytes": 2323,
+      "sha256": "3f1aea1cef96f2535de104a5d75c4950b9fdafd5942b9e9b69a718489b3c1b68"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/v1/summary.json",
+      "bytes": 17666,
+      "sha256": "8b2dfc48de71aa644f5182348b1e2160d915e3a102770d24b4e4a7cc97cdb72a"
+    },
+    {
+      "path": "data/reviews/current/mesh-lateral-approach/v1-launcher.json",
+      "bytes": 2279,
+      "sha256": "4c6f5070203963ed8f65a876f4bb820931adbf2380f79d47f8b1b937106ce303"
+    }
+  ]
+}
