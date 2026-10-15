@@ -35,7 +35,8 @@ const fixtureSource=original.slice(0,original.indexOf("describe('the original in
  +'\nexport {fixture,step,loaded,prime,checked,readUntil};\n';
 const fixtureModule=ts.transpileModule(fixtureSource,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const fixtures=await import('data:text/javascript;base64,'+Buffer.from(fixtureModule).toString('base64'));
-const runs:any[]=[],routeDiagnostic=process.argv.includes('--collection-route');
+const runs:any[]=[],routeDiagnostic=process.argv.includes('--collection-route'),collectionOnly=process.argv.includes('--collection-only');
+const collectionWindow=process.argv.includes('--collection-window');
 function frame(sim:any,combo:any,owner:any,helper:any){
  const e=combo.defender.engagement,h=e?.hands,blocker=e?.blocker??owner;
  return {t:sim.t,phase:sim.phase,released:combo.released,checkSince:combo.checkSince,checkNextRead:combo.checkNextRead,nextRead:combo.nextRead,
@@ -72,7 +73,7 @@ for(const mode of (routeDiagnostic?['patch']:['center','patch']) as Array<'cente
  // only for fixture creation, then set the explicit law before the first step.
  const worldModule=await import('../../../src/physics/world.js'),step=worldModule.World.prototype.step;
  worldModule.World.prototype.step=function(...args:any[]){Reflect.set(this,'handContact',mode);Reflect.set(this,'groundMovementSetting','legacy');return step.apply(this,args as any);};
- for(const scenario of (routeDiagnostic?['loss-minus','loss-plus']:['recovery','loss-minus','loss-plus'])){
+ for(const scenario of (routeDiagnostic||collectionOnly?['loss-minus','loss-plus']:['recovery','loss-minus','loss-plus'])){
   const side=scenario==='loss-minus'?-1:1,f=fixtures.loaded(side),{sim,owner,helper,combination:combo}=f;
   const trace=observe(sim,combo,owner,helper),initial=frame(sim,combo,owner,helper),markers:any[]=[];
   if(scenario==='recovery'){
@@ -102,13 +103,14 @@ for(const mode of (routeDiagnostic?['patch']:['center','patch']) as Array<'cente
    fixtures.step(f,true);
    for(let k=0;k<40&&!helper.engagement;k++)fixtures.step(f,true);
    if(helper.engagement)for(let k=0;k<4;k++)fixtures.step(f,true);
+   if(collectionWindow)while(sim.t<3.4-1e-9)fixtures.step(f,true);
   }
   runs.push({mode,scenario,side,scope:'Exact controlled test fixture; other players intentionally idle/parked as in original, no native outcome claim',
    slots:{owner:owner.slot,helper:helper.slot,defender:combo.defender.slot,backer:combo.backer.slot},initial,markers,...trace,
    final:frame(sim,combo,owner,helper),events:sim.events});
  }
  worldModule.World.prototype.step=step;
- for(const front of (routeDiagnostic?[]:['under','tite'])){
+ for(const front of (routeDiagnostic||collectionOnly?[]:['under','tite'])){
   const run=(observed:boolean)=>{
    const formation=FORMATION_BY_ID.gun_wing_12,sim=new PlaySim({
     offense:pickOffense(generateTeam(new Rng(31),'Panel offense 1','O1',{strength:.55}),formation.personnel),

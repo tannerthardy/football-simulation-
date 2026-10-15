@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Bounded collection correction, 2026-10-15 (America/Phoenix)
+
+User assigns Run Game the two missed collections identified in #66; #67 stays
+separate at `01ed8d2`. Branch `codex/helper-collection-correction` starts from
+review evidence `4f90b64` / #66 runtime source `8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3`.
+Ownership notice is posted to #66/#65 after checking Do-It-All!'s current task:
+accepted-base run-entry-admission consumer extraction. Run Game claims only a
+new free-helper collection approach helper and a narrow `RunBlocker.attack`
+hook; Do-It-All retains entry/admission, navigation, joined/climb/traffic and its
+preserved experimental blocking branches. No shared spacing/Awareness, physics,
+assignment, release, ratings, capacities or PassProtector changes. Exact small
+patch will identify overlap for extraction. Accepted develop is separately
+`8c891f4cf887b54297efbbc4c7993ba5e2f318b5`; historical4ded6b6 unchanged.
+Use both saved sides and a genuinely obstructed teammate route first. The old
+fixed diagnostic waypoint is evidence, not the production policy. Physics's
+latest #66 yaw-force selection sensitivity remains an independent promotion hold.
+
 ## Run adjudication of PR #66
 
 Run owner, 2026-10-15 UTC: [five-assertion decision report](reviews/helper-contact-adjudication.md)
