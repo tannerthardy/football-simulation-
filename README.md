@@ -1,0 +1,3 @@
+# Measurement frozen48 native evidence
+
+Data-only transport ref. Never merge this orphan artifact commit into develop. Both complete48-case arms retain exact original native member bytes, manifests and launcher receipts. Baseline8ca8dee reused without recollection; candidate7eb2554 collected once. The receipt lists archive bytes/SHA256; all96 raw case member hashes verified against the original arm summary. Use a shallow named-ref fetch, git show each needed archive, verify checksum, and extract into separate new directories outside the simulation repository. No provider/NFL/AMF data. No runtime source or Git history bundled.
