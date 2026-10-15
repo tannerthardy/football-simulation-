@@ -158,12 +158,48 @@ failure that was corrected. The final reducer-only check adds1.324s. No full
 suite, new input panel or games. These
 are audit costs, not an uninstrumented production solver benchmark.
 
-**Recommendation:** close this witness without weakening its earned restraint
-under the current model. The next useful physics input is a portable Run/Flex
-case where an independently feasible request fails because of physical response;
-prioritize that over more solver expansion or adjusting grip from YAC alone.
-Grip-capacity and corrective-support calibration remain open physical assumptions.
-Controller progress can proceed independently.
+## Priority checkpoint: pause pending a concrete football witness
+
+The excessive-restraint suspicion is closed for this contact. Rank the remaining
+concerns by demonstrated impact, rather than treating an unvalidated assumption
+as a new defect:
+
+1. **Timestep-sensitive support placement has the stronger numerical evidence,
+   but material football impact remains unproven.** Reinspect the existing
+   Tite continuation; simulate zero new plays. At .2/.4 seconds after first
+   load, ordinary versus192 subdivisions differs .004815/.025180yd in runner
+   position, .080961/.189752yd/s in velocity, and .071963/.161060yd in support
+   deviation. Between48/192, the .4-second differences are .008959yd,
+   .071407yd/s and .070579yd respectively. Both athletes remain upright, the
+   grasp stays intact, and neither comparison changes the observed body-contact
+   sequence (zero). The brief48-step slip is retained. Refinement ends at .2s;
+   the following .2s uses ordinary stepping. All refined runs are censored at
+   .4s, so neither a later tackle change nor harmlessness is established. These
+   are whole-World partition comparisons, not isolation of support alone.
+2. **Implausible grip/support calibration has no independent demonstration
+   here.** The large deceleration, structural/availability distinction and
+   unvalidated mobility identify assumptions, not disproven human capabilities.
+   Delivered impulses, reaction, shared budgets and the weak/zero controls
+   support the current restraint. No matched measurement or independent
+   capability bound establishes that this strength or support is excessive.
+   Do not tune either from YAC.
+
+The saved raw trace hash remains
+`36c31800e01cb4eaf4b3aa60d5461605b9ebb757d97d2b39030a7b9c48a8c93b`,
+already pinned in the compact evidence; source, inputs and flags above are
+unchanged. Earlier apparent support-history amplification in
+[PR59](https://github.com/tannerthardy/football-simulation-/pull/59) was dominated
+by opposite half-turn requests; it does not supply a missing recovery-law
+diagnosis for this contact. Historical rejected models remain separate evidence.
+
+**Decision: pause experimental Physics on these concerns.** Neither has a
+demonstrated material football failure that justifies the next experiment.
+Resume with a source-pinned witness from Run or Measurement: an ordinary
+feasible request that loses an action/contact because of physical response, or
+a matched capability measurement that contradicts the grip/support assumption.
+The witness should identify the first relevant interval, actual requests and
+achieved response. Controller work proceeds independently. No new simulation,
+test suite, capacity/recovery change or solver expansion at this checkpoint.
 
 [PR77's moving-geometry/World-replacement HOLD](world-contact-events.md) remains;
 no adapter or universal World accounting/fallback/native-cost acceptance is
