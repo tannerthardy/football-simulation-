@@ -6,7 +6,7 @@ import type { Vec2 } from '../src/core/vec.js';
 import type { Body, MoveCommand } from '../src/physics/kinematics.js';
 import { World } from '../src/physics/world.js';
 import { supportParams } from '../src/physics/support.js';
-import { stretchDepartureStep, type DeparturePeer } from '../src/sim/stretch-departure.js';
+import { planStretchDeparture, stretchDepartureStep, type DeparturePeer } from '../src/sim/stretch-departure.js';
 import { track } from '../src/sim/behaviors/common.js';
 
 const saved = JSON.parse(readFileSync(new URL('./fixtures/stretch-departure-state.json', import.meta.url), 'utf8'));
@@ -161,5 +161,57 @@ describe('the transit request respects real first-beat obstructions', () => {
     expect(stretchDepartureStep(f.body, { x: 38, y: 26 }, Math.PI, [peer], f.now, BEAT, f.handContact)).not.toBeNull();
     f.body.vel = { x: .5, y: 0 }; f.body.facing = 0;
     expect(stretchDepartureStep(f.body, { x: 42, y: 26 }, 0, [peer], f.now, BEAT, f.handContact)).toBeNull();
+  });
+});
+
+describe('a complete acquired departure route preserves the safe first beat', () => {
+  it.each([false, true])('connects the saved release around both torsos, mirrored=%s', mirror => {
+    const f = fixture(mirror), before = structuredClone(f);
+    const path = planStretchDeparture(f.body, f.backer.pos, f.peers,
+      f.now, BEAT, f.handContact, f.placementError);
+    expect(path).not.toBeNull();
+    expect(path!.length).toBeGreaterThan(1);
+    expect(path!.at(-1)!.x).toBe(f.backer.pos.x);
+    expect(path!.at(-1)!.y).toBe(f.backer.pos.y + f.placementError);
+    const first = stretchDepartureStep(f.body, path![0], facing(f), f.peers,
+      f.now, BEAT, f.handContact, path![1]);
+    expect(first).not.toBeNull();
+    expect(f).toEqual(before);
+    const body = structuredClone(f.body), world = new World([body], { handContact: f.handContact });
+    world.time = f.now;
+    let previous = { ...body.pos };
+    for (let k = 0; k < 5; k++) {
+      const report = world.step([first!], .05);
+      expect(body.support!.state).toBe('up');
+      expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+      for (const peer of f.peers) {
+        const radius = Math.min(f.body.profile.radius + peer.radius,
+          Math.hypot(f.body.pos.x-peer.pos.x, f.body.pos.y-peer.pos.y));
+        const x = previous.x-peer.pos.x-peer.vel.x*k*.05;
+        const y = previous.y-peer.pos.y-peer.vel.y*k*.05;
+        const dx = body.pos.x-peer.pos.x-peer.vel.x*(k+1)*.05-x;
+        const dy = body.pos.y-peer.pos.y-peer.vel.y*(k+1)*.05-y;
+        const u = Math.max(0, Math.min(1, -(x*dx+y*dy)/Math.max(1e-12, dx*dx+dy*dy)));
+        expect(Math.hypot(x+u*dx,y+u*dy)).toBeGreaterThanOrEqual(radius-1e-9);
+      }
+      previous = { ...body.pos };
+    }
+    const dx=path![0].x-f.body.pos.x, dy=path![0].y-f.body.pos.y;
+    expect((body.pos.x-f.body.pos.x)*dx+(body.pos.y-f.body.pos.y)*dy).toBeGreaterThan(0);
+    console.info('complete stretch departure first beat', JSON.stringify({ mirror, path,
+      request:first!.vel, start:f.body.pos, end:body.pos }));
+  });
+
+  it('keeps the genuine closing overlap rejected instead of inventing a safe detour', () => {
+    const f = fixture(), closing = structuredClone(f.closingState);
+    const body = closing.body as Body;
+    if (body.support?.since === null) body.support.since = -Infinity;
+    const before = structuredClone(closing);
+    const down = closing.peers[0];
+    const dx=body.pos.x-down.pos.x, dy=body.pos.y-down.pos.y;
+    expect(Math.hypot(dx,dy)).toBeLessThan(body.profile.radius+down.radius);
+    expect(dx*(body.vel.x-down.vel.x)+dy*(body.vel.y-down.vel.y)).toBeLessThan(0);
+    expect(planStretchDeparture(body, closing.target, closing.peers, closing.now, BEAT, f.handContact)).toBeNull();
+    expect(closing).toEqual(before);
   });
 });
