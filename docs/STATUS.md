@@ -42,27 +42,27 @@ Do not use the historical sections below as a current starting-reference pin.
 - #75's isolated information correction is held at a neighboring run-fit contract.
   The eight new recognition checks pass; one combined run has1,732 TS pass/two
   existing back-man failures, with145 Python,typecheck/build passing (188.094s).
-  Catching + Run Game must resolve pre-recognition insertion/alley ownership;
+  Catching owns the contract disposition, consulting Run on insertion/alley ownership;
   assertions and adverse evidence are preserved. [Exact question, candidate and receipt](INTEGRATION.md#man-recognition-review).
   No unchanged rerun, parked P045 variants or additional game campaign.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
 
-Current priorities remain bounded run-entry/collection, P045 coverage technique
-and secondary support, and independent minimal ready controller reviews. Owners
-reconcile only affected accepted contracts at clean checkpoints; see the
-[specific investigation handoff](INTEGRATION.md#current-candidate-2026-10-15).
-No new games, roster screen or shared-suite rerun is requested by this update.
-The next [accepted-controller game checkpoint](INTEGRATION.md#accepted-controller-game-checkpoint)
-will be coordinated once with Measurement/CEO after disposition of #75 and the
-next ready batch; #69 is adopted and #75 individually held. [Frozen handoff](../data/reviews/current/accepted-controller-game-checkpoint.json):
-four existing inputs, one accepted arm, cap four games/240 launcher seconds,60s per
-game. Measurement/CEO acknowledgement pending; zero new evaluation games.
-Documentation-only policy edits use link/ref checks; the ready runtime candidate
-alone triggers its required verification. Believable football remains the goal;
-information correctness and overall football quality are separate claims.
-[One accepted-pin/owner/evaluation handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
+Current investigations are [second-level blocking access (Run), run-support
+continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
+Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
+source remains8ca8dee; accepted develop remains90edc525. Measurement distributes
+existing saved cases/archive with checksum; [access status](../data/reviews/current/accepted-broad-audit-access.json).
+No panel recollection to distribute it, #69 re-review, new suite or games here.
+
+After a meaningful accepted controller batch, coordinate [one frozen-panel
+comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline
+where compatible. The separate [four-game packet](INTEGRATION.md#accepted-controller-game-checkpoint)
+stays available for a **CEO-called game-context evaluation**. Neither is an
+automatic per-patch requirement. Physics, unused transport, broad RB-jam tuning
+and P045-only variants remain separate/parked; believable football, not a target
+gain or more tackles, is the goal. Previous game-handoff receipts remain historical.
 
 <details>
 <summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>

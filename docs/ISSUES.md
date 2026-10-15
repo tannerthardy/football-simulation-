@@ -42,13 +42,15 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | --- | --- | --- | --- | --- |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
-| [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Active bounded owner follow-up | Do-It-All! + Run Game; no earlier zone/Duo/detour ancestry imported |
+| [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
 | [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 scope independently accepted; #78 exact verification passes | Integration; final ref/tree check then routine adoption; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
+| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Active bounded continuity investigation | Catching, consulting Run; acquired responsibility/handoff contract, no permanent run latch |
+| [PASS-007](#PASS-007) | Mesh prethrow stop and converging man/robber approach | Saved observations; producing stage and avoidability unresolved | Active bounded attribution | Flex/Do-It-All; A020/A044 versus A008/A032, coordinate coverage edits with Catching |
 | [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
-| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; adjacent run-fit contracts conflict | #75 isolated verification held: two preserved assertions | Catching + Run Game: acquired insertion/alley before recognition versus recognized-ball priority; Integration owns subsequent verification |
+| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; adjacent run-fit contracts conflict | #75 isolated verification held: two preserved assertions | Catching owns disposition, consulting Run: acquired support before recognition versus recognized-ball priority; Integration owns subsequent verification |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -120,8 +122,41 @@ is not a current-source golden: the matched current-source rollback control
 preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 **Accepted bounded correction via merged #63.**
 
+<a id="COV-003"></a>
+### COV-003 — Run support through coverage reassignment
+
+The saved8ca8dee audit shows eight of eight selected Quarters runs returning to
+receiver-directed requests after zone→man replacement despite established run
+belief and an acquired carrying-RB picture. This identifies routing, not eight
+caused missed tackles or outcome loss. Catching owns the smallest continuity
+contract in the existing architecture; consult Run on insertion/alley duties.
+Preserve alley leverage, vertical responsibilities and legitimate PA uncertainty;
+no hidden possession or permanent run-belief latch. Keep #75's separate airborne
+contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audit-priorities-and-access).
+
+<a id="PASS-007"></a>
+### PASS-007 — Mesh approach coordination and request attribution
+
+Flex/Do-It-All needs exact saved **A020/A044, with A008/A032 controls**, not a
+recollection. A020 has a prethrow final-request stop; A044 has converging man/robber
+contact before the catch. Neither final intent nor the touchdown alone identifies
+an avoidable controller cause. Follow stable actors through legitimate pictures,
+original requests, modifiers and achieved movement. Preserve earned separation,
+useful contained mesh controls and A044's later offensive block. If the saved
+record lacks discarded stages, one small opt-in observation-only diagnostic can
+be coordinated with Run; no extra perception calls, RNG draws or behavior changes.
+Archive distribution is Measurement's job; [exact checksum/access status](../data/reviews/current/accepted-broad-audit-access.json).
+
 <a id="RUN-007"></a>
-### RUN-007 — Remaining lane, spacing and collection boundaries
+### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
+
+Run Game now prioritizes saved A018/A030 and a successful access contrast. Trace
+installed job→takeover security→release cue→original interception→later modifiers
+→achieved protection when the runner arrives. Check #69 compatibility before
+calling8ca8dee observations current90edc525 evidence. Nine unachieved jobs across
+24 runs are not nine defects; preserve A027's achieved block and A006/A042's useful
+access, upstream losses and legitimate defensive wins. No stronger force or
+automatically earlier release. Earlier lane/P037 and rejected trials remain below.
 
 The five-play review does not certify the earlier RB bounce, unify the legacy
 lane picture with owned spacing, or repair Will protection and P037's puller
@@ -150,7 +185,7 @@ on accepted8ca8dee retains only the authored defense hunk and eight direct tests
 All eight direct tests pass, but the unchanged insertion/alley fixtures at
 `back-man-run-fit.test.ts:255/390` require generic ball-in-flight ownership while
 the defender has not recognized the throw and still holds a positive runner
-picture. Catching and Run Game must adjudicate that boundary before changing
+picture. Catching owns that disposition, consulting Run, before changing
 assertions or recommending adoption. All four phases ran:1,732 TS pass/two fail,
 145 Python,typecheck/build pass;188.094 command seconds, no extra games/replays.
 
@@ -158,7 +193,8 @@ P006's later contact and Smash's +1.245YAC/changed finishing defender remain
 source-pinned adverse evidence; P045 still scores. The current47-source comeback
 control is a sack, not native plant transfer. No overall coverage improvement,
 new8ca native result or grip conclusion is claimed. Broader PASS-004 findings,
-parked P045 variants and experimental physics remain separate. No merge authority.
+parked P045 variants and experimental physics remain separate. Standing routine
+merge authority does not clear the unresolved material contract risk.
 
 <a id="PASS-005"></a>
 ### PASS-005 — Pass tackle station-keeps toward an interception point

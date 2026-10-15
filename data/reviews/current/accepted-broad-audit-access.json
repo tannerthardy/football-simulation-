@@ -1,0 +1,107 @@
+{
+  "schema": "accepted-broad-audit-shared-access-v1",
+  "status": "Awaiting Measurement publication of exact existing archive or saved-case subset; local path alone is not shared access.",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "savedAuditCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "savedAuditSourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "publishedInventoryCommit": "58303d6e22a42a5dce78b6ad0b967229140a59e1",
+  "inventoryUrl": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/data/reviews/current/accepted-broad-audit/archive.json",
+  "archive": {
+    "fileName": "accepted-8ca8dee-48snap-v1.tar.gz",
+    "bytes": 40559081,
+    "sha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+    "publishedUrl": null,
+    "sharedBytesIndependentlyVerified": false
+  },
+  "manifestSha256": "fbb8ee4147163842758ee308a2d8f4e836d70602358ed777b10a1531a8b4fa53",
+  "immediateConsumer": {
+    "owner": "Flex / Do-It-All",
+    "cases": [
+      "A020",
+      "A044"
+    ],
+    "controls": [
+      "A008",
+      "A032"
+    ],
+    "need": "Exact saved cases and their setup/identity/raw-hash metadata for mesh request attribution; no recollection.",
+    "rawCases": [
+      {
+        "id": "A008",
+        "matchup": "speed-gap",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+        "sha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+        "bytes": 10624983,
+        "rawPath": "out/accepted-broad-audit/cases/A008.json"
+      },
+      {
+        "id": "A020",
+        "matchup": "technique-elusive",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+        "sha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+        "bytes": 16777002,
+        "rawPath": "out/accepted-broad-audit/cases/A020.json"
+      },
+      {
+        "id": "A032",
+        "matchup": "ordinary",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+        "sha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+        "bytes": 13678159,
+        "rawPath": "out/accepted-broad-audit/cases/A032.json"
+      },
+      {
+        "id": "A044",
+        "matchup": "offensive-advantage",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+        "sha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+        "bytes": 36353213,
+        "rawPath": "out/accepted-broad-audit/cases/A044.json"
+      }
+    ],
+    "rawBytes": 77433357,
+    "hashVerificationScope": "Exact expected per-case values copied from immutable published collection metadata; raw case bytes are not available/independently verified in Integration yet."
+  },
+  "publicationOwner": "Measurement",
+  "validationOwner": "Integration",
+  "coordination": [
+    "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203266536",
+    "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203274129"
+  ],
+  "requirements": [
+    "Publish existing bytes through a durable shared GitHub artifact/asset or evidence branch.",
+    "Pin the immutable object/commit URL and exact checksum; do not substitute another environment local path.",
+    "If packaging only the immediate four cases, retain their original per-case hashes and publish a separate subset archive hash. Do not call it the original archive.",
+    "Verify saved source/manifest/actor identities and size/hash before using current-build claims.",
+    "Do not recollect the panel, regenerate players, recompress/replace the original or rewrite prior receipts merely to distribute evidence."
+  ],
+  "savedEvidenceUrls": {
+    "diagnosis": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md",
+    "protocol": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-protocol-2026-10-15.md",
+    "runReview": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-run-notes.md",
+    "passReview": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-pass-notes.md"
+  },
+  "newSimulations": 0,
+  "newSharedSuiteRuns": 0,
+  "validation": {
+    "acceptedRefRechecked": "90edc52530caa71efdebf257f17d954a8a629ea0",
+    "completed69ReviewRepeated": false,
+    "sourceTestsSettingsFixturesChanged": false,
+    "originalCommittedReceiptsChanged": false,
+    "newSimulations": 0,
+    "newCodeSuiteRuns": 0,
+    "checks": "Git refs, exact published inventory/case metadata, documentation links. Shared archive byte validation remains pending publication."
+  }
+}

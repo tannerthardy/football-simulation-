@@ -1,5 +1,30 @@
 # Current work ownership
 
+## Current audit-led investigations and evidence distribution — 2026-10-15
+
+Integration owns this docs/access-only update from accepted90edc525 plus published
+queue4bca231 in `codex/audit-access-integration`. Source, tests, fixtures, settings
+and prior receipts stay unchanged. #69/#78 is completed, not another review task.
+
+| Owner | Current bounded task | Boundary and evidence |
+| --- | --- | --- |
+| Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile accepted #69 effects first. No automatic earlier release or added force. |
+| Catching, consulting Run | Run-support continuity and #75 disposition | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching owns the two #75 contracts; Run supplies installation context. |
+| Flex/Do-It-All | Mesh approach attribution | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
+| Measurement | Shared saved archive/cases and checksum | Publish existing40.6MB archive or immediate four-case subset at a shared immutable URL; no recollection. Preserve source8ca8dee, raw case hashes and original archive hash. Integration validates access; local-only paths do not complete the handoff. |
+
+These are task/coordination boundaries, not a blanket claim over each source
+file; owners name their actual functions before edits and preserve active work.
+Experimental Physics keeps its own law/geometry/accounting/cost review and is
+independent of these controller investigations. Direct ready submissions,
+independent review, compatible checkpoint batches and one exact combined check
+remain unchanged. [Cases, owner questions and archive status](INTEGRATION.md#audit-priorities-and-access).
+
+After a meaningful accepted controller batch, Integration/Measurement coordinate
+one frozen-panel comparison using compatible saved baseline evidence. The separate
+four-game packet is available only for a CEO-called context evaluation. Neither
+runs per patch; no evaluation or new code suite starts for this documentation pass.
+
 ## Standing queue, accepted controller batch and next game checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
@@ -21,8 +46,9 @@ Entire merged tree equals publicationfed46a1; no unchanged rerun. [Actual merge 
 #75's two back-man assertions stay held with Catching + Run; no assertion edit or
 unchanged rerun. A blocked patch holds itself; do not wait for all agents.
 
-Measurement owns one subsequent game collector/film/results packet; Integration
-freezes the accepted source/settings and coordinates the question/budget with CEO.
+Earlier four-game preparation is retained below; execution now requires a CEO
+call for game context, separately from the post-batch frozen-panel comparison.
+Measurement owns any called collector; Integration freezes source/settings.
 Ceiling four full games/240 launcher seconds,60s per game, existing declared inputs,
 no duplicate collection. [Exact frozen handoff](../data/reviews/current/accepted-controller-game-checkpoint.json)
 uses the same424 players/four inputs/seeds701–704. Measurement/CEO ownership and
@@ -38,7 +64,7 @@ is posted; contributor #69 is closed as incorporated and its branch is preserved
 **Held after one complete combined run.** Tested
 `0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
 assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
-new direct contracts pass. Catching + Run Game own the specific insertion/alley
+new direct contracts pass. Catching owns, consulting Run, the specific insertion/alley
 versus recognized-ball boundary; Integration retains verification ownership.
 [Question and receipt](INTEGRATION.md#man-recognition-review). Existing tests
 remain unchanged; no new panel, unchanged rerun or merge is requested.
