@@ -8,6 +8,16 @@ navigation improvement; collision alone did not establish bad football. That
 classification is corrected at `3246009b951b28912599bb6ef93b4141505c0fc8` on
 `codex/run-entry-cues`. The original traces/classification remain immutable.
 
+**Accepted-development review update:** current admission is held at a precise
+information-contract seam. Awareness returns zero velocity after its prediction
+cap to denote unknown current motion; this client treats it as stationary. The
+[compiler-checked extraction plan and original-owner coordination](https://github.com/tannerthardy/football-simulation-/tree/ac3822da1a403aec1eb10f69c0c4fc26a5176e8e/docs/reviews/run-entry-awareness-extraction)
+provides minimal observation/query slices for accepted development and #63,
+without importing the experimental stack. Owner acknowledgment is pending; no
+runtime/schema change or behavior tuning has been made. Fresh P032/P019 evidence
+below remains valid at its original scope. The independent gap fix already in
+#63 is unaffected.
+
 The new approach uses the RB's complete own body, observer-owned teammate
 pictures and public braking capability. It asks whether a path stays clear if a
 teammate continues observed motion **or brakes along that same motion**, including

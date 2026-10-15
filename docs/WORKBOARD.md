@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Accepted-base interface extraction follow-up, 2026-10-15
+
+Admission cfcb7db is held at the stale-motion contract, not a new football-tuning
+question. Plan ac3822d on `codex/run-entry-awareness-extraction` supplies minimal
+Awareness observation/query core and five PlaySim wiring seams; accepted/#63
+application checks and virtual accepted typecheck pass. Original owner request
+posted on #36 comment6200674433; no acknowledgment yet. Integration received
+explicit plan on #63 comment6200681545; independent gap review stays unblocked.
+Current core means zero after prediction cap is unknown; consumer treats it as
+stationary. Reconcile that contract before implementing shared fields. No runtime
+change, experimental stack import, private fallback, simulations or behavior
+tuning in this follow-up.
+
+
 ## Runner entry approach uncertainty, 2026-10-15
 
 Do-It-All owns carrier run-entry approach selection and a new run-only helper

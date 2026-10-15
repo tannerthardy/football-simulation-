@@ -1,7 +1,7 @@
 {
   "algorithm": "sha256",
   "files": {
-    "README.md": "89f34c9ad49cff0f702e09a3f0fbd447a012a6b32f8985ba2f23f43ddb906c91",
+    "README.md": "39739120ee4cd8804a28c1dad90ff55fa2ddb1763b71c8b0112c855da6b03828",
     "compatibility.json": "4010aa48d684f3c38e8fb3b9189273ab47bbeb533ba6cebdf3c1b63a04abf0e5",
     "isolated-source.json": "1161800f7a25def6589b038cf757d98d4057f291aba056d8c2c59c77085c18d1",
     "native.json.gz": "dff3696a32dfb00b5bddb0ec32af524ce6543b3b13d3805b423b079f5de2e545",
