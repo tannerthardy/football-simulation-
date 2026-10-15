@@ -925,7 +925,12 @@ export class RunBlocker implements Behavior {
       // is already added by movingArrivalVelocity; adding that speed again as
       // through-speed sends a free climber through the moving fit.
       for (const lead of [.2, .4, .6, .8, 1.0, 1.3]) {
-        const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
+        // Meet the near shoulder, with our torso behind his. A landmark at
+        // his center's depth asks us to arrive alongside him; the subsequent
+        // downhill drive then carries tangential load or separates the hands.
+        const depth = a.profile.radius + target.profile.radius + .15;
+        const meet = { x: seen.pos.x + seen.vel.x * lead - depth,
+          y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
         const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, 0, 1, capacity);
         const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
         const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
