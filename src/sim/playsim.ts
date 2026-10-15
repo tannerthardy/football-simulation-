@@ -838,6 +838,7 @@ export class PlaySim {
     if (s.completed && this.catchAt >= 0) {
       const caught = segs.find((g) => g.how === 'catch');
       const catchX = caught?.startX ?? this.catchX;
+      s.completedAirYards = catchX - this.los;
       const endX = offTD ? OPP_GOAL_X : turnover ? (caught?.endX ?? catchX) : spot.x;
       s.yac = endX - catchX;
     }
@@ -846,6 +847,13 @@ export class PlaySim {
       s.returnYards = this.scoreKind === 'TD' ? takeaway.startX - OWN_GOAL_X : takeaway.startX - spot.x;
     }
     if (!this.isPass || this.scrambled) {
+      // An unexchanged snap is still an actual rush by its possessor. Do not
+      // infer a handoff, fumble, scramble, or a successful keeper decision.
+      const snap = segs.length === 1 ? segs[0] : undefined;
+      if (!s.rusher && !this.isPass && snap?.team === 'O' && snap.how === 'snap' && snap.end === 'dead') {
+        s.rusher = snap.carrier;
+        s.retainedSnap = true;
+      }
       if (this.firstContactX !== null) s.yardsBeforeContact = this.firstContactX - this.los;
     }
     const clockStops = this.outcome === 'incomplete' || this.outcome === 'oob' || this.outcome === 'touchdown' || this.outcome === 'safety' || this.outcome === 'touchback' || turnover;

@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Game bookkeeping follow-up — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Spread/air P022/P038 and catch-credit handoff | Codex integration owner in this chat, user supplied the integration handoff | `codex/game-bookkeeping-review` from accepted `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`; read-only film `4ae667e29b3ce085f43c5cb911b294349cda2b8f` | `Game.holdingDecision`, final result/stat attribution and replay export fields, directly affected tests and a separate receipt. No movement, exchange, coverage, catching contest or physics changes. | In progress. Reuse #54/#57/#58 and the 45-entry prefix evidence. Small scripted record/spot controls only; no new games, automatic roster screen or contributor shared-suite rerun. No merge/reference/default change. |
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
