@@ -1,0 +1,160 @@
+{
+  "schema": "accepted-controller-game-checkpoint-plan-v1",
+  "status": "Prepared; Measurement/CEO owner, question and spend acknowledgement pending; zero new evaluation games executed.",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "sourceSha256": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+  "engineVerification": {
+    "testedCommit": "40be568d9fa19c8361384c677e3ab87ba1321255",
+    "validationSha256": "b33f8da879717dfcd835c33f7250a6b9aad9d29a8cf0886bdb9ee17f507f1340",
+    "receipt": "controller-checkpoint-integration/final-receipt.json",
+    "passingOutcome": {
+      "typecheck": "pass",
+      "build": "pass",
+      "typescriptPassed": 1729,
+      "typescriptFiles": 146,
+      "pythonPassed": 145,
+      "allPhasesComplete": true,
+      "inputsUnchanged": true,
+      "trackedChanges": [],
+      "skippedCommands": [],
+      "exitCode": 0
+    },
+    "noRepeatedSuiteForIdenticalEngine": true
+  },
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "inputManifest": {
+    "path": "data/reviews/current/accepted-controller-game-inputs.json",
+    "sha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b",
+    "originalCommit": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+    "originalPath": "data/reviews/current/experimental-game-inputs.json",
+    "originalSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+    "allFourFixturesSemanticallyUnchanged": true,
+    "players": 424
+  },
+  "games": [
+    {
+      "id": "zone-reference",
+      "seed": 701,
+      "teamsSha256": "88bcfcb03db4c2e68cb8a09943f60e65ce46982a0bb999906f631ff1c18733a1",
+      "homeScheme": "wide-zone",
+      "awayScheme": "west-coast"
+    },
+    {
+      "id": "spread-air",
+      "seed": 702,
+      "teamsSha256": "bbb46bb6b4af3eeb0ebcbf97c032b887e710744284daaf0c595b1148a22f8eac",
+      "homeScheme": "spread",
+      "awayScheme": "air-raid"
+    },
+    {
+      "id": "power-zone",
+      "seed": 703,
+      "teamsSha256": "feef8f7128b4acb1f56a0084904b34a5eec9bf87a61af4062d2ba0995916c351",
+      "homeScheme": "power",
+      "awayScheme": "wide-zone"
+    },
+    {
+      "id": "west-spread",
+      "seed": 704,
+      "teamsSha256": "65fc74c2c6464d822ef4b10c11fae7907443017dda3f477cd4afb1ccce4d41ad",
+      "homeScheme": "west-coast",
+      "awayScheme": "spread"
+    }
+  ],
+  "budget": {
+    "gamesPerArm": 4,
+    "totalGames": 4,
+    "maxGameSeconds": 60,
+    "maxCombinedGameSeconds": 240,
+    "maxGameSteps": 600
+  },
+  "arm": "accepted only",
+  "compatibleCollectorReference": {
+    "commit": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+    "path": "scripts/experimental-games.mjs",
+    "sha256": "93d35fc550f8fa47c5d7ef6c0c6d538ecab1648311b8e1a2fc551d531d47d22a",
+    "mode": "run INPUT GAME_ID accepted OUT; do not use prepare to regenerate players",
+    "requirements": "Measurement confirms compatibility of Game hooks, replay packing and outputs with accepted90edc52; any necessary collector adaptation is isolated measurement tooling and published with its own exact hash, not silently presented as this original collector. Freeze measurement version before collection."
+  },
+  "owners": {
+    "Integration": "Freeze exact accepted source/settings, retain combined receipt and consolidate handoff.",
+    "Measurement": "One collector/batch ledger; reuse existing fixtures; publish complete outcomes, denominators, adverse play index and standalone film. Preserve failed/unfinished/unrun inputs and command costs. No contributor duplicate games.",
+    "CEO": "At the working checkpoint confirm the evaluation question and ceiling; consolidate football interpretation and next decision with Measurement. No automatic expanded campaign."
+  },
+  "question": "Does the accepted controller stack produce believable exchanges, blocking, pursuit, coverage and full-game interactions across the four preserved inputs? Diagnose repeated adverse mechanisms; no isolated-PR or population-realism claim.",
+  "interpretation": "Reused historical output retains its old source and experimental inclusion limits; changed full-game calls/fatigue/random histories preclude isolated-fix attribution. NFL averages only where compatible definitions/denominators/data exist. No tuning toward those means.",
+  "heldExclusions": [
+    "#75 unresolved back-man recognition contracts",
+    "#76 carrier navigation",
+    "unused observation transport",
+    "experimental contact/Physics",
+    "new ratings/roster generation/default changes"
+  ],
+  "stopRules": [
+    "At most four completed games, one accepted arm, no automatic retries or extra seeds.",
+    "At most60 seconds per game and240 total launcher seconds; preserve any timeout/failure and the unrun tail.",
+    "Stop early for a concrete mechanical/nonfinite/malformed recording failure; do not stop merely because initial outcomes look favorable.",
+    "Do not repeat baseline games; historical prior outputs are comparison context only.",
+    "Render/report from saved results without resimulating."
+  ],
+  "newCompletedGames": 0,
+  "nextAction": "Measurement/CEO acknowledge this one handoff at their working checkpoint, freeze the compatible measurement version and execute within the declared budget; Integration does not launch a duplicate collector or background monitor."
+}

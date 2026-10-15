@@ -213,7 +213,13 @@ export class ManCoverage implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
-    if (sim.ball.kind === 'air') return playBall(a, sim, R);
+    if (sim.ball.kind === 'air') return playBall(a, sim, R, () => this.coverMan(a, sim));
+    return this.coverMan(a, sim);
+  }
+
+  /** An unrecognized throw does not erase the installed man technique. */
+  private coverMan(a: Agent, sim: PlaySim): MoveCommand {
+    const R = this.target;
     const receiverCue = sim.see(a, R);
     // A back carrying the ball will not look like a stalk blocker. A man
     // marker who reads run and personally acquires that possession uses his
@@ -734,10 +740,14 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   return sim.t - sim.throwAt >= react;
 }
 
-export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand {
+export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
+  continueCoverage?: () => MoveCommand): MoveCommand {
   const ball = sim.ball;
   if (ball.kind !== 'air') return stand();
   if (!sawThrow(a, sim, man)) {
+    // Use the same acquired route picture, leverage and technique until the
+    // defender recognizes the throw. Ball flight alone is hidden information.
+    if (continueCoverage) return continueCoverage();
     // Haven't seen it yet: stay with the man / keep doing what we were doing.
     if (man) {
       const s = sim.see(a, man);

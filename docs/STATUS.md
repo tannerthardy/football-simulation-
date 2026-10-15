@@ -10,7 +10,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `8ca8deebe4afa91c3021bdd119bed8976cf00e47`**, merged #74 with #72/#63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
+- **Accepted develop: `90edc52530caa71efdebf257f17d954a8a629ea0`**, merged #78 with reviewed #69 collection; #74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr78-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -35,31 +35,40 @@ Do not use the historical sections below as a current starting-reference pin.
   Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69's corrected production hook now has Do-It-All's focused acceptance;
-  Its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
-  typecheck/build in191.361s,44 flags/components1. Routine adoption follows
-  final ref/tree checks under standing authority, without an unchanged rerun.
+  its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
+  typecheck/build in191.361s,44 flags/components1. It is now accepted via90edc525;
+  exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
-- #75's isolated information correction is held at a neighboring run-fit contract.
-  The eight new recognition checks pass; one combined run has1,732 TS pass/two
-  existing back-man failures, with145 Python,typecheck/build passing (188.094s).
-  Catching + Run Game must resolve pre-recognition insertion/alley ownership;
-  assertions and adverse evidence are preserved. [Exact question, candidate and receipt](INTEGRATION.md#man-recognition-review).
-  No unchanged rerun, parked P045 variants or additional game campaign.
+- #75's Catching/Run contract reconciliation and #80's acquired run-support
+  continuity have independent controller acceptance for the minimal five files.
+  Exact freezee788ccc passes 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
+  Focused evidence reused; no unchanged rerun to publish/merge.
+  P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
+  and the original failed #75 receipt remain. No overall coverage-quality claim.
+- #76 stays parked/frozen per Flex; no independent current-tree adoption approval.
+  #81 supplies mesh stage diagnosis and a rejected bend trial, not a ready
+  behavioral fix. Neither is included; experimental Physics remains separate.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
 
-Current priorities remain bounded run-entry/collection, P045 coverage technique
-and secondary support, and independent minimal ready controller reviews. Owners
-reconcile only affected accepted contracts at clean checkpoints; see the
-[specific investigation handoff](INTEGRATION.md#current-candidate-2026-10-15).
-No new games, roster screen or shared-suite rerun is requested by this update.
-The next [accepted-controller game checkpoint](INTEGRATION.md#accepted-controller-game-checkpoint)
-will be coordinated once with Measurement/CEO after disposition of #75 and the
-next ready batch; cap four games/240 launcher seconds,60s per game, no automatic rerun.
-Documentation-only policy edits use link/ref checks; the ready runtime candidate
-alone triggers its required verification. Believable football remains the goal;
-information correctness and overall football quality are separate claims.
+Current investigations are [second-level blocking access (Run), run-support
+continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
+Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
+source remains8ca8dee; accepted develop remains90edc525. Measurement published/delivered the two data-only subsets; Integration verified
+all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
+The access blocker is resolved. No panel recollection, #69 re-review or new games.
+The exact #75/#80 candidate completed combined verification once.
+[Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json);
+final adoption/ref checks pending, no extra game evaluation.
+
+After a meaningful accepted controller batch, coordinate [one frozen-panel
+comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline
+where compatible. The separate [four-game packet](INTEGRATION.md#accepted-controller-game-checkpoint)
+stays available for a **CEO-called game-context evaluation**. Neither is an
+automatic per-patch requirement. Physics, unused transport, broad RB-jam tuning
+and P045-only variants remain separate/parked; believable football, not a target
+gain or more tackles, is the goal. Previous game-handoff receipts remain historical.
 
 <details>
 <summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>

@@ -9,7 +9,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Gap } from '../src/playbook/types.js';
-import { ManCoverage, playBall } from '../src/sim/behaviors/defense.js';
+import { ManCoverage, playBall, sawThrow } from '../src/sim/behaviors/defense.js';
 import { chase } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Perceived } from '../src/sim/perception.js';
@@ -243,8 +243,8 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.update()).toEqual(chase(expected.sim, expected.a, expected.r));
   });
 
-  it('lets the existing ball-in-flight technique own an old positive runner picture', () => {
-    const f = stage(), expected = stage();
+  it.each([-1, 1])('retains acquired insertion until throw recognition then transfers to the ball, side=%s', side => {
+    const held = stage(true, side), f = stage(true, side), expected = stage(true, side);
     for (const item of [f, expected]) {
       item.sim.throwAt = 1.4;
       item.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
@@ -252,7 +252,19 @@ describe('inside man players insert from their acquired back possession', () => 
         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
       item.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
     }
+    // The fixtures' old .20-second flight is still unrecognized. Hidden
+    // release does not cancel positive acquired possession and run belief.
+    expect(sawThrow(f.a, f.sim, f.r)).toBe(false);
+    expect(f.update()).toEqual(held.update());
+    expect(f.sim.rng).toEqual(held.sim.rng);
+    f.sim.throwAt = expected.sim.throwAt = .1;
+    for (const item of [f, expected]) {
+      item.a.tags.add('looking');
+      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
+    }
+    expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
     expect(f.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(f.a.tags.has('onBall')).toBe(true);
     expect(f.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
   });
 
@@ -369,7 +381,7 @@ describe('back man markers preserve their installed alley support instead of rec
     expect(split.update()).toEqual(unknown.update());
   });
 
-  it('supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership', () => {
+  it('supports a known backfield FB without reading live possession', () => {
     const one = alleyStage(true, 1, 'run', 'F', 'i_pro_21'), two = alleyStage(true, 1, 'run', 'F', 'i_pro_21');
     expect(one.r.player.position).toBe('FB');
     expect(one.a.runFit!.kind).toBe('alley');
@@ -379,7 +391,10 @@ describe('back man markers preserve their installed alley support instead of rec
     two.r.body.pos = { x: 75, y: 2 }; two.r.body.vel = { x: -8, y: 0 };
     expect(one.update()).toEqual(two.update());
     expect(one.sim.rng.nextU32()).toBe(two.sim.rng.nextU32());
-    const air = alleyStage(), expected = alleyStage();
+  });
+
+  it.each([-1, 1])('retains acquired alley support until throw recognition then transfers to the ball, side=%s', side => {
+    const held = alleyStage(true, side), air = alleyStage(true, side), expected = alleyStage(true, side);
     for (const f of [air, expected]) {
       f.sim.throwAt = 1.1;
       f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
@@ -387,7 +402,17 @@ describe('back man markers preserve their installed alley support instead of rec
         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
       f.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
     }
+    expect(sawThrow(air.a, air.sim, air.r)).toBe(false);
+    expect(air.update()).toEqual(held.update());
+    expect(air.sim.rng).toEqual(held.sim.rng);
+    air.sim.throwAt = expected.sim.throwAt = .1;
+    for (const item of [air, expected]) {
+      item.a.tags.add('looking');
+      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
+    }
+    expect(sawThrow(air.a, air.sim, air.r)).toBe(true);
     expect(air.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(air.a.tags.has('onBall')).toBe(true);
     expect(air.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
   });
 
@@ -407,6 +432,41 @@ describe('back man markers preserve their installed alley support instead of rec
       const unknown = alleyStage(null, 1, 'run', 'RB', 'gun_trey_11', level);
       unknown.update();
       expect(unknown.sim.trace.data!.decisions.filter(d => d.kind === 'coverage-run-fit')).toHaveLength(0);
+    }
+  });
+});
+
+describe('acquired back-man support has no private positive-picture latch', () => {
+  it.each(['insert', 'alley'] as const)('uses new sensing and contradictory belief after a positive %s choice', kind => {
+    for (const replacement of [null, undefined]) {
+      const f = kind === 'insert' ? stage() : alleyStage();
+      f.sim.see = PlaySim.prototype.see;
+      f.a.mind.observationDelay = () => .1;
+      f.a.eyes = { keys: [f.r], peripheral: .15 };
+      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.r.idx);
+      expect(f.sim.see(f.a, f.r).carrying).toBe(true);
+      const positive = f.update();
+      f.a.recog!.read = 'pass';
+      const pass = f.update();
+      expect(pass).not.toEqual(positive);
+      f.a.recog!.read = 'run';
+      expect(f.update()).toEqual(positive);
+
+      for (let i = 0; i < 3; i++) {
+        f.sim.t += f.sim.dt;
+        f.sim.perception.record(f.sim.agents, replacement);
+        const cue = f.sim.see(f.a, f.r);
+        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
+        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.r)).toEqual(cue);
+        expect(f.sim.perception).toEqual(buffer);
+        expect(f.sim.rng).toEqual(rng);
+        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
+        if (i < 2) f.update();
+      }
+      expect(f.a.recog!.read).toBe('run');
+      f.sim.ball = { kind: 'held', carrier: f.r };
+      expect(f.update()).toEqual(new ManCoverage(f.a, f.sim, f.r, false, 'B', 1).update(f.a, f.sim));
+      expect(f.sim.see(f.a, f.r).carrying).toBe(replacement === null ? false : null);
     }
   });
 });
