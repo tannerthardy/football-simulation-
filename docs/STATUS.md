@@ -50,8 +50,8 @@ Do not use the historical sections below as a current starting-reference pin.
   assertion fails;145 Python/typecheck/build pass,202.275s, no drift/skips.
   One targeted three-lane diagnostic preserves commands/contact/budgets but
   adds15/0/14 forecasts. Run + Do-It-All must adjudicate that cost contract.
-  No assertion is edited. Exact reviewed #84-only tree/source dcebbee now gets
-  its own required verification; original failed candidate remains preserved.
+  No assertion is edited. Exact reviewed #84-only freeze5727110/source dcebbee passes
+  1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s; final adoption/ref checks pending; original failed candidate remains preserved.
 - #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
   disposition. It is no dependency and is not adopted/rejected. Lateral trial and
   experimental Physics remain separate. [Exact pins/review owners](INTEGRATION.md#ready-blocked-experimental).

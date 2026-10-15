@@ -180,8 +180,10 @@ contract is with Run consulting Do-It-All; no assertion has been changed.
 blocking.ts + combo-transfer.test.ts, exactly the reviewed blobs/source dcebbee.
 #81 runtime/test/fixture are removed by a normal revert; original candidate,
 failed receipt, diagnostic and portable patch remain fetchable in history.
-This materially different #84-only tree needs one exact verification; it does
-not reuse the failed combined clearance. No new panel/replay/game campaign.
+Exact #84-only freeze5727110 passes all phases: 1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s.
+[Final #84-only receipt](../data/reviews/current/duo-motion-integration/final-receipt.json).
+No skips/input drift. Final ref/tree checks precede routine adoption; original
+failed combined receipt remains failed. No unchanged verification repeat. No new panel/replay/game campaign.
 [Intake, reviews and patches](../data/reviews/current/duo-motion-integration/intake.json).
 
 | Item | Exact scope / pins | Independent decision and owner |
