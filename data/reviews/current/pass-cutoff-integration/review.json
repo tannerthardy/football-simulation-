@@ -1,0 +1,275 @@
+{
+  "schema": "pass-cutoff-current-integration-review-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "authoredCandidate": "81b908586416070145b5b89ee9517380c4fe09fe",
+  "reviewedPublication": "01ed8d2e68e85e673e07ac0aa042cd851ac2fa92",
+  "runtimeExtraction": "b405a0e15efc5163bf9c435d50b35013e3e9883a",
+  "frozenCombinedCommit": "be6225436498a43d8d98437a69069434e51565aa",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "validationSha256": "9583f767a94405cb907f497c2311bbb425965861b52fa3c80a9115dbbbe90f17",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "decision": "#65 documentation is independently ready for explicit adoption approval. #67 minimal extraction is portable and focused checks pass, but runtime promotion is held on the existing replay-telemetry coverage-only assertion; preserve the exact failed combined receipt. No new merge authorization inferred.",
+  "combinedOutcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1723,
+    "typescriptFailed": 1,
+    "typescriptFiles": 144,
+    "python": "skipped by fail-fast",
+    "inputsUnchanged": true
+  },
+  "blocker": {
+    "file": "test/replay-telemetry.test.ts",
+    "line": 55,
+    "owner": "Run Game handoff owner with Catching/replay contract reviewer; Integration owns composition and eventual verification",
+    "cause": "The coverage-only test treats every recorded decision as a coverage job. Candidate legitimately reaches an existing tackle-opportunity at2.20 by DE_W; all six real coverage jobs still match actual history, copied state and explicit unavailable causes. Accepted fixture has six coverage jobs and no other kind.",
+    "smallestProposedRepair": "One-line filter to coverage-job entries before coverage-specific assertions. Patch is uninstalled and applies cleanly; all runtime/tests remain the exact failed frozen candidate. No seed, outcome, threshold, timing or source change.",
+    "nextDecision": "Review the one-line coverage-kind contract correction and the adverse ordinary fixture. After disposition, freeze the final runtime/test candidate and decide the smallest compatible verification; do not rerun the unchanged failed tree."
+  },
+  "diagnosticLimits": {
+    "initialHarnessFailures": "Two diagnostic attempts repeated the invalid all-decision-kinds assumption before the final kind-specific diagnostic. Their launchers and exact scripts are retained.",
+    "telemetryFixtureAdverse": "Before the copy-test mutation at2.25, candidate LT sheds1.20 and allows pressure2.15; accepted has no recorded LT shed/pressure through that boundary. Both remain live. The diagnostic then moves QB10yd solely to test immutable recording; events at/after2.25 are not native football evidence.",
+    "finalDiagnostic": "Two same-fixture short arms confirm six historical coverage jobs, immutable copied state/perception/QB beliefs. Candidate also records one existing tackle-opportunity with explicit acquired evidence.",
+    "testProposalApplied": false
+  },
+  "runtime": {
+    "allNewCommandSeconds": 209.46349681500004,
+    "combinedCommandSeconds": 197.62315114800003,
+    "attempts": [
+      {
+        "receipt": "focused.json",
+        "exitCode": 0,
+        "commandSeconds": 3.085471862,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "node_modules/vitest/vitest.mjs",
+              "run",
+              "--project",
+              "core",
+              "--maxWorkers=1",
+              "test/pass-cutoff-approach.test.ts",
+              "test/pass-contact.test.ts",
+              "test/protection.test.ts",
+              "test/pass-installation.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 3.085471862
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "paired-launcher.json",
+        "exitCode": 0,
+        "commandSeconds": 2.910450879,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "data/reviews/current/pass-cutoff-integration/replay.mjs"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.910450879
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "traffic-diagnostic-launcher.json",
+        "exitCode": 0,
+        "commandSeconds": 1.6700528030000001,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "data/reviews/current/pass-cutoff-integration/replay.mjs",
+              "out/pass-cutoff-review/traffic-diagnostic",
+              "out/pass-cutoff-review/paired/trace.json.gz"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.6700528030000001
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "combined-failure.json",
+        "exitCode": 1,
+        "commandSeconds": 197.62315114800003,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 10.762659205
+          },
+          {
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 13.456215153999999
+          },
+          {
+            "command": [
+              "npm",
+              "run",
+              "test:all"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 173.40427678900002
+          }
+        ],
+        "skippedCommands": [
+          [
+            "npm",
+            "run",
+            "test:data"
+          ]
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "telemetry-diagnostic-failure1.json",
+        "exitCode": 1,
+        "commandSeconds": 1.2719338740000001,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "data/reviews/current/pass-cutoff-integration/telemetry-contract.mjs"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.2719338740000001
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "telemetry-diagnostic-failure2.json",
+        "exitCode": 1,
+        "commandSeconds": 1.5128732930000002,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "data/reviews/current/pass-cutoff-integration/telemetry-contract.mjs"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.5128732930000002
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "telemetry-diagnostic-launcher.json",
+        "exitCode": 0,
+        "commandSeconds": 1.389562956,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "data/reviews/current/pass-cutoff-integration/telemetry-contract.mjs"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.389562956
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      }
+    ],
+    "standaloneCollectorAttempts": 11,
+    "standaloneCompletedBoundedSegments": 9,
+    "standalonePartialHarnessFailureSegments": 2,
+    "completedGameCampaigns": 0,
+    "newRosters": 0,
+    "suiteGameAssertions": "Existing complete-suite game assertions executed; no extra campaign."
+  },
+  "exclusions": [
+    "#65 documentation runtime bundle",
+    "#66 physics",
+    "entry-admission",
+    "experimental run/awareness/stretch stack",
+    "forecast replacement",
+    "loaded-foot coordinate trial"
+  ],
+  "preservation": "Original branch/evidence history and adverse results retained. Accepted develop, historical4ded6b6, default and flags remain unchanged."
+}

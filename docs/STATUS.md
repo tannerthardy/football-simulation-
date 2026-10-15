@@ -4,7 +4,7 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Accepted develop: `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`**, merged #63 and prior #12. Historical `4ded6b6` stays separate.
+- **Accepted develop: `7d1451b2c31786e075550183a6a93bbda23da29b`**, documentation-only #65 after #63 and prior #12. Historical `4ded6b6` stays separate.
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -13,17 +13,19 @@ Do not use the historical sections below as a current starting-reference pin.
   entry-risk trial remain separate. Its latest information-versus-navigation
   clarification is recorded without promoting it. #34 coverage and #36 awareness retain
   their named blockers/owners. #54 and physics packages remain experimental.
-- Entry-admission remains held on the Awareness interface and explicit
-  sampled/unknown-motion contract. Observation-only extraction is a review
-  artifact, not accepted runtime. Its information-only correction stays separate.
+- Awareness has approved the bounded observation-only/existing-schema contract.
+  Entry-admission consumer football benefit remains unproved; the original
+  P032 clear-entry claim does not transfer under corrected unknown semantics.
+  Neither is accepted runtime; the information-only correction stays separate.
 - Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 remains held after Run-owner adjudication (mirrored feasible collection
-  still missed; two center-history compatibility questions remain Integration's).
-  #67 is portable on accepted develop, but its one combined attempt has a
-  replay-test decision-kind failure (1,723 pass/one fail; Python skipped).
-  Its one-line test proposal needs Run Game/Catching review. Neither runtime
-  candidate is included in develop; #65 docs are independently ready.
+- #66 remains held independently. #67's isolated final candidate at
+  `64177487272b7e0b2d51460e23ccdb6447508e39` passes **1,724 TS/145 Python,
+  typecheck/build** with all44 flags/components=1, no skipped phases or drift.
+  User accepted Run's ordinary-fixture adjudication; native adverse outcomes
+  and forecast/contact limitations remain. [Final receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
+  Recommend bounded merge **after explicit authorization**; accepted develop
+  remains7d1451b. #69 remains a separate queued controller review.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 

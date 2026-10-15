@@ -1,0 +1,135 @@
+{
+  "schema": "pass-cutoff-review-artifacts-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "combinedFrozen": "be6225436498a43d8d98437a69069434e51565aa",
+  "publicationAfterFreezeChangesProtectedPaths": false,
+  "localReviewLinksChecked": 9,
+  "brokenLinks": [],
+  "artifacts": [
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/adverse-review.json",
+      "bytes": 11184,
+      "sha256": "7cdab002a576638203ca2aa5ecc1dd8ff282c5790c1e3f77f7f71fa7ba61322f"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/author-evidence-review.json",
+      "bytes": 469,
+      "sha256": "88e8a92e636c759715e8ccd78e4c2001237ebabd04a6c31a02ffc428cc8b1b4e"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/combined-failure.json",
+      "bytes": 2538,
+      "sha256": "ea8bd6fb233bf51b110c98354016dfd77f37f16e626c68fb4300368be48eadd8"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/combined-failure.log",
+      "bytes": 16141,
+      "sha256": "594fa81c247f86ddb37f4590c9ba4d06ca3316873ea3a9e302de9b48676ed772"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/focused.json",
+      "bytes": 2418,
+      "sha256": "1c0dd59053574d65f37cdef20dfc8bafbdbb6cdec4fce186b68f3bacfdb53876"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/paired-launcher.json",
+      "bytes": 2241,
+      "sha256": "7307f331720bb1974c76cf8bb177a14908233f567f60952555c84ca456da108e"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/paired-native.json",
+      "bytes": 13059,
+      "sha256": "706339f2d8947b2c8074d8f688e91ca037d189909ba277b74c2d34abcad9d905"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/paired-native.json.gz",
+      "bytes": 1659248,
+      "sha256": "c18d49dd95dc67d1c7dbd727a182a18b5c5ef616832e72f69999ee111a2e22d7"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/portable-extraction.patch",
+      "bytes": 18103,
+      "sha256": "0ac801e45ccef2b60202ece25803cc194f2013ea3a8af9c28cd9c7c5d9a29afa"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/pr65-final-review.json",
+      "bytes": 913,
+      "sha256": "fdc5d15d1f68a3aea45501696fba51b513feef27caa62b3197420895c4d57fe2"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/pr65-review.json",
+      "bytes": 2055,
+      "sha256": "173247c2653d7d2b62ee5a02994fb75157d1fa41530108b077b5df5e126d25bf"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/replay-capture-v1.mjs",
+      "bytes": 7920,
+      "sha256": "bd1ddcca7acff1d822092e8ada96b7dd280dc178ed6fe477789e6f4bce056a37"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/replay.mjs",
+      "bytes": 10125,
+      "sha256": "1a29e5c0c2ba0de79f74043ed3b4f2677a26ce9443c05350040730ceb26d7a57"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/review.json",
+      "bytes": 9538,
+      "sha256": "b7203cd1930c6d9ba3060b5c77530d2c4e059f77d76b1d2f5a2879164c5eeb8a"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-contract-proposal.patch",
+      "bytes": 561,
+      "sha256": "d4192529071fb55b6f662c984fa1214462eefe22a9f1dadc2a05c9c469a68834"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-contract.json",
+      "bytes": 11037,
+      "sha256": "87829411813c982306ebbc930dfac17c10e47daa8ac13edec7228c561f5e2f1b"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-contract.mjs",
+      "bytes": 6543,
+      "sha256": "b0925568fecb23f0bea39b57b8f9c658372b381ad4815bcaccaaf77912ec50a5"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-diagnostic-failure1.json",
+      "bytes": 2260,
+      "sha256": "1ebdab666ed6013e2fefd097c442c40a18587aceb80b7ee1d9e2e57d4b0997da"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-diagnostic-failure1.mjs",
+      "bytes": 5929,
+      "sha256": "5f068cd7bc50eee5c7bbaf889743824a48d633206528438306f1c5862062908c"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-diagnostic-failure2.json",
+      "bytes": 2260,
+      "sha256": "0de6d56726995c5c3e9375b4904c6fbcc48bce73053a23f9dda3952a38ed8801"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-diagnostic-failure2.mjs",
+      "bytes": 6250,
+      "sha256": "7d6ecce44d38e0a1503375550a932cc7d4be80db629faba54132941fe209673c"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/telemetry-diagnostic-launcher.json",
+      "bytes": 2253,
+      "sha256": "460f56d2710e168204283435994ade46b6fd6ff9694c00fd51e0cdc2ee8bfaa4"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/traffic-diagnostic-launcher.json",
+      "bytes": 2356,
+      "sha256": "605f0f4cfde8d65091d84bbec038e211f12761c557354f1573619baae127a58a"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/traffic-diagnostic-native.json",
+      "bytes": 5613,
+      "sha256": "5d88b030878378a27c0d3030ed83dff7aa4a2d335a0ac66c814b77d4b91b1664"
+    },
+    {
+      "path": "data/reviews/current/pass-cutoff-integration/traffic-diagnostic-native.json.gz",
+      "bytes": 433122,
+      "sha256": "8c03092a3130b6fa4a85e2a0816cf7bb742a787a2d50b5e11f13a4b2f57baf18"
+    }
+  ]
+}
