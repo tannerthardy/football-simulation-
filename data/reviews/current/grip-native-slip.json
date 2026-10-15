@@ -1,0 +1,1122 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "testedRevision": "ec88e85988ec4b540074f97f70d0e428c62c46be",
+  "runtimeSource": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+  "meta": {
+    "commit": "ec88e85988ec4b540074f97f70d0e428c62c46be",
+    "source": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+    "hashes": {
+      "src/physics/world.ts": "9a9f2a5aa50897581ace7bdd08c9b21cd3bce988d3a010e858858134718d01e2",
+      "src/physics/active-grip.ts": "fb30cfc803ea0576ec9a5ae44dbf9391b65065fb5f5dc9e3351f579c241bc053",
+      "scripts/diag/physics/grip-native-span-model.ts": "4754c50de6f08f5cdab5f9014d5cf7aab36a6bd8561f8b79911a38ac89299cd4",
+      "scripts/diag/physics/grip-span-kernel-trial.ts": "642a17d5406f6dd9bfa9c5008ed04c11c77f1fca92345314352e5be293da9cc5",
+      "scripts/diag/physics/grip-native-slip.ts": "5eaa05884e8c33e75bcc17848483a1fad3dc749e9ce6a02805a2c4588a273a50",
+      "scripts/diag/physics/grip-native-reel-reference.ts": "5c07248df940c30f3a8e254d6af1f67502cc4629460f86ef51749e0f173e63ed",
+      "scripts/diag/physics/grip-native-slip-evidence.ts": "cc653f4845f6f2507e0c729f01b8b394acb526fa6e712a7788285a268ad40312",
+      "test/grip-native-slip.test.ts": "d815fa4c790373743e16a0aa5e3d3ba2e20884fbed7b385a22b8c2438b6e70b8",
+      "config/grip-native-world-packets.json": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f",
+      "config/grip-native-force-inputs.json": "e13d65a55a454f39314c996c957ac1d6d79236d0e385c8e1ebecd25d443a9f9a"
+    },
+    "node": "v22.23.3",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "timestamp": "2026-10-15T00:40:04.033Z",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "parent": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+    "inputs": {
+      "path": "config/grip-native-world-packets.json",
+      "sha256": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f"
+    },
+    "settings": {
+      "handContact": "patch",
+      "gripTiming": "midpoint",
+      "constraintWork": "per-solve",
+      "materialTransport": "owned",
+      "nativeSubsteps": 96
+    },
+    "accuracy": {
+      "normalizedAllowance": 0.0625,
+      "share": 1e-09,
+      "eventTime": 1e-12,
+      "heightImpulse": 1e-09,
+      "ledger": 1e-09,
+      "work": 1e-08,
+      "angular": 1e-07
+    },
+    "costBudgetMilliseconds": {
+      "median": 2,
+      "p95": 5
+    },
+    "fullHost": false,
+    "host": "equivalent portable two-body World"
+  },
+  "scope": "Experimental owned patch/midpoint/per-solve, one upright held-foot grip, zero recovery command. New monotone zero-tension/zero-reel tangent cap/slip exit; existing below-slip native reel/ground path unchanged. No multiple-contact, impact, off-feet, active recovery, mixed saturated normal/reel or LEG_BRACE promotion.",
+  "mechanical": {
+    "duration": 0.004166666666666667,
+    "accuracy": 0.002440714297335944,
+    "referenceConvergence": 0.03125322223240801,
+    "events": [
+      {
+        "kind": "cap",
+        "time": 0.0022957388333565147,
+        "residual": -1.787459069646502e-14
+      },
+      {
+        "kind": "slide",
+        "time": 0.0022985040338802777,
+        "residual": -4.8405723873656825e-14
+      }
+    ],
+    "evaluations": 936,
+    "workResidual": 7.585043704239069e-13,
+    "energyResidual": 7.620570841027074e-13,
+    "angularResidual": -2.4868995751603507e-12,
+    "maximumCapacityRatio": 1
+  },
+  "continuation": [
+    {
+      "case": "acquired-cap",
+      "id": "patch-45-8-0-3001-1",
+      "phase": 0,
+      "intervals": 16,
+      "physicalTime": 0.008333333333333333,
+      "accuracy": {
+        "position": 1.0098709710996372e-13,
+        "support": 2.4837232038162668e-15,
+        "facing": 2.042810365310288e-14,
+        "material": 1.6877747909769677e-16,
+        "bodyWork": 4.215294779896794e-12,
+        "armWork": 3.4660052605772762e-12,
+        "motorWork": 1.8207657603852567e-14,
+        "legs": 5.273559366969494e-16,
+        "worstInterval": 0.0008969277798943432
+      },
+      "referenceConvergence": {
+        "position": 0,
+        "support": 3.635741650903616e-16,
+        "facing": 1.5765166949677223e-14,
+        "material": 6.5764126779783e-18,
+        "bodyWork": 1.1901590823981678e-13,
+        "armWork": 9.947598300641403e-14,
+        "motorWork": 9.836575998178887e-14,
+        "legs": 9.71445146547012e-16,
+        "worstInterval": 0.0002052266874515625
+      },
+      "events": [
+        {
+          "kind": "cap",
+          "time": 0.0002124253172637581,
+          "residual": 7.038813976123492e-14,
+          "timeAfterAcquisition": 0.0022957586505970916
+        },
+        {
+          "kind": "slide",
+          "time": 0.0002151905946086341,
+          "residual": 2.0872192862952943e-14,
+          "timeAfterAcquisition": 0.0022985239279419674
+        }
+      ],
+      "referenceReelEvents": [
+        {
+          "kind": "reel",
+          "time": 0.0004332170611102507,
+          "residual": -6.616929226765933e-14,
+          "timeAfterAcquisition": 0.005120717061110251
+        }
+      ],
+      "alternatives": [
+        {
+          "mode": "owned",
+          "position": {
+            "x": 55.26631686650873,
+            "y": 26.666638160386274
+          },
+          "facing": -2.9518683068178396e-08,
+          "legs": 0.17636472941510695,
+          "slipping": false,
+          "bodyWork": -9.931186109202718,
+          "audit": null
+        },
+        {
+          "mode": "old-callback",
+          "position": {
+            "x": 55.26631600135267,
+            "y": 26.666638064084108
+          },
+          "facing": -2.8765862232471197e-08,
+          "legs": 0.17636472941510695,
+          "slipping": false,
+          "bodyWork": -9.931419431739307,
+          "audit": {
+            "accepted": 11,
+            "fallbacks": 5,
+            "reasons": {
+              "solver:Mixed span cap/target/power scope": 5
+            },
+            "dose": 0.45930934883635444,
+            "bodyWork": 0.42657603698792323,
+            "motorWork": -0.012634108822035427,
+            "armCost": 0.4392101458099587,
+            "reelDose": 0.21723892220677377
+          }
+        },
+        {
+          "mode": "transition",
+          "position": {
+            "x": 55.26631499574148,
+            "y": 26.666638024564104
+          },
+          "facing": -2.8907754129186194e-08,
+          "legs": 0.17695531278853194,
+          "slipping": false,
+          "bodyWork": -9.94600970809975,
+          "audit": {
+            "accepted": 16,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 5.806565558600814,
+            "bodyWork": -9.94600970809975,
+            "motorWork": -1.0990866835037356,
+            "armCost": 0.4386305008929636,
+            "reelDose": 0.21694346723163288
+          }
+        }
+      ]
+    },
+    {
+      "case": "frontal-control",
+      "id": "patch-0-3-0-3001-1",
+      "phase": 0,
+      "intervals": 16,
+      "physicalTime": 0.008333333333333333,
+      "accuracy": {
+        "position": 1.2505552149377763e-12,
+        "support": 0,
+        "facing": 0,
+        "material": 0,
+        "bodyWork": 0,
+        "armWork": 0,
+        "motorWork": 0,
+        "legs": 0,
+        "worstInterval": 0.0025011104298755527
+      },
+      "referenceConvergence": {
+        "position": 1.8189894035458565e-12,
+        "support": 0,
+        "facing": 0,
+        "material": 0,
+        "bodyWork": 0,
+        "armWork": 0,
+        "motorWork": 0,
+        "legs": 0,
+        "worstInterval": 0.0036379788070917125
+      },
+      "events": [],
+      "referenceReelEvents": [],
+      "alternatives": [
+        {
+          "mode": "owned",
+          "position": {
+            "x": 52.12499999999996,
+            "y": 26.666666666666668
+          },
+          "facing": 0,
+          "legs": 0.2705178936866569,
+          "slipping": false,
+          "bodyWork": 0,
+          "audit": null
+        },
+        {
+          "mode": "old-callback",
+          "position": {
+            "x": 52.125000000000185,
+            "y": 26.666666666666668
+          },
+          "facing": 0,
+          "legs": 0.2705178936866569,
+          "slipping": false,
+          "bodyWork": 0,
+          "audit": {
+            "accepted": 16,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 0,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "armCost": 0,
+            "reelDose": 0
+          }
+        },
+        {
+          "mode": "transition",
+          "position": {
+            "x": 52.125000000000185,
+            "y": 26.666666666666668
+          },
+          "facing": 0,
+          "legs": 0.2705178936866569,
+          "slipping": false,
+          "bodyWork": 0,
+          "audit": {
+            "accepted": 16,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 0,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "armCost": 0,
+            "reelDose": 0
+          }
+        }
+      ]
+    },
+    {
+      "case": "fresh-angle",
+      "id": "patch-45-8-0-4001-1",
+      "phase": 16,
+      "intervals": 16,
+      "physicalTime": 0.008333333333333333,
+      "accuracy": {
+        "position": 1.399606873320082e-13,
+        "support": 6.248809145131689e-15,
+        "facing": 4.440892098500626e-15,
+        "material": 3.3686680674249915e-16,
+        "bodyWork": 8.138378859712248e-12,
+        "armWork": 8.377298854611581e-12,
+        "motorWork": 2.378652830259398e-13,
+        "legs": 0,
+        "worstInterval": 0.0015266509457384253
+      },
+      "referenceConvergence": {
+        "position": 1.0658141036401503e-14,
+        "support": 7.027683403803289e-16,
+        "facing": 1.4432899320127035e-14,
+        "material": 1.7295403614533675e-17,
+        "bodyWork": 1.9184653865522705e-13,
+        "armWork": 1.9628743075372768e-13,
+        "motorWork": 5.88418203051333e-15,
+        "legs": 0,
+        "worstInterval": 0.0002338901383696357
+      },
+      "events": [],
+      "referenceReelEvents": [],
+      "alternatives": [
+        {
+          "mode": "owned",
+          "position": {
+            "x": 55.33259643835833,
+            "y": 26.666696163704405
+          },
+          "facing": -1.1471571857657803e-06,
+          "legs": 0.1393467156903025,
+          "slipping": false,
+          "bodyWork": -5.442571421301444,
+          "audit": null
+        },
+        {
+          "mode": "old-callback",
+          "position": {
+            "x": 55.33259583656834,
+            "y": 26.666695733617843
+          },
+          "facing": -1.134398235967458e-06,
+          "legs": 0.1393467156903025,
+          "slipping": false,
+          "bodyWork": -5.4601012024698,
+          "audit": {
+            "accepted": 16,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 2.553215040841184,
+            "bodyWork": 4.51276046192217,
+            "motorWork": -0.04943293660394772,
+            "armCost": 4.562193398526117,
+            "reelDose": 2.545398475879261
+          }
+        },
+        {
+          "mode": "transition",
+          "position": {
+            "x": 55.33259583656834,
+            "y": 26.666695733617843
+          },
+          "facing": -1.134398235967458e-06,
+          "legs": 0.1393467156903025,
+          "slipping": false,
+          "bodyWork": -5.4601012024698,
+          "audit": {
+            "accepted": 16,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 2.553215040841184,
+            "bodyWork": 4.51276046192217,
+            "motorWork": -0.04943293660394772,
+            "armCost": 4.562193398526117,
+            "reelDose": 2.545398475879261
+          }
+        }
+      ]
+    }
+  ],
+  "referenceCorrection": {
+    "description": "Same-input existing centered RK4 misses the later reel-demand-zero kink at native interval9. Optional independent event-aware reference converges without changing candidate reel law. Original reference retained.",
+    "preserved": {
+      "convergence": 0.42374547946054386,
+      "candidateComparison": 0.2028885612574867
+    },
+    "eventAware": {
+      "convergence": 7.105427357601001e-06,
+      "candidateComparison": 0.0003586909696161797,
+      "events": [
+        {
+          "kind": "reel",
+          "time": 0.000433217061125409,
+          "residual": 9.325873406851315e-15
+        }
+      ]
+    }
+  },
+  "cost": {
+    "budgetMilliseconds": {
+      "median": 2,
+      "p95": 5
+    },
+    "unit": "One .520833ms two-body native contact interval in the original saved22-body World; not a full World.step, game cost or hard worst-case bound.",
+    "protocol": "Two serial uninstrumented processes, same CPU/Node,11 warm +101 measured rotating samples per case/mode; preparation outside clock. No other test/profile CPU jobs during clocks.",
+    "runs": [
+      {
+        "meta": {
+          "commit": "ec88e85988ec4b540074f97f70d0e428c62c46be",
+          "source": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+          "hashes": {
+            "src/physics/world.ts": "9a9f2a5aa50897581ace7bdd08c9b21cd3bce988d3a010e858858134718d01e2",
+            "src/physics/active-grip.ts": "fb30cfc803ea0576ec9a5ae44dbf9391b65065fb5f5dc9e3351f579c241bc053",
+            "scripts/diag/physics/grip-native-span-model.ts": "4754c50de6f08f5cdab5f9014d5cf7aab36a6bd8561f8b79911a38ac89299cd4",
+            "scripts/diag/physics/grip-span-kernel-trial.ts": "642a17d5406f6dd9bfa9c5008ed04c11c77f1fca92345314352e5be293da9cc5",
+            "scripts/diag/physics/grip-native-slip.ts": "5eaa05884e8c33e75bcc17848483a1fad3dc749e9ce6a02805a2c4588a273a50",
+            "scripts/diag/physics/grip-native-reel-reference.ts": "5c07248df940c30f3a8e254d6af1f67502cc4629460f86ef51749e0f173e63ed",
+            "scripts/diag/physics/grip-native-slip-evidence.ts": "cc653f4845f6f2507e0c729f01b8b394acb526fa6e712a7788285a268ad40312",
+            "test/grip-native-slip.test.ts": "d815fa4c790373743e16a0aa5e3d3ba2e20884fbed7b385a22b8c2438b6e70b8",
+            "config/grip-native-world-packets.json": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f",
+            "config/grip-native-force-inputs.json": "e13d65a55a454f39314c996c957ac1d6d79236d0e385c8e1ebecd25d443a9f9a"
+          },
+          "node": "v22.23.3",
+          "cpu": "AMD EPYC 9V74 80-Core Processor",
+          "timestamp": "2026-10-15T00:40:20.024Z",
+          "flags": {
+            "ANCHOR_SPLIT": "1",
+            "CF_FLOW": null,
+            "CLIMB_INTERCEPT": "1",
+            "CLIMB_PLAN": "1",
+            "DL_FIGHT": "0",
+            "DL_FLOW": "1",
+            "DL_HANDS": "0",
+            "FLOW_READ": "1",
+            "FLOW_RELEASE": "1",
+            "GAIT_STEP": "0",
+            "HAND_FIGHT": "0",
+            "HAND_MOTOR": "0",
+            "HOLD_SUBSTEPS": "0",
+            "IN_STRIDE_CATCH": "0",
+            "KEEPER_TORSO": "1",
+            "LB_PLAN": "1",
+            "LEG_BRACE": "0",
+            "LEVER_FACING": "1",
+            "LIVE_AIM": "1",
+            "LIVE_GAPS": "1",
+            "PASS_SINK": "0",
+            "PULL_CUE": "0",
+            "PULL_PLAN": "0",
+            "PULL_READ": "1",
+            "PULL_STEP": "0",
+            "REACH_CONTACT": "0",
+            "READ_EYES": "1",
+            "READ_RISK_TRACE": "0",
+            "RUN_ANCHOR": "1",
+            "RUN_CONTACT_TRACK": "0",
+            "RUN_HANDS": "0",
+            "RUN_READ": "0",
+            "RUN_READ_TURN": "0",
+            "SCRAPE": "1",
+            "SHED_PHYSICAL": "1",
+            "STALK_CLAIM": "1",
+            "STRETCH_MESH": "1",
+            "STRETCH_REACH": "1",
+            "TACKLE_ROLL": "0",
+            "TACKLE_TOUCH": "0",
+            "THREAT_READ": "1",
+            "WRAP_BIND": "0",
+            "ZONE_FLOW": "1"
+          },
+          "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+          "parent": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+          "inputs": {
+            "path": "config/grip-native-world-packets.json",
+            "sha256": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f"
+          },
+          "settings": {
+            "handContact": "patch",
+            "gripTiming": "midpoint",
+            "constraintWork": "per-solve",
+            "materialTransport": "owned",
+            "nativeSubsteps": 96
+          },
+          "accuracy": {
+            "normalizedAllowance": 0.0625,
+            "share": 1e-09,
+            "eventTime": 1e-12,
+            "heightImpulse": 1e-09,
+            "ledger": 1e-09,
+            "work": 1e-08,
+            "angular": 1e-07
+          },
+          "costBudgetMilliseconds": {
+            "median": 2,
+            "p95": 5
+          },
+          "fullHost": true,
+          "host": "original saved 22-body World, two-body contact group"
+        },
+        "rows": [
+          {
+            "case": "acquired-cap",
+            "mode": "owned",
+            "median": 0.06606900000042515,
+            "p95": 0.1511369999998351,
+            "p99": 0.17400099999986196,
+            "maximum": 0.24034100000017133,
+            "pass": true
+          },
+          {
+            "case": "acquired-cap",
+            "mode": "old-callback",
+            "median": 0.17952000000013868,
+            "p95": 0.32541900000023816,
+            "p99": 0.5825360000003457,
+            "maximum": 0.8575690000000122,
+            "pass": true
+          },
+          {
+            "case": "acquired-cap",
+            "mode": "transition",
+            "median": 0.12733099999968545,
+            "p95": 0.3113679999996748,
+            "p99": 0.41227000000026237,
+            "maximum": 0.4834569999998166,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "owned",
+            "median": 0.038436999999248656,
+            "p95": 0.11818700000003446,
+            "p99": 0.15481299999964904,
+            "maximum": 0.18860399999994115,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "old-callback",
+            "median": 0.13630499999999302,
+            "p95": 0.647993999999926,
+            "p99": 1.030138000000079,
+            "maximum": 2.285134000000653,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "transition",
+            "median": 0.6783990000003541,
+            "p95": 1.4696090000002187,
+            "p99": 3.0875059999998484,
+            "maximum": 3.5185989999999947,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "owned",
+            "median": 0.026780000000144355,
+            "p95": 0.09176799999931973,
+            "p99": 0.18596000000025015,
+            "maximum": 0.7869230000001153,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "old-callback",
+            "median": 0.3072620000002644,
+            "p95": 1.1625119999998788,
+            "p99": 1.6927890000001753,
+            "maximum": 1.722238999999945,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "transition",
+            "median": 0.3125199999999495,
+            "p95": 0.9938740000002326,
+            "p99": 1.818974000000253,
+            "maximum": 1.920296000000235,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "owned",
+            "median": 0.04815200000030018,
+            "p95": 0.14040099999988342,
+            "p99": 0.29960000000005493,
+            "maximum": 0.9363280000002305,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "old-callback",
+            "median": 0.10888299999987794,
+            "p95": 0.26642100000026403,
+            "p99": 0.33209899999928894,
+            "maximum": 0.4574670000001788,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "transition",
+            "median": 0.10901400000011563,
+            "p95": 0.28065200000014556,
+            "p99": 0.8182099999999082,
+            "maximum": 1.1963079999995898,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "owned",
+            "median": 0.026670000000194705,
+            "p95": 0.09760600000026898,
+            "p99": 0.24225399999977526,
+            "maximum": 0.2440670000000864,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "old-callback",
+            "median": 0.6954249999998865,
+            "p95": 1.8535860000001776,
+            "p99": 3.445598999999902,
+            "maximum": 3.716985999999906,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "transition",
+            "median": 0.6992609999997512,
+            "p95": 2.0904219999999896,
+            "p99": 3.6133950000003097,
+            "maximum": 5.584852999999384,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "owned",
+            "median": 0.044557000000168046,
+            "p95": 0.19666599999982282,
+            "p99": 0.31070699999963836,
+            "maximum": 0.3163360000003195,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "old-callback",
+            "median": 0.9986519999999928,
+            "p95": 2.0343370000000505,
+            "p99": 3.1974049999998897,
+            "maximum": 5.73820499999988,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "transition",
+            "median": 1.0619959999999082,
+            "p95": 2.390813999999864,
+            "p99": 3.3016820000002554,
+            "maximum": 4.083035999999993,
+            "pass": true
+          }
+        ],
+        "samples": {
+          "path": "out/grip-native-slip/cost-a.samples.json",
+          "sha256": "b54bc24ee9b379074df7d3cad2c707edbc9cdbb1b6d0275786cff0d11428248d"
+        }
+      },
+      {
+        "meta": {
+          "commit": "ec88e85988ec4b540074f97f70d0e428c62c46be",
+          "source": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+          "hashes": {
+            "src/physics/world.ts": "9a9f2a5aa50897581ace7bdd08c9b21cd3bce988d3a010e858858134718d01e2",
+            "src/physics/active-grip.ts": "fb30cfc803ea0576ec9a5ae44dbf9391b65065fb5f5dc9e3351f579c241bc053",
+            "scripts/diag/physics/grip-native-span-model.ts": "4754c50de6f08f5cdab5f9014d5cf7aab36a6bd8561f8b79911a38ac89299cd4",
+            "scripts/diag/physics/grip-span-kernel-trial.ts": "642a17d5406f6dd9bfa9c5008ed04c11c77f1fca92345314352e5be293da9cc5",
+            "scripts/diag/physics/grip-native-slip.ts": "5eaa05884e8c33e75bcc17848483a1fad3dc749e9ce6a02805a2c4588a273a50",
+            "scripts/diag/physics/grip-native-reel-reference.ts": "5c07248df940c30f3a8e254d6af1f67502cc4629460f86ef51749e0f173e63ed",
+            "scripts/diag/physics/grip-native-slip-evidence.ts": "cc653f4845f6f2507e0c729f01b8b394acb526fa6e712a7788285a268ad40312",
+            "test/grip-native-slip.test.ts": "d815fa4c790373743e16a0aa5e3d3ba2e20884fbed7b385a22b8c2438b6e70b8",
+            "config/grip-native-world-packets.json": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f",
+            "config/grip-native-force-inputs.json": "e13d65a55a454f39314c996c957ac1d6d79236d0e385c8e1ebecd25d443a9f9a"
+          },
+          "node": "v22.23.3",
+          "cpu": "AMD EPYC 9V74 80-Core Processor",
+          "timestamp": "2026-10-15T00:40:41.464Z",
+          "flags": {
+            "ANCHOR_SPLIT": "1",
+            "CF_FLOW": null,
+            "CLIMB_INTERCEPT": "1",
+            "CLIMB_PLAN": "1",
+            "DL_FIGHT": "0",
+            "DL_FLOW": "1",
+            "DL_HANDS": "0",
+            "FLOW_READ": "1",
+            "FLOW_RELEASE": "1",
+            "GAIT_STEP": "0",
+            "HAND_FIGHT": "0",
+            "HAND_MOTOR": "0",
+            "HOLD_SUBSTEPS": "0",
+            "IN_STRIDE_CATCH": "0",
+            "KEEPER_TORSO": "1",
+            "LB_PLAN": "1",
+            "LEG_BRACE": "0",
+            "LEVER_FACING": "1",
+            "LIVE_AIM": "1",
+            "LIVE_GAPS": "1",
+            "PASS_SINK": "0",
+            "PULL_CUE": "0",
+            "PULL_PLAN": "0",
+            "PULL_READ": "1",
+            "PULL_STEP": "0",
+            "REACH_CONTACT": "0",
+            "READ_EYES": "1",
+            "READ_RISK_TRACE": "0",
+            "RUN_ANCHOR": "1",
+            "RUN_CONTACT_TRACK": "0",
+            "RUN_HANDS": "0",
+            "RUN_READ": "0",
+            "RUN_READ_TURN": "0",
+            "SCRAPE": "1",
+            "SHED_PHYSICAL": "1",
+            "STALK_CLAIM": "1",
+            "STRETCH_MESH": "1",
+            "STRETCH_REACH": "1",
+            "TACKLE_ROLL": "0",
+            "TACKLE_TOUCH": "0",
+            "THREAT_READ": "1",
+            "WRAP_BIND": "0",
+            "ZONE_FLOW": "1"
+          },
+          "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+          "parent": "d19656db4964559dd7952c23ccd3388cc0e6058c",
+          "inputs": {
+            "path": "config/grip-native-world-packets.json",
+            "sha256": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f"
+          },
+          "settings": {
+            "handContact": "patch",
+            "gripTiming": "midpoint",
+            "constraintWork": "per-solve",
+            "materialTransport": "owned",
+            "nativeSubsteps": 96
+          },
+          "accuracy": {
+            "normalizedAllowance": 0.0625,
+            "share": 1e-09,
+            "eventTime": 1e-12,
+            "heightImpulse": 1e-09,
+            "ledger": 1e-09,
+            "work": 1e-08,
+            "angular": 1e-07
+          },
+          "costBudgetMilliseconds": {
+            "median": 2,
+            "p95": 5
+          },
+          "fullHost": true,
+          "host": "original saved 22-body World, two-body contact group"
+        },
+        "rows": [
+          {
+            "case": "acquired-cap",
+            "mode": "owned",
+            "median": 0.06041099999993094,
+            "p95": 0.15907999999990352,
+            "p99": 0.18925400000011905,
+            "maximum": 0.19134699999995064,
+            "pass": true
+          },
+          {
+            "case": "acquired-cap",
+            "mode": "old-callback",
+            "median": 0.1733799999999519,
+            "p95": 0.3496749999999338,
+            "p99": 0.4716889999999694,
+            "maximum": 0.6866419999996651,
+            "pass": true
+          },
+          {
+            "case": "acquired-cap",
+            "mode": "transition",
+            "median": 0.12189300000000003,
+            "p95": 0.271588999999949,
+            "p99": 0.29948000000013053,
+            "maximum": 0.6604130000000623,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "owned",
+            "median": 0.038488000000143074,
+            "p95": 0.10111199999983,
+            "p99": 0.3011930000002394,
+            "maximum": 0.7975489999998899,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "old-callback",
+            "median": 0.12570899999991525,
+            "p95": 0.2954939999999624,
+            "p99": 0.40079199999991033,
+            "maximum": 0.8656510000000708,
+            "pass": true
+          },
+          {
+            "case": "native-transition",
+            "mode": "transition",
+            "median": 0.6200120000000879,
+            "p95": 1.4698889999999665,
+            "p99": 2.3364330000003974,
+            "maximum": 6.5730590000000575,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "owned",
+            "median": 0.026099000000158412,
+            "p95": 0.07313999999996668,
+            "p99": 0.1840270000000146,
+            "maximum": 0.26798299999973096,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "old-callback",
+            "median": 0.305810000000065,
+            "p95": 0.5905680000000757,
+            "p99": 1.1012249999998858,
+            "maximum": 1.4934149999999136,
+            "pass": true
+          },
+          {
+            "case": "below-slip",
+            "mode": "transition",
+            "median": 0.2857400000000325,
+            "p95": 0.9362670000000435,
+            "p99": 1.4067540000000918,
+            "maximum": 1.448627000000215,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "owned",
+            "median": 0.04978499999970154,
+            "p95": 0.1360939999999573,
+            "p99": 0.42257500000005166,
+            "maximum": 0.6951850000004924,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "old-callback",
+            "median": 0.11770700000033685,
+            "p95": 0.23066700000003948,
+            "p99": 0.34954500000003463,
+            "maximum": 0.8607539999998153,
+            "pass": true
+          },
+          {
+            "case": "frontal-control",
+            "mode": "transition",
+            "median": 0.11684500000001208,
+            "p95": 0.21736699999974007,
+            "p99": 0.3655090000002019,
+            "maximum": 0.9778390000001309,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "owned",
+            "median": 0.026749999999992724,
+            "p95": 0.09675599999991391,
+            "p99": 0.14363600000024235,
+            "maximum": 0.25953000000026805,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "old-callback",
+            "median": 0.6208039999992252,
+            "p95": 0.9358369999999923,
+            "p99": 2.0571910000001026,
+            "maximum": 2.1560709999994288,
+            "pass": true
+          },
+          {
+            "case": "fresh-angle",
+            "mode": "transition",
+            "median": 0.6322110000000976,
+            "p95": 1.7444919999998092,
+            "p99": 2.412785999999869,
+            "maximum": 3.4294539999998506,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "owned",
+            "median": 0.04161300000032497,
+            "p95": 0.11151699999982156,
+            "p99": 0.22614999999996144,
+            "maximum": 0.24690099999997983,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "old-callback",
+            "median": 0.9054099999998471,
+            "p95": 1.8601260000000366,
+            "p99": 2.246908000000076,
+            "maximum": 4.6022790000001805,
+            "pass": true
+          },
+          {
+            "case": "reel-onset",
+            "mode": "transition",
+            "median": 0.9035279999998238,
+            "p95": 1.4437200000002122,
+            "p99": 1.7108310000000984,
+            "maximum": 2.074387999999999,
+            "pass": true
+          }
+        ],
+        "samples": {
+          "path": "out/grip-native-slip/cost-b.samples.json",
+          "sha256": "db6466f4d6d2ae7584f6b15cdd0975cf91edc5b00f2456f2cd1760e62b4a5b32"
+        }
+      }
+    ]
+  },
+  "dryCap": {
+    "status": "Unresolved old numerical phase-certificate/search failure, not a capacity overrun or new transition failure. No test re-pin or enlarged production search.",
+    "test": "test/grip-fast.test.ts: dry cap-stop boundary, expected limited=0,actual1",
+    "source": {
+      "path": "data/reviews/current/grip-native-forces.json",
+      "sha256": "ce20a0448f354e282e8dd6d3938548b5ff75a669bb2dcc55d3e209a0e4abdfc7"
+    },
+    "rows": [
+      {
+        "coarse": 8192,
+        "fine": 16384,
+        "normalized": 5.013791870571044,
+        "finePhaseUncertainty": 5.013791870571044e-06,
+        "finePhaseUncertaintyNormalized": 5.013791870571044,
+        "transitions": [
+          {
+            "time": 0.004307556152343684,
+            "slipping": false,
+            "legs": 0.014250914795546493,
+            "width": 1.52587890625e-06,
+            "increment": 5.013791870571044e-06
+          }
+        ],
+        "legsDelta": 1.0862838406566766e-13,
+        "pointDelta": 7.55327569928955e-08,
+        "bodyPosition": 7.55327569928955e-08,
+        "facing": 4.238164469191896e-06,
+        "spin": 0.00016954210069441977,
+        "work": 0.0003649416206297218
+      },
+      {
+        "coarse": 16384,
+        "fine": 32768,
+        "normalized": 2.506892747598504,
+        "finePhaseUncertainty": 2.506892747598504e-06,
+        "finePhaseUncertaintyNormalized": 2.506892747598504,
+        "transitions": [
+          {
+            "time": 0.004306793212891081,
+            "slipping": false,
+            "legs": 0.014250914795523626,
+            "width": 7.62939453125e-07,
+            "increment": 2.506892747598504e-06
+          }
+        ],
+        "legsDelta": 2.286712486032627e-14,
+        "pointDelta": 3.7768467291761436e-08,
+        "bodyPosition": 3.7768467291761436e-08,
+        "facing": 2.119179235305496e-06,
+        "spin": 8.477105034720989e-05,
+        "work": 0.00018249610789888848
+      },
+      {
+        "coarse": 32768,
+        "fine": 65536,
+        "normalized": 1.2534455769044792,
+        "finePhaseUncertainty": 1.2534455769044792e-06,
+        "finePhaseUncertaintyNormalized": 1.2534455769044792,
+        "transitions": [
+          {
+            "time": 0.004306411743164325,
+            "slipping": false,
+            "legs": 0.014250914795809559,
+            "width": 3.814697265625e-07,
+            "increment": 1.2534455769044792e-06
+          }
+        ],
+        "legsDelta": 2.8593273582178114e-13,
+        "pointDelta": 1.8884755838905393e-08,
+        "bodyPosition": 1.8884755843458172e-08,
+        "facing": 1.0596139104965263e-06,
+        "spin": 4.238552517354943e-05,
+        "work": 9.125437835710848e-05
+      }
+    ],
+    "verdict": "Retained old numerical acceptance/search failure, dominated by unresolved slip-exit phase uncertainty around4.306ms. Uniform16384 uncertainty5.01379e-6 exceeds1e-6; even65536 yields1.25345e-6. Endpoint share agreement alone is not a certificate. No changed test expectation or larger production search bound."
+  },
+  "validation": {
+    "newSlipTests": {
+      "passed": 14,
+      "receipt": "out/baseline/run-1792024778499-319240.json"
+    },
+    "compatiblePanel": {
+      "passed": 51,
+      "includesPrior13SlipTests": true,
+      "receipt": "out/baseline/run-1792024679189-318967.json",
+      "reuse": "38 existing active/passive/bounded World checks unchanged; final14 slip checks rerun after canonical event-boundary guard and independent support-moment test.52 distinct focused contracts total."
+    },
+    "typecheck": "pass",
+    "build": "pass",
+    "fullSuite": "Not rerun. Reuse parent1905pass/1dry-cap failure on parent runtime; do not describe it as a new candidate full-suite pass.",
+    "defaultsAndExpectations": "Unchanged; no callback installed by defaults."
+  },
+  "inputs": {
+    "portable": {
+      "path": "config/grip-native-world-packets.json",
+      "sha256": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f"
+    },
+    "originalArchiveManifest": {
+      "path": "out/grip-timing/baseline.json",
+      "sha256": "c36000fdfabf82a21f2c5224b483a892883cb44fbe746d8b7ad04501f02d102a"
+    },
+    "nativePackets": [
+      {
+        "id": "patch-45-8-0-3001-1",
+        "phase": 16,
+        "nativePacketSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+        "reducedPacketSha256": "6a4d4ed35cba3dc2f4fc7336b7ec6082a4917ab8bfe11ba5cb6f5bd16464bad4"
+      },
+      {
+        "id": "patch-45-8-0-3001--1",
+        "phase": 16,
+        "nativePacketSha256": "18072e0f7396aa58e9fed6630fdb154a582388b6a8c7c27524157a24fd13a7d5",
+        "reducedPacketSha256": "84d7895b15f30b1ea114694964dea14558e748e7d091d410c1a3dd63a82d999a"
+      },
+      {
+        "id": "patch-0-3-0-3001-1",
+        "phase": 0,
+        "nativePacketSha256": "ccf3c23363fda87c9fcb181b50e547d7b7343b030d99b784364708f187fb984b",
+        "reducedPacketSha256": "6e8ada56c2effa9c2229fde0fb6104629ae332da7719f8fa1523071d881c2390"
+      },
+      {
+        "id": "patch-45-8-0-4001-1",
+        "phase": 16,
+        "nativePacketSha256": "da3708553b3c7e85929f00636bf65d735743b1e03594cb9d59dea58869186187",
+        "reducedPacketSha256": "a5978024ad9d12451aaabd8029c1d6b3ee1d541b6cccf5977bb1426ec2373656"
+      },
+      {
+        "id": "patch-45-8-0-3001-1",
+        "phase": 0,
+        "nativePacketSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+        "reducedPacketSha256": "50c1327451be3d0cd15ab0c4ac4c635a3e9cd5428e3cf28a77ebfd1e540e8ca4"
+      }
+    ]
+  },
+  "retained": {
+    "patchGate": "Earlier43/52 with nine failures retained, not rerun; no promotion or test changes. Zero old timing invocation does not imply one shared cause.",
+    "keeper": "Angular-law witness separate.",
+    "supportHistory": "Earlier0.24yd history divergence separate.",
+    "football": "Parent successful/failed/censored native results preserved; this run establishes early-contact numerical accuracy, not improved endings.",
+    "cost": "Worst new native transition sample6.573ms; no hard runtime fallback guarantee. Full4.167ms mechanical interval accuracy certified; new native cost evidence only .520833ms intervals."
+  },
+  "evidence": [
+    {
+      "path": "out/grip-native-slip/accuracy.json",
+      "sha256": "196a992a4adc9fd39312cdd2b593e1288c2106df6bccf555177a3abddc54ef8c"
+    },
+    {
+      "path": "out/grip-native-slip/accuracy.raw.json",
+      "sha256": "5b796e21055a5daaed29110a34478dcce9ed1d16333881d82ada0517937a18d9"
+    },
+    {
+      "path": "out/grip-native-slip/cost-a.json",
+      "sha256": "455a4e9b44c8715c9b661b6d99e5ea54bc743a6bacce171b14005a5da951bffa"
+    },
+    {
+      "path": "out/grip-native-slip/cost-b.json",
+      "sha256": "d18fd8381af0990a2be55a62a038e14e174880d2138570aa4ae964a970017c14"
+    },
+    {
+      "path": "out/grip-native-slip/reel-reference.json",
+      "sha256": "b3874b2ba43db544360ee16436d0ccc54e21cb0f9452e9dc756cfd227ae78af1"
+    }
+  ],
+  "recommendation": "Ready for review as a bounded default-off experimental transition extension on PR48, not production/full-patch promotion. Next: small matched successful/failed native-contact continuation panel using the same flags, retaining adverse/censored cases; no broad campaign yet."
+}
