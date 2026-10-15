@@ -1,0 +1,32 @@
+[
+  {
+    "index": 39,
+    "checks": {
+      "frames": true,
+      "observedEvents": true,
+      "engagementStarts": true,
+      "telemetry": true,
+      "initialization": true
+    }
+  },
+  {
+    "index": 18,
+    "checks": {
+      "frames": true,
+      "observedEvents": true,
+      "engagementStarts": true,
+      "telemetry": true,
+      "initialization": true
+    }
+  },
+  {
+    "index": 19,
+    "checks": {
+      "frames": true,
+      "observedEvents": true,
+      "engagementStarts": true,
+      "telemetry": true,
+      "initialization": true
+    }
+  }
+]

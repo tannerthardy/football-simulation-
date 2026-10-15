@@ -1,0 +1,310 @@
+{
+  "fullGames": 0,
+  "prefixReplays": 0,
+  "newRosters": 0,
+  "completedCollectorSegments": 15,
+  "uniqueNativeInputs": 3,
+  "failedHarnessStarts": 2,
+  "commandWallSeconds": 40.752223538,
+  "nativeCollectorCommandSeconds": 26.021587815,
+  "nativeLoopSeconds": 4.451988325000001,
+  "focusedChecks": 17,
+  "attempts": [
+    {
+      "file": "axis-lt-json-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-loaded-objective.mjs",
+            "out/pass-loaded-objective/axis-lt",
+            "qb-axis-lt",
+            "39,18",
+            "3.05"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.251903482
+        }
+      ],
+      "startedAt": "2026-10-15T18:49:56.917Z",
+      "finishedAt": "2026-10-15T18:49:59.173Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "axis-lt-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-loaded-objective.mjs",
+            "out/pass-loaded-objective/axis-lt",
+            "qb-axis-lt",
+            "39,18",
+            "3.05"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.251259111
+        }
+      ],
+      "startedAt": "2026-10-15T18:49:31.870Z",
+      "finishedAt": "2026-10-15T18:49:33.124Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "cutoff-through-ends-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/cutoff-through-ends",
+            "cutoff-through",
+            "39,18",
+            "6"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.210025233
+        }
+      ],
+      "startedAt": "2026-10-15T18:56:28.169Z",
+      "finishedAt": "2026-10-15T18:56:31.383Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "cutoff-through-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/cutoff-through",
+            "cutoff-through",
+            "39,18"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.645664063
+        }
+      ],
+      "startedAt": "2026-10-15T18:51:15.052Z",
+      "finishedAt": "2026-10-15T18:51:17.701Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "focused.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/pass-cutoff-approach.test.ts",
+            "test/pass-contact.test.ts",
+            "test/protection.test.ts",
+            "test/pass-installation.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.1510751359999998
+        }
+      ],
+      "startedAt": "2026-10-15T19:06:57.443Z",
+      "finishedAt": "2026-10-15T19:07:00.596Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "production-controls-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/production-controls",
+            "production",
+            "39,18",
+            "6"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.1135371050000002
+        }
+      ],
+      "startedAt": "2026-10-15T19:07:31.432Z",
+      "finishedAt": "2026-10-15T19:07:34.548Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "production-transfer-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/production-transfer",
+            "production",
+            "19",
+            "2"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.304126222
+        }
+      ],
+      "startedAt": "2026-10-15T19:08:09.174Z",
+      "finishedAt": "2026-10-15T19:08:11.481Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "punch-baseline-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/punch-baseline",
+            "baseline",
+            "39,18",
+            "3.05"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.5473978280000003
+        }
+      ],
+      "startedAt": "2026-10-15T18:58:17.549Z",
+      "finishedAt": "2026-10-15T18:58:20.099Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "retained-punch-import-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/retained-punch",
+            "cutoff-through",
+            "39,18",
+            "3.05",
+            "out/pass-loaded-objective/punch-baseline/trace.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.725486232
+        }
+      ],
+      "startedAt": "2026-10-15T19:00:30.555Z",
+      "finishedAt": "2026-10-15T19:00:33.284Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "retained-punch-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/retained-punch",
+            "cutoff-through",
+            "39,18",
+            "3.05",
+            "out/pass-loaded-objective/punch-baseline/trace.json.gz"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.417329749
+        }
+      ],
+      "startedAt": "2026-10-15T19:00:10.825Z",
+      "finishedAt": "2026-10-15T19:00:12.245Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "transfer-baseline-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/transfer-baseline",
+            "baseline",
+            "19",
+            "2"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.303576929
+        }
+      ],
+      "startedAt": "2026-10-15T19:01:25.942Z",
+      "finishedAt": "2026-10-15T19:01:28.249Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "transfer-candidate-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-loaded-objective/transfer-candidate",
+            "cutoff-through",
+            "19",
+            "2"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.251281861
+        }
+      ],
+      "startedAt": "2026-10-15T19:01:36.298Z",
+      "finishedAt": "2026-10-15T19:01:38.552Z",
+      "inputsUnchanged": true
+    },
+    {
+      "file": "typecheck.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.579560587
+        }
+      ],
+      "startedAt": "2026-10-15T19:06:57.442Z",
+      "finishedAt": "2026-10-15T19:07:09.025Z",
+      "inputsUnchanged": true
+    }
+  ]
+}

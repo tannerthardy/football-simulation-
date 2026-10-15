@@ -1,0 +1,840 @@
+{
+  "schema": "pass-cutoff-approach-v1",
+  "testedCommit": "81b908586416070145b5b89ee9517380c4fe09fe",
+  "sourceSha256": "0eb4c7652f49c420c25535f4932bdc6abe24443ba05163f8ac2d999a7f6bee56",
+  "decision": "Recommend review of this bounded approach correction; preserve adverse and execution-sensitive outcomes. No baseline promotion.",
+  "fullGames": 0,
+  "rows": [
+    {
+      "name": "axis-lt",
+      "index": 39,
+      "play": 40,
+      "arm": "qb-axis-lt",
+      "endTime": 3.05,
+      "censoring": "Native dead-ball ending",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 1.25,
+          "b": 2,
+          "d": 12,
+          "phi": 0.48173577023762876
+        },
+        {
+          "t": 1.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.584465341729074
+        }
+      ],
+      "events": [
+        {
+          "t": 1.8,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 76.89,
+            "y": 32.2
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.4,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 73.87,
+            "y": 29.8
+          }
+        },
+        {
+          "t": 3,
+          "type": "sack",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 72.71,
+            "y": 26.71
+          }
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 2,
+      "openingImpactImpulse": 43.43244958407927,
+      "elapsedSeconds": 0.35869904300000005
+    },
+    {
+      "name": "axis-lt",
+      "index": 18,
+      "play": 19,
+      "arm": "qb-axis-lt",
+      "endTime": 3.05,
+      "censoring": "Live at 3.05; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 1,
+          "d": 11,
+          "phi": -0.08449122255625369
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656944209188572
+        },
+        {
+          "t": 1.15,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3881091671441025
+        }
+      ],
+      "events": [
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 25.1,
+            "y": 26.67
+          }
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 26,
+      "openingImpactImpulse": 686.9944782021828,
+      "elapsedSeconds": 0.34563655599999993
+    },
+    {
+      "name": "cutoff-through",
+      "index": 39,
+      "play": 40,
+      "arm": "cutoff-through",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3475846198446589
+        },
+        {
+          "t": 1.2,
+          "b": 1,
+          "d": 11,
+          "phi": -0.4360625139407246
+        }
+      ],
+      "events": [
+        {
+          "t": 1.55,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.84,
+            "y": 22.47
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 59.96470139506102,
+      "elapsedSeconds": 0.22112143499999956
+    },
+    {
+      "name": "cutoff-through",
+      "index": 18,
+      "play": 19,
+      "arm": "cutoff-through",
+      "endTime": 3,
+      "censoring": "Opening only; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.55,
+          "b": 2,
+          "d": 12,
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 19,
+      "openingImpactImpulse": 807.166830037136,
+      "elapsedSeconds": 0.21081770300000016
+    },
+    {
+      "name": "cutoff-through-ends",
+      "index": 39,
+      "play": 40,
+      "arm": "cutoff-through",
+      "endTime": 5.35,
+      "censoring": "Native dead-ball ending",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3475846198446589
+        },
+        {
+          "t": 1.2,
+          "b": 1,
+          "d": 11,
+          "phi": -0.4360625139407246
+        }
+      ],
+      "events": [
+        {
+          "t": 1.55,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.84,
+            "y": 22.47
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.6,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 74.41,
+            "y": 33.38
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 74.51,
+            "y": 27.52
+          }
+        },
+        {
+          "t": 5.3,
+          "type": "incomplete"
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 59.96470139506102,
+      "elapsedSeconds": 0.44635410000000003
+    },
+    {
+      "name": "cutoff-through-ends",
+      "index": 18,
+      "play": 19,
+      "arm": "cutoff-through",
+      "endTime": 6,
+      "censoring": "Live at 6; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.55,
+          "b": 2,
+          "d": 12,
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3.15,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 25.07,
+            "y": 26.68
+          }
+        },
+        {
+          "t": 4.5,
+          "type": "catch",
+          "a": 8,
+          "pos": {
+            "x": 55.27,
+            "y": 38.17
+          }
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 19,
+      "openingImpactImpulse": 807.166830037136,
+      "elapsedSeconds": 0.36050034300000017
+    },
+    {
+      "name": "punch-baseline",
+      "index": 39,
+      "play": 40,
+      "arm": "baseline",
+      "endTime": 3.05,
+      "censoring": "Native dead-ball ending",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 1.25,
+          "b": 2,
+          "d": 12,
+          "phi": 0.48173577023762876
+        },
+        {
+          "t": 1.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.5837566965058237
+        }
+      ],
+      "events": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.13,
+            "y": 32.36
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.4,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 73.81,
+            "y": 29.85
+          }
+        },
+        {
+          "t": 3,
+          "type": "sack",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 72,
+            "y": 26.67
+          }
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 2,
+      "openingImpactImpulse": 43.43244958407927,
+      "elapsedSeconds": 0.2767043990000002
+    },
+    {
+      "name": "punch-baseline",
+      "index": 18,
+      "play": 19,
+      "arm": "baseline",
+      "endTime": 3.05,
+      "censoring": "Live at 3.05; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 1,
+          "d": 11,
+          "phi": -0.08437975536389608
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656944209188572
+        },
+        {
+          "t": 1.15,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3881091671441025
+        }
+      ],
+      "events": [
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 25.1,
+            "y": 26.67
+          }
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 26,
+      "openingImpactImpulse": 686.9944782021828,
+      "elapsedSeconds": 0.22075376300000016
+    },
+    {
+      "name": "retained-punch",
+      "index": 39,
+      "play": 40,
+      "arm": "cutoff-through",
+      "endTime": 3.05,
+      "censoring": "Live at 3.05; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "b": 2,
+          "d": 12,
+          "phi": 0.34515691445982416
+        },
+        {
+          "t": 1.2,
+          "b": 1,
+          "d": 11,
+          "phi": -0.4360625139407246
+        }
+      ],
+      "events": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.3,
+            "y": 32.76
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 74.22,
+            "y": 27.34
+          }
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 59.96470139506102,
+      "elapsedSeconds": 0.2876785460000001
+    },
+    {
+      "name": "retained-punch",
+      "index": 18,
+      "play": 19,
+      "arm": "cutoff-through",
+      "endTime": 3.05,
+      "censoring": "Live at 3.05; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.55,
+          "b": 2,
+          "d": 12,
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 19,
+      "openingImpactImpulse": 807.166830037136,
+      "elapsedSeconds": 0.18409077500000012
+    },
+    {
+      "name": "transfer-baseline",
+      "index": 19,
+      "play": 20,
+      "arm": "baseline",
+      "endTime": 2,
+      "censoring": "Live at 2; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.75,
+          "b": 5,
+          "d": 13,
+          "phi": 0.05166212664792061
+        },
+        {
+          "t": 0.95,
+          "b": 1,
+          "d": 11,
+          "phi": -0.23571268598780842
+        },
+        {
+          "t": 1.15,
+          "b": 2,
+          "d": 12,
+          "phi": 0.4286252065047754
+        }
+      ],
+      "events": [],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 6,
+      "openingImpactImpulse": 406.16633853819525,
+      "elapsedSeconds": 0.21284771900000032
+    },
+    {
+      "name": "transfer-candidate",
+      "index": 19,
+      "play": 20,
+      "arm": "cutoff-through",
+      "endTime": 2,
+      "censoring": "Live at 2; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.75,
+          "b": 5,
+          "d": 13,
+          "phi": 0.05166212664792061
+        },
+        {
+          "t": 0.8,
+          "b": 1,
+          "d": 11,
+          "phi": -0.14794830581834584
+        },
+        {
+          "t": 1,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3282386586834242
+        }
+      ],
+      "events": [],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 136.1209120911336,
+      "elapsedSeconds": 0.22900359200000003
+    },
+    {
+      "name": "production-controls",
+      "index": 39,
+      "play": 40,
+      "arm": "production",
+      "endTime": 5.35,
+      "censoring": "Native dead-ball ending",
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3475846198446589
+        },
+        {
+          "t": 1.2,
+          "b": 1,
+          "d": 11,
+          "phi": -0.4360625139407246
+        }
+      ],
+      "events": [
+        {
+          "t": 1.55,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.84,
+            "y": 22.47
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.6,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 74.41,
+            "y": 33.38
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 74.51,
+            "y": 27.52
+          }
+        },
+        {
+          "t": 5.3,
+          "type": "incomplete"
+        }
+      ],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 59.96470139506102,
+      "elapsedSeconds": 0.47520086100000003
+    },
+    {
+      "name": "production-controls",
+      "index": 18,
+      "play": 19,
+      "arm": "production",
+      "endTime": 6,
+      "censoring": "Live at 6; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.55,
+          "b": 2,
+          "d": 12,
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3.15,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 25.07,
+            "y": 26.68
+          }
+        },
+        {
+          "t": 4.5,
+          "type": "catch",
+          "a": 8,
+          "pos": {
+            "x": 55.27,
+            "y": 38.17
+          }
+        }
+      ],
+      "openingImpactWindow": 3.0,
+      "openingImpactCount": 19,
+      "openingImpactImpulse": 807.166830037136,
+      "elapsedSeconds": 0.40601139999999986
+    },
+    {
+      "name": "production-transfer",
+      "index": 19,
+      "play": 20,
+      "arm": "production",
+      "endTime": 2,
+      "censoring": "Live at 2; no later ending inferred",
+      "contacts": [
+        {
+          "t": 0.75,
+          "b": 5,
+          "d": 13,
+          "phi": 0.05166212664792061
+        },
+        {
+          "t": 0.8,
+          "b": 1,
+          "d": 11,
+          "phi": -0.14794830581834584
+        },
+        {
+          "t": 1,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3282386586834242
+        }
+      ],
+      "events": [],
+      "openingImpactWindow": 2.0,
+      "openingImpactCount": 3,
+      "openingImpactImpulse": 136.1209120911336,
+      "elapsedSeconds": 0.2165680900000002
+    }
+  ],
+  "actualAccessAt2p4": [
+    {
+      "name": "punch-baseline",
+      "t": 2.4,
+      "qb": {
+        "x": 73.5787578973616,
+        "y": 27.38416250669921
+      },
+      "deW": {
+        "x": 73.81341458871114,
+        "y": 29.85403914058359
+      },
+      "deS": {
+        "x": 75.36344580556987,
+        "y": 22.171700001965277
+      },
+      "deWDistanceToQb": 2.480998659693947,
+      "deSDistanceToQb": 5.509525959006087
+    },
+    {
+      "name": "production-controls",
+      "t": 2.4,
+      "qb": {
+        "x": 73.61709518912123,
+        "y": 27.402212170626566
+      },
+      "deW": {
+        "x": 75.10732152041675,
+        "y": 33.47089959381494
+      },
+      "deS": {
+        "x": 73.69974189982096,
+        "y": 24.248478677660398
+      },
+      "deWDistanceToQb": 6.248979241352243,
+      "deSDistanceToQb": 3.1548162265726467
+    },
+    {
+      "name": "retained-punch",
+      "t": 2.4,
+      "qb": {
+        "x": 73.52117179795616,
+        "y": 27.40100056412968
+      },
+      "deW": {
+        "x": 74.26905672450394,
+        "y": 31.228132876387093
+      },
+      "deS": {
+        "x": 75.66268790149965,
+        "y": 21.041801864438522
+      },
+      "deWDistanceToQb": 3.899522227001937,
+      "deSDistanceToQb": 6.710104270716651
+    }
+  ]
+}

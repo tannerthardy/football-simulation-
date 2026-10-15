@@ -1,0 +1,170 @@
+{
+  "schema": "pass-loaded-accounting-v1",
+  "nativeSimulations": 0,
+  "qualification": "Independent reconstruction at recorded-force ticks. Exact agreement with final request demonstrates no net spacing change for this blocker, not the absence of all teammate interactions.",
+  "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+  "rows": [
+    {
+      "t": 1.4,
+      "axis": [
+        -0.5928731398729488,
+        -0.8052958711040253
+      ],
+      "tangent": [
+        0.8052958711040253,
+        -0.5928731398729488
+      ],
+      "phi": -0.5395618774707983,
+      "handTangentForce": 0,
+      "mirror": 2.912976669391859,
+      "dlat": -3.522131838557682,
+      "felt": 0.0,
+      "offlat": -1.7601663584025484,
+      "unclampedMirror": -12.59762695243104,
+      "vlat": -2.912976669391859,
+      "depth": 2.2431607371233326,
+      "setDepth": 3.9377125473360453,
+      "kick": 3.0810032912958407,
+      "independentlyCalculated": [
+        -5.42681137577946,
+        1.7270256243589959
+      ],
+      "final": [
+        -5.42681137577946,
+        1.7270256243589959
+      ],
+      "finalRequestResidual": 0.0,
+      "kickTangent": -2.481119229338453,
+      "mirrorAndKickAgree": true,
+      "requestNormal": 1.8266440952694545,
+      "requestTangent": -5.394095898730312,
+      "achievedNormal": 0.6577361766529504,
+      "achievedTangent": -3.9345943155577716
+    },
+    {
+      "t": 1.45,
+      "axis": [
+        -0.5856335549554148,
+        -0.8105759306260476
+      ],
+      "tangent": [
+        0.8105759306260476,
+        -0.5856335549554148
+      ],
+      "phi": -0.5837566965058238,
+      "handTangentForce": -406.6009762755141,
+      "mirror": 2.912976669391859,
+      "dlat": -3.186700828193487,
+      "felt": -0.5127477081175459,
+      "offlat": -1.6491397069319849,
+      "unclampedMirror": -12.21848759107522,
+      "vlat": -2.912976669391859,
+      "depth": 2.413067187899287,
+      "setDepth": 4.067870330588161,
+      "kick": 3.008732986707044,
+      "independentlyCalculated": [
+        -5.369921761391314,
+        1.7059368823981385
+      ],
+      "final": [
+        -5.369921761391314,
+        1.7059368823981385
+      ],
+      "finalRequestResidual": 0.0,
+      "kickTangent": -2.43880654070535,
+      "mirrorAndKickAgree": true,
+      "requestNormal": 1.7620149949168684,
+      "requestTangent": -5.351783210097208,
+      "achievedNormal": 0.9599399275428875,
+      "achievedTangent": -4.0703835091889395
+    },
+    {
+      "t": 1.55,
+      "axis": [
+        -0.5759967227401949,
+        -0.8174520018891355
+      ],
+      "tangent": [
+        0.8174520018891355,
+        -0.5759967227401949
+      ],
+      "phi": -0.6796146151633388,
+      "handTangentForce": -398.6402591783418,
+      "mirror": 2.912976669391859,
+      "dlat": -2.772170056343157,
+      "felt": -0.3986106545563614,
+      "offlat": -1.4342390601213897,
+      "unclampedMirror": -10.578220505052222,
+      "vlat": -2.912976669391859,
+      "depth": 2.7982267547975255,
+      "setDepth": 4.331337182505945,
+      "kick": 2.787473504924399,
+      "independentlyCalculated": [
+        -5.168692114775121,
+        1.6778650149883587
+      ],
+      "final": [
+        -5.168692114775121,
+        1.6778650149883587
+      ],
+      "finalRequestResidual": 0.0,
+      "kickTangent": -2.2786257968133747,
+      "mirrorAndKickAgree": true,
+      "requestNormal": 1.605575603561579,
+      "requestTangent": -5.191602466205234,
+      "achievedNormal": 1.4174864628245876,
+      "achievedTangent": -4.241075601129483
+    },
+    {
+      "t": 1.65,
+      "axis": [
+        -0.569593581124166,
+        -0.8219264884052272
+      ],
+      "tangent": [
+        0.8219264884052272,
+        -0.569593581124166
+      ],
+      "phi": -0.8219935236709747,
+      "handTangentForce": -400.75963008967494,
+      "mirror": 2.912976669391859,
+      "dlat": -2.495929734903897,
+      "felt": -0.2293140133623676,
+      "offlat": -1.2050922031551592,
+      "unclampedMirror": -8.945908731984394,
+      "vlat": -2.912976669391859,
+      "depth": 3.2250766471523775,
+      "setDepth": 4.5902311694959055,
+      "kick": 2.482099131533687,
+      "independentlyCalculated": [
+        -4.876351816213292,
+        1.6592128128500547
+      ],
+      "final": [
+        -4.876351816213292,
+        1.6592128128500547
+      ],
+      "finalRequestResidual": 0.0,
+      "kickTangent": -2.0401030230551473,
+      "mirrorAndKickAgree": true,
+      "requestNormal": 1.4137877330354551,
+      "requestTangent": -4.953079692447006,
+      "achievedNormal": 1.3812660848430316,
+      "achievedTangent": -4.282321694325145
+    }
+  ],
+  "skipped": [
+    {
+      "t": 1.5,
+      "reason": "Preceding hand force not recorded at this 20 Hz tick"
+    },
+    {
+      "t": 1.6,
+      "reason": "Preceding hand force not recorded at this 20 Hz tick"
+    },
+    {
+      "t": 1.7,
+      "reason": "Preceding hand force not recorded at this 20 Hz tick"
+    }
+  ]
+}

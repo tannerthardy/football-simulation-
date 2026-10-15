@@ -2,6 +2,17 @@
 
 ## Loaded pass-foot objective follow-up, 2026-10-15
 
+**Tested candidate ready for bounded review:** `81b908586416070145b5b89ee9517380c4fe09fe`,
+source `0eb4c7652f49c420c25535f4932bdc6abe24443ba05163f8ac2d999a7f6bee56`.
+PassProtector now approaches through its selected cutoff at the forecast's
+existing .75*vmax instead of station-keeping on it. P040 LT load1.45→1.20,
+shed1.75→2.60; throw3.00 replaces the sack. P019 retains both edges through its
+throw; declared P020 improves both initial shoulders. Native RT/RG adverse
+losses remain; a retained-initial-punch diagnostic resolves the RT loss but not
+the later RG branch. No shared engagement/physics/run/spacing edit. 17 focused
+checks and typecheck pass. Native collector commands26.02s; all checks40.75s;
+zero games. [Exact patch, limitations, adverse evidence and Integration handoff](reviews/pass-cutoff-approach/README.md).
+
 Run-game continues from #64 evidence `eba1b61`, publication `db77674`, on
 `codex/pass-loaded-objective`. First question: does field-x give-ground oppose
 the contact-relative mirror action in native P040, or is the observed motion
