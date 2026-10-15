@@ -71,12 +71,13 @@ export function previewMovementStep(body: Body, command: Intent,
   handContact: 'center' | 'patch') {
   const steps = Math.max(1, Math.ceil(horizon / .05));
     const path = previewFreeMovement(body, command, now, steps, handContact);
+    const clearances=path.map(()=>Infinity);
     const gaps = peers.map(peer => {
       const touch = CONTACT_SCALE * (body.profile.radius + peer.radius);
       let x = body.pos.x - peer.pos.x, y = body.pos.y - peer.pos.y;
       let own=body.pos;
       let gap = Math.hypot(x, y) - touch;
-      for (const sample of path) {
+      for (const [index,sample] of path.entries()) {
         if (sample.t > (peer.horizon ?? horizon) + 1e-9) break;
         // After an installed call expires, bound possible movement from its
         // last valid point. Do not extend the route or delete the obstacle.
@@ -90,10 +91,11 @@ export function previewMovementStep(body: Body, command: Intent,
         if(peer.mayStop)gap=Math.min(gap,segmentGap(own,sample.pos,peer.pos,p)-touch);
         own=sample.pos;
         x = nx; y = ny;
+        clearances[index]=Math.min(clearances[index],gap);
       }
       return gap;
     });
-    return { command, path, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up') };
+    return { command, path, clearances, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up') };
 }
 
 export function clearMovementStep(body: Body, original: Intent, goal: Vec2,

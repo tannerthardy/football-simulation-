@@ -316,24 +316,36 @@ export class BallCarrier implements Behavior {
     const base = dir > 0 ? 0 : Math.PI;
     const goalX = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
     const hurry = sim.hurry && a.team === 'O';
+    const run=!!this.opts.run;
+    const acquired=run?sim.teammates(a).filter(b=>b!==a).flatMap(b=>{
+      const seen=sim.teammateInformation(a,b);
+      return seen.source==='unavailable'?[]:[{id:b.idx,pos:seen.pos,vel:seen.vel,radius:b.profile.radius,
+        maxSpeed:b.profile.vmax,mayStop:seen.source!=='called',
+        ...(seen.source==='called'?{route:seen.forecast?.samples,validFor:seen.forecast?.validFor??0}:{})}];
+    }):[];
+    const own=a.body.support;
+    const physical=run&&own?.state==='up'&&!own.foot&&!own.strike&&!a.engagement
+      &&Math.hypot(own.load.x,own.load.y)<1e-6&&!sim.world.joints.some(j=>j.a===a.body||j.b===a.body);
 
     // Perceived defenders (vision-filtered).
     const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
-    const blockers = sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
+    const blockers = run?acquired:sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
     for (const d of sim.opponents(a)) {
-      const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
+      const seen = run?sim.see(a,d,.7):null;
+      const location=seen?.pos??d.pos;
+      const dd = Math.hypot(location.x - p.x, location.y - p.y);
       if (dd > range) continue;
       // Backside defenders behind the runner are easy to miss for poor-vision backs.
-      const behind = (d.pos.x - p.x) * dir < -1.5;
+      const behind = (location.x - p.x) * dir < -1.5;
       if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
-      const seen = sim.see(a, d, 0.7);
+      const picture = seen??sim.see(a, d, 0.7);
       // Explicit scenario parking keeps its scheduled absence. Physical falls
       // leave downUntil=-1; infer their allowance only from the delayed pose,
       // never hidden support state/since or an exact recovery deadline.
-      let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
-        : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
-      if (d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
-      threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
+      let extra = !run&&d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
+        : observedRecoveryAllowance(picture, d.profile.getUp, sim.dt);
+      if (!run&&d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
+      threats.push({ pos: picture.pos, vel: picture.vel, d, extra });
     }
 
     const cands: number[] = [];
@@ -356,6 +368,9 @@ export class BallCarrier implements Behavior {
       const s0 = speed * Math.max(0.25, Math.cos(Math.min(turn, Math.PI / 2)));
       const hx = Math.cos(h);
       const hy = Math.sin(h);
+      const requested=designed?vmax*(.62+.18*(1-a.r('patience'))):vmax;
+      const preview=physical?previewMovementStep(a.body,{vel:{x:hx*requested,y:hy*requested},
+        cutSkill:.85+.35*a.r('elusiveness'),squeeze:0},acquired,sim.t,2,sim.world.handContact):null;
       let safeGain = 0;
       let clean = true;
       let lastQ = p;
@@ -364,22 +379,27 @@ export class BallCarrier implements Behavior {
       let contactGain: number | null = null;
       for (const t of SAMPLES) {
         const d = vmax * t - (vmax - s0) * tau * (1 - Math.exp(-t / tau));
-        let q = { x: p.x + hx * d, y: p.y + hy * d };
+        const sample=preview?.path[Math.round(t/.05)-1];
+        let q = sample?{...sample.pos}:{ x: p.x + hx * d, y: p.y + hy * d };
         let arrival = t;
         const crosses = q.y < 0 || q.y > FIELD_WIDTH;
         if (crosses) {
           // An exit is a terminal option. Clip the forecast at the boundary
           // and still check whether a defender/blocker can stop him first.
           const edge = q.y < 0 ? 0 : FIELD_WIDTH;
-          const distance = (edge - p.y) / hy;
-          q = { x: p.x + hx * distance, y: edge };
-          arrival = sprintTime(distance, s0, vmax, tau);
+          if(sample){
+            const u=(edge-lastQ.y)/(q.y-lastQ.y);q={x:lastQ.x+(q.x-lastQ.x)*u,y:edge};
+          }else{
+            const distance = (edge - p.y) / hy;
+            q = { x: p.x + hx * distance, y: edge };
+            arrival = sprintTime(distance, s0, vmax, tau);
+          }
         }
         // A lane through our own blocker is not open. Allow the minimum
         // shoulder-turned footprint, then request posture on approach.
         const segment = { x: q.x - lastQ.x, y: q.y - lastQ.y };
         const segment2 = segment.x * segment.x + segment.y * segment.y;
-        const obstructed = blockers.some((b) => {
+        const obstructed = preview?preview.clearances[Math.round(t/.05)-1]<0||sample?.support!=='up':blockers.some((b) => {
           const horizon = Math.min(arrival, 0.6);
           const bx = b.pos.x + b.vel.x * horizon;
           const by = b.pos.y + b.vel.y * horizon;
@@ -393,12 +413,12 @@ export class BallCarrier implements Behavior {
         let minMargin = Infinity;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale:run?1:th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
           const m = tt - arrival;
           if (m < minMargin) {
             minMargin = m;
             if (m < 0) {
-              const runnerSpeed = vmax - (vmax - s0) * Math.exp(-arrival / tau);
+              const runnerSpeed = sample?Math.hypot(sample.vel.x,sample.vel.y):vmax - (vmax - s0) * Math.exp(-arrival / tau);
               impactCost = contactCost(a.profile.massKg, th.d.profile.massKg,
                 Math.hypot(hx * runnerSpeed - th.vel.x, hy * runnerSpeed - th.vel.y), a.r('toughness'), a.r('ballSecurity'));
             }
