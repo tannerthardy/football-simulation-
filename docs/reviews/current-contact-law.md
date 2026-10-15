@@ -1,5 +1,7 @@
 # Current-development contact-law candidate
 
+[Draft PR #66](https://github.com/tannerthardy/football-simulation-/pull/66).
+
 **Ready for bounded review; hold default promotion for Run's helper-contract
 adjudication.** This is a minimal extraction on approved develop `a1b16e6`,
 not a merge of the historical physics stack. PR62 is parked at `1f071b9` on
