@@ -16,6 +16,13 @@ import {supportParams} from '../../../src/physics/support.js';
 import {replayKeeper,stateError,type KeeperWitness} from './keeper-contact-law.js';
 const root='out/contact-law-current',hash=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');mkdirSync(root,{recursive:true});
 const source=sourceVersion(),start=performance.now();
+if(process.argv.includes('--replay')){
+ const saved=JSON.parse(readFileSync('config/current-contact-first-interval.json','utf8')),
+  center=replayKeeper(saved.witness,'center',{substeps:12}),patch=replayKeeper(saved.witness,'patch',{groundMovement:'legacy',substeps:12}),
+  errors={center:stateError(center.bodies,saved.witness.expectedAfter),isolated:stateError(patch.bodies,saved.expectedIsolated)};
+ assert(errors.center<1e-12&&errors.isolated<1e-12);
+ console.log(JSON.stringify({source,errors,scope:'Saved full-World endpoint reproduction, not independent physical truth',elapsedSeconds:(performance.now()-start)/1000}));process.exit(0);
+}
 function run(mode:'center'|'patch',observe:boolean){
  const formation=FORMATION_BY_ID.gun_wing_12,sim=new PlaySim({
   offense:pickOffense(generateTeam(new Rng(31),'Panel offense 1','O1',{strength:.55}),formation.personnel),
