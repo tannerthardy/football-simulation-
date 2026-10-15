@@ -1,0 +1,931 @@
+{
+  "schema": "accepted-panel-pr82-adjudication-v1",
+  "reviewCoverage": {
+    "pairedNativeIntegrityChecks": 48,
+    "unchangedRecordedAgentStateAndEventSequences": 30,
+    "fullResultExactlyEqual": 26,
+    "changedSequencesWithFocusedPairedReview": 18,
+    "newSimulations": 48,
+    "baselineRecollections": 0,
+    "newGames": 0,
+    "sharedSuiteRepeats": 0
+  },
+  "exposures": [
+    {
+      "plannedRuns": 24,
+      "calledPasses": 24,
+      "catches": 17,
+      "contactedCatches": 16,
+      "sacks": 2,
+      "scrambles": 2,
+      "passOutcomes": {
+        "tackle": 20,
+        "incomplete": 3,
+        "touchdown": 1
+      },
+      "runYards": 72.66
+    },
+    {
+      "plannedRuns": 24,
+      "calledPasses": 24,
+      "catches": 16,
+      "contactedCatches": 16,
+      "sacks": 2,
+      "scrambles": 2,
+      "passOutcomes": {
+        "tackle": 19,
+        "touchdown": 1,
+        "incomplete": 4
+      },
+      "runYards": 67.73
+    }
+  ],
+  "findings": {
+    "supportWitnesses": 8,
+    "supportContinuityImprovedAfterPositiveCue": 8,
+    "earlyPreCueReversalRemoved": false,
+    "closerFSAt2Seconds": 8,
+    "closerFSAtBaselineFirstContactTime": 8,
+    "remainingSelectedRTorY_LBMAccessQuestions": 9,
+    "overlapSupportAndAccess": 5,
+    "originalMeshConcernsStillRelevant": [
+      "A020",
+      "A044"
+    ],
+    "adverseWitnesses": [
+      "A008",
+      "A020",
+      "A024",
+      "A042",
+      "A044",
+      "A046"
+    ],
+    "qualification": "Exposure/disposition counts overlap; not fault counts, causal yardage estimates or simulator-wide defect rates."
+  },
+  "cases": [
+    {
+      "id": "A001",
+      "kind": "run",
+      "concept": "iz_strong",
+      "offense": "LG\u2192LB_W contact1.80 is useful second-level access; the runner keeps progressing until contact.",
+      "defense": "LB_M closes under control, wraps2.65 and finishes3.20 after the runner falls2.85.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Only perception observation ordering differs; no changed observation values or achieved football motion.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        1.97,
+        1.97
+      ],
+      "rawSha256": [
+        "63631b729626ec7470c279f5499ebd99fa817801903263d007eb90ef4983d819",
+        "40fbfeffb0118b4c52653fb7abecf3ffcc84d21fbd0f7f257cbf00fbfbac8b97"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A002",
+      "kind": "run",
+      "concept": "oz_strong",
+      "offense": "RG achieves the intended climb/contact and RB gets1.95yd before recorded first contact.",
+      "defense": "LB_M works through/around an actual block to wrap3.05, then LB_W adds3.45. A blocked defender need not disappear.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        2.52,
+        2.52
+      ],
+      "rawSha256": [
+        "96873271e875200d38df86b909c3692d19603468417f0010192f57289e51c57a",
+        "9af7ce522d814e5eb0ee6804608b3eb2b4843ba83158ee099b2147d315d7b2e2"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A003",
+      "kind": "run",
+      "concept": "wz_strong",
+      "offense": "Runner remains moving and gains0.92; no RT/Y\u2192LB_M engagement before contact, as before.",
+      "defense": "FS retains acquired support and is1.845yd closer at baseline contact time; LB_M still makes first contact.",
+      "assessment": "Support improvement; second-level access unresolved. Gain1.14\u21920.92 is not the proof.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        1.14,
+        0.92
+      ],
+      "rawSha256": [
+        "5fe2a21263a4ebdd7eba4f0c7708cd5d57b85ba75eac76f69d514c6e53ad3e2a",
+        "dca3f977354ed4c1f678d65003611bd17d12faac9953d812fafe3a7d5733a83e"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A004",
+      "kind": "run",
+      "concept": "power",
+      "offense": "LG actually reaches the reserved end and Y reaches LB_W2.05; this is not an entirely absent-block sequence.",
+      "defense": "DE_S defeats the kick geometry and gets a backfield wrap, LB_M adds2.75. Holding onY2.55 is retained separately.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -0.34,
+        -0.34
+      ],
+      "rawSha256": [
+        "88c28a4dd13d1fe91634d74f1521b56ce418a401b3594585cf5b7547abc2a414",
+        "6558511cc67599aa02745d29302a37df822321cc29249de61f65138860e2ec8d"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A005",
+      "kind": "run",
+      "concept": "counter",
+      "offense": "The kick/collection and later LB block create a real lane; RB gains4.74 and breaks NB late.",
+      "defense": "NB/SS close from different leverage, LB_M adds and SS finishes4.55. No need to label the late NB loss weak grip.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        4.74,
+        4.74
+      ],
+      "rawSha256": [
+        "09d7be46e9a8a898111da76985b7e04b4c038eba62c9130c9dce7115ea6e0d1a",
+        "e1b78aaaec63f049268734e0873fc08310ee99f838796c55b9d21e3add76a970"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A006",
+      "kind": "run",
+      "concept": "duo",
+      "offense": "Useful Duo crease survives for15.61yd. Changed runner request begins2.65, after support changes.",
+      "defense": "FS closes gap8.928\u21924.252yd at3.25; own first wrap4.80\u21923.75. SS first contact remains3.25, and corner assists.",
+      "assessment": "Useful earlier support arrival; offensive win remains. Earlier help does not guarantee a clean first stop.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        23.25,
+        15.61
+      ],
+      "rawSha256": [
+        "9e5d36bd25a73d5843aeb44952e2b639bc4937e6013c45b167396d14005e978a",
+        "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A007",
+      "kind": "pass",
+      "concept": "slant_flat",
+      "offense": "Useful underneath completion and continued run; initial coverage spacing explains opportunity without establishing a bust.",
+      "defense": "FS supplies a supported late finish; blitz and four-man protection interactions do not prevent the scheduled release.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        20.89,
+        20.89
+      ],
+      "rawSha256": [
+        "d7521b86309af9d6c3fa4eec6182581b508fdd1c40eb10ba1960c7fefc0a8f9b",
+        "e356c740b55e9556168268f9bb92e89dba8e8b736b200555b0a058fb1bfd6da8"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A008",
+      "kind": "pass",
+      "concept": "mesh",
+      "offense": "Same intended H, actual Y catch2.45, plus2.294YAC versus0.277. Preserve actual catcher identity.",
+      "defense": "NB gap0.860\u21921.030yd at catch; wrap2.45\u21922.50, terminal3.35\u21923.80; useful catch-adjacent tackle survives.",
+      "assessment": "Adverse containment/timing change retained; no demonstrated decision/force defect.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        3.78,
+        5.79
+      ],
+      "rawSha256": [
+        "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+        "aa2b701aacad149f5a45299d076da2ff8ce47d93465d70407086c58ed43c5e1c"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A009",
+      "kind": "pass",
+      "concept": "smash",
+      "offense": "A valid checkdown exploits an underneath void; the runner survives a last-chance dive.",
+      "defense": "Rush sheds force continued pocket movement; FS maintains a later stopping opportunity.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        22.3,
+        22.3
+      ],
+      "rawSha256": [
+        "e81b159b90b9faa9a8da666a0dd19150e8a291f33cd56874e3afd93ce8e5c6e3",
+        "f3b769c1936f7d91ffb8bdf31ed0439e182bfdf21e8d550ed0c55457e2ff503e"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A010",
+      "kind": "pass",
+      "concept": "four_verts",
+      "offense": "Same Y completion2.55; still earns7.164YAC.",
+      "defense": "LB_M catch gap2.773yd unchanged; LB_W gap3.640\u21923.860. First contact3.40\u21923.35; safety distances alone do not establish better assigned coverage.",
+      "assessment": "Mixed geometry/earlier contact, not general pass-positioning improvement.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        14.05,
+        13.38
+      ],
+      "rawSha256": [
+        "dcb6dc980224bf7d6e837f163ca7d6323048fc9777a194e10cf0afe05d16453f",
+        "bb09fc5fb42beb11ca6bddc0aa316c7e2ecd7ab124a28e16dabf5c8b4389c0a9"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A011",
+      "kind": "pass",
+      "concept": "pa_flood",
+      "offense": "QB and RB each survive one recorded hold; H attempts useful interference after the catch.",
+      "defense": "DE_W produces actual QB contact; SS persists after the first failed finish and a second defender assists.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        19.55,
+        19.55
+      ],
+      "rawSha256": [
+        "5fb035c745d5228e09d843d8bfff34897cd9f39a2c6d7a9bb8381641397c3a85",
+        "e1092ab612d9b848265c6398199cf35a562eec74f885c955d68f1ef81048d45b"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A012",
+      "kind": "pass",
+      "concept": "y_cross",
+      "offense": "QB tries to climb and escape away from the closest interior defender.",
+      "defense": "Three rush wins collapse the pocket, and DT_S turns it into an effective stop.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -7.45,
+        -7.45
+      ],
+      "rawSha256": [
+        "e39a63c18aa1ea4083f351fce028bdda4883b7bf2514760df611329306d7b9b2",
+        "653edf6ea60367dbd3b28b03a1de8bc0c7cebb32eda5308b4a74c76e413e6e3e"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A013",
+      "kind": "run",
+      "concept": "iz_strong",
+      "offense": "Mesh completes and the runner advances continuously to the developing defensive win.",
+      "defense": "DT_S maintains interior access and finishes3.00; do not blame hypothetical LB_M access for a stop already earned by DT_S.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Only perception observation ordering differs; no changed observation values or achieved football motion.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -1.24,
+        -1.24
+      ],
+      "rawSha256": [
+        "78b96acc2af4ffebb00663b3bcb6b31b2f5d2094003afa6273204a80bbd2fdcb",
+        "70286192be7262c641d4272e2d1b921fa4c2e3a7b19b7fa2a526f20b78f71ba8"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A014",
+      "kind": "run",
+      "concept": "oz_strong",
+      "offense": "Y creates an actual DE_S encounter and later an actual NB block; RG reaches LB_M2.70.",
+      "defense": "NB stays involved through a real blocking contest and wraps2.70; CB_S adds3.15 before the3.30 finish.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        0.95,
+        0.95
+      ],
+      "rawSha256": [
+        "83c804d7c7d2c5989bea0ec1afbe83fef6821380de6ff53b78638925bebf703a",
+        "73eac7a95cc30b2b7f6a4417d4c1e8e0bbf5c4d102ba5b149ada41b2f31c296f"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A015",
+      "kind": "run",
+      "concept": "wz_strong",
+      "offense": "Y still does not achieve LB_M block before first contact; no runner freeze established.",
+      "defense": "FS support continuity/gap improve; middle defender still contacts2.85.",
+      "assessment": "Support improvement, unresolved access; tiny yardage change is incidental.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        -0.27,
+        -0.29
+      ],
+      "rawSha256": [
+        "236568c74e552a62e32e60f54342eaafbe67a097d02ba523a84fa6070b0db739",
+        "9931ed6b035966d38d8def580deaa7c6050edc10f4afa15800d5e909093a2389"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A016",
+      "kind": "run",
+      "concept": "power",
+      "offense": "LG does arrive at DE_S; RT releases toward LB_M2.05. An actual intended sequence exists even in the loss.",
+      "defense": "DT_S earns the backfield stop. RT/LG body collision2.80 is later than initial RB contact  and cannot explain that first loss.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -1.55,
+        -1.55
+      ],
+      "rawSha256": [
+        "fc15fde114a2773adb9e570e27f96bed8c5b69f5133ed4792f9134a6c29de385",
+        "ddf5ace95d70607749fe78b2f685747e1914b633ea2e33eb5b32baa4099054d8"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A017",
+      "kind": "run",
+      "concept": "counter",
+      "offense": "RG reaches the kick and LT reaches LB_W2.95; RB earns5.91 without requiring a failed handoff or vanished defender.",
+      "defense": "DT_W has a real miss, then SS wraps4.10/FS4.30 and SS finishes4.80. That is a useful defensive recovery.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        5.91,
+        5.91
+      ],
+      "rawSha256": [
+        "f90a0a0d7ff4bf6eb5e28a4a90749ab1aef708a06acf7bd172f12ac4c5e523f8",
+        "409042b55d2b529e41e5879e769430b2c714598de62fc9aa3df29cef5f19dfaa"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A018",
+      "kind": "run",
+      "concept": "duo",
+      "offense": "RT still never engages LB_M before carrier contact; RB contact2.75\u21922.70. Original RT departure request question remains.",
+      "defense": "FS nearer with inward velocity; first middle-defender contact remains upstream of useful safety arrival.",
+      "assessment": "Support improvement does not repair blocking access.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        1.79,
+        1.53
+      ],
+      "rawSha256": [
+        "72d6d9b5837d74fc469411a46c73936509cc6f739c32cc316354f1ceae6f0c42",
+        "c2644a9606b2ae36a243e36ee0066bfb1f52dc4a90303c1a7bdd122647240878"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A019",
+      "kind": "pass",
+      "concept": "slant_flat",
+      "offense": "The receiver escapes an actual weak/dive-origin contact and gains18.14YAC.",
+      "defense": "SS reaches the receiver soon after catch; FS supplies a second useful finish.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        20.85,
+        20.85
+      ],
+      "rawSha256": [
+        "b7ea8abcc5037fe36a9299c4ed1b139b10bd3607bb3a703b89e02e6e5f457bb2",
+        "1dab562f5c2a57400889bd5d2d5aba9963bb8670f252f20af6c3897c7894c50b"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A020",
+      "kind": "pass",
+      "concept": "mesh",
+      "offense": "Same H catch3.35 and motion through3.55. First changed carrier request3.60; contact4.65 then a broken tackle/68.246YAC TD.",
+      "defense": "SS still final-intent zero2.25\u20132.40 and same4.601yd catch gap. CB_S request first changes at throw2.50; contact4.60\u21924.65, tackle no longer finishes.",
+      "assessment": "Material adverse result retained. Prethrow stall persists; later access/contact geometry changes. Cause of whole TD remains unisolated; no grip/RNG verdict from final state.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        16.51,
+        75
+      ],
+      "rawSha256": [
+        "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+        "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A021",
+      "kind": "pass",
+      "concept": "smash",
+      "offense": "An earned corner-route window and changing movement direction produce a deep completion.",
+      "defense": "The safety keeps a later containment opportunity and completes it.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        34.91,
+        34.91
+      ],
+      "rawSha256": [
+        "f99a620e3236fbbf827613a44788eab0a8a6c4765160a1be9322186959e2c236",
+        "5ec5cbc5b85f2cc27661647db5c9060525320c111b4dcd375fc5d43536af79dc"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A022",
+      "kind": "pass",
+      "concept": "four_verts",
+      "offense": "Same Y drop2.50/incomplete3.00.",
+      "defense": "LB_M resolution gap4.610yd equal; safety motion differs after throw. No new PBU.",
+      "assessment": "Changed coverage motion with unchanged drop; outcome cannot certify defense.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        0,
+        0
+      ],
+      "rawSha256": [
+        "7d24e6512b3e411892a710030da6c8ca1a0090228c7202393590a98b71cfa255",
+        "b1d19620f8a5461265d9a4e551096852bf01251b19564f1c53faea2f77b6e229"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A023",
+      "kind": "pass",
+      "concept": "pa_flood",
+      "offense": "QB gets a throw away through impending contact; this is a real attempted escape/release sequence.",
+      "defense": "A legitimate edge win reaches QB before release.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        0,
+        0
+      ],
+      "rawSha256": [
+        "66824a6d9ceb2699e2fd061d0f37b7f970547b6ad7abc15ff5dde9ef471d1b9d",
+        "9dd63a90c2267897ccf4aad8e1d92c082fb8b48601ec8d5abc6ef7a9b2d0eae9"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A024",
+      "kind": "pass",
+      "concept": "y_cross",
+      "offense": "Same RB catch4.35, earns0.520YAC versus0.032.",
+      "defense": "LB_W gap3.501\u21923.700yd at catch; contact5.10\u21925.15, eventual tackle retained.",
+      "assessment": "Small adverse arrival difference retained; legitimate offensive catch retained.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        4.41,
+        4.9
+      ],
+      "rawSha256": [
+        "8eee0fcdaaa1c5eae787aa5daf2a8db55b7c60e588a14dc50e475494084101da",
+        "fa9a2cb4c88179c06e550ef43d7c46fe58406d04618a07b7f8406225111aa32d"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A025",
+      "kind": "run",
+      "concept": "iz_strong",
+      "offense": "Useful climb, actual load and a successful four-yard path coexist with the missing right-side second-level job.",
+      "defense": "LB_M remains available through the crease, wraps3.00 and finishes3.65.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Only perception observation ordering differs; no changed observation values or achieved football motion.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        4.04,
+        4.04
+      ],
+      "rawSha256": [
+        "af25968fbd5d2dbcd5a5563534079dbfdfa86df1bc3f997dcaa604e342b5d9b3",
+        "64b58957cb3ea69726f362b55a9416d795fd7f0e674951b7e3a57094128c68a1"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A026",
+      "kind": "run",
+      "concept": "oz_strong",
+      "offense": "C/LG/RG achieve front contacts and the mesh itself is complete; the loss is not a missing ball transfer.",
+      "defense": "DE_S sustains the useful edge angle and earns a backfield hit/wrap2.05, finishing2.70. A defender beating a reach is legitimate counterplay.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -1.1,
+        -1.1
+      ],
+      "rawSha256": [
+        "749206f8776fe1c2bf83f9ad66c7cbdd5b3828f9fe5641edbb99285b3fd85d8a",
+        "fe1ab913661f3dd6bf4c355b891991bb95625dbacac3aac9d8318d14e9e3fdbd"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A027",
+      "kind": "run",
+      "concept": "wz_strong",
+      "offense": "Useful actual Y\u2192LB_M hand engagement remains; initial samples2.65\u20132.80 exactly equal, including loaded hands from2.70. Preserve this earned block despite final tackle.",
+      "defense": "FS/LB_W support nearer; LB_M still reaches RB, first recorded contact3.20\u21922.95.",
+      "assessment": "Both sides retain useful work. Gain0.33\u21920.80 does not establish weaker defense.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        0.33,
+        0.8
+      ],
+      "rawSha256": [
+        "40ad8eb8ac8a0da88c193615abaedd736f47c5933cbe0e9d92e32dbe06cddadc",
+        "4947066ec75644edb40822a9b9e7a65e1588e38ac753d7818a8d7ecf89fe39a2"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A028",
+      "kind": "run",
+      "concept": "power",
+      "offense": "LG kick fit produces control .51 at 2.50/.58 at 3.00 and an actual lane; useful ordinary success must survive any puller change.",
+      "defense": "LB_M wraps3.20 and FS adds3.45. RT/Y collide1.50, yet the sequence still advances; one bump is not a persistent teammate jam.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        4.5,
+        4.5
+      ],
+      "rawSha256": [
+        "732c55af61728065dbd6eb3e4f15bf42435233a572e2872a48b9b95c0d65ef51",
+        "cb0eb784ed4886971461fdd15d330edd808b648fd80f537b1351f4060230a161"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A029",
+      "kind": "run",
+      "concept": "counter",
+      "offense": "The runner survives the initial wrap and gains2.35; the late LT collection/contact is preserved as attempted recovery.",
+      "defense": "DE_W wins the early kick race and earns backfield access; LB_M adds2.85 and finishes3.65. Whether the pull route should beat that movement remains unresolved.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        2.35,
+        2.35
+      ],
+      "rawSha256": [
+        "6457b2b14712398f2a9975a62587f99813301fc313020d3e44275449610e081a",
+        "20c6982292e98632ea5bdfc37fcae62e0da87e7582f80eb627f789b718934335"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A030",
+      "kind": "run",
+      "concept": "duo",
+      "offense": "RT still never achieves LB_M engagement before contact; same2.01yd outcome.",
+      "defense": "FS nearer; middle/LB_W first-contact geometry and2.75 carrier contact remain equal.",
+      "assessment": "Support improvement without claimed blocking repair or outcome effect.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        2.01,
+        2.01
+      ],
+      "rawSha256": [
+        "7d60bf3e23dd5b023b7dfe7a2f9071168776181983e2fbe517b58f8b8cb05dd1",
+        "f15d553f4cff5245e7f434754d1743dc0c28081f3d4d90759a18ab1f09a5db35"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A031",
+      "kind": "pass",
+      "concept": "slant_flat",
+      "offense": "The quick completion survives the pressure without requiring a large gain.",
+      "defense": "Curl/flat support produces an ordinary contained result with actual contact.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        2.44,
+        2.44
+      ],
+      "rawSha256": [
+        "6556fe2b9137acf56b50d9ba9dd606a4a662cf340e292fd5bc90c622c50f8dae",
+        "fb02349a667f78bf0dd5023784d3c7683a1107e73450ca9dd0d0f267977844f2"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A032",
+      "kind": "pass",
+      "concept": "mesh",
+      "offense": "Same Y catch2.80; position changes after release. Offense still completes, but less postcatch progress.",
+      "defense": "NB wrap at2.80 retained; gap0.539\u21920.608yd, terminal tackle4.30\u21923.40 without baseline LB_M assist.",
+      "assessment": "Useful containment survives; faster finish is not proof of better catch positioning.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        3.4,
+        3.13
+      ],
+      "rawSha256": [
+        "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+        "438fa21833f26ff7a7b939b69bdb1e15f7ac35a5b5551f4b2adb6f88110381c3"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A033",
+      "kind": "pass",
+      "concept": "smash",
+      "offense": "The offense preserves possession through a real C recovery.",
+      "defense": "Rush wins produce the fumble and a second defender stops the recovery.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -3.63,
+        -3.63
+      ],
+      "rawSha256": [
+        "9baa34c306873adbca9df896a9a527a51ab0fcf045fa931f46887331b68e8353",
+        "355b0c907d0115cb1ba8a07fff79b0d273151084f075df21d0099203cfe7ff46"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A034",
+      "kind": "pass",
+      "concept": "four_verts",
+      "offense": "Same Y catch2.90 and near-identical ordinary completion, YAC9.545\u21929.971.",
+      "defense": "LB_M gap4.909yd equal; LB_W gap5.664\u21925.946, first contact4.05 unchanged.",
+      "assessment": "Mixed geometry and modest outcome change; no demonstrated new defect.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        14.69,
+        15.12
+      ],
+      "rawSha256": [
+        "223a6b8a5cf5229be1b1bac5cdf5dd3bb73d9d25850666d5f11a5abe86fec8da",
+        "d26e028db7e9b253f1d33285bd6426d4b80e027ede35388e10e439ff0ffd4aff"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A035",
+      "kind": "pass",
+      "concept": "pa_flood",
+      "offense": "A timely throw survives pressure and gains a first down.",
+      "defense": "A real pass-rush threat and several useful pursuit/assist actions coexist with the completion.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        12.56,
+        12.56
+      ],
+      "rawSha256": [
+        "d387acba748f6af701c4b97632ffdd05cc5d73a437900b3f74bfa31f58a0719e",
+        "82c400e762c6168b6bc5090bd274c3385dfb6a319bb00f798b23e0e801a95c60"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A036",
+      "kind": "pass",
+      "concept": "y_cross",
+      "offense": "Same RB catch4.25; still earns2.035YAC.",
+      "defense": "LB_W gap3.139\u21923.131yd within positional rounding; contact4.90\u21924.85.",
+      "assessment": "Small timing change, no broad positioning claim.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        7.13,
+        6.68
+      ],
+      "rawSha256": [
+        "d24021c9004be4ec6404e5fb59bf80a36876c8a4d8f55b32e19707d3e97f5bbe",
+        "b326cdf0196eda3ac7fa36432e621909877ee44a2452e01063fe5d704767be8c"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A037",
+      "kind": "run",
+      "concept": "iz_strong",
+      "offense": "C and RG have real front loads, LG achieves LB_W contact and the mesh remains continuous.",
+      "defense": "LB_M wins access and finishes3.10 despite falling late2.75; offense advantage is not a required winner.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Only perception observation ordering differs; no changed observation values or achieved football motion.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        1.13,
+        1.13
+      ],
+      "rawSha256": [
+        "d2c47afa1849b99ab0a23e259507a8a9ff50ab8d0160eed598c9eaf0cb89d40a",
+        "1b802efacede89b489a2f6d9039964f8f90a95f45fa2810e18b11d3f5c5ea38a"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A038",
+      "kind": "run",
+      "concept": "oz_strong",
+      "offense": "RB earns a real escape from the end and3.72yd; RG establishes NB contact1.35 and RT releases toward LB_M1.80.",
+      "defense": "CB_S approaches from useful outside leverage, wraps2.90 and finishes3.60. Z never owning him does not automatically make this a decision defect.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        3.72,
+        3.72
+      ],
+      "rawSha256": [
+        "4cfa6cbd08ef2a4ec21484c98d6edd1698bf31232fa11935d3dd432e1259a6bc",
+        "56f293690b9bd30e2e738a850f2506c1eb4d72a7ac3ebfe6bc5c975b89c3370d"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A039",
+      "kind": "run",
+      "concept": "wz_strong",
+      "offense": "RT still lacks LB_M engagement before2.55 contact. Runner progress remains;2.78yd equal.",
+      "defense": "FS and corners continue support; FS gap13.724\u219211.411yd at2.55, still remote.",
+      "assessment": "Useful positioning difference, no inferred extra tackle.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        2.78,
+        2.78
+      ],
+      "rawSha256": [
+        "41c31395763eac23e7fc2c51d0ad4e1859db6b7e468054a343d07e51eb710c54",
+        "fb51a04ff22ec9de96a5bdeb3737221fe7f2cb16e3ce0eb5f1ad2f75af00f677"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A040",
+      "kind": "run",
+      "concept": "power",
+      "offense": "The stronger line produces several front encounters and an actual kick fit; the loss is not absent effort/contact.",
+      "defense": "DE_S reaches through the fit, LB_M adds2.65 and the run ends2.95. Need a reachable runner/puller alternative before calling the squeeze a bug.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -0.29,
+        -0.29
+      ],
+      "rawSha256": [
+        "3886eb372b86bded73c5e5381bb2cfc23d2869d99ab9452d28b0ac13080db5cf",
+        "9a66f24171a61939f9c77df576b7351417e06049503dabf4f8353aaadaaafbc7"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A041",
+      "kind": "run",
+      "concept": "counter",
+      "offense": "Actual kick/stalk blocks open a4.33yd run; preserve those offensive wins despite the eventual stop.",
+      "defense": "NB and SS earn simultaneous useful wraps and LB_M adds4.05 before4.10 termination; falls/overlapping tackles are not independent failures.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        4.33,
+        4.33
+      ],
+      "rawSha256": [
+        "90225ddd5420187550c7c60ea3ef8d685e57521943796db5b7978b049bc98d6c",
+        "873b18a868f6544fd6f36036dabd625a4b3148cf3ea73e673717a3f922ff5919"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A042",
+      "kind": "run",
+      "concept": "duo",
+      "offense": "Duo crease remains,12.73yd versus9.99. Runner request first differs2.60; do not erase this offensive success.",
+      "defense": "FS gap8.213\u21923.162yd at3.25 and assists3.55 (no baseline FS wrap). SS gap1.36\u21921.73yd at3.25; first contact3.25\u21923.30, finish4.05\u21924.70.",
+      "assessment": "Mixed sequence: support improves but initial contact/finish worsen. No isolated causal claim for extra gain.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        9.99,
+        12.73
+      ],
+      "rawSha256": [
+        "fbee9a2d1b1dea734687aafa5bb1733c67c0782d0a5712d81b33997c184daa4b",
+        "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A043",
+      "kind": "pass",
+      "concept": "slant_flat",
+      "offense": "Offense creates and attempts a rhythm throw despite pressure.",
+      "defense": "The SS ball contest is a legitimate defensive win worth preserving.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        0,
+        0
+      ],
+      "rawSha256": [
+        "e4e2f96117ba0acd4cfd7abcadf545b2e92c5c9f6e4a5763b8f7eea76581332e",
+        "c156fba3242379b230623144e2d7ace095e3091d8bc121852d60b831be4dd087"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A044",
+      "kind": "pass",
+      "concept": "mesh",
+      "offense": "H position/stored velocity remain equal through2.90 resolution; catch becomes drop/incomplete, so historical earned downfield Z\u2192CB_S block is unexercised in candidate.",
+      "defense": "SS\u2013LB_M sampled collision persists2.70\u21922.75, impulse173.92\u2192139.00kg\u00b7yd/s; SS catch-time gap3.087\u21923.008yd, nearest stat2.6\u21923.0. No PBU or receiver contact.",
+      "assessment": "Lower gain75\u21920 is not repaired defense. Collision/approach unresolved; drop cause not isolated and no catch-probability/draw tape available.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        75,
+        0
+      ],
+      "rawSha256": [
+        "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+        "be2a7dca189afc22a3722e1603bcffa8e7531431edce377398cf4e5f8524c9a7"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A045",
+      "kind": "pass",
+      "concept": "smash",
+      "offense": "A corner-route break wins a real deep window; offensive motion and throw timing remain useful.",
+      "defense": "The same FS retains a later closing/finish opportunity despite losing the catch contest.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        34.29,
+        34.29
+      ],
+      "rawSha256": [
+        "db580fe4ea7c661174e0a1ccb0edbb35faca786b89cbdd228c1165971652a1ba",
+        "fdc1d3eb6733d8b151a463f7046ca185f47f10975eac6499bbe12ceb39d64d9c"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A046",
+      "kind": "pass",
+      "concept": "four_verts",
+      "offense": "Same Y catch2.50,2.294YAC versus2.079.",
+      "defense": "LB_W gap2.484\u21922.561yd; first contact2.75\u21922.80, short tackle retained.",
+      "assessment": "Small adverse arrival difference retained; no blanket coverage improvement.",
+      "evidenceBasis": "Paired saved event sequences, fixed-identity phase samples, stored velocity, relevant native request/contact windows. No claim of complete live-film adjudication.",
+      "yards": [
+        8.64,
+        8.86
+      ],
+      "rawSha256": [
+        "0249b0477d5d96706c2506d244eb785f66871890fb089616c26a129fb19816a0",
+        "febbbf181b0c5aba3d5f506f7042c9b037e154c0ddb1c7ebf0c061701d863a2a"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A047",
+      "kind": "pass",
+      "concept": "pa_flood",
+      "offense": "Interior blockers continue useful interference even while one edge rep is lost.",
+      "defense": "Edge rush and coherent grasp/finish produce a legitimate sack.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -6.24,
+        -6.24
+      ],
+      "rawSha256": [
+        "27c6e46b28358fb9186e2b0da1ef3daa3c3df9dc086851ce1710a16ca053ebe1",
+        "331ff1152e9abe6c4a965c20b9d75f8325835d004dae06f808adeb09c4849240"
+      ],
+      "causalYardageAttributed": false
+    },
+    {
+      "id": "A048",
+      "kind": "pass",
+      "concept": "y_cross",
+      "offense": "Other protected threats do not all become immediate access; assignment identity remains intact.",
+      "defense": "An actual interior rush win and supported quick finish stop the play.",
+      "assessment": "Reuse original two-sided adjudication: all recorded agent states, positional frames and events equal. Full result equal.",
+      "evidenceBasis": "Compatible original full-sequence review reused after byte/content comparisons; no baseline rerun.",
+      "yards": [
+        -7.88,
+        -7.88
+      ],
+      "rawSha256": [
+        "e7601189e9053db1e95386ebe1cc03af602f4d21e4ad6a933f4094b6236d3642",
+        "5e02ed4a0d4d719db2865ac98687f38324838139373cd53b991d06e04e173345"
+      ],
+      "causalYardageAttributed": false
+    }
+  ]
+}

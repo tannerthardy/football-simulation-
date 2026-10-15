@@ -1,6 +1,6 @@
 # Measurement frozen48 comparison — 2026-10-15
 
-Measurement owns only scripts/diag/accepted-broad-audit.ts (byte-identical portable collector), config/accepted-broad-audit.json (accepted pin), scripts/diag/panel-pr82-compare.py, compact data/reviews/current/panel-pr82 and docs/reviews/panel-pr82-comparison.md. Base7eb2554; one candidate48 against verified saved8ca8dee,90s/5s caps. No engine/tests/settings edits, no baseline/game/suite recollection. Preserve adverse/partial/unrun.
+Completed:48/48 candidate plays in19.214s, no skips/retries/baseline recollection. Source/settings unchanged. Results and native artifact published on this comparison branch, with direct #82/owner handoffs. Measurement owns only scripts/diag/accepted-broad-audit.ts (byte-identical portable collector), config/accepted-broad-audit.json (accepted pin), scripts/diag/panel-pr82-compare.py, compact data/reviews/current/panel-pr82 and docs/reviews/panel-pr82-comparison.md. Base7eb2554; one candidate48 against verified saved8ca8dee,90s/5s caps. No engine/tests/settings edits, no baseline/game/suite recollection. Preserve adverse/partial/unrun.
 
 # Current work ownership
 

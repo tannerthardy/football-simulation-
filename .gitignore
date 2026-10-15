@@ -40,3 +40,5 @@ data/reviews/**/*.txt
 # Compact frozen-panel receipts; native traces remain outside tracked source.
 !data/reviews/current/panel-pr82/
 !data/reviews/current/panel-pr82/*.json
+!data/reviews/current/panel-pr82/*.json.gz
+data/reviews/current/panel-pr82/paired.json

@@ -1,0 +1,26 @@
+{
+  "ref": "codex/accepted-panel-pr82-evidence-v1",
+  "commit": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+  "files": [
+    "accepted-8ca8dee-48snap-v1.tar.gz",
+    "accepted-7eb2554-48snap-v1.tar.gz",
+    "README.md",
+    "receipt.json"
+  ],
+  "totalArchiveBytes": 61581589,
+  "kind": "separate data-only orphan artifact; never merge into develop",
+  "remoteVerification": "Fresh shallow fetch of exact named ref; both archive byte counts/SHA256 and all96 native member hashes verified against original summaries.",
+  "remoteChecks": [
+    {
+      "filename": "accepted-8ca8dee-48snap-v1.tar.gz",
+      "archiveSha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+      "rawCaseHashesVerified": 48
+    },
+    {
+      "filename": "accepted-7eb2554-48snap-v1.tar.gz",
+      "archiveSha256": "60c4d4af04713583c19a59224831d9e89a48011cd4affaebd891cfe1e35f0919",
+      "rawCaseHashesVerified": 48
+    }
+  ],
+  "remoteVerificationWallSeconds": 6.9717136139988725
+}
