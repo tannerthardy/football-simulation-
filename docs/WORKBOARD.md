@@ -17,8 +17,8 @@ no other merge, reference, default or historical-baseline authority follows.
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
-#63 runtime is accepted; documentation-only #65 advances accepted develop to
-`4679a3c260188143bcc66f6f20534327c78d7eaa` after user-authorized #72. #69 and physics remain separate.
+#63 runtime and #65 documentation remain included; user-authorized #72 advances
+accepted develop to `4679a3c260188143bcc66f6f20534327c78d7eaa`. #69 and physics remain separate.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 

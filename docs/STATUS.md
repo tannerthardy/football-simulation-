@@ -4,7 +4,7 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Accepted develop: `7d1451b2c31786e075550183a6a93bbda23da29b`**, documentation-only #65 after #63 and prior #12. Historical `4ded6b6` stays separate.
+- **Accepted develop: `4679a3c260188143bcc66f6f20534327c78d7eaa`**, merged #72 with #63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
