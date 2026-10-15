@@ -1,0 +1,1394 @@
+{
+  "protocol": "coupled-ground-yaw-v1",
+  "source": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+  "input": {
+    "path": "config/current-contact-first-interval.json",
+    "sha256": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb",
+    "t": 0.35,
+    "dt": 0.05
+  },
+  "settings": {
+    "groundMovement": "legacy",
+    "handContact": "patch",
+    "groundYawCoupling": "split versus hands",
+    "components": "1"
+  },
+  "criteria": {
+    "facingAndSpinImprovement": 4,
+    "medianCostRatioTarget": 2,
+    "physicalLedgerTolerance": 1e-08
+  },
+  "improvements": {
+    "facing": 7.90890641033487,
+    "spin": 11.525625387205293
+  },
+  "local12to48": {
+    "split": {
+      "position": 0.00011609480647108042,
+      "velocity": 0.004727355927754204,
+      "facing": 0.0033716703618869026,
+      "spin": 0.12669864695238026
+    },
+    "hands": {
+      "position": 3.6078763448398856e-05,
+      "velocity": 0.0008540180194457882,
+      "facing": 0.0005226539731530006,
+      "spin": 0.010152909112293163
+    }
+  },
+  "workTradeoff": {
+    "referenceSplit12288": -1.7226633762679453,
+    "referenceCoupled12288": -1.7214149508872674,
+    "native": {
+      "split": -3.0770553412698,
+      "hands": -3.235263589335062
+    },
+    "change12to48": {
+      "split": 0.9113744903148406,
+      "hands": 1.1118071143645794
+    },
+    "decision": "Do not adopt as a complete numerical correction: native hand-work convergence worsens despite improved pose/cost and a balanced ledger. Joint endpoint selection still uses ordered ground-then-hand work; the measured cross term explains that accounting sensitivity. No work-law relabeling, clipping bypass or third solver method is installed."
+  },
+  "opposing": [
+    {
+      "control": "no-hand",
+      "n": 12,
+      "bodyAndReportExact": true
+    },
+    {
+      "control": "no-hand",
+      "n": 48,
+      "bodyAndReportExact": true
+    },
+    {
+      "control": "free",
+      "n": 12,
+      "bodyAndReportExact": true
+    },
+    {
+      "control": "free",
+      "n": 48,
+      "bodyAndReportExact": true
+    }
+  ],
+  "costRatios": [
+    1.4583201308821907,
+    1.4429362121474711
+  ],
+  "costTargetMet": true,
+  "scope": "One passive non-material upper-hands row, no compressive/tensile force capacity active, no torso contacts/strikes, legacy ground/support, no acquired foot. Unsupported cases retain split execution; no new default or football verdict.",
+  "testedRevision": "6e2a005c13a9a289561ad6ac3692697c87741ba9",
+  "runtimeRevision": "2bc8cc8fd0a19d2e1a58922b254faaf9bc10e918",
+  "basePR": 66,
+  "baseRevision": "29b00905edee16f00651317364b729c1b377eb5b",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "acceptedDevelopAtHandoff": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "acceptedPhysicsTreeChangeFromA1b16e6": false,
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies",
+    "groundYawCoupling": "split"
+  },
+  "tools": [
+    {
+      "path": "scripts/diag/physics/coupled-ground-yaw.ts",
+      "sha256": "583bcd18a4997334bf496a9fc733579ed56ef26ea729b811492b8382ef45c75e"
+    },
+    {
+      "path": "scripts/diag/physics/keeper-contact-law.ts",
+      "sha256": "350dcf369f8d03325e6fe9b51151a8ae73491a7a2a7c13dd3bacbebaff5401a3"
+    },
+    {
+      "path": "test/coupled-hand-yaw.test.ts",
+      "sha256": "ac7d448325dc2206a049ee6294b810fc56b052ea97a2f5e4c4543f98d03e3437"
+    }
+  ],
+  "references": {
+    "path": "data/reviews/current/current-contact-yaw.json",
+    "sha256": "cc85a5db01d13129c05a423bfb7d3f57116214f902fb1193459faf90223e0dc1",
+    "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+    "substeps": 196608,
+    "remainingTail": {
+      "position": 4.2334701937227936e-08,
+      "velocity": 1.357857431457755e-06,
+      "spin": 0.0002909283576475463,
+      "facing": 8.080027790874356e-07
+    },
+    "scope": "Retained World refinement, not independent physical truth. Same input and force laws. Split native exactly matches its saved endpoint."
+  },
+  "motionReference": {
+    "substeps": 12288,
+    "scope": "Same-law self-refinement only; older196608 motion/yaw tail stays explicit."
+  },
+  "grid": [
+    {
+      "mode": "split",
+      "n": 12,
+      "errors": {
+        "facing": 0.004423731644693785,
+        "spin": 0.12519757846400226
+      },
+      "motionVs12288": {
+        "position": 0.00016945689897464178,
+        "velocity": 0.0065027802391372635,
+        "facing": 0.004423725915154275,
+        "spin": 0.12563248112885228
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 156.24927164296994,
+        "forceOnB": {
+          "x": 3.0959333913857656,
+          "y": 156.2215296333592
+        },
+        "momentOnA": -89.38118326358023,
+        "momentOnB": -87.15222607496227
+      },
+      "workResidual": 8.215650382226158e-14,
+      "work": {
+        "hands": -3.0770553412698,
+        "groundYaw": [
+          14.558967012533623,
+          -2.553488297377157
+        ],
+        "ground": [
+          12.585052106488163,
+          -18.608436294968005
+        ],
+        "kineticAfter": 187.94840078491353
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 12,
+      "errors": {
+        "facing": 0.0005593354397155498,
+        "spin": 0.010862541012567117
+      },
+      "motionVs12288": {
+        "position": 4.0795277754293827e-05,
+        "velocity": 0.0009888624655614562,
+        "facing": 0.0005633817714851552,
+        "spin": 0.010999540114428719
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 177.54995715573818,
+        "forceOnB": {
+          "x": 3.6575431430015657,
+          "y": 177.51458790896487
+        },
+        "momentOnA": -102.19296984095992,
+        "momentOnB": -99.64451672771902
+      },
+      "workResidual": 9.015010959956271e-14,
+      "work": {
+        "hands": -3.235263589335062,
+        "groundYaw": [
+          13.425007780311706,
+          -2.006722721743832
+        ],
+        "ground": [
+          12.463841491145011,
+          -18.485870695830638
+        ],
+        "kineticAfter": 187.2043538640539
+      }
+    },
+    {
+      "mode": "split",
+      "n": 48,
+      "errors": {
+        "facing": 0.001052061282806882,
+        "spin": 0.03556484949939209
+      },
+      "motionVs12288": {
+        "position": 5.3362113656614036e-05,
+        "velocity": 0.001775424388753303,
+        "facing": 0.0010520555532673725,
+        "spin": 0.03542785039753049
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 169.42862023163036,
+        "forceOnB": {
+          "x": 3.4338388302941873,
+          "y": 169.39644164723023
+        },
+        "momentOnA": -97.25862645328058,
+        "momentOnB": -94.83322429733846
+      },
+      "workResidual": 5.995204332975845e-14,
+      "work": {
+        "hands": -2.1656808509549594,
+        "groundYaw": [
+          13.361157136430426,
+          -2.8998115111697578
+        ],
+        "ground": [
+          12.470081958283018,
+          -18.473768273362943
+        ],
+        "kineticAfter": 187.33534005873247
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 48,
+      "errors": {
+        "facing": 3.6681466562549225e-05,
+        "spin": 0.0007096319002739548
+      },
+      "motionVs12288": {
+        "position": 4.797623857674754e-06,
+        "velocity": 0.00014361673328116666,
+        "facing": 4.0727798332154674e-05,
+        "spin": 0.001595823285184983
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 175.08397971414064,
+        "forceOnB": {
+          "x": 3.584468153653694,
+          "y": 175.04972706334834
+        },
+        "momentOnA": -100.6708125200047,
+        "momentOnB": -98.16031844219914
+      },
+      "workResidual": -2.042810365310288e-14,
+      "work": {
+        "hands": -2.1234564749704825,
+        "groundYaw": [
+          13.022010767708714,
+          -2.722002078438882
+        ],
+        "ground": [
+          12.434057347322005,
+          -18.437923172230047
+        ],
+        "kineticAfter": 187.2160479888979
+      }
+    },
+    {
+      "mode": "split",
+      "n": 192,
+      "errors": {
+        "facing": 0.0002699623977219373,
+        "spin": 0.03431727050711714
+      },
+      "motionVs12288": {
+        "position": 1.3945563161351772e-05,
+        "velocity": 0.0004517606097617416,
+        "facing": 0.00026591606595233186,
+        "spin": 0.03307720183761076
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 173.31328469659147,
+        "forceOnB": {
+          "x": 3.536825137659603,
+          "y": 173.27969485369326
+        },
+        "momentOnA": -99.60041000110365,
+        "momentOnB": -97.11660925294647
+      },
+      "workResidual": -4.3853809472693683e-13,
+      "work": {
+        "hands": -1.8915246903586527,
+        "groundYaw": [
+          12.981563438569275,
+          -2.9514261576658134
+        ],
+        "ground": [
+          12.434036013454293,
+          -18.432910667757543
+        ],
+        "kineticAfter": 187.18309953574774
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 192,
+      "errors": {
+        "facing": 6.266136889546137e-06,
+        "spin": 0.00011377158557657197
+      },
+      "motionVs12288": {
+        "position": 1.1913804279802865e-06,
+        "velocity": 3.546449794472281e-05,
+        "facing": 1.0312468659151586e-05,
+        "spin": 0.0013538402550829498
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 174.76154679907614,
+        "forceOnB": {
+          "x": 3.57551054760549,
+          "y": 174.72742198377986
+        },
+        "momentOnA": -100.47516005123096,
+        "momentOnB": -97.96954508735995
+      },
+      "workResidual": -8.815170815523743e-14,
+      "work": {
+        "hands": -1.8215921965516066,
+        "groundYaw": [
+          12.891776721850281,
+          -2.9023972159159284
+        ],
+        "ground": [
+          12.424528285185168,
+          -18.423536289384717
+        ],
+        "kineticAfter": 187.21214090468973
+      }
+    },
+    {
+      "mode": "split",
+      "n": 768,
+      "errors": {
+        "facing": 6.831985748209646e-05,
+        "spin": 0.012541379276731934
+      },
+      "motionVs12288": {
+        "position": 3.369028242952749e-06,
+        "velocity": 0.00010839705664243168,
+        "facing": 6.427352571249101e-05,
+        "spin": 0.011301310607225556
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 174.3308522509244,
+        "forceOnB": {
+          "x": 3.5639644363900205,
+          "y": 174.2968878056695
+        },
+        "momentOnA": -100.21477658336292,
+        "momentOnB": -97.71565497280541
+      },
+      "workResidual": 9.758860386455126e-13,
+      "work": {
+        "hands": -1.7641660824698888,
+        "groundYaw": [
+          12.881152874741693,
+          -2.9665625570599627
+        ],
+        "ground": [
+          12.424499225718176,
+          -18.422188601585507
+        ],
+        "kineticAfter": 187.1960964588521
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 768,
+      "errors": {
+        "facing": 3.0051019613563934e-06,
+        "spin": 0.00012450771008820638
+      },
+      "motionVs12288": {
+        "position": 5.351341251328176e-07,
+        "velocity": 1.6494724640418795e-05,
+        "facing": 7.0514337309618424e-06,
+        "spin": 0.0013645763795945842
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 174.70276974441802,
+        "forceOnB": {
+          "x": 3.5739060522643653,
+          "y": 174.66866766717163
+        },
+        "momentOnA": -100.4394773490638,
+        "momentOnB": -97.93475222813956
+      },
+      "workResidual": 6.363798377151397e-13,
+      "work": {
+        "hands": -1.74496195216943,
+        "groundYaw": [
+          12.857901670611541,
+          -2.947667511728472
+        ],
+        "ground": [
+          12.422039206810828,
+          -18.419776641356098
+        ],
+        "kineticAfter": 187.21089637167563
+      }
+    },
+    {
+      "mode": "split",
+      "n": 3072,
+      "errors": {
+        "facing": 1.6976618224390227e-05,
+        "spin": 0.004185111035789668
+      },
+      "motionVs12288": {
+        "position": 6.776193368388579e-07,
+        "velocity": 2.175219783418847e-05,
+        "facing": 1.2930286454784778e-05,
+        "spin": 0.0029450423662832903
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 174.58818182777893,
+        "forceOnB": {
+          "x": 3.5708375859298322,
+          "y": 174.55412234214822
+        },
+        "momentOnA": -100.37020359325035,
+        "momentOnB": -97.8672059974087
+      },
+      "workResidual": -1.98507876802978e-12,
+      "work": {
+        "hands": -1.7310282224278462,
+        "groundYaw": [
+          12.85569044593113,
+          -2.9657307048925046
+        ],
+        "ground": [
+          12.42208087764793,
+          -18.419480745196054
+        ],
+        "kineticAfter": 187.2048932505673
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 3072,
+      "errors": {
+        "facing": 7.734249630464429e-07,
+        "spin": 0.00012547956188724285
+      },
+      "motionVs12288": {
+        "position": 2.9363901926425566e-07,
+        "velocity": 9.2647027669853e-06,
+        "facing": 4.819756732651892e-06,
+        "spin": 0.0013655482313936207
+      },
+      "joint": {
+        "normalForce": 0,
+        "tangentForce": 174.68061013583375,
+        "forceOnB": {
+          "x": 3.5733086858919676,
+          "y": 174.64651643070988
+        },
+        "momentOnA": -100.42604986950406,
+        "momentOnB": -97.92165959844425
+      },
+      "workResidual": -5.206945985491984e-13,
+      "work": {
+        "hands": -1.7261951027460822,
+        "groundYaw": [
+          12.849900203292137,
+          -2.958903219956758
+        ],
+        "ground": [
+          12.421471226862366,
+          -18.418879155734622
+        ],
+        "kineticAfter": 187.21075555122314
+      }
+    }
+  ],
+  "rejectedSymmetricOrdering": {
+    "scope": "Diagnostic only; no runtime implementation retained. Ground half-step, existing passive hands, ground half-step. Same capacities and corrected centered yaw, no repeated World stepping.",
+    "referenceSubsteps": 12288,
+    "nativeRows": [
+      {
+        "n": 12,
+        "trial": false,
+        "difference": {
+          "pos": 0.00016945689897464178,
+          "vel": 0.0065027802391372635,
+          "spin": 0.12563248112885228,
+          "facing": 0.004423725915154275
+        },
+        "work": 8.215650382226158e-14,
+        "bodies": [
+          {
+            "facing": -0.07871261949102204,
+            "spin": 1.6068173044198293
+          },
+          {
+            "facing": 3.103375321422916,
+            "spin": -0.5409296199274163
+          }
+        ],
+        "ms": 10.32064600000001
+      },
+      {
+        "n": 12,
+        "trial": true,
+        "difference": {
+          "pos": 0.0003502743088073338,
+          "vel": 0.012750938490277018,
+          "spin": 0.24470856177760303,
+          "facing": 0.0064879540183085255
+        },
+        "work": 2.9753977059954195e-14,
+        "bodies": [
+          {
+            "facing": -0.07539293707901688,
+            "spin": 1.7264652868352917
+          },
+          {
+            "facing": 3.1061281109298444,
+            "spin": -0.45079606775445824
+          }
+        ],
+        "ms": 2.6295330000000376
+      }
+    ],
+    "toolSha256": "a6a760e3317fc4767e9260b6cb59010312b32e2138c17cb1f24d50a8f5c0bbde"
+  },
+  "independentLedgers": [
+    {
+      "mode": "split",
+      "n": 12,
+      "count": 0,
+      "maxTorqueExcess": 0,
+      "maxMotorResidual": 0,
+      "residuals": [
+        {
+          "slot": "C",
+          "position": 3.552713678800501e-15,
+          "velocity": 4.577566798522237e-16,
+          "spin": 4.440892098500626e-16,
+          "facing": 0
+        },
+        {
+          "slot": "NT",
+          "position": 3.552713678800501e-15,
+          "velocity": 2.220446049250313e-16,
+          "spin": 3.3306690738754696e-16,
+          "facing": 4.440892098500626e-16
+        }
+      ],
+      "workResidual": 8.215650382226158e-14,
+      "passiveHandWork": -3.0770553412698,
+      "maxWorkIdentityResidual": 3.885780586188048e-16,
+      "frozenFrameHandWork": -1.6380272656415016,
+      "orderedWorkCrossTerm": -1.4390280756282987,
+      "positiveFrozenFrameIntervals": 4,
+      "armImpulse": [
+        15.018932653087628,
+        0
+      ],
+      "armImpulseLimit": [
+        73.52006075982344,
+        63.32293978378542
+      ],
+      "armWork": [
+        0,
+        0
+      ],
+      "armWorkLimit": [
+        220.5601822794703,
+        189.96881935135627
+      ],
+      "firstPositiveFrozenFrameWork": {
+        "elapsed": 0.012499999999999997,
+        "h": 0.004166666666666667,
+        "coupled": false,
+        "tangent": 0.16546388961652245,
+        "ground": [
+          1.3243971266169319,
+          -0.9603797840245551
+        ],
+        "startSlip": 0.004251206726931601,
+        "endSlip": 0,
+        "orderedWork": -0.002359356843454341,
+        "finiteWork": 0.00035171060030101406,
+        "orderedWorkCrossTerm": -0.0027110674437553963
+      }
+    },
+    {
+      "mode": "split",
+      "n": 48,
+      "count": 0,
+      "maxTorqueExcess": 0,
+      "maxMotorResidual": 0,
+      "residuals": [
+        {
+          "slot": "C",
+          "position": 7.944109290391274e-15,
+          "velocity": 1.2325475812854657e-15,
+          "spin": 6.661338147750939e-16,
+          "facing": 0
+        },
+        {
+          "slot": "NT",
+          "position": 2.1610313646285627e-14,
+          "velocity": 1.1102230246251565e-15,
+          "spin": 2.7755575615628914e-16,
+          "facing": 8.881784197001252e-16
+        }
+      ],
+      "workResidual": 5.995204332975845e-14,
+      "passiveHandWork": -2.1656808509549594,
+      "maxWorkIdentityResidual": 2.0122792321330962e-16,
+      "frozenFrameHandWork": -1.7620295623469289,
+      "orderedWorkCrossTerm": -0.4036512886080297,
+      "positiveFrozenFrameIntervals": 13,
+      "armImpulse": [
+        15.941008446344997,
+        0
+      ],
+      "armImpulseLimit": [
+        73.52006075982344,
+        63.32293978378542
+      ],
+      "armWork": [
+        0,
+        0
+      ],
+      "armWorkLimit": [
+        220.5601822794703,
+        189.96881935135627
+      ],
+      "firstPositiveFrozenFrameWork": {
+        "elapsed": 0.009375000000000001,
+        "h": 0.0010416666666666667,
+        "coupled": false,
+        "tangent": 0.04126576095327718,
+        "ground": [
+          0.3287911173993989,
+          -0.238570778642214
+        ],
+        "startSlip": 0.0010288153358535418,
+        "endSlip": -1.3877787807814457e-17,
+        "orderedWork": -0.00014898357142789642,
+        "finiteWork": 2.122742385719863e-05,
+        "orderedWorkCrossTerm": -0.0001702109952850582
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 12,
+      "count": 12,
+      "maxTorqueExcess": 6.661338147750939e-16,
+      "maxMotorResidual": 1.3322676295501878e-15,
+      "residuals": [
+        {
+          "slot": "C",
+          "position": 7.105427357601002e-15,
+          "velocity": 3.510833468576701e-16,
+          "spin": 2.220446049250313e-16,
+          "facing": 1.3877787807814457e-17
+        },
+        {
+          "slot": "NT",
+          "position": 7.944109290391274e-15,
+          "velocity": 2.2887833992611187e-16,
+          "spin": 5.551115123125783e-17,
+          "facing": 0
+        }
+      ],
+      "workResidual": 9.015010959956271e-14,
+      "passiveHandWork": -3.235263589335062,
+      "maxWorkIdentityResidual": 4.440892098500626e-16,
+      "frozenFrameHandWork": -1.6072892771339233,
+      "orderedWorkCrossTerm": -1.6279743122011385,
+      "positiveFrozenFrameIntervals": 3,
+      "armImpulse": [
+        16.083966928726042,
+        0
+      ],
+      "armImpulseLimit": [
+        73.52006075982344,
+        63.32293978378542
+      ],
+      "armWork": [
+        0,
+        0
+      ],
+      "armWorkLimit": [
+        220.5601822794703,
+        189.96881935135627
+      ],
+      "firstPositiveFrozenFrameWork": {
+        "elapsed": 0.012499999999999997,
+        "h": 0.004166666666666667,
+        "coupled": true,
+        "tangent": 0.16546388961652211,
+        "ground": [
+          1.3243971266169319,
+          -0.9603797840245551
+        ],
+        "startSlip": 0.004251206726931661,
+        "endSlip": -2.7755575615628914e-17,
+        "orderedWork": -0.002359356843454341,
+        "finiteWork": 0.000351710600301016,
+        "orderedWorkCrossTerm": -0.0027110674437553894
+      }
+    },
+    {
+      "mode": "hands",
+      "n": 48,
+      "count": 48,
+      "maxTorqueExcess": 1.2212453270876722e-15,
+      "maxMotorResidual": 1.4988010832439613e-15,
+      "residuals": [
+        {
+          "slot": "C",
+          "position": 3.5704330589399866e-14,
+          "velocity": 1.3608726004012153e-15,
+          "spin": 2.220446049250313e-16,
+          "facing": 0
+        },
+        {
+          "slot": "NT",
+          "position": 2.929642751054232e-14,
+          "velocity": 7.021666937153402e-16,
+          "spin": 5.551115123125783e-17,
+          "facing": 1.3322676295501878e-15
+        }
+      ],
+      "workResidual": -2.042810365310288e-14,
+      "passiveHandWork": -2.1234564749704825,
+      "maxWorkIdentityResidual": 2.1163626406917047e-16,
+      "frozenFrameHandWork": -1.709790083101163,
+      "orderedWorkCrossTerm": -0.4136663918693189,
+      "positiveFrozenFrameIntervals": 11,
+      "armImpulse": [
+        16.223776420470514,
+        0
+      ],
+      "armImpulseLimit": [
+        73.52006075982344,
+        63.32293978378542
+      ],
+      "armWork": [
+        0,
+        0
+      ],
+      "armWorkLimit": [
+        220.5601822794703,
+        189.96881935135627
+      ],
+      "firstPositiveFrozenFrameWork": {
+        "elapsed": 0.009375000000000001,
+        "h": 0.0010416666666666667,
+        "coupled": true,
+        "tangent": 0.04126576095327781,
+        "ground": [
+          0.3287911173993989,
+          -0.238570778642214
+        ],
+        "startSlip": 0.0010288153358534863,
+        "endSlip": 2.7755575615628914e-17,
+        "orderedWork": -0.00014898357142789642,
+        "finiteWork": 2.1227423857198666e-05,
+        "orderedWorkCrossTerm": -0.0001702109952850605
+      }
+    }
+  ],
+  "benchmarks": [
+    {
+      "context": "Initial uncontended screen; includes warmup/JIT variation; same runtime source",
+      "revision": "29b00905edee16f00651317364b729c1b377eb5b",
+      "passes": [
+        {
+          "pass": 0,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.40057200000001103,
+              "p95Ms": 0.946252999999956,
+              "maxMs": 1.179363999999964
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.4007330000000593,
+              "p95Ms": 0.9931839999999283,
+              "maxMs": 1.629662000000053
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 1.2485279999999648,
+              "p95Ms": 2.13799599999993,
+              "maxMs": 2.3525990000000547
+            }
+          ]
+        },
+        {
+          "pass": 1,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.12606900000002952,
+              "p95Ms": 0.2249379999999519,
+              "maxMs": 0.269094999999993
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.1737910000000511,
+              "p95Ms": 0.2911179999999831,
+              "maxMs": 0.3409229999999752
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 0.3479330000000118,
+              "p95Ms": 0.5577890000000707,
+              "maxMs": 0.776108000000022
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "context": "Overlapped rejected CLI startup; retain but exclude from uncontended cost recommendation",
+      "revision": "2bc8cc8fd0a19d2e1a58922b254faaf9bc10e918",
+      "passes": [
+        {
+          "pass": 0,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.2816940000000159,
+              "p95Ms": 0.5246789999998782,
+              "maxMs": 0.7628460000000814
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.44891500000017004,
+              "p95Ms": 1.4941660000001775,
+              "maxMs": 1.7274110000000746
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 0.9998319999999694,
+              "p95Ms": 1.7907709999999497,
+              "maxMs": 2.2122049999998126
+            }
+          ]
+        },
+        {
+          "pass": 1,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.235253000000057,
+              "p95Ms": 0.7054900000000544,
+              "maxMs": 0.7321999999999207
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.32637099999988095,
+              "p95Ms": 0.7473130000000765,
+              "maxMs": 1.0868830000001708
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 0.6572880000001078,
+              "p95Ms": 1.4194430000000011,
+              "maxMs": 1.504690999999866
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "context": "Final uncontended, same pinned runtime and machine,20 warmups then31 interleaved samples/mode/pass; includes cloning and construction",
+      "revision": "6e2a005c13a9a289561ad6ac3692697c87741ba9",
+      "passes": [
+        {
+          "pass": 0,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.15464299999996456,
+              "p95Ms": 0.457177999999999,
+              "maxMs": 0.4662910000000693
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.22551899999996294,
+              "p95Ms": 0.5495859999999766,
+              "maxMs": 0.5522900000000845
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 0.4498760000000175,
+              "p95Ms": 1.8845529999999826,
+              "maxMs": 1.9700520000000097
+            }
+          ]
+        },
+        {
+          "pass": 1,
+          "settings": [
+            {
+              "mode": "split",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.13496299999997063,
+              "p95Ms": 0.26547900000014124,
+              "maxMs": 0.27408199999990757
+            },
+            {
+              "mode": "hands",
+              "n": 12,
+              "samples": 31,
+              "medianMs": 0.19474300000001676,
+              "p95Ms": 0.5236669999999322,
+              "maxMs": 0.5369869999999537
+            },
+            {
+              "mode": "split",
+              "n": 48,
+              "samples": 31,
+              "medianMs": 0.4479639999999563,
+              "p95Ms": 0.6639380000001438,
+              "maxMs": 0.7539329999999609
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "commit": "2bc8cc8fd0a19d2e1a58922b254faaf9bc10e918",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "e101092a74785366769b94193b23d9a369e4372c8f025e0c939c9c7f58126d12",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/hand-angular-transfer.test.ts",
+            "test/contact-angular-transfer.test.ts",
+            "--maxWorkers=1",
+            "--then",
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.178446305
+        }
+      ],
+      "path": "out/coupled-yaw/angular-typecheck.receipt.json",
+      "sha256": "86c0ee94cf1dcc88b75fd012ad806dfa55a84ec85f519d563e03391677e05a59",
+      "classification": "Rejected CLI --then option; no tests/typecheck executed. Corrected invocations are retained."
+    },
+    {
+      "commit": "29b00905edee16f00651317364b729c1b377eb5b",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "e579e6950d55217086d7011b53b180d083f67818d0d2142a1b196bfd219a6f8b",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/coupled-hand-yaw.test.ts",
+            "test/run-hand-control.test.ts",
+            "test/contact-ground-isolation.test.ts",
+            "test/keeper-contact-law.test.ts",
+            "test/contact-material-ownership.test.ts",
+            "test/hand-angular.test.ts",
+            "test/hand-force-point.test.ts",
+            "test/contact-angular.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.749911784
+        }
+      ],
+      "path": "out/coupled-yaw/candidate-tests.receipt.json",
+      "sha256": "7f77a4716eccd7d7347ad1b7d8b62997bbf3244df878b30ede440daa7a71673f"
+    },
+    {
+      "commit": "29b00905edee16f00651317364b729c1b377eb5b",
+      "sourceSha256": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "9f0419953075e6ed4134d707c9546c56e67cbf12a48b824be45e081de7e94388",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/coupled-yaw/coupled.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9729099520000001
+        }
+      ],
+      "path": "out/coupled-yaw/coupled.receipt.json",
+      "sha256": "710215c162810fb656c0ef4c0d3bb385fc9d1a94f22ea38c3fd33eb0fd5da4ad"
+    },
+    {
+      "commit": "2bc8cc8fd0a19d2e1a58922b254faaf9bc10e918",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "e101092a74785366769b94193b23d9a369e4372c8f025e0c939c9c7f58126d12",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/coupled-ground-yaw.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.57807721
+        }
+      ],
+      "path": "out/coupled-yaw/final-screen.receipt.json",
+      "sha256": "ec2325ffb47454f91aebbecfb88834e74ca7698cf24d2e9a899346d490847934"
+    },
+    {
+      "commit": "6e2a005c13a9a289561ad6ac3692697c87741ba9",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "fcaaf70ba7e13aec09140dce3bc0cc475f78610fbd307b2e92583538d2c58647",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/coupled-ground-yaw.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.0733154160000002
+        }
+      ],
+      "path": "out/coupled-yaw/final-uncontended.receipt.json",
+      "sha256": "dc1ba7557c8a2ac0729341448e49c953ff3d74cc38bcfa2bd95145e9504d7c35"
+    },
+    {
+      "commit": "c459691f8830f33f2e4ff536c7e896f0ec57d11c",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "7ef07fd425b08ccaefb4b4b52f20d4d888d6caecb3bd761eb77388fef80eda2b",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/coupled-hand-yaw.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.4554375399999997
+        }
+      ],
+      "path": "out/coupled-yaw/fixture-final.receipt.json",
+      "sha256": "3c4f7813188d5eebe7d8fcc9f54cf1b5b80a77cd966fc34608638d801011b9c7"
+    },
+    {
+      "commit": "1087d243b102576136565d61a0013f196cb1b3a5",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "5153c1908111e4172731f02917b787b5bde14d2d5e95edbceaeb7b1fa589a391",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/coupled-hand-yaw.test.ts",
+            "test/hand-angular-transfer.test.ts",
+            "test/contact-angular-transfer.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.010846832
+        }
+      ],
+      "path": "out/coupled-yaw/focused-final.receipt.json",
+      "sha256": "b1f07b3c168f4405ef5a3dede11e8fc8a63aeb6e3bb84f961d1285c2e317fae9"
+    },
+    {
+      "commit": "29b00905edee16f00651317364b729c1b377eb5b",
+      "sourceSha256": "2bf52249141ef6f2b759fb3253ae0bd602e1d2ce167b88d45b93d6d34ec4d405",
+      "validationSha256": "092c69d64b84463145a97c4e7d508514a33523c5bfc4bcbb41b5842637e4f07a",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/coupled-hand-yaw.test.ts",
+            "test/run-hand-control.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 4.099208066
+        }
+      ],
+      "path": "out/coupled-yaw/initial-tests.receipt.json",
+      "sha256": "069df9b5e11139895fcb30ae9190dea2f1e252173930c95543e84d6e7e2bc7d6",
+      "classification": "Three initial new-test failures: coupling guard rejected tiny roundoff normal arms; two assertions distinguished signed zero. Guard corrected because normal impulse is inactive, and numerical zero checks retained."
+    },
+    {
+      "commit": "29b00905edee16f00651317364b729c1b377eb5b",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "4cefc76d00b69fbcc80def9321adadc39cf3af18ef0b11714b298fc953b7b251",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/coupled-ground-yaw.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9074761959999998
+        }
+      ],
+      "path": "out/coupled-yaw/mechanical-screen.receipt.json",
+      "sha256": "5121f934242f8083209104407e07784912bf6b1f9899f8d16387a91bf97693f9"
+    },
+    {
+      "commit": "29b00905edee16f00651317364b729c1b377eb5b",
+      "sourceSha256": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "9f0419953075e6ed4134d707c9546c56e67cbf12a48b824be45e081de7e94388",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/coupled-yaw/symmetric.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.839952331
+        }
+      ],
+      "path": "out/coupled-yaw/symmetric.receipt.json",
+      "sha256": "bd3265634bd3e1bcabf748be9466d6dccc6ab4d7e115693e026ac7c6edcf9bc8"
+    },
+    {
+      "commit": "c459691f8830f33f2e4ff536c7e896f0ec57d11c",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "7ef07fd425b08ccaefb4b4b52f20d4d888d6caecb3bd761eb77388fef80eda2b",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 17.858517182
+        }
+      ],
+      "path": "out/coupled-yaw/typecheck-final.receipt.json",
+      "sha256": "2524c8b249d18bd00787c4d353891cc47a609af606bdb8928dec27cc27a1328d"
+    },
+    {
+      "commit": "6e2a005c13a9a289561ad6ac3692697c87741ba9",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "fcaaf70ba7e13aec09140dce3bc0cc475f78610fbd307b2e92583538d2c58647",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 14.712811752
+        }
+      ],
+      "path": "out/coupled-yaw/typecheck-published.receipt.json",
+      "sha256": "644f139316214c3e8036a7633f025d464862999a7ea7174a733064b558e2b1cf"
+    },
+    {
+      "commit": "1087d243b102576136565d61a0013f196cb1b3a5",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "5153c1908111e4172731f02917b787b5bde14d2d5e95edbceaeb7b1fa589a391",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 13.846421798000002
+        }
+      ],
+      "path": "out/coupled-yaw/typecheck.receipt.json",
+      "sha256": "e456a86f55871664402d2fd358b788c9ee4f2e90366d2998bc04e2a2896b95fd",
+      "classification": "Two diagnostic fixture typing errors (flattened holder and readonly contact). Fixed without engine changes; final typecheck passes."
+    },
+    {
+      "commit": "c459691f8830f33f2e4ff536c7e896f0ec57d11c",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "7ef07fd425b08ccaefb4b4b52f20d4d888d6caecb3bd761eb77388fef80eda2b",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "--input-type=module",
+            "-e",
+            "import {readFileSync} from \"node:fs\";import {replayKeeper} from \"./scripts/diag/physics/keeper-contact-law.ts\";const {witness}=JSON.parse(readFileSync(\"config/current-contact-first-interval.json\",\"utf8\"));for(const n of [12,48,12288])for(const mode of [\"split\",\"hands\"]){const r=replayKeeper(witness,\"patch\",{groundMovement:\"legacy\",groundYawCoupling:mode,substeps:n}),q=r.reports[0];console.log(JSON.stringify({mode,n,work:q.work,ground:q.groundWork,yaw:q.groundYawWork,handImpulse:r.joints[0],arm:q.armImpulse}));}"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9200229950000001
+        }
+      ],
+      "path": "out/coupled-yaw/work-probe.receipt.json",
+      "sha256": "f0aabcd82ac477eb955fce9bde2a62dc8c5ea848e5e5a5ed769fe7a5a757f89a"
+    },
+    {
+      "commit": "c459691f8830f33f2e4ff536c7e896f0ec57d11c",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "7ef07fd425b08ccaefb4b4b52f20d4d888d6caecb3bd761eb77388fef80eda2b",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/coupled-yaw/work-timing.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.415804441
+        }
+      ],
+      "path": "out/coupled-yaw/work-timing.receipt.json",
+      "sha256": "88e8442336a88e3c6cc8f73fe25533e0f9f65b931f6bc2bc6d7af336751c9a1a"
+    }
+  ],
+  "distinctFocusedChecks": 102,
+  "focusedFiles": {
+    "test/coupled-hand-yaw.test.ts": 18,
+    "test/run-hand-control.test.ts": 14,
+    "test/hand-force-point.test.ts": 35,
+    "test/contact-ground-isolation.test.ts": 9,
+    "test/keeper-contact-law.test.ts": 8,
+    "test/contact-material-ownership.test.ts": 4,
+    "test/hand-angular-transfer.test.ts": 8,
+    "test/contact-angular-transfer.test.ts": 6
+  },
+  "launcherSecondsIncludingDevelopment": 68.6191598,
+  "finalCollectorSeconds": 0.720255813,
+  "runCoordination": {
+    "review": "https://github.com/tannerthardy/football-simulation-/blob/4f90b6428b98224774bbd63a4adad6bb3e354b53/docs/reviews/helper-contact-adjudication.md",
+    "status": "Reviewed. Two demonstrated collection-route errors remain controller-owned; three guaranteed expectations are invalid. Original seven assertions unchanged. No combined verification or helper-law promotion claimed."
+  },
+  "decision": "Keep default-off feasibility candidate separately reviewable, not an accepted numerical correction. Motion/median cost criteria pass, hand-work convergence worsens and ordered-work cross term is demonstrated. Stop after two methods. Next question is the first local slip transition with consistent work gating, not recovery retuning or broader football evaluation."
+}
