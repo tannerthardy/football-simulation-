@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Active #75/#80 integration boundary — 2026-10-15
+
+Integration owns `codex/coverage-contract-integration`, starting at accepted
+`90edc52530caa71efdebf257f17d954a8a629ea0` plus queue metadata255d1c4.
+Extract only #75's `src/sim/behaviors/defense.ts`,
+`test/man-throw-recognition.test.ts`, `test/back-man-run-fit.test.ts` and #80's
+`src/sim/coverage/defender.ts`, `test/coverage-run-support.test.ts`.
+Independent review accepts these exact extractions and their recognition/support
+priority; Integration owns one frozen combined verification, with existing
+focused evidence reused. Catching retains diagnosis and Run's agreed contract
+context. No extra native cases or games. #76 stays frozen; #81 is diagnosis,
+with its behavioral trial rejected; transport/navigation/P045 variants and
+experimental Physics remain separate. Update these four shared records and
+the existing archive-access record, preserving all earlier receipts and history.
+
 ## Current audit-led investigations and evidence distribution — 2026-10-15
 
 Integration owns this docs/access-only update from accepted90edc525 plus published
