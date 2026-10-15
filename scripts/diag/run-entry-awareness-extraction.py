@@ -28,6 +28,10 @@ s=git('diff','--binary','f8ce858','cfcb7db','--','src','test').decode()
 context='private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, assessmentAim = this.opts.aim):'
 assert context in s
 (patches/'03-admission-context-only-proposal.patch').write_text(s.replace(context,'private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean):'))
+# Git accepts unprefixed empty context lines; avoid whitespace-only lines in
+# a patch stored inside another diff without changing its source meaning.
+for patch in patches.glob('*.patch'):
+ patch.write_text(patch.read_text().replace('\n \n','\n\n'))
 checks=[]
 for ref,first in [(BASE,'01-observation-core-proposal.patch'),(REVIEW,'01b-observation-core-after63-proposal.patch')]:
  with tempfile.TemporaryDirectory(prefix='entry-extraction-') as temp:

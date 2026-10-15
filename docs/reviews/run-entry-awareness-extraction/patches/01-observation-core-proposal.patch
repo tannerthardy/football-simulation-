@@ -174,7 +174,7 @@ diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
 +    this.teammateAwareness = new TeammateInformation(this.agents, new Map());
      this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
    }
- 
+
 @@ -314,6 +318,11 @@
    }
    teammates(a: Agent): Agent[] {
@@ -193,5 +193,5 @@ diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
      }
 +    this.teammateAwareness.sense(this.agents, t, this.dt);
      for (const d of this.defense) d.recog?.update(d, this);
- 
+
      this.prepareJoinedRunBlocks();

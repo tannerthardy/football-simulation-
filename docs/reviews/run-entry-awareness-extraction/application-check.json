@@ -69,10 +69,10 @@
     }
   ],
   "patchSha256": {
-    "01-observation-core-proposal.patch": "dbee4cda7f8113a46c4cdc0d0d5b354278af2085e33d9bbc22a793c592c11728",
-    "01b-observation-core-after63-proposal.patch": "87f791e64f51fdea73695bc12cf85ad58c053b622588945eb7ae5418ddb60069",
+    "01-observation-core-proposal.patch": "b7b1444d06db7c8e6a68e7620edfe2d0a235ff2e07b7d842107c8fa4e2136291",
+    "01b-observation-core-after63-proposal.patch": "3b5a580074716c5a9ad33eb74e456aae523a138e08e9438a52195d26db8f4fa5",
     "02-information-risk.patch": "6e029983024d643129cf11db875d6ad6caa748dbab901641f209d9106915d3ed",
-    "03-admission-context-only-proposal.patch": "2565c1f97fae53433dd7dae0a90abf031353f161a71aa003fa8c67e0dcc3bf98"
+    "03-admission-context-only-proposal.patch": "2c4c0c75b1746f95f4eeb558cc1137eeb43d0432c17f22a596a33cb2696c321d"
   },
   "original63ImportConflict": "Accepted-base import context overlaps #63 IncidentalCatchReadiness. The after63 variant preserves that import; same semantic shim and unchanged owner core.",
   "admissionContextAdaptation": "Preserve accepted four-argument evaluate signature. Do not import recorded-engine assessmentAim change or Behavior.runSurfaceMotion.",

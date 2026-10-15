@@ -7,11 +7,11 @@ index cc9bd7d..1b01752 100644
  import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
  import { observeRunRead, runReadObservers } from '../run-read-observer.js';
 +import {chooseRunApproach,type RunApproachPeer} from '../run-approach.js';
- 
+
  export interface CarrierOptions {
    /** Designed aiming point (run concept) and how long to honor it. */
 @@ -63,7 +64,8 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
- 
+
  /** Read the current surface, rather than a two-second forecast through it.
   * Entry points are between moving blockers, or outside a kick/log. */
 -export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
@@ -42,7 +42,7 @@ index cc9bd7d..1b01752 100644
    private boundaryRecovery = false;
    private readDone = false;
 +  private entryApproach = false;
- 
+
    constructor(
      private readonly opts: CarrierOptions = {},
 @@ -209,14 +218,19 @@ export class BallCarrier implements Behavior {
@@ -65,12 +65,12 @@ index cc9bd7d..1b01752 100644
 -    return this.command(a, sim, h, a.profile.vmax, cutSkill);
 +    return this.command(a, sim, h, a.profile.vmax, cutSkill, this.entryApproach);
    }
- 
+
    /** Press the live track until the read commits, then attack the entry. */
 @@ -240,7 +254,7 @@ export class BallCarrier implements Behavior {
      return null;
    }
- 
+
 -  private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
 +  private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number, entryApproach=false): MoveCommand {
      const bodies = sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
@@ -110,7 +110,7 @@ index cc9bd7d..1b01752 100644
 +    }
 +    return chooseRunApproach(a.body,command,peers,sim.t,sim.world.handContact);
    }
- 
+
    private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
 diff --git a/src/sim/run-approach.ts b/src/sim/run-approach.ts
 new file mode 100644
