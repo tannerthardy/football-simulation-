@@ -1,12 +1,13 @@
 # Current work ownership
 
-## Verified #85 Duo-only scope, adoption pending — #81 held separately
+## Completed #85 Duo-only adoption — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
 Do-It-All accepts exact #84 head4af71ac; only `readJoinedCombination` in
 `src/sim/behaviors/blocking.ts` and `test/combo-transfer.test.ts` are included.
 Exact source dcebbee matches the independently reviewed #84 tree. Exact freeze5727110 passes 1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s.
-Final ref/adoption checks pending; no unchanged suite rerun.
+Adopted as86250bb; entire merge tree matches publication, no unchanged rerun.
+Integration boundary released; Run owns next A018 collection question.
 
 Earlier five-file freezebbc4f82 completed all phases with one preserved #81
 zero-preview assertion failure (1,761 TS pass,145 Python/typecheck/build pass).

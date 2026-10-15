@@ -152,7 +152,8 @@ Current: Run independently accepts #81's exact admission-only scope, but exact
 #85 combined verification exposes the preserved fast-straight zero-preview
 assertion at traffic-turning.test.ts:212.1,761 TS pass/one fail;145 Python and
 typecheck/build pass. Run consults Do-It-All on cost versus movement behavior;
-no automatic assertion update or adoption. Independent accepted scope remains:
+no automatic assertion update or #81 adoption. Final merged #85 contains only
+#84; #81 remains outside develop. Independent source acceptance remains:
 f27456b/edad309/head6e19ad2 on accepted7eb2554. Exact spacing/test/fixture patch
 is portable; it removes the requested-turn shortcut using existing reachable
 tube/World preview, without low-speed expansion, observer or carrier override.
@@ -201,8 +202,7 @@ crossing/Under detours settle the necessary-climb question within this scope.
 A030 guard loads LB before runner arrival while RT keeps real DT load; A018
 still misses LB. A030 C release/execution draws also change. Current A027 WZ
 and preselected Under full histories/results are exact. No league/yardage or
-physics claim. Reuse66 focused/typecheck checks; #85 exact #84-only freeze5727110/source dcebbee passes all phases; final adoption
-checks pending. #81 cost contract holds only itself. [Intake](INTEGRATION.md#ready-blocked-experimental).
+physics claim. Reuse66 focused/typecheck checks; #85 exact #84-only freeze5727110/source dcebbee passes all phases; adopted via #85 as86250bb. #81 cost contract holds only itself. [Intake](INTEGRATION.md#ready-blocked-experimental).
 
 Earlier diagnosis retained:
 

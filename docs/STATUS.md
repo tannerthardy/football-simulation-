@@ -10,7 +10,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`**, merged #82 with independently reviewed #75/#80 continuity; prior #78/#74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr82-merge.json).
+- **Accepted develop: `86250bb4f0c6f421878c204161864d523c3e30b6`**, merged #85 with #84 Duo only; prior #82/#78/#74/#72/#63/#65/#12 retained. #81 remains held. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr85-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -45,13 +45,13 @@ Do not use the historical sections below as a current starting-reference pin.
   Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
-- **#85 advances reviewed #84 Duo only; #81 is integration-held.** First combined
+- **#85 adopted reviewed #84 Duo only; #81 remains integration-held.** First combined
   freezebbc4f82 completes all phases:1,761 TS pass/one existing zero-preview
   assertion fails;145 Python/typecheck/build pass,202.275s, no drift/skips.
   One targeted three-lane diagnostic preserves commands/contact/budgets but
   adds15/0/14 forecasts. Run + Do-It-All must adjudicate that cost contract.
   No assertion is edited. Exact reviewed #84-only freeze5727110/source dcebbee passes
-  1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s; final adoption/ref checks pending; original failed candidate remains preserved.
+  1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s; actual merged tree equals verified publication; original failed candidate remains preserved.
 - #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
   disposition. It is no dependency and is not adopted/rejected. Lateral trial and
   experimental Physics remain separate. [Exact pins/review owners](INTEGRATION.md#ready-blocked-experimental).
@@ -62,7 +62,7 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop is7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop is86250bb; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
 Measurement completed/published the one frozen48 comparison at40af332; no
