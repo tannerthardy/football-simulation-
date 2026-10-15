@@ -1,0 +1,27 @@
+{
+  "schema": "run-entry-information-only-v1",
+  "base": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "candidate": "60223a863a8431e85d5027c879191f3527ed10b8",
+  "branch": "codex/run-entry-information-portable",
+  "sourceSha256": "650c03aa263ff7469b4f9ee015836ca735c21de82b8513d28d2710a8799cbb89",
+  "validationSha256": "0109ce8282f51eb877dfa8608e968b1cf35d0bf706456ea5a868ca9b6ee46c5a",
+  "productionFiles": [
+    "src/sim/behaviors/carrier.ts",
+    "src/sim/playsim.ts",
+    "src/sim/teammate-information.ts"
+  ],
+  "coreByteIdenticalToOwner": true,
+  "coreSha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367",
+  "navigationExcluded": true,
+  "historicalSampledVelExcluded": true,
+  "ownerApproval": "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6201016808",
+  "checks": {
+    "focused": 4,
+    "typecheck": true,
+    "transportOuterTicks": 1,
+    "fullGames": 0,
+    "fullSuiteRuns": 0
+  },
+  "newLauncherSeconds": 15.085626648000002,
+  "recommendation": "Advance information-only for Integration acceptance/combined verification independently of parked navigation. Existing source-specific adverse evidence remains; this is an information contract correction, not a football gain claim."
+}
