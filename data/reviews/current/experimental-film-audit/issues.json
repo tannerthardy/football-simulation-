@@ -1,0 +1,118 @@
+{
+  "schema": "checkpoint-film-issues-v1",
+  "simulationRuns": 0,
+  "note": "Priorities are proposed investigation order, not worker acknowledgments or automatic test suites. Observed outcome is not automatically a code defect.",
+  "issues": [
+    {
+      "id": "EX-01",
+      "priority": 1,
+      "status": "Confirmed failed exchange / missing recovery; exact consumed teammate cue not saved",
+      "handoffDestination": "Run controller / exchange",
+      "witnesses": [
+        "mesh-failure",
+        "mesh-cap",
+        "mesh-control",
+        "historical-mesh"
+      ]
+    },
+    {
+      "id": "DEF-01",
+      "priority": 1,
+      "status": "Confirmed unbounded pre-exchange RB-key contract",
+      "handoffDestination": "Run defense / awareness",
+      "witnesses": [
+        "mesh-failure",
+        "mesh-cap"
+      ]
+    },
+    {
+      "id": "LOG-01",
+      "priority": 1,
+      "status": "Confirmed missing rusher and omitted rushing credit",
+      "handoffDestination": "Game bookkeeping",
+      "witnesses": [
+        "mesh-failure"
+      ]
+    },
+    {
+      "id": "COV-01",
+      "priority": 1,
+      "status": "Confirmed false run read and coverage departure; cue root cause unresolved",
+      "handoffDestination": "Coverage / recognition",
+      "witnesses": [
+        "hitch-run-read"
+      ]
+    },
+    {
+      "id": "COV-02",
+      "priority": 2,
+      "status": "Observed coverage loss with correct pass read; mechanism unresolved",
+      "handoffDestination": "Man coverage / arrival",
+      "witnesses": [
+        "crosser",
+        "immediate-wrap"
+      ]
+    },
+    {
+      "id": "COV-03",
+      "priority": 2,
+      "status": "Confirmed directive churn / technique reconstruction; correct persistence unresolved",
+      "handoffDestination": "Coverage rules",
+      "witnesses": [
+        "coverage-churn"
+      ]
+    },
+    {
+      "id": "PUR-01",
+      "priority": 1,
+      "status": "Observed cross-behind pursuit miss; first wrong cue/request or body response unresolved",
+      "handoffDestination": "Pursuit / arrival",
+      "witnesses": [
+        "hitch-pursuit",
+        "immediate-wrap"
+      ]
+    },
+    {
+      "id": "BLK-01",
+      "priority": 1,
+      "status": "Confirmed teammate collision/fall; controller/contact attribution unresolved",
+      "handoffDestination": "Run carrier / blocking / awareness",
+      "witnesses": [
+        "carrier-blocker",
+        "carrier-fall",
+        "short-run-control"
+      ]
+    },
+    {
+      "id": "INFO-01",
+      "priority": 2,
+      "status": "Confirmed live/private access remains; football effect unmeasured",
+      "handoffDestination": "Information ownership / downfield blocking",
+      "witnesses": [
+        "crosser",
+        "hitch-pursuit"
+      ]
+    },
+    {
+      "id": "PASS-01",
+      "priority": 2,
+      "status": "Observed interception excess; decision/prediction/execution attribution unresolved",
+      "handoffDestination": "QB decision / release",
+      "witnesses": [
+        "interception",
+        "immediate-wrap"
+      ]
+    },
+    {
+      "id": "CONTACT-01",
+      "priority": 2,
+      "status": "Confirmed acquired holds slip; physical correctness unresolved",
+      "handoffDestination": "Contact physics",
+      "witnesses": [
+        "grip-slip",
+        "opening-accepted",
+        "opening-experimental"
+      ]
+    }
+  ]
+}

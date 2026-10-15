@@ -1,0 +1,105 @@
+{
+  "schema": "checkpoint-audit-viewer-check-v1",
+  "browser": "154.0.8037.57",
+  "simulationRuns": 0,
+  "checks": [
+    {
+      "id": "mesh-failure",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 26
+    },
+    {
+      "id": "mesh-cap",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 51
+    },
+    {
+      "id": "mesh-control",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 32
+    },
+    {
+      "id": "historical-mesh",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 51
+    },
+    {
+      "id": "hitch-run-read",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 29
+    },
+    {
+      "id": "hitch-pursuit",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 29
+    },
+    {
+      "id": "immediate-wrap",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 30
+    },
+    {
+      "id": "grip-slip",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 37
+    },
+    {
+      "id": "carrier-blocker",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 29
+    },
+    {
+      "id": "carrier-fall",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 28
+    },
+    {
+      "id": "short-run-control",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 27
+    },
+    {
+      "id": "crosser",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 39
+    },
+    {
+      "id": "coverage-churn",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 24
+    },
+    {
+      "id": "interception",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 30
+    },
+    {
+      "id": "opening-accepted",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 25
+    },
+    {
+      "id": "opening-experimental",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 62
+    }
+  ],
+  "pageErrors": [],
+  "elapsedSeconds": 2.307275874001789
+}

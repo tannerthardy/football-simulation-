@@ -1,0 +1,98 @@
+{
+  "schema": "saved-checkpoint-film-audit-v1",
+  "simulationRuns": 0,
+  "scope": "All saved ordinary scrimmages, including flagged plays; special teams and six unfilmed tries excluded.",
+  "limitations": [
+    "No-exchange requires an installed mesh, QB ownership throughout saved frames, and no handoff/pitch event.",
+    "Contacts are recorded events, not proof that no physical force or reach occurred between sampled frames.",
+    "Distance, yardage and interception flags identify review witnesses, not automatic defects.",
+    "Standard telemetry does not record consumed perception or complete body/contact internals."
+  ],
+  "inputs": [
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/accepted/power-zone/game.json.gz",
+      "sha256": "b9ed5a733823f399a0d85b98eb0d93fe011efc1580da789570558c3aac3e2693",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/accepted/spread-air/game.json.gz",
+      "sha256": "6adaf416c55aba65ddba3760ff5a52274022336e90ae181acd8a04cd29c2507d",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/accepted/west-spread/game.json.gz",
+      "sha256": "dfd4cdd6fc9ddce801f7092e1fc98299517a380c5122cb266d4f16296c771767",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/accepted/zone-reference/game.json.gz",
+      "sha256": "05f5fe8447783f581988d7ceb22883e535ecc6d46dc74caf553b9443825b75c3",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/experimental/power-zone/game.json.gz",
+      "sha256": "9b8863b2633e25ba29256056258c5c94efaf79382c54929dde26e4a5ed0d9b6c",
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/experimental/spread-air/game.json.gz",
+      "sha256": "15e553e26449ff44806293f1611bffd3362cbf2e4dd80d3f1447f0264681057f",
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/experimental/west-spread/game.json.gz",
+      "sha256": "a7123112d9c280c4588b57790b9815b12ed07a2b0095523d282d32477f964298",
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba"
+    },
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/experimental/zone-reference/game.json.gz",
+      "sha256": "9043fcb999ab144582292136ac7743f82cb5738a73c23879edfeb96f845bb039",
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba"
+    }
+  ],
+  "totals": {
+    "accepted": {
+      "filmedScrimmages": 545,
+      "passPlays": 364,
+      "nonPlayActionPassCalls": 319,
+      "runPlays": 181,
+      "expectedExchanges": 181,
+      "noExchangeObserved": 11,
+      "noExchangeClean": 10,
+      "runsWithoutRusher": 11,
+      "completions": 202,
+      "nonPlayActionPassCallsWithRunRead": 67,
+      "nonPlayActionPassCallsWithSecondaryRunRead": 67,
+      "catches20Yac": 24,
+      "snapsWithRbBlockerContactAfterHandoff": 20,
+      "catches40Yac": 8,
+      "catches20YacNoContactOrAttemptEvent": 5,
+      "playCaps": 7
+    },
+    "experimental": {
+      "filmedScrimmages": 538,
+      "passPlays": 362,
+      "nonPlayActionPassCalls": 318,
+      "completions": 205,
+      "catches20Yac": 23,
+      "catches40Yac": 15,
+      "runPlays": 176,
+      "expectedExchanges": 176,
+      "noExchangeObserved": 9,
+      "noExchangeClean": 9,
+      "playCaps": 5,
+      "runsWithoutRusher": 9,
+      "nonPlayActionPassCallsWithRunRead": 74,
+      "nonPlayActionPassCallsWithSecondaryRunRead": 74,
+      "snapsWithRbBlockerContactAfterHandoff": 44,
+      "catches20YacNoContactOrAttemptEvent": 7
+    }
+  },
+  "elapsedSeconds": 7.911268491996452,
+  "playsArtifact": {
+    "path": "plays.json.gz",
+    "plays": 1083,
+    "bytes": 304426,
+    "sha256": "bb98ede19419db7867cfd5237a8178f0085e8901810bd978f4fabfbf2c9559fa"
+  }
+}

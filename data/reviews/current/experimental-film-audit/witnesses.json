@@ -1,0 +1,272 @@
+[
+  {
+    "id": "mesh-failure",
+    "arm": "experimental",
+    "fixture": "west-spread",
+    "at": 1.0,
+    "actors": [
+      "QB",
+      "RB",
+      "DE_S",
+      "LB_M"
+    ],
+    "title": "Failed exchange from the reel",
+    "note": "QB keeps possession; the RB remains in mesh and leaves the exchange. QB requests zero velocity through the wait. DE_S finally tackles the QB at 10.20 s. This is not a keeper or a completed handoff.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/west-spread/film.html",
+    "index": 21,
+    "play": 22
+  },
+  {
+    "id": "mesh-cap",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 2.0,
+    "actors": [
+      "QB",
+      "RB",
+      "LB_M"
+    ],
+    "title": "Failed exchange ends only at the play cap",
+    "note": "No handoff; QB stays at the installed gun mesh. RB continues without possession. The 25-second result is a system cap, not a football ending.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 13,
+    "play": 14
+  },
+  {
+    "id": "mesh-control",
+    "arm": "experimental",
+    "fixture": "west-spread",
+    "at": 1.05,
+    "actors": [
+      "QB",
+      "RB"
+    ],
+    "title": "Opposing control: gun moving exchange succeeds",
+    "note": "Gun Doubles Wide Zone hands off at 1.05 s and gains 5.13 yd. Same team/formation, different direction and game state; a useful existing control, not a matched causal replay.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/west-spread/film.html",
+    "index": 68,
+    "play": 69
+  },
+  {
+    "id": "historical-mesh",
+    "arm": "accepted",
+    "fixture": "west-spread",
+    "at": 2.0,
+    "actors": [
+      "QB",
+      "RB"
+    ],
+    "title": "Accepted source also has the exchange failure",
+    "note": "Gun Doubles Outside Zone Weak never exchanges and reaches the 25-second cap. Demonstrates pre-existing exposure; does not isolate which candidate changes affect its frequency.",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "film": "../experimental-game-checkpoint/accepted/west-spread/film.html",
+    "index": 36,
+    "play": 37
+  },
+  {
+    "id": "hitch-run-read",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 0.95,
+    "actors": [
+      "X",
+      "CB_W",
+      "FS"
+    ],
+    "title": "All Hitch: coverage misread before 88.88 YAC",
+    "note": "CB_W reads run at 0.95 s, moves toward the backfield action, and reads pass at 2.55 s after the 2.30 s throw. Catch is at 3.25 s. The exact consumed cue is not in standard recording.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 35,
+    "play": 36
+  },
+  {
+    "id": "hitch-pursuit",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 4.0,
+    "actors": [
+      "X",
+      "CB_W",
+      "FS",
+      "SS"
+    ],
+    "title": "Same play: secondary pursuit crosses behind the runner",
+    "note": "FS closes from ahead and inside, crosses behind X, and never records contact or an attempt. Closest sampled defender distance is 2.47 yd at 4.50 s. Shared chase uses delayed velocity forecasts; cause still needs a consumed-picture/body trace.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 35,
+    "play": 36
+  },
+  {
+    "id": "immediate-wrap",
+    "arm": "experimental",
+    "fixture": "zone-reference",
+    "at": 3.15,
+    "actors": [
+      "X",
+      "CB_S"
+    ],
+    "title": "Opposing control: immediate catch-and-wrap",
+    "note": "Completed Stick gains 9.00 yd, only 0.116 YAC. Catch, contact and wrap are all recorded at 3.15 s; tackle at 3.90 s. Preserve useful catch approach and legitimate defended catches.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/zone-reference/film.html",
+    "index": 28,
+    "play": 29
+  },
+  {
+    "id": "grip-slip",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 3.85,
+    "actors": [
+      "Z",
+      "CB_S",
+      "SS",
+      "FS"
+    ],
+    "title": "Different failure: attempts and acquired holds slip",
+    "note": "Levels gains 55.25 YAC after a missed dive and two holds that slip. Unlike the no-contact hitch, acquisition/retention really occurs. Standard film cannot adjudicate transmitted forces or conservation.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 1,
+    "play": 2
+  },
+  {
+    "id": "carrier-blocker",
+    "arm": "experimental",
+    "fixture": "zone-reference",
+    "at": 2.6,
+    "actors": [
+      "LT",
+      "RB",
+      "LB_M"
+    ],
+    "title": "Run coordination: repeated collision with own LT",
+    "note": "Outside Zone hands off at 1.40 s; first RB/LT impulse at 2.60 s precedes first recorded opposing carrier contact at 3.35 s. Sixteen positive RB/blocker intervals total 758.82 kg yd/s; gain 0.83 yd. Impulse sum is exposure, not net momentum or proof of an illegal force.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/zone-reference/film.html",
+    "index": 60,
+    "play": 61
+  },
+  {
+    "id": "carrier-fall",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 2.25,
+    "actors": [
+      "LG",
+      "RB"
+    ],
+    "title": "Inside Zone: RB falls in teammate contact",
+    "note": "LG/RB impulse is 328.59 kg yd/s at 2.25 s, with a recorded RB contact fall at that time; gain 0.35 yd. Does not isolate runner steering, blocker tracking or body support. An untouched player getting up is legal.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 61,
+    "play": 62
+  },
+  {
+    "id": "short-run-control",
+    "arm": "experimental",
+    "fixture": "power-zone",
+    "at": 2.45,
+    "actors": [
+      "RB",
+      "LB_W",
+      "C"
+    ],
+    "title": "Short run with ordinary defensive win",
+    "note": "Median run gains 1.69 yd: no positive RB/OL-TE-FB contact, first opposing grasp/wrap at 2.45 s, tackle at 2.95 s. A short gain alone is not a defect; do not force every run to succeed.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/power-zone/film.html",
+    "index": 117,
+    "play": 118
+  },
+  {
+    "id": "crosser",
+    "arm": "experimental",
+    "fixture": "spread-air",
+    "at": 2.95,
+    "actors": [
+      "H",
+      "SS",
+      "FS"
+    ],
+    "title": "Man crosser: correct pass read still yields separation",
+    "note": "SS is assigned man:H and reads pass at 0.40 s, yet is 8.16 yd from H at the catch. 64.76 YAC and no recorded carrier contact/attempt. This is a separate coverage/arrival witness, not the hitch's false run read.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/spread-air/film.html",
+    "index": 73,
+    "play": 74
+  },
+  {
+    "id": "coverage-churn",
+    "arm": "experimental",
+    "fixture": "west-spread",
+    "at": 2.2,
+    "actors": [
+      "LB_M",
+      "H"
+    ],
+    "title": "Coverage directives alternate every tick",
+    "note": "LB_M alternates man:H and zone:hook_s seven times from 2.10 to 2.40 s. Each changed directive rebuilds the technique controller. Pass is incomplete: outcome alone would hide the coordination problem. Review rule inputs before choosing a persistence repair.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/west-spread/film.html",
+    "index": 100,
+    "play": 101
+  },
+  {
+    "id": "interception",
+    "arm": "experimental",
+    "fixture": "zone-reference",
+    "at": 2.85,
+    "actors": [
+      "QB",
+      "Y",
+      "NB"
+    ],
+    "title": "Smash interception: target/risk diagnosis remains open",
+    "note": "QB throws to Y; NB intercepts at 4.15 s and Y tackles the returner. A real defensive win must remain possible. Stored film lacks the QB's complete scored alternatives, so an interception alone does not prove a bad throw decision.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/zone-reference/film.html",
+    "index": 10,
+    "play": 11
+  },
+  {
+    "id": "opening-accepted",
+    "arm": "accepted",
+    "fixture": "zone-reference",
+    "at": 1.4,
+    "actors": [
+      "RB",
+      "FS",
+      "CB_W"
+    ],
+    "title": "Matched opening: accepted 3.73 yd",
+    "note": "Same opening call/plan/initial recorded frame as the experimental opening. Full internal information states need not be identical. This is retained adverse comparison, not a required yardage target.",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "film": "../experimental-game-checkpoint/accepted/zone-reference/film.html",
+    "index": 1,
+    "play": 2
+  },
+  {
+    "id": "opening-experimental",
+    "arm": "experimental",
+    "fixture": "zone-reference",
+    "at": 3.75,
+    "actors": [
+      "RB",
+      "FS",
+      "CB_W"
+    ],
+    "title": "Matched opening: experimental 34 yd",
+    "note": "Actual handoff at 1.40 s; contact and first wrap at 3.75 s; two holds break before the eventual tackle. The favorable gain is not automatically a controller improvement.",
+    "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+    "film": "../experimental-game-checkpoint/experimental/zone-reference/film.html",
+    "index": 1,
+    "play": 2
+  }
+]

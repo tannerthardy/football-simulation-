@@ -8,6 +8,11 @@ Local improvements and a clean code suite do not establish better full-game
 football. Ordinary runs worsen, interceptions rise and explosive YAC remains.
 Nothing is merged, designated a baseline, or switched as GitHub's default.
 
+**Follow-up:** [the saved-film failure audit](experimental-film-audit-2026-10-15.md)
+identifies failed exchanges and their attribution/run-fit consequences, a false
+run read on All Hitch, separate pursuit/coverage/contact witnesses and bounded
+owner handoffs. It adds no simulations and changes no runtime.
+
 [Open the complete results and eight film rooms](../../data/reviews/current/experimental-game-checkpoint/index.html) ·
 [Watch the 59-second all-22 reel](../../data/reviews/current/experimental-game-checkpoint/checkpoint-film.mp4) ·
 [Download the standalone film-room bundle](../../data/reviews/current/experimental-game-checkpoint-film.zip) ·
