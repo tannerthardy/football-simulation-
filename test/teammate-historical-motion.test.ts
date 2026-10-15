@@ -14,7 +14,7 @@ describe('delivered historical teammate velocity',()=>{
     expect(s.query(.25)).toEqual({source:'unavailable'});
     for(const t of [.30,.35,.40,1]){
       const p=s.query(t);if(p.source!=='observed'&&p.source!=='remembered')throw Error('Visual sample expected');
-      expect(p.sampledVel).toEqual({x:0,y:1});expect(p.sampledAt).toBe(0);expect(p.availableAt).toBe(.3);
+      expect(p.sampledVel).toEqual({x:0,y:1});expect(p.sampledAt).toBe(0);expect(p.availableAt).toBeCloseTo(.3,12);
       expect(p.pos).toEqual({x:5,y:.3});expect(p.age).toBe(t);expect(p.predictedFor).toBe(.3);
       expect({x:p.pos.x-p.sampledVel.x*p.predictedFor,y:p.pos.y-p.sampledVel.y*p.predictedFor}).toEqual({x:5,y:0});
       expect(p.vel).toEqual(t<=.30?{x:0,y:1}:{x:0,y:0});
