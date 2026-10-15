@@ -22,6 +22,9 @@ export interface MovementObstacle {
   /** An observed teammate can stop clearing the lane. Do not require him to
    * maintain speed to make our request safe. Installed calls stay separate. */
   mayStop?: boolean;
+  /** Public sprint envelope, measured from the delivered sample rather than
+   * treating its extrapolated current velocity as a guaranteed future pace. */
+  pace?: {tau:number;predictedFor:number};
 }
 
 export interface MovementStep {
@@ -88,7 +91,17 @@ export function previewMovementStep(body: Body, command: Intent,
         const dx = nx - x, dy = ny - y;
         const u = Math.max(0, Math.min(1, -(x * dx + y * dy) / Math.max(1e-12, dx * dx + dy * dy)));
         gap = Math.min(gap, Math.hypot(x + u * dx, y + u * dy) - touch - uncertainty);
-        if(peer.mayStop)gap=Math.min(gap,segmentGap(own,sample.pos,peer.pos,p)-touch);
+        if(peer.mayStop){
+          let start=peer.pos,end=p;
+          const speed=Math.hypot(peer.vel.x,peer.vel.y),pace=peer.pace;
+          if(pace&&speed>1e-9){
+            const past=pace.predictedFor,time=past+sample.t,vmax=Math.max(speed,peer.maxSpeed??speed);
+            const distance=vmax*time-(vmax-speed)*pace.tau*(1-Math.exp(-time/pace.tau));
+            start={x:peer.pos.x-peer.vel.x*past,y:peer.pos.y-peer.vel.y*past};
+            end={x:start.x+peer.vel.x/speed*distance,y:start.y+peer.vel.y/speed*distance};
+          }
+          gap=Math.min(gap,segmentGap(own,sample.pos,start,end)-touch);
+        }
         own=sample.pos;
         x = nx; y = ny;
         clearances[index]=Math.min(clearances[index],gap);
