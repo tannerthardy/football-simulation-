@@ -9,8 +9,13 @@ restoration through [PR #58](https://github.com/tannerthardy/football-simulation
 No engine changes, new simulation, reference adoption or shared verifier run.
 Raw NFL access is pending; never represent aggregate context as selected NFL witnesses.
 Saved comparison/query and five focused checks are complete. Individual NFL
-witness selection remains blocked by absent restored CSVs/receipt; see the
+witness selection was initially blocked by absent restored CSVs/receipt; see the
 [measurements, controls and exact continuation](reviews/p045-nfl-catch-approach-2026-10-15.md).
+Resume: Catching's `747bb24` receipt is received and verified, but its posted
+CSV/ZIP paths are absent on this executor. The
+[pinned execution handoff](reviews/p045-nfl-restoration-handoff-2026-10-15.md)
+needs only three existing Python modules and a small result JSON return;
+the original query, filters and engine remain unchanged.
 
 ## Current controller integration preparation
 

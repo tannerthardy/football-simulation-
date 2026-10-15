@@ -24,13 +24,25 @@
   "nfl": {
     "status": "blocked",
     "missing_files": [
+      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/players.csv",
+      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/plays.csv",
+      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
+      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv"
+    ],
+    "restoration_receipt": {
+      "commit": "747bb24bd2c17c8b4a6f572fcb3ee8e459375fb8",
+      "sha256": "d8e3cdc71461117439f2dafe84f1d87a3c74952d713f7167b436e4d82a53449b",
+      "catalog_archive_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+      "published_verification_verified_zip_members": true
+    },
+    "reason": "Verified receipt received; posted restored CSVs and ZIP are absent on this separate executor. No NFL query executed.",
+    "original_environment_missing_files": [
       "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/players.csv",
       "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/plays.csv",
       "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
       "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv"
     ],
-    "restoration_receipt": null,
-    "reason": "Reuse Catching's checksum-verified restoration; no competing download was attempted."
+    "access_receipt": "data/reviews/current/p045-nfl-restoration-access.json"
   },
   "sim_witnesses": [
     {
@@ -1253,7 +1265,8 @@
   },
   "coordination": {
     "url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427",
-    "status": "Requested existing restoration receipt/location; no response available at measurement time."
+    "status": "Receipt received and verified; source bytes accessible only on Catching executor. Prepared unchanged week-1 query execution handoff.",
+    "restoration_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876"
   },
   "checks": {
     "focusedTests": 5,

@@ -1,0 +1,65 @@
+{
+  "schema": "p045-nfl-execution-handoff-v1",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "receipt": {
+    "commit": "747bb24bd2c17c8b4a6f572fcb3ee8e459375fb8",
+    "sha256": "d8e3cdc71461117439f2dafe84f1d87a3c74952d713f7167b436e4d82a53449b",
+    "catalog_archive_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "published_verification_verified_zip_members": true
+  },
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "access": {
+    "players.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/players.csv",
+      "readable": false,
+      "expected_bytes": 104749,
+      "expected_sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    },
+    "plays.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/plays.csv",
+      "readable": false,
+      "expected_bytes": 6892353,
+      "expected_sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    "player_play.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
+      "readable": false,
+      "expected_bytes": 52533762,
+      "expected_sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    "tracking_week_1.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv",
+      "readable": false,
+      "expected_bytes": 971403802,
+      "expected_sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    }
+  },
+  "simulation_runs": 0,
+  "nfl": {
+    "status": "blocked",
+    "reason": "Restored CSVs are not readable on this executor"
+  },
+  "archive": {
+    "path": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "readable": false,
+    "expected_bytes": 1219840421,
+    "expected_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "rehashed_here": false
+  },
+  "query_executed": false,
+  "elapsed_s": 0.0006629569998040097,
+  "runner_sha256": "cf489afef2f55182146178cd8544263fc292554b8bfbbb4db849005e71e9ee45",
+  "checks": {
+    "receipt_git_blob_sha1": "166c90d830a36dc1a5b668228457039c1b67f421",
+    "receipt_blob_and_sha256_verified_here": true,
+    "archive_pin_matches_catalog": true,
+    "three_pinned_query_module_bytes_verified_here": true,
+    "csv_mismatch_stops_before_query": true,
+    "restored_csv_or_archive_bytes_rehashed_here": false
+  },
+  "handoff_comment": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876"
+}

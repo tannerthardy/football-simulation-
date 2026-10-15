@@ -2,6 +2,12 @@
 
 October 15, 2026 (America/Phoenix).
 
+Resume status: Catching's restoration receipt is now pinned and verified;
+the posted CSV/ZIP paths are on another executor and absent here. The
+[small query-execution handoff](p045-nfl-restoration-handoff-2026-10-15.md)
+reuses this exact study without transferring the archive. The measurements
+below are unchanged; individual NFL witnesses remain pending that execution.
+
 **P045 loses containment before receiver contact.** Its corner falls behind
 during flight; its safety reduces distance while losing downfield support.
 This supports an earlier coverage/approach investigation, not a grip change.
@@ -146,9 +152,12 @@ also retains P010's changing second-nearest identity instead of splicing it.
 
 ## Unresolved risk and exact access gap
 
-**Individual NFL witnesses: blocked, zero selected.** This environment lacks
+**Individual NFL witnesses: blocked, zero selected.** At the original collection this environment lacked
 `data/raw/bdb2025/big-data-bowl-data/{players.csv,plays.csv,player_play.csv,tracking_week_1.csv}`
-and Catching's existing checksum-restoration receipt. Its other restored weeks
+and Catching's existing checksum-restoration receipt. The receipt is now verified;
+the [resumed access check](p045-nfl-restoration-handoff-2026-10-15.md) confirms
+that Catching's posted restored directory and ZIP are on another executor.
+Its other restored weeks
 and any cached common packet are also absent. A legacy common packet alone
 would be insufficient if it discarded nflIds and observed-sample validity.
 
