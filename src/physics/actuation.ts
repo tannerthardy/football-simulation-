@@ -5,11 +5,19 @@
  */
 import { angleDiff, clamp } from '../core/vec.js';
 import type { Body } from './kinematics.js';
-import { baseRadiusAt, supportParams } from './support.js';
+import { baseRadiusAt, supportParams, type SupportParams } from './support.js';
 import { integrateYaw } from './yaw-response.js';
 
 export const ARM_SPEED = 3;
 export const YAW_RESPONSE = .05;
+
+/** The existing traction/turn-rate allowance, shared by split and coupled yaw. */
+export function yawAccelerationLimit(sp: SupportParams, posture: number, turnRate: number, available: number, force: number): number {
+  const radius = baseRadiusAt(sp, posture);
+  const traction = sp.traction * available;
+  const torque = Math.sqrt(Math.max(0, traction * traction - force * force)) * radius;
+  return Math.min(turnRate / YAW_RESPONSE * (.3 + .7 * available), torque / sp.yawInertia);
+}
 
 /** Fraction of an impulse that fits a remaining positive work budget.
  * W(s) = s v_rel·J + s² |J|²/(2 m_reduced). A zero budget permits removing
@@ -26,10 +34,7 @@ export function workFraction(linear: number, quadratic: number, budget: number):
 export function turnBody(b: Body, target: number, remaining: number, dt: number,
   turnRate: number, available: number, force: number): { impulse: number; work: number } {
   const sp = supportParams(b.profile);
-  const radius = baseRadiusAt(sp, b.support?.posture ?? (.2-.2*(1-b.energy)));
-  const traction = sp.traction * available;
-  const torque = Math.sqrt(Math.max(0, traction * traction - force * force)) * radius;
-  const acceleration = Math.min(turnRate / YAW_RESPONSE * (.3 + .7 * available), torque / sp.yawInertia);
+  const acceleration = yawAccelerationLimit(sp, b.support?.posture ?? (.2-.2*(1-b.energy)), turnRate, available, force);
   const targetSpin = clamp(angleDiff(b.facing, target) / Math.max(dt, remaining), -turnRate, turnRate);
   const before = b.spin ?? 0;
   const after = before + clamp(targetSpin - before, -acceleration * dt, acceleration * dt);

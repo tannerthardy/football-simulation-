@@ -35,7 +35,8 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
-import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
+import { ARM_SPEED, turnBody, turnBodyResponse, workFraction, yawAccelerationLimit } from './actuation.js';
+import { coupleHandYaw } from './coupled-hand-yaw.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
@@ -382,6 +383,9 @@ export class World {
   readonly supportIntegration: 'mean' | 'integrated';
   /** Live reduced lower geometry; false retains the historical linear law. */
   readonly boundedAttachment: boolean;
+  /** Experimental one-row passive hand/legacy-yaw coupling; default stays split. */
+  readonly groundYawCoupling: 'split' | 'hands';
+  private readonly handYaw?: Array<{ spin: number; demand: number; limit: number; impulse: number; work: number; force: number } | undefined>;
   joints: Joint[] = [];
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
@@ -442,12 +446,14 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; groundMovement?: 'legacy' | 'response' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; groundMovement?: 'legacy' | 'response'; groundYawCoupling?: 'split' | 'hands' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
     this.handContact = opts.handContact ?? 'center';
     this.groundMovementSetting = opts.groundMovement;
+    this.groundYawCoupling = opts.groundYawCoupling ?? 'split';
+    if (this.groundYawCoupling === 'hands') this.handYaw = new Array(bodies.length);
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
     this.supportModel = opts.supportModel ?? 'legacy';
@@ -1020,6 +1026,7 @@ export class World {
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
+      if (this.handYaw) this.handYaw[i] = undefined;
       this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0; this.thighX[i] = 0; this.thighY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       this.travelAdjustX[i] = 0; this.travelAdjustY[i] = 0; this.facing0[i] = bs[i].facing;
@@ -1150,6 +1157,7 @@ export class World {
         for (let k = 0; k < ids.length; k++) bs[ids[k]].facing += h * ((bs[ids[k]].spin ?? 0) - spin[k]);
       }
       const rows = this.jointRows(h);
+      this.coupleGroundHandYaw(rows, contacts, h);
       // Freeze every finite-force point before delivering any patch reel.
       // This matters when one body participates in several different holds.
       if (this.handContact === 'patch') for (const r of rows) {
@@ -1503,9 +1511,17 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
+        if (this.handYaw && this.groundMovement === 'legacy') {
+          const rate = turnRateOf(b), spin = b.spin ?? 0;
+          this.handYaw[i] = { spin,
+            demand: this.inertia[i] * (clamp(angleDiff(b.facing, plan.facing) / Math.max(h, remaining), -rate, rate) - spin),
+            limit: this.inertia[i] * yawAccelerationLimit(sp, sup.posture, rate, a, Math.hypot(fx, fy)) * h,
+            impulse: 0, work: 0, force: Math.hypot(fx, fy) };
+        }
         const yaw: { impulse: number; work: number; peakTorque?: number } = this.groundMovement === 'response'
           ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
           : turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
+        if (this.handYaw?.[i]) { this.handYaw[i]!.impulse = yaw.impulse; this.handYaw[i]!.work = yaw.work; }
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance
@@ -1991,6 +2007,46 @@ export class World {
       rows.push(row);
     }
     return rows;
+  }
+
+  /** Re-select the two ground impulses before the existing hand solve. This
+   * bounded prototype supports one passive, torque-only hands connection;
+   * normal loading, material points, grasps, impacts and multiple rows retain
+   * the original path. The hand solver still delivers/spends its impulse once. */
+  private coupleGroundHandYaw(rows: JointRow[], contacts: Contact[], h: number): boolean {
+    if (!this.handYaw || this.handContact !== 'patch' || this.groundMovement !== 'legacy'
+      || this.supportModel !== 'legacy' || this.impactTiming !== 'speculative'
+      || contacts.length || this.pending.length || rows.length !== 1) return false;
+    const r = rows[0], jt = r.joint;
+    if (jt.kind !== 'hands' || jt.contact || r.drive || r.shove || !(r.steerLim > 0)
+      || r.handMembers?.length !== 1
+      || (r.mode > 0 && r.pushLim > 0) || (r.mode < 0 && r.holdLim > 0)) return false;
+    const a = this.handYaw[r.i], b = this.handYaw[r.j];
+    if (!a || !b || this.bodies[r.i].support!.foot || this.bodies[r.j].support!.foot) return false;
+    const ri = r.ri ?? 0, rj = r.rj ?? 0;
+    if (!(ri > 0 && rj > 0)) return false;
+    const va = this.bodies[r.i].vel, vb = this.bodies[r.j].vel;
+    const result = coupleHandYaw({ ...a, inertia: this.inertia[r.i], arm: ri },
+      { ...b, inertia: this.inertia[r.j], arm: rj },
+      (vb.x - va.x) * -r.ny + (vb.y - va.y) * r.nx,
+      1 / this.mass[r.i] + 1 / this.mass[r.j], r.steerLim);
+    for (const [i, state, impulse] of [[r.i, a, result.groundA], [r.j, b, result.groundB]] as const) {
+      const body = this.bodies[i], inertia = this.inertia[i], change = impulse - state.impulse;
+      body.spin = (body.spin ?? 0) + change / inertia;
+      body.facing += .5 * h * change / inertia;
+      this.report.groundYawImpulse[i] += change;
+      const after = state.spin + impulse / inertia;
+      this.report.groundYawWork[i] += .5 * inertia * (after * after - state.spin * state.spin) - state.work;
+      // Recompute the same recovery allocation from actual ground demand.
+      // No acquired foot or support motor can have spent this reserve yet.
+      const sp = this.sp[i], force = state.force;
+      const yawForce = impulse / (h * baseRadiusAt(sp, body.support!.posture));
+      const demand = Math.hypot(force, yawForce);
+      const reserve = Math.sqrt(Math.max(0, Math.min((sp.pushForce - force) * (sp.pushForce + force),
+        (sp.traction - demand) * (sp.traction + demand))));
+      this.recovery[i] = this.prepareRecovery(i, h, reserve);
+    }
+    return true;
   }
 
   private solveHands(r: JointRow, soft: Softness): void {
