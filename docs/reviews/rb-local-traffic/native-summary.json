@@ -1,10 +1,10 @@
 {
-  "reusedExecutions": 4,
-  "newExecutions": 4,
-  "cacheSha256": "afa9b4f4a42cba7f4c69fc11083333b4488190736263a4d7a3f164c44be80e83",
+  "reusedExecutions": 0,
+  "newExecutions": 8,
+  "cacheSha256": null,
   "schema": "rb-local-traffic-coupled-v1",
   "fixtureSha256": "10454c0f5e735e683e208597a3f009e0a11d65197c73a6b6bc80cd03ef79ecc0",
-  "collectorSha256": "94d4bacc21b36e3dce9d925895c827ca9e5be0773b90d7913db9d14a6ae89c72",
+  "collectorSha256": "ab178fc706e8936fb5f6e10fa12f55d5bdc142e51158e64457f7c8438cd1e8af",
   "node": "v22.23.3",
   "comparisons": [
     {
@@ -251,53 +251,23 @@
       "play": 32,
       "call": "Pistol Doubles — Wide Zone",
       "initialStatesEqual": true,
-      "allFramesEqual": false,
-      "firstDifference": {
-        "t": 2.35,
-        "sameBodies": true,
-        "actors": [
-          6
-        ],
-        "old": {
-          "vel": {
-            "x": 3.282476668196243,
-            "y": -5.414141634136531
-          },
-          "cutSkill": 1.1285714285714286,
-          "squeeze": 0
-        },
-        "next": {
-          "vel": {
-            "x": 4.025554529384797,
-            "y": -8.71591370783977
-          },
-          "cutSkill": 1.1285714285714286,
-          "squeeze": 0
-        },
-        "raw": {
-          "vel": {
-            "x": 4.025554529384797,
-            "y": -8.71591370783977
-          },
-          "cutSkill": 1.1285714285714286,
-          "squeeze": 0
-        }
-      },
+      "allFramesEqual": true,
+      "firstDifference": null,
       "before": {
-        "end": 3.5,
-        "censored": true,
-        "los": 2.65,
-        "spacingSlowSeconds": 0.25,
+        "end": 3.35,
+        "censored": false,
+        "los": 2.5999999999999996,
+        "spacingSlowSeconds": 0.15000000000000002,
         "spacingStopSeconds": 0,
         "rbTeammateContacts": 0,
         "rbTeammateImpulse": 0,
-        "offensiveNormalImpulse": 4670.074230914102,
+        "offensiveNormalImpulse": 4324.913218450555,
         "rbPosition": {
-          "x": 76.48696123012567,
-          "y": 19.382178407288524
+          "x": 76.14965624575991,
+          "y": 21.151547796720013
         },
-        "rbSpeed": 2.7713569510528875,
-        "support": "falling",
+        "rbSpeed": 1.838524944847335,
+        "support": "down",
         "events": [
           {
             "t": 1.05,
@@ -310,63 +280,63 @@
             }
           },
           {
-            "t": 2.5,
+            "t": 2.65,
             "type": "carrier_contact",
             "a": 6,
             "b": 12,
             "pos": {
-              "x": 74.07,
-              "y": 23.25
+              "x": 74.76,
+              "y": 23.35
             },
             "note": "grasp"
           },
           {
-            "t": 3.1,
+            "t": 2.7,
             "type": "fall",
             "a": 12,
             "pos": {
-              "x": 74.62,
-              "y": 21.72
+              "x": 72.97,
+              "y": 22.58
             },
             "note": "dive"
           },
           {
-            "t": 3.15,
-            "type": "fall",
-            "a": 17,
-            "pos": {
-              "x": 76.37,
-              "y": 19.89
-            },
-            "note": "contact"
-          },
-          {
-            "t": 3.3,
+            "t": 2.9,
             "type": "fall",
             "a": 6,
             "pos": {
-              "x": 76.23,
-              "y": 19.74
+              "x": 75.44,
+              "y": 22.06
             },
             "note": "legs"
+          },
+          {
+            "t": 3.3,
+            "type": "tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 74.01,
+              "y": 21.71
+            }
           }
         ]
       },
       "after": {
-        "end": 3.5,
-        "censored": true,
+        "end": 3.35,
+        "censored": false,
         "los": 2.5999999999999996,
-        "spacingSlowSeconds": 0.25,
+        "spacingSlowSeconds": 0.15000000000000002,
         "spacingStopSeconds": 0,
         "rbTeammateContacts": 0,
         "rbTeammateImpulse": 0,
-        "offensiveNormalImpulse": 4630.494828432277,
+        "offensiveNormalImpulse": 4324.913218450555,
         "rbPosition": {
-          "x": 76.50763210036709,
-          "y": 19.085242865045522
+          "x": 76.14965624575991,
+          "y": 21.151547796720013
         },
-        "rbSpeed": 2.616398694080207,
-        "support": "falling",
+        "rbSpeed": 1.838524944847335,
+        "support": "down",
         "events": [
           {
             "t": 1.05,
@@ -379,35 +349,45 @@
             }
           },
           {
-            "t": 2.5,
+            "t": 2.65,
             "type": "carrier_contact",
             "a": 6,
             "b": 12,
             "pos": {
-              "x": 74.13,
-              "y": 23.22
+              "x": 74.76,
+              "y": 23.35
             },
             "note": "grasp"
           },
           {
-            "t": 3.1,
+            "t": 2.7,
             "type": "fall",
-            "a": 17,
+            "a": 12,
             "pos": {
-              "x": 76.54,
-              "y": 19.82
+              "x": 72.97,
+              "y": 22.58
             },
-            "note": "contact"
+            "note": "dive"
           },
           {
-            "t": 3.25,
+            "t": 2.9,
             "type": "fall",
             "a": 6,
             "pos": {
-              "x": 76.33,
-              "y": 19.63
+              "x": 75.44,
+              "y": 22.06
             },
             "note": "legs"
+          },
+          {
+            "t": 3.3,
+            "type": "tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 74.01,
+              "y": 21.71
+            }
           }
         ]
       }
@@ -523,5 +503,5 @@
     "No mid-play state reset, no future-frame or private intent supplied to any controller.",
     "Default accepted center contact; no experimental physics."
   ],
-  "elapsedSeconds": 2.405507982
+  "elapsedSeconds": 5.054756806
 }

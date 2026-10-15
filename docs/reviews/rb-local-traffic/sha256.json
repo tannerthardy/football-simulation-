@@ -1,10 +1,11 @@
 {
-  "README.md": "01826f9aa6ac190ef02337028bcbcdabed07e497e31512fb35d36ae81eaea732",
-  "adverse.json": "c6b067d01fee027ac89a98f24690662caf4539694c4ddd02643b23bbe4b43017",
+  "README.md": "2936ef67fb8f3edb5646e4ea73122076e64e05eace049b807690c5c7b37443ce",
+  "adverse.json": "7ba5d04caa85a075765bde35c71695dce34e830e01df94d23604fdd8975fe3ec",
   "archive/initial-native-summary.json": "cda6937fd5b0c874e3ba054734622f12e55c58bee718600f8fdc9931c1788ec3",
-  "comparison.png": "cb8e7047399b5a4f998624563fd5e283ef8b966aaeba9b820fc8b765bd249bff",
-  "native-summary.json": "79f31123a609d5d905a32d357328781d9af2b6b05d9f5b86ce04a6024ef47f03",
-  "native.json.gz": "00ba5eda3025562c01e44c8188548258d0cf6eacf43d39a011c556bf8fecf230",
+  "comparison.png": "bc478f710eea9c8aa54ce17b4c8c94299681633dee37ba2e159ae3e50c98bff1",
+  "native-summary.json": "57de79a7c12e7dc5fdbfc8151d312b3f60de8a0d2dbd34d3e078e15f75ffcd2d",
+  "native.json.gz": "314237c895cbd0fee6a72d4c8f10ba6d558fb55ba958c01e68888f368d6baa05",
+  "pr72-adverse.json": "c6b067d01fee027ac89a98f24690662caf4539694c4ddd02643b23bbe4b43017",
   "probe.json": "13fa4321e3e9797921a51f565964134fa7322e159952b2f8ddeb15a15d042272",
   "receipts/blocked-corrected.receipt.json": "758ab3f5cefbe90aa0291420e8e56ed95320d51e0dd0f6c2049d434157ead817",
   "receipts/blocked.receipt.json": "f19b3fac78f149346f9d8f7d6c0412e6d0be0671e060caa14f02dab654d3658c",
@@ -16,11 +17,14 @@
   "receipts/focused.receipt.json": "e39bb7013651bb5282bfa9950ac8336ee5534c0cc9c7c96f6c86d79df3553b36",
   "receipts/native.receipt.json": "fc5fea3b703c2b3d2c9ed6a27b412ef37d1a1f432a3abdf63acc63630c550349",
   "receipts/observed-focused.receipt.json": "71c430294bef58d03f530a4b03bdb195e4872e3d7da07d9865152ecc554a6a24",
+  "receipts/pr74-focused.receipt.json": "2deb4b056f3295479112474d6cad3bf51447896b2f41d354d6df230fb6000e6a",
+  "receipts/pr74-native.receipt.json": "d4acbaeaeaa7cd4a5546cea613c51e3dd03b907efd5e7977293be57bdc339748",
+  "receipts/pr74-typecheck.receipt.json": "4ce8ca007ab5ea3087c66c379bc5b68654ed5c71344f739b89f36f9c79bc94b5",
   "receipts/probe.receipt.json": "ef5cb7473066e28289121724087a88cd28647677a756fdb97e0e14f4783beba2",
   "receipts/reviewed-focused.receipt.json": "994a7abd895d4a57b2ac98912776c88ec06ee718ba16af87ea63cc4207637c78",
   "receipts/reviewed-native.receipt.json": "901befb0fdbb46f22cf34c5f3b5857bd50a219e0a93af548023d69656c4b68da",
   "receipts/reviewed-typecheck.receipt.json": "91726a89ffeb3457ea29f8db7dec55cb9d83023a82c9201c99e82d667804a0a7",
   "receipts/typecheck.receipt.json": "0ad52b1ec0e1b72dc78a871dcae61f1c5df33ada863b226730cbdbd8e738bb48",
   "runtime.patch": "105450f62eacae09eef5e4ea6c5ed23ec3f75a8c257848692b73a94276b8c9ca",
-  "summary.json": "d57fb83c286fb4d609ec0ee54bbd6bf32bdc09a591dad3225cd1dce56eaf801a"
+  "summary.json": "6798f0e43e698fbf39caba87f4d977899c07003345a3ae10024402c6dcf385b7"
 }

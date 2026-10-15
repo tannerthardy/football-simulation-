@@ -1,13 +1,12 @@
 {
   "schema": "rb-local-traffic-compatibility-v1",
-  "acceptedBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
-  "candidate": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
-  "sourceSha256": "9d42f362a9b96ecc93418037554edc0f6e1e8c0c179f65371ea14835e7735ab2",
+  "sourceSha256": "5dfb0d73d0d5d12a471af45b9aac61112a24983e31a553e11b997d488682d493",
   "settings": "44 baseline flags/components=1; center hands/legacy ground, no defaults changed",
-  "newOpeningExecutions": 20,
+  "newOpeningExecutions": 28,
   "finalCapture": {
-    "new": 4,
-    "cached": 4
+    "new": 8,
+    "cached": 0,
+    "why": "Accepted PR74 changes active opponent-risk reads; prior-base physical receipts cannot establish this combination."
   },
   "completeGames": 0,
   "gamePrefixes": 0,
@@ -117,12 +116,31 @@
       "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
       "exitCode": 0,
       "seconds": 11.084995286
+    },
+    {
+      "file": "receipts/pr74-focused.receipt.json",
+      "commit": "2e1dfa343a77f142b02a3a23fa49a88c0b40ef13",
+      "sourceSha256": "5dfb0d73d0d5d12a471af45b9aac61112a24983e31a553e11b997d488682d493",
+      "exitCode": 0,
+      "seconds": 2.89920006
+    },
+    {
+      "file": "receipts/pr74-native.receipt.json",
+      "commit": "2e1dfa343a77f142b02a3a23fa49a88c0b40ef13",
+      "sourceSha256": "5dfb0d73d0d5d12a471af45b9aac61112a24983e31a553e11b997d488682d493",
+      "exitCode": 0,
+      "seconds": 6.507674815000001
+    },
+    {
+      "file": "receipts/pr74-typecheck.receipt.json",
+      "commit": "2e1dfa343a77f142b02a3a23fa49a88c0b40ef13",
+      "sourceSha256": "5dfb0d73d0d5d12a471af45b9aac61112a24983e31a553e11b997d488682d493",
+      "exitCode": 0,
+      "seconds": 9.705114199
     }
   ],
-  "launcherSeconds": 70.460970443,
-  "initialPhysicalTapesEqualFinal": true,
-  "optinPhysicalTapesEqualFinal": true,
-  "duplicateTapeOmission": "Initial/opt-in complete frames, bodies, commands and reports equal final8 tapes; final native.json.gz preserves every physical frame. Initial summaries and all launcher receipts are retained, redundant raw packets remain in local out/rb-local-traffic. Initial cache raw SHA256 is recorded in final packet.",
+  "launcherSeconds": 89.572959517,
+  "duplicateTapeOmission": "Initial/opt-in tapes match the final PR72-base8 tapes at historical publication7075917. That publication preserves their complete physical frames. Current native.json.gz is PR74-base evidence; do not assert cross-base equality.",
   "checkFailures": [
     {
       "receipt": "receipts/blocked.receipt.json",
@@ -137,5 +155,14 @@
     "Saved calls/players/post-constructor physical bodies and RNG, current constructor recognition/scouting in both arms; not an exact original game replay.",
     "No mid-play state reset, no future-frame or private intent supplied to any controller.",
     "Default accepted center contact; no experimental physics."
-  ]
+  ],
+  "historicalAcceptedBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "acceptedBase": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "historicalCandidate": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
+  "candidate": "2e1dfa343a77f142b02a3a23fa49a88c0b40ef13",
+  "currentBaseLauncherSeconds": 19.111989074,
+  "historicalEvidencePublication": "70759178181accb97f96f5b057b2214b843b470a",
+  "historicalWzTradeoff": "On PR72 base, LOS and later fall both advance. On accepted PR74 base, WZ is exact between arms; earlier tradeoff is historical, not a current effect.",
+  "initialPr72PhysicalTapesEqualPr72Final": true,
+  "optinPr72PhysicalTapesEqualPr72Final": true
 }
