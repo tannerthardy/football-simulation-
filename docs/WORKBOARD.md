@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Receiver blocking-read correction
+
+| Item | Owner | Branch / exact engine | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| YAC recognition repair | Codex catch/pursuit owner | `codex/receiver-blocking-evidence`, accepted `a1b16e6` + tested code `dc0f104`; engine `03d8e3ea…` | Only CB/S receiver blocking evidence in `recognition.ts`, observer-only contact candidates in `coverage-cues.ts`, focused tests. No physics, capabilities, helper, run-fit or hold changes. | [Evidence and adverse review](reviews/yac-read-correction.md): 66 focused checks/typecheck, frozen native + fresh-player controls, two candidate games versus reused accepted baselines. Three long-run TDs retained; fourth becomes a supported 25-yard gain. Narrow fix ready for Integration owner's combined check; run/YAC population calibration remains unproven. No merge. |
+
+Integration owner remains the designated Integration chat for the exact combined
+candidate; this worker has not run or replaced the shared full suite. Run Game
+should flag overlap in shared CB/S recognition and inspect the retained rushing
+adverse evidence. Research-only pursuit pilots remain on
+`codex/yac-containment-repair`; do not import that experimental branch wholesale.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
