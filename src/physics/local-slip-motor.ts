@@ -77,7 +77,10 @@ export function integrateSlipMotor(field:MotorField):MotorResult {
     for(let i=0;i<2;i++){
       const b=bs[i],sign=i===0?-1:1,ax=b.groundAcceleration.x+sign*t.x*F/b.mass,ay=b.groundAcceleration.y+sign*t.y*F/b.mass,
         dx=b.velocity.x*d+.5*ax*d*d,dy=b.velocity.y*d+.5*ay*d*d,angle=b.spin*d+.5*alpha[i]*d*d,torque=b.inertia*g[i];
-      if(b.yaw&&Math.abs(b.yaw.targetHeading-(b.facing+angle))>=Math.PI)return {ok:false,reason:'heading-branch'};
+      if(b.yaw){const turning=alpha[i]===0?-1:-b.spin/alpha[i];
+        if(Math.abs(b.yaw.targetHeading-(b.facing+angle))>=Math.PI
+          ||(turning>0&&turning<d&&Math.abs(b.yaw.targetHeading-(b.facing+b.spin*turning+.5*alpha[i]*turning*turning))>=Math.PI))return {ok:false,reason:'heading-branch'};
+      }
       LW[i]+=b.mass*(b.groundAcceleration.x*dx+b.groundAcceleration.y*dy);GW[i]+=torque*angle;
       G[i]+=torque*d;GM[i]+=torque*d*(h-elapsed-.5*d);GA[i]+=Math.abs(torque)*d;
       b.position.x+=dx;b.position.y+=dy;b.velocity.x+=ax*d;b.velocity.y+=ay*d;b.facing+=angle;b.spin+=alpha[i]*d;

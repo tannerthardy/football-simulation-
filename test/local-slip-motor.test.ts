@@ -54,6 +54,12 @@ describe('saved local ground-motor transition, no World integration',()=>{
   bodies(r.bodies,ref.after);scalars(r,ref);expect(r.phases).toHaveLength(2);expect(r.phases[0].groundAcceleration[1]).toBeLessThan(0);expect(r.phases[1].groundAcceleration[1]).toBe(0);
   const b=r.bodies[1],target=(b.yaw!.targetHeading-b.facing)/(f.remaining-f.duration);near(b.spin,target);expect(r.handWork).toBe(0);expect(r.absoluteImpulse).toBe(0);
  });
+ it('rejects an interior heading-wrap crossing even when the phase ends inside the branch',()=>{
+  const f:MotorField=structuredClone(input.nextField.field);f.duration=.05;f.remaining=1;f.forceLimit=0;
+  for(const b of f.bodies){b.groundAcceleration={x:0,y:0};b.spin=0;b.yaw!.accelerationLimit=0;b.yaw!.targetHeading=b.facing;}
+  Object.assign(f.bodies[0],{facing:Math.PI-.004,spin:1});f.bodies[0].yaw={targetHeading:0,turnRate:10,accelerationLimit:100};
+  const before=JSON.stringify(f);expect(integrateSlipMotor(f)).toEqual({ok:false,reason:'heading-branch'});expect(JSON.stringify(f)).toBe(before);
+ });
  it('returns identity at zero time and rejects controller deadline without changing input',()=>{
   const f:MotorField=structuredClone(input.nextField.field),before=JSON.stringify(f),r=solve({...f,duration:0});expect(r.bodies).toEqual(f.bodies);expect(r.absoluteImpulse).toBe(0);expect(r.absoluteGroundYawImpulse).toEqual([0,0]);
   expect(integrateSlipMotor({...f,duration:f.remaining})).toEqual({ok:false,reason:'controller-deadline'});expect(JSON.stringify(f)).toBe(before);
