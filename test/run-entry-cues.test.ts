@@ -42,7 +42,7 @@ describe('run entry risk uses the acquired defender picture',()=>{
   }
   expect(s.read()).toEqual(decision);
  });
- it.each(['waiting-control','legitimate-win-control'])('preserves the recorded contrasting entry: %s',id=>{
-  const s=scene(id);expect(s.read()).toEqual(s.r.recordedRead.selected);
+ it.each(['waiting-control','legitimate-win-control'])('preserves the exact-parent contrasting entry: %s',id=>{
+  const s=scene(id);expect(s.read()).toEqual(s.r.parentRead.selected);
  });
 });
