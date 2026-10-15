@@ -2,6 +2,16 @@
 
 ## Continued run-lane execution, 2026-10-15
 
+Final engine candidate `6ac628b` / `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.
+Root also owns the narrow Behavior movement-veto interface and carrier read.
+Zone/Duo duties retain the correction; direct counter/trap transfer was rejected
+and those physical histories match reference exactly. Wham has no installed
+concept in this checkout. The accepted mesh, arrival law, first-level contact
+motor, physics/capacity and teammate information limits are preserved.
+Twelve short final controls include the exposed Under regression. Evidence,
+all rejected outcomes, exact pins and runtime are in `docs/reviews/run-lanes/README.md`.
+
+
 Root continues at `377d375` on `codex/run-lanes`, engine `66e59745…`.
 Only root is active. Root owns `behaviors/blocking.ts`, a new bounded climb
 clearance/route helper, affected tests and exact coupled validation. Root also

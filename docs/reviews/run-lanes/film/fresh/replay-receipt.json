@@ -1,0 +1,49 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "PR52 engine reference",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/run-lanes-fresh-reference.json.gz",
+      "sha256": "9aee19e5848767d148c5729bca530221ba358acd894115ce0b9e256664090aec",
+      "revision": "377d375005008554fadda9320983271cd44fc026",
+      "runtime": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08"
+    },
+    {
+      "label": "Zone clearance and navigation",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-under.json.gz",
+      "sha256": "b5f617fed66bb52a0d6b0af38fbfd903efd854c818bfb5be67df10cbb4ecbd57",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527"
+    }
+  ],
+  "output": "/workspace/run-lanes/docs/reviews/run-lanes/film/fresh/replay.gif",
+  "bytes": 986986,
+  "sha256": "fe9c1d410032149d0ee8d7ef68ff5b5cfa5d32f9061e7eccc2d6e8c766cf464b",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 50,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "docs/reviews/run-lanes/film/fresh/replay-0.50s.png",
+    "docs/reviews/run-lanes/film/fresh/replay-1.00s.png",
+    "docs/reviews/run-lanes/film/fresh/replay-2.00s.png",
+    "docs/reviews/run-lanes/film/fresh/replay-2.50s.png",
+    "docs/reviews/run-lanes/film/fresh/replay-2.95s.png",
+    "docs/reviews/run-lanes/film/fresh/replay-3.00s.png"
+  ],
+  "scriptSha256": "27b2650efc19a0da4d31e91a28e106b38fc41b3228d046b9f3e38016cb1ab6d3",
+  "newWorldSteps": 0,
+  "seconds": 12.495154983997054
+}

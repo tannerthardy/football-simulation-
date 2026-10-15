@@ -1,0 +1,49 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "PR52 reference",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/current-zone.json.gz",
+      "sha256": "2a008df287595ec72e52ea7b67621265eb93eadb91a45e4d990d52ced251705b",
+      "revision": "2bf7ed6b2bf23e2b11d82a5bc084f773451c1222",
+      "runtime": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08"
+    },
+    {
+      "label": "Zone clearance and navigation",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-interior.json.gz",
+      "sha256": "1df6af2a2653fcca542d80c397f17c6c81f8e8c5d008677efe2bfb53bf55c987",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527"
+    }
+  ],
+  "output": "/workspace/run-lanes/docs/reviews/run-lanes/film/interior/replay.gif",
+  "bytes": 2211714,
+  "sha256": "705c0f5768fc0c6b66ca3beec31054647b2ebe4e308aba685336d37fe03b500f",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 50,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "docs/reviews/run-lanes/film/interior/replay-0.50s.png",
+    "docs/reviews/run-lanes/film/interior/replay-1.00s.png",
+    "docs/reviews/run-lanes/film/interior/replay-2.00s.png",
+    "docs/reviews/run-lanes/film/interior/replay-2.50s.png",
+    "docs/reviews/run-lanes/film/interior/replay-2.95s.png",
+    "docs/reviews/run-lanes/film/interior/replay-3.00s.png"
+  ],
+  "scriptSha256": "27b2650efc19a0da4d31e91a28e106b38fc41b3228d046b9f3e38016cb1ab6d3",
+  "newWorldSteps": 0,
+  "seconds": 20.523354583001492
+}

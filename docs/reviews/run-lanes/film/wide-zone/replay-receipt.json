@@ -1,0 +1,68 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "PR50 reference",
+      "path": "/workspace/wide-zone-flow/out/wide-zone-flow/packaging/decoded-final.json.gz",
+      "sha256": "60c8791ebbb83fdfc7b8f36304b5ec82107e316fcc63375c8a3571ab86f02b9a",
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+    },
+    {
+      "label": "Zone clearance and navigation",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-wide.json.gz",
+      "sha256": "d7d8902c842eb3000ea0b3a45a36872a692788147f688943876ccf7679d759b0",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527"
+    }
+  ],
+  "output": "/workspace/run-lanes/docs/reviews/run-lanes/film/wide-zone/replay.gif",
+  "bytes": 2305277,
+  "sha256": "6b2b2da15b755ac4e472a5799e53d0fe32feec2031e93702e38974b853b66c55",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 50,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [
+    {
+      "arm": "PR50 reference",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 2.9,
+      "end": 2.85
+    },
+    {
+      "arm": "PR50 reference",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 2.95,
+      "end": 2.85
+    },
+    {
+      "arm": "PR50 reference",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 3.0,
+      "end": 2.85
+    }
+  ],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "docs/reviews/run-lanes/film/wide-zone/replay-0.50s.png",
+    "docs/reviews/run-lanes/film/wide-zone/replay-1.00s.png",
+    "docs/reviews/run-lanes/film/wide-zone/replay-2.00s.png",
+    "docs/reviews/run-lanes/film/wide-zone/replay-2.50s.png",
+    "docs/reviews/run-lanes/film/wide-zone/replay-2.95s.png",
+    "docs/reviews/run-lanes/film/wide-zone/replay-3.00s.png"
+  ],
+  "scriptSha256": "27b2650efc19a0da4d31e91a28e106b38fc41b3228d046b9f3e38016cb1ab6d3",
+  "newWorldSteps": 0,
+  "seconds": 26.311065927999152
+}

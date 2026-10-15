@@ -1,0 +1,119 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "00-clearance-near",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/00-clearance-near.json.gz",
+      "rawSha256": "3123e5e724ae55fcdee70f041fb5599ecd1df8297a91f8a988aa559fa5a03da4",
+      "revision": "1f753fef96a0b2da92fb322e7cddca5739ed47f5",
+      "runtime": "8a480758e10c1963294dd5ff3163a01cddcea84767d76fc56a4ad77e6c1a44d1",
+      "originalGzipBytes": 2973529,
+      "cases": [
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "01-clearance-relative",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/01-clearance-relative.json.gz",
+      "rawSha256": "d3cb26cb2d005fc7eee968381c26751faafdaf604924cff29bbd725e4cff9c3f",
+      "revision": "1990b1e16957f4761e360c53a5773953afd8d955",
+      "runtime": "53cac9c24de468a752c71a7a9c525acf1548b0e1133108384b62f037890c446e",
+      "originalGzipBytes": 3326652,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "02-runner-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/02-runner-first.json.gz",
+      "rawSha256": "8407e36337ebc890325c5b543a6a68d1cb4c73c75071c591d96c031b9eb1f8c3",
+      "revision": "f5dab6fe0799c10b35ec0fd2495867a4a77cc52f",
+      "runtime": "bdc9b3064dd36605f84dd219db6a89f40e4e7dcc83c5d86b97fd3bb83038606c",
+      "originalGzipBytes": 3310576,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "03-runner-budget",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/03-runner-budget.json.gz",
+      "rawSha256": "f2f09f52b9a1281109b3782adf4966ac84094499a5149858e14afd196531ec44",
+      "revision": "7c1a2b475d0cae0d1f17f35ff0a20f1f362289e0",
+      "runtime": "5abc85639546b46ae41f7bd9c357b80b45bdd03a4ea0727d5b51efde3ddbeb91",
+      "originalGzipBytes": 3014767,
+      "cases": [
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "04-rolling-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/04-rolling-first.json.gz",
+      "rawSha256": "1949280aedc8d94dacd31f09afe97b02078e6bd033fea3b78f7f357070baa88c",
+      "revision": "2f828fa7efdf9c83d590dda73a03ac552d6be93e",
+      "runtime": "cb7feedfc6b9ae2a4b378bb19a2940b17384ad705c0397ed2f26290d74c563cd",
+      "originalGzipBytes": 3348261,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "05-entry-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/05-entry-first.json.gz",
+      "rawSha256": "7abce3e60338a26bb5b16bc8184521d3b182184ce87ff9bd4d87dd74c4a536f8",
+      "revision": "745090b712a8b9700045aa47d28a46210835cfd9",
+      "runtime": "ef4416a36d8b88071b9ac21cb90f5ee66a1d6074c704aba105985c2be82e2727",
+      "originalGzipBytes": 3333045,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/run-lanes/evidence/rejected-a/cases.jsonrefs.gz",
+  "bytes": 3623089,
+  "sha256": "462ebb9f668e480bcd8cd20db28400758e77fceda807e6abd79d91dc46d4dedc",
+  "retainedJsonSha256": "93f8e041030f5414bc5e9b44e04e72a228cc6f1390e8917bcc71217fa097f79f",
+  "roundTripExact": true,
+  "containersVisited": 1353129,
+  "uniqueContainers": 194534,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 17.52186724100102
+}

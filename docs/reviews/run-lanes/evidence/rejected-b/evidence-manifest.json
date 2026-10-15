@@ -1,0 +1,135 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "06-continuous-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/06-continuous-first.json.gz",
+      "rawSha256": "0dd4783a2ced8eed04a1dea9d876f8f9cd9db259863e6823d780f83b4ebda3c3",
+      "revision": "8911b18e9af34cf29f73cab261d44cb6513066fd",
+      "runtime": "ec2979926741da1565a443ffc971f1b35bf44cf5d24448089252cbbb5270791e",
+      "originalGzipBytes": 3336729,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "07-pace-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/07-pace-first.json.gz",
+      "rawSha256": "c89bb88c188fd2e641ea656035c32e6bfaff50aa9dd92151338af07aa809ba67",
+      "revision": "6c0e42c9d51fc24eb5985cbdc9d66bc814a4b964",
+      "runtime": "14487f3333e10dfcb93ecdab3b54e5e070fc9dedab371417146fa8307fd9425c",
+      "originalGzipBytes": 3264525,
+      "cases": [
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "08-pace-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/08-pace-first.json.gz",
+      "rawSha256": "78f1ed4f939191895f19109628588a4687c53b78995d307cf485e4fde0c1ca25",
+      "revision": "6c0e42c9d51fc24eb5985cbdc9d66bc814a4b964",
+      "runtime": "14487f3333e10dfcb93ecdab3b54e5e070fc9dedab371417146fa8307fd9425c",
+      "originalGzipBytes": 2984614,
+      "cases": [
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "09-shoulder-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/09-shoulder-first.json.gz",
+      "rawSha256": "6a0cd1587624ee183121836e7c35efcc55f901963defd2d1c016d4d7da79d8b6",
+      "revision": "24d96235c0767c93455083a0a157e0ba5d58e077",
+      "runtime": "19f03fbbdeff113f53df546567dd5425ea34cadddb5370636d6d9c4e65e4b07c",
+      "originalGzipBytes": 3252788,
+      "cases": [
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "10-wide-zone-first",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/10-wide-zone-first.json.gz",
+      "rawSha256": "0825360e2e1ccf290694733b303f2d7e64f2dff9aaa08cdfe4fc80da8b1b5619",
+      "revision": "b20938402fdd45aa95047b16062ab07f550a4c1e",
+      "runtime": "d3ea21b5f41056aee22c11fd007c49ad1551e5ae8c597c29a6b1d0206e515833",
+      "originalGzipBytes": 3581118,
+      "cases": [
+        {
+          "id": "uc12-wz-weak-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "11-slice-priority-controls",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/11-slice-priority-controls.json.gz",
+      "rawSha256": "70f252ea9412fedc4f98fa9b038acb181420a184f3abc1b6a1a8f0ecb67b3f91",
+      "revision": "5ad31fa6463e8e0b5c5f5339060a02aa0d443656",
+      "runtime": "a475c8ebb97c4b2790056d104180e24d3a767e07047a108ccd9cb5cb1c533749",
+      "originalGzipBytes": 3267739,
+      "cases": [
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "12-closing-drive-controls",
+      "path": "/workspace/run-lanes/out/run-lanes/failure-cases/12-closing-drive-controls.json.gz",
+      "rawSha256": "8983e6a9bb4d8478d758ed0d1c640b7f088c1d3619f087aba2ed5b71441b79c8",
+      "revision": "ea714d766195b67f2ea8b51942a8cc1d6df73c39",
+      "runtime": "f120794f31034a3eaa0d5603fea02b49420655d5977e4416f2bf8ae8b2379b76",
+      "originalGzipBytes": 3272183,
+      "cases": [
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/run-lanes/evidence/rejected-b/cases.jsonrefs.gz",
+  "bytes": 5572023,
+  "sha256": "c1a301e41a21493790ef810aa4ea61d2ccf84166594f7ebcc56ec43bc83b0a79",
+  "retainedJsonSha256": "95fba5ac5ebe0f6430fbb7e28be4d156b485ed78f4a7dd1fe0503ca4cd40860f",
+  "roundTripExact": true,
+  "containersVisited": 1613235,
+  "uniqueContainers": 295203,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 26.045465761999367
+}

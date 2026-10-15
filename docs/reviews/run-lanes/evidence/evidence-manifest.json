@@ -1,0 +1,161 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "candidate-interior",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-interior.json.gz",
+      "rawSha256": "1df6af2a2653fcca542d80c397f17c6c81f8e8c5d008677efe2bfb53bf55c987",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "originalGzipBytes": 9911776,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "candidate-wide",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-wide.json.gz",
+      "rawSha256": "d7d8902c842eb3000ea0b3a45a36872a692788147f688943876ccf7679d759b0",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "originalGzipBytes": 14073438,
+      "cases": [
+        {
+          "id": "uc12-wz-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-s3-mirror",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-weak-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-s3-tite-fresh",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "candidate-counter",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-counter.json.gz",
+      "rawSha256": "6b9d2802e2263200f38a599cd95cdaa13d4d251e416660a119769878acb99209",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "originalGzipBytes": 2954445,
+      "cases": [
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "candidate-schemes",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-schemes.json.gz",
+      "rawSha256": "8327e2ca0906985d56c37235252313c3b0e80943459b71dce98aff76a7bee937",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "originalGzipBytes": 9707340,
+      "cases": [
+        {
+          "id": "ace12-duo-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-trap-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-oz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "exposed-under-regression",
+      "path": "/workspace/run-lanes/out/run-lanes/scoped-under.json.gz",
+      "rawSha256": "b5f617fed66bb52a0d6b0af38fbfd903efd854c818bfb5be67df10cbb4ecbd57",
+      "revision": "6ac628b9cd017fb475c477d41904264d463a6a46",
+      "runtime": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "originalGzipBytes": 3480398,
+      "cases": [
+        {
+          "id": "ace12-wz-under-o41-d42-s17",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "fresh-reference",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/run-lanes-fresh-reference.json.gz",
+      "rawSha256": "9aee19e5848767d148c5729bca530221ba358acd894115ce0b9e256664090aec",
+      "revision": "377d375005008554fadda9320983271cd44fc026",
+      "runtime": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "originalGzipBytes": 3450033,
+      "cases": [
+        {
+          "id": "ace12-wz-under-o41-d42-s17",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/run-lanes/evidence/final.jsonrefs.gz",
+  "bytes": 11294107,
+  "sha256": "dbae3ca386991326988e7b3326c6b638fc8d9e8b4c6da62aa4d0e709e2ce4e5a",
+  "retainedJsonSha256": "6a359fb80431f07f9d5372b6be9f14506b303a9babf6a67c0a4283edd49c40fc",
+  "roundTripExact": true,
+  "containersVisited": 3002868,
+  "uniqueContainers": 587186,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 52.285653369999636
+}
