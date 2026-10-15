@@ -1,0 +1,486 @@
+{
+  "acceptedBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "controllerCommit": "3b4ea698819074640626a215bf2f06af2735f25a",
+  "controllerSource": "f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67",
+  "lawContextCommit": "961415f459420dd393604eb5f5f59a62ac269f2b",
+  "lawContextSource": "0ca846c7b495058e65525cb4dedba0027fa6157668c396da0c7fa180b1314eac",
+  "referenceSource": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "settings": {
+    "control": {
+      "handContact": "center",
+      "groundMovement": "legacy"
+    },
+    "lawContext": {
+      "handContact": "patch",
+      "groundMovement": "legacy"
+    },
+    "flags": "44 resolved values in launcher receipts; RUN_CONTACT_COMPONENTS=1; active hands off"
+  },
+  "referencePacketSha256": "76435eca628cc27c34c742092ac36083207382237b9d8484aca3d063f2f1303d",
+  "collection": [
+    {
+      "side": -1,
+      "before": {
+        "firstAcquisition": null,
+        "firstCompletedLoadedStep": null,
+        "censor": 3.399999999999996,
+        "helperEngagement": null,
+        "helperOwnerImpacts": 25,
+        "helperOwnerImpulseKgYdPerS": 1171.9805028513283,
+        "hands": null,
+        "helper": {
+          "pos": {
+            "x": 41.28229078833563,
+            "y": 26.43639258700517
+          },
+          "vel": {
+            "x": 0.13174142408598002,
+            "y": 0.04356190978419095
+          },
+          "facing": 0.8173668212308688
+        },
+        "defender": {
+          "pos": {
+            "x": 42.049193622675226,
+            "y": 27.436931468282925
+          },
+          "vel": {
+            "x": 0.07704052612717573,
+            "y": 0.11317340930390421
+          },
+          "facing": 3.279507889368308
+        },
+        "support": "up",
+        "maximumWorkResidual": 3.1108449149996886e-13
+      },
+      "candidate": {
+        "firstAcquisition": 2.549999999999999,
+        "firstCompletedLoadedStep": 2.5999999999999988,
+        "censor": 3.399999999999996,
+        "helperEngagement": "DT_W",
+        "helperOwnerImpacts": 0,
+        "helperOwnerImpulseKgYdPerS": 0,
+        "hands": {
+          "active": true,
+          "normal": 534.6542329305071,
+          "tangent": 0.5472363615281209,
+          "extension": 0.87240647411745,
+          "distance": 0.6504631710920814,
+          "off": -0.08630695660332766
+        },
+        "helper": {
+          "pos": {
+            "x": 41.64674277041111,
+            "y": 27.510165964162805
+          },
+          "vel": {
+            "x": 1.0519837629767026,
+            "y": 0.4744325766466268
+          },
+          "facing": -0.5631725159557976
+        },
+        "defender": {
+          "pos": {
+            "x": 42.16477079870085,
+            "y": 27.116784090084437
+          },
+          "vel": {
+            "x": 0.7254977701796415,
+            "y": 0.047919929287914574
+          },
+          "facing": 2.6100933448807746
+        },
+        "support": "up",
+        "maximumWorkResidual": 3.0109248427834245e-13
+      },
+      "firstChangedRequestTime": 1.5500000000000005,
+      "samePhysicalFork": true,
+      "originalRequest": {
+        "vel": {
+          "x": 5.482059953327633,
+          "y": 5.268659154915008
+        },
+        "posture": 0.7
+      },
+      "candidateRequest": {
+        "vel": {
+          "x": 1.192491084359309,
+          "y": 3.790721839759193
+        },
+        "facing": 0.8284734475188058,
+        "posture": 0.7
+      },
+      "entryVelocity": {
+        "x": 0.6620507365227885,
+        "y": 0.6362790089300707
+      },
+      "achievedVelocity": {
+        "x": 0.5868464963482699,
+        "y": 0.8589956400058273
+      },
+      "achievedPosition": {
+        "x": 40.09870346629996,
+        "y": 25.268902726091557
+      },
+      "consumedCues": [
+        {
+          "target": "DT_W",
+          "picture": {
+            "pos": {
+              "x": 41.80173880171833,
+              "y": 27.122012372662464
+            },
+            "vel": {
+              "x": -0.10520510531573295,
+              "y": -0.17556136419239288
+            },
+            "stance": null,
+            "facing": 3.2552885741238593,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": null
+          }
+        },
+        {
+          "target": "DT_W",
+          "picture": {
+            "pos": {
+              "x": 41.80173880171833,
+              "y": 27.122012372662464
+            },
+            "vel": {
+              "x": -0.10520510531573295,
+              "y": -0.17556136419239288
+            },
+            "stance": null,
+            "facing": 3.2552885741238593,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": null
+          }
+        },
+        {
+          "target": "C",
+          "picture": {
+            "pos": {
+              "x": 41.475508427439344,
+              "y": 26.53792785807256
+            },
+            "vel": {
+              "x": 0.7092264177829917,
+              "y": 0.08735872621111324
+            },
+            "stance": null,
+            "facing": 3.9175544597722793,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": null
+          }
+        }
+      ]
+    },
+    {
+      "side": 1,
+      "before": {
+        "firstAcquisition": null,
+        "firstCompletedLoadedStep": null,
+        "censor": 3.399999999999996,
+        "helperEngagement": null,
+        "helperOwnerImpacts": 25,
+        "helperOwnerImpulseKgYdPerS": 1172.1417628049003,
+        "hands": null,
+        "helper": {
+          "pos": {
+            "x": 41.31138453848453,
+            "y": 26.92210127344145
+          },
+          "vel": {
+            "x": 0.10370450548523406,
+            "y": -0.07381922988753031
+          },
+          "facing": -0.9136752641299292
+        },
+        "defender": {
+          "pos": {
+            "x": 42.043332299758966,
+            "y": 25.892236620972852
+          },
+          "vel": {
+            "x": 0.054018007124413125,
+            "y": -0.11439920916613808
+          },
+          "facing": 3.0055994867247082
+        },
+        "support": "up",
+        "maximumWorkResidual": 6.849002362973276e-13
+      },
+      "candidate": {
+        "firstAcquisition": 2.549999999999999,
+        "firstCompletedLoadedStep": 2.5999999999999988,
+        "censor": 3.399999999999996,
+        "helperEngagement": "DT_W",
+        "helperOwnerImpacts": 0,
+        "helperOwnerImpulseKgYdPerS": 0,
+        "hands": {
+          "active": true,
+          "normal": 534.6542329305071,
+          "tangent": 0.382205029076187,
+          "extension": 0.87240647411745,
+          "distance": 0.6504632446657753,
+          "off": -0.009522255210913128
+        },
+        "helper": {
+          "pos": {
+            "x": 41.5436334050869,
+            "y": 25.540327682645344
+          },
+          "vel": {
+            "x": 0.7738419378269449,
+            "y": -0.39713427982391647
+          },
+          "facing": 0.1391009353212485
+        },
+        "defender": {
+          "pos": {
+            "x": 42.18864344115262,
+            "y": 25.62437817958395
+          },
+          "vel": {
+            "x": 0.8236712320630651,
+            "y": -0.7956855796218748
+          },
+          "facing": 3.120335702394226
+        },
+        "support": "up",
+        "maximumWorkResidual": 3.779199175824033e-13
+      },
+      "firstChangedRequestTime": 1.5500000000000005,
+      "samePhysicalFork": true,
+      "originalRequest": {
+        "vel": {
+          "x": 5.4440020905371345,
+          "y": -5.307974365120427
+        },
+        "posture": 0.7
+      },
+      "candidateRequest": {
+        "vel": {
+          "x": 1.188307074798212,
+          "y": -3.8137811417315532
+        },
+        "facing": -0.8282093226923221,
+        "posture": 0.7
+      },
+      "entryVelocity": {
+        "x": 0.6569837368397624,
+        "y": -0.6405678718432994
+      },
+      "achievedVelocity": {
+        "x": 0.5809504591828227,
+        "y": -0.8629508646502151
+      },
+      "achievedPosition": {
+        "x": 40.09789340935764,
+        "y": 28.06380638075332
+      },
+      "consumedCues": [
+        {
+          "target": "DT_W",
+          "picture": {
+            "pos": {
+              "x": 41.80173880171833,
+              "y": 26.21132096067087
+            },
+            "vel": {
+              "x": -0.1052051053157329,
+              "y": 0.17556136419239302
+            },
+            "stance": null,
+            "facing": 3.027896733055727,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": null
+          }
+        },
+        {
+          "target": "DT_W",
+          "picture": {
+            "pos": {
+              "x": 41.80173880171833,
+              "y": 26.21132096067087
+            },
+            "vel": {
+              "x": -0.1052051053157329,
+              "y": 0.17556136419239302
+            },
+            "stance": null,
+            "facing": 3.027896733055727,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": null
+          }
+        },
+        {
+          "target": "C",
+          "picture": {
+            "pos": {
+              "x": 41.475508427439344,
+              "y": 26.795405475260775
+            },
+            "vel": {
+              "x": 0.7092264177829912,
+              "y": -0.08735872621111324
+            },
+            "stance": null,
+            "facing": 2.365630847407307,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": null
+          }
+        }
+      ]
+    }
+  ],
+  "nativeControls": [
+    {
+      "mode": "center",
+      "scenario": "under",
+      "bodiesRequestsMindsRngEventsUnchanged": true,
+      "liveCensor": 2
+    },
+    {
+      "mode": "center",
+      "scenario": "tite",
+      "bodiesRequestsMindsRngEventsUnchanged": true,
+      "liveCensor": 2
+    },
+    {
+      "mode": "patch",
+      "scenario": "under",
+      "bodiesRequestsMindsRngEventsUnchanged": true,
+      "liveCensor": 2
+    },
+    {
+      "mode": "patch",
+      "scenario": "tite",
+      "bodiesRequestsMindsRngEventsUnchanged": true,
+      "liveCensor": 2
+    }
+  ],
+  "otherControls": [
+    {
+      "mode": "center",
+      "scenario": "recovery",
+      "unchangedPhysicalRequestsReportsThrough": 1.7500000000000007
+    },
+    {
+      "mode": "center",
+      "scenario": "loss-minus",
+      "unchangedPhysicalRequestsReportsThrough": 2.3999999999999995
+    },
+    {
+      "mode": "center",
+      "scenario": "loss-plus",
+      "unchangedPhysicalRequestsReportsThrough": 2.3999999999999995
+    },
+    {
+      "mode": "patch",
+      "scenario": "recovery",
+      "unchangedPhysicalRequestsReportsThrough": 2.1000000000000005
+    }
+  ],
+  "cost": {
+    "commands": [
+      {
+        "path": "receipts/current-focused.receipt.json",
+        "commit": "3b4ea698819074640626a215bf2f06af2735f25a",
+        "source": "f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67",
+        "exitCode": 0,
+        "seconds": 6.889551067999999
+      },
+      {
+        "path": "receipts/current-typecheck.receipt.json",
+        "commit": "3b4ea698819074640626a215bf2f06af2735f25a",
+        "source": "f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67",
+        "exitCode": 0,
+        "seconds": 12.498204573999999
+      },
+      {
+        "path": "receipts/final-context.receipt.json",
+        "commit": "961415f459420dd393604eb5f5f59a62ac269f2b",
+        "source": "0ca846c7b495058e65525cb4dedba0027fa6157668c396da0c7fa180b1314eac",
+        "exitCode": 0,
+        "seconds": 5.603343057999999
+      },
+      {
+        "path": "receipts/focused.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "c596144e38f0c3bc690421e60965e6efe0250192772555fe2102ca765c057793",
+        "exitCode": 0,
+        "seconds": 3.3839774830000002
+      },
+      {
+        "path": "receipts/guarded-mirrors.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "7bde0e32e17435a3c5ec93e0810dedb90621f08a9b7a8aec78f9426d0ef31f7c",
+        "exitCode": 0,
+        "seconds": 1.4238488649999999
+      },
+      {
+        "path": "receipts/law-affected.receipt.json",
+        "commit": "961415f459420dd393604eb5f5f59a62ac269f2b",
+        "source": "0ca846c7b495058e65525cb4dedba0027fa6157668c396da0c7fa180b1314eac",
+        "exitCode": 1,
+        "seconds": 5.95053274
+      },
+      {
+        "path": "receipts/mirrors-focused.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "7bde0e32e17435a3c5ec93e0810dedb90621f08a9b7a8aec78f9426d0ef31f7c",
+        "exitCode": 1,
+        "seconds": 2.351468504
+      },
+      {
+        "path": "receipts/mirrors.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "beda06281fb8d88bf53ce412aba5eb8e413d7d017447cd749c4cdf32c3cd132d",
+        "exitCode": 0,
+        "seconds": 3.37926496
+      },
+      {
+        "path": "receipts/opposing-entry.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "c596144e38f0c3bc690421e60965e6efe0250192772555fe2102ca765c057793",
+        "exitCode": 0,
+        "seconds": 1.302978264
+      },
+      {
+        "path": "receipts/opposing.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "7bde0e32e17435a3c5ec93e0810dedb90621f08a9b7a8aec78f9426d0ef31f7c",
+        "exitCode": 0,
+        "seconds": 1.4340895070000002
+      },
+      {
+        "path": "receipts/strike-entry.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "c596144e38f0c3bc690421e60965e6efe0250192772555fe2102ca765c057793",
+        "exitCode": 0,
+        "seconds": 1.379768561
+      },
+      {
+        "path": "receipts/through-arrival-window.receipt.json",
+        "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+        "source": "c596144e38f0c3bc690421e60965e6efe0250192772555fe2102ca765c057793",
+        "exitCode": 0,
+        "seconds": 1.82015886
+      }
+    ],
+    "summedCommandSeconds": 47.417186443999995,
+    "fullGames": 0,
+    "freshRosters": 0,
+    "broadScreens": 0,
+    "scope": "Four saved situations and one constructed obstructed geometry. Includes failed compression expectations and rejected variants. Concurrent command times overlap."
+  }
+}

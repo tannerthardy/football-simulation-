@@ -1,5 +1,24 @@
 # Current work ownership
 
+## Bounded first-level collection candidate, 2026-10-15 (America/Phoenix)
+
+Run Game owns the user-assigned #66 collection correction; #67 remains separate.
+Accepted-base code/test pin `3b4ea698819074640626a215bf2f06af2735f25a` on
+`codex/helper-collection-current`, from develop `8c891f4`; source
+`f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67`.
+[Report, scope and exact receipts](reviews/helper-collection-correction.md).
+Runtime boundary is a new collection-approach helper plus20 RunBlocker lines;
+only the free original check helper after an observed lost torso surface.
+Do-It-All keeps entry/Awareness consumer, navigation, joined climb/release and
+traffic work; ownership notices are linked in the report, with no inferred ack.
+Physics retains World/contact law and its independent native-accuracy hold.
+Integration owns final combined verification. 63 focused checks/typecheck pass;
+both isolated-law controlled collections load by2.60 and hold through3.40,
+zero C/LG impacts; current center and four native law/control histories retain
+their saved states/requests. Genuine obstruction brakes physically. The three
+adjudicated #66 expectations still fail and remain untouched.47.42s all new
+launchers, zero games/new rosters; no defaults, merge or baseline designation.
+
 ## Departed-center gap integration — 2026-10-15
 
 | Item | Owner | Branch / reference | Boundary | Status |

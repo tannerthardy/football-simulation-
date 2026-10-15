@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit 4f90b6428b98224774bbd63a4adad6bb3e354b53, source c596144e38f0c3bc690421e60965e6efe0250192772555fe2102ca765c057793
+Running node node_modules/vitest/vitest.mjs run --project core test/collection-approach.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-helper-collection
+
+ ✓ |core| test/collection-approach.test.ts (2 tests) 52ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:57:05
+   Duration  927ms (transform 556ms, setup 0ms, collect 720ms, tests 52ms, environment 0ms, prepare 55ms)
+
+Validation receipt: out/collection-correction/opposing-entry.receipt.json; exit 0
