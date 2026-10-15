@@ -14,7 +14,7 @@ const [engineRoot,expectedSource,originalManifest,nativeFile,witnessFile,outFile
 assert(engineRoot&&expectedSource&&originalManifest&&nativeFile&&witnessFile&&outFile);
 const start=performance.now(),root=resolve(engineRoot),sha=x=>createHash('sha256').update(x).digest('hex'),hash=x=>sha(JSON.stringify(x));
 const source=()=>{const files=p=>readdirSync(join(root,p),{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(join(p,e.name)):[join(p,e.name)]).sort();const h=createHash('sha256');for(const p of files('src'))h.update(p).update('\0').update(readFileSync(join(root,p))).update('\0');return h.digest('hex');};
-assert.equal(sourceVersion(),'ad6d7ad5747769c5e637a652dfebf3f3d634a78b9197385c10320ac7fcdd845d');
+assert.equal(sourceVersion(),'ec8bdc6fda7c89b60f5e5efaa80c194a22bba9effa3c947800b9e7e5311db885');
 assert.equal(source(),expectedSource);
 const inputs=JSON.parse(readFileSync(originalManifest)),nativeBytes=readFileSync(nativeFile),native=JSON.parse(gunzipSync(nativeBytes));
 assert.equal(sha(readFileSync(originalManifest)),native.provenance.inputSha256);
