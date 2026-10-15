@@ -1,0 +1,230 @@
+{
+  "schema": "man-recognition-integration-review-v1",
+  "decision": "Hold adoption: narrow receiver-technique information correction is supported, but two preserved acquired back-man run-fit contracts conflict. Obtain affected-owner adjudication before modifying assertions or recommending merge.",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "authorPR": 75,
+  "authorHead": "1f2d949409aad9615da2b52df8fddd174e04b2aa",
+  "actualAuthorBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "testedCommit": "0f349ef0735402a79d916cff7c9ad496f9424380",
+  "branch": "codex/man-recognition-integration-review",
+  "sourceSha256": "c804b77057c4600cdf5b14b23f798715566c0e162d6e62bdf49764b93d61c742",
+  "validationSha256": "11a0065fa9e2294a93ede3817eb82e88044d08e840860f207772359a6e826b29",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "hashEncoding": "Source/validation: baseline path-NUL-content-NUL SHA256; flag/World: UTF-8 compact JSON with sorted keys.",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1732,
+    "typescriptFailed": 2,
+    "typescriptTotal": 1734,
+    "typescriptFilesPassed": 145,
+    "typescriptFilesFailed": 1,
+    "typescriptFilesTotal": 146,
+    "directRecognitionContractsPassed": 8,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 1
+  },
+  "blockingContracts": [
+    {
+      "file": "test/back-man-run-fit.test.ts",
+      "line": 255,
+      "test": "lets the existing ball-in-flight technique own an old positive runner picture",
+      "setup": "Insertion fixture: t=1.6, throwAt=1.4, positive acquired back carrying cue and run belief.",
+      "expected": "Generic playBall fallback takes ownership immediately when ball is airborne.",
+      "actual": "Installed acquired keyed insertion continues while existing recognition is false."
+    },
+    {
+      "file": "test/back-man-run-fit.test.ts",
+      "line": 390,
+      "test": "supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership",
+      "setup": "Alley fixture: t=1.3, throwAt=1.1, positive acquired back carrying cue and run belief.",
+      "expected": "Generic playBall fallback takes ownership immediately when ball is airborne.",
+      "actual": "Installed acquired alley support continues while existing recognition is false."
+    }
+  ],
+  "nextDecision": {
+    "owners": [
+      "Catching And Defensive Pursuit",
+      "Run Game / acquired back-man run-fit owner"
+    ],
+    "question": "Does an unrecognized airborne throw preserve the same acquired keyed insertion/alley action as the held-ball arm, until existing sawThrow becomes true, where unchanged ball-contest priority then owns the action?",
+    "boundedProposal": "If owners confirm that boundary, reconcile the two tests into explicit unrecognized-versus-held invariance and recognized-ball ownership controls; retain positive acquired possession/run belief and mirrored/traction/PA controls. Do not simply remove or weaken the assertions.",
+    "alternative": "If a valid observable cue should cancel run-fit earlier, identify that cue and the smallest controller correction; do not restore omniscient global-air phase switching.",
+    "approval": "No merge authorization exists. No test-contract change is presumed approved by this packet."
+  },
+  "scope": {
+    "productionFiles": [
+      "src/sim/behaviors/defense.ts"
+    ],
+    "testFiles": [
+      "test/man-throw-recognition.test.ts"
+    ],
+    "authorFilesByteIdentical": true,
+    "portablePatchAppliesToAcceptedDevelop": true,
+    "otherProtectedFilesUnchanged": true,
+    "existingTestsNotModified": true,
+    "preservedPriorCurrentEvidenceFiles": 152
+  },
+  "reusedEvidence": {
+    "receiptSettingsVerified": 15,
+    "initialAffectedChecks": 44,
+    "authorCurrentDirectChecks": 8,
+    "originalNativeExecutions": 30,
+    "originalLauncherSeconds": 47.065055859,
+    "initialComparison": "https://github.com/tannerthardy/football-simulation-/blob/1f2d949409aad9615da2b52df8fddd174e04b2aa/data/reviews/current/man-recognition-comparison.json",
+    "current47Comparison": "https://github.com/tannerthardy/football-simulation-/blob/1f2d949409aad9615da2b52df8fddd174e04b2aa/data/reviews/current/man-recognition-current-comparison.json",
+    "authorReport": "https://github.com/tannerthardy/football-simulation-/blob/1f2d949409aad9615da2b52df8fddd174e04b2aa/docs/reviews/coverage-technique-recognition.md",
+    "rawTapeLimit": "Full raw tapes are ignored out/ artifacts in original environment; immutable compact comparisons contain first-fork acquired cues/requests, achieved/contact/load/support detail and exact raw hashes. No access to the raw tapes is claimed. Exact reproducible input fixtures/collectors are published on the author branch."
+  },
+  "adverseEvidenceAndLimits": {
+    "P006": "At1.75 identical incoming bodies/unrecognized throw: generic fallback vs retained press/history/0.65 delayScale. First contact3.35->3.55, tackle retained; old-source evidence.",
+    "Smash": "At1.85 identical incoming body/unrecognized throw: generic fallback vs retained off-man/history. SS misses after changed entry/runner motion, FS tackles;YAC4.406273->5.651768. No identical-entry grip-law inference; old-source evidence.",
+    "P045": "No-contact49.503836-YAC TD persists; does not veto information correction or diagnose grip law.",
+    "currentVertical": "Author base47 pair actively exercises continuity and preserves tackle7.154575->7.154956YAC.",
+    "currentComeback": "Both current47 arms are identical sacks; native plant transfer remains unmeasured, direct acquired-plant contract passes.",
+    "sourceScope": "P006/Smash/P045 outcomes retain their original pre-72 source; current author transfer packet is47 source. None are relabeled as newly executed8ca outcomes.",
+    "broaderCoverage": "No overall coverage/YAC improvement, recognition timing, gaze/occlusion, cushion/target quality, upstream judgment, help or contact-law repair is claimed."
+  },
+  "cost": {
+    "combinedCommandSeconds": 188.094098739,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.84831681
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.767161107
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 165.670600442
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8080203800000018
+      }
+    ],
+    "newStandaloneNativeReplays": 0,
+    "newStandaloneGameCampaigns": 0,
+    "newRosterScreens": 0,
+    "suiteGameAssertions": "Existing full-suite game assertions ran once. No extra campaign.",
+    "nextSpend": "Owner contract adjudication first; no unchanged full-suite retry or new film panel. If an approved material correction is made, focused affected controls precede any new combined verification."
+  },
+  "preservation": {
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "acceptedDevelopUnchanged": true,
+    "authorBranchAndBroaderFindingsPreserved": true,
+    "adverseAndFailedEvidenceKept": true,
+    "mergeAuthorized": false
+  },
+  "excluded": [
+    "parked P045 assigned-man/primary-only variants",
+    "coverage tuning",
+    "upstream judgment repair",
+    "helper/containment changes",
+    "observation transport/navigation/sampledVel",
+    "#69",
+    "experimental physics",
+    "author diagnostic ancestry"
+  ],
+  "artifacts": {
+    "evidence-review.json": {
+      "bytes": 12616,
+      "sha256": "0a698fdcd0ebc37eda651df5df4e21932ceea4246cdfd25ce3132eb31ab22092"
+    },
+    "combined-failed.json": {
+      "bytes": 2626,
+      "sha256": "1250064d5ff09622b4ecbfaa016f2f7b08409c28b0c6967984353152a0aa84ef"
+    },
+    "combined-failed.log": {
+      "bytes": 22914,
+      "sha256": "318b84c02108de94f9c39632e39c2b16ccde808ff09571e485a12971bfa234bf"
+    },
+    "portable-extraction.patch": {
+      "bytes": 7516,
+      "sha256": "bc89f851ec039db6bd436d916993f9105f5d2b930a08dee422d8d2a3e36ae5c2"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "man-recognition-publication-compatibility-v1",
+  "testedCommit": "0f349ef0735402a79d916cff7c9ad496f9424380",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "protectedTreeStillMatchesTestedCandidate": true,
+  "changedProtectedPathsVersusAccepted": [
+    "src/sim/behaviors/defense.ts",
+    "test/man-throw-recognition.test.ts"
+  ],
+  "existingTestsNotModified": true,
+  "priorCurrentEvidenceFilesPreserved": 152,
+  "portablePatchCleanApplyCheck": true,
+  "newLocalDocumentationLinksChecked": [
+    [
+      "docs/INTEGRATION.md",
+      "../data/reviews/current/man-recognition-integration/review-receipt.json"
+    ],
+    [
+      "docs/INTEGRATION.md",
+      "../data/reviews/current/man-recognition-integration/portable-extraction.patch"
+    ],
+    [
+      "docs/INTEGRATION.md",
+      "../data/reviews/current/man-recognition-integration/review-receipt.json"
+    ],
+    [
+      "docs/STATUS.md",
+      "INTEGRATION.md#man-recognition-review"
+    ],
+    [
+      "docs/ISSUES.md",
+      "#PASS-006"
+    ],
+    [
+      "docs/ISSUES.md",
+      "INTEGRATION.md#man-recognition-review"
+    ],
+    [
+      "docs/WORKBOARD.md",
+      "INTEGRATION.md#man-recognition-review"
+    ]
+  ],
+  "allNewArtifactHashesChecked": true,
+  "combinedVerificationVerdict": "FAILED, two preserved back-man run-fit contracts; no rerun or merge recommendation",
+  "publicationChanges": "Only documentation and new review artifacts; no tested source, tests, settings or existing evidence edits."
+}

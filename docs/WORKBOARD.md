@@ -2,6 +2,16 @@
 
 ## Independent #75 man-recognition integration — 2026-10-15
 
+**Held after one complete combined run.** Tested
+`0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
+assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
+new direct contracts pass. Catching + Run Game own the specific insertion/alley
+versus recognized-ball boundary; Integration retains verification ownership.
+[Question and receipt](INTEGRATION.md#man-recognition-review). Existing tests
+remain unchanged; no new panel, unchanged rerun or merge is requested.
+
+The original bounded assembly claim is preserved below:
+
 Integration owns this isolated assembly from accepted8ca8dee, preserving latest
 queue metadatafad1b94. Only ManCoverage continuation, playBall's optional unaware
 fallback and the eight authored direct contracts are extracted from1f2d949.
