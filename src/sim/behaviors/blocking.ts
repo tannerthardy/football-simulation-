@@ -31,7 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
-import { clearMovementStep, movementLookahead, type MovementObstacle, type MovementStep } from '../movement-clearance.js';
+import { clearMovementStep, movementLookahead, ZONE_AND_DUO_RUNS, type MovementObstacle, type MovementStep } from '../movement-clearance.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -940,7 +940,7 @@ export class RunBlocker implements Behavior {
       // backer. Only this player's free body and acquired pictures enter the
       // preview; a loaded body cannot be certified by an empty-space solve.
       const own = a.body.support;
-      if (!a.engagement && own?.state === 'up' && !own.foot && !own.strike
+      if (ZONE_AND_DUO_RUNS.has(run.scheme) && !a.engagement && own?.state === 'up' && !own.foot && !own.strike
         && Math.hypot(own.load.x, own.load.y) < 1e-6
         && !sim.world.joints.some(j => j.a === a.body || j.b === a.body)) {
         const r = this.climbRead;
@@ -953,9 +953,10 @@ export class RunBlocker implements Behavior {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
         chose: this.climbRead.clearance && this.climbRead.clearance.kind !== 'direct' ? `first-level ${this.climbRead.clearance.kind}`
           : this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
-        cue: 'acquired backer/front and teammate pictures, previewed with own free movement',
+        cue: this.climbRead.clearance ? 'acquired backer/front and teammate pictures, previewed with own free movement'
+          : 'acquired backer, previewed with own free movement; first-level clearance not used',
         options: ['attainable meeting point', 'closest approach (no attainable fit)', 'first-level around', 'first-level gather', 'first-level blocked'],
-        detail: `free meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd; first-level ${this.climbRead.clearance?.kind ?? 'loaded, not forecast'}` });
+        detail: `free meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd; first-level ${this.climbRead.clearance?.kind ?? 'outside duty or own contact constraint'}` });
     }
     const r = this.climbRead!;
     // Hold a deliberate clearance action through the ordinary decision beat.

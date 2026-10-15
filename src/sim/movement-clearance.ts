@@ -5,6 +5,12 @@ import type { Vec2 } from '../core/vec.js';
 import { followAccel, type Body } from '../physics/kinematics.js';
 import { previewFreeMovement,type MovementSample } from '../physics/movement-preview.js';
 import { CONTACT_SCALE, type Intent } from '../physics/world.js';
+import type {RunScheme} from '../playbook/types.js';
+
+/** Zone/Duo line duties share this free-surface navigation. The coupled
+ * counter/trap controls require their own puller/climber ordering; transplanting
+ * these detours loses existing block work. Keep those installed controllers. */
+export const ZONE_AND_DUO_RUNS:ReadonlySet<RunScheme>=new Set(['insideZone','outsideZone','wideZone','splitZone','duo']);
 
 export interface MovementObstacle {
   id: number;

@@ -29,6 +29,7 @@ import { PerceptionBuffer, type Perceived } from './perception.js';
 import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
 import { installTeammateExpectations } from './teammate-calls.js';
 import { spaceTeammates } from './spacing.js';
+import {ZONE_AND_DUO_RUNS} from './movement-clearance.js';
 import { RunBlocker, isZoneLineBlocker, prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
@@ -604,7 +605,8 @@ export class PlaySim {
       const information = this.teammateInformation(a,b);
       return information.source === 'unavailable' ? null : information;
     },{now:t,constrained,openingTrack,handContact:this.world.handContact,
-      runCarrier:this.offCall.kind==='run'&&this.handoffAt>=0?this.carrier?.body:undefined,
+      runCarrier:this.offCall.kind==='run'&&this.offCall.run&&ZONE_AND_DUO_RUNS.has(this.offCall.run.scheme)
+        &&this.handoffAt>=0&&this.carrier?.team==='O'?this.carrier.body:undefined,
       allowDetour:(a,path,original)=>a.behavior.allowSpacingDetour?.(a,this,path,original)??true});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
