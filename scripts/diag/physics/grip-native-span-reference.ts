@@ -10,7 +10,9 @@ const referenceReel:ReelProvider=(q,g)=>{
   if(!(q.pullSpeed>0))return 0;
   const cross=g.nx*g.rby-g.ny*g.rbx,body=1/q.a.mass+1/q.b.mass+cross*cross/q.b.inertia,
     foot=q.mobility*(g.jnx*g.jnx+g.jny*g.jny),request=Math.max(0,g.vn+Math.min(q.pullSpeed,3)),wanted=request/(foot+q.tickDuration*body);
-  return wanted>Math.min(q.capacity,q.armCapacity)?Math.min(q.capacity,q.armCapacity):wanted;
+  const delivered=wanted>Math.min(q.capacity,q.armCapacity)?Math.min(q.capacity,q.armCapacity):wanted;
+  if(delivered>0&&g.d<=q.minimumDistance/1.12)throw new RangeError('Native reel-stop scope');
+  return delivered;
 };
 import {spanReferenceForce} from './grip-mixed-span-reference-force.js';
 export function nativeSpanReference(input:ActiveGripInput,n:number){

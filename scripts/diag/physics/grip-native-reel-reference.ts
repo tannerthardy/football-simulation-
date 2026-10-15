@@ -8,7 +8,9 @@ const reel:ReelProvider=(q,g)=>{
   if(!(q.pullSpeed>0))return 0;
   const cross=g.nx*g.rby-g.ny*g.rbx,body=1/q.a.mass+1/q.b.mass+cross*cross/q.b.inertia,
     foot=q.mobility*(g.jnx*g.jnx+g.jny*g.jny),request=Math.max(0,g.vn+Math.min(q.pullSpeed,3));
-  return Math.min(q.capacity,q.armCapacity,request/(foot+q.tickDuration*body));
+  const delivered=Math.min(q.capacity,q.armCapacity,request/(foot+q.tickDuration*body));
+  if(delivered>0&&g.d<=q.minimumDistance/1.12)throw new RangeError('Native reel-stop scope');
+  return delivered;
 };
 export function nativeReelEventReference(input:ActiveGripInput,n:number){
   if(!Number.isInteger(n)||n<1||n>4096)throw new RangeError('Reel reference budget');

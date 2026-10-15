@@ -13,7 +13,13 @@ export type ReelProvider=(q:ActiveGripInput,g:ReturnType<typeof pressureGeometry
 export function nativeReel(q:ActiveGripInput,g:ReturnType<typeof pressureGeometry>){
   if(q.pullSpeed===0)return 0;
   const nb=g.rbx*g.ny-g.rby*g.nx,B=1/q.a.mass+1/q.b.mass+nb*nb/q.b.inertia;
-  return Math.min(q.armCapacity,q.capacity,Math.max(0,g.vn+Math.min(ARM_SPEED,q.pullSpeed))/(B*q.tickDuration+g.nn));
+  const reel=Math.min(q.armCapacity,q.capacity,Math.max(0,g.vn+Math.min(ARM_SPEED,q.pullSpeed))/(B*q.tickDuration+g.nn));
+  // World's native input uses minimumDistance=1.12*CONTACT_SCALE*radiusSum.
+  // Its reel law stops at CONTACT_SCALE*radiusSum. Integrating that switch
+  // is outside this helper's scope: refuse the entire proposal at any stage,
+  // so World retains the native stop, instead of reeling inside the span.
+  if(reel>0&&g.d<=q.minimumDistance/1.12)throw new RangeError('Native reel-stop scope');
+  return reel;
 }
 /** Optional diagnostic scope: zero-tension, zero-reel tangent cap/slip only.
  * The phase is held fixed by the event integrator, not inferred at RK stages. */
