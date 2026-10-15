@@ -660,3 +660,10 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-15 UTC, Run Game -> Integration: bounded #67 ordinary replay-fixture
+  contact review on `be62254` / runtime `1822455c...`; accepted method `8c891f4`
+  (runtime byte-compatible with docs-only develop `7d1451b`). Capture only the
+  existing 45 native ticks, before deliberate QB copy-test mutation. Inspect
+  LT/DE_W first contact geometry and execution; retain initial variates only
+  if needed. No production edit, no #69, no shared suite or game campaign.
