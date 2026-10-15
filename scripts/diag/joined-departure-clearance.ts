@@ -1,10 +1,10 @@
 /** A free departure begins with the body that actually leaves the contact,
  * not an instantaneous turn onto a clear line. Neighbors use acquired coast
  * only until the next ordinary read. This cannot certify future contact wins. */
-import type { Vec2 } from '../core/vec.js';
-import type { Body } from '../physics/kinematics.js';
-import { previewFreeMovement } from '../physics/movement-preview.js';
-import { CONTACT_SCALE, type Intent } from '../physics/world.js';
+import type { Vec2 } from '../../src/core/vec.js';
+import type { Body } from '../../src/physics/kinematics.js';
+import { previewFreeMovement } from '../../src/physics/movement-preview.js';
+import { CONTACT_SCALE, type Intent } from '../../src/physics/world.js';
 
 export interface DeparturePicture { pos: Vec2; vel: Vec2; radius: number }
 
