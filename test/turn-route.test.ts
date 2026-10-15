@@ -25,6 +25,30 @@ describe('experimental minimum-time orientation route, unchanged yaw law',()=>{
     for(const [a,r,w]of [[0,8,2],[60,0,2],[60,8,10]])expect(turnRoute(3.1,w,a,r).fallback).toBe(true);
     expect(()=>boundedArrival(1,0,-1,8)).toThrow('scope');
   });
+  it('keeps spin-selected half-turns equivalent across heading representations, retaining genuine zero-spin ties',()=>{
+    for(const error of [-.01,0,.01])for(const spin of [-1.3,1.3]){
+      const original=turnRoute(Math.PI+error,spin,60,8);
+      for(const wrap of [-2,-1,0,1,2]){
+        const equivalent=turnRoute(Math.PI+error+wrap*2*Math.PI,spin,60,8);
+        expect(equivalent.delta).toBeCloseTo(original.delta,12);
+        expect(equivalent.estimated).toBeCloseTo(original.estimated!,12);
+      }
+      let requested:number|undefined;
+      for(const bodyWrap of [-1,0,1])for(const targetWrap of [-1,0,1]){
+        const v=recoveryFixture('previous'),body=v.w.bodies[0];v.w.turnChoice='arrival-time';
+        body.facing=-Math.PI-error+bodyWrap*2*Math.PI;body.spin=spin;
+        const intent={...v.args[1][0],facing:targetWrap*2*Math.PI},plan=v.w.plan(body,0,intent,.05);
+        const displacement=plan.facing-body.facing;
+        if(requested===undefined)requested=displacement;
+        else expect(displacement).toBeCloseTo(requested,12);
+      }
+    }
+    // With no spin at precisely pi, both routes are equally valid. Preserve
+    // the established input-sign tie convention rather than forcing a side.
+    const a=turnRoute(Math.PI,0,60,8),b=turnRoute(-Math.PI,0,60,8);
+    expect(a.delta).toBe(Math.PI);expect(b.delta).toBe(-Math.PI);
+    expect(a.estimated).toBe(b.estimated);
+  });
   it('settles the saved half-turn sooner through the existing motor, retaining the genuine mirror',()=>{
     for(const id of ['saved-previous','mirror-previous','low-torque']){
       const c=turnTasks.find(c=>c.id===id)!,old=turnTask(c,'shortest'),r=turnTask(c,'arrival');
