@@ -1,0 +1,522 @@
+{
+  "schema": "run-entry-relevance-coupled-v1",
+  "sourceSha256": "bf044ce72a98a9aa6dcbebf31d61b5f8754b56dc8b5e848283b27f4aa60887f8",
+  "inputSha256": "66c09e1eeeaf834529794fd36f323dc4444d66cab207ea3e39cd3f54770e88eb",
+  "collectorSha256": "d38eba8bd425e38a36487062e14646f116ac06e01b34ff33f95f63d57bd832fe",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "comparisons": [
+    {
+      "play": 19,
+      "initialStatesEqual": true,
+      "firstChangedRequest": null,
+      "fullFramesEqual": true,
+      "summaries": [
+        {
+          "play": 19,
+          "arm": "information-only",
+          "end": 3,
+          "censored": true,
+          "outcome": null,
+          "losCrossing": 2.5,
+          "rb": {
+            "pos": {
+              "x": 28.715380634608508,
+              "y": 30.835754362708222
+            },
+            "vel": {
+              "x": 6.5287540581049335,
+              "y": 3.1429048128297437
+            },
+            "speed": 7.245859522080869
+          },
+          "impacts": [],
+          "durations": {
+            "fast": 0,
+            "slower": 0,
+            "gather": 0
+          },
+          "statuses": {
+            "clear": 0,
+            "blocked": 0,
+            "unknown": 0
+          },
+          "loads": {
+            "1": {
+              "normalImpulse": 178.13688873504157,
+              "absoluteTangentImpulse": 257.2423720306916
+            },
+            "4": {
+              "normalImpulse": 650.7768366804613,
+              "absoluteTangentImpulse": 347.865686511606
+            },
+            "7": {
+              "normalImpulse": 806.8846737513294,
+              "absoluteTangentImpulse": 511.3822598488035
+            },
+            "10": {
+              "normalImpulse": 90.86354459276455,
+              "absoluteTangentImpulse": 53.19025865228719
+            }
+          },
+          "entryReads": [
+            {
+              "t": 2.25,
+              "selected": {
+                "x": 26,
+                "y": 28.839430321024295
+              }
+            },
+            {
+              "t": 2.5,
+              "selected": {
+                "x": 26,
+                "y": 29.42411265814178
+              }
+            }
+          ],
+          "events": [
+            {
+              "t": 1.55,
+              "type": "block_climb",
+              "a": 1,
+              "b": 15,
+              "pos": {
+                "x": 25.14,
+                "y": 27.04
+              },
+              "note": "secured DT_S; LG stays"
+            }
+          ]
+        },
+        {
+          "play": 19,
+          "arm": "portable-admission",
+          "end": 3,
+          "censored": true,
+          "outcome": null,
+          "losCrossing": 2.5,
+          "rb": {
+            "pos": {
+              "x": 28.715380634608508,
+              "y": 30.835754362708222
+            },
+            "vel": {
+              "x": 6.5287540581049335,
+              "y": 3.1429048128297437
+            },
+            "speed": 7.245859522080869
+          },
+          "impacts": [],
+          "durations": {
+            "fast": 0.49999999999999994,
+            "slower": 0,
+            "gather": 0
+          },
+          "statuses": {
+            "clear": 0,
+            "blocked": 0.1,
+            "unknown": 0.39999999999999997
+          },
+          "loads": {
+            "1": {
+              "normalImpulse": 178.13688873504157,
+              "absoluteTangentImpulse": 257.2423720306916
+            },
+            "4": {
+              "normalImpulse": 650.7768366804613,
+              "absoluteTangentImpulse": 347.865686511606
+            },
+            "7": {
+              "normalImpulse": 806.8846737513294,
+              "absoluteTangentImpulse": 511.3822598488035
+            },
+            "10": {
+              "normalImpulse": 90.86354459276455,
+              "absoluteTangentImpulse": 53.19025865228719
+            }
+          },
+          "entryReads": [
+            {
+              "t": 2.25,
+              "selected": {
+                "x": 26,
+                "y": 28.839430321024295
+              }
+            },
+            {
+              "t": 2.5,
+              "selected": {
+                "x": 26,
+                "y": 29.42411265814178
+              }
+            }
+          ],
+          "events": [
+            {
+              "t": 1.55,
+              "type": "block_climb",
+              "a": 1,
+              "b": 15,
+              "pos": {
+                "x": 25.14,
+                "y": 27.04
+              },
+              "note": "secured DT_S; LG stays"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "play": 32,
+      "initialStatesEqual": true,
+      "firstChangedRequest": {
+        "t": 1.7,
+        "sameBodiesBefore": true,
+        "actors": [
+          6
+        ]
+      },
+      "fullFramesEqual": false,
+      "summaries": [
+        {
+          "play": 32,
+          "arm": "information-only",
+          "end": 3,
+          "censored": true,
+          "outcome": null,
+          "losCrossing": 2.5999999999999996,
+          "rb": {
+            "pos": {
+              "x": 75.5258138866843,
+              "y": 21.875480481029374
+            },
+            "vel": {
+              "x": 1.8115243207083984,
+              "y": -3.4661300159859714
+            },
+            "speed": 3.91096888919318
+          },
+          "impacts": [],
+          "durations": {
+            "fast": 0,
+            "slower": 0,
+            "gather": 0
+          },
+          "statuses": {
+            "clear": 0,
+            "blocked": 0,
+            "unknown": 0
+          },
+          "loads": {
+            "2": {
+              "normalImpulse": 1146.2828829523617,
+              "absoluteTangentImpulse": 647.1472915774934
+            },
+            "3": {
+              "normalImpulse": 46.12103931431943,
+              "absoluteTangentImpulse": 22.697529236624096
+            },
+            "4": {
+              "normalImpulse": 1152.5214534868328,
+              "absoluteTangentImpulse": 558.6650901791271
+            },
+            "5": {
+              "normalImpulse": 1052.836967174295,
+              "absoluteTangentImpulse": 480.9642167082143
+            },
+            "7": {
+              "normalImpulse": 118.4653464037306,
+              "absoluteTangentImpulse": 354.4701337898896
+            },
+            "10": {
+              "normalImpulse": 156.7307465036269,
+              "absoluteTangentImpulse": 85.21304748907097
+            }
+          },
+          "entryReads": [
+            {
+              "t": 1.7,
+              "selected": {
+                "x": 74.8,
+                "y": 28.06840558176394
+              }
+            },
+            {
+              "t": 1.95,
+              "selected": {
+                "x": 74.8,
+                "y": 21.55414534026393
+              }
+            },
+            {
+              "t": 2.2,
+              "selected": {
+                "x": 74.8,
+                "y": 20.729627111266666
+              }
+            },
+            {
+              "t": 2.45,
+              "selected": {
+                "x": 75.4833999312624,
+                "y": 22.250282465387425
+              }
+            }
+          ],
+          "events": [
+            {
+              "t": 2.45,
+              "type": "block_climb",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 75.81,
+                "y": 25.45
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 2.65,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 74.76,
+                "y": 23.35
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.7,
+              "type": "fall",
+              "a": 12,
+              "pos": {
+                "x": 72.97,
+                "y": 22.58
+              },
+              "note": "dive"
+            },
+            {
+              "t": 2.9,
+              "type": "fall",
+              "a": 6,
+              "pos": {
+                "x": 75.44,
+                "y": 22.06
+              },
+              "note": "legs"
+            }
+          ]
+        },
+        {
+          "play": 32,
+          "arm": "portable-admission",
+          "end": 3,
+          "censored": true,
+          "outcome": null,
+          "losCrossing": 2.75,
+          "rb": {
+            "pos": {
+              "x": 75.36203955298582,
+              "y": 22.22305945811719
+            },
+            "vel": {
+              "x": 2.8262256560328756,
+              "y": -5.203278123580093
+            },
+            "speed": 5.921288262713245
+          },
+          "impacts": [],
+          "durations": {
+            "fast": 0.8500000000000002,
+            "slower": 0.15000000000000002,
+            "gather": 0.1
+          },
+          "statuses": {
+            "clear": 0,
+            "blocked": 0,
+            "unknown": 1.1000000000000003
+          },
+          "loads": {
+            "2": {
+              "normalImpulse": 1181.546159890058,
+              "absoluteTangentImpulse": 571.460952690311
+            },
+            "3": {
+              "normalImpulse": 46.12103931431943,
+              "absoluteTangentImpulse": 22.697529236624096
+            },
+            "4": {
+              "normalImpulse": 1149.489365124506,
+              "absoluteTangentImpulse": 522.6565133671211
+            },
+            "5": {
+              "normalImpulse": 1089.9726977716593,
+              "absoluteTangentImpulse": 479.25575409624577
+            },
+            "7": {
+              "normalImpulse": 118.4653464037306,
+              "absoluteTangentImpulse": 354.4701337898896
+            },
+            "10": {
+              "normalImpulse": 155.4224276021126,
+              "absoluteTangentImpulse": 84.40792816506216
+            }
+          },
+          "entryReads": [
+            {
+              "t": 1.7,
+              "selected": {
+                "x": 74.8,
+                "y": 28.06840558176394
+              }
+            },
+            {
+              "t": 1.95,
+              "selected": {
+                "x": 74.8,
+                "y": 21.55414534026393
+              }
+            },
+            {
+              "t": 2.2,
+              "selected": {
+                "x": 74.8,
+                "y": 20.729627111266666
+              }
+            },
+            {
+              "t": 2.45,
+              "selected": {
+                "x": 75.48071090735908,
+                "y": 22.24852845735604
+              }
+            },
+            {
+              "t": 2.7,
+              "selected": {
+                "x": 75.69514898963433,
+                "y": 21.700693389992992
+              }
+            }
+          ],
+          "events": [
+            {
+              "t": 2.45,
+              "type": "block_climb",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 75.87,
+                "y": 25.42
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 2.75,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 74.66,
+                "y": 23.27
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.8,
+              "type": "fall",
+              "a": 12,
+              "pos": {
+                "x": 73.01,
+                "y": 22.48
+              },
+              "note": "dive"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "historicalSetupLimits": [
+    "Game scouting/coverage scouting object state",
+    "pre-call man-matchup preferences",
+    "audible input before the recorded final call",
+    "Original pre-constructor energy/mind state and pre-snap recognition history are not serialized"
+  ],
+  "method": "Saved final calls/players/down/distance/LOS/ballY; default scouting/matchup/mind setup. Restore all22 saved post-constructor physical bodies and RNG once at t=0. No subsequent frame injection.",
+  "intervention": "Information correction in both arms. Baseline bypasses only BallCarrier.approach, so original entry ranking/request remains. Candidate uses portable production admission. All22 players react; no old-frame injection or game prefix.",
+  "physicalExecutions": 4,
+  "completedGames": 0,
+  "elapsedSeconds": 1.700364415,
+  "totalNewLauncherSeconds": 19.893838889,
+  "runtimeByGroup": {
+    "focused-launcher": 1.2644443760000001,
+    "native-launcher": 2.310501501,
+    "setup-control-adverse-launcher": 0.41962486799999993,
+    "no-adverse-assertion-launcher": 0.37598503,
+    "typecheck-launcher": 12.186520060000001,
+    "adverse-launcher": 0.43558287900000003,
+    "setup-control-native-launcher": 2.901180175
+  },
+  "physicalExecutionsIncludingSetupControl": 8,
+  "recommendation": "Advance independently justified information/transport slice; keep complete navigation benefit held. No production relevance change earned: distant X is irrelevant under ordinary-speed bound, nearby QB remains possibly relevant to every saved alternative. Corrected paired control is exact; P032 moves without proving earlier collision benefit.",
+  "nextConcreteCorrection": "Use approved historical sampledVel/sample-origin contract for a bounded ordinary reachable-motion model of the nearby QB, retaining unknown current motion and explicit force/contact limitations. Compare route-relevant uncertainty rather than removing unknown peers or treating frozen estimates as stationary."
+}

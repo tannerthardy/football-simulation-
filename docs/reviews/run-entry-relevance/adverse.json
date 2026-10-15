@@ -1,0 +1,7 @@
+{
+  "schema": "run-entry-first-adverse-v1",
+  "status": "not-applicable",
+  "reason": "Opposing opening is exactly unchanged; no adverse decision to diagnose.",
+  "newNativeTicks": 0,
+  "elapsedSeconds": 0.22264469899999997
+}

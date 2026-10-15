@@ -1,0 +1,235 @@
+{
+  "schema": "run-entry-first-adverse-v1",
+  "question": "Does the prior raw approach preview contradict the request actually issued by existing teammate spacing?",
+  "t": 2.05,
+  "sameOwnAndPeerInformation": true,
+  "alternatives": [
+    {
+      "label": "raw requested",
+      "command": {
+        "vel": {
+          "x": 6.699607938785595,
+          "y": 6.876590325017238
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      },
+      "choice": "gather",
+      "status": "blocked",
+      "knownMinimumGap": -0.26564926898920854,
+      "choices": [
+        {
+          "kind": "fast",
+          "status": "blocked",
+          "knownMinimumGap": -0.5064545454545455,
+          "worst": {
+            "id": 7,
+            "gap": -0.5064545454545455
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 26.50585805228723,
+              "y": 30.41275892764995
+            },
+            "vel": {
+              "x": 5.095153411259951,
+              "y": 4.5593863172374585
+            },
+            "support": "up"
+          }
+        },
+        {
+          "kind": "slower",
+          "status": "blocked",
+          "knownMinimumGap": -0.5064545454545455,
+          "worst": {
+            "id": 7,
+            "gap": -0.5064545454545455
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 25.796414761593898,
+              "y": 30.147351908289075
+            },
+            "vel": {
+              "x": 3.3498039693927977,
+              "y": 3.438295162508619
+            },
+            "support": "up"
+          }
+        },
+        {
+          "kind": "gather",
+          "status": "blocked",
+          "knownMinimumGap": -0.26564926898920854,
+          "worst": {
+            "id": 7,
+            "gap": -0.26564926898920854
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 25.14065384894926,
+              "y": 29.14606868984265
+            },
+            "vel": {
+              "x": 0.6405390793382354,
+              "y": 0.47606014254347473
+            },
+            "support": "up"
+          }
+        }
+      ]
+    },
+    {
+      "label": "spacing issued",
+      "command": {
+        "vel": {
+          "x": 2.228162076700624,
+          "y": 2.9153281677060603
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      },
+      "choice": "gather",
+      "status": "blocked",
+      "knownMinimumGap": -0.26564926898920854,
+      "choices": [
+        {
+          "kind": "fast",
+          "status": "blocked",
+          "knownMinimumGap": -0.5064545454545455,
+          "worst": {
+            "id": 7,
+            "gap": -0.5064545454545455
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 25.308236589666638,
+              "y": 29.86790013027063
+            },
+            "vel": {
+              "x": 2.228162076700624,
+              "y": 2.9153281677060603
+            },
+            "support": "up"
+          }
+        },
+        {
+          "kind": "slower",
+          "status": "blocked",
+          "knownMinimumGap": -0.24851319786548814,
+          "worst": {
+            "id": 7,
+            "gap": -0.24851319786548814
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 25.091558495724676,
+              "y": 29.34019495282959
+            },
+            "vel": {
+              "x": 1.114081038350312,
+              "y": 1.4576640838530301
+            },
+            "support": "up"
+          }
+        },
+        {
+          "kind": "gather",
+          "status": "blocked",
+          "knownMinimumGap": -0.26564926898920854,
+          "worst": {
+            "id": 7,
+            "gap": -0.26564926898920854
+          },
+          "end": {
+            "t": 0.6000000000000001,
+            "pos": {
+              "x": 25.14065384894926,
+              "y": 29.14606868984265
+            },
+            "vel": {
+              "x": 0.6405390793382354,
+              "y": 0.47606014254347473
+            },
+            "support": "up"
+          }
+        }
+      ]
+    }
+  ],
+  "acquiredTightEnd": {
+    "id": 7,
+    "picture": {
+      "source": "observed",
+      "pos": {
+        "x": 25.355098547193197,
+        "y": 29.326886280936012
+      },
+      "vel": {
+        "x": -0.15871393256402325,
+        "y": 0.9709655206922758
+      },
+      "sampledAt": 1.75,
+      "availableAt": 2.05,
+      "age": 0.2999999999999998,
+      "predictedFor": 0.2999999999999998
+    },
+    "radius": 0.30272727272727273,
+    "brake": 6.2857142857142865
+  },
+  "actualTightEndPositions": [
+    {
+      "t": 2.05,
+      "pos": {
+        "x": 25.277711172645365,
+        "y": 29.46160540443231
+      },
+      "vel": {
+        "x": -0.38482411592079335,
+        "y": 1.7937820556013
+      }
+    },
+    {
+      "t": 2.25,
+      "pos": {
+        "x": 25.13908316069523,
+        "y": 29.879373182362432
+      },
+      "vel": {
+        "x": -0.7546478254779866,
+        "y": 2.375856980289631
+      }
+    },
+    {
+      "t": 2.45,
+      "pos": {
+        "x": 24.961429538470234,
+        "y": 30.414288860393775
+      },
+      "vel": {
+        "x": -0.9379119827264686,
+        "y": 2.9313175561797915
+      }
+    },
+    {
+      "t": 2.65,
+      "pos": {
+        "x": 24.83598628882232,
+        "y": 31.017649021037084
+      },
+      "vel": {
+        "x": -0.020573760644612582,
+        "y": 2.9762266546055924
+      }
+    }
+  ],
+  "warning": "Actual future state is diagnostic-only and is never supplied to a controller. The spacing-issued command is not claimed to be available before that stage executes.",
+  "newNativeTicks": 0,
+  "elapsedSeconds": 0.20980980600000004
+}

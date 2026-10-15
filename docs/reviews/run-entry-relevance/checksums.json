@@ -1,0 +1,23 @@
+{
+  "README.md": "740e59c7aef29fc9a43c027089c27659b6d6b918881485c946cfe4723aa4eeec",
+  "adverse.json": "4465ced890b82af948af5ecd2d9ee6756152167eb11d37d65d5a3822467d5658",
+  "compatibility.json": "9ade60e737f71a4163db5214630bde9fd95a446bc49c56e73ff9eb0da060ab84",
+  "extraction.json": "47552267c5be7cfd4b3e2bce3c191f9217efd639a5379ab53de40a37a9abb762",
+  "inputs.json.gz": "66c09e1eeeaf834529794fd36f323dc4444d66cab207ea3e39cd3f54770e88eb",
+  "measurements.json": "305227ae4e947323d3e1003675dae4862eded5feb8efa147018035a33edb2e41",
+  "native.json.gz": "4b086289d5f9fcb623b0711df98779ac981055fad82fb4a486f5e9231424f362",
+  "patches/01-observation-transport.patch": "7e3f7fafcd177532732283f6234f676710b3331528f9449d121adaafc06461d5",
+  "patches/02-information-risk.patch": "6e029983024d643129cf11db875d6ad6caa748dbab901641f209d9106915d3ed",
+  "patches/03-unproved-navigation.patch": "f02d6675ea61d212fb58ad9fff7b6cea9336219ff8620f617a782d955ae77ac8",
+  "route-relevance.json": "f976bda454329c81a4809c829618dc362341f457dc5183e27bbda951f0cfc64d",
+  "setup-control-adverse.json": "043d86349df83620464e8e616fcd4e977ad7f62f495190ec3fe5fb3d5e50862f",
+  "setup-control-native.json.gz": "26bcb5bae820e9a2c03f33a5fb37303bf046d7adc783485bf3fe8f91f5f3d95c",
+  "summary.json": "8ed380a84ba40b7c33e723ca32c23530c0784b99715777e9527973ab839e61bf",
+  "validation/adverse-launcher.json": "7bbb6ae9697956c5f88d3ed047c61e5f908693fc450dee957f0e88c97d7c6712",
+  "validation/focused-launcher.json": "e7fe74f68400ac45f58a4fe3a9c7b03bf471b96fc88ec6797b8ee7f922826f9e",
+  "validation/native-launcher.json": "9ed22a5a61033240bc6bb23c4cf2bf7ba1bc455d0835755403cfa307746a034b",
+  "validation/no-adverse-assertion-launcher.json": "13f5607987648a8d75342fabc42524e4c7af40a0ace40670f5e3fb48ac1aeda8",
+  "validation/setup-control-adverse-launcher.json": "dc6a79f16a1e765db6ac1b24a0ef472dffcf45d7b9058fe7a94d9f3967118819",
+  "validation/setup-control-native-launcher.json": "9244a2085e0d123813278962fe174750ca0c0a0660338385b6d5cd7a38b5ea7e",
+  "validation/typecheck-launcher.json": "26d6f5f00b965bad0d2e0a8f8a43586a2dd8d6ca5888bd97ccba11e76c184f5a"
+}

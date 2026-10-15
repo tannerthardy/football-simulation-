@@ -1,0 +1,19 @@
+{
+  "schema": "separable-run-entry-source-v1",
+  "acceptedBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "navigationCandidate": "f93840e428e8f8795020f400faf75e1792f5751b",
+  "stages": [
+    {
+      "patch": "01-observation-transport.patch",
+      "tree": "2ec2fbbcb868c7dead286b563968cb5eed75fb06"
+    },
+    {
+      "patch": "02-information-risk.patch",
+      "tree": "33bdb7ee000c69f129e0539385be58305d926899"
+    }
+  ],
+  "navigationTree": "6dd21f57efceefa5523047819c9dc4050488c38e",
+  "allThreeSourceExactCandidate": true,
+  "informationOnlyExcludesNavigation": true,
+  "testsAndFixture": "Use existing portable candidate tests/fixtures only with their dependencies; these three patches deliberately split runtime source only."
+}

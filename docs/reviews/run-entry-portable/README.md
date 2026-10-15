@@ -1,5 +1,8 @@
 # Portable run-entry consumer: unknown motion stays unknown
 
+Follow-up: [approval reconciled, route relevance and bounded coupled evidence](../run-entry-relevance/README.md).
+The coordination blocker is cleared; complete navigation benefit remains held.
+
 **The extraction is reviewable on current accepted development. Hold promotion
 as a complete navigation improvement:** correcting the consumer exposes stale
 peers in the original saved scenes, so the earlier entry-reranking benefit is

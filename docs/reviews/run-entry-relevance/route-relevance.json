@@ -1,0 +1,1018 @@
+[
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 74.8,
+      "y": 23.77425964055695
+    },
+    "choice": "gather",
+    "status": "unknown",
+    "knownMinimumGap": 0.4988462991698386,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.377580448183213,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.758599164693847,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 5.514984791701149,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 5.6249655722510745,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 75.05591006273107,
+      "y": 25.387084523041526
+    },
+    "choice": "gather",
+    "status": "unknown",
+    "knownMinimumGap": 0.4988462991698386,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.473782054159766,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.9764337090007915,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 5.154365254122293,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.985043252391094,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 74.93723107164152,
+      "y": 26.78612645565707
+    },
+    "choice": "gather",
+    "status": "unknown",
+    "knownMinimumGap": 0.4988462991698386,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.655849700862193,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.292562423699778,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.76173884105928,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.279335687322021,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 74.89487872797069,
+      "y": 28.38741680206015
+    },
+    "choice": "gather",
+    "status": "unknown",
+    "knownMinimumGap": 0.4988462991698386,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.001718282050298,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.650684322918757,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.232437386619214,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 3.809288833461466,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 75.00268222409963,
+      "y": 30.32195479123544
+    },
+    "choice": "slower",
+    "status": "unknown",
+    "knownMinimumGap": 0.07866789974962418,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.35736984055247,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.823606408746713,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 3.8872652149707396,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 3.759306036544729,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 74.8,
+      "y": 22.020043756660172
+    },
+    "choice": "slower",
+    "status": "unknown",
+    "knownMinimumGap": 0.03552819106798699,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.371338881243769,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.764092286096488,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 5.721217850760411,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 5.8142100218005375,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "failing",
+    "entry": {
+      "x": 75.70516609283703,
+      "y": 32.268362640762675
+    },
+    "choice": "slower",
+    "status": "unknown",
+    "knownMinimumGap": 0.10882405039568677,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 69.60471408484008,
+            "y": 29.56539506252714
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.486500794597927,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.87694570353001,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.989620963527976,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "slot": "X",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 74.56478792828797,
+            "y": 45.73074916835776
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.35,
+          "availableAt": 1.6500000000000001,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 9.584242759364484,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 3.8142611803052167,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 3.7757744686655212,
+            "initialRadius": 8.625818483428034
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "disjoint",
+            "minimumOrdinaryGap": 4.6855210729248356,
+            "initialRadius": 8.625818483428034
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 27.38096291702604,
+      "y": 21.309159141219816
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.19381859374001054,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.565878767788675,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.87403593907424,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 26.93314404119174,
+      "y": 24.61697329804761
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.2579360674847201,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.242251261066281,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.717557206981146,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 26,
+      "y": 25.93860428572723
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.29388857259678247,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.12179735959911,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.655488909331794,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 26,
+      "y": 29.458092209826994
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.63689773230953,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.753489614337066,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.282773246182058,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 26,
+      "y": 18.01522014502377
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.15747689684215527,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.852767369800933,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.02492851960204,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scene": "waiting-control",
+    "entry": {
+      "x": 26,
+      "y": 33.19464651131885
+    },
+    "choice": "fast",
+    "status": "unknown",
+    "knownMinimumGap": 0.7202400637399216,
+    "unknown": [
+      {
+        "id": 0,
+        "slot": "QB",
+        "picture": {
+          "source": "remembered",
+          "pos": {
+            "x": 20.966730489308784,
+            "y": 26.76698768580962
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 1.45,
+          "availableAt": 1.75,
+          "age": 0.5999999999999999,
+          "predictedFor": 0.3
+        },
+        "vmax": 8.621534410799635,
+        "choices": [
+          {
+            "kind": "fast",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -7.988941339639551,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "slower",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -8.564512557458272,
+            "initialRadius": 7.759380969719671
+          },
+          {
+            "kind": "gather",
+            "motion": "unknown",
+            "relevance": "possibly-relevant",
+            "minimumOrdinaryGap": -9.373079037958886,
+            "initialRadius": 7.759380969719671
+          }
+        ]
+      }
+    ]
+  }
+]

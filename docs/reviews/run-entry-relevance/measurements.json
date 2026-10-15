@@ -1,0 +1,297 @@
+{
+  "schema": "run-entry-relevance-measurement-v1",
+  "sourceSha256": "bf044ce72a98a9aa6dcbebf31d61b5f8754b56dc8b5e848283b27f4aa60887f8",
+  "rawTraceSha256": "4b086289d5f9fcb623b0711df98779ac981055fad82fb4a486f5e9231424f362",
+  "control": {
+    "all60FramesEqual": true,
+    "eventsEqual": true,
+    "finalBodiesBallRngEqual": true
+  },
+  "target": {
+    "firstExecutedRequestChange": {
+      "t": 1.7,
+      "sameBodiesBefore": true,
+      "actors": [
+        6
+      ]
+    },
+    "noTeammateImpactsEitherArm": true,
+    "rgNormalImpulseRatio": 1.0352720618245699,
+    "finalRgPositions": [
+      {
+        "arm": "information-only",
+        "pos": {
+          "x": 77.456209827705,
+          "y": 24.153561871965483
+        }
+      },
+      {
+        "arm": "portable-admission",
+        "pos": {
+          "x": 77.46154582467726,
+          "y": 24.231065274283072
+        }
+      }
+    ],
+    "summaries": [
+      {
+        "play": 32,
+        "arm": "information-only",
+        "end": 3,
+        "censored": true,
+        "outcome": null,
+        "losCrossing": 2.5999999999999996,
+        "rb": {
+          "pos": {
+            "x": 75.5258138866843,
+            "y": 21.875480481029374
+          },
+          "vel": {
+            "x": 1.8115243207083984,
+            "y": -3.4661300159859714
+          },
+          "speed": 3.91096888919318
+        },
+        "impacts": [],
+        "durations": {
+          "fast": 0,
+          "slower": 0,
+          "gather": 0
+        },
+        "statuses": {
+          "clear": 0,
+          "blocked": 0,
+          "unknown": 0
+        },
+        "loads": {
+          "2": {
+            "normalImpulse": 1146.2828829523617,
+            "absoluteTangentImpulse": 647.1472915774934
+          },
+          "3": {
+            "normalImpulse": 46.12103931431943,
+            "absoluteTangentImpulse": 22.697529236624096
+          },
+          "4": {
+            "normalImpulse": 1152.5214534868328,
+            "absoluteTangentImpulse": 558.6650901791271
+          },
+          "5": {
+            "normalImpulse": 1052.836967174295,
+            "absoluteTangentImpulse": 480.9642167082143
+          },
+          "7": {
+            "normalImpulse": 118.4653464037306,
+            "absoluteTangentImpulse": 354.4701337898896
+          },
+          "10": {
+            "normalImpulse": 156.7307465036269,
+            "absoluteTangentImpulse": 85.21304748907097
+          }
+        },
+        "entryReads": [
+          {
+            "t": 1.7,
+            "selected": {
+              "x": 74.8,
+              "y": 28.06840558176394
+            }
+          },
+          {
+            "t": 1.95,
+            "selected": {
+              "x": 74.8,
+              "y": 21.55414534026393
+            }
+          },
+          {
+            "t": 2.2,
+            "selected": {
+              "x": 74.8,
+              "y": 20.729627111266666
+            }
+          },
+          {
+            "t": 2.45,
+            "selected": {
+              "x": 75.4833999312624,
+              "y": 22.250282465387425
+            }
+          }
+        ],
+        "events": [
+          {
+            "t": 2.45,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 75.81,
+              "y": 25.45
+            },
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 2.65,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 74.76,
+              "y": 23.35
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.7,
+            "type": "fall",
+            "a": 12,
+            "pos": {
+              "x": 72.97,
+              "y": 22.58
+            },
+            "note": "dive"
+          },
+          {
+            "t": 2.9,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 75.44,
+              "y": 22.06
+            },
+            "note": "legs"
+          }
+        ]
+      },
+      {
+        "play": 32,
+        "arm": "portable-admission",
+        "end": 3,
+        "censored": true,
+        "outcome": null,
+        "losCrossing": 2.75,
+        "rb": {
+          "pos": {
+            "x": 75.36203955298582,
+            "y": 22.22305945811719
+          },
+          "vel": {
+            "x": 2.8262256560328756,
+            "y": -5.203278123580093
+          },
+          "speed": 5.921288262713245
+        },
+        "impacts": [],
+        "durations": {
+          "fast": 0.8500000000000002,
+          "slower": 0.15000000000000002,
+          "gather": 0.1
+        },
+        "statuses": {
+          "clear": 0,
+          "blocked": 0,
+          "unknown": 1.1000000000000003
+        },
+        "loads": {
+          "2": {
+            "normalImpulse": 1181.546159890058,
+            "absoluteTangentImpulse": 571.460952690311
+          },
+          "3": {
+            "normalImpulse": 46.12103931431943,
+            "absoluteTangentImpulse": 22.697529236624096
+          },
+          "4": {
+            "normalImpulse": 1149.489365124506,
+            "absoluteTangentImpulse": 522.6565133671211
+          },
+          "5": {
+            "normalImpulse": 1089.9726977716593,
+            "absoluteTangentImpulse": 479.25575409624577
+          },
+          "7": {
+            "normalImpulse": 118.4653464037306,
+            "absoluteTangentImpulse": 354.4701337898896
+          },
+          "10": {
+            "normalImpulse": 155.4224276021126,
+            "absoluteTangentImpulse": 84.40792816506216
+          }
+        },
+        "entryReads": [
+          {
+            "t": 1.7,
+            "selected": {
+              "x": 74.8,
+              "y": 28.06840558176394
+            }
+          },
+          {
+            "t": 1.95,
+            "selected": {
+              "x": 74.8,
+              "y": 21.55414534026393
+            }
+          },
+          {
+            "t": 2.2,
+            "selected": {
+              "x": 74.8,
+              "y": 20.729627111266666
+            }
+          },
+          {
+            "t": 2.45,
+            "selected": {
+              "x": 75.48071090735908,
+              "y": 22.24852845735604
+            }
+          },
+          {
+            "t": 2.7,
+            "selected": {
+              "x": 75.69514898963433,
+              "y": 21.700693389992992
+            }
+          }
+        ],
+        "events": [
+          {
+            "t": 2.45,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 75.87,
+              "y": 25.42
+            },
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 2.75,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 74.66,
+              "y": 23.27
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 12,
+            "pos": {
+              "x": 73.01,
+              "y": 22.48
+            },
+            "note": "dive"
+          }
+        ]
+      }
+    ]
+  },
+  "newNativeTicks": 0
+}

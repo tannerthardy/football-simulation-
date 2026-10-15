@@ -1,0 +1,7 @@
+{
+  "runtimeSourceUnchanged": true,
+  "typecheckTsInputsUnchangedSince": "adf7d8d9f79758863df7af75c440497ad8992f18",
+  "nativeSourceUnchanged": true,
+  "prior12ConsumerTestsUnchanged": true,
+  "note": "Later edits are .mjs observers/docs only; current baseline default remains accepted8c891f4. This reuses compatible focused/typecheck receipts, not a combined-suite claim."
+}
