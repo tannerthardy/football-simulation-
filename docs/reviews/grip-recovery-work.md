@@ -52,7 +52,7 @@ The2058 accepted intervals demonstrate supported native invocation. The small ch
 
 Auditing retained PR51 histories finds positive reel inside the native stop in seed4001:359 previous-helper calls and361 transition-helper calls. First violations are4.326042s and4.286458s, respectively, after the earlier4.1125s support amplification. The older helper and its reel reference both omitted the native stop. The new corrective path explicitly preserves zero reel inside that stop and is independent of this defect.
 
-A narrow scope/fallback guard is isolated on `codex/grip-reel-stop`, from PR51, with input-only counterexamples. Review it separately before any active/corrective combination. It does not explain seed5001's inherited+.95s delay: that history has no audited below-stop positive-reel calls. Preserve the original evidence rather than relabeling all changes as recovery or timing failures.
+A narrow scope/fallback guard is isolated in [draft PR #56](https://github.com/tannerthardy/football-simulation-/pull/56), from PR51, with input-only counterexamples. Review it separately before any active/corrective combination. It does not explain seed5001's inherited+.95s delay: that history has no audited below-stop positive-reel calls. Preserve the original evidence rather than relabeling all changes as recovery or timing failures.
 
 ## Validation and next decision
 
