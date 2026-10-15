@@ -1,0 +1,132 @@
+{
+  "protocol": "wide-zone-flow-v1",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "awarenessHead": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "acceptedSource": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "awarenessSource": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+  "openingStop": 3,
+  "maximumBatchWallSeconds": 30,
+  "freshTransferDeclaredBeforeResults": {
+    "id": "uc12-wz-s3-tite-fresh",
+    "concept": "wz_strong",
+    "kind": "run",
+    "seed": 3,
+    "flip": false,
+    "o": 31,
+    "d": 32,
+    "front": "tite",
+    "formation": "ace_12",
+    "purpose": "Frozen before any native candidate: same roster/seed, reduced interior challenge to covered/uncovered and DL keys. Run once only after mechanism and original controls support candidate; preserve adverse result."
+  },
+  "scope": "Frozen before candidate native results: moving inside/split mesh and planned-climb collection. Preserve productive inside strong C, diagnose obstructed weak LG, check real Gun Wing slice, all three existing Ace WZ openings, known Tite C miss and counter pull/lead transfer. 3s or earlier whistle, existing bodies/flags/physics; reuse all reference evidence.",
+  "inputs": [
+    {
+      "id": "ace12-iz_strong-over-s3",
+      "concept": "iz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "ace12-iz_weak-over-s3",
+      "concept": "iz_weak",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "wing12-split_zone-over-s3",
+      "concept": "split_zone",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "gun_wing_12"
+    },
+    {
+      "id": "ace12-counter-over-s3",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "concept": "wz_weak",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-s3-tite-fresh",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "tite",
+      "formation": "ace_12",
+      "purpose": "Frozen before any native candidate: same roster/seed, reduced interior challenge to covered/uncovered and DL keys. Run once only after mechanism and original controls support candidate; preserve adverse result."
+    }
+  ],
+  "parentCode": "ccbbe47b217333dd7800c65890fa87a26a9877c7",
+  "parentPublication": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+  "parentSource": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+  "frozenBeforeTransferResults": true,
+  "transferBefore": {
+    "commit": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+    "source": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96"
+  },
+  "transferCandidate": {
+    "commit": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+    "source": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+  },
+  "setupCorrection": "Both sources reject Ace12 split-zone: no off-ball core slicer. Declared Gun Wing12 before any split-zone simulation; invalid initial batch preserved in receipts (2 valid IZ plays per arm lost before final write).",
+  "referenceSources": {
+    "current-zone": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+    "wide-zone-and-counter": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+  }
+}

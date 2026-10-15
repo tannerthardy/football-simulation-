@@ -86,7 +86,7 @@ def main():
     fig, axes = plt.subplots(2, len(cases), figsize=(5*len(cases), 10), dpi=100, squeeze=False)
     fig.subplots_adjust(left=.045, right=.99, top=.87, bottom=.115, wspace=.17, hspace=.24)
     title = fig.suptitle('Run schemes · achieved movement and physical load · 0.00 s', fontsize=17, y=.985)
-    fig.text(.5, .946, f'Strong presses toward lower field y; weak toward higher field y. 0–{args.stop:g} s · playback at half speed.',
+    fig.text(.5, .946, f'Strong presses toward lower field y; weak toward higher field y. 0–{args.stop:g} s · playback {50/args.delay_ms:g}×.',
              ha='center', fontsize=10)
     fig.text(.5, .920, 'Native all-22 reactions from snap. Whistled cases hold the last pose; no motion is extrapolated.',
              ha='center', fontsize=9)

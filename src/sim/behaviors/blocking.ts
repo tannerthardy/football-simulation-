@@ -912,9 +912,10 @@ export class RunBlocker implements Behavior {
    * takes the closest approach and the plan says so. Empty-space forecast
    * only: grips, traffic and the backer's future cuts are unknown. */
   private plannedClimb(a: Agent, sim: PlaySim, target: Agent, strike: number, picture?: Perceived): Intent | null {
+    const seen = picture ?? sim.see(a, target);
     const read = this.climbRead;
     if (!read || read.target !== target || sim.t >= read.nextRead) {
-      const seen = picture ?? sim.see(a, target), run = sim.offCall.run!;
+      const run = sim.offCall.run!;
       const side = playSideSign(sim, run) * .5;
       const capacity = a.body.support
         ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -923,7 +924,12 @@ export class RunBlocker implements Behavior {
         const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
         const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, Math.hypot(seen.vel.x, seen.vel.y), 1, capacity);
         const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
-        const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
+        // Preview the same collection request used below. The long-range
+        // plan must not bypass near-body braking, shoulder fit or lowering.
+        const error = a.mind.placementError * (1 - .5 * a.r('runBlock'));
+        const command = secondLevelBlockApproach(a, seen, this.plan.drive, meet, error,
+          strike, a.profile.radius + target.profile.radius, { vel, facing }, sim.t);
+        const path = previewFreeMovement(a.body, command, sim.t, 26, sim.world.handContact);
         for (const s of path) {
           const bx = seen.pos.x + seen.vel.x * s.t, by = seen.pos.y + seen.vel.y * s.t;
           const gap = Math.hypot(s.pos.x - bx, s.pos.y - by) - strike;
@@ -943,8 +949,11 @@ export class RunBlocker implements Behavior {
     const r = this.climbRead!;
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
-    return { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
+    const command = { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
+    return secondLevelBlockApproach(a, seen, this.plan.drive, r.meet,
+      a.mind.placementError * (1 - .5 * a.r('runBlock')), strike,
+      a.profile.radius + target.profile.radius, command, sim.t);
   }
 
   /** The uncovered player's own near-gap read. It changes his job only; it
@@ -1233,7 +1242,7 @@ export class RunBlocker implements Behavior {
       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
-      const fit = this.plannedClimb(a, sim, target, contact);
+      const fit = this.plannedClimb(a, sim, target, contact, seen);
       if (fit) return fit;
     }
     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {

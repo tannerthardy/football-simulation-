@@ -1,5 +1,20 @@
 # Current work ownership
 
+## RB timing and second-level collection, 2026-10-15
+
+Root owns this continuation on `codex/run-tempo-climb`, starting from PR52
+publication `42edf82` / engine `66e59745…`. No other live agent owns these files.
+Claim `behaviors/blocking.ts`, runner/mesh decision regions only if the saved
+timing trace demonstrates a cause, a bounded collection helper and focused
+diagnostics/tests. Existing physical laws, capacities, sensing and memory stay
+fixed. Compare saved inside/outside/wide-zone events with existing NFL tracking
+aggregates and published NGS definitions; distinguish snap, handoff, crossing,
+censored failures and presentation speed. Diagnose the first second-level miss
+from saved acquired pictures before editing. One mechanism correction, a genuine
+opposing control, then only named short naturally interacting cases. Reuse
+existing evidence, preserve prior blocking gains and reject unexplained harms.
+Experimental parent comparisons do not designate a shared baseline.
+
 ## Joined release and run-scheme transfer, 2026-10-15
 
 Root continues PR #50 publication `da6cbce` / tested `0336414`, runtime
