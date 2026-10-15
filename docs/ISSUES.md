@@ -86,7 +86,7 @@ before `meshTime-.15`. Physical reach still controls the exchange. P038
 transfers in the combined preflight. P069's historical experimental trajectory
 is not a current-source golden: the matched current-source rollback control
 preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
-**Candidate; combined verified; promotion review pending.**
+**Candidate; combined verified; final integration decision pending.**
 
 <a id="RUN-007"></a>
 ### RUN-007 — Remaining lane, spacing and collection boundaries
@@ -108,12 +108,17 @@ It is not imported or newly verified here.
 <a id="PASS-002"></a>
 ### PASS-002 — Slow upright release is interpreted as blocking
 
+Controller owner approved the exact #63 zone-key contract and recognition
+contribution in [the review](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200453995).
+No recognition blocker remains; this does not approve unrelated scope or grant
+new merge authority. Preserve the original failed and final passing receipts.
+
 [#58](https://github.com/tannerthardy/football-simulation-/pull/58) replaces the
 speed-only blocking cue with acquired pad/contact evidence; contact is limited
 to the observer himself. It is independent of #61 and #54. Preserve legitimate
 blocking, PA, offensive wins, and the adverse power rushing6.82→1.17 evidence.
 The matched92→25.31 gain supports earlier informed containment; it does not
-calibrate the league. **Candidate; combined verified; promotion review pending.**
+calibrate the league. **Candidate; combined verified; final integration decision pending.**
 
 <a id="PASS-003"></a>
 ### PASS-003 — Incidental offensive catch without acquiring the flight
@@ -123,7 +128,7 @@ once-per-tick observer-owned delivery before incidental attempts. P004/P024
 protectors are not QB-selected targets. P034 is a legitimate check-release;
 an acquired emergency catch remains allowed. Preserve the body-facing/occlusion
 limitations, existing privileged targeted tracking, and no claim that P023's
-entire interception is repaired. **Candidate; combined verified; promotion review pending.**
+entire interception is repaired. **Candidate; combined verified; final integration decision pending.**
 
 <a id="PASS-004"></a>
 ### PASS-004 — Quarters match approach and secondary containment
@@ -154,7 +159,7 @@ was assigned, retaining `retainedSnap` and the failed-exchange description.
 It separately records achieved catch depth while keeping intended target/air
 depth. QB and receiver boxes already have distinct actual-recipient semantics.
 No historical recording, comparison table, physical transfer or fumble is
-invented. **Candidate; combined verified; promotion review pending.** More complex possession
+invented. **Candidate; combined verified; final integration decision pending.** More complex possession
 allocation and versioned research-adapter migrations remain separate.
 
 ## Information and awareness

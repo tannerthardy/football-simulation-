@@ -32,15 +32,19 @@ silently become approval; investigate a disagreement with this ledger.
 
 | State | Exact candidate / evidence | Remaining decision, dependency and owner |
 | --- | --- | --- |
-| **Verified; required review pending** | [#63](https://github.com/tannerthardy/football-simulation-/pull/63), publication `0f70bb2a4205497d7df8ed1ed59391d87084c603`, tested `a862a05713d0b8bbd22683ce8a70d5ac16eb18e2`, directly from accepted develop | Integration owns promotion after acceptance under existing authority. Controller/recognition review must decide the explicit zone-key contract revision and five-contribution scope. No code blocker remains; no new tests just to acknowledge the handoff. |
+| **Verified; controller approved; final integration decision pending** | [#63](https://github.com/tannerthardy/football-simulation-/pull/63), publication `0f70bb2a4205497d7df8ed1ed59391d87084c603`, tested `a862a05713d0b8bbd22683ce8a70d5ac16eb18e2`, directly from accepted develop | Integration owns promotion after acceptance under existing authority. [Controller approval](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200453995) clears the zone-key/recognition gate. Final acceptance/merge of the exact five-contribution scope stays under existing authority. No rerun for unchanged code. |
+| **Independent review/extraction** | #13 `d5447c274e63952c023a171b177a1bd79aa72d6b`; #29 `b8e4d86866a9880c59e2e3f0809114b7667c058b` | Run Game/Integration: review the minimal actual controller corrections against accepted develop, preserving source-specific evidence. Neither is accepted merely because #54/#34 included it. |
 | **Gap ready; already included in #63** | `codex/departed-center-gap@132c27a8f1d9ce9a4366b92f0ede0df42a0dac52`; implementation `d63bf4504e1a17e2f6a32738009a532838fc5e20`, evidence `92566b3b650bb2e855487cbf1eae6a2dbf60918b` | Integration verified the three extracted files byte-identical. Nine author focused passes reused; the original `73b9441` / `badddf4` history remains. No earlier zone/Duo dependency. Do not queue the same fix twice. |
 | **Ready minimal extractions in #63** | #57 `1f11e4546bc75ed6c5d139d3ac75fd09d214eb51`; #58 `f597cec3983e73ac5538f1f68a1ef7db4c49fa43`; #60 `987056fe5b6dec61d8377834c5b277600685cbcd`; #61 `351dcff82b96713b5abbc7602d9a051567d1b00a` | Existing riding mesh satisfies #57; exclude its #54 ancestry. #58 and #61 are independent. #60's final-stat and #61's sensing hunks do not overlap. #58's latest update is docs-only. Integration retains required review; focused receipts do not mean individual PRs are merged. |
 | **Blocked coverage** | [#34](https://github.com/tannerthardy/football-simulation-/pull/34) `306579fda9d496d45606445fd542239cf2f5acf4`, tested `cb240d236b3b5bbc13c855dab251fdf986a3ae77` | Pass Game/Pursuit owner: resolve the supported seam-gap expectation (`coverage-panel.test.ts:75`) and native-scramble fixture precondition (`qb-rusher-recording.test.ts:55`). 1,698 pass / two failures; Python skipped. Explanations have not cleared either contract. Do not rerun unchanged source. |
 | **Held awareness promotion** | [#36](https://github.com/tannerthardy/football-simulation-/pull/36) `68284671d062dfd4e7e879bcd037bc21dad3e3ac`, engine/test `98411ef025dcaa3d024e430e1215eec81b13af1e` | Run Game + Awareness: review real rear teammate collision and bounded post-mesh coordination; honest information alone does not establish safe action. Experimental #41/#45/#47/#50/#52 dependencies need their own review. Not needed by #63. |
 | **Full navigation trial held; prior rejection preserved** | `codex/run-entry-cues`: candidate `7f9d9a4b2e40946129281ae382c8483f717e8c5d`, evidence `4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e`; clarification `3246009b951b28912599bb6ef93b4141505c0fc8`, handoff tip `f5618d09f8a25e230217a5a0661098d15eeb5e9b` | Do-It-All! owns achievable approach and teammate-picture uncertainty. The original rejected result remains pinned: contact delays 2.55→2.90s but creates a 69.81 kg·yd/s RB/RG impact with .005 yd forecast clearance. Latest author review says collision alone is insufficient for rejection; private-state removal is independently justified, complete navigation improvement still held. No runtime import; no strength/vision/pass-pro/physics change. |
 | **New approach candidate; dependency held** | `codex/run-entry-admission@75dbf46b12a4d186a7da6ebc463b9fba228f0b50`; information `f8ce858adf7a3859b10307520000f4eb3172d344`, approach `cfcb7db0ba17c978fd02fb179c61f4e8b1d66752`, tested `fd655f10ec67125e945aba473b952f08f67b71a9` | Do-It-All! supplies bounded approach evidence (40 checks/typecheck; P019 unchanged, P032 censored at3s). It directly calls/types `teammateInformation` / `TeammatePicture`, absent from accepted develop and #63. Awareness + Run Game must review the interface host/extraction; Integration owns composition. Do not merge recorded ancestry or add live-state fallback. |
-| **Evidence; no runtime candidate** | [#64](https://github.com/tannerthardy/football-simulation-/pull/64) `db77674b0e2493017d8778c5cdc5dd1420e68002`, diagnostic `eba1b61756d7a85b3b8c39dc73196244e7eef719` | Run Game/pass-protection owner: P040 forecast improves in one trial but loses P019's useful edge control; both trials rejected. Loaded foot-objective algebra is an owner contract question, not a proven defect. Experimental #57/#54 host is explicit; do not import ancestry. |
-| **Experimental / parked** | [#54](https://github.com/tannerthardy/football-simulation-/pull/54) `4ae667e29b3ce085f43c5cb911b294349cda2b8f`; earlier zone/Duo `6122fb03c7104c0f9d762591d737cf2cf6a49067`; [#62](https://github.com/tannerthardy/football-simulation-/pull/62) `1f071b9568f3fcc790aff71ddf5ea032cca5cf16` | Preserve film, rejected trials and evidence. #62's historical patch host is parked; primary Physics owns any independently reviewable current-develop contact-law extraction. No hands/grip/helper/turn package or experimental setting is enabled by this queue. |
+| **Active pass diagnosis / contract question** | [#64](https://github.com/tannerthardy/football-simulation-/pull/64) `db77674b0e2493017d8778c5cdc5dd1420e68002`, diagnostic `eba1b61756d7a85b3b8c39dc73196244e7eef719` | Run Game/pass-protection owner: P040 forecast improves in one trial but loses P019's useful edge control; both trials rejected. #67 is a separately reviewable free-approach candidate; the loaded foot-objective algebra remains an owner question, not a proven defect. Experimental #57/#54 host is explicit; do not import ancestry. |
+| **Current physics candidate held** | [#66](https://github.com/tannerthardy/football-simulation-/pull/66) `29b00905edee16f00651317364b729c1b377eb5b` | Run/Physics adjudicate five helper contracts; Integration owns two center-history compatibility questions and later exact verification. Preserve all seven failures and the native yaw force-selection sensitivity/accuracy limit; no new suite or experimental default in this cleanup. #17/#49 are closed predecessor review vehicles, not accepted production. |
+| **Incoming separate pass candidate** | [#67](https://github.com/tannerthardy/football-simulation-/pull/67) `e33ac769929fb1134729c20d083e9e50ed6658da`; tested `81b908586416070145b5b89ee9517380c4fe09fe` | Run Game/Integration: review/extract free cutoff approach only, excluding #64/#57/#54 ancestry. Reuse 17 focused checks/typecheck where compatible; retain P040 RT/P019 RG losses and censored limits. Not added to frozen #63; no new verification in cleanup. |
+| **Owner disposition requested; remain open** | #4, #41, #51, #55, #56 | Handover owner, Awareness and Primary Physics must clarify live objective versus parked research. Requests are linked in the cleanup receipt. No need to finish experiments or run tests to answer. Legacy #1/#2 stay open for their separate owner/reference decisions. |
+| **Closed research / preserved experimental branches** | [#54](https://github.com/tannerthardy/football-simulation-/pull/54) `4ae667e29b3ce085f43c5cb911b294349cda2b8f`; earlier zone/Duo `6122fb03c7104c0f9d762591d737cf2cf6a49067`; [#62](https://github.com/tannerthardy/football-simulation-/pull/62) `1f071b9568f3fcc790aff71ddf5ea032cca5cf16` | PR #54/#62 are closed as completed/parked records; every branch/film/receipt remains. #62's historical patch host is parked; primary Physics owns any independently reviewable current-develop contact-law extraction. No hands/grip/helper/turn package or experimental setting is enabled by this queue. |
 
 #63's [shared receipt](https://github.com/tannerthardy/football-simulation-/blob/0f70bb2a4205497d7df8ed1ed59391d87084c603/data/reviews/current/departed-center-integration/receipt.json)
 records **1,720 TS / 145 Python checks, typecheck/build pass**, source
@@ -69,6 +73,38 @@ measured on recorded host `f62511a`, not accepted develop; P032 is censored, not
 a new completed-run improvement. Source calls confirm the owned-information
 interface is a real dependency. No new native run or shared suite is justified
 while that host/review decision remains unresolved.
+
+<a id="pr-dispositions"></a>
+## Bounded PR cleanup — 2026-10-15
+
+**43 PRs closed; 65 initially open → 23 open after new #67 arrived.**
+The pass classified all 66 initial PRs and recorded #67 separately. This is a
+bookkeeping decision, not simulation-code or scientific revalidation.
+**All 106 starting branches remain; a worker added one, yielding 107.**
+Develop, historical comparison, default branch, genuine stack bases, source,
+tests, settings, dependency files and existing receipts are unchanged. No
+merge, branch deletion, force-push, history rewrite or cleanup of local outputs.
+
+| Closed disposition | PRs | Preservation / successor |
+| --- | --- | --- |
+| Incorporated / adoption complete | #6, #8, #9, #10 | #6 ancestry and exact #8/develop identity verified; #9/#10 component files match accepted #12. Excluded handover ancestry is not claimed included. |
+| Superseded review/documentation vehicles | #17, #24, #37, #49 | #66, #29 and current #65/#63 are explicit successors, not blanket production acceptance. Existing master issue content is retained here in ISSUES. |
+| Completed diagnostic/reference/audit | #5, #11, #14, #18, #22, #23, #26, #30, #35, #39, #42, #44, #54, #59 | Immutable reports, shared references, film, adverse results and next-owner questions remain linked. Branches remain available to active children. |
+| Completed numerical milestones / rejected strategies | #3, #7, #15, #16, #19, #20, #21, #25, #31, #33, #38, #40, #43, #46, #48 | Each named successor retains the next bounded objective. Original cost/accuracy/fallback failures are not relabeled passing. |
+| Parked/rejected controller research | #27, #28, #32, #45, #53, #62 | Preserve original trials; return only for the recorded decision-changing mechanism/host. No implicit promotion from a closed PR. |
+
+[Exact disposition/evidence/successor and preservation receipt](../data/reviews/current/pr-queue-cleanup.json)
+records every PR head/base/branch, all 43 durable closure comments, source
+incorporation checks, unchanged child bases and owner requests. Closing a PR
+retains its branch and committed files; reopen the same PR if its objective
+becomes active again. Do not create another PR for another run/receipt of the
+same candidate. A genuinely independent review/integration boundary can have
+its own PR (#67's runtime correction versus #64's diagnosis, for example).
+
+Current next decision: #63's controller approval is recorded; decide final
+acceptance/merge of its exact verified five-correction scope under existing
+authority. #66/#67 and awareness/coverage blockers stay independent. No new
+simulation or full-suite run was performed for this cleanup.
 
 <a id="agent-workflow"></a>
 ## Agent workflow: stay current without stopping useful work

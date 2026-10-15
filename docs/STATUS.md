@@ -5,14 +5,18 @@ short ready/blocked/experimental record are in [the integration queue](INTEGRATI
 Do not use the historical sections below as a current starting-reference pin.
 
 - Accepted develop includes merged #12; historical `4ded6b6` stays separate.
-- #63's five narrow corrections are verified and ready for required review;
-  they are not merged. Reuse its exact receipt; no suite rerun is requested.
+- #63's five narrow corrections are verified, with controller contract approval
+  recorded; final integration/merge decision remains. They are not merged. Reuse its exact receipt; no suite rerun is requested.
 - The gap correction is portable; earlier zone/Duo work and the rejected
   entry-risk trial remain separate. Its latest information-versus-navigation
   clarification is recorded without promoting it. #34 coverage and #36 awareness retain
   their named blockers/owners. #54 and physics packages remain experimental.
 - New entry-admission work has a real owned-information interface dependency;
   it stays separate from #63 pending Awareness/Run Game review.
+- PR bookkeeping: 43 finished/superseded PRs closed; 23 remain open after #67
+  arrived. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
+- #66 has seven contract failures to adjudicate; new #67 stays separate from
+  frozen #63. Neither is promoted by cleanup.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 

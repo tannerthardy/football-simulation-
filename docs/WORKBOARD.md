@@ -2,6 +2,12 @@
 
 ## Current queue ownership — 2026-10-15
 
+The bounded PR bookkeeping pass closes 43 finished/superseded records while
+retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
+#63 now has controller contract approval; #66/#67 remain separately scoped.
+Unclear handover/attention/callback dispositions remain with their owners.
+No contributor must rerun a suite, rebase, stop work or move a branch for this.
+
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
 separate documentation branch `codex/integration-queue` starts at accepted

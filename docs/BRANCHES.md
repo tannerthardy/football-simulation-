@@ -1,5 +1,11 @@
 # GitHub branch map and preservation record
 
+The 2026-10-15 [PR-only cleanup](INTEGRATION.md#pr-dispositions) preserved all
+106 starting remote branches; a worker added one during the pass. Closing
+43 completed/superseded PRs did not delete or move their branches, retarget
+child stacks or authorize retirement. The older retirement inventory and
+preservation holds below remain separate dated records.
+
 Current accepted develop, candidate readiness and owner dependencies live in
 [the integration queue](INTEGRATION.md#accepted-development). The counts, old
 adoption decisions and cleanup checks below are dated preservation snapshots,
