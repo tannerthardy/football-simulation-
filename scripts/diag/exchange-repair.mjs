@@ -1,5 +1,6 @@
-/** One native failure/control pair; the recovery-only arm restores only the
- * old early-departure decision. No game replay, RNG probes or extra sensing. */
+/** One native failure/control pair. The rejected recovery-only experiment is
+ * preserved at 0c4f77b; this collector runs only the supported cadence change.
+ * No game replay, RNG probes or extra sensing. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
@@ -15,18 +16,9 @@ const manifest=JSON.parse(readFileSync('data/reviews/current/experimental-game-i
 const flags=Object.fromEntries(Object.keys(manifest.flags).map(k=>[k,process.env[k]??null]));
 assert.deepEqual(flags,manifest.flags);assert.equal(process.version,manifest.node);
 const started=performance.now(),source=sourceVersion(),rows=[];
-for(const [id,arm] of [['spread-air','recovery-only'],['spread-air','combined'],['west-spread','combined']]){
+for(const [id,arm] of [['spread-air','cadence'],['west-spread','cadence']]){
  const sim=savedExchange(id),qb=sim.qb,rb=sim.slot('RB'),input=savedExchanges.inputs.find(r=>r.id===id);
  sim.event('snap',sim.slot('C')??qb);
- if(arm==='recovery-only'){
-  const job=rb.behavior,update=job.update.bind(job);
-  job.update=(a,s)=>{
-   // Exactly the recorded RunnerToMesh condition; private field is diagnostic
-   // JavaScript state, never a new production policy or physical override.
-   if(job.ride&&Math.hypot(job.mesh.x-a.pos.x,job.mesh.y-a.pos.y)<.7)job.passed=true;
-   return update(a,s);
-  };
- }
  const frames=[],cues=[],contacts=[];
  const information=sim.teammateInformation.bind(sim);
  sim.teammateInformation=(a,b)=>{
@@ -42,7 +34,7 @@ for(const [id,arm] of [['spread-air','recovery-only'],['spread-air','combined'],
   return report;
  };
  const start=performance.now();
- while(sim.phase==='live'&&(arm==='combined'||sim.handoffAt<0)&&sim.t<25){
+ while(sim.phase==='live'&&sim.t<25){
   assert(performance.now()-start<30000,'Bounded play budget');sim.tick();
  }
  const transfer=frames.find(f=>f.carrier===rb.idx);

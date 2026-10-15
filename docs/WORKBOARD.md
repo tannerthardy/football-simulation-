@@ -6,9 +6,11 @@ Run-game continues PR #57 on `codex/designed-run-game-diagnosis`. Recorded
 comparator: `f62511a5`, source `dd173a3e`; user-note evidence read-only at
 `4ae667e29b3ce085f43c5cb911b294349cda2b8f`. First question: coordinate the
 attainable shotgun exchange and recovery, using spread-air **P038 (index37)**
-and west-spread **P069 (index68)**. Claim only `QBHandoff.update` in
-`behaviors/qb.ts`, `RunnerToMesh.update` in `assign.ts`, and focused exchange
-fixtures/diagnostics. Physical transfer, information acquisition, spacing,
+and west-spread **P069 (index68)**. Final correction is confined to
+`RunnerToMesh.update` in `assign.ts`, with focused exchange fixtures/diagnostics.
+The acquired-back late-QB-chase trial at `0c4f77b` is rejected: no exchange,
+new QB/LG impact107.99 N·s. `QBHandoff.update` returns to the recorded source;
+failed-exchange recovery remains a separate blocker. Physical transfer, information acquisition, spacing,
 capacities and all shared laws remain owned elsewhere. Genuine keepers and
 play action are opposing contracts. No new full-game campaign.
 
