@@ -137,10 +137,12 @@ node scripts/baseline.mjs --candidate --receipt out/run-entry-portable/probe-rec
 
 Awareness retains shared policy/schema ownership. [Original contract request](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200674433)
 and [consumer scope/unchanged-schema coordination](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200885111)
-are durable. **No owner acknowledgment was visible at publication**; the user
-authorized continuing the consumer, and no new shared representation was invented.
-Observation-only staging still needs its owner/Integration disposition; delivery
-is not claimed to be approval. Run Game's pass scopes remain untouched.
+are durable. **Approval reconciled:** Catching approved the existing-schema consumer and
+observation-only staging in [6201016808](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6201016808),
+following [owner review6200878215](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200878215).
+The prior publication's outstanding-acknowledgment wording is superseded. No
+coordination blocker or extra Integration gate remains. Football benefit stays
+unproved. Run Game's pass scopes remain untouched.
 
 **Next decision:** review this portable contract repair, then agree how a
 route-relevant unknown teammate can be handled using legitimate evidence before

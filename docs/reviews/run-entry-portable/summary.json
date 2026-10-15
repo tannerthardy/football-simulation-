@@ -11,7 +11,7 @@
     "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200674433",
     "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200885111"
   ],
-  "ownerAcknowledgmentObserved": false,
+  "ownerAcknowledgmentObserved": true,
   "schemaPolicyChanged": false,
   "gapAlreadyAccepted": true,
   "priorNativeEvidence": "75dbf46b12a4d186a7da6ebc463b9fba228f0b50",
@@ -75,6 +75,7 @@
     "existingCarrierRegressionNativeExecutions": 4,
     "description": "Initial focused run included the existing carrier recovery observational-equivalence test (two fixed native calls, inspected/plain each). Final focused recheck runs only the two changed test files, including one PlaySim outer tick. Own-body empty-World forecasts occur in tests/probe. No P032/P019 coupled continuation or whole-game collector."
   },
-  "recommendation": "Advance portable consumer/transport for contract review; hold complete entry-admission behavior promotion. Stale QB/receiver memories now correctly block certification of the earlier reranking. Integration owns combined verification and owner staging disposition.",
-  "nextDecision": "Agree a bounded treatment of route-relevant unknown teammates using legitimate evidence, before more football tuning. Do not remove unknown peers or restore private state to recover prior P032 ending."
+  "recommendation": "Observation-only staging and existing-schema consumer approved. Hold complete entry-admission behavior promotion pending route-relevance and short coupled evidence; no coordination blocker remains.",
+  "nextDecision": "Agree a bounded treatment of route-relevant unknown teammates using legitimate evidence, before more football tuning. Do not remove unknown peers or restore private state to recover prior P032 ending.",
+  "ownerApproval": "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6201016808"
 }
