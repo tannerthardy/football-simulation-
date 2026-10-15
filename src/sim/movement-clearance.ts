@@ -78,8 +78,11 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
       let x = body.pos.x - peer.pos.x, y = body.pos.y - peer.pos.y;
       let own=body.pos;
       let gap = Math.hypot(x, y) - touch;
+      // Reads execute on native 50 ms boundaries. Cover the last interval
+      // before that read, including a fractional requested horizon.
+      const through=Math.ceil((peer.horizon??horizon)/.05-1e-9)*.05;
       for (const sample of path) {
-        if (sample.t > (peer.horizon ?? horizon) + 1e-9) break;
+        if (sample.t > through + 1e-9) break;
         // After an installed call expires, bound possible movement from its
         // last valid point. Do not extend the route or delete the obstacle.
         const validAt = Math.min(sample.t, peer.validFor ?? Infinity);

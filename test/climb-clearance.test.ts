@@ -52,6 +52,17 @@ describe('a free climb clears acquired first-level bodies',()=>{
   const choice=choose(f);expect(choice.kind).toBe('direct');expect(choice.command).toBe(f.command);
   expect(path(f.body,choice.command,.6)).toEqual(path(f.body,f.command,.6));
  });
+ it('covers the physical interval up to a fractional next read',()=>{
+  const f=saved();f.body.vel={x:0,y:0};f.command={vel:{x:0,y:0}};
+  const touch=CONTACT_SCALE*2*f.body.profile.radius;
+  f.horizon=.196;f.peers=[{id:91,pos:{x:f.body.pos.x+touch+.19,y:f.body.pos.y},
+   vel:{x:-1,y:0},radius:f.body.profile.radius,horizon:.196}];
+  const choice=choose(f);expect(choice.kind).toBe('blocked');expect(choice.minimumGap).toBeLessThan(0);
+  const own=structuredClone(f.body),peer=structuredClone(f.body);peer.pos={...f.peers[0].pos};peer.vel={x:-1,y:0};
+  const world=new World([own,peer]);world.time=.45;let hits=0;
+  for(let k=0;k<4;k++)hits+=world.step([f.command,{vel:{x:-1,y:0}}],.05).contacts.length;
+  expect(hits).toBeGreaterThan(0);
+ });
  it('accounts for the neighboring route together with the down man',()=>{
   const f=saved(),first=choose(f),states=path(f.body,first.command,f.horizon),p=states.at(-1)!.pos;
   const neighbor:MovementObstacle={id:91,pos:{...p},vel:{x:0,y:0},radius:.34};
