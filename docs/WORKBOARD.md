@@ -1,5 +1,24 @@
 # Current work ownership
 
+## Independent Duo release review #84 — 2026-10-15
+
+Do-It-All independently reviews pinned #84 head4af71ac8a8f320456e87a027579200469a0c1ee0
+and saved evidence70ed238a2246cd89d3c4108d647245baf5ff70bb. Review-only branch
+`codex/pr84-independent-review` starts at accepted7eb2554. Own only the review
+report/artifact directory, and at most one focused supplemental contract if an
+unresolved question requires it. No production blocking/spacing/coverage/physics
+edits; mesh variants remain parked. Check acquired information, keeper security,
+runner space and valid departures. Reuse saved controls and costs; Integration
+retains exact combined verification and adoption authority.
+
+Verdict: accept exact #84 head above as a bounded Duo release preference.
+Verified22 saved artifact hashes, protected equality to tested8d4b868, unchanged
+native Under detour/A027 WZ controls, real RT/DT and RG/LB load and runner space.
+No added test or native run; independent saved-data reduction1.698s. A018 missed
+collection and both changed members/RNG in A030 remain explicit. No remaining
+review blocker; combined verification/adoption remains Integration's decision.
+[Independent report](reviews/pr84-independent-review.md).
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
