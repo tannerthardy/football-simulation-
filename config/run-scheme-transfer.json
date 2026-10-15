@@ -45,7 +45,7 @@
       "formation": "ace_12"
     },
     {
-      "id": "ace12-split_zone-over-s3",
+      "id": "wing12-split_zone-over-s3",
       "concept": "split_zone",
       "kind": "run",
       "seed": 3,
@@ -53,7 +53,7 @@
       "o": 31,
       "d": 32,
       "front": "over",
-      "formation": "ace_12"
+      "formation": "gun_wing_12"
     },
     {
       "id": "ace12-duo-over-s3",
@@ -111,5 +111,6 @@
   "transferCandidate": {
     "commit": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
     "source": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
-  }
+  },
+  "setupCorrection": "Both sources reject Ace12 split-zone: no off-ball core slicer. Declared Gun Wing12 before any split-zone simulation; invalid initial batch preserved in receipts (2 valid IZ plays per arm lost before final write)."
 }

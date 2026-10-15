@@ -59,13 +59,18 @@ const started=performance.now(),panel:any[]=[];
 const inputs=(fresh?[manifest.freshTransferDeclaredBeforeResults]:manifest.inputs)
  .filter((i:any)=>!selectedCases||selectedCases.includes(i.id));
 assert(inputs.length>0&&(!selectedCases||inputs.length===selectedCases.length));
-for(const input of inputs){
+const create=(input:any)=>{
  const recipe=reference.manifest,formation=FORMATION_BY_ID[input.formation];
- const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(input.o),'O','O',{strength:recipe.strength}),formation.personnel),
+ return new PlaySim({offense:pickOffense(generateTeam(new Rng(input.o),'O','O',{strength:recipe.strength}),formation.personnel),
   defense:pickDefense(generateTeam(new Rng(input.d),'D','D',{strength:recipe.strength}),'base43'),
   offCall:{formation,flip:input.flip,kind:'run',run:RUN_BY_ID[input.concept],label:input.id},
   defCall:{personnel:'base43',front:FRONT_BY_ID[input.front],coverage:COVERAGE_BY_ID.cover3,pressure:null,label:input.front+' Cover3'},
   los:recipe.los,ballY:recipe.ballY,firstDownX:recipe.firstDownX,seed:input.seed});
+};
+// Validate every installation before paying for any movement steps.
+for(const input of inputs) create(input);
+for(const input of inputs){
+ const sim=create(input);
  assert.equal(sim.agents.length,22);assert(FRONT_BY_ID[input.front]);
  const initializedInformation=snap(Reflect.get(sim,'teammateAwareness'));
  const actors=sim.agents.map(a=>({idx:a.idx,slot:a.slot,team:a.team,player:snap(a.player),profile:snap(a.profile),
