@@ -8,8 +8,17 @@ import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const start=performance.now(),sha=v=>createHash('sha256').update(typeof v==='string'||Buffer.isBuffer(v)?v:JSON.stringify(v)).digest('hex');
 const fixture=readFileSync('test/fixtures/rb-local-traffic.json.gz'),saved=JSON.parse(gunzipSync(fixture)),rows=[];
+const cachePath=process.argv[2],cached=cachePath?JSON.parse(gunzipSync(readFileSync(cachePath))):null;
+if(cached){
+ assert.equal(cached.fixtureSha256,sha(fixture));assert.equal(cached.node,process.version);
+ const receipt=JSON.parse(readFileSync('out/rb-local-traffic/native.receipt.json'));
+ assert.deepEqual(Object.fromEntries(Object.keys(receipt.flags).map(k=>[k,process.env[k]??null])),receipt.flags);
+ for(const row of cached.rows.filter(r=>r.arm==='accepted')){assert.equal(row.sourceSha256,'1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7');rows.push(row);}
+ assert.equal(rows.length,4,'Require complete compatible baseline before any new simulation');
+}
+
 function source(root){const files=p=>readdirSync(join(root,p),{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(join(p,e.name)):[join(p,e.name)]).sort();const h=createHash('sha256');for(const p of files('src'))h.update(p).update('\0').update(readFileSync(join(root,p))).update('\0');return h.digest('hex');}
-for(const arm of ['accepted','candidate']){
+for(const arm of (cached?['candidate']:['accepted','candidate'])){
  const root=resolve(arm==='accepted'?'out/rb-local-traffic/accepted-engine':'.');
  const load=p=>import(pathToFileURL(join(root,p)).href);
  const [{PlaySim},{Agent}]=await Promise.all([load('src/sim/playsim.ts'),load('src/sim/agent.ts')]);
@@ -53,5 +62,5 @@ function measure(row){
 const comparisons=saved.inputs.map(input=>{const [a,b]=rows.filter(r=>r.play===input.play);assert.equal(a.initialSha256,b.initialSha256);
  const f=b.frames.find((f,i)=>sha(f.final)!==sha(a.frames[i]?.final));const old=f&&a.frames.find(g=>g.t===f.t);
  return {play:input.play,call:b.call,initialStatesEqual:true,allFramesEqual:sha(a.frames)===sha(b.frames),firstDifference:f?{t:f.t,sameBodies:sha(f.before)===sha(old.before),actors:f.final.flatMap((v,i)=>sha(v)===sha(old.final[i])?[]:[i]),old:old.final[6],next:f.final[6],raw:f.raw[6]}:null,before:measure(a),after:measure(b)};});
-const report={schema:'rb-local-traffic-coupled-v1',fixtureSha256:sha(fixture),collectorSha256:sha(readFileSync(import.meta.filename)),node:process.version,comparisons,rows,limits:['Saved calls/players/post-constructor physical bodies and RNG, current constructor recognition/scouting in both arms; not an exact original game replay.','No mid-play state reset, no future-frame or private intent supplied to any controller.','Default accepted center contact; no experimental physics.'],elapsedSeconds:(performance.now()-start)/1000};
+const report={reusedExecutions:cached?4:0,newExecutions:cached?4:8,cacheSha256:cached?sha(readFileSync(cachePath)):null,schema:'rb-local-traffic-coupled-v1',fixtureSha256:sha(fixture),collectorSha256:sha(readFileSync(import.meta.filename)),node:process.version,comparisons,rows,limits:['Saved calls/players/post-constructor physical bodies and RNG, current constructor recognition/scouting in both arms; not an exact original game replay.','No mid-play state reset, no future-frame or private intent supplied to any controller.','Default accepted center contact; no experimental physics.'],elapsedSeconds:(performance.now()-start)/1000};
 mkdirSync('out/rb-local-traffic',{recursive:true});writeFileSync('out/rb-local-traffic/native.json.gz',gzipSync(JSON.stringify(report)));writeFileSync('out/rb-local-traffic/native-summary.json',JSON.stringify({...report,rows:undefined},null,2)+'\n');console.log(JSON.stringify({...report,rows:undefined}));

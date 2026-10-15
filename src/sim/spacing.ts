@@ -33,6 +33,9 @@ export interface SpacingContext {
   constrained?: ReadonlySet<Body>;
   /** Opt in only the possessing carrier on an installed run. */
   runCarrier?: Body;
+  /** Already acquired pictures before any called-track substitution. Missing
+   * motion must not fall back to a private body or another prediction channel. */
+  runCarrierPictures?: ReadonlyMap<Body,Pick<Perceived,'pos'|'vel'>>;
 }
 
 interface PeerPicture {
@@ -129,7 +132,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
-    const peers:PeerPicture[]=[];
+    const peers:PeerPicture[]=[],acquiredPeers:PeerPicture[]=[];
+    let acquiredComplete=!!context?.runCarrierPictures;
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
       const b = agents[j];
@@ -139,6 +143,11 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
       peers.push({pos:seen.pos,vel:seen.vel,touch});
+      if(context?.runCarrier===a.body){
+        const acquired=context.runCarrierPictures?.get(b.body);
+        if(acquired)acquiredPeers.push({pos:acquired.pos,vel:acquired.vel,touch});
+        else acquiredComplete=false;
+      }
       const gap = d - touch;
       if (d < 1e-6) continue;
       const nx = dx / d, ny = dy / d;
@@ -170,7 +179,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
-    spaced=retainAchievableCarrierRequest(a,ia,spaced,peers,context);
+    if(acquiredComplete)spaced=retainAchievableCarrierRequest(a,ia,spaced,acquiredPeers,context);
     intents[i]=gatherForTurn(a,spaced,peers,context);
   }
 }

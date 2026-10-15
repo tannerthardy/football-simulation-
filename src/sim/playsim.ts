@@ -585,12 +585,15 @@ export class PlaySim {
     }
     // A teammate's delayed picture lags motion the call itself announces (a
     // rehearsed track on the snap count); predict him from the call there.
+    const runCarrier=this.offCall.kind==='run'?this.carrier?.body:undefined;
+    const runCarrierPictures=new Map<Body,Pick<Perceived,'pos'|'vel'>>();
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
+      if(a.body===runCarrier)runCarrierPictures.set(b.body,seen);
       if (!called) return seen;
       const age = seen.age ?? 0;
       return { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
-    },{now:t,constrained,runCarrier:this.offCall.kind==='run'?this.carrier?.body:undefined});
+    },{now:t,constrained,runCarrier,runCarrierPictures});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,

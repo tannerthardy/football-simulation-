@@ -15,7 +15,7 @@ function state(id:string){
 function request(s:ReturnType<typeof state>,context=true){
  const agents=[s.a,...s.agents.slice(0,11).filter(p=>p!==s.a)],intents:Intent[]=agents.map(a=>structuredClone(s.f.raw[a.idx]));
  spaceTeammates(agents,intents,(_a,b)=>s.pictures[b.idx]??{pos:{x:1000,y:1000},vel:{x:0,y:0}},
-  context?{now:s.f.t,runCarrier:s.a.body,constrained:new Set(s.f.joints.flatMap((j:any)=>[s.agents[j.a].body,s.agents[j.b].body]))}:undefined);
+  context?{now:s.f.t,runCarrier:s.a.body,runCarrierPictures:new Map(agents.filter(a=>a!==s.a).map(a=>[a.body,s.pictures[a.idx]])),constrained:new Set(s.f.joints.flatMap((j:any)=>[s.agents[j.a].body,s.agents[j.b].body]))}:undefined);
  return intents[0];
 }
 describe('retain a carrier request when radial spacing misreads achievable motion',()=>{
@@ -46,7 +46,7 @@ describe('retain a carrier request when radial spacing misreads achievable motio
   expect(Math.hypot(b.pos.x-c.pos.x,b.pos.y-c.pos.y)).toBeGreaterThan(b.profile.radius+c.profile.radius);
   const raw:Intent={vel:{x:6,y:0}},known=(_a:Agent,p:Agent)=>({pos:{...p.pos},vel:{...p.vel}});
   const run=(preview:boolean)=>{const commands=[structuredClone(raw),{vel:{x:0,y:0}},{vel:{x:0,y:0}}];
-   spaceTeammates([a,b,c],commands,known,preview?{now:s.f.t,runCarrier:a.body}:undefined);return commands;};
+   spaceTeammates([a,b,c],commands,known,preview?{now:s.f.t,runCarrier:a.body,runCarrierPictures:new Map([b,c].map(p=>[p.body,known(a,p)]))}:undefined);return commands;};
   const corrected=run(true);expect(corrected).toEqual(run(false));expect(corrected[0]).not.toEqual(raw);
   const execute=(commands:Intent[])=>{const bodies=[a,b,c].map(p=>structuredClone(p.body)),w=new World(bodies);w.time=s.f.t;let contacts=0,impulse=0;
    for(let k=0;k<12;k++){const r=w.step(commands,.05);const hits=r.contacts.filter(p=>p.i===0||p.j===0);contacts+=hits.length;impulse+=hits.reduce((s,c)=>s+c.impulse,0);
@@ -71,6 +71,16 @@ describe('retain a carrier request when radial spacing misreads achievable motio
   spaceTeammates(peers,legacy,(_a,b)=>unopted.pictures[b.idx]);expect(plain).toEqual(legacy);
   const held=state('P015-2.60');held.f=structuredClone(held.f);held.f.joints.push({a:6,b:0});
   expect(request(held)).toEqual(request(held,false));
+ });
+ it('requires acquired pictures without treating missing motion or a called track as observed',()=>{
+  const s=state('P015-2.60'),peers=[s.a,...s.agents.slice(0,11).filter(a=>a!==s.a)];
+  const run=(map:Map<Agent['body'],Perceived>|undefined)=>{const intents=peers.map(a=>({...structuredClone(s.f.raw[a.idx]),...(a===s.a?{}:{free:true})}));
+   spaceTeammates(peers,intents,(_a,b)=>({...s.pictures[b.idx],vel:{x:-8,y:0}}),{now:s.f.t,runCarrier:s.a.body,runCarrierPictures:map});
+   return intents[0];};
+  const pictures=new Map(peers.slice(1).map(a=>[a.body,s.pictures[a.idx]]));
+  expect(run(pictures)).toEqual(s.f.raw[6]);
+  const missing=new Map(pictures);missing.delete(s.agents[0].body);
+  expect(run(missing)).toEqual(run(undefined));expect(run(missing)).not.toEqual(s.f.raw[6]);
  });
  it('leaves real glancing contact to World rather than shrinking a body or awarding an avoidance win',()=>{
   const s=state('P015-2.60'),command=request(s),a=structuredClone(s.a.body),b=structuredClone(s.agents[0].body);
