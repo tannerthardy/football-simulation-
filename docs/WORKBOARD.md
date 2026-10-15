@@ -28,6 +28,16 @@ Read [safe checkpoint/handoff guidance](INTEGRATION.md#agent-workflow). Existing
 completed-stage and historical claims below retain their own stage/evidence;
 use the current queue and affected owner for live branch/readiness information.
 
+## Independent pass review checkpoint
+
+Integration reviewed #65 documentation and prepared #67's bounded extraction
+from accepted develop. [Fetchable code, complete failed receipt, adverse evidence
+and one-line test proposal](https://github.com/tannerthardy/football-simulation-/blob/3218c43914fd068401d07d5486c66383ccf72149/docs/reviews/pass-cutoff-integration.md).
+Run Game with Catching/replay review owns the decision-kind contract disposition;
+Integration retains final exact composition/verification. The proposal is
+uninstalled. #65 docs are ready for explicit adoption approval; #67 runtime
+stays held independently of Physics and entry-admission. No new merge authority.
+
 ## Accepted #63 and current follow-up
 
 | Item | Owner / boundary | State |

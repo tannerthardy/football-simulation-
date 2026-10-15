@@ -20,7 +20,10 @@ Do not use the historical sections below as a current starting-reference pin.
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
 - #66 remains held after Run-owner adjudication (mirrored feasible collection
   still missed; two center-history compatibility questions remain Integration's).
-  #67 pass approach remains separately queued. Neither is included in develop.
+  #67 is portable on accepted develop, but its one combined attempt has a
+  replay-test decision-kind failure (1,723 pass/one fail; Python skipped).
+  Its one-line test proposal needs Run Game/Catching review. Neither runtime
+  candidate is included in develop; #65 docs are independently ready.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
