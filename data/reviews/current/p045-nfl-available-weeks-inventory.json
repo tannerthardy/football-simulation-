@@ -1,0 +1,116 @@
+{
+  "schema": "p045-nfl-available-weeks-v1",
+  "status": "inventoried_not_executed",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "driver_sha256": "a508c8baaea535cb7cc328a396bf20db39df4e52f5171fe4ce948004e355dec3",
+  "budget": {
+    "wall_seconds": 300,
+    "input_read_bytes": 12884901888
+  },
+  "simulation_runs": 0,
+  "inventory": {
+    "archive": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "archive_bytes": 1219840421,
+    "weeks": [
+      {
+        "week": 1,
+        "member": "big-data-bowl-data/tracking_week_1.csv",
+        "bytes": 971403802,
+        "compressed_bytes": 145396262,
+        "crc32": "4fcd608b",
+        "restored_readable": true,
+        "restored_bytes": 971403802
+      },
+      {
+        "week": 2,
+        "member": "big-data-bowl-data/tracking_week_2.csv",
+        "bytes": 916177128,
+        "compressed_bytes": 136838666,
+        "crc32": "d84e8eb1",
+        "restored_readable": true,
+        "restored_bytes": 916177128
+      },
+      {
+        "week": 3,
+        "member": "big-data-bowl-data/tracking_week_3.csv",
+        "bytes": 975586722,
+        "compressed_bytes": 146382515,
+        "crc32": "df993ad4",
+        "restored_readable": true,
+        "restored_bytes": 975586722
+      },
+      {
+        "week": 4,
+        "member": "big-data-bowl-data/tracking_week_4.csv",
+        "bytes": 922169785,
+        "compressed_bytes": 138290619,
+        "crc32": "f7b30ddf",
+        "restored_readable": true,
+        "restored_bytes": 922169785
+      },
+      {
+        "week": 5,
+        "member": "big-data-bowl-data/tracking_week_5.csv",
+        "bytes": 971152971,
+        "compressed_bytes": 145252045,
+        "crc32": "b6a1728b",
+        "restored_readable": true,
+        "restored_bytes": 971152971
+      },
+      {
+        "week": 6,
+        "member": "big-data-bowl-data/tracking_week_6.csv",
+        "bytes": 852375725,
+        "compressed_bytes": 126808453,
+        "crc32": "d70c1251",
+        "restored_readable": true,
+        "restored_bytes": 852375725
+      },
+      {
+        "week": 7,
+        "member": "big-data-bowl-data/tracking_week_7.csv",
+        "bytes": 824474366,
+        "compressed_bytes": 124190306,
+        "crc32": "9a487c78",
+        "restored_readable": true,
+        "restored_bytes": 824474366
+      },
+      {
+        "week": 8,
+        "member": "big-data-bowl-data/tracking_week_8.csv",
+        "bytes": 903573224,
+        "compressed_bytes": 136017766,
+        "crc32": "7e85cafa",
+        "restored_readable": true,
+        "restored_bytes": 903573224
+      },
+      {
+        "week": 9,
+        "member": "big-data-bowl-data/tracking_week_9.csv",
+        "bytes": 774645862,
+        "compressed_bytes": 115446495,
+        "crc32": "84a4740d",
+        "restored_readable": true,
+        "restored_bytes": 774645862
+      }
+    ],
+    "new_weeks": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "outside_catalog_weeks": [],
+    "planned_input_read_bytes": 9257358332,
+    "source_mode": "Existing verified ZIP streams; no extraction or new download"
+  }
+}

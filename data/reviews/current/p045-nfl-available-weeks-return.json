@@ -1,0 +1,4498 @@
+{
+  "schema": "p045-nfl-available-weeks-v1",
+  "status": "complete",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "driver_sha256": "a508c8baaea535cb7cc328a396bf20db39df4e52f5171fe4ce948004e355dec3",
+  "budget": {
+    "wall_seconds": 300,
+    "input_read_bytes": 12884901888
+  },
+  "simulation_runs": 0,
+  "inventory": {
+    "archive": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "archive_bytes": 1219840421,
+    "weeks": [
+      {
+        "week": 1,
+        "member": "big-data-bowl-data/tracking_week_1.csv",
+        "bytes": 971403802,
+        "compressed_bytes": 145396262,
+        "crc32": "4fcd608b",
+        "restored_readable": true,
+        "restored_bytes": 971403802
+      },
+      {
+        "week": 2,
+        "member": "big-data-bowl-data/tracking_week_2.csv",
+        "bytes": 916177128,
+        "compressed_bytes": 136838666,
+        "crc32": "d84e8eb1",
+        "restored_readable": true,
+        "restored_bytes": 916177128
+      },
+      {
+        "week": 3,
+        "member": "big-data-bowl-data/tracking_week_3.csv",
+        "bytes": 975586722,
+        "compressed_bytes": 146382515,
+        "crc32": "df993ad4",
+        "restored_readable": true,
+        "restored_bytes": 975586722
+      },
+      {
+        "week": 4,
+        "member": "big-data-bowl-data/tracking_week_4.csv",
+        "bytes": 922169785,
+        "compressed_bytes": 138290619,
+        "crc32": "f7b30ddf",
+        "restored_readable": true,
+        "restored_bytes": 922169785
+      },
+      {
+        "week": 5,
+        "member": "big-data-bowl-data/tracking_week_5.csv",
+        "bytes": 971152971,
+        "compressed_bytes": 145252045,
+        "crc32": "b6a1728b",
+        "restored_readable": true,
+        "restored_bytes": 971152971
+      },
+      {
+        "week": 6,
+        "member": "big-data-bowl-data/tracking_week_6.csv",
+        "bytes": 852375725,
+        "compressed_bytes": 126808453,
+        "crc32": "d70c1251",
+        "restored_readable": true,
+        "restored_bytes": 852375725
+      },
+      {
+        "week": 7,
+        "member": "big-data-bowl-data/tracking_week_7.csv",
+        "bytes": 824474366,
+        "compressed_bytes": 124190306,
+        "crc32": "9a487c78",
+        "restored_readable": true,
+        "restored_bytes": 824474366
+      },
+      {
+        "week": 8,
+        "member": "big-data-bowl-data/tracking_week_8.csv",
+        "bytes": 903573224,
+        "compressed_bytes": 136017766,
+        "crc32": "7e85cafa",
+        "restored_readable": true,
+        "restored_bytes": 903573224
+      },
+      {
+        "week": 9,
+        "member": "big-data-bowl-data/tracking_week_9.csv",
+        "bytes": 774645862,
+        "compressed_bytes": 115446495,
+        "crc32": "84a4740d",
+        "restored_readable": true,
+        "restored_bytes": 774645862
+      }
+    ],
+    "new_weeks": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "outside_catalog_weeks": [],
+    "planned_input_read_bytes": 9257358332,
+    "source_mode": "Existing verified ZIP streams; no extraction or new download"
+  },
+  "per_week": [
+    {
+      "week": 1,
+      "status": "reused",
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 3,
+          "invalid": 3,
+          "geometry_matched": 1,
+          "contained": 1,
+          "offensive_win": 0
+        },
+        "witnesses": {
+          "contained": {
+            "id": "2022091101-4104",
+            "events": {
+              "pass_forward": 3.1,
+              "pass_arrived": 4.1,
+              "first_contact": 4.3,
+              "catch": 4.2,
+              "end": 5.2
+            },
+            "target_id": "52595",
+            "receiver_id": "52595",
+            "endpoint": "catch",
+            "selected_defender_ids": [
+              "46527",
+              "52472"
+            ],
+            "catch_depth_yd": 15.2,
+            "yac_yd": -2.1999999999999993,
+            "player_ids_by_common_index": [
+              "41264",
+              "42347",
+              "43380",
+              "44841",
+              "44870",
+              "44898",
+              "46235",
+              "52418",
+              "52595",
+              "53520",
+              "53539",
+              "42368",
+              "42436",
+              "45004",
+              "46124",
+              "46205",
+              "46527",
+              "47799",
+              "52417",
+              "52446",
+              "52472",
+              "53437"
+            ],
+            "frame_provenance": {
+              "snap_frame": 32,
+              "original_event_frames": {
+                "ball_snap": 32,
+                "pass_forward": 63,
+                "pass_arrived": 73,
+                "pass_outcome_caught": 74,
+                "first_contact": 75,
+                "tackle": 84
+              }
+            },
+            "native_stats": null,
+            "snapshots": [
+              {
+                "phase": "release",
+                "event_t_s": 3.1,
+                "position_sample_t_s": 3.1,
+                "receiver_xy": [
+                  12.3,
+                  35.0
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    5.2500000000000036,
+                    -4.0000000000000036
+                  ],
+                  "sample_window_s": [
+                    2.7,
+                    3.1
+                  ]
+                },
+                "nearest_id": "52472",
+                "defenders": [
+                  {
+                    "id": "46527",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 7.955501241279521,
+                    "relative_xy_yd": [
+                      -2.0,
+                      -7.699999999999999
+                    ],
+                    "downfield_lead_yd": -2.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.250000000000001,
+                        -2.5
+                      ],
+                      "sample_window_s": [
+                        2.7,
+                        3.1
+                      ]
+                    },
+                    "speed_yd_s": 3.3634060117684283,
+                    "closing_yd_s": 0.6976304611961053,
+                    "momentum_kg_m_s": [
+                      219.30692137893007,
+                      -243.6743570877
+                    ],
+                    "lead_along_receiver_motion_yd": 3.0756693174589955,
+                    "lateral_to_receiver_motion_yd": 7.336910674775951,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.1,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 4.091735468900023,
+                      "peak_accel_required_at_least_yd_s2": 7.905790268711553
+                    }
+                  },
+                  {
+                    "id": "52472",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 5.5,
+                    "relative_xy_yd": [
+                      5.5,
+                      0.0
+                    ],
+                    "downfield_lead_yd": 5.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.5,
+                        -2.2499999999999964
+                      ],
+                      "sample_window_s": [
+                        2.7,
+                        3.1
+                      ]
+                    },
+                    "speed_yd_s": 3.3634060117684252,
+                    "closing_yd_s": 2.7500000000000036,
+                    "momentum_kg_m_s": [
+                      219.82537745784,
+                      -197.8428397120557
+                    ],
+                    "lead_along_receiver_motion_yd": 4.374874460178742,
+                    "lateral_to_receiver_motion_yd": 3.3332376839457094,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.1,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 4.3761606740904115,
+                      "peak_accel_required_at_least_yd_s2": 8.271089383925542
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "flight_midpoint",
+                "event_t_s": 3.6500000000000004,
+                "position_sample_t_s": 3.6,
+                "receiver_xy": [
+                  14.3,
+                  32.5
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    3.75,
+                    -5.2500000000000036
+                  ],
+                  "sample_window_s": [
+                    3.2,
+                    3.6
+                  ]
+                },
+                "nearest_id": "52472",
+                "defenders": [
+                  {
+                    "id": "46527",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 7.200694410957875,
+                    "relative_xy_yd": [
+                      -3.3000000000000007,
+                      -6.399999999999999
+                    ],
+                    "downfield_lead_yd": -3.3000000000000007,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.25,
+                        -2.5
+                      ],
+                      "sample_window_s": [
+                        3.2,
+                        3.6
+                      ]
+                    },
+                    "speed_yd_s": 2.7950849718747373,
+                    "closing_yd_s": 1.2984858773858492,
+                    "momentum_kg_m_s": [
+                      121.83717854385,
+                      -243.6743570877
+                    ],
+                    "lead_along_receiver_motion_yd": 3.2898081764500864,
+                    "lateral_to_receiver_motion_yd": 6.405244894784441,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.6000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.662201312771017,
+                      "peak_accel_required_at_least_yd_s2": 29.113292310297705
+                    }
+                  },
+                  {
+                    "id": "52472",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 3.712142238654116,
+                    "relative_xy_yd": [
+                      3.6999999999999993,
+                      0.29999999999999716
+                    ],
+                    "downfield_lead_yd": 3.6999999999999993,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.25000000000000355,
+                        -4.500000000000011
+                      ],
+                      "sample_window_s": [
+                        3.2,
+                        3.6
+                      ]
+                    },
+                    "speed_yd_s": 4.506939094329997,
+                    "closing_yd_s": 3.4279397668268223,
+                    "momentum_kg_m_s": [
+                      21.982537745784313,
+                      -395.68567942411295
+                    ],
+                    "lead_along_receiver_motion_yd": 1.906461275398637,
+                    "lateral_to_receiver_motion_yd": 3.1851853015806464,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.6000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 5.172761509561059,
+                      "peak_accel_required_at_least_yd_s2": 10.917861114647492
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "catch",
+                "event_t_s": 4.2,
+                "position_sample_t_s": 4.2,
+                "receiver_xy": [
+                  15.2,
+                  29.8
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    0.9999999999999964,
+                    -4.500000000000002
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "nearest_id": "52472",
+                "defenders": [
+                  {
+                    "id": "46527",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 5.200961449578338,
+                    "relative_xy_yd": [
+                      -3.1999999999999993,
+                      -4.100000000000001
+                    ],
+                    "downfield_lead_yd": -3.1999999999999993,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.7499999999999982,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 1.7677669529663675,
+                    "closing_yd_s": 3.811795221363791,
+                    "momentum_kg_m_s": [
+                      170.5720499613898,
+                      -24.367435708770348
+                    ],
+                    "lead_along_receiver_motion_yd": 3.3081894817345114,
+                    "lateral_to_receiver_motion_yd": 4.0132134696451365,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "52472",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 1.4142135623730971,
+                    "relative_xy_yd": [
+                      1.4000000000000021,
+                      0.1999999999999993
+                    ],
+                    "downfield_lead_yd": 1.4000000000000021,
+                    "motion": {
+                      "velocity_yd_s": [
+                        -2.7499999999999947,
+                        -4.500000000000002
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 5.273755777432245,
+                    "closing_yd_s": 3.712310601229366,
+                    "momentum_kg_m_s": [
+                      -241.80791520362357,
+                      -395.68567942411215
+                    ],
+                    "lead_along_receiver_motion_yd": 0.1084652289093281,
+                    "lateral_to_receiver_motion_yd": 1.4100479758212672,
+                    "catch_landmark_demand": null
+                  }
+                ]
+              }
+            ],
+            "labels": {
+              "gameId": "2022091101",
+              "playId": "4104",
+              "pff_passCoverage": "Quarters",
+              "routeRan": "POST",
+              "official_target_had_reception": true,
+              "all_22_positions_observed_snap_through_endpoint": true
+            }
+          }
+        }
+      },
+      "result_sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+      "audit": {
+        "reason_detail": "Legacy week-1 invalid/geometry reasons were not collected; no rescan"
+      }
+    },
+    {
+      "status": "complete",
+      "week": 2,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 7,
+          "invalid": 0,
+          "geometry_matched": 4,
+          "contained": 3,
+          "offensive_win": 0
+        },
+        "witnesses": {
+          "contained": {
+            "id": "2022091807-2947",
+            "events": {
+              "pass_forward": 3.4,
+              "pass_arrived": 4.4,
+              "first_contact": 5.4,
+              "catch": 4.8,
+              "end": 6.0
+            },
+            "target_id": "54473",
+            "receiver_id": "54473",
+            "endpoint": "catch",
+            "selected_defender_ids": [
+              "38577",
+              "47844",
+              "47862"
+            ],
+            "catch_depth_yd": 19.3,
+            "yac_yd": 2.6999999999999993,
+            "player_ids_by_common_index": [
+              "41232",
+              "41808",
+              "42345",
+              "45550",
+              "47797",
+              "47814",
+              "48723",
+              "53433",
+              "53543",
+              "54473",
+              "54616",
+              "38577",
+              "41239",
+              "43294",
+              "43335",
+              "47844",
+              "47862",
+              "47939",
+              "52492",
+              "52607",
+              "52846",
+              "53532"
+            ],
+            "frame_provenance": {
+              "snap_frame": 200,
+              "original_event_frames": {
+                "ball_snap": 200,
+                "play_action": 215,
+                "pass_forward": 234,
+                "pass_arrived": 244,
+                "pass_outcome_caught": 248,
+                "first_contact": 254,
+                "tackle": 260
+              }
+            },
+            "native_stats": null,
+            "snapshots": [
+              {
+                "phase": "release",
+                "event_t_s": 3.4,
+                "position_sample_t_s": 3.4,
+                "receiver_xy": [
+                  16.2,
+                  39.3
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    5.0,
+                    -5.500000000000007
+                  ],
+                  "sample_window_s": [
+                    3.0,
+                    3.4
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 13.562448156582938,
+                    "relative_xy_yd": [
+                      -7.5,
+                      -11.299999999999997
+                    ],
+                    "downfield_lead_yd": -7.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.4999999999999987,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 3.508917211904549,
+                    "closing_yd_s": 3.544714010697647,
+                    "momentum_kg_m_s": [
+                      351.3058390694159,
+                      -25.09327421924436
+                    ],
+                    "lead_along_receiver_motion_yd": 3.3162768744018263,
+                    "lateral_to_receiver_motion_yd": 13.150753122627904,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.004297744629847,
+                      "peak_accel_required_at_least_yd_s2": 5.310441251363344
+                    }
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 7.375635565834309,
+                    "relative_xy_yd": [
+                      5.600000000000001,
+                      -4.799999999999997
+                    ],
+                    "downfield_lead_yd": 5.600000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.499999999999998,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 5.505678886386309,
+                    "closing_yd_s": 3.0370264094611885,
+                    "momentum_kg_m_s": [
+                      474.4910034184319,
+                      -21.567772882656307
+                    ],
+                    "lead_along_receiver_motion_yd": 7.318679998679878,
+                    "lateral_to_receiver_motion_yd": 0.9148349998349925,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 2.900451693965712,
+                      "peak_accel_required_at_least_yd_s2": 10.178193708473675
+                    }
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 2.1213203435596424,
+                    "relative_xy_yd": [
+                      1.5,
+                      1.5
+                    ],
+                    "downfield_lead_yd": 1.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.0,
+                        -3.75
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 6.25,
+                    "closing_yd_s": -1.2374368670764633,
+                    "momentum_kg_m_s": [
+                      406.46956586544,
+                      -304.85217439908
+                    ],
+                    "lead_along_receiver_motion_yd": -0.10090091909944823,
+                    "lateral_to_receiver_motion_yd": 2.118919301088384,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.013546307381294,
+                      "peak_accel_required_at_least_yd_s2": 6.808357183016758
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "flight_midpoint",
+                "event_t_s": 4.1,
+                "position_sample_t_s": 4.1,
+                "receiver_xy": [
+                  18.4,
+                  34.4
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -7.000000000000011
+                  ],
+                  "sample_window_s": [
+                    3.7,
+                    4.1
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 9.14002188181188,
+                    "relative_xy_yd": [
+                      -7.299999999999999,
+                      -5.5
+                    ],
+                    "downfield_lead_yd": -7.299999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.500000000000001,
+                        1.7499999999999982
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 3.913118960624632,
+                    "closing_yd_s": 6.063989858743406,
+                    "momentum_kg_m_s": [
+                      351.3058390694161,
+                      175.65291953470782
+                    ],
+                    "lead_along_receiver_motion_yd": 2.72432481568507,
+                    "lateral_to_receiver_motion_yd": 8.724566138132172,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 10.410485345771809,
+                      "peak_accel_required_at_least_yd_s2": 19.387976928854066
+                    }
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 7.324616030891995,
+                    "relative_xy_yd": [
+                      7.300000000000001,
+                      -0.6000000000000014
+                    ],
+                    "downfield_lead_yd": 7.300000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.249999999999995,
+                        -1.750000000000007
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 5.533985905294661,
+                    "closing_yd_s": -2.310701329410003,
+                    "momentum_kg_m_s": [
+                      452.92323053577553,
+                      -150.97441017859262
+                    ],
+                    "lead_along_receiver_motion_yd": 3.020300845043441,
+                    "lateral_to_receiver_motion_yd": 6.672914116443422,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 9.132234044729262,
+                      "peak_accel_required_at_least_yd_s2": 38.26346197115537
+                    }
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 3.360059523282291,
+                    "relative_xy_yd": [
+                      2.0,
+                      2.700000000000003
+                    ],
+                    "downfield_lead_yd": 2.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.4999999999999964,
+                        -5.749999999999993
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 6.731456008918122,
+                    "closing_yd_s": -1.5996740423066818,
+                    "momentum_kg_m_s": [
+                      284.5286961058077,
+                      -467.4400007452554
+                    ],
+                    "lead_along_receiver_motion_yd": -1.8700303673097527,
+                    "lateral_to_receiver_motion_yd": 2.7915920950846966,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 8.694144993175357,
+                      "peak_accel_required_at_least_yd_s2": 14.823476850662137
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "catch",
+                "event_t_s": 4.8,
+                "position_sample_t_s": 4.8,
+                "receiver_xy": [
+                  19.3,
+                  30.1
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    1.25,
+                    -5.749999999999993
+                  ],
+                  "sample_window_s": [
+                    4.4,
+                    4.8
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 5.333854141237835,
+                    "relative_xy_yd": [
+                      -5.300000000000001,
+                      0.5999999999999979
+                    ],
+                    "downfield_lead_yd": -5.300000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        4.249999999999998,
+                        2.5
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 4.930770730829003,
+                    "closing_yd_s": 2.0529245288771305,
+                    "momentum_kg_m_s": [
+                      426.58566172714785,
+                      250.93274219244003
+                    ],
+                    "lead_along_receiver_motion_yd": -1.7121829333082117,
+                    "lateral_to_receiver_motion_yd": 5.05157694219222,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 8.221921916437786,
+                    "relative_xy_yd": [
+                      8.2,
+                      0.5999999999999979
+                    ],
+                    "downfield_lead_yd": 8.2,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.5000000000000036,
+                        -5.000000000000009
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 5.220153254455284,
+                    "closing_yd_s": -0.3040651596315771,
+                    "momentum_kg_m_s": [
+                      129.40663729593632,
+                      -431.35545765312077
+                    ],
+                    "lead_along_receiver_motion_yd": 1.1556172651608818,
+                    "lateral_to_receiver_motion_yd": 8.140303970765592,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 2.831960451701259,
+                    "relative_xy_yd": [
+                      1.8999999999999986,
+                      2.1000000000000014
+                    ],
+                    "downfield_lead_yd": 1.8999999999999986,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.4999999999999982,
+                        -7.5
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 7.516648189186454,
+                    "closing_yd_s": 1.8008726064434513,
+                    "momentum_kg_m_s": [
+                      40.64695658654386,
+                      -609.70434879816
+                    ],
+                    "lead_along_receiver_motion_yd": -1.6484540400089003,
+                    "lateral_to_receiver_motion_yd": 2.302737344548513,
+                    "catch_landmark_demand": null
+                  }
+                ]
+              }
+            ],
+            "labels": {
+              "gameId": "2022091807",
+              "playId": "2947",
+              "pff_passCoverage": "Quarters",
+              "routeRan": "POST",
+              "official_target_had_reception": true,
+              "all_22_positions_observed_snap_through_endpoint": true
+            }
+          }
+        }
+      },
+      "audit": {
+        "stream_fragments": 7,
+        "distinct_label_play_ids_seen": 7,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 3
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 3,
+          "separation": 1
+        },
+        "outcome_bins": {
+          "contained": 3,
+          "middle_yac": 1
+        },
+        "cases": [
+          {
+            "id": "2022091901-1574",
+            "outcome_bin": "contained",
+            "yac_yd": -0.1999999999999993
+          },
+          {
+            "id": "2022091901-2028",
+            "outcome_bin": "middle_yac",
+            "yac_yd": 8.2
+          },
+          {
+            "id": "2022091900-1613",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "separation"
+            ],
+            "depth_yd": 12.5,
+            "flight_s": 1.1,
+            "nearest_yd": 0.7810249675906638
+          },
+          {
+            "id": "2022091812-2171",
+            "outcome_bin": "contained",
+            "yac_yd": 0.5
+          },
+          {
+            "id": "2022091807-2947",
+            "outcome_bin": "contained",
+            "yac_yd": 2.6999999999999993
+          },
+          {
+            "id": "2022091804-3718",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth"
+            ],
+            "depth_yd": 11.8,
+            "flight_s": 1.4000000000000004,
+            "nearest_yd": 2.202271554554525
+          },
+          {
+            "id": "2022091801-2162",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth"
+            ],
+            "depth_yd": 13.7,
+            "flight_s": 1.3000000000000003,
+            "nearest_yd": 3.7656340767525456
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [
+          {
+            "id": "2022091807-2947",
+            "events": {
+              "pass_forward": 3.4,
+              "pass_arrived": 4.4,
+              "first_contact": 5.4,
+              "catch": 4.8,
+              "end": 6.0
+            },
+            "target_id": "54473",
+            "receiver_id": "54473",
+            "endpoint": "catch",
+            "selected_defender_ids": [
+              "38577",
+              "47844",
+              "47862"
+            ],
+            "catch_depth_yd": 19.3,
+            "yac_yd": 2.6999999999999993,
+            "player_ids_by_common_index": [
+              "41232",
+              "41808",
+              "42345",
+              "45550",
+              "47797",
+              "47814",
+              "48723",
+              "53433",
+              "53543",
+              "54473",
+              "54616",
+              "38577",
+              "41239",
+              "43294",
+              "43335",
+              "47844",
+              "47862",
+              "47939",
+              "52492",
+              "52607",
+              "52846",
+              "53532"
+            ],
+            "frame_provenance": {
+              "snap_frame": 200,
+              "original_event_frames": {
+                "ball_snap": 200,
+                "play_action": 215,
+                "pass_forward": 234,
+                "pass_arrived": 244,
+                "pass_outcome_caught": 248,
+                "first_contact": 254,
+                "tackle": 260
+              }
+            },
+            "native_stats": null,
+            "snapshots": [
+              {
+                "phase": "release",
+                "event_t_s": 3.4,
+                "position_sample_t_s": 3.4,
+                "receiver_xy": [
+                  16.2,
+                  39.3
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    5.0,
+                    -5.500000000000007
+                  ],
+                  "sample_window_s": [
+                    3.0,
+                    3.4
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 13.562448156582938,
+                    "relative_xy_yd": [
+                      -7.5,
+                      -11.299999999999997
+                    ],
+                    "downfield_lead_yd": -7.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.4999999999999987,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 3.508917211904549,
+                    "closing_yd_s": 3.544714010697647,
+                    "momentum_kg_m_s": [
+                      351.3058390694159,
+                      -25.09327421924436
+                    ],
+                    "lead_along_receiver_motion_yd": 3.3162768744018263,
+                    "lateral_to_receiver_motion_yd": 13.150753122627904,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.004297744629847,
+                      "peak_accel_required_at_least_yd_s2": 5.310441251363344
+                    }
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 7.375635565834309,
+                    "relative_xy_yd": [
+                      5.600000000000001,
+                      -4.799999999999997
+                    ],
+                    "downfield_lead_yd": 5.600000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.499999999999998,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 5.505678886386309,
+                    "closing_yd_s": 3.0370264094611885,
+                    "momentum_kg_m_s": [
+                      474.4910034184319,
+                      -21.567772882656307
+                    ],
+                    "lead_along_receiver_motion_yd": 7.318679998679878,
+                    "lateral_to_receiver_motion_yd": 0.9148349998349925,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 2.900451693965712,
+                      "peak_accel_required_at_least_yd_s2": 10.178193708473675
+                    }
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 2.1213203435596424,
+                    "relative_xy_yd": [
+                      1.5,
+                      1.5
+                    ],
+                    "downfield_lead_yd": 1.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.0,
+                        -3.75
+                      ],
+                      "sample_window_s": [
+                        3.0,
+                        3.4
+                      ]
+                    },
+                    "speed_yd_s": 6.25,
+                    "closing_yd_s": -1.2374368670764633,
+                    "momentum_kg_m_s": [
+                      406.46956586544,
+                      -304.85217439908
+                    ],
+                    "lead_along_receiver_motion_yd": -0.10090091909944823,
+                    "lateral_to_receiver_motion_yd": 2.118919301088384,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.4000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.013546307381294,
+                      "peak_accel_required_at_least_yd_s2": 6.808357183016758
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "flight_midpoint",
+                "event_t_s": 4.1,
+                "position_sample_t_s": 4.1,
+                "receiver_xy": [
+                  18.4,
+                  34.4
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -7.000000000000011
+                  ],
+                  "sample_window_s": [
+                    3.7,
+                    4.1
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 9.14002188181188,
+                    "relative_xy_yd": [
+                      -7.299999999999999,
+                      -5.5
+                    ],
+                    "downfield_lead_yd": -7.299999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.500000000000001,
+                        1.7499999999999982
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 3.913118960624632,
+                    "closing_yd_s": 6.063989858743406,
+                    "momentum_kg_m_s": [
+                      351.3058390694161,
+                      175.65291953470782
+                    ],
+                    "lead_along_receiver_motion_yd": 2.72432481568507,
+                    "lateral_to_receiver_motion_yd": 8.724566138132172,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 10.410485345771809,
+                      "peak_accel_required_at_least_yd_s2": 19.387976928854066
+                    }
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 7.324616030891995,
+                    "relative_xy_yd": [
+                      7.300000000000001,
+                      -0.6000000000000014
+                    ],
+                    "downfield_lead_yd": 7.300000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        5.249999999999995,
+                        -1.750000000000007
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 5.533985905294661,
+                    "closing_yd_s": -2.310701329410003,
+                    "momentum_kg_m_s": [
+                      452.92323053577553,
+                      -150.97441017859262
+                    ],
+                    "lead_along_receiver_motion_yd": 3.020300845043441,
+                    "lateral_to_receiver_motion_yd": 6.672914116443422,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 9.132234044729262,
+                      "peak_accel_required_at_least_yd_s2": 38.26346197115537
+                    }
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 3.360059523282291,
+                    "relative_xy_yd": [
+                      2.0,
+                      2.700000000000003
+                    ],
+                    "downfield_lead_yd": 2.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.4999999999999964,
+                        -5.749999999999993
+                      ],
+                      "sample_window_s": [
+                        3.7,
+                        4.1
+                      ]
+                    },
+                    "speed_yd_s": 6.731456008918122,
+                    "closing_yd_s": -1.5996740423066818,
+                    "momentum_kg_m_s": [
+                      284.5286961058077,
+                      -467.4400007452554
+                    ],
+                    "lead_along_receiver_motion_yd": -1.8700303673097527,
+                    "lateral_to_receiver_motion_yd": 2.7915920950846966,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 8.694144993175357,
+                      "peak_accel_required_at_least_yd_s2": 14.823476850662137
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "catch",
+                "event_t_s": 4.8,
+                "position_sample_t_s": 4.8,
+                "receiver_xy": [
+                  19.3,
+                  30.1
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    1.25,
+                    -5.749999999999993
+                  ],
+                  "sample_window_s": [
+                    4.4,
+                    4.8
+                  ]
+                },
+                "nearest_id": "47862",
+                "defenders": [
+                  {
+                    "id": "38577",
+                    "index": 11,
+                    "slot": null,
+                    "separation_yd": 5.333854141237835,
+                    "relative_xy_yd": [
+                      -5.300000000000001,
+                      0.5999999999999979
+                    ],
+                    "downfield_lead_yd": -5.300000000000001,
+                    "motion": {
+                      "velocity_yd_s": [
+                        4.249999999999998,
+                        2.5
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 4.930770730829003,
+                    "closing_yd_s": 2.0529245288771305,
+                    "momentum_kg_m_s": [
+                      426.58566172714785,
+                      250.93274219244003
+                    ],
+                    "lead_along_receiver_motion_yd": -1.7121829333082117,
+                    "lateral_to_receiver_motion_yd": 5.05157694219222,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "47844",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 8.221921916437786,
+                    "relative_xy_yd": [
+                      8.2,
+                      0.5999999999999979
+                    ],
+                    "downfield_lead_yd": 8.2,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.5000000000000036,
+                        -5.000000000000009
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 5.220153254455284,
+                    "closing_yd_s": -0.3040651596315771,
+                    "momentum_kg_m_s": [
+                      129.40663729593632,
+                      -431.35545765312077
+                    ],
+                    "lead_along_receiver_motion_yd": 1.1556172651608818,
+                    "lateral_to_receiver_motion_yd": 8.140303970765592,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "47862",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 2.831960451701259,
+                    "relative_xy_yd": [
+                      1.8999999999999986,
+                      2.1000000000000014
+                    ],
+                    "downfield_lead_yd": 1.8999999999999986,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.4999999999999982,
+                        -7.5
+                      ],
+                      "sample_window_s": [
+                        4.4,
+                        4.8
+                      ]
+                    },
+                    "speed_yd_s": 7.516648189186454,
+                    "closing_yd_s": 1.8008726064434513,
+                    "momentum_kg_m_s": [
+                      40.64695658654386,
+                      -609.70434879816
+                    ],
+                    "lead_along_receiver_motion_yd": -1.6484540400089003,
+                    "lateral_to_receiver_motion_yd": 2.302737344548513,
+                    "catch_landmark_demand": null
+                  }
+                ]
+              }
+            ],
+            "labels": {
+              "gameId": "2022091807",
+              "playId": "2947",
+              "pff_passCoverage": "Quarters",
+              "routeRan": "POST",
+              "official_target_had_reception": true,
+              "all_22_positions_observed_snap_through_endpoint": true
+            }
+          },
+          {
+            "id": "2022091812-2171",
+            "events": {
+              "pass_forward": 2.9,
+              "pass_arrived": 3.8,
+              "first_contact": 4.3,
+              "catch": 4.2,
+              "end": 4.8
+            },
+            "target_id": "40149",
+            "receiver_id": "40149",
+            "endpoint": "catch",
+            "selected_defender_ids": [
+              "43404",
+              "44911",
+              "47804",
+              "54487"
+            ],
+            "catch_depth_yd": 17.5,
+            "yac_yd": 0.5,
+            "player_ids_by_common_index": [
+              "40149",
+              "43345",
+              "46522",
+              "47856",
+              "48159",
+              "52451",
+              "52581",
+              "53440",
+              "53468",
+              "53580",
+              "54633",
+              "42381",
+              "42485",
+              "43316",
+              "43338",
+              "43404",
+              "44911",
+              "46087",
+              "47795",
+              "47804",
+              "53458",
+              "54487"
+            ],
+            "frame_provenance": {
+              "snap_frame": 6,
+              "original_event_frames": {
+                "ball_snap": 6,
+                "pass_forward": 35,
+                "pass_arrived": 44,
+                "pass_outcome_caught": 48,
+                "first_contact": 49,
+                "tackle": 54
+              }
+            },
+            "native_stats": null,
+            "snapshots": [
+              {
+                "phase": "release",
+                "event_t_s": 2.9,
+                "position_sample_t_s": 2.9,
+                "receiver_xy": [
+                  11.3,
+                  19.4
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    6.5000000000000036,
+                    1.4999999999999947
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "nearest_id": "54487",
+                "defenders": [
+                  {
+                    "id": "43404",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 9.024411338142782,
+                    "relative_xy_yd": [
+                      -2.0,
+                      8.8
+                    ],
+                    "downfield_lead_yd": -2.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.5,
+                        -0.25000000000000355
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 2.512468905280223,
+                    "closing_yd_s": 0.8199980832791798,
+                    "momentum_kg_m_s": [
+                      240.56362061424,
+                      -24.05636206142434
+                    ],
+                    "lead_along_receiver_motion_yd": 0.02998126755982662,
+                    "lateral_to_receiver_motion_yd": 9.024361535510174,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 6.741314086082235,
+                      "peak_accel_required_at_least_yd_s2": 7.1219610264006885
+                    }
+                  },
+                  {
+                    "id": "44911",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 6.47610994347687,
+                    "relative_xy_yd": [
+                      -1.5,
+                      -6.299999999999999
+                    ],
+                    "downfield_lead_yd": -1.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.5,
+                        -3.75
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 4.5069390943299865,
+                    "closing_yd_s": -6.033714736322331,
+                    "momentum_kg_m_s": [
+                      216.71464098438,
+                      -325.07196147657
+                    ],
+                    "lead_along_receiver_motion_yd": -2.8782016857441026,
+                    "lateral_to_receiver_motion_yd": 5.801375272827969,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 8.817804361796458,
+                      "peak_accel_required_at_least_yd_s2": 16.964338838219764
+                    }
+                  },
+                  {
+                    "id": "47804",
+                    "index": 19,
+                    "slot": null,
+                    "separation_yd": 11.525623627379128,
+                    "relative_xy_yd": [
+                      7.199999999999999,
+                      9.0
+                    ],
+                    "downfield_lead_yd": 7.199999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.4999999999999964,
+                        -2.2500000000000053
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 4.16082924427331,
+                    "closing_yd_s": 4.802343178074641,
+                    "momentum_kg_m_s": [
+                      290.33540418959967,
+                      -186.64418840760044
+                    ],
+                    "lead_along_receiver_motion_yd": 9.039352169290082,
+                    "lateral_to_receiver_motion_yd": 7.150532313020526,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 3.530899956730365,
+                      "peak_accel_required_at_least_yd_s2": 6.0571143189429995
+                    }
+                  },
+                  {
+                    "id": "54487",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 3.635931792539569,
+                    "relative_xy_yd": [
+                      -3.1000000000000014,
+                      -1.8999999999999986
+                    ],
+                    "downfield_lead_yd": -3.1000000000000014,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.2499999999999987,
+                        -2.7500000000000036
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 3.5531676008879756,
+                    "closing_yd_s": -5.844444068945982,
+                    "momentum_kg_m_s": [
+                      223.97302608911986,
+                      -273.7448096644804
+                    ],
+                    "lead_along_receiver_motion_yd": -3.4478457693809625,
+                    "lateral_to_receiver_motion_yd": 1.1542788010536282,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.503129997969964,
+                      "peak_accel_required_at_least_yd_s2": 11.844603253806039
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "flight_midpoint",
+                "event_t_s": 3.55,
+                "position_sample_t_s": 3.5,
+                "receiver_xy": [
+                  14.6,
+                  21.1
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    5.249999999999999,
+                    3.000000000000007
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "nearest_id": "54487",
+                "defenders": [
+                  {
+                    "id": "43404",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 6.7424031324150295,
+                    "relative_xy_yd": [
+                      -3.9000000000000004,
+                      5.5
+                    ],
+                    "downfield_lead_yd": -3.9000000000000004,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.2499999999999964,
+                        -2.9999999999999982
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 3.7499999999999964,
+                    "closing_yd_s": 3.159111014527942,
+                    "momentum_kg_m_s": [
+                      216.50725855281567,
+                      -288.67634473708785
+                    ],
+                    "lead_along_receiver_motion_yd": -0.6573840933227977,
+                    "lateral_to_receiver_motion_yd": 6.710279141276178,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 9.630638418835375,
+                      "peak_accel_required_at_least_yd_s2": 18.222398467976753
+                    }
+                  },
+                  {
+                    "id": "44911",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 9.808159868191384,
+                    "relative_xy_yd": [
+                      -2.799999999999999,
+                      -9.400000000000002
+                    ],
+                    "downfield_lead_yd": -2.799999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.2500000000000018,
+                        -2.0000000000000018
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 3.8160843806184395,
+                    "closing_yd_s": -5.3628815911316785,
+                    "momentum_kg_m_s": [
+                      281.7290332796942,
+                      -173.37171278750415
+                    ],
+                    "lead_along_receiver_motion_yd": -7.0947868185027305,
+                    "lateral_to_receiver_motion_yd": 6.7722965085707765,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 16.524314758584648,
+                      "peak_accel_required_at_least_yd_s2": 49.2130851631105
+                    }
+                  },
+                  {
+                    "id": "47804",
+                    "index": 19,
+                    "slot": null,
+                    "separation_yd": 7.017834423809098,
+                    "relative_xy_yd": [
+                      4.6,
+                      5.299999999999997
+                    ],
+                    "downfield_lead_yd": 4.6,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.7500000000000018,
+                        -3.5000000000000053
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 3.5794552658190937,
+                    "closing_yd_s": 7.858549613666441,
+                    "momentum_kg_m_s": [
+                      62.21472946920015,
+                      -290.33540418960047
+                    ],
+                    "lead_along_receiver_motion_yd": 6.623454827063732,
+                    "lateral_to_receiver_motion_yd": 2.3194495368181887,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 4.130021845241062,
+                      "peak_accel_required_at_least_yd_s2": 5.960448733978184
+                    }
+                  },
+                  {
+                    "id": "54487",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 6.529931086925805,
+                    "relative_xy_yd": [
+                      -5.0,
+                      -4.200000000000003
+                    ],
+                    "downfield_lead_yd": -5.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.5,
+                        -0.5000000000000071
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 2.549509756796394,
+                    "closing_yd_s": -4.356860680652896,
+                    "momentum_kg_m_s": [
+                      248.8589178768,
+                      -49.77178357536071
+                    ],
+                    "lead_along_receiver_motion_yd": -6.424999251721001,
+                    "lateral_to_receiver_motion_yd": 1.1659265051385548,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 12.743116357076318,
+                      "peak_accel_required_at_least_yd_s2": 31.99986148278889
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "catch",
+                "event_t_s": 4.2,
+                "position_sample_t_s": 4.2,
+                "receiver_xy": [
+                  17.5,
+                  22.9
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    3.75,
+                    2.2499999999999964
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "nearest_id": "47804",
+                "defenders": [
+                  {
+                    "id": "43404",
+                    "index": 15,
+                    "slot": null,
+                    "separation_yd": 4.74130783645188,
+                    "relative_xy_yd": [
+                      -4.199999999999999,
+                      2.200000000000003
+                    ],
+                    "downfield_lead_yd": -4.199999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        4.0000000000000036,
+                        -1.7499999999999982
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 4.366062299143247,
+                    "closing_yd_s": 2.0774858625022716,
+                    "momentum_kg_m_s": [
+                      384.90179298278434,
+                      -168.39453442996782
+                    ],
+                    "lead_along_receiver_motion_yd": -2.469579626052128,
+                    "lateral_to_receiver_motion_yd": 4.047366609363209,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "44911",
+                    "index": 16,
+                    "slot": null,
+                    "separation_yd": 11.795338062132851,
+                    "relative_xy_yd": [
+                      -3.6999999999999993,
+                      -11.2
+                    ],
+                    "downfield_lead_yd": -3.6999999999999993,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.7500000000000036,
+                        0.4999999999999982
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 2.7950849718747404,
+                    "closing_yd_s": -1.9753566940824776,
+                    "momentum_kg_m_s": [
+                      238.38610508281832,
+                      43.342928196875846
+                    ],
+                    "lead_along_receiver_motion_yd": -8.935076285924705,
+                    "lateral_to_receiver_motion_yd": 7.700286472898653,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "47804",
+                    "index": 19,
+                    "slot": null,
+                    "separation_yd": 1.4866068747318517,
+                    "relative_xy_yd": [
+                      1.0,
+                      1.1000000000000014
+                    ],
+                    "downfield_lead_yd": 1.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        -0.9999999999999964,
+                        -3.2500000000000018
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 3.4003676271838614,
+                    "closing_yd_s": 7.26486617516017,
+                    "momentum_kg_m_s": [
+                      -82.95297262559971,
+                      -269.59716103320017
+                    ],
+                    "lead_along_receiver_motion_yd": 1.4234382566828239,
+                    "lateral_to_receiver_motion_yd": 0.4287464628562743,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "54487",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 7.291776189653656,
+                    "relative_xy_yd": [
+                      -5.4,
+                      -4.899999999999999
+                    ],
+                    "downfield_lead_yd": -5.4,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.999999999999999,
+                        2.0000000000000018
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 4.47213595499958,
+                    "closing_yd_s": 0.01714259965595008,
+                    "momentum_kg_m_s": [
+                      398.1742686028799,
+                      199.0871343014402
+                    ],
+                    "lead_along_receiver_motion_yd": -7.151491000442617,
+                    "lateral_to_receiver_motion_yd": 1.4234382566828268,
+                    "catch_landmark_demand": null
+                  }
+                ]
+              }
+            ],
+            "labels": {
+              "gameId": "2022091812",
+              "playId": "2171",
+              "pff_passCoverage": "Quarters",
+              "routeRan": "POST",
+              "official_target_had_reception": true,
+              "all_22_positions_observed_snap_through_endpoint": true
+            }
+          },
+          {
+            "id": "2022091901-1574",
+            "events": {
+              "pass_forward": 2.9,
+              "pass_arrived": 4.0,
+              "first_contact": 4.4,
+              "catch": 4.2,
+              "end": 5.7
+            },
+            "target_id": "53439",
+            "receiver_id": "53439",
+            "endpoint": "catch",
+            "selected_defender_ids": [
+              "38559",
+              "53519",
+              "53554"
+            ],
+            "catch_depth_yd": 16.2,
+            "yac_yd": -0.1999999999999993,
+            "player_ids_by_common_index": [
+              "37266",
+              "39950",
+              "43368",
+              "46118",
+              "46270",
+              "46302",
+              "47834",
+              "52461",
+              "52608",
+              "53439",
+              "53466",
+              "37078",
+              "38559",
+              "42388",
+              "43361",
+              "44867",
+              "46165",
+              "46652",
+              "52497",
+              "52525",
+              "53519",
+              "53554"
+            ],
+            "frame_provenance": {
+              "snap_frame": 119,
+              "original_event_frames": {
+                "ball_snap": 119,
+                "pass_forward": 148,
+                "pass_arrived": 159,
+                "pass_outcome_caught": 161,
+                "first_contact": 163,
+                "tackle": 176
+              }
+            },
+            "native_stats": null,
+            "snapshots": [
+              {
+                "phase": "release",
+                "event_t_s": 2.9,
+                "position_sample_t_s": 2.9,
+                "receiver_xy": [
+                  13.8,
+                  19.2
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    5.750000000000002,
+                    4.500000000000002
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "nearest_id": "38559",
+                "defenders": [
+                  {
+                    "id": "38559",
+                    "index": 12,
+                    "slot": null,
+                    "separation_yd": 4.604345773288533,
+                    "relative_xy_yd": [
+                      4.599999999999998,
+                      -0.1999999999999993
+                    ],
+                    "downfield_lead_yd": 4.599999999999998,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.999999999999993,
+                        2.9999999999999982
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 3.605551275463984,
+                    "closing_yd_s": 3.6813047574170215,
+                    "momentum_kg_m_s": [
+                      177.51936141878338,
+                      266.2790421281759
+                    ],
+                    "lead_along_receiver_motion_yd": 3.499261352303271,
+                    "lateral_to_receiver_motion_yd": 2.992519003828824,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 5.243084009128963,
+                      "peak_accel_required_at_least_yd_s2": 5.917159763313601
+                    }
+                  },
+                  {
+                    "id": "53519",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 4.965883607174054,
+                    "relative_xy_yd": [
+                      -4.5,
+                      -2.099999999999998
+                    ],
+                    "downfield_lead_yd": -4.5,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.7500000000000027,
+                        -1.999999999999993
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 2.657536453183659,
+                    "closing_yd_s": -6.373488084633362,
+                    "momentum_kg_m_s": [
+                      188.7180127232403,
+                      -215.67772882655925
+                    ],
+                    "lead_along_receiver_motion_yd": -4.838019854016167,
+                    "lateral_to_receiver_motion_yd": 1.1196266753455693,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 8.20047498412453,
+                      "peak_accel_required_at_least_yd_s2": 14.036010233845643
+                    }
+                  },
+                  {
+                    "id": "53554",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 15.339491516996251,
+                    "relative_xy_yd": [
+                      6.899999999999999,
+                      13.7
+                    ],
+                    "downfield_lead_yd": 6.899999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        3.2500000000000018,
+                        -2.0000000000000107
+                      ],
+                      "sample_window_s": [
+                        2.5,
+                        2.9
+                      ]
+                    },
+                    "speed_yd_s": 3.816084380618444,
+                    "closing_yd_s": 6.9298255344526325,
+                    "momentum_kg_m_s": [
+                      262.85723200737016,
+                      -161.75829661992088
+                    ],
+                    "lead_along_receiver_motion_yd": 13.877207691668456,
+                    "lateral_to_receiver_motion_yd": 6.536291508362962,
+                    "catch_landmark_demand": {
+                      "horizon_s": 1.3,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 5.248986152021121,
+                      "peak_accel_required_at_least_yd_s2": 10.078813424365348
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "flight_midpoint",
+                "event_t_s": 3.55,
+                "position_sample_t_s": 3.5,
+                "receiver_xy": [
+                  15.8,
+                  22.8
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    3.0000000000000027,
+                    6.000000000000005
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "nearest_id": "38559",
+                "defenders": [
+                  {
+                    "id": "38559",
+                    "index": 12,
+                    "slot": null,
+                    "separation_yd": 3.0594117081556713,
+                    "relative_xy_yd": [
+                      3.0,
+                      -0.6000000000000014
+                    ],
+                    "downfield_lead_yd": 3.0,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.25000000000000355,
+                        5.750000000000002
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 5.755432216610671,
+                    "closing_yd_s": 2.647567824365482,
+                    "momentum_kg_m_s": [
+                      22.189920177348316,
+                      510.3681640790042
+                    ],
+                    "lead_along_receiver_motion_yd": 0.8049844718999228,
+                    "lateral_to_receiver_motion_yd": 2.951609730299723,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 5.749911157943495,
+                      "peak_accel_required_at_least_yd_s2": 7.300378918796714
+                    }
+                  },
+                  {
+                    "id": "53519",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 7.496665925596525,
+                    "relative_xy_yd": [
+                      -5.4,
+                      -5.199999999999999
+                    ],
+                    "downfield_lead_yd": -5.4,
+                    "motion": {
+                      "velocity_yd_s": [
+                        1.7500000000000027,
+                        1.25
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 2.150581316760659,
+                    "closing_yd_s": -4.19519828042724,
+                    "momentum_kg_m_s": [
+                      188.7180127232403,
+                      134.7985805166
+                    ],
+                    "lead_along_receiver_motion_yd": -7.065974808899336,
+                    "lateral_to_receiver_motion_yd": 2.5043961347997654,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 13.747268661814985,
+                      "peak_accel_required_at_least_yd_s2": 33.62241445967875
+                    }
+                  },
+                  {
+                    "id": "53554",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 9.651942809610922,
+                    "relative_xy_yd": [
+                      5.399999999999999,
+                      8.0
+                    ],
+                    "downfield_lead_yd": 5.399999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        0.24999999999999467,
+                        -3.5000000000000053
+                      ],
+                      "sample_window_s": [
+                        3.1,
+                        3.5
+                      ]
+                    },
+                    "speed_yd_s": 3.5089172119045546,
+                    "closing_yd_s": 9.412612754971594,
+                    "momentum_kg_m_s": [
+                      20.21978707748957,
+                      -283.07701908486047
+                    ],
+                    "lead_along_receiver_motion_yd": 9.570370943699098,
+                    "lateral_to_receiver_motion_yd": 1.252198067399881,
+                    "catch_landmark_demand": {
+                      "horizon_s": 0.7000000000000001,
+                      "radius_yd": 1.0,
+                      "speed_cap_required_at_least_yd_s": 7.992421196455741,
+                      "peak_accel_required_at_least_yd_s2": 18.34994687446999
+                    }
+                  }
+                ]
+              },
+              {
+                "phase": "catch",
+                "event_t_s": 4.2,
+                "position_sample_t_s": 4.2,
+                "receiver_xy": [
+                  16.2,
+                  26.5
+                ],
+                "receiver_motion": {
+                  "velocity_yd_s": [
+                    0.24999999999999467,
+                    5.0
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "nearest_id": "38559",
+                "defenders": [
+                  {
+                    "id": "38559",
+                    "index": 12,
+                    "slot": null,
+                    "separation_yd": 1.2649110640673507,
+                    "relative_xy_yd": [
+                      1.1999999999999993,
+                      -0.3999999999999986
+                    ],
+                    "downfield_lead_yd": 1.1999999999999993,
+                    "motion": {
+                      "velocity_yd_s": [
+                        -2.5,
+                        5.500000000000007
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 6.041522986797292,
+                    "closing_yd_s": 2.766992952647329,
+                    "momentum_kg_m_s": [
+                      -221.89920177348003,
+                      488.1782439016567
+                    ],
+                    "lead_along_receiver_motion_yd": -0.33957579521846715,
+                    "lateral_to_receiver_motion_yd": 1.2184778534309695,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "53519",
+                    "index": 20,
+                    "slot": null,
+                    "separation_yd": 7.323933369440222,
+                    "relative_xy_yd": [
+                      -4.199999999999999,
+                      -6.0
+                    ],
+                    "downfield_lead_yd": -4.199999999999999,
+                    "motion": {
+                      "velocity_yd_s": [
+                        2.5,
+                        4.7499999999999964
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 5.367727638395969,
+                    "closing_yd_s": 1.0854822946877285,
+                    "momentum_kg_m_s": [
+                      269.5971610332,
+                      512.2346059630796
+                    ],
+                    "lead_along_receiver_motion_yd": -6.202252024431411,
+                    "lateral_to_receiver_motion_yd": 3.8951341216236,
+                    "catch_landmark_demand": null
+                  },
+                  {
+                    "id": "53554",
+                    "index": 21,
+                    "slot": null,
+                    "separation_yd": 3.405877273185281,
+                    "relative_xy_yd": [
+                      2.6000000000000014,
+                      2.1999999999999993
+                    ],
+                    "downfield_lead_yd": 2.6000000000000014,
+                    "motion": {
+                      "velocity_yd_s": [
+                        -4.249999999999998,
+                        -2.5
+                      ],
+                      "sample_window_s": [
+                        3.8,
+                        4.2
+                      ]
+                    },
+                    "speed_yd_s": 4.930770730829003,
+                    "closing_yd_s": 8.279805095157313,
+                    "momentum_kg_m_s": [
+                      -343.73638031732986,
+                      -202.19787077490003
+                    ],
+                    "lead_along_receiver_motion_yd": 2.3270929495853747,
+                    "lateral_to_receiver_motion_yd": 2.486893323805837,
+                    "catch_landmark_demand": null
+                  }
+                ]
+              }
+            ],
+            "labels": {
+              "gameId": "2022091901",
+              "playId": "1574",
+              "pff_passCoverage": "Quarters",
+              "routeRan": "POST",
+              "official_target_had_reception": true,
+              "all_22_positions_observed_snap_through_endpoint": true
+            }
+          }
+        ],
+        "offensive_win": []
+      },
+      "elapsed_s": 18.795544405991677
+    },
+    {
+      "status": "complete",
+      "week": 3,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 2,
+          "invalid": 1,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "missing_required_events": 1,
+          "geometry_depth": 2
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 2
+        },
+        "outcome_bins": {},
+        "cases": [
+          {
+            "id": "2022092509-1262",
+            "reason": "missing_required_events",
+            "missing": [
+              "catch"
+            ]
+          },
+          {
+            "id": "2022092503-1310",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth"
+            ],
+            "depth_yd": 12.6,
+            "flight_s": 1.1,
+            "nearest_yd": 1.063014581273465
+          },
+          {
+            "id": "2022092200-3812",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth"
+            ],
+            "depth_yd": 14.7,
+            "flight_s": 1.4,
+            "nearest_yd": 1.2369316876852976
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 18.234529682988068
+    },
+    {
+      "status": "complete",
+      "week": 4,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 2,
+          "invalid": 1,
+          "geometry_matched": 1,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "missing_required_events": 1,
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {
+          "middle_yac": 1
+        },
+        "cases": [
+          {
+            "id": "2022100213-1247",
+            "reason": "missing_required_events",
+            "missing": [
+              "catch"
+            ]
+          },
+          {
+            "id": "2022100212-3250",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "flight"
+            ],
+            "depth_yd": 48.4,
+            "flight_s": 3.1,
+            "nearest_yd": 1.7464249196572992
+          },
+          {
+            "id": "2022100205-680",
+            "outcome_bin": "middle_yac",
+            "yac_yd": 10.600000000000001
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 18.60099841002375
+    },
+    {
+      "status": "complete",
+      "week": 5,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 1,
+          "invalid": 1,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 2,
+        "distinct_label_play_ids_seen": 2,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1,
+          "missing_required_events": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "cases": [
+          {
+            "id": "2022100909-1046",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "flight"
+            ],
+            "depth_yd": 50.0,
+            "flight_s": 3.3,
+            "nearest_yd": 2.343074902771994
+          },
+          {
+            "id": "2022100906-3568",
+            "reason": "missing_required_events",
+            "missing": [
+              "catch"
+            ]
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 18.84328819499933
+    },
+    {
+      "status": "complete",
+      "week": 6,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 1,
+          "invalid": 0,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 1,
+        "distinct_label_play_ids_seen": 1,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "cases": [
+          {
+            "id": "2022101604-3174",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "flight"
+            ],
+            "depth_yd": 10.6,
+            "flight_s": 0.8000000000000003,
+            "nearest_yd": 3.0594117081556713
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 16.609940241003642
+    },
+    {
+      "status": "complete",
+      "week": 7,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 2,
+          "invalid": 1,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 2,
+          "missing_required_events": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 2,
+          "separation": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "cases": [
+          {
+            "id": "2022102303-3040",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "separation"
+            ],
+            "depth_yd": 12.6,
+            "flight_s": 1.2999999999999998,
+            "nearest_yd": 0.5
+          },
+          {
+            "id": "2022102301-1517",
+            "reason": "missing_required_events",
+            "missing": [
+              "catch"
+            ]
+          },
+          {
+            "id": "2022102000-145",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "flight"
+            ],
+            "depth_yd": 46.2,
+            "flight_s": 3.3000000000000003,
+            "nearest_yd": 1.0000000000000042
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 16.150438776006922
+    },
+    {
+      "status": "complete",
+      "week": 8,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 1,
+          "invalid": 0,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 1,
+        "distinct_label_play_ids_seen": 1,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "cases": [
+          {
+            "id": "2022103000-3293",
+            "reason": "geometry_depth",
+            "failed_filters": [
+              "depth",
+              "flight"
+            ],
+            "depth_yd": 12.3,
+            "flight_s": 0.7999999999999998,
+            "nearest_yd": 3.9319206502674984
+          }
+        ],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 17.63450855499832
+    },
+    {
+      "status": "complete",
+      "week": 9,
+      "original": {
+        "status": "measured",
+        "counts": {
+          "label_candidates": 26,
+          "converted": 0,
+          "invalid": 0,
+          "geometry_matched": 0,
+          "contained": 0,
+          "offensive_win": 0
+        },
+        "witnesses": {}
+      },
+      "audit": {
+        "stream_fragments": 0,
+        "distinct_label_play_ids_seen": 0,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {},
+        "geometry_failure_memberships_overlap": {},
+        "outcome_bins": {},
+        "cases": [],
+        "reconciles_with_unchanged_query": true
+      },
+      "examples": {
+        "contained": [],
+        "offensive_win": []
+      },
+      "elapsed_s": 16.104142552998383
+    }
+  ],
+  "archive_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+  "reused_weeks": [
+    1
+  ],
+  "new_query_weeks_attempted": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "aggregate_counts": {
+    "label_candidates": 26,
+    "converted": 19,
+    "invalid": 7,
+    "geometry_matched": 6,
+    "contained": 4,
+    "offensive_win": 0
+  },
+  "examples": {
+    "contained": [
+      {
+        "id": "2022091101-4104",
+        "events": {
+          "pass_forward": 3.1,
+          "pass_arrived": 4.1,
+          "first_contact": 4.3,
+          "catch": 4.2,
+          "end": 5.2
+        },
+        "target_id": "52595",
+        "receiver_id": "52595",
+        "endpoint": "catch",
+        "selected_defender_ids": [
+          "46527",
+          "52472"
+        ],
+        "catch_depth_yd": 15.2,
+        "yac_yd": -2.1999999999999993,
+        "player_ids_by_common_index": [
+          "41264",
+          "42347",
+          "43380",
+          "44841",
+          "44870",
+          "44898",
+          "46235",
+          "52418",
+          "52595",
+          "53520",
+          "53539",
+          "42368",
+          "42436",
+          "45004",
+          "46124",
+          "46205",
+          "46527",
+          "47799",
+          "52417",
+          "52446",
+          "52472",
+          "53437"
+        ],
+        "frame_provenance": {
+          "snap_frame": 32,
+          "original_event_frames": {
+            "ball_snap": 32,
+            "pass_forward": 63,
+            "pass_arrived": 73,
+            "pass_outcome_caught": 74,
+            "first_contact": 75,
+            "tackle": 84
+          }
+        },
+        "native_stats": null,
+        "snapshots": [
+          {
+            "phase": "release",
+            "event_t_s": 3.1,
+            "position_sample_t_s": 3.1,
+            "receiver_xy": [
+              12.3,
+              35.0
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                5.2500000000000036,
+                -4.0000000000000036
+              ],
+              "sample_window_s": [
+                2.7,
+                3.1
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 7.955501241279521,
+                "relative_xy_yd": [
+                  -2.0,
+                  -7.699999999999999
+                ],
+                "downfield_lead_yd": -2.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.250000000000001,
+                    -2.5
+                  ],
+                  "sample_window_s": [
+                    2.7,
+                    3.1
+                  ]
+                },
+                "speed_yd_s": 3.3634060117684283,
+                "closing_yd_s": 0.6976304611961053,
+                "momentum_kg_m_s": [
+                  219.30692137893007,
+                  -243.6743570877
+                ],
+                "lead_along_receiver_motion_yd": 3.0756693174589955,
+                "lateral_to_receiver_motion_yd": 7.336910674775951,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.1,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 4.091735468900023,
+                  "peak_accel_required_at_least_yd_s2": 7.905790268711553
+                }
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 5.5,
+                "relative_xy_yd": [
+                  5.5,
+                  0.0
+                ],
+                "downfield_lead_yd": 5.5,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -2.2499999999999964
+                  ],
+                  "sample_window_s": [
+                    2.7,
+                    3.1
+                  ]
+                },
+                "speed_yd_s": 3.3634060117684252,
+                "closing_yd_s": 2.7500000000000036,
+                "momentum_kg_m_s": [
+                  219.82537745784,
+                  -197.8428397120557
+                ],
+                "lead_along_receiver_motion_yd": 4.374874460178742,
+                "lateral_to_receiver_motion_yd": 3.3332376839457094,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.1,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 4.3761606740904115,
+                  "peak_accel_required_at_least_yd_s2": 8.271089383925542
+                }
+              }
+            ]
+          },
+          {
+            "phase": "flight_midpoint",
+            "event_t_s": 3.6500000000000004,
+            "position_sample_t_s": 3.6,
+            "receiver_xy": [
+              14.3,
+              32.5
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                3.75,
+                -5.2500000000000036
+              ],
+              "sample_window_s": [
+                3.2,
+                3.6
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 7.200694410957875,
+                "relative_xy_yd": [
+                  -3.3000000000000007,
+                  -6.399999999999999
+                ],
+                "downfield_lead_yd": -3.3000000000000007,
+                "motion": {
+                  "velocity_yd_s": [
+                    1.25,
+                    -2.5
+                  ],
+                  "sample_window_s": [
+                    3.2,
+                    3.6
+                  ]
+                },
+                "speed_yd_s": 2.7950849718747373,
+                "closing_yd_s": 1.2984858773858492,
+                "momentum_kg_m_s": [
+                  121.83717854385,
+                  -243.6743570877
+                ],
+                "lead_along_receiver_motion_yd": 3.2898081764500864,
+                "lateral_to_receiver_motion_yd": 6.405244894784441,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.6000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 7.662201312771017,
+                  "peak_accel_required_at_least_yd_s2": 29.113292310297705
+                }
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 3.712142238654116,
+                "relative_xy_yd": [
+                  3.6999999999999993,
+                  0.29999999999999716
+                ],
+                "downfield_lead_yd": 3.6999999999999993,
+                "motion": {
+                  "velocity_yd_s": [
+                    0.25000000000000355,
+                    -4.500000000000011
+                  ],
+                  "sample_window_s": [
+                    3.2,
+                    3.6
+                  ]
+                },
+                "speed_yd_s": 4.506939094329997,
+                "closing_yd_s": 3.4279397668268223,
+                "momentum_kg_m_s": [
+                  21.982537745784313,
+                  -395.68567942411295
+                ],
+                "lead_along_receiver_motion_yd": 1.906461275398637,
+                "lateral_to_receiver_motion_yd": 3.1851853015806464,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.6000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 5.172761509561059,
+                  "peak_accel_required_at_least_yd_s2": 10.917861114647492
+                }
+              }
+            ]
+          },
+          {
+            "phase": "catch",
+            "event_t_s": 4.2,
+            "position_sample_t_s": 4.2,
+            "receiver_xy": [
+              15.2,
+              29.8
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                0.9999999999999964,
+                -4.500000000000002
+              ],
+              "sample_window_s": [
+                3.8,
+                4.2
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 5.200961449578338,
+                "relative_xy_yd": [
+                  -3.1999999999999993,
+                  -4.100000000000001
+                ],
+                "downfield_lead_yd": -3.1999999999999993,
+                "motion": {
+                  "velocity_yd_s": [
+                    1.7499999999999982,
+                    -0.25000000000000355
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 1.7677669529663675,
+                "closing_yd_s": 3.811795221363791,
+                "momentum_kg_m_s": [
+                  170.5720499613898,
+                  -24.367435708770348
+                ],
+                "lead_along_receiver_motion_yd": 3.3081894817345114,
+                "lateral_to_receiver_motion_yd": 4.0132134696451365,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 1.4142135623730971,
+                "relative_xy_yd": [
+                  1.4000000000000021,
+                  0.1999999999999993
+                ],
+                "downfield_lead_yd": 1.4000000000000021,
+                "motion": {
+                  "velocity_yd_s": [
+                    -2.7499999999999947,
+                    -4.500000000000002
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 5.273755777432245,
+                "closing_yd_s": 3.712310601229366,
+                "momentum_kg_m_s": [
+                  -241.80791520362357,
+                  -395.68567942411215
+                ],
+                "lead_along_receiver_motion_yd": 0.1084652289093281,
+                "lateral_to_receiver_motion_yd": 1.4100479758212672,
+                "catch_landmark_demand": null
+              }
+            ]
+          }
+        ],
+        "labels": {
+          "gameId": "2022091101",
+          "playId": "4104",
+          "pff_passCoverage": "Quarters",
+          "routeRan": "POST",
+          "official_target_had_reception": true,
+          "all_22_positions_observed_snap_through_endpoint": true
+        }
+      },
+      {
+        "id": "2022091807-2947",
+        "events": {
+          "pass_forward": 3.4,
+          "pass_arrived": 4.4,
+          "first_contact": 5.4,
+          "catch": 4.8,
+          "end": 6.0
+        },
+        "target_id": "54473",
+        "receiver_id": "54473",
+        "endpoint": "catch",
+        "selected_defender_ids": [
+          "38577",
+          "47844",
+          "47862"
+        ],
+        "catch_depth_yd": 19.3,
+        "yac_yd": 2.6999999999999993,
+        "player_ids_by_common_index": [
+          "41232",
+          "41808",
+          "42345",
+          "45550",
+          "47797",
+          "47814",
+          "48723",
+          "53433",
+          "53543",
+          "54473",
+          "54616",
+          "38577",
+          "41239",
+          "43294",
+          "43335",
+          "47844",
+          "47862",
+          "47939",
+          "52492",
+          "52607",
+          "52846",
+          "53532"
+        ],
+        "frame_provenance": {
+          "snap_frame": 200,
+          "original_event_frames": {
+            "ball_snap": 200,
+            "play_action": 215,
+            "pass_forward": 234,
+            "pass_arrived": 244,
+            "pass_outcome_caught": 248,
+            "first_contact": 254,
+            "tackle": 260
+          }
+        },
+        "native_stats": null,
+        "snapshots": [
+          {
+            "phase": "release",
+            "event_t_s": 3.4,
+            "position_sample_t_s": 3.4,
+            "receiver_xy": [
+              16.2,
+              39.3
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                5.0,
+                -5.500000000000007
+              ],
+              "sample_window_s": [
+                3.0,
+                3.4
+              ]
+            },
+            "nearest_id": "47862",
+            "defenders": [
+              {
+                "id": "38577",
+                "index": 11,
+                "slot": null,
+                "separation_yd": 13.562448156582938,
+                "relative_xy_yd": [
+                  -7.5,
+                  -11.299999999999997
+                ],
+                "downfield_lead_yd": -7.5,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.4999999999999987,
+                    -0.25000000000000355
+                  ],
+                  "sample_window_s": [
+                    3.0,
+                    3.4
+                  ]
+                },
+                "speed_yd_s": 3.508917211904549,
+                "closing_yd_s": 3.544714010697647,
+                "momentum_kg_m_s": [
+                  351.3058390694159,
+                  -25.09327421924436
+                ],
+                "lead_along_receiver_motion_yd": 3.3162768744018263,
+                "lateral_to_receiver_motion_yd": 13.150753122627904,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.4000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 7.004297744629847,
+                  "peak_accel_required_at_least_yd_s2": 5.310441251363344
+                }
+              },
+              {
+                "id": "47844",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 7.375635565834309,
+                "relative_xy_yd": [
+                  5.600000000000001,
+                  -4.799999999999997
+                ],
+                "downfield_lead_yd": 5.600000000000001,
+                "motion": {
+                  "velocity_yd_s": [
+                    5.499999999999998,
+                    -0.25000000000000355
+                  ],
+                  "sample_window_s": [
+                    3.0,
+                    3.4
+                  ]
+                },
+                "speed_yd_s": 5.505678886386309,
+                "closing_yd_s": 3.0370264094611885,
+                "momentum_kg_m_s": [
+                  474.4910034184319,
+                  -21.567772882656307
+                ],
+                "lead_along_receiver_motion_yd": 7.318679998679878,
+                "lateral_to_receiver_motion_yd": 0.9148349998349925,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.4000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 2.900451693965712,
+                  "peak_accel_required_at_least_yd_s2": 10.178193708473675
+                }
+              },
+              {
+                "id": "47862",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 2.1213203435596424,
+                "relative_xy_yd": [
+                  1.5,
+                  1.5
+                ],
+                "downfield_lead_yd": 1.5,
+                "motion": {
+                  "velocity_yd_s": [
+                    5.0,
+                    -3.75
+                  ],
+                  "sample_window_s": [
+                    3.0,
+                    3.4
+                  ]
+                },
+                "speed_yd_s": 6.25,
+                "closing_yd_s": -1.2374368670764633,
+                "momentum_kg_m_s": [
+                  406.46956586544,
+                  -304.85217439908
+                ],
+                "lead_along_receiver_motion_yd": -0.10090091909944823,
+                "lateral_to_receiver_motion_yd": 2.118919301088384,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.4000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 7.013546307381294,
+                  "peak_accel_required_at_least_yd_s2": 6.808357183016758
+                }
+              }
+            ]
+          },
+          {
+            "phase": "flight_midpoint",
+            "event_t_s": 4.1,
+            "position_sample_t_s": 4.1,
+            "receiver_xy": [
+              18.4,
+              34.4
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                2.5,
+                -7.000000000000011
+              ],
+              "sample_window_s": [
+                3.7,
+                4.1
+              ]
+            },
+            "nearest_id": "47862",
+            "defenders": [
+              {
+                "id": "38577",
+                "index": 11,
+                "slot": null,
+                "separation_yd": 9.14002188181188,
+                "relative_xy_yd": [
+                  -7.299999999999999,
+                  -5.5
+                ],
+                "downfield_lead_yd": -7.299999999999999,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.500000000000001,
+                    1.7499999999999982
+                  ],
+                  "sample_window_s": [
+                    3.7,
+                    4.1
+                  ]
+                },
+                "speed_yd_s": 3.913118960624632,
+                "closing_yd_s": 6.063989858743406,
+                "momentum_kg_m_s": [
+                  351.3058390694161,
+                  175.65291953470782
+                ],
+                "lead_along_receiver_motion_yd": 2.72432481568507,
+                "lateral_to_receiver_motion_yd": 8.724566138132172,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 10.410485345771809,
+                  "peak_accel_required_at_least_yd_s2": 19.387976928854066
+                }
+              },
+              {
+                "id": "47844",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 7.324616030891995,
+                "relative_xy_yd": [
+                  7.300000000000001,
+                  -0.6000000000000014
+                ],
+                "downfield_lead_yd": 7.300000000000001,
+                "motion": {
+                  "velocity_yd_s": [
+                    5.249999999999995,
+                    -1.750000000000007
+                  ],
+                  "sample_window_s": [
+                    3.7,
+                    4.1
+                  ]
+                },
+                "speed_yd_s": 5.533985905294661,
+                "closing_yd_s": -2.310701329410003,
+                "momentum_kg_m_s": [
+                  452.92323053577553,
+                  -150.97441017859262
+                ],
+                "lead_along_receiver_motion_yd": 3.020300845043441,
+                "lateral_to_receiver_motion_yd": 6.672914116443422,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 9.132234044729262,
+                  "peak_accel_required_at_least_yd_s2": 38.26346197115537
+                }
+              },
+              {
+                "id": "47862",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 3.360059523282291,
+                "relative_xy_yd": [
+                  2.0,
+                  2.700000000000003
+                ],
+                "downfield_lead_yd": 2.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.4999999999999964,
+                    -5.749999999999993
+                  ],
+                  "sample_window_s": [
+                    3.7,
+                    4.1
+                  ]
+                },
+                "speed_yd_s": 6.731456008918122,
+                "closing_yd_s": -1.5996740423066818,
+                "momentum_kg_m_s": [
+                  284.5286961058077,
+                  -467.4400007452554
+                ],
+                "lead_along_receiver_motion_yd": -1.8700303673097527,
+                "lateral_to_receiver_motion_yd": 2.7915920950846966,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 8.694144993175357,
+                  "peak_accel_required_at_least_yd_s2": 14.823476850662137
+                }
+              }
+            ]
+          },
+          {
+            "phase": "catch",
+            "event_t_s": 4.8,
+            "position_sample_t_s": 4.8,
+            "receiver_xy": [
+              19.3,
+              30.1
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                1.25,
+                -5.749999999999993
+              ],
+              "sample_window_s": [
+                4.4,
+                4.8
+              ]
+            },
+            "nearest_id": "47862",
+            "defenders": [
+              {
+                "id": "38577",
+                "index": 11,
+                "slot": null,
+                "separation_yd": 5.333854141237835,
+                "relative_xy_yd": [
+                  -5.300000000000001,
+                  0.5999999999999979
+                ],
+                "downfield_lead_yd": -5.300000000000001,
+                "motion": {
+                  "velocity_yd_s": [
+                    4.249999999999998,
+                    2.5
+                  ],
+                  "sample_window_s": [
+                    4.4,
+                    4.8
+                  ]
+                },
+                "speed_yd_s": 4.930770730829003,
+                "closing_yd_s": 2.0529245288771305,
+                "momentum_kg_m_s": [
+                  426.58566172714785,
+                  250.93274219244003
+                ],
+                "lead_along_receiver_motion_yd": -1.7121829333082117,
+                "lateral_to_receiver_motion_yd": 5.05157694219222,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "47844",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 8.221921916437786,
+                "relative_xy_yd": [
+                  8.2,
+                  0.5999999999999979
+                ],
+                "downfield_lead_yd": 8.2,
+                "motion": {
+                  "velocity_yd_s": [
+                    1.5000000000000036,
+                    -5.000000000000009
+                  ],
+                  "sample_window_s": [
+                    4.4,
+                    4.8
+                  ]
+                },
+                "speed_yd_s": 5.220153254455284,
+                "closing_yd_s": -0.3040651596315771,
+                "momentum_kg_m_s": [
+                  129.40663729593632,
+                  -431.35545765312077
+                ],
+                "lead_along_receiver_motion_yd": 1.1556172651608818,
+                "lateral_to_receiver_motion_yd": 8.140303970765592,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "47862",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 2.831960451701259,
+                "relative_xy_yd": [
+                  1.8999999999999986,
+                  2.1000000000000014
+                ],
+                "downfield_lead_yd": 1.8999999999999986,
+                "motion": {
+                  "velocity_yd_s": [
+                    0.4999999999999982,
+                    -7.5
+                  ],
+                  "sample_window_s": [
+                    4.4,
+                    4.8
+                  ]
+                },
+                "speed_yd_s": 7.516648189186454,
+                "closing_yd_s": 1.8008726064434513,
+                "momentum_kg_m_s": [
+                  40.64695658654386,
+                  -609.70434879816
+                ],
+                "lead_along_receiver_motion_yd": -1.6484540400089003,
+                "lateral_to_receiver_motion_yd": 2.302737344548513,
+                "catch_landmark_demand": null
+              }
+            ]
+          }
+        ],
+        "labels": {
+          "gameId": "2022091807",
+          "playId": "2947",
+          "pff_passCoverage": "Quarters",
+          "routeRan": "POST",
+          "official_target_had_reception": true,
+          "all_22_positions_observed_snap_through_endpoint": true
+        }
+      },
+      {
+        "id": "2022091812-2171",
+        "events": {
+          "pass_forward": 2.9,
+          "pass_arrived": 3.8,
+          "first_contact": 4.3,
+          "catch": 4.2,
+          "end": 4.8
+        },
+        "target_id": "40149",
+        "receiver_id": "40149",
+        "endpoint": "catch",
+        "selected_defender_ids": [
+          "43404",
+          "44911",
+          "47804",
+          "54487"
+        ],
+        "catch_depth_yd": 17.5,
+        "yac_yd": 0.5,
+        "player_ids_by_common_index": [
+          "40149",
+          "43345",
+          "46522",
+          "47856",
+          "48159",
+          "52451",
+          "52581",
+          "53440",
+          "53468",
+          "53580",
+          "54633",
+          "42381",
+          "42485",
+          "43316",
+          "43338",
+          "43404",
+          "44911",
+          "46087",
+          "47795",
+          "47804",
+          "53458",
+          "54487"
+        ],
+        "frame_provenance": {
+          "snap_frame": 6,
+          "original_event_frames": {
+            "ball_snap": 6,
+            "pass_forward": 35,
+            "pass_arrived": 44,
+            "pass_outcome_caught": 48,
+            "first_contact": 49,
+            "tackle": 54
+          }
+        },
+        "native_stats": null,
+        "snapshots": [
+          {
+            "phase": "release",
+            "event_t_s": 2.9,
+            "position_sample_t_s": 2.9,
+            "receiver_xy": [
+              11.3,
+              19.4
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                6.5000000000000036,
+                1.4999999999999947
+              ],
+              "sample_window_s": [
+                2.5,
+                2.9
+              ]
+            },
+            "nearest_id": "54487",
+            "defenders": [
+              {
+                "id": "43404",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 9.024411338142782,
+                "relative_xy_yd": [
+                  -2.0,
+                  8.8
+                ],
+                "downfield_lead_yd": -2.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -0.25000000000000355
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "speed_yd_s": 2.512468905280223,
+                "closing_yd_s": 0.8199980832791798,
+                "momentum_kg_m_s": [
+                  240.56362061424,
+                  -24.05636206142434
+                ],
+                "lead_along_receiver_motion_yd": 0.02998126755982662,
+                "lateral_to_receiver_motion_yd": 9.024361535510174,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.3,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 6.741314086082235,
+                  "peak_accel_required_at_least_yd_s2": 7.1219610264006885
+                }
+              },
+              {
+                "id": "44911",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 6.47610994347687,
+                "relative_xy_yd": [
+                  -1.5,
+                  -6.299999999999999
+                ],
+                "downfield_lead_yd": -1.5,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -3.75
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "speed_yd_s": 4.5069390943299865,
+                "closing_yd_s": -6.033714736322331,
+                "momentum_kg_m_s": [
+                  216.71464098438,
+                  -325.07196147657
+                ],
+                "lead_along_receiver_motion_yd": -2.8782016857441026,
+                "lateral_to_receiver_motion_yd": 5.801375272827969,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.3,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 8.817804361796458,
+                  "peak_accel_required_at_least_yd_s2": 16.964338838219764
+                }
+              },
+              {
+                "id": "47804",
+                "index": 19,
+                "slot": null,
+                "separation_yd": 11.525623627379128,
+                "relative_xy_yd": [
+                  7.199999999999999,
+                  9.0
+                ],
+                "downfield_lead_yd": 7.199999999999999,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.4999999999999964,
+                    -2.2500000000000053
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "speed_yd_s": 4.16082924427331,
+                "closing_yd_s": 4.802343178074641,
+                "momentum_kg_m_s": [
+                  290.33540418959967,
+                  -186.64418840760044
+                ],
+                "lead_along_receiver_motion_yd": 9.039352169290082,
+                "lateral_to_receiver_motion_yd": 7.150532313020526,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.3,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 3.530899956730365,
+                  "peak_accel_required_at_least_yd_s2": 6.0571143189429995
+                }
+              },
+              {
+                "id": "54487",
+                "index": 21,
+                "slot": null,
+                "separation_yd": 3.635931792539569,
+                "relative_xy_yd": [
+                  -3.1000000000000014,
+                  -1.8999999999999986
+                ],
+                "downfield_lead_yd": -3.1000000000000014,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.2499999999999987,
+                    -2.7500000000000036
+                  ],
+                  "sample_window_s": [
+                    2.5,
+                    2.9
+                  ]
+                },
+                "speed_yd_s": 3.5531676008879756,
+                "closing_yd_s": -5.844444068945982,
+                "momentum_kg_m_s": [
+                  223.97302608911986,
+                  -273.7448096644804
+                ],
+                "lead_along_receiver_motion_yd": -3.4478457693809625,
+                "lateral_to_receiver_motion_yd": 1.1542788010536282,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.3,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 7.503129997969964,
+                  "peak_accel_required_at_least_yd_s2": 11.844603253806039
+                }
+              }
+            ]
+          },
+          {
+            "phase": "flight_midpoint",
+            "event_t_s": 3.55,
+            "position_sample_t_s": 3.5,
+            "receiver_xy": [
+              14.6,
+              21.1
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                5.249999999999999,
+                3.000000000000007
+              ],
+              "sample_window_s": [
+                3.1,
+                3.5
+              ]
+            },
+            "nearest_id": "54487",
+            "defenders": [
+              {
+                "id": "43404",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 6.7424031324150295,
+                "relative_xy_yd": [
+                  -3.9000000000000004,
+                  5.5
+                ],
+                "downfield_lead_yd": -3.9000000000000004,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.2499999999999964,
+                    -2.9999999999999982
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "speed_yd_s": 3.7499999999999964,
+                "closing_yd_s": 3.159111014527942,
+                "momentum_kg_m_s": [
+                  216.50725855281567,
+                  -288.67634473708785
+                ],
+                "lead_along_receiver_motion_yd": -0.6573840933227977,
+                "lateral_to_receiver_motion_yd": 6.710279141276178,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 9.630638418835375,
+                  "peak_accel_required_at_least_yd_s2": 18.222398467976753
+                }
+              },
+              {
+                "id": "44911",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 9.808159868191384,
+                "relative_xy_yd": [
+                  -2.799999999999999,
+                  -9.400000000000002
+                ],
+                "downfield_lead_yd": -2.799999999999999,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.2500000000000018,
+                    -2.0000000000000018
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "speed_yd_s": 3.8160843806184395,
+                "closing_yd_s": -5.3628815911316785,
+                "momentum_kg_m_s": [
+                  281.7290332796942,
+                  -173.37171278750415
+                ],
+                "lead_along_receiver_motion_yd": -7.0947868185027305,
+                "lateral_to_receiver_motion_yd": 6.7722965085707765,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 16.524314758584648,
+                  "peak_accel_required_at_least_yd_s2": 49.2130851631105
+                }
+              },
+              {
+                "id": "47804",
+                "index": 19,
+                "slot": null,
+                "separation_yd": 7.017834423809098,
+                "relative_xy_yd": [
+                  4.6,
+                  5.299999999999997
+                ],
+                "downfield_lead_yd": 4.6,
+                "motion": {
+                  "velocity_yd_s": [
+                    0.7500000000000018,
+                    -3.5000000000000053
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "speed_yd_s": 3.5794552658190937,
+                "closing_yd_s": 7.858549613666441,
+                "momentum_kg_m_s": [
+                  62.21472946920015,
+                  -290.33540418960047
+                ],
+                "lead_along_receiver_motion_yd": 6.623454827063732,
+                "lateral_to_receiver_motion_yd": 2.3194495368181887,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 4.130021845241062,
+                  "peak_accel_required_at_least_yd_s2": 5.960448733978184
+                }
+              },
+              {
+                "id": "54487",
+                "index": 21,
+                "slot": null,
+                "separation_yd": 6.529931086925805,
+                "relative_xy_yd": [
+                  -5.0,
+                  -4.200000000000003
+                ],
+                "downfield_lead_yd": -5.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -0.5000000000000071
+                  ],
+                  "sample_window_s": [
+                    3.1,
+                    3.5
+                  ]
+                },
+                "speed_yd_s": 2.549509756796394,
+                "closing_yd_s": -4.356860680652896,
+                "momentum_kg_m_s": [
+                  248.8589178768,
+                  -49.77178357536071
+                ],
+                "lead_along_receiver_motion_yd": -6.424999251721001,
+                "lateral_to_receiver_motion_yd": 1.1659265051385548,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.7000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 12.743116357076318,
+                  "peak_accel_required_at_least_yd_s2": 31.99986148278889
+                }
+              }
+            ]
+          },
+          {
+            "phase": "catch",
+            "event_t_s": 4.2,
+            "position_sample_t_s": 4.2,
+            "receiver_xy": [
+              17.5,
+              22.9
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                3.75,
+                2.2499999999999964
+              ],
+              "sample_window_s": [
+                3.8,
+                4.2
+              ]
+            },
+            "nearest_id": "47804",
+            "defenders": [
+              {
+                "id": "43404",
+                "index": 15,
+                "slot": null,
+                "separation_yd": 4.74130783645188,
+                "relative_xy_yd": [
+                  -4.199999999999999,
+                  2.200000000000003
+                ],
+                "downfield_lead_yd": -4.199999999999999,
+                "motion": {
+                  "velocity_yd_s": [
+                    4.0000000000000036,
+                    -1.7499999999999982
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 4.366062299143247,
+                "closing_yd_s": 2.0774858625022716,
+                "momentum_kg_m_s": [
+                  384.90179298278434,
+                  -168.39453442996782
+                ],
+                "lead_along_receiver_motion_yd": -2.469579626052128,
+                "lateral_to_receiver_motion_yd": 4.047366609363209,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "44911",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 11.795338062132851,
+                "relative_xy_yd": [
+                  -3.6999999999999993,
+                  -11.2
+                ],
+                "downfield_lead_yd": -3.6999999999999993,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.7500000000000036,
+                    0.4999999999999982
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 2.7950849718747404,
+                "closing_yd_s": -1.9753566940824776,
+                "momentum_kg_m_s": [
+                  238.38610508281832,
+                  43.342928196875846
+                ],
+                "lead_along_receiver_motion_yd": -8.935076285924705,
+                "lateral_to_receiver_motion_yd": 7.700286472898653,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "47804",
+                "index": 19,
+                "slot": null,
+                "separation_yd": 1.4866068747318517,
+                "relative_xy_yd": [
+                  1.0,
+                  1.1000000000000014
+                ],
+                "downfield_lead_yd": 1.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    -0.9999999999999964,
+                    -3.2500000000000018
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 3.4003676271838614,
+                "closing_yd_s": 7.26486617516017,
+                "momentum_kg_m_s": [
+                  -82.95297262559971,
+                  -269.59716103320017
+                ],
+                "lead_along_receiver_motion_yd": 1.4234382566828239,
+                "lateral_to_receiver_motion_yd": 0.4287464628562743,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "54487",
+                "index": 21,
+                "slot": null,
+                "separation_yd": 7.291776189653656,
+                "relative_xy_yd": [
+                  -5.4,
+                  -4.899999999999999
+                ],
+                "downfield_lead_yd": -5.4,
+                "motion": {
+                  "velocity_yd_s": [
+                    3.999999999999999,
+                    2.0000000000000018
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 4.47213595499958,
+                "closing_yd_s": 0.01714259965595008,
+                "momentum_kg_m_s": [
+                  398.1742686028799,
+                  199.0871343014402
+                ],
+                "lead_along_receiver_motion_yd": -7.151491000442617,
+                "lateral_to_receiver_motion_yd": 1.4234382566828268,
+                "catch_landmark_demand": null
+              }
+            ]
+          }
+        ],
+        "labels": {
+          "gameId": "2022091812",
+          "playId": "2171",
+          "pff_passCoverage": "Quarters",
+          "routeRan": "POST",
+          "official_target_had_reception": true,
+          "all_22_positions_observed_snap_through_endpoint": true
+        }
+      }
+    ],
+    "offensive_win": []
+  },
+  "query": {
+    "weeks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "coverage": "QUARTERS",
+    "official_catcher_route": "POST",
+    "catch_depth_yd": [
+      15,
+      30
+    ],
+    "flight_s": [
+      1,
+      2
+    ],
+    "nearest_at_catch_yd": [
+      1,
+      4
+    ],
+    "witnesses": "Smallest numeric gameId/playId in each bin: YAC <=5; YAC >=15. No automatic widening.",
+    "purpose": "Post catch within Y-Cross; illustrative containment/offensive-win controls, not frequency estimates."
+  },
+  "label_candidates_scope": "Global metadata count appears once, not summed across weeks",
+  "exclusion_detail_scope": "New weeks only; week 1 reuses original pooled counters without invented reasons",
+  "input_reads": [
+    {
+      "member": "big-data-bowl-data/games.csv",
+      "bytes": 7128,
+      "sha256": "166456ed4fa84277f18242defcb523bd45ef20d50486ef55ada71c4b71024477",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_2.csv",
+      "bytes": 916177128,
+      "sha256": "d735b37f04bdf324132b9cb0f084a4ca583fadbbf02653e1873dad39c36924aa",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_3.csv",
+      "bytes": 975586722,
+      "sha256": "db2965ad61a5ad3895a8878a3754c3d3e4bf4b2dce75732c0b6b4d9d094887bb",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_4.csv",
+      "bytes": 922169785,
+      "sha256": "2e931bc9cd7f6126d6cd1e7eb71a3c711b748a0cece9d04dcace870e7298774f",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_5.csv",
+      "bytes": 971152971,
+      "sha256": "1c10136562b82f3e2d5405247540d890fc02f38804109bdaaba5e63bd816c3e9",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_6.csv",
+      "bytes": 852375725,
+      "sha256": "684692991ba0875ea7bce45406cf3e47882c88528d876887aa455c40a23a1c32",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_7.csv",
+      "bytes": 824474366,
+      "sha256": "29fb1b4737a40c28dbc4422bca6588cdfaa85e5e513ba8b9c06075c2ce22aee7",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_8.csv",
+      "bytes": 903573224,
+      "sha256": "b27824f46a9b5cdd8a5064b46beb6f1d536f659f26a04a49380d5edec8e48b77",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "complete": true
+    },
+    {
+      "member": "big-data-bowl-data/tracking_week_9.csv",
+      "bytes": 774645862,
+      "sha256": "bb51989c1e2b796e0185bfbeab9d07515e24994b8a4a40fc297a53440beaa349",
+      "complete": true
+    }
+  ],
+  "input_read_bytes": 9257358332,
+  "elapsed_s": 142.0296637249994,
+  "unrun_weeks": []
+}

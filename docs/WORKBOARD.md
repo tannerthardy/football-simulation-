@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Measurement return and teammate-motion contract checkpoint
+
+| Item | Owner | Branch | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Execute Measurement's available-weeks query, resolve Do-It-All's #36 velocity seam, then resume catch approach | Codex Catching/Awareness owner, user assigned 2026-10-15 (America/Phoenix) | `codex/yac-approach-objective`; current accepted develop separately pinned `8c891f4` | Published Measurement driver only; no duplicate data pipeline/filter changes. #36 contract review only; Do-It-All owns separate core/consumer implementation, Integration owns PlaySim. Catch approach remains controller diagnosis with physics fixed. | [Query complete](reviews/p045-nfl-available-weeks-return.md): existing weeks 1–9, week 1 reused; 142.03 s / 9,257,358,332 input bytes, within 300 s / 12 GiB; six geometry matches, four contained, zero explosive, two middle. [Contract decision sent](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200878215): approve copied visual `sampledVel` plus explicit unknown-motion handling after .30 s; observation-only staging approved, no whole #36 promotion. [Exact contract](reviews/teammate-velocity-contract.md). Production unchanged. Resume bounded consumed-flight-picture diagnosis; prior P045 source stays explicitly historical to new develop. |
+
 ## P045 cushion-to-turn continuation and PR63 controller review
 
 | Item | Owner | Branch | Boundary | Status |
