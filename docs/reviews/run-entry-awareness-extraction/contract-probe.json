@@ -99,9 +99,11 @@
     "Raw sampled velocity is stored but not exposed in the picture.",
     "The admission helper uses picture.vel as sampled velocity to undo extrapolation, and treats zero as stationary. Importing the type alone does not satisfy this assumption."
   ],
+  "node": "v22.23.3",
+  "collectorSha256": "97eb11795572ef750f385bb8d83bd7c99f4db16bcab5731cf337b639c05fa34f",
   "queryPurityPreserved": true,
   "physicalScrimmages": 0,
   "worldSteps": 0,
   "completedGames": 0,
-  "elapsedSeconds": 0.0015940689999999905
+  "elapsedSeconds": 0.0018535199999999748
 }

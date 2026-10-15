@@ -1,0 +1,16 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "README.md": "bbad0d54d31fd6eb6695e35c5b58ec912d049795e4f79d3f9f1c0fa306aefc95",
+    "application-check.json": "a6884e1ac902ba31ad5268471b89baf6b0aaaf4cdc5921cb7f24621c9de1a301",
+    "contract-probe.json": "1c8d6e22f430f86f19841d18a10a3910203e056953302022279a10345a91119b",
+    "coordination.json": "42ce261fcf7b47854dc0bae05a43a3edc89b86e7070e052097e9d4490e83077e",
+    "patches/01-observation-core-proposal.patch": "b7b1444d06db7c8e6a68e7620edfe2d0a235ff2e07b7d842107c8fa4e2136291",
+    "patches/01b-observation-core-after63-proposal.patch": "3b5a580074716c5a9ad33eb74e456aae523a138e08e9438a52195d26db8f4fa5",
+    "patches/02-information-risk.patch": "6e029983024d643129cf11db875d6ad6caa748dbab901641f209d9106915d3ed",
+    "patches/03-admission-context-only-proposal.patch": "2c4c0c75b1746f95f4eeb558cc1137eeb43d0432c17f22a596a33cb2696c321d",
+    "validation/probe-launcher.json": "eb23f0c0015d7a81bbeecf1e61046b524f02e1ab2e009fabdd86512d46d20a13",
+    "validation/proposed-source.json": "46fd6b3d926839a0bb828a8d73b68549b98af74702b5d2c52f9d3342aba51d73",
+    "validation/proposed-typecheck-launcher.json": "15e1a0aa30ca6286c21a7dd5bed85d7a620ae92218faadb0bc9024e514bc1237"
+  }
+}

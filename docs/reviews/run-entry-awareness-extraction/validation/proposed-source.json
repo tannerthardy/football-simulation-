@@ -1,0 +1,9 @@
+{
+  "proposedTree": "8e076feed8ce6f257d2c007905abc57da508a50b",
+  "proposedSourceSha256BeforeAndAfter": "96b825d4c6168c8a6126a816f3407d1022764d8c95b49de009f382204049ab5e",
+  "compilerPassed": true,
+  "compilerSeconds": 11.106125983,
+  "hostRepoSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "note": "Launcher host source is unchanged accepted development. Compiler target is the separately materialized virtual proposal, identified by its own tree/source hash. No approved runtime candidate is claimed.",
+  "WorldSteps": 0
+}

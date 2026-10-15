@@ -154,9 +154,12 @@ The [patch directory](patches) provides proposed slices, **not approved runtime*
 [Temporary-index application checks](application-check.json) apply the appropriate
 01 variant,02 and03 in order onto **both** exact base trees. Only six files differ:
 PlaySim, information core, carrier, approach helper, approach test and fixture.
-No production source, branch reference or PR head is changed. A materialized
-accepted-base proposal is compiler-checkable; a compiler pass will establish
-implementation dependency closure, not semantic approval or football transfer.
+No production source, branch reference or PR head is changed. The materialized
+accepted-base proposal **passes typecheck in11.106s**, source
+`96b825d4c6168c8a6126a816f3407d1022764d8c95b49de009f382204049ab5e`.
+That establishes implementation dependency closure, not semantic approval or
+football transfer. The [compiler target/receipt](validation/proposed-source.json)
+distinguishes this virtual proposal from the unchanged accepted host runtime.
 
 The probe/check scripts are under `scripts/diag/run-entry-awareness-contract.mjs`
 and `scripts/diag/run-entry-awareness-extraction.py`. All new verification is

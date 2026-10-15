@@ -1,0 +1,13 @@
+{
+  "originalOwner": "Awareness owner, original PR36",
+  "contractSource": "68284671d062dfd4e7e879bcd037bc21dad3e3ac/docs/reviews/teammate-information.md#interface-and-acquisition",
+  "reviewSurface": "https://github.com/tannerthardy/football-simulation-/pull/36",
+  "status": "Concrete proposal prepared; scoped review request will be posted with this published evidence pin. No owner acknowledgement claimed.",
+  "requestedDecisions": [
+    "Confirm observation-only staging with no install/tactile/spacing migration.",
+    "Confirm smallest explicit representation of sampled motion/unknown current motion; retain vel, prediction and expiry semantics."
+  ],
+  "runtimeImplementation": "held",
+  "sharedSourceEdits": false,
+  "moreBehaviorTuning": false
+}
