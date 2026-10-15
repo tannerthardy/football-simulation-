@@ -1,3 +1,45 @@
+# Current project status
+
+Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
+short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
+Do not use the historical sections below as a current starting-reference pin.
+
+- **Accepted develop: `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`**, merged #63 and prior #12. Historical `4ded6b6` stays separate.
+- #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
+  blocking recognition, bookkeeping and incidental catch acquisition. The actual
+  merge matches the verified publication exactly. Reuse its exact receipt;
+  no suite rerun is requested.
+- The gap correction is portable; earlier zone/Duo work and the rejected
+  entry-risk trial remain separate. Its latest information-versus-navigation
+  clarification is recorded without promoting it. #34 coverage and #36 awareness retain
+  their named blockers/owners. #54 and physics packages remain experimental.
+- Entry-admission remains held on the Awareness interface and explicit
+  sampled/unknown-motion contract. Observation-only extraction is a review
+  artifact, not accepted runtime. Its information-only correction stays separate.
+- Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
+  that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
+- #66 remains held after Run-owner adjudication (mirrored feasible collection
+  still missed; two center-history compatibility questions remain Integration's).
+  #67 is portable on accepted develop, but its one combined attempt has a
+  replay-test decision-kind failure (1,723 pass/one fail; Python skipped).
+  Its one-line test proposal needs Run Game/Catching review. Neither runtime
+  candidate is included in develop; #65 docs are independently ready.
+- New work starts from accepted develop. Existing owners check relevant
+  accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
+
+
+Current priorities remain bounded run-entry/collection, P045 coverage technique
+and secondary support, and independent minimal ready controller reviews. Owners
+reconcile only affected accepted contracts at clean checkpoints; see the
+[specific investigation handoff](INTEGRATION.md#current-candidate-2026-10-15).
+No new games, roster screen or shared-suite rerun is requested by this update.
+
+<details>
+<summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>
+
+These are the original dated tracking records. Their then-current accepted pin
+and pending-review statements are historical; the queue above is authoritative.
+
 # Project status and priorities
 
 Updated **2026-10-15 (America/Phoenix)**. This page and [ISSUES](ISSUES.md)
@@ -373,6 +415,8 @@ random-film review, the two-attempt stopping rule and the future untouched exam.
 Research probes stay outside production/default tests; generated films and
 traces go to ignored `out/`. Old large evidence remains recoverable at `663193d`
 through [the retrieval guide](../data/README.md). History was not rewritten.
+
+</details>
 
 </details>
 

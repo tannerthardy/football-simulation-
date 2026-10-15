@@ -1,0 +1,46 @@
+{
+  "schema": "pass-cutoff-final-preflight-v1",
+  "acceptedDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "priorFreeze": "be6225436498a43d8d98437a69069434e51565aa",
+  "priorReviewPublication": "48bbfe77df0b64798ff0dde1e6d1ea69f1d9a752",
+  "runAdjudication": "f430360d9e5a6a151a3851843d6a917a94bd0964",
+  "runReport": "https://github.com/tannerthardy/football-simulation-/blob/f430360d9e5a6a151a3851843d6a917a94bd0964/docs/reviews/pass-ordinary-contact.md",
+  "runArtifactManifestSha256": "9978e318791513a577a604c517025fd3676e830364f443f045684212dc7b5b63",
+  "runVerifiedArtifacts": [
+    "input.json",
+    "matched-harness-failure.json",
+    "matched-launcher.json",
+    "matched-metadata-failure.json",
+    "matched-metadata-failure.log",
+    "matched-receipt.json",
+    "matched.json.gz",
+    "matched.log",
+    "native-launcher.json",
+    "native-receipt.json",
+    "native.json.gz",
+    "summary.json"
+  ],
+  "runtimeTestsSettingsChangedOnRunDiagnostic": false,
+  "runDiagnosticScriptsNotImported": [
+    "scripts/diag/ordinary-pass-contact-report.py",
+    "scripts/diag/ordinary-pass-contact.mjs"
+  ],
+  "candidateRuntimeChangedSincePriorFreeze": false,
+  "changedProtectedPaths": [
+    "src/sim/behaviors/blocking.ts",
+    "test/fixtures/pass-cutoff-inputs.json.gz",
+    "test/pass-cutoff-approach.test.ts",
+    "test/replay-telemetry.test.ts"
+  ],
+  "testContractRepair": "Only coverage-job entries enter coverage-specific assertions; all existing assertions, setup, seeds and inspection timing preserved.",
+  "preservedPriorReceiptFiles": 27,
+  "scopeExclusions": [
+    "#69 collection",
+    "#66 and experimental contact physics",
+    "entry-admission",
+    "experimental original #67 ancestry",
+    "#64 predictor/loaded-coordinate trials"
+  ],
+  "verificationAuthorized": true,
+  "mergeAuthorized": false
+}

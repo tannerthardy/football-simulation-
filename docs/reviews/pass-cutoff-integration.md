@@ -1,5 +1,31 @@
 # Independent #67 extraction on accepted develop
 
+## Final verification preparation — 2026-10-15
+
+User accepted [Run's bounded ordinary-fixture adjudication](https://github.com/tannerthardy/football-simulation-/blob/f430360d9e5a6a151a3851843d6a917a94bd0964/docs/reviews/pass-ordinary-contact.md).
+The prior ordinary-fixture hold is cleared; native losses remain adverse evidence.
+Reciprocal response-variate diagnostics transfer the successful swim and early
+pressure to the accepted approach; each approach protects through2.25s with
+the failed long-arm execution. This supports a contact-clock/execution tradeoff,
+not universal improvement, zero geometry effect, or validation of contact law.
+All13 Run artifact hashes are verified and reused without another replay.
+
+The final candidate includes current accepted develop
+`7d1451b2c31786e075550183a6a93bbda23da29b` through a normal merge, preserving
+#65 documentation and both workboard histories. Runtime remains the same isolated
+extraction and source hash below. The only additional test edit is the approved
+one-line `coverage-job` filter. Nonempty/history/copy/perception/QB/unavailable
+assertions, setup, timing, seeds and thresholds remain. #69, experimental physics
+and Run's diagnostic scripts are not imported. All prior receipts are preserved.
+[Preparation checks](../../data/reviews/current/pass-cutoff-integration/final-preflight.json).
+
+Freeze this exact candidate and complete typecheck, build, TypeScript and Python
+phases once with44 accepted flags, components=1 and existing World defaults.
+No fail-fast skips, extra games, roster panel or repeated focused campaign.
+Verification approval is not merge authorization; accepted develop remains7d1451b.
+
+## Earlier review stages — preserved
+
 **Decision: hold #67 runtime promotion on one replay-test contract; #65
 documentation is independently ready for adoption approval.** Integration review from accepted develop
 `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`, separate from #65 documentation,

@@ -49,7 +49,7 @@ describe('observational replay recording', () => {
     const sim = new PlaySim(setup('pass', 'full'));
     for (let i = 0; i < 45 && sim.phase === 'live'; i++) sim.tick();
     const first = JSON.stringify(sim.trace.data!.frames[0]);
-    const before = sim.trace.data!.decisions.slice();
+    const before = sim.trace.data!.decisions.filter(d => d.kind === 'coverage-job');
     for (const decision of before) {
       const b = sim.agents[decision.a].behavior;
       expect(b instanceof CoverageDefender).toBe(true);

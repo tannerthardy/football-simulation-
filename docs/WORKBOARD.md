@@ -3,13 +3,66 @@
 ## Independent #67 portability review — 2026-10-15
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
-`8c891f4cf887b54297efbbc4c7993ba5e2f318b5`. Boundary: the authored free-cutoff
+`7d1451b2c31786e075550183a6a93bbda23da29b` after the docs-only #65 merge. Boundary: the authored free-cutoff
 PassProtector action only, its existing four checks and portable saved inputs;
 no run-controller, forecast, spacing, engagement, physics, flags or capacities.
-Review #65 independently. Preserve #67's RT/RG adverse evidence and forecast
-limitations; reuse compatible focused receipts. No merge authority, default or
-historical-baseline change. First decision: does the minimal extraction compose
-with accepted controllers and retain its primary/opposing behavior contracts?
+User accepted Run's ordinary-fixture adjudication at `f430360d9e5a6a151a3851843d6a917a94bd0964`.
+Install only the reviewed coverage-job assertion filter, freeze, and complete
+typecheck/build/TS/Python verification with components=1. Preserve the failed
+first receipt, native RT/RG/LT losses, traffic and forecast limits. #69 and
+experimental physics remain separate. Verification approval grants no merge,
+reference, default or historical-baseline authority.
+
+## Current queue ownership — 2026-10-15
+
+The bounded PR bookkeeping pass closes 43 finished/superseded records while
+retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
+#63 is accepted and merged as develop `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`;
+#66/#67 remain separately scoped.
+Unclear handover/attention/callback dispositions remain with their owners.
+No contributor must rerun a suite, rebase, stop work or move a branch for this.
+
+Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
+verification and accepted-pin publication under existing authority. This
+documentation branch `codex/integration-queue` now includes accepted #63 through
+a normal merge of develop, preserving both documentation histories. Its diff
+against accepted develop changes agent/reference/navigation records and adds a
+merge receipt only. Source, tests, flags, dependencies and existing receipts
+are identical to accepted develop; no worker branch is moved.
+
+Run Game retains exchange and PassProtector/cutoff; Do-It-All! retains run
+blocking/climb and carrier/spacing navigation; Catching/Pursuit owns recognition
+and coverage; Awareness owns acquired teammate-information boundaries; Physics
+retains contact-law and experimental promotion. Shared-file overlap calls for
+function/contract coordination, not a blanket subsystem lock. If behavior is
+ambiguous, involve the affected owner rather than choosing the newest branch.
+
+Read [safe checkpoint/handoff guidance](INTEGRATION.md#agent-workflow). Existing
+completed-stage and historical claims below retain their own stage/evidence;
+use the current queue and affected owner for live branch/readiness information.
+
+## Independent pass review checkpoint
+
+Integration reviewed #65 documentation and prepared #67's bounded extraction
+from accepted develop. [Fetchable code, complete failed receipt, adverse evidence
+and one-line test proposal](https://github.com/tannerthardy/football-simulation-/blob/d27988a15584312b17a5c88be6c9786baafa3c7d/docs/reviews/pass-cutoff-integration.md).
+Run Game with Catching/replay review owns the decision-kind contract disposition;
+Integration retains final exact composition/verification. The proposal is
+uninstalled. #65 docs are ready for explicit adoption approval; #67 runtime
+stays held independently of Physics and entry-admission. No new merge authority.
+
+## Accepted #63 and current follow-up
+
+| Item | Owner / boundary | State |
+| --- | --- | --- |
+| #63 integration | Integration: exact accepted pin, source/test/settings compatibility and publication | Complete. Actual merge equals reviewed publication; existing 1,720-TS/145-Python/typecheck/build receipt reused. No new simulations. |
+| #65 documentation reconciliation | Integration: README, agent guidance, existing integration/status/issues/workboard records and new merge receipt | Preserve newer queue/approval/disposition content and #63's complete detailed history. No additional runtime changes or new merge authority. |
+| Follow-on run entry | Do-It-All!: carrier admission; Awareness: acquired information schema; Integration: PlaySim composition | Held on sampled/unknown-motion contract and explicit observation-only staging review. P032 remains censored at3s; information correction is independent. |
+
+See [affected investigations and exact pin](INTEGRATION.md#current-candidate-2026-10-15).
+
+<details>
+<summary>Pre-merge #63 preparation ownership — completed stage, preserved</summary>
 
 ## Departed-center gap integration — 2026-10-15
 
@@ -23,7 +76,11 @@ The rejected trial remains outside this candidate; Run Game retains pass
 protection/cutoff and Do-It-All! retains run-blocking/climb and carrier/spacing
 navigation. This record coordinates boundaries without moving worker branches.
 
-## Current controller integration preparation
+
+</details>
+
+## Completed #12 controller integration preparation — historical
+
 
 This bounded ownership row records the current reviewed candidate. Original
 ownership rows below retain their approved-reference content and evidence;
