@@ -114,7 +114,7 @@ describe('run-block approach uses the existing physical base', () => {
 describe('an attached inside-zone first-level job keeps its physical base', () => {
   it.each(['iz_strong','split_zone'])('lowers the TE through the same finite law on %s', concept => {
     const {sim,blocker}=setup('drive',true,'Y',concept);
-    const before=structuredClone(blocker.body), command=blocker.behavior.update(blocker,sim);
+    const before=structuredClone(blocker.body), command=blocker.behavior.update(blocker,sim) as Intent;
     expect(command.posture).toBe(.7);
     expect(blocker.body).toEqual(before);
     expect(before.support!.posture).toBeLessThan(.7);
@@ -130,11 +130,11 @@ describe('an attached inside-zone first-level job keeps its physical base', () =
 
   it.each(['climb','pull','stalk'] as RunBlockKind[])('does not impose the base on a TE %s job', kind => {
     const {sim,blocker}=setup(kind,true,'Y');
-    expect(blocker.behavior.update(blocker,sim).posture).toBeUndefined();
+    expect((blocker.behavior.update(blocker,sim) as Intent).posture).toBeUndefined();
   });
 
   it.each(['counter','trap'])('leaves %s technique outside this zone-only correction', concept => {
     const {sim,blocker}=setup('drive',true,'Y',concept);
-    expect(blocker.behavior.update(blocker,sim).posture).toBeUndefined();
+    expect((blocker.behavior.update(blocker,sim) as Intent).posture).toBeUndefined();
   });
 });
