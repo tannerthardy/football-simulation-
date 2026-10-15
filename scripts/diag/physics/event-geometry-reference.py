@@ -141,9 +141,9 @@ def equivalent(field, phases, base):
     mirrored, mirrored_phases = copy.deepcopy(field), copy.deepcopy(phases)
     for b in mirrored['bodies']:
         for key in ('position', 'velocity', 'groundAcceleration'):
-            b[key]['x'] = -b[key]['x']
+            b[key]['y'] = -b[key]['y']
         b['spin'], b['facing'] = -b['spin'], -b['facing']
-    mirrored['tangent']['y'] = -mirrored['tangent']['y']
+    mirrored['tangent']['x'] = -mirrored['tangent']['x']
     for p in mirrored_phases:
         p['force'] = -p['force']
         p['groundAcceleration'] = [-v for v in p['groundAcceleration']]
