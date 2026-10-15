@@ -1,0 +1,24 @@
+{
+  "protocol":"native-leg-grasp-input-v1",
+  "parent":"config/solver-value-study.json",
+  "question":"Is the first .2s of native leg-grasp braking earned by actual impulses, shared capacity, tackler reaction/support and compliant placement?",
+  "windowSeconds":0.2,
+  "weakContinuationSeconds":0.4,
+  "cases":[
+    {"id":"tite","start":2.8,"prefix":"ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587"},
+    {"id":"under","start":2.95,"prefix":"5af8695b1437ac0a45e12ec4db11953874a868ea33c79216f058755617d53dcd"}
+  ],
+  "variants":[
+    {"id":"native","case":"tite","scale":1,"substeps":null,"finish":true},
+    {"id":"successful-control","case":"under","scale":1,"substeps":null,"finish":true},
+    {"id":"weak","case":"tite","scale":0.05,"substeps":null},
+    {"id":"tiny","case":"tite","scale":0.001,"substeps":null},
+    {"id":"zero","case":"tite","scale":0,"substeps":null},
+    {"id":"removed","case":"tite","scale":1,"substeps":null,"remove":true},
+    {"id":"refine48","case":"tite","scale":1,"substeps":48},
+    {"id":"refine192","case":"tite","scale":1,"substeps":192}
+  ],
+  "scope":"Replay full acquisition prefix, then diagnostic hold-capacity or timestep control. Physical capacities, recovery, requests and defaults otherwise unchanged. Self-refinement is not independent force-law truth.",
+  "checks":{"momentum":1e-8,"spinImpulse":1e-8,"work":1e-8,"rowDose":1e-8,"capacity":1e-8},
+  "budget":"Two existing native inputs, one .2s loaded window and .4s weak continuation; native successful endings only. No solver expansion, full suite or games."
+}
