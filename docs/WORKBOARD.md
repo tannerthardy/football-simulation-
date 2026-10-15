@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Measurement evidence delivery — 2026-10-15
+
+Continuing the intentionally pinned `codex/accepted-broad-audit` evidence host,
+HEAD58303d6/runtime8ca8dee. Fresh fetched develop90edc525 matches canonical queue
+publication4bca2313; #78 changes RunBlocker/collection and preserves defense.ts.
+Saved evidence remains historical to8ca8dee; no new-develop trajectory claim.
+Boundary: archive verification/selective transfer, the specifically requested
+A020/A044 + A008/A032 saved-data handoff to Flex/Do-It-All, consumer publication,
+a bounded NFL geometry answer from completed query output, and one Integration
+checkpoint coordination. No runtime edits, duplicate panel/game collection,
+general coverage-motion packet or AMF/NFL query expansion. Existing NFL and
+isolated AMF evidence stays byte-identical. Missing discarded request stages
+belong to Flex's passive observer; final intents cannot reconstruct them.
+
+
 ## Accepted-build broad football diagnosis — 2026-10-15
 
 Measurement owns a bounded symptom audit on accepted develop

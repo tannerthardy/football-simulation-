@@ -1,0 +1,34 @@
+{
+  "referenceSha256": "11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191",
+  "verifiedCases": [
+    {
+      "caseId": "A008",
+      "rows": 32,
+      "rawSha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+      "exactNativeWindowComparison": true
+    },
+    {
+      "caseId": "A020",
+      "rows": 37,
+      "rawSha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+      "exactNativeWindowComparison": true
+    },
+    {
+      "caseId": "A032",
+      "rows": 47,
+      "rawSha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+      "exactNativeWindowComparison": true
+    },
+    {
+      "caseId": "A044",
+      "rows": 53,
+      "rawSha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+      "exactNativeWindowComparison": true
+    }
+  ],
+  "all22IdentityJoins": true,
+  "storedVelocityExact": true,
+  "finalIntentOnly": true,
+  "eventsStatsInitialSetupExact": true,
+  "noNewSimulations": true
+}

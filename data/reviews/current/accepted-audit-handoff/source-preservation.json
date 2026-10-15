@@ -1,0 +1,74 @@
+{
+  "completedMeasurementCommit": "410a36983dadbe6e8cc2d917a8fb12665a63ccab",
+  "files": [
+    {
+      "path": "scripts/diag/p045-nfl-approach.py",
+      "sha256": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+      "bytes": 13264,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "scripts/diag/p045-nfl-expand.py",
+      "sha256": "a508c8baaea535cb7cc328a396bf20db39df4e52f5171fe4ce948004e355dec3",
+      "bytes": 17641,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "scripts/diag/p045-nfl-validate-expanded.py",
+      "sha256": "2d4d6b1a59e48dae9398f8c5846b90d853002a6090b421b8327be76b73854ee3",
+      "bytes": 16513,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "data/reviews/current/p045-nfl-expanded-validation.json",
+      "sha256": "797721da891f31026901b35b279133ed18318c7a96a4de0622b0d5981779de0a",
+      "bytes": 34569,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "data/reviews/current/p045-nfl-expansion-status.json",
+      "sha256": "9140a37fffcdc0c5da4c2e1edf9f427da96d3cd95cfcb9e1c64e427f5f758bff",
+      "bytes": 6828,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "scripts/diag/amf-source-audit.py",
+      "sha256": "417f452434a2548515706ec8d6ecdb15dca339804155eed0de4176aa40143242",
+      "bytes": 12914,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "scripts/diag/amf-protection-access.py",
+      "sha256": "592b8cc3fcbbb74a49706e1e477dbbeb0ae6d3db154e6ae7bcd4004a97aeaf7f",
+      "bytes": 22134,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "scripts/data/amf-acquire.py",
+      "sha256": "41db355751c1fe296a9324d536dcfdce4138ec5d66caab53bd2d6bafac854ecd",
+      "bytes": 5720,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "data/reviews/current/amf-source-audit.json",
+      "sha256": "c5370a622748d5e5e8c43139187a64c32c29395008917e92e31b60e80befae97",
+      "bytes": 11950,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "data/reviews/current/amf-protection-access-research.json",
+      "sha256": "12b4b9fb9d8291cc79200810733bbd75a11f2675ba9da11e6f04da191da4402f",
+      "bytes": 36525,
+      "matchesCompletedCommit": true
+    },
+    {
+      "path": "data/reviews/current/amf-acquisition-manifest.json",
+      "sha256": "8e9353d63daab1ee17508a27aea1ca21cf4b070817978ef59ff1a979a154a992",
+      "bytes": 97986,
+      "matchesCompletedCommit": true
+    }
+  ],
+  "rawAMFReadOrWrite": false,
+  "originalResultsOrQueriesChanged": false,
+  "newRawNFLQuery": false
+}

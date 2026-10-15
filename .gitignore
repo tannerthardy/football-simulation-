@@ -36,3 +36,10 @@ data/reviews/**/*.txt
 # Keep these bounded aggregate references available to current diagnostics.
 !data/reviews/rushing-benchmark/reference/nfl-benchmark.json.gz
 !data/reviews/rushing-benchmark/concepts/report.json.gz
+
+# Named compact consumer reference, not the complete native audit/archive.
+!data/reviews/current/accepted-audit-handoff/flex-windows.json.gz
+!data/reviews/current/accepted-audit-handoff/transfer-receipt.json
+!data/reviews/current/accepted-audit-handoff/nfl-support-geometry.json
+!data/reviews/current/accepted-audit-handoff/source-preservation.json
+!data/reviews/current/accepted-audit-handoff/reference-validation.json
