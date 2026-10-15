@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Acquired run support across coverage reassignment — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Preserve installed support plus acquired runner evidence through a Quarters zone→man replacement | Catching, user-assigned; Run consulted and Flex owns mesh attribution | `codex/coverage-run-support-continuity` from accepted `90edc52530caa71efdebf257f17d954a8a629ea0` (#78 merge; current owner acceptance in #75) | `CoverageDefender` support ownership and an existing keyed-fit entry point if justified; focused tests/one saved witness. #75's insertion/alley assertion dispositions stay on #75. No mesh, spacing, recognition, physics, capacity or P045 target tuning. | Diagnose before changing code. [Run/Flex boundary and contract consultation](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203247713). Preserve current run belief and acquired carrying picture, not a permanent run latch; existing throw recognition transfers ownership. Integration owns combined verification. |
+
 ## Standing queue and next controller checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
