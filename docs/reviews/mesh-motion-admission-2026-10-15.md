@@ -1,17 +1,46 @@
 # Requested-turn admission replaced by achievable motion
 
 **Recommendation: adopt the narrow admission correction after independent review;
-keep its navigation benefit unproved.**
-It fixes a demonstrated missing check; it does **not** fix A044's collision.
-Reject the broader low-speed variant. Do not promote the earlier research bend
-or claim a coverage/YAC improvement. No coverage behavior or physics expanded.
+keep its navigation benefit unproved.** It fixes a demonstrated missing check,
+but does not resolve A044's collision. Reject the broader low-speed variant and
+keep #81's research bend outside production. No coverage behavior or physics expanded.
 
-Code **f27456b5f4cd7e5d628417662a77e4ede5b85bfc**, continuing #81 on
-`codex/mesh-command-attribution`; accepted base remains
-**90edc52530caa71efdebf257f17d954a8a629ea0**, freshly fetched and matched to queue255d1c4.
-Prior #81 evidence cb3823e and all failed trials remain intact.
-Candidate source SHA256:
-`6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571`.
+Current accepted develop advanced during publication to
+**7eb2554f5dbb497cff169f386704a5b0f4cf43fe** (merged/reviewed #82). Reconciled
+feature code: **edad30904780523896092f592f4c30f1686cc764**. The unchanged minimal
+three-file spacing correction remains **f27456b5f4cd7e5d628417662a77e4ede5b85bfc**;
+its portable patch passes `git apply --cached --check` on both90edc525 and7eb2554.
+Source on current accepted plus the unchanged #81 observer:
+`f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8`.
+
+The observer-only current reference is7eb2554 +4fe2342, published as
+`codex/mesh-admission-82-reference@bfb0d5ec4ca090b1bb8e38ac01116eb29954a8ce`,
+sourcec0c660cb. This is a measurement host, not another accepted baseline.
+The feature reconciliation preserves all #82 recognition/run-support changes.
+No shared suite was repeated or production branch merged by this work.
+
+## Current accepted-source matched check
+
+#82 changes the unrecognized-flight man continuation, so old native trajectories
+were not relabeled current. Only A044/A008 were run once each as reference and
+candidate, same frozen setups/seeds/physics/flags and passive measurement.
+13 focused checks and typecheck pass on this reconciled source.
+
+| Case |7eb2554 + observer reference | Same source + spacing correction |
+| --- | --- | --- |
+| A044 | SS/robber collision2.75: impulse139.003268833, closing2.716118059yd/s. H drops2.90; incomplete3.50, stop3.55. | Collision and all events exactly match. First request fork is SS3.25, **after** the drop; it is not a repair of the earlier collision. |
+| A008 | Y catches2.45, NB wrap2.50; still live at3.40 cap. | Every recorded physical/request tick, event and main RNG matches the current reference. Useful catch defense preserved; no current terminal tackle claim. |
+
+There is no late Z/CB_S block to compare in current A044 because **both** arms
+end incomplete first. We did not force a catch or continue after whistle to
+manufacture that control. The separate historical90edc525 matched continuation
+below preserves the real block and all8 available hand-force samples exactly.
+[Current paired evidence and all-task runtime](../../data/reviews/current/mesh-motion-admission/current-review.json).
+
+The remaining sections retain the90edc525-source diagnosis, rejected attempt and
+historical block control. Their source is
+6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571 and original
+#81 evidencecb3823e. Their final tackle/TD or collision clocks are not current-build claims.
 
 ## Small correction and mechanism
 
@@ -39,9 +68,9 @@ motion, along with the existing shared preview/clearance machinery. It **does
 not import #76** or its separately reviewed/unadopted carrier-only raw-picture
 transport and radial override. #76 stays at4cf253e, separately identified.
 
-## Reacting continuations and actual blocking
+## Historical90edc525 reacting continuations and actual blocking
 
-Only A044 through5.60 and A008 through3.40 were tested. All22 players react
+On that historical host, only A044 through5.60 and A008 through3.40 were tested. All22 players react
 normally. Inputs/IDs/seeds/accepted44flags/components1/physics are unchanged;
 there is no research bend, forced trajectory, extra perception or private peer
 motion. Existing #81 baseline windows/events/RNG and Measurement's saved block
@@ -110,7 +139,7 @@ its stationary neighbor became forecast-eligible; the final candidate preserves
 the original strict contact-exclusion assertion unchanged. All receipts are
 retained, including failures. No full suite or broad transfer panel.
 
-**27.155463 launcher seconds total**, including typecheck, every focused run and
+Historical stage: **27.155463 launcher seconds total**, including typecheck, every focused run and
 failures; **5.069258s native launchers**. Five native executions: two broad
 candidate prefixes, one1.95s first-fork diagnostic, two final prefixes. Maximum
 native clock5.60s, no games/new rosters/seeds. Observer overhead is included;
@@ -127,3 +156,9 @@ Shared spacing ownership was coordinated on #81/#76/#75 before edits. Run keeps
 RunBlocker.leaveCombination/climbRoute/PassProtector; Catching keeps coverage
 wrapper/keyed-fit changes. Integration owns exact combined verification and
 adoption. No merge/default or physical-capacity promotion is performed here.
+
+Current-source reconciliation adds four bounded native executions and focused/type
+checks. **All-task total: 44.435229 launcher seconds,
+9.212155 native launcher seconds;9 native executions,
+zero games/new rosters**, max5.60s. It is a source-compatibility check after an
+accepted coverage change, not another policy variant or a broad campaign.

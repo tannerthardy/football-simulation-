@@ -1,0 +1,654 @@
+{
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "codeOnAccepted": "edad30904780523896092f592f4c30f1686cc764",
+  "portableBehavior": "f27456b5f4cd7e5d628417662a77e4ede5b85bfc",
+  "reference": "bfb0d5ec4ca090b1bb8e38ac01116eb29954a8ce",
+  "referenceSource": "c0c660cbad2afb0180ad773cdef8f8ecb70b6c5083409cbbdcb03e446ba028e1",
+  "candidateSource": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+  "rows": [
+    {
+      "caseId": "A044",
+      "differences": {
+        "21": [
+          3.25,
+          3.3,
+          3.35,
+          3.4,
+          3.45,
+          3.5
+        ]
+      },
+      "eventsExactlyEqual": true,
+      "rngExactlyEqual": true,
+      "oldImpacts": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ],
+      "newImpacts": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ],
+      "endClock": 3.55,
+      "events": [
+        {
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "pos": {
+            "x": 34.45,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 0.35,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 34.62313956996969,
+            "y": 23.989451252799554
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 35.8,
+            "y": 23.35
+          },
+          "note": "pass; pPass=0.89 focus=0.93 urgency=0.67"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 39,
+            "y": 34.63
+          },
+          "note": "pass; pPass=0.79 focus=1.00 urgency=0.81"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 35.77,
+            "y": 28.58
+          },
+          "note": "pass; pPass=0.73 focus=0.87 urgency=0.78"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 39.97,
+            "y": 24.85
+          },
+          "note": "pass; pPass=0.75 focus=0.86 urgency=0.72"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 39.97,
+            "y": 27.57
+          },
+          "note": "pass; pPass=0.72 focus=0.80 urgency=0.81"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 48.08,
+            "y": 26.64
+          },
+          "note": "pass; pPass=0.71 focus=1.00 urgency=0.84"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 35.66,
+            "y": 26.2
+          },
+          "note": "pass; pPass=0.78 focus=0.88 urgency=0.78"
+        },
+        {
+          "t": 0.65,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 34.09900723824608,
+            "y": 26.47523263911931
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.65,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 34.08836296615697,
+            "y": 27.913139252071502
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "jam",
+          "a": 18,
+          "b": 8,
+          "pos": {
+            "x": 36.54,
+            "y": 43.94
+          }
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 34.48346237832633,
+            "y": 30.2664210799557
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.8,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 35.08,
+            "y": 31.03
+          },
+          "note": "pass; pPass=0.72 focus=0.53 urgency=0.63"
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 36.73,
+            "y": 43.99
+          },
+          "note": "pass; pPass=0.72 focus=0.91 urgency=0.84"
+        },
+        {
+          "t": 0.95,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 36.78,
+            "y": 9.36
+          },
+          "note": "pass; pPass=0.73 focus=0.95 urgency=0.83"
+        },
+        {
+          "t": 1.2,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 36.84,
+            "y": 23.87
+          },
+          "note": "pass; pPass=0.74 focus=0.84 urgency=0.86"
+        },
+        {
+          "t": 2.25,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "pos": {
+            "x": 27.11,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.9,
+          "type": "drop",
+          "a": 10,
+          "pos": {
+            "x": 40.12,
+            "y": 24.35
+          }
+        },
+        {
+          "t": 3.5,
+          "type": "incomplete"
+        }
+      ],
+      "firstDifference": {
+        "t": 3.25,
+        "actors": [
+          21
+        ]
+      }
+    },
+    {
+      "caseId": "A008",
+      "differences": {},
+      "eventsExactlyEqual": true,
+      "rngExactlyEqual": true,
+      "oldImpacts": [],
+      "newImpacts": [],
+      "endClock": 3.4,
+      "events": [
+        {
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "pos": {
+            "x": 34.45,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 39.92,
+            "y": 24.82
+          },
+          "note": "pass; pPass=0.73 focus=0.85 urgency=0.69"
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 39.98,
+            "y": 27.57
+          },
+          "note": "pass; pPass=0.75 focus=0.83 urgency=0.74"
+        },
+        {
+          "t": 0.35,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 34.61216647671818,
+            "y": 23.99080519530909
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 35.82,
+            "y": 23.33
+          },
+          "note": "pass; pPass=0.75 focus=0.90 urgency=0.71"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 39,
+            "y": 34.62
+          },
+          "note": "pass; pPass=0.77 focus=1.00 urgency=0.73"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 35.79,
+            "y": 26.22
+          },
+          "note": "pass; pPass=0.76 focus=0.90 urgency=0.77"
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 34.28067301188336,
+            "y": 26.566555842549487
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.55,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 35.67,
+            "y": 28.54
+          },
+          "note": "pass; pPass=0.72 focus=0.84 urgency=0.79"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 48.31,
+            "y": 26.64
+          },
+          "note": "pass; pPass=0.70 focus=1.00 urgency=0.82"
+        },
+        {
+          "t": 0.75,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 34.48717907820439,
+            "y": 30.290722339252596
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 34.02072464419829,
+            "y": 27.90016668669368
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 35.11,
+            "y": 31.08
+          },
+          "note": "pass; pPass=0.75 focus=0.53 urgency=0.73"
+        },
+        {
+          "t": 0.8,
+          "type": "jam",
+          "a": 18,
+          "b": 8,
+          "pos": {
+            "x": 36.56,
+            "y": 43.94
+          }
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 36.63,
+            "y": 9.4
+          },
+          "note": "pass; pPass=0.73 focus=0.97 urgency=0.77"
+        },
+        {
+          "t": 0.85,
+          "type": "jam",
+          "a": 17,
+          "b": 9,
+          "pos": {
+            "x": 36.63,
+            "y": 9.4
+          }
+        },
+        {
+          "t": 1,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 37.01,
+            "y": 44.02
+          },
+          "note": "pass; pPass=0.70 focus=0.90 urgency=0.86"
+        },
+        {
+          "t": 1.2,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 36.85,
+            "y": 23.85
+          },
+          "note": "pass; pPass=0.74 focus=0.85 urgency=0.89"
+        },
+        {
+          "t": 2,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "pos": {
+            "x": 27.13,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.45,
+          "type": "fall",
+          "a": 5,
+          "pos": {
+            "x": 31.21,
+            "y": 24.94
+          },
+          "note": "contact"
+        },
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 38.5,
+            "y": 27.94
+          }
+        },
+        {
+          "t": 2.55,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 30.90881930419616,
+            "y": 25.58012073872421
+          },
+          "note": "run"
+        },
+        {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 7,
+          "b": 19,
+          "pos": {
+            "x": 38.52,
+            "y": 28.18
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.5,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.48,
+            "y": 27.65
+          },
+          "note": "initial"
+        },
+        {
+          "t": 2.8,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 30.111334291470545,
+            "y": 23.951302623649703
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.1,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 29.60276883874612,
+            "y": 31.52160615938188
+          },
+          "note": "run"
+        }
+      ],
+      "firstDifference": null
+    }
+  ],
+  "newNativeExecutionsThisTask": 9,
+  "receipts": [
+    {
+      "file": "before-mechanism.json",
+      "exitCode": 1,
+      "seconds": 1.836699713,
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b"
+    },
+    {
+      "file": "current-focused.json",
+      "exitCode": 0,
+      "seconds": 2.575153688,
+      "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8"
+    },
+    {
+      "file": "current-native-receipt.json",
+      "exitCode": 0,
+      "seconds": 1.799115511,
+      "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8"
+    },
+    {
+      "file": "current-reference-receipt.json",
+      "exitCode": 0,
+      "seconds": 2.343781839,
+      "sourceSha256": "c0c660cbad2afb0180ad773cdef8f8ecb70b6c5083409cbbdcb03e446ba028e1"
+    },
+    {
+      "file": "current-typecheck.json",
+      "exitCode": 0,
+      "seconds": 10.561714614,
+      "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8"
+    },
+    {
+      "file": "final-focused.json",
+      "exitCode": 0,
+      "seconds": 1.854971935,
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571"
+    },
+    {
+      "file": "focused-pass.json",
+      "exitCode": 0,
+      "seconds": 1.804517785,
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3"
+    },
+    {
+      "file": "mechanism-tests.json",
+      "exitCode": 1,
+      "seconds": 1.831610134,
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3"
+    },
+    {
+      "file": "narrow-native-receipt.json",
+      "exitCode": 0,
+      "seconds": 2.000681808,
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571"
+    },
+    {
+      "file": "narrow-tests.json",
+      "exitCode": 0,
+      "seconds": 1.803805969,
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571"
+    },
+    {
+      "file": "native-receipt.json",
+      "exitCode": 0,
+      "seconds": 2.133025556,
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3"
+    },
+    {
+      "file": "reference-mechanism.json",
+      "exitCode": 1,
+      "seconds": 1.64186616,
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b"
+    },
+    {
+      "file": "reference-opening-receipt.json",
+      "exitCode": 0,
+      "seconds": 0.9355505810000001,
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b"
+    },
+    {
+      "file": "typecheck.json",
+      "exitCode": 0,
+      "seconds": 11.312733294,
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571"
+    }
+  ],
+  "allLauncherSeconds": 44.435228587,
+  "allNativeLauncherSeconds": 9.212155295,
+  "fileHashes": {
+    "current-focused.json": "e3d6cabc637d661a05a770206eecc6cf5a01848d529225120c80ac7e4e1c7c80",
+    "current-typecheck.json": "def6dcaa41b7d5dbd6351c4d078c6ffea59cb119756df691cba24ec7a4914718",
+    "narrow-native-receipt.json": "824ac06a49c80bc4171439405191911833e83b0318d6a08d6c5742eeb5fe4735",
+    "current-reference-receipt.json": "61e11a61708c494c65dc93e185e2ef315e57e89d224b5e82b89448988f7511f8",
+    "before-mechanism.json": "32e0450225a7891a54544a10a1228e44eea89b1087f631555ca78fdfa1aedef6",
+    "typecheck.json": "8d48f3177552af645249a6be40fbb26255fbe096a6d549aa2430b0b7d91b690e",
+    "current-native-receipt.json": "a6ebf4277e5916adf6c20cc163b40896e3c456e54cc6e0374705eafff71da4a1",
+    "mechanism-tests.json": "6aadea5da39f56d1111c5ea528b4b6e3945f1757290954998990b0114c2f3cdd",
+    "focused-pass.json": "e055027e7e4ec9e7e4412d70241066b61b16c1c953192c00d25921d641e9bdba",
+    "portable.patch": "929c3b1a424173de2989c2c63c11f7a910adbfefa8c78ea824ab1ca664ea4cc5",
+    "final-focused.json": "3f8fe5a07a213357701502ce8604ee2297d58b66e411a4297edece59b00326e9",
+    "rejected-low-speed.patch": "81152539787cd2059ab463f6d64fb28a05838cbc994fee330f2151b8c0cfa978",
+    "reference-opening-receipt.json": "de5c9d456c5596dda97c7f786b154da07c71b0082cbbe32a3fd6d96359aabb16",
+    "narrow-tests.json": "b8d2d2464541721c6d01b6223c3c3d2374dc010cf320fb7a7a2a17070494fbab",
+    "reference-mechanism.json": "156f08c9c542aeaa131b13c0a79466d19e1930a48a130f824a0b34f29d491322",
+    "native-receipt.json": "80cefd67c5b541a3878b5478efd3b826b3e54d2f39726acc6ef3dc32d0523d6a",
+    "review.json": "c1d78235ab4f292c65b6d2f3aca8b9ce2afd2fea644246aa13c316ced060dd75",
+    "native-v2/plan.json": "555e287aac214324af0f2f53d71459e6bbbb829062f8ed9f7427ffb21dbabc5f",
+    "native-v2/A008.json.gz": "3e8c62cc0b57ba69fd96d916b28c2d1ec3c7d25735b8d78e428041501ca89a7d",
+    "native-v2/summary.json": "880bd75d29f1d8f3f994decd5c1a5b86150fb79a6938dde339b722d32836376f",
+    "native-v2/A044.json.gz": "970fee2e4cc4bafbb86de90139e2715b90b8f0220dd1fcf712f866e894642910",
+    "current-candidate/plan.json": "a7ecb021c4a2af94cb96ddccf366adfed40da2e9e6d0f5081b891200bd6ed7d4",
+    "current-candidate/A008.json.gz": "9b9bf7657e9552520900b27b1577473bdb3a732569cf7421bee10960857c3dec",
+    "current-candidate/summary.json": "49340b498e1e2eb5f016790f70757aa0143b96f2c7b25c72b8097f0898fbfdb1",
+    "current-candidate/A044.json.gz": "c15d3aea9a799269c0301657e742313d0ab7fd1064cb4c8a82928dea616a81b8",
+    "native-v1/plan.json": "6e29d681f3e10b8fa5b4a8d8fabe114245cba8555def573abbbd30d6360fbfe2",
+    "native-v1/A008.json.gz": "b25f5c763723c299233a20bcf06dbc828dbd3e1a6736c1af0306df0611f4eebc",
+    "native-v1/summary.json": "4be0bd1681a7503262bd9af389ebb690260d580cb5c0d211492ac9cf8a8213e8",
+    "native-v1/A044.json.gz": "a5ab8ad832a5ec3a6bf98ae317fc26c45fa232a2580adf1dbf146ace61182352",
+    "current-reference/plan.json": "c91aea5e1584d0691e1947fcf5377717015904da076c71c73e308589320b80fd",
+    "current-reference/A008.json.gz": "77ff2b5793c2d32f661851aa4b19cd17dc022e4b5b34da9deb8c698380c539bf",
+    "current-reference/summary.json": "d4a739298eb621de6cd9fbacaec082b051365c4340a99cf68b6e37e6c16bddd7",
+    "current-reference/A044.json.gz": "f441203456eb0d17f53952d101c900d45b2c943b97314c05cb92a5e18444466b",
+    "reference-opening/plan.json": "29cf338cd9dbb73bd295d833356509c4115fff671db407345e0242db564cc636",
+    "reference-opening/summary.json": "07abc1ada3e3cba22e3ff8ff06cb56f10dc166366bc6a3aa78b3a94ad9992371",
+    "reference-opening/A044.json.gz": "40bdb18e5426691d4ed6658328be9238ed537d8506f459893b81094194ebbe24"
+  }
+}

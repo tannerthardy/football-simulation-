@@ -1,0 +1,140 @@
+{
+  "question": "Does attainable-motion spacing admission improve the reacting A044 approach while preserving A008 and Z/CB_S load?",
+  "cases": [
+    {
+      "id": "A044",
+      "until": 5.6
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "nativeExecutions": 2,
+  "baseline": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "baselineDirectory": "out/motion-admission/current-reference",
+  "batchWallCapMs": 15000,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "physicsAndFlags": "Unchanged accepted defaults; use baseline:run --candidate.",
+  "provenance": {
+    "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "rows": [
+    {
+      "caseId": "A044",
+      "stoppedAt": 3.55,
+      "firstDifference": {
+        "t": 3.25,
+        "actors": [
+          21
+        ]
+      },
+      "compatibleBaselineWindowsEqual": false,
+      "teammateImpacts": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ],
+      "catchAndTackle": [],
+      "zCornerBlock": [],
+      "elapsedMs": 727.7463890000001,
+      "sha256": "c15d3aea9a799269c0301657e742313d0ab7fd1064cb4c8a82928dea616a81b8"
+    },
+    {
+      "caseId": "A008",
+      "stoppedAt": 3.4,
+      "firstDifference": null,
+      "compatibleBaselineWindowsEqual": true,
+      "teammateImpacts": [],
+      "catchAndTackle": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 38.5,
+            "y": 27.94
+          }
+        },
+        {
+          "t": 2.5,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.48,
+            "y": 27.65
+          },
+          "note": "initial"
+        }
+      ],
+      "zCornerBlock": [],
+      "elapsedMs": 691.802854,
+      "sha256": "9b9bf7657e9552520900b27b1577473bdb3a732569cf7421bee10960857c3dec"
+    }
+  ],
+  "elapsedMs": 1423.222903,
+  "cpuMs": 2268.598
+}

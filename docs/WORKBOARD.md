@@ -899,3 +899,13 @@ A008 useful defense and A044 actual Z/CB_S loads exact, but A044's collision rem
 27.155 launcher seconds including failures. Minimal three-file patch applies to
 accepted90edc525; no #76 import. Review the narrow mechanical correction separately
 from unproved navigation benefit. Integration owns final review/combined checks.
+
+Publication checkpoint: accepted #82 advanced develop to7eb2554 during this task.
+Merged accepted source into #81 atedad309; unchanged spacing patch f27456b.
+Added exactly four matched short native prefixes (current reference/candidate,
+A044/A008),13 focused checks/typecheck; no shared-suite repeat. Current A044
+has the same2.75 collision and2.90 drop/3.50 incomplete in both arms; current
+A008 comparison is exact through3.40, including catch/wrap. Historical block
+control remains separately pinned90edc525. All-task9 native executions,
+44.435 launcher seconds. Current source/review overrides old-base interpretation;
+no native old-source outcome is relabeled current.

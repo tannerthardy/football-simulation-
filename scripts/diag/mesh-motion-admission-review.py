@@ -49,6 +49,7 @@ assert rows[1]['actorDifferenceClocks']=={} and rows[1]['eventsExactlyEqual'] an
 assert all(k not in rows[0]['actorDifferenceClocks'] for k in ['9','10','17','21'])
 receipts=[]
 for p in sorted(root.glob('*.json')):
+    if p.name.startswith('current-'):continue
     d=read(p)
     if 'commands' in d:receipts.append({'file':p.name,'sourceSha256':d['sourceSha256'],'exitCode':d['exitCode'],
         'seconds':sum(c['elapsedSeconds'] for c in d['commands'])})
@@ -62,3 +63,36 @@ report={'candidate':'f27456b5f4cd7e5d628417662a77e4ede5b85bfc','acceptedBase':'9
 (root/'review.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'launcherSeconds':report['launcherSeconds'],'nativeLauncherSeconds':report['nativeLauncherSeconds'],
     'blockLoadSamples':len(rows[0]['zCornerLoad']),'A008Exact':True,'A044ManReceiverBlockActorsExact':True,'nativeExecutions':5}))
+
+# Current accepted-source comparison is a separate operator and provenance.
+if (root/'current-candidate/summary.json').exists():
+    current_rows=[]
+    for name in ['A044','A008']:
+        before=read(root/'current-reference'/f'{name}.json.gz');after=read(root/'current-candidate'/f'{name}.json.gz')
+        prior={t['t']:t for t in before['ticks']};delta={}
+        for t in after['ticks']:
+            old=prior[t['t']]
+            for idx,(a,b) in enumerate(zip(t['agents'],old['agents'])):
+                if a!=b or t['commands'][idx]!=old['commands'][idx]:delta.setdefault(str(idx),[]).append(t['t'])
+        impacts=lambda d:[{'t':t['t'],**c} for t in d['ticks'] for c in t['contacts'] if c['i']==15 and c['j']==21]
+        current_rows.append({'caseId':name,'differences':delta,'eventsExactlyEqual':before['events']==after['events'],
+            'rngExactlyEqual':before['rng']==after['rng'],'oldImpacts':impacts(before),'newImpacts':impacts(after),
+            'endClock':after['stoppedAt'],'events':after['events'],'firstDifference':after['firstDifference']})
+    assert current_rows[0]['eventsExactlyEqual'] and current_rows[0]['oldImpacts']==current_rows[0]['newImpacts']
+    assert current_rows[1]['differences']=={} and current_rows[1]['eventsExactlyEqual'] and current_rows[1]['rngExactlyEqual']
+    all_receipts=[]
+    for path in sorted(root.glob('*.json')):
+        data=read(path)
+        if 'commands' in data:all_receipts.append({'file':path.name,'exitCode':data['exitCode'],
+            'seconds':sum(c['elapsedSeconds'] for c in data['commands']),'sourceSha256':data['sourceSha256']})
+    current={'accepted':'7eb2554f5dbb497cff169f386704a5b0f4cf43fe','codeOnAccepted':'edad30904780523896092f592f4c30f1686cc764',
+        'portableBehavior':'f27456b5f4cd7e5d628417662a77e4ede5b85bfc','reference':'bfb0d5ec4ca090b1bb8e38ac01116eb29954a8ce',
+        'referenceSource':'c0c660cbad2afb0180ad773cdef8f8ecb70b6c5083409cbbdcb03e446ba028e1',
+        'candidateSource':'f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8','rows':current_rows,
+        'newNativeExecutionsThisTask':9,'receipts':all_receipts,'allLauncherSeconds':sum(r['seconds'] for r in all_receipts),
+        'allNativeLauncherSeconds':sum(r['seconds'] for r in all_receipts if r['file'] in ['native-receipt.json','narrow-native-receipt.json',
+            'reference-opening-receipt.json','current-reference-receipt.json','current-native-receipt.json']),
+        'fileHashes':{str(p.relative_to(root)):sha(p) for p in root.rglob('*') if p.is_file() and p.name!='current-review.json'}}
+    (root/'current-review.json').write_text(json.dumps(current,indent=2)+'\n')
+    print(json.dumps({'currentAccepted':current['accepted'],'totalLauncherSeconds':current['allLauncherSeconds'],
+        'totalNativeLauncherSeconds':current['allNativeLauncherSeconds'],'nativeExecutions':9}))

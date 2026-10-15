@@ -11,17 +11,22 @@ import { sourceVersion } from '../source-version.js';
 
 const args = process.argv.slice(2), index = args.indexOf('--out'), out = index < 0 ? 'out/motion-admission/native-v1' : args[index + 1];
 const opening = args.includes('--trace-opening');
+const baselineIndex = args.indexOf('--baseline-dir'), pinIndex = args.indexOf('--baseline-pin');
 const plan = { question: 'Does attainable-motion spacing admission improve the reacting A044 approach while preserving A008 and Z/CB_S load?',
   cases: [{ id: 'A044', until: 5.6 }, { id: 'A008', until: 3.4 }], nativeExecutions: 2,
   baseline: 'cb3823ee749a50ab51e4024b3cdc0dd4ce45341c', baselineDirectory: 'data/reviews/current/mesh-command-attribution',
   batchWallCapMs: 15000, fullGames: 0, generatedRosters: 0, physicsAndFlags: 'Unchanged accepted defaults; use baseline:run --candidate.' };
 if (opening) { plan.cases = [{ id: 'A044', until: 1.95 }]; plan.nativeExecutions = 1;
   plan.question = 'Attribute the first earlier command divergence of the two-case candidate, not another football trial.'; }
+if (baselineIndex >= 0) {
+  if (!args[baselineIndex + 1] || pinIndex < 0 || !args[pinIndex + 1]) throw Error('A paired current baseline requires directory and exact pin');
+  plan.baselineDirectory = args[baselineIndex + 1]; plan.baseline = args[pinIndex + 1];
+}
 if (!args.includes('--run')) { console.log(JSON.stringify(plan, null, 2)); process.exit(0); }
 if (existsSync(`${out}/summary.json`)) throw Error('Preserve earlier evidence');
 const read = (p: string) => JSON.parse(gunzipSync(readFileSync(p)).toString());
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
-const input = `${plan.baselineDirectory}/flex-windows.json.gz`;
+const input = 'data/reviews/current/mesh-command-attribution/flex-windows.json.gz';
 if (createHash('sha256').update(readFileSync(input)).digest('hex') !== '11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191') throw Error('Saved input hash');
 const saved = read(input), profile = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
 const flags = Object.fromEntries(Object.keys(profile.flags).map(k => [k, process.env[k] ?? null]));
@@ -34,7 +39,8 @@ for (const c of plan.cases) {
   const inputCase = saved.cases.find((s: any) => s.caseId === c.id), setup = inputCase.setup as PlaySetup;
   if (hash(setup) !== inputCase.inputSha256) throw Error('Frozen setup mismatch');
   const begin = performance.now(), sim = new PlaySim(structuredClone(setup));
-  const baseline = read(`${plan.baselineDirectory}/bend-v1/${c.id}-accepted.json.gz`), ticks = [], stages: CommandObservation[] = [];
+  const baseline = read(baselineIndex < 0 ? `${plan.baselineDirectory}/bend-v1/${c.id}-accepted.json.gz`
+    : `${plan.baselineDirectory}/${c.id}.json.gz`), ticks = [], stages: CommandObservation[] = [];
   const focused = new Set([15, 19, 21]);
   const remove = observeCommands(sim, sim.agents, event => {
     if (opening || ['behavior', 'spacing'].includes(event.stage) || focused.has(event.actor) && sim.t >= 1.8 && sim.t <= 3) stages.push(event);
@@ -60,7 +66,7 @@ for (const c of plan.cases) {
     if (actors.length) { firstDifference = { t: tick.t, actors }; break; }
   }
   const digest = hash({ ticks: ticks.filter(t => oldTicks.has(t.t)).map(({ zCornerBlock, ...rest }) => rest), events: sim.events, rng: { ...sim.rng } });
-  const oldDigest = hash({ ticks: baseline.ticks, events: baseline.events, rng: baseline.rng });
+  const oldDigest = hash({ ticks: baseline.ticks.map(({ zCornerBlock, ...rest }: any) => rest), events: baseline.events, rng: baseline.rng });
   const data = { schema: 'mesh-motion-admission-v1', caseId: c.id, setupSha256: hash(setup), provenance, firstDifference,
     compatibleBaselineWindowsEqual: digest === oldDigest, stages, ticks, events: sim.events, rng: { ...sim.rng }, stoppedAt: sim.t };
   const bytes = gzipSync(JSON.stringify(data)); writeFileSync(`${out}/${c.id}.json.gz`, bytes);
