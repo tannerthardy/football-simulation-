@@ -1,0 +1,44 @@
+{
+  "schema": "bdb2025-existing-restoration-v1",
+  "purpose": "Reuse existing restoration; no download or extraction. Archive reverified against catalog; four consumed CSV contents independently match members in the verified ZIP.",
+  "catalog": "data/sources.json",
+  "sourceUrl": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view",
+  "archive": {
+    "path": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "bytes": 1219840421,
+    "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3"
+  },
+  "rawDirectory": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
+  "files": {
+    "players.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "archiveMember": "big-data-bowl-data/players.csv",
+      "verifiedArchiveMemberBytes": true
+    },
+    "plays.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "archiveMember": "big-data-bowl-data/plays.csv",
+      "verifiedArchiveMemberBytes": true
+    },
+    "player_play.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "archiveMember": "big-data-bowl-data/player_play.csv",
+      "verifiedArchiveMemberBytes": true
+    },
+    "tracking_week_1.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c",
+      "archiveMember": "big-data-bowl-data/tracking_week_1.csv",
+      "verifiedArchiveMemberBytes": true
+    }
+  },
+  "seconds": 5.009325947990874,
+  "limitation": "Local filesystem path is usable only on this executor/shared filesystem; no hosted raw-data mirror is claimed."
+}

@@ -1,5 +1,11 @@
 # Current work ownership
 
+## P045 earliest actionable defensive failure
+
+| Item | Owner | Branch | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| P045 coverage choice → flight approach → catch transition | Codex catch/pursuit owner, user assigned 2026-10-15 (America/Phoenix) | `codex/yac-approach-objective`, accepted `a1b16e6` | Football interpretation and bounded controller diagnosis; #58/#61 independently reviewable. Measurement owns the reusable same-defender NFL query at `81e43e7`. No shared spacing, physics, capacity, grips or release edits. | In progress: reuse saved consumed cues/requests/movement from `4ae667e`; preserve #2 vertical, P006 tackle and P010 interception. Existing NFL archive and four query CSVs verified without downloading/extracting again; [restoration receipt](../data/reviews/current/bdb2025-existing-restoration.json). Investigate FS first help at 2.10 s and CB before release before any post-catch policy. |
+
 ## Tracking-guided YAC approach investigation
 
 | Item | Owner | Branch | Boundary | Status |
