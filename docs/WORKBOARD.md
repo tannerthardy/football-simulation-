@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Runner entry approach uncertainty, 2026-10-15
+
+Do-It-All owns carrier run-entry approach selection and a new run-only helper
+`src/sim/run-approach.ts` on `codex/run-entry-approach`. Base is recorded
+`f62511a` so the existing owned teammate-information interface is available; no
+interface, spacing, blocking, pass cutoff or physics edit is claimed. Separate
+information-only risk extraction matches `cfc2fc9` runtime delta. Compare fast,
+half and gather from the exact first changed P032 body and acquired pictures;
+account directionally for plausible teammate slowing, not a universal bubble.
+One naturally reacting native encounter and genuine clear-route control after
+mechanism checks; no full games/roster sweep. Gap code `d63bf45` and evidence
+`92566b3` remain independent for Integration. Integration owns combined checks.
+
+
 ## Experimental full-game checkpoint
 
 | Item | Owner | Branch | Boundary | Status |
