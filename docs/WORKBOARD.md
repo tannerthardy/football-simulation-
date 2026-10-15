@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Independent #67 portability review — 2026-10-15
+
+Integration owns `codex/pass-cutoff-integration-review` from accepted develop
+`8c891f4cf887b54297efbbc4c7993ba5e2f318b5`. Boundary: the authored free-cutoff
+PassProtector action only, its existing four checks and portable saved inputs;
+no run-controller, forecast, spacing, engagement, physics, flags or capacities.
+Review #65 independently. Preserve #67's RT/RG adverse evidence and forecast
+limitations; reuse compatible focused receipts. No merge authority, default or
+historical-baseline change. First decision: does the minimal extraction compose
+with accepted controllers and retain its primary/opposing behavior contracts?
+
 ## Departed-center gap integration — 2026-10-15
 
 | Item | Owner | Branch / reference | Boundary | Status |
