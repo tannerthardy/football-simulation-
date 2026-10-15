@@ -1,0 +1,478 @@
+{
+  "decision": "Reviewable minimal current-develop law candidate; HOLD default promotion for Run helper-contract adjudication. Physics retains one bounded C/NT within-step yaw question. Integration owns combined checks; no promotion/merge.",
+  "approvedDevelop": {
+    "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "source": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54"
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeRevision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+  "runtimeSource": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+  "portableDiagnosticsRevision": "5b2f9e80764337a7aca7a14a6d786186e63ccd34",
+  "extraction": {
+    "separation": "318e70dfac275f21cac7dfacaa3409abb53a063f (PR17), three runtime files only",
+    "ownership": "dc9fc4b0ace3241ac4d7d5927aee788125e70817 (PR49), guard logic only and intrinsic to selected patch path; no materialTransport option or solver ancestry",
+    "parkedPR62": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+    "changedSourceFiles": [
+      "src/physics/world.ts",
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/playsim.ts"
+    ],
+    "insertedRuntimeLines": 20,
+    "removedRuntimeLines": 7,
+    "newFlags": 0,
+    "excluded": [
+      "grip solvers/timing",
+      "turn choice",
+      "active hands",
+      "capacity/recovery changes",
+      "baseline/default promotion"
+    ]
+  },
+  "settings": {
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "flagCount": 44,
+    "control": {
+      "handContact": "center",
+      "groundMovement": "legacy"
+    },
+    "candidate": {
+      "handContact": "patch",
+      "groundMovement": "legacy"
+    },
+    "shared": {
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive,12 in first native hand island;12/48/192/768 frozen-pair diagnostic"
+    }
+  },
+  "fileHashes": {
+    "src/physics/world.ts": "e65b6a8330e3b522cef3eac1ead40b90be810c36512e83cadb1700050ae6d716",
+    "src/sim/behaviors/blocking.ts": "363a0b3f238ac94f41e18a56100c25389f9f0edbfe45ab25481a59c44f9d7b8b",
+    "src/sim/playsim.ts": "c28080d1b09038450dad5cdd95350814eb06a5be632fe47ca95cee42585d881f",
+    "src/physics/actuation.ts": "54ff21e935cb21447dd32cd115da35156385d4efb11a83415967580703684cf8",
+    "src/physics/kinematics.ts": "5ee381d37da0dd525320e5381eb6b88f5ac5d9b12298e0414b71e8d0aea86fd2",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "src/physics/virtual-foot.ts": "ac1e522bbe28a45bbcb7494db115eea0b1266e2c133c936a60a5c06ac0c30c92",
+    "src/physics/yaw-response.ts": "fe1aa7e4845f50d3c12869a969b19d3f08f6cbcc2b6eba0275b4a621f7d4c530",
+    "src/physics/movement-preview.ts": "6bc54d02f95dcfa693332e58ddeb52fd6a5f8a26190b7b6367e31946a2239fdb",
+    "docs/reviews/under-center-zone-keeper-world-witness.json": "d5b7fb8578578dc939622455adaa3bb99ce101079ca066b749b0ad8aa353e548",
+    "config/current-contact-first-interval.json": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb",
+    "scripts/diag/physics/current-contact-contract.ts": "1e49fb2ab665f0ac69bb4294068af99c290feab40ecdc23353004b0d5c081d71",
+    "scripts/diag/physics/contact-isolation-mechanics.ts": "ce65dc5673285f76eeb9cd529ccf1a32ce67840557564895e756fa20c7826666",
+    "scripts/diag/physics/keeper-contact-law.ts": "2fbaed97361a178bd50749b00d3e5a31400667032adf979118a053ee2423d747",
+    "scripts/diag/contact-law-current-test.setup.ts": "37405afae92f7b788f5eaf3e83b5a473f197075bbc24683837c1fa1f927e74bb",
+    "scripts/diag/contact-law-current-vitest.config.ts": "515a1604219b9f3239e4cf69b05945f862610f5a9d93017b27df62ac4310da0e"
+  },
+  "node": "v22.23.3",
+  "results": {
+    "physicsAndGripTestsPassed": 182,
+    "currentCenterContracts": {
+      "passed": 52,
+      "failed": 0
+    },
+    "isolatedLawContracts": {
+      "passed": 45,
+      "failed": 7,
+      "failures": [
+        {
+          "test": "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+          "classification": "Legacy exact-history compatibility under changed law; current center still passes",
+          "owner": "Integration"
+        },
+        {
+          "test": "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+          "classification": "Legacy exact-history compatibility under changed law; current center still passes",
+          "owner": "Integration"
+        },
+        {
+          "test": "test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering",
+          "classification": "Unadjudicated supported helper/collection/keeper behavior; not proven law or request defect",
+          "owner": "Run; Physics for demonstrated response/numerical defect"
+        },
+        {
+          "test": "test/zone-helper-check.test.ts > a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1",
+          "classification": "Unadjudicated supported helper/collection/keeper behavior; not proven law or request defect",
+          "owner": "Run; Physics for demonstrated response/numerical defect"
+        },
+        {
+          "test": "test/zone-helper-check.test.ts > a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1",
+          "classification": "Unadjudicated supported helper/collection/keeper behavior; not proven law or request defect",
+          "owner": "Run; Physics for demonstrated response/numerical defect"
+        },
+        {
+          "test": "test/zone-helper-check.test.ts > a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands",
+          "classification": "Unadjudicated supported helper/collection/keeper behavior; not proven law or request defect",
+          "owner": "Run; Physics for demonstrated response/numerical defect"
+        },
+        {
+          "test": "test/zone-helper-check.test.ts > the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands",
+          "classification": "Unadjudicated supported helper/collection/keeper behavior; not proven law or request defect",
+          "owner": "Run; Physics for demonstrated response/numerical defect"
+        }
+      ]
+    },
+    "nativeKeeperError": 8.43769498715119e-15,
+    "freeMaximumAngularChange": 3.637978807091713e-12,
+    "loadedKeeperWorkResidual": -2.824407374646398e-13,
+    "ownershipBefore": {
+      "pointDriftYd": 7.10759312122062e-05,
+      "bodyUnchanged": true,
+      "gripWorkUnchanged": true,
+      "centerPointDrift": 0
+    },
+    "currentTite": {
+      "input": {
+        "O": 31,
+        "D": 32,
+        "strength": 0.55,
+        "seed": 3,
+        "formation": "gun_wing_12",
+        "concept": "split_zone",
+        "front": "tite",
+        "coverage": "cover3",
+        "flip": false,
+        "windowSeconds": 2
+      },
+      "observerNeutral": [
+        true,
+        true
+      ],
+      "earliest": {
+        "time": 0.35,
+        "identicalInput": true,
+        "firstChangedCommandTime": 0.4,
+        "zeroCompressionPredicate": {
+          "t": 1.35,
+          "normal": 0,
+          "tangent": -196.5158721785174,
+          "phi": 1.4864135566273378,
+          "achievedOff": 0.08641839967341092,
+          "active": true,
+          "support": "up",
+          "helperReleased": false
+        }
+      },
+      "firstIntervalLedgerMaximum": 3.552713678800501e-15,
+      "localComparison": {
+        "errors": {
+          "center": 0,
+          "isolated": 0
+        },
+        "law": {
+          "position": 0.0034746362334490263,
+          "velocity": 0.1897814623869936,
+          "spin": 0.9418509009618115,
+          "facing": 0.004423731667252184
+        },
+        "refinement": {
+          "position": 0.00011609480647108042,
+          "velocity": 0.004727355927754204,
+          "spin": 0.12669864695238026,
+          "facing": 0.0033716703618869026
+        }
+      },
+      "refinementSeries": [
+        {
+          "substeps": 12,
+          "law": {
+            "position": 0.0034746362334490263,
+            "velocity": 0.1897814623869936,
+            "spin": 0.9418509009618115,
+            "facing": 0.004423731667252184
+          },
+          "refinement": null,
+          "workResidual": 8.215650382226158e-14
+        },
+        {
+          "substeps": 48,
+          "law": {
+            "position": 0.0035799388653532725,
+            "velocity": 0.19367200926236755,
+            "spin": 1.025685611773388,
+            "facing": 0.0015864217760808846
+          },
+          "refinement": {
+            "position": 0.00011609480647108042,
+            "velocity": 0.004727355927754204,
+            "spin": 0.12669864695238026,
+            "facing": 0.0033716703618869026
+          },
+          "workResidual": 5.995204332975845e-14
+        },
+        {
+          "substeps": 192,
+          "law": {
+            "position": 0.003617285936990059,
+            "velocity": 0.1948276057043896,
+            "spin": 1.050587720168146,
+            "facing": 0.0022992831523981766
+          },
+          "refinement": {
+            "position": 3.941655069681097e-05,
+            "velocity": 0.0013236637832677067,
+            "spin": 0.03201103601408278,
+            "facing": 0.0010261954835253384
+          },
+          "workResidual": -4.3853809472693683e-13
+        },
+        {
+          "substeps": 768,
+          "law": {
+            "position": 0.0036273649612384683,
+            "velocity": 0.19513050329235312,
+            "spin": 1.0571203282505182,
+            "facing": 0.002491846629109881
+          },
+          "refinement": {
+            "position": 1.0576534967678209e-05,
+            "velocity": 0.0003433635588066555,
+            "spin": 0.021775891230385203,
+            "facing": 0.00020164254023984085
+          },
+          "workResidual": 9.758860386455126e-13
+        }
+      ],
+      "windowEndings": [
+        {
+          "mode": "center",
+          "t": 2,
+          "phase": "live",
+          "climbs": [
+            {
+              "t": 1.25,
+              "type": "block_climb",
+              "a": 2,
+              "b": 16,
+              "pos": {
+                "x": 39.98,
+                "y": 22.64
+              },
+              "note": "check DE_S; Y stays"
+            }
+          ],
+          "released": true
+        },
+        {
+          "mode": "patch",
+          "t": 2,
+          "phase": "live",
+          "climbs": [],
+          "released": false
+        }
+      ],
+      "scope": "Two-second inspection windows; both stop live, no final-play/football-benefit claim. Saved replay matches pose/velocity/spin endpoints, not independent physical truth; no native convergence certificate."
+    },
+    "newFullSuite": false,
+    "newFullGames": 0
+  },
+  "blocker": {
+    "prerequisite": "Adjudicate four helper situations/five assertions under the coherent law using current feasible requests and protected approach",
+    "owner": "Run, with Physics evidence and any demonstrated law defect returned to Physics",
+    "compatibilityOwner": "Integration: two legacy center-history expectations remain unchanged",
+    "boundedResearch": "Physics: current C/NT within-step yaw sensitivity on the saved packet; no solver expansion without a consequential demonstrated error"
+  },
+  "cost": {
+    "allStagedLaunchers": 15,
+    "summedLauncherSecondsIncludingIteration": 77.948896267,
+    "note": "Concurrent runs overlap. Sum is verification work, not session elapsed wall or production runtime benchmark. No full-suite/game campaign.",
+    "finalTiteInstrumentedSeconds": 1.4163494620000001,
+    "portableReplayLauncherSeconds": 0.44901872000000004
+  },
+  "validation": {
+    "mechanical-tests": {
+      "path": "out/contact-law-current/mechanical-tests.receipt.json",
+      "sha256": "2cd7cfee01c45c1ef1e29a980ea18656aa80900640f394a557ba3f52db71232a",
+      "revision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "c066470820835bd59f3e7c9fa14a12186f569a9e82d9c9a8d6f5399d570c5a91",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 3.3507763760000002
+    },
+    "grip-controls": {
+      "path": "out/contact-law-current/grip-controls.receipt.json",
+      "sha256": "6baa4f234acefe0ac554047e2d0b0132cbbd804195fc2700d7a2f9255081feac",
+      "revision": "083d82eb0116ca5b132bd122414efd56629af6d4",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "b0a6f64b2a6450766e0db7b49caf86a86502e7a3e24e3f4a37a767be7848c2d0",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 4.537087225
+    },
+    "current-center-contracts": {
+      "path": "out/contact-law-current/current-center-contracts.receipt.json",
+      "sha256": "2e032e6153641b0939eef719fc0e35a97846c330486a9d41b7a4318be9d229f4",
+      "revision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "c066470820835bd59f3e7c9fa14a12186f569a9e82d9c9a8d6f5399d570c5a91",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 7.308212756
+    },
+    "isolated-contracts": {
+      "path": "out/contact-law-current/isolated-contracts.receipt.json",
+      "sha256": "330044ba9a56d62e426a38ec6d6b57bd63fe90fb81d6bb13db8434e8652f854d",
+      "revision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "c066470820835bd59f3e7c9fa14a12186f569a9e82d9c9a8d6f5399d570c5a91",
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "seconds": 7.524503426
+    },
+    "mechanics": {
+      "path": "out/contact-law-current/mechanics.receipt.json",
+      "sha256": "dbdd3540a9a809be231e49416d272989e59f9ce7537f95a861da7c74d748aea8",
+      "revision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "c066470820835bd59f3e7c9fa14a12186f569a9e82d9c9a8d6f5399d570c5a91",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 0.33283528
+    },
+    "ownership-before": {
+      "path": "out/contact-law-current/ownership-before.receipt.json",
+      "sha256": "8697be9948e3c7c38c903d0c727d1e2c36c612bc44e97095b0ee36654e85e2b3",
+      "revision": "5454aa22b5627934345a68c38124384e3dd67a05",
+      "source": "18a9604a2bac0be6cca14b2e6e8aae68139ba1fa82eee6eaad4424703afc8c28",
+      "validationSha256": "a1f9d6035e461253bb9d3059c385a93df328c4f6b4a3fbb771fe5144f7360fe8",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 0.45870014200000003
+    },
+    "final-typecheck": {
+      "path": "out/contact-law-current/final-typecheck.receipt.json",
+      "sha256": "d26d9bb327a62e04789af89262e93e1c9057d5c1717d1622b5f025b0490d100f",
+      "revision": "083d82eb0116ca5b132bd122414efd56629af6d4",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "b0a6f64b2a6450766e0db7b49caf86a86502e7a3e24e3f4a37a767be7848c2d0",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 15.60874287
+    },
+    "build": {
+      "path": "out/contact-law-current/build.receipt.json",
+      "sha256": "febb1f618f30fd54d2cf0399bc45a15a8329a8a65d58dff9ef8295ac5fd1050d",
+      "revision": "5b2f9e80764337a7aca7a14a6d786186e63ccd34",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "90fc75a8d0a59ca30fcc5ace3b585f9644d2af824a76e6558f00e4c9454ef933",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 15.706600272000001
+    },
+    "tite-contract-published": {
+      "path": "out/contact-law-current/tite-contract-published.receipt.json",
+      "sha256": "9f6bf9581dc83d1c4aa85723f042baaa61c6d9feb5241f2a49147b6cdf3ef0ea",
+      "revision": "083d82eb0116ca5b132bd122414efd56629af6d4",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "b0a6f64b2a6450766e0db7b49caf86a86502e7a3e24e3f4a37a767be7848c2d0",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.9738607630000002
+    },
+    "portable-replay": {
+      "path": "out/contact-law-current/portable-replay.receipt.json",
+      "sha256": "4a2b804d4fcbe469e58a5d971a95a4a7dcd95cf9e0b80973a73779584731f799",
+      "revision": "5b2f9e80764337a7aca7a14a6d786186e63ccd34",
+      "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+      "validationSha256": "90fc75a8d0a59ca30fcc5ace3b585f9644d2af824a76e6558f00e4c9454ef933",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 0.44901872000000004
+    }
+  },
+  "evidence": [
+    {
+      "path": "out/contact-law-current/mechanics.json",
+      "sha256": "bc603c0874c7c99ae3ecb072e0dd321323a8729a7b61f02d31d57e35019873bd"
+    },
+    {
+      "path": "out/contact-law-current/ownership-before.json",
+      "sha256": "cac28406816ad3a84f102e8aae7d4dd9b326db9531dd495a9332419467c57ed4"
+    },
+    {
+      "path": "out/contact-law-current/ownership-probe.ts",
+      "sha256": "43a300588610e3437c186d67ec3f90a47361af77f7efe3365657aebdb9951578"
+    },
+    {
+      "path": "out/contact-law-current/tite-contract.json",
+      "sha256": "8384c55d23b3ecea25c801fb64b41c6b9fcda240ea379439737d4c316c6b67d1"
+    },
+    {
+      "path": "out/contact-law-current/first-interval.json",
+      "sha256": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb"
+    },
+    {
+      "path": "out/contact-law-current/refinement-probe.json",
+      "sha256": "01e2886c1475656ed1292e509f8f92086ec1d4267cd29ae1a067f04c5bcdbb2e"
+    },
+    {
+      "path": "out/contact-law-current/refinement-probe.ts",
+      "sha256": "a5a7049d00aa3ac42cf2522c14ddde6e540e95396a37ed2af46509ec13ff2798"
+    },
+    {
+      "path": "out/contact-law-current/current-center-contracts.log",
+      "sha256": "88f440694c3d0404f99085888845e8e0a66280c7b64bd354a052bb2d5be7a4ee"
+    },
+    {
+      "path": "out/contact-law-current/isolated-contracts.log",
+      "sha256": "71902c89756142d0fac89fee99126c006e54e1a3d09a114c2820c42a408b3720"
+    }
+  ],
+  "commands": {
+    "replay": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/current-contact-contract.ts --replay",
+    "currentTite": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/current-contact-contract.ts",
+    "mechanics": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/contact-isolation-mechanics.ts out/contact-law-current/mechanics.json",
+    "isolatedContracts": "node scripts/baseline.mjs --candidate -- npx vitest run --config scripts/diag/contact-law-current-vitest.config.ts --maxWorkers=1",
+    "centerContracts": "node scripts/baseline.mjs --candidate -- npx vitest run test/zone-helper-check.test.ts test/run-hand-control.test.ts test/helper-fit.test.ts test/scenario-pack.test.ts --maxWorkers=1",
+    "physics": "node scripts/baseline.mjs --candidate -- npx vitest run test/contact-ground-isolation.test.ts test/keeper-contact-law.test.ts test/contact-material-ownership.test.ts test/hand-angular-transfer.test.ts test/hand-force-point.test.ts test/contact-angular-transfer.test.ts test/lower-grip-angular-transfer.test.ts test/grasp-angular-transfer.test.ts --maxWorkers=1"
+  }
+}

@@ -11,7 +11,7 @@ to apply cleanly without importing unrelated branch content here.
 
 | Current item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Isolated contact-law correction on current develop | Physics Codex, user review assignment; Integration owns combined verification | `codex/contact-law-current`, from approved develop `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Extract PR17 contact/ground selection and PR49 required material ownership guard. World/PlaySim API plumbing plus existing movement-preview selector; no controller policy, solver, active-hands, capacity, recovery or default changes. | 2026-10-15 (America/Phoenix) | In progress: confirm coherent common-point response on current accepted controllers; retain ordinary no-contact movement, independent law/work checks and current affected football contracts. PR62 parked on historical host at `1f071b9`; no further helper optimization/native cost study. Historical comparison `4ded6b6` unchanged. Deliver a minimal default-off candidate and named blockers/owners, not a merge of physics branches. |
+| Isolated contact-law correction on current develop | Physics Codex, user review assignment; Integration owns combined verification | `codex/contact-law-current`, runtime `1332ddb`, portable diagnostics `5b2f9e8`, from approved develop `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | PR17 contact/ground selection and required PR49 patch material ownership guard. World/PlaySim API plumbing plus existing preview selector; no controller policy, solver, active-hands, capacity, recovery or default changes. | 2026-10-15 (America/Phoenix) | [Reviewable extraction; HOLD default promotion for Run helper-contract adjudication](reviews/current-contact-law.md).182 focused physics/grip checks/type/build pass; exact no-contact controls. Keeper native error8.44e-15/free angular≤3.64e-12. Current center52/52 versus isolated45/52:2 legacy-history compatibility assertions and5 unadjudicated helper assertions, all retained. Tite first C/NT law change.35s with identical inputs, first command.40; Y at1.35 has active lateral196.516 but compression0; no climb by2s, both hosts still live. [15KB exact pose/velocity/spin packet](../config/current-contact-first-interval.json) and local12/48/192/768 sensitivity retained; no converged native accuracy claim. [Receipt](../data/reviews/current/current-contact-law.json).44 flags/components=1; baseline4ded6b6 unchanged. PR62 parked1f071b9. No full suite/games; Integration owns combined verification after Run's four-case adjudication. Physics retains one bounded C/NT yaw question; no further helper polishing/solver expansion. |
 | Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
 
 ## Approved-reference ownership history
@@ -648,3 +648,24 @@ Edit only your own rows and requests so board merges stay trivial.
   Review PR49's patch-only material ownership guard; no solver/turn/active-hands
   or recovery package. Supply focused mechanical/current-football evidence;
   Integration retains exact combined checks and adoption. PR62 is parked.
+
+- 2026-10-15 (America/Phoenix), Physics Codex -> Run and Integration owners:
+  [Current-develop contact-law extraction](reviews/current-contact-law.md)
+  is ready for bounded review, runtime `1332ddb`, source `8e022611…`.
+  Current center contracts52/52; isolated contact/legacy ground45/52.
+  Request Run adjudication of four helper situations: recovery recheck,
+  lost-contact collection in both directions, Under supported check, and Tite
+  keeper loading/climb. Five failed assertions remain; do not force a climb or
+  re-pin them from gain alone. Two legacy run/pass hashes remain center-valid
+  compatibility expectations for Integration. All original assertions retained.
+  Tite first changes in C/NT response at.35s with identical inputs, preceding
+  changed commands at.40. The portable two-body packet reproduces both native
+  pose/velocity/spin endpoints exactly; delivered torque/work closes. At1.35,
+  Y's normal row is inactive with lateral196.516 and no fall/removed hands.
+  This explains the compression predicate, not the complete football result.
+  Local angular refinement remains sensitive; Physics owns that one bounded
+  C/NT question alongside the integration target. No new solver is imported.
+  Please return a minimal violated-law reproduction if request/response evidence
+  establishes a physical defect; keep controller work with its existing owner.
+  Integration owns the exact combined verification after the supported contracts
+  are adjudicated. No full suite, broad game panel, baseline/default changes.
