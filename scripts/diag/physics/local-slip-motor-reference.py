@@ -3,7 +3,7 @@ No engine imports. Bisection selects force and event time; the candidate may
 instead use piecewise-linear/quadratic roots. The ground motor is the bounded
 continuous limit of clamp(targetSpin-spin + handLoad/inertia, +/-cap*dt).
 """
-import json,sys,hashlib
+import json,sys,hashlib,copy
 from decimal import Decimal as D,getcontext
 from pathlib import Path
 getcontext().prec=int(sys.argv[2]) if len(sys.argv)>2 else 70
@@ -82,6 +82,8 @@ def solve(field):
     residual=finalE-initialE-W-sum(GW)-sum(LW)
     assert abs(residual)<D('1e-50'),residual
     return {'after':[{k:b[k] for k in ('position','velocity','facing','spin')} for b in bs],'phases':phases,'impulse':J,'temporalMoment':M,'absoluteImpulse':amount,'handWork':W,'groundYawImpulse':G,'groundYawTemporalMoment':GM,'absoluteGroundYawImpulse':GA,'groundYawWork':GW,'legWork':LW,'energyChange':finalE-initialE,'workResidual':residual}
-result={'protocol':'decimal-local-slip-motor-v1','precision':getcontext().prec,'input':{'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()},'law':'Continuous bounded limit of the existing heading/remaining-tick motor. Frozen tangent/arms/leg forces and yaw/tangent capacities. Actual phases, no projection.','cases':{key:solve(packet[key]['field']) for key in ('nextField','selected','slidingControl')}}
+fields={key:packet[key]['field'] for key in ('nextField','selected','slidingControl')}
+fields['noHandControl']=copy.deepcopy(fields['nextField']);fields['noHandControl']['forceLimit']=ZERO
+result={'protocol':'decimal-local-slip-motor-v1','precision':getcontext().prec,'input':{'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()},'law':'Continuous bounded limit of the existing heading/remaining-tick motor. Frozen tangent/arms/leg forces and yaw/tangent capacities. Actual phases, no projection.','cases':{key:solve(f) for key,f in fields.items()}}
 Path(sys.argv[1]).write_text(json.dumps(result,indent=2,default=str)+'\n')
 for key,r in result['cases'].items():print(key,'phases',len(r['phases']),'events',[(str(p['duration']),str(p['force']),[str(g) for g in p['groundAcceleration']]) for p in r['phases']],'W',r['handWork'])
