@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Coverage leverage and transition review — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Broaden P045 findings into contrasting route/technique contracts; repair one repeated wrong coverage request if established | Codex Catching, assigned by user | `codex/coverage-leverage-continuity` from fetched `7d1451b2c31786e075550183a6a93bbda23da29b`, runtime identical to accepted `8c891f4`; candidate source `d41b6b19` | Only `ManCoverage` continuation and `playBall`'s optional unaware fallback; tests/diagnostics/evidence. Physics, capacities, upstream judgment and helper policy unchanged. | Ready for isolated information-contract review. Hidden release no longer discards taught technique before recognition. 44 focused checks/typecheck pass; nine completed paired inputs including two untouched player pairs;22 new native executions,37.385 launcher seconds. P006/Smash adverse acquisition changes and P045 no-contact TD remain. [Broad football review and handoff](reviews/coverage-technique-recognition.md). Integration retains exact combined verification. |
+
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
