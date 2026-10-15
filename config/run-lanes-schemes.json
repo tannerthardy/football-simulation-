@@ -20,7 +20,7 @@
     "formation": "ace_12",
     "purpose": "Fresh roster/seed/front combination frozen before any clearance candidate native result. Under is a known front family, not an untouched holdout family. One matched reference/candidate short opening only after mechanism and original controls support candidate."
   },
-  "scope": "Supplemental scheme regression: reuse the saved PR50 Duo, trap and outside-zone openings. New matched Gun Wing12 wham input frozen before either wham result; public setup and the same three-second bound. No fresh-front claim.",
+  "scope": "Supplemental scheme regression: reuse the saved PR50 Duo, trap and outside-zone openings. Wham is absent from RUN_BY_ID/RunScheme in this checkout; the attempted setup rejects before any World step. Do not substitute another scheme as a wham validation.",
   "inputs": [
     {
       "id": "ace12-duo-over-s3",
@@ -54,17 +54,6 @@
       "d": 32,
       "front": "over",
       "formation": "ace_12"
-    },
-    {
-      "id": "wing12-wham-over-s3",
-      "concept": "wham",
-      "kind": "run",
-      "seed": 3,
-      "flip": false,
-      "o": 31,
-      "d": 32,
-      "front": "over",
-      "formation": "gun_wing_12"
     }
   ],
   "parentCode": "ccbbe47b217333dd7800c65890fa87a26a9877c7",
@@ -83,5 +72,11 @@
   "referenceSources": {
     "current-zone": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
     "wide-zone-and-counter": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+  },
+  "unavailableScheme": {
+    "requested": "wham",
+    "reason": "No installed wham concept or scheme controller in this checkout",
+    "rejectedSetupReceipt": "/workspace/run-tempo-climb/out/tempo-climb/run-lanes-wham-reference.json",
+    "newWorldSteps": 0
   }
 }
