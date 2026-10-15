@@ -45,13 +45,13 @@ Do not use the historical sections below as a current starting-reference pin.
   Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
-- **Current ready intake: #84 Duo admission and #81 achievable-motion spacing.**
-  Both have independent acceptance on7eb2554: Do-It-All for #84, Run for #81.
-  Exact #85 freezebbc4f82 completed all phases:1,761 TS pass/one zero-preview
-  assertion fails;145 Python/typecheck/build pass. 202.275s;no input drift/skips.
-  Hold adoption for Run/Do-It-All cost-contract disposition and one targeted
-  diagnostic; no automatic assertion edit, new panel or unchanged suite rerun.
-  #81 excludes observer/lateral/low-speed research and does not repair A044's collision.
+- **#85 advances reviewed #84 Duo only; #81 is integration-held.** First combined
+  freezebbc4f82 completes all phases:1,761 TS pass/one existing zero-preview
+  assertion fails;145 Python/typecheck/build pass,202.275s, no drift/skips.
+  One targeted three-lane diagnostic preserves commands/contact/budgets but
+  adds15/0/14 forecasts. Run + Do-It-All must adjudicate that cost contract.
+  No assertion is edited. Exact reviewed #84-only tree/source dcebbee now gets
+  its own required verification; original failed candidate remains preserved.
 - #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
   disposition. It is no dependency and is not adopted/rejected. Lateral trial and
   experimental Physics remain separate. [Exact pins/review owners](INTEGRATION.md#ready-blocked-experimental).

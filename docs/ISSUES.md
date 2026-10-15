@@ -201,8 +201,8 @@ crossing/Under detours settle the necessary-climb question within this scope.
 A030 guard loads LB before runner arrival while RT keeps real DT load; A018
 still misses LB. A030 C release/execution draws also change. Current A027 WZ
 and preselected Under full histories/results are exact. No league/yardage or
-physics claim. Reuse66 focused/typecheck checks; Integration owns any approved
-batch's one exact combined verification. [Intake](INTEGRATION.md#ready-blocked-experimental).
+physics claim. Reuse66 focused/typecheck checks; #85 now verifies exact #84-only source dcebbee
+once, while #81 cost contract holds only itself. [Intake](INTEGRATION.md#ready-blocked-experimental).
 
 Earlier diagnosis retained:
 

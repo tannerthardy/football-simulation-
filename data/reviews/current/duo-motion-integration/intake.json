@@ -209,7 +209,7 @@
     ],
     "reviewOwner": "Run",
     "reviewRequested": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204470898",
-    "decision": "ACCEPT exact three-file scope; independent combined verification pending",
+    "decision": "Independent ACCEPT retained; integration HOLD pending forecast-cost contract disposition",
     "scope": "Behavior three-file patch only; no observer, #76, low-speed or lateral policy.",
     "nativeLimits": "Current A044 impact/drop/result unchanged; A008 trajectory/events/RNG exact; historical block load separately pinned.",
     "publishedHashesVerified": [
@@ -471,7 +471,7 @@
   "newTests": 0,
   "newNativeExecutions": 0,
   "newCodeSuiteRuns": 0,
-  "nextDecision": "Freeze only independently approved exact five-file composition and run all required phases once.",
+  "nextDecision": "Verify exact #84-only source dcebbee once, then routine adoption if all phases/final refs pass. #81 cost contract remains with Run consulting Do-It-All.",
   "completedMeasurementCheckpoint": {
     "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
     "evidence": "40af332f3c988b5abe19d9236b49a43bde27200c",
@@ -504,5 +504,15 @@
     },
     "scope": "The previously requested48-case comparison is complete; no new collection for intake. Measurement verified96 raw hashes; Integration previously verified8 subset hashes and does not claim another full archive download.",
     "adverse": "A020 YAC9.75\u219268.25 TD; A042 finish worse despite useful FS support; A044 catch\u2192drop does not establish coverage repair. No accepted information correction reversed based on yardage."
+  },
+  "currentScope": {
+    "included": [
+      84
+    ],
+    "held": [
+      81,
+      76
+    ],
+    "reason": "First combined run exposed #81 zero-preview cost contract. One targeted diagnostic preserves movement/contact but does not clear cost policy; #84 progresses independently."
   }
 }

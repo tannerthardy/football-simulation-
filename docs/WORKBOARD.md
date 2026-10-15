@@ -1,23 +1,20 @@
 # Current work ownership
 
-## Held #85 exact verification — shared #81 forecast-cost contract — 2026-10-15
+## Active #85 Duo-only verification — #81 held separately
 
-Integration starts from accepted `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`,
-preserving queue metadata0e7af86 in `codex/duo-motion-integration`.
-Do-It-All accepted exact #84 head4af71ac; Run accepted exact #81 head6e19ad2.
-Both owner reviews are published and user confirmed the gate is clear. Extract only
-`readJoinedCombination` in `src/sim/behaviors/blocking.ts` plus
-`test/combo-transfer.test.ts`, and #81's `src/sim/spacing.ts`,
-`test/spacing-residual-motion.test.ts` and its fixture. The already checked portable patches
-are unchanged; no observer/lateral or review ancestry is imported.
-Integration completed all phases once atbbc4f82:1,761 TS pass/one preserved
-zero-preview assertion fails;145 Python/typecheck/build pass;202.275s.
-Hold adoption; Run + Do-It-All disposition and one targeted diagnostic next.
-No source/test assertion changes or further full suite before contract resolution.
-No source editing overlaps Run's or Do-It-All's research checkouts.
-Lateral/low-speed trials, passive observer, #76 carrier override and experimental
-Physics remain excluded. #76 author disposition is requested separately;
-that question does not hold an independent approved correction.
+Integration owns the isolated branch from accepted7eb2554 plus current queue.
+Do-It-All accepts exact #84 head4af71ac; only `readJoinedCombination` in
+`src/sim/behaviors/blocking.ts` and `test/combo-transfer.test.ts` are included.
+Exact source dcebbee matches the independently reviewed #84 tree. One #84-only
+all-phase verification follows the changed scope; no unchanged suite rerun.
+
+Earlier five-file freezebbc4f82 completed all phases with one preserved #81
+zero-preview assertion failure (1,761 TS pass,145 Python/typecheck/build pass).
+One targeted three-lane diagnostic preserves commands/contact/budgets but adds
+15/0/14 forecasts. Run consults Do-It-All on the cost contract; no assertion edit.
+#81 source/test/fixture are excluded by a normal revert, with failed evidence and
+original patch/history preserved. #76 disposition, lateral/low-speed trials,
+observer, transport/navigation and experimental Physics remain separate.
 
 ## Completed #75/#80 integration boundary — 2026-10-15
 
