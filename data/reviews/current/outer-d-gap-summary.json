@@ -236,6 +236,28 @@
       "exitCode": 0,
       "inputsUnchanged": true,
       "qualification": "Passing frozen transfer: A002 OZ,A025 IZ,F002 fresh Over to3.10."
+    },
+    {
+      "path": "out/outer-d/typecheck.json",
+      "sha256": "21d03d67bd3b5da25b74c1bd958405cf42494ee06c6612148f3c1ee4e5a8c87b",
+      "commit": "1a5551d8a417767a8ac5030da5f65ce89cc8677a",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "c6e8f2fe49ad6bc338a63df3a3480f382acaeac0c01bf145d30a5d6c2ec8e739",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.553637057
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "Root typecheck passes at evidence/reproducer/input pin1a5551d; no runtime, test or operator changes; no simulation."
     }
   ],
   "environment": {
@@ -960,15 +982,18 @@
   "costSeconds": {
     "contributorFocusedCommands": 3.804489264,
     "rootCandidateNativeCommandsIncludingFailedValidation": 6.608245861,
-    "knownLauncherCommandTotal": 10.412735125,
+    "knownLauncherCommandTotal": 19.966372182,
     "freshAcceptedReferenceCollectorSeparately": 0.726387503,
-    "freshAcceptedReferenceLauncher": "not recorded here; collector value is not launcher time",
+    "freshAcceptedReferenceLauncher": 0.972718962,
     "rootFrozenWZCollector": 2.858657554,
     "rootTransferCollector": 1.986488998,
     "contributorNative": 0,
     "contributorPreview": 0,
     "extraSimulationsForPackaging": 0,
-    "fullSuites": 0
+    "fullSuites": 0,
+    "rootTypecheckCommand": 9.553637057,
+    "freshAcceptedReferenceLauncherQualification": "Exact command time provided by root; distinct from collector0.726387503s. Receipt reference follows when available; no rerun.",
+    "includingFreshAcceptedReferenceCommandTotal": 20.939091144
   },
   "portableReproducer": {
     "file": "scripts/diag/outer-d-gap-replay.ts",
@@ -982,5 +1007,6 @@
     "manifestQualification": "Seven exact setup/initialBodies/actors; historical result.frames omitted. Extraction makes fresh input files. savedFramePrefixEqual=false is expected for condensed inputs; not a failed physics comparison. F002 actual setup hash09e74ac4 is authoritative despite inherited A003 storedInput metadata.",
     "rawRetention": "Original saved full inputs retained locally /tmp/zone-native-input and in /workspace/contact-approach-evidence/current.tar.gz SHA25691c9e1d3713e2ce6e84610c319b7638dddfddec492363dadf66d9475e69dbc84. Native tapes retained locally at the documented /workspace output paths; raw telemetry is not committed."
   },
-  "nextDecision": "Independent objective-correctness review and Integration exact combined verification; reassess actual runner entry-speed/second-level limitation on correct objective. Keep held blocking/footwork and separate physics candidates separate. No merge/promotion performed."
+  "nextDecision": "Independent objective-correctness review and Integration exact combined verification; reassess actual runner entry-speed/second-level limitation on correct objective. Keep held blocking/footwork and separate physics candidates separate. No merge/promotion performed.",
+  "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/103"
 }

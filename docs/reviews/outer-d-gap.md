@@ -1,7 +1,9 @@
 # Keep D outside the observed outer surface
 
 Advance code `6cf700db7a475ed6e95833509229b30eececba52` for independent review
-as an objective identity correction. It is based directly on accepted
+as an objective identity correction in
+[draft PR #103](https://github.com/tannerthardy/football-simulation-/pull/103).
+It is based directly on accepted
 `bb6d4c73948d53ba841dd9338dd240146c739f8c`, source
 `668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac`.
 There is no #96, primary-footwork, old experimental controller or physics
@@ -90,10 +92,17 @@ World settings, results and limitations are in the
 Costs are recorded separately: focused red0.930100020 + passing1.934833384 +
 accepted-A0390.939555860 = **3.804489264 command seconds**. Root candidate native
 commands, including the failed validation attempt, cost1.292383792 +3.077235396
-+2.238626673 = **6.608245861 seconds**. Known launcher command total is
-**10.412735125 seconds**. The fresh accepted reference collector adds
-0.726387503 seconds; its full launcher time is not recorded here and is not
-represented by collector time. Node22.23.3,44 accepted flags,
++2.238626673 = **6.608245861 seconds**. Root also passes `npm run typecheck`
+at exact evidence/input/reproducer
+pin `1a5551d8a417767a8ac5030da5f65ce89cc8677a`, unchanged sourcee29 and
+validation `c6e8f2fe49ad6bc338a63df3a3480f382acaeac0c01bf145d30a5d6c2ec8e739`.
+That command costs **9.553637057 seconds**, with unchanged validation inputs;
+receipt SHA256 `21d03d67bd3b5da25b74c1bd958405cf42494ee06c6612148f3c1ee4e5a8c87b`.
+Candidate launcher command total, including this check and the failed attempt,
+is **19.966372182 seconds**. Fresh accepted-reference command time is separately
+**0.972718962 seconds** (collector0.726387503 seconds is included within that
+command, not added again), giving **20.939091144 seconds** of known command time
+for this isolated family. Node22.23.3,44 accepted flags,
 RUN_CONTACT_COMPONENTS=1 and accepted World defaults were retained. This
 contributor ran zero native continuations or previews; packaging adds none.
 No panels, games, full suites or unchanged compatible baseline campaigns were
