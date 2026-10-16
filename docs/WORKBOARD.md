@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Press/front initial stance — 2026-10-15
+
+Do-It-All delegated setup correction on `codex/press-front-stance`, isolated
+from fetched/accepted bb6d4c73948d53ba841dd9338dd240146c739f8c. Own
+`alignment.ts` initial pressed-assigned-DB stance geometry and the minimal
+`PlaySim` pre-history staging hook, with focused setup fixtures. Keep receiver,
+exact lateral shade, press/coverage duty, fixed front and physical radii. Choose
+nearest legal depth using actual teammate bodies after alignment scatter; no
+in-play correction, added observations/RNG, capacity or force changes. Shared
+alignment boundary coordinated through #95 comment6210664704; no active owner
+conflict found. Main stretch-contact feet and held #94/#96 remain separate.
+
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in

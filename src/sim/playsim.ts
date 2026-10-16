@@ -16,7 +16,7 @@ import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { applyCheck, resolveZeus } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -211,6 +211,7 @@ export class PlaySim {
       if (!spot) continue;
       mk('D', slot, player, spot.pos, Math.PI);
     }
+    fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
     // Linemen and backs start in their stances; skill players upright.
@@ -275,6 +276,9 @@ export class PlaySim {
       targets.set(mug!,{x:this.los+.65,y:gapY(this.offAlign,spot.role.gap,side)});
       mug!.body.pos.x = Math.max(mug!.pos.x,this.los+4);
     }
+    // A stem replaces the initial presentation above. Fit that starting
+    // stance before its first observable history, never the moving endpoint.
+    fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
     const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
