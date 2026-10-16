@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Do-It-All contact-approach movement — 2026-10-16
+
+Start accepted bb6d4c73948d53ba841dd9338dd240146c739f8c, matching fetched
+develop and published queue. Separate branch codex/contact-approach-motion;
+#92 remains frozen for review. Own saved A018/A030 approach-to-contact stage
+analysis and directly relevant diagnostics, contrasting successful A006/A042.
+Distinguish objective, acquired cues, modifiers, residual momentum and contact
+before any runtime correction. Coordinate common/approach objective semantics
+with Catching on #91; Run retains blocking and release. No grip/force/capacity,
+perception/memory, collision geometry or all-role avoidance expansion. No new
+panel or contributor full suite. Claim a specific runtime boundary only after
+the mechanism and owner contract are established.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
