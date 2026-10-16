@@ -910,7 +910,13 @@ export class RunBlocker implements Behavior {
           a.tags.add('wrap-log');
         }
       }
-      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
+      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) {
+        // A waypoint's distance tolerance cannot certify crossing its outer
+        // boundary. Keep the new perimeter job in the route until achieved.
+        if (plan.pullRole === 'force' && this.pullIdx === plan.pullPath.length-1
+          && (a.pos.y-plan.pullPath[this.pullIdx].y)*playSideSign(sim,sim.offCall.run!) < 0) break;
+        this.pullIdx++;
+      }
       const wp = plan.pullPath[this.pullIdx];
       if (wp) {
         // The wrapper's separate second-level interception is unchanged.
@@ -938,7 +944,10 @@ export class RunBlocker implements Behavior {
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         let path = read && this.pullCleared && plan.pullRole!=='force' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         if(plan.pullRole==='force'&&this.pullIdx>=2&&!atCorner)
-          path={x:plan.pullPath[1].x,y:edge.y};
+          // Arrival steering stops short of its goal. Put the flat goal a
+          // body radius beyond the gate so that ordinary feet can cross it;
+          // commanding a stop exactly on the gate deadlocks just inside.
+          path={x:plan.pullPath[1].x,y:edge.y+perimeterSide*a.profile.radius};
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole!=='force') plan.pullPath[this.pullIdx] = path;
@@ -1064,9 +1073,9 @@ export class RunBlocker implements Behavior {
   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
     const plan = this.plan, t = sim.t;
     let target = plan.target;
-    // An installed crack is a named responsibility. Another defender's
-    // unobserved engagement cannot redirect the receiver to a different man.
-    if(plan.kind==='crack')return target;
+    // New crack and perimeter-force jobs are named responsibilities. Another
+    // defender's unobserved engagement cannot redirect their approach.
+    if(plan.kind==='crack'||(plan.kind==='pull'&&plan.pullRole==='force'))return target;
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1164,7 +1173,7 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
-    if(plan.kind==='crack'&&(seen.pose==='down'||seen.pose==='rising'))return stand();
+    if((plan.kind==='crack'||plan.pullRole==='force')&&(seen.pose==='down'||seen.pose==='rising'))return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);

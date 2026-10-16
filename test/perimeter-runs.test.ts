@@ -11,11 +11,11 @@ import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(11), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(12), 'D', 'D', { strength: .55 });
-function make(call = 'buck_sweep', flip = false, front = 'over') {
+function make(call = 'buck_sweep', weak = false, front = 'over') {
   const formation = FORMATION_BY_ID[call === 'crack_toss' ? 'ace_nasty_12' : 'ace_12'];
   return new PlaySim({ offense: pickOffense(offense, formation.personnel),
     defense: pickDefense(defense, front === 'bear' ? 'goalline' : 'base43'),
-    offCall: { formation, kind: 'run', flip: false, run: { ...RUN_BY_ID[call], direction: flip ? 'weak' : 'strong' }, label: call },
+    offCall: { formation, kind: 'run', flip: false, run: { ...RUN_BY_ID[call], direction: weak ? 'weak' : 'strong' }, label: call },
     defCall: { personnel: front === 'bear' ? 'goalline' : 'base43', front: FRONT_BY_ID[front],
       coverage: COVERAGE_BY_ID.cover3, pressure: null, label: front },
     los: 40, ballY: 26.67, firstDownX: 50, seed: 77, audibles: false });
@@ -118,6 +118,10 @@ describe('new perimeter production approaches', () => {
     const side = flip ? 1 : -1, edge = plan(a).pullPath!.at(-1)!;
     sim.t = 1;
     Reflect.set(controller, 'pullIdx', 2);
+    // Give this boundary probe enough depth to satisfy the separate wall
+    // clearance contract. The captured native case acquires that clearance
+    // as its real wall moves; no such future movement is assumed here.
+    plan(a).pullPath![1].x = 38;
     // Saved failure: arrival steering stopped .11yd inside the strict gate.
     a.body.pos = { x: plan(a).pullPath![1].x, y: edge.y - side * .11 };
     a.body.vel = { x: 0, y: 0 };
@@ -129,6 +133,16 @@ describe('new perimeter production approaches', () => {
     const intercept = controller.update(a, sim);
     expect(movementObjective(intercept)?.kind).toBe('moving');
     expect(intercept.vel.x).toBeGreaterThan(0);
+  });
+
+  it('crossing the corner cannot waive a still-obstructed wall', () => {
+    const sim = make('crack_toss');
+    const a = blockers(sim).find(a => plan(a).pullRole === 'force')!, controller = a.behavior as RunBlocker;
+    sim.t = 1;
+    Reflect.set(controller, 'pullIdx', 2);
+    a.body.pos = { x: sim.los - .6, y: plan(a).pullPath!.at(-1)!.y - .1 };
+    const command = controller.update(a, sim);
+    expect(movementObjective(command)).toBeUndefined();
   });
 
   it.each([false, true])('final-waypoint tolerance cannot skip the achieved-corner gate, weak direction=%s', flip => {
