@@ -1,0 +1,20 @@
+{
+  "current": {
+    "path": "/workspace/datasets/simulator-audits/accepted-bb6d4c7-48snap-v1.tar.gz",
+    "filename": "accepted-bb6d4c7-48snap-v1.tar.gz",
+    "bytes": 21972999,
+    "sha256": "91c9e1d3713e2ce6e84610c319b7638dddfddec492363dadf66d9475e69dbc84",
+    "nativeMembersVerified": 48
+  },
+  "reference": {
+    "commit": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+    "artifactRef": "codex/accepted-panel-pr82-evidence-v1",
+    "artifactCommit": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+    "filename": "accepted-7eb2554-48snap-v1.tar.gz",
+    "bytes": 21022508,
+    "sha256": "60c4d4af04713583c19a59224831d9e89a48011cd4affaebd891cfe1e35f0919",
+    "newUpload": false
+  },
+  "packagingAndValidationWallSeconds": 19.49842505400011,
+  "nativeEvidenceOutsideTrackedSource": true
+}
