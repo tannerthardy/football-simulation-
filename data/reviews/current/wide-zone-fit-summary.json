@@ -1,0 +1,3603 @@
+{
+  "schema": "wide-zone-fit-held-review-v1",
+  "date": "2026-10-16",
+  "status": "HELD evidence branch; no PR/adoption request for any paired behavior",
+  "branch": "codex/paired-stretch-recovery",
+  "codeHead": "dc7741da5df0af377a992d2c80b7df24b055b47c",
+  "sourceSha256": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+  "acceptedBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "acceptedSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "ancestry": {
+    "stages": [
+      {
+        "name": "D identity + isolated-contact-span comparator",
+        "head": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+        "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+        "decision": "Correctness changes remain independently reviewable; not paired behavior adoption."
+      },
+      {
+        "name": "paired lateral arrival, normal request capped at2.4",
+        "head": "092c413a9fe406d9c6bcd645aa195dfb4fe7f647",
+        "source": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+        "decision": "HOLD: early real width, A015 normal overrun and A039 helper impacts/late collection."
+      },
+      {
+        "name": "bounded normal arrival, lower bound0",
+        "head": "02d034b63e83c2616d3962a9d7472ef17ca0ab84",
+        "source": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+        "decision": "HOLD: A015 pre-RNG overrun repaired; keeper release lifecycle and anchor composition failures remain."
+      },
+      {
+        "name": "continuing keeper fit and lateral brace composition",
+        "head": "25f1380605f732a79448c8490b55bbe9ed8c22c8",
+        "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+        "decision": "Initial role assertion fails; existing OL framed solo versus inline unframed keeper distinction retained."
+      },
+      {
+        "name": "same continuity runtime, corrected explicit C/Y role controls",
+        "head": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+        "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+        "decision": "Mechanism useful in A039; HOLD overall due A003/A015 and matched OZ adverse, fresh entry unproved."
+      },
+      {
+        "name": "existing bounded backstep lower bound-1",
+        "head": "dc7741da5df0af377a992d2c80b7df24b055b47c",
+        "source": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+        "decision": "STOP/HOLD: executes from identical states but fails A003 and loses A039 useful passage; no more lower-bound tuning."
+      }
+    ],
+    "portableDCode": "6cf700db7a475ed6e95833509229b30eececba52",
+    "portableSpanCherryPick": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+    "excluded": "No acquired-away release, #96/#98 near-fit dependency, old experimental stack or physics-law promotion."
+  },
+  "separateReadyCorrections": [
+    {
+      "pr": "https://github.com/tannerthardy/football-simulation-/pull/103",
+      "code": "6cf700db7a475ed6e95833509229b30eececba52",
+      "evidence": "3f1c546b4e4852b9f20bb5a9e622140cfe357186",
+      "recommendation": "Adopt D position/width/velocity identity correctness after independent review; no faster rushing claim."
+    },
+    {
+      "pr": "https://github.com/tannerthardy/football-simulation-/pull/102",
+      "code": "84a71afb85298b8e154bc3a3a468f1cebd801f28",
+      "priorEvidence": "2605ae48b25d488c6f014d9602dbb08a1064e6c1",
+      "recommendation": "Adopt bounded isolated run-contact span correction after review; owner updating evidence for exact matched transfer controls."
+    },
+    {
+      "pr": "https://github.com/tannerthardy/football-simulation-/pull/98",
+      "code": "c574615d90943c9e839c506882989a1be6bc89eb",
+      "evidence": "cf320b17a32be7c4925eac9a3e0ce7fa3bc450f2",
+      "recommendation": "Run-owned separate candidate; absent from paired ancestry."
+    }
+  ],
+  "footballQuestion": "Can current feet preserve called stretch width under actual first-level load while the uncovered helper acquires hands and climbs, rather than losing keeper fit or colliding with him?",
+  "informationContract": {
+    "newController": "Own acquired DL picture at ordinary decision cadence, observation age retained; installed combo half from snap alignment; own body/support/movement capacity. Unknown velocity remains unknown. No private live DL/partner position or velocity supplies the new foot request.",
+    "independentReview": "Owner accepts702 mechanism boundary, not football adoption. No literal Engagement identity token is stored; continuity requires own current run engagement, same primary/defender/job/target and retained combination. Ordinary free attack clears held state before a fresh contact.",
+    "focusedControls": "13 known/unknown, throwing private motion getter, cadence, installed half vs crossed partner, residual momentum, changed target/release, C framed vs Y unframed continuing keeper, brace composition and flag provenance contracts pass on final code.",
+    "physicalContract": "Feet only; existing contact surface/joints/normal/tangent/traction capacities and keeper/release criteria retained. Existing movingArrivalVelocity and physics provide achievable steering, not guaranteed control or whole-route clearance.",
+    "limit": "Do not certify entire RB open-field information boundary: inherited BallCarrier.evaluate private-engagement/recovery shortcuts are unchanged. Early OL movement, real hand load and removal of RT-Y impacts support the A039 mechanical finding; late RB ending alone does not."
+  },
+  "units": {
+    "positions": "yd",
+    "velocity": "yd/s",
+    "rawForce": "kg*yd/s^2 (simulator units)",
+    "integratedLoadAndCollisionImpulse": "kg*yd/s",
+    "SIConversion": "Multiply raw force or integrated magnitude by0.9144 for N or N*s. Old source artifacts used unconverted N/N*s shorthand; this summary does not adopt that shorthand.",
+    "loadDefinition": "20Hz dt=.05 rectangular integral of primary resultant force magnitude, or explicitly positive-normal component; not signed net impulse or quality score. Helper load separate.",
+    "time": "Native event20Hz precision. Body samples are post-step but retain tick-start labels; sample1.50 is after the1.50 step. Short prefixes censored3.10. Later outcomes descriptive after first RNG divergence."
+  },
+  "cleanLateralStage": [
+    {
+      "id": "A003",
+      "candidateSource": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+      "candidateSHA256": "e7dc46bf994c3dfcad829eb8a98e434bd69d9bc1712187fdddde7b8f9f15f1cd",
+      "referenceSHA256": "e70b3275e3315077d0e2d5ba24480ee6930251eef72a03c93f5fcad2f8dcc37e",
+      "compatible": true,
+      "firstRNG": 1.35,
+      "firstContact": [
+        {
+          "t": 3.05,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 34.99,
+            "y": 18.85
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 34.68,
+            "y": 19.08
+          },
+          "note": "grasp"
+        }
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "integratedNs": 969.8976000617009,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 0.7733780912436861
+          },
+          "candidate": {
+            "integratedNs": 548.4982204484947,
+            "samples": 41,
+            "first": 0.6,
+            "maxSep": 1.5530976866714845
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "integratedNs": 2189.8817223895157,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.3917713878266336
+          },
+          "candidate": {
+            "integratedNs": 1952.0872375431454,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.1027649690733228
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "integratedNs": 1741.0584537326292,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.017963007489266
+          },
+          "candidate": {
+            "integratedNs": 1687.511554523464,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.1912600145614851
+          }
+        },
+        "Mike": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 541.171484991152,
+            "samples": 15,
+            "first": 2.35,
+            "maxSep": 0.895702695422535
+          }
+        },
+        "Will": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "teammateContact": {
+        "reference": [],
+        "candidate": []
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 34.98528834021104,
+            "y": 18.854238531833545
+          },
+          "v": {
+            "x": 2.4509068997549397,
+            "y": -4.167588724456876
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 35.78686241971105,
+            "y": 16.642329059076665
+          },
+          "v": {
+            "x": 2.3668543083390623,
+            "y": -6.626303009159393
+          },
+          "state": "up",
+          "LOSfirst": 2.75
+        }
+      }
+    },
+    {
+      "id": "A015",
+      "candidateSource": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54",
+      "candidateSHA256": "423c4fe9cebbd469303b87ef07a30da531d50522713e56320f672a356904c94e",
+      "referenceSHA256": "48cac9f632b41a746bb25f61ec68df67be2306aa4d621530b74df047413bd6e4",
+      "compatible": true,
+      "firstRNG": 1.3,
+      "firstContact": [
+        {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 34.32,
+            "y": 20.07
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.47,
+            "y": 19.96
+          },
+          "note": "grasp"
+        }
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "integratedNs": 1361.7121449771,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 0.7747985988131559
+          },
+          "candidate": {
+            "integratedNs": 822.9930778721081,
+            "samples": 38,
+            "first": 0.6,
+            "maxSep": 1.9583362640386357
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "integratedNs": 2651.067378330526,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0652889928877685
+          },
+          "candidate": {
+            "integratedNs": 2923.184873911157,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0651710148188258
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "integratedNs": 1356.98193670496,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.217634454465116
+          },
+          "candidate": {
+            "integratedNs": 1946.1121392144844,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.1106879695334115
+          }
+        },
+        "Mike": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        },
+        "Will": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "teammateContact": {
+        "reference": [],
+        "candidate": [
+          {
+            "t": 2.7,
+            "i": 3,
+            "j": 4,
+            "impulse": 11.54469095055017,
+            "closing": 0.10457159093532087
+          },
+          {
+            "t": 2.85,
+            "i": 3,
+            "j": 4,
+            "impulse": 27.041715287077597,
+            "closing": 0.22999842885197136
+          },
+          {
+            "t": 2.9,
+            "i": 3,
+            "j": 4,
+            "impulse": 9.96095883802282,
+            "closing": 0
+          },
+          {
+            "t": 2.95,
+            "i": 3,
+            "j": 4,
+            "impulse": 15.19166232383733,
+            "closing": 0
+          },
+          {
+            "t": 3,
+            "i": 3,
+            "j": 4,
+            "impulse": 1.700971425015893,
+            "closing": 0
+          }
+        ]
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 34.477640290559,
+            "y": 19.90314215125529
+          },
+          "v": {
+            "x": 1.4208373871053819,
+            "y": -0.7115608937721386
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 36.629902523559615,
+            "y": 19.370932137520732
+          },
+          "v": {
+            "x": 1.4066318304975585,
+            "y": -2.188905209912752
+          },
+          "state": "falling",
+          "LOSfirst": 2.65
+        }
+      }
+    },
+    {
+      "id": "A039",
+      "candidateSource": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d",
+      "candidateSHA256": "e2eb2a2e6e8df49eb1b889ee2114a9487a468a66b7c4cbbfe705c326cb8e845b",
+      "referenceSHA256": "3708573de2e5970230c4c8db838cf935b35e1384a4a1c61e0f531377d7b4baf1",
+      "compatible": true,
+      "firstRNG": 1.6,
+      "firstContact": [
+        {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.79,
+            "y": 19.35
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 36.21,
+            "y": 19.15
+          },
+          "note": "grasp"
+        }
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "integratedNs": 984.4992343673714,
+            "samples": 48,
+            "first": 0.6,
+            "maxSep": 1.3677485026144875
+          },
+          "candidate": {
+            "integratedNs": 980.4357860267796,
+            "samples": 49,
+            "first": 0.6,
+            "maxSep": 1.1489606659477647
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "integratedNs": 1738.6710932558935,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.1485721413932262
+          },
+          "candidate": {
+            "integratedNs": 1715.752680359031,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.0266691555961314
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "integratedNs": 960.2389771464916,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0537421892160546
+          },
+          "candidate": {
+            "integratedNs": 874.4238551327329,
+            "samples": 49,
+            "first": 0.5,
+            "maxSep": 1.0537421892160546
+          }
+        },
+        "Mike": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        },
+        "Will": {
+          "reference": {
+            "integratedNs": 220.53252457848401,
+            "samples": 6,
+            "first": 1.85,
+            "maxSep": 0.6812705488184571
+          },
+          "candidate": {
+            "integratedNs": 287.9503273316536,
+            "samples": 6,
+            "first": 1.85,
+            "maxSep": 0.7608254272462905
+          }
+        }
+      },
+      "teammateContact": {
+        "reference": [],
+        "candidate": [
+          {
+            "t": 2.35,
+            "i": 2,
+            "j": 7,
+            "impulse": 52.44422731203574,
+            "closing": 0.7599215815745087
+          },
+          {
+            "t": 2.4,
+            "i": 2,
+            "j": 7,
+            "impulse": 14.41508059241725,
+            "closing": 0.01646269380900478
+          },
+          {
+            "t": 2.45,
+            "i": 2,
+            "j": 7,
+            "impulse": 13.713372957577418,
+            "closing": 0.023728271015776514
+          },
+          {
+            "t": 2.5,
+            "i": 2,
+            "j": 7,
+            "impulse": 5.445786706406706,
+            "closing": 0.021376929689970736
+          },
+          {
+            "t": 2.55,
+            "i": 2,
+            "j": 7,
+            "impulse": 0.30452432097770216,
+            "closing": 0.014525980857423182
+          }
+        ]
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 36.45160038058175,
+            "y": 18.610663496907623
+          },
+          "v": {
+            "x": 1.5211836463556547,
+            "y": -3.2547067572380577
+          },
+          "state": "falling",
+          "LOSfirst": 2.6
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 37.24180634860018,
+            "y": 18.25872068789421
+          },
+          "v": {
+            "x": 2.3512696085732268,
+            "y": -3.236225314364026
+          },
+          "state": "falling",
+          "LOSfirst": 2.55
+        }
+      }
+    },
+    {
+      "id": "F002",
+      "candidateSource": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "baseSource": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "09e74ac4bf76cc1f7fe96d02b3384792f3573c8c787f13fbc8f5dbd69f20b760",
+      "candidateSHA256": "7c987b61e9006cde03bc347e7acbeea31b3b2caea9c2678d274faf3e900ac6ee",
+      "referenceSHA256": "745bd3d38c63813636f1b26a89797b23b3b83b7627f2d880b8e9407d49faae57",
+      "compatible": true,
+      "firstRNG": 1.55,
+      "firstContact": [
+        {
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 34.75,
+            "y": 20.14
+          },
+          "note": "grasp"
+        },
+        null
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "integratedNs": 928.8815662103837,
+            "samples": 50,
+            "first": 0.45,
+            "maxSep": 1.9894394521013785
+          },
+          "candidate": {
+            "integratedNs": 1003.6952051388264,
+            "samples": 51,
+            "first": 0.45,
+            "maxSep": 1.2161663296492138
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "integratedNs": 1979.872831728065,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0697213817978752
+          },
+          "candidate": {
+            "integratedNs": 1976.6535061482923,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0697213817978752
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "integratedNs": 982.3877969399095,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 1.039210028952702
+          },
+          "candidate": {
+            "integratedNs": 669.7367921727216,
+            "samples": 36,
+            "first": 0.6,
+            "maxSep": 1.953241229499129
+          }
+        },
+        "Mike": {
+          "reference": {
+            "integratedNs": 228.1648170370547,
+            "samples": 19,
+            "first": 2.15,
+            "maxSep": 1.6055471000968327
+          },
+          "candidate": {
+            "integratedNs": 256.9314157599467,
+            "samples": 13,
+            "first": 1.75,
+            "maxSep": 1.5407566937567556
+          }
+        },
+        "Will": {
+          "reference": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "integratedNs": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "teammateContact": {
+        "reference": [],
+        "candidate": []
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 34.89677734959433,
+            "y": 19.97357391379354
+          },
+          "v": {
+            "x": 1.670852398103951,
+            "y": -1.5402125861387177
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 34.93511209233009,
+            "y": 20.243792708515045
+          },
+          "v": {
+            "x": 3.4568209994410237,
+            "y": -3.072415765155331
+          },
+          "state": "up",
+          "LOSfirst": null
+        }
+      }
+    }
+  ],
+  "normalArrivalStage": [
+    {
+      "case": "A015",
+      "sourcesAndFileHashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A015.json.gz",
+          "sha256": "48cac9f632b41a746bb25f61ec68df67be2306aa4d621530b74df047413bd6e4",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        },
+        "lateralOnly": {
+          "file": "/workspace/paired-stretch-corrected-route/A015.json.gz",
+          "sha256": "423c4fe9cebbd469303b87ef07a30da531d50522713e56320f672a356904c94e",
+          "source": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        },
+        "normalFit": {
+          "file": "/workspace/paired-stretch-normal-fit-native/A015.json.gz",
+          "sha256": "20ba3c401625393e18f1055990ce6598d1c338613a5ef8abc6b1c45ed7d1ff32",
+          "source": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "lateralOnly": true,
+        "normalFit": true
+      },
+      "firstRNGVersusReference": {
+        "reference": null,
+        "lateralOnly": 1.3,
+        "normalFit": 1.35
+      },
+      "events": {
+        "reference": [
+          {
+            "t": 1.9,
+            "type": "block_climb",
+            "a": 5,
+            "b": 16,
+            "note": "secured DT_S; C stays"
+          },
+          {
+            "t": 2.05,
+            "type": "block_climb",
+            "a": 7,
+            "b": 15,
+            "note": "secured DE_S; RT stays"
+          },
+          {
+            "t": 2.9,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          }
+        ],
+        "lateralOnly": [
+          {
+            "t": 1.7,
+            "type": "block_climb",
+            "a": 5,
+            "b": 16,
+            "note": "secured DT_S; C stays"
+          },
+          {
+            "t": 2.7,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 12,
+            "note": "dive"
+          },
+          {
+            "t": 2.95,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          }
+        ],
+        "normalFit": [
+          {
+            "t": 1.7,
+            "type": "block_climb",
+            "a": 5,
+            "b": 16,
+            "note": "secured DT_S; C stays"
+          },
+          {
+            "t": 1.8,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "note": "grasp"
+          },
+          {
+            "t": 2.65,
+            "type": "block_contact",
+            "a": 2,
+            "b": 15,
+            "note": "run"
+          },
+          {
+            "t": 2.6,
+            "type": "fall",
+            "a": 6,
+            "note": "contact"
+          }
+        ]
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.477640290559,
+            "y": 19.90314215125529
+          },
+          "vel": {
+            "x": 1.4208373871053819,
+            "y": -0.7115608937721386
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "lateralOnly": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 36.629902523559615,
+            "y": 19.370932137520732
+          },
+          "vel": {
+            "x": 1.4066318304975585,
+            "y": -2.188905209912752
+          },
+          "state": "falling",
+          "LOSfirst": 2.65
+        },
+        "normalFit": {
+          "tickStart": 3,
+          "phase": "dead",
+          "until": 3.05,
+          "pos": {
+            "x": 34.09512478005785,
+            "y": 19.169783317652012
+          },
+          "vel": {
+            "x": -0.3713691159729172,
+            "y": -1.4543955462695681
+          },
+          "state": "down",
+          "LOSfirst": null
+        }
+      },
+      "commonPrefixLoadThrough3_05": {
+        "reference": {
+          "12": {
+            "primaryResultantNs": 1336.6319092031256,
+            "positiveNormalNs": 1252.7911780134004
+          },
+          "15": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          },
+          "16": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          }
+        },
+        "lateralOnly": {
+          "12": {
+            "primaryResultantNs": 822.9930778721081,
+            "positiveNormalNs": 463.7340040263216
+          },
+          "15": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          },
+          "16": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          }
+        },
+        "normalFit": {
+          "12": {
+            "primaryResultantNs": 1030.8056511986213,
+            "positiveNormalNs": 860.3039999088867
+          },
+          "15": {
+            "primaryResultantNs": 145.63376689675064,
+            "positiveNormalNs": 124.10881164257684
+          },
+          "16": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "A039",
+      "sourcesAndFileHashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A039.json.gz",
+          "sha256": "3708573de2e5970230c4c8db838cf935b35e1384a4a1c61e0f531377d7b4baf1",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "lateralOnly": {
+          "file": "/workspace/paired-stretch-corrected-route/A039.json.gz",
+          "sha256": "e2eb2a2e6e8df49eb1b889ee2114a9487a468a66b7c4cbbfe705c326cb8e845b",
+          "source": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "normalFit": {
+          "file": "/workspace/paired-stretch-normal-fit-native/A039.json.gz",
+          "sha256": "286b8f0f60c06dbb719c1542da0028f17991b182e48c60c56e9f9190e09fa358",
+          "source": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "lateralOnly": true,
+        "normalFit": true
+      },
+      "firstRNGVersusReference": {
+        "reference": null,
+        "lateralOnly": 1.6,
+        "normalFit": 1.05
+      },
+      "events": {
+        "reference": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 1.75,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1.9,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2.1,
+            "type": "fall",
+            "a": 16,
+            "note": "contact"
+          },
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          },
+          {
+            "t": 3.05,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          }
+        ],
+        "lateralOnly": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 1.9,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2.1,
+            "type": "fall",
+            "a": 16,
+            "note": "contact"
+          },
+          {
+            "t": 2.35,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.75,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          },
+          {
+            "t": 2.95,
+            "type": "fall",
+            "a": 6,
+            "note": "contact"
+          }
+        ],
+        "normalFit": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 2,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.85,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          }
+        ]
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 36.45160038058175,
+            "y": 18.610663496907623
+          },
+          "vel": {
+            "x": 1.5211836463556547,
+            "y": -3.2547067572380577
+          },
+          "state": "falling",
+          "LOSfirst": 2.6
+        },
+        "lateralOnly": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 37.24180634860018,
+            "y": 18.25872068789421
+          },
+          "vel": {
+            "x": 2.3512696085732268,
+            "y": -3.236225314364026
+          },
+          "state": "falling",
+          "LOSfirst": 2.55
+        },
+        "normalFit": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.346718526640466,
+            "y": 20.571910467103148
+          },
+          "vel": {
+            "x": -0.6071265859230739,
+            "y": -0.2398902843983094
+          },
+          "state": "up",
+          "LOSfirst": null
+        }
+      },
+      "commonPrefixLoadThrough3_05": {
+        "reference": {
+          "12": {
+            "primaryResultantNs": 984.4992343673714,
+            "positiveNormalNs": 728.359451963622
+          },
+          "15": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          },
+          "16": {
+            "primaryResultantNs": 220.53252457848401,
+            "positiveNormalNs": 191.35710284182966
+          }
+        },
+        "lateralOnly": {
+          "12": {
+            "primaryResultantNs": 980.4357860267796,
+            "positiveNormalNs": 782.7221542840228
+          },
+          "15": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          },
+          "16": {
+            "primaryResultantNs": 287.9503273316536,
+            "positiveNormalNs": 230.1122967570866
+          }
+        },
+        "normalFit": {
+          "12": {
+            "primaryResultantNs": 1295.5700932962338,
+            "positiveNormalNs": 1109.5732406988311
+          },
+          "15": {
+            "primaryResultantNs": 0,
+            "positiveNormalNs": 0
+          },
+          "16": {
+            "primaryResultantNs": 300.6529027212136,
+            "positiveNormalNs": 99.32777098559146
+          }
+        }
+      }
+    }
+  ],
+  "continuityStage": [
+    {
+      "case": "A015",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "sourcesAndHashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A015.json.gz",
+          "sha256": "48cac9f632b41a746bb25f61ec68df67be2306aa4d621530b74df047413bd6e4",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        },
+        "normalFit": {
+          "file": "/workspace/paired-stretch-normal-fit-native/A015.json.gz",
+          "sha256": "20ba3c401625393e18f1055990ce6598d1c338613a5ef8abc6b1c45ed7d1ff32",
+          "source": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        },
+        "continuity": {
+          "file": "/workspace/paired-stretch-continuity-native/A015.json.gz",
+          "sha256": "00b81cacf519559cd7c069be04a406e5936f8041efc7150ddf4ee4e4b8a21f14",
+          "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+          "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "normalFit": true,
+        "continuity": true
+      },
+      "firstRNGVersusReference": {
+        "reference": null,
+        "normalFit": 1.35,
+        "continuity": 1.35
+      },
+      "load": {
+        "reference": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 1361.7121449771,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 1277.028905254089,
+            "helperResultantMagnitudeIntegral": 118.78826569570737,
+            "RThelperFirst": 1.8
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 2651.067378330526,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 2278.741060012975,
+            "helperResultantMagnitudeIntegral": 193.78951027263287,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 1356.98193670496,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 135.85578886020866,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "normalFit": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 1030.8056511986213,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 860.3039999088867,
+            "helperResultantMagnitudeIntegral": 247.53774527930545,
+            "RThelperFirst": 1.4
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 2457.067988560572,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 2152.43790446972,
+            "helperResultantMagnitudeIntegral": 203.07602760501683,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 2152.948372816294,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 1317.283383183034,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 145.63376689675064,
+            "first": 2.6,
+            "positiveNormalMagnitudeIntegral": 124.10881164257684,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "continuity": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 1116.1351183825022,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 1014.8907148807364,
+            "helperResultantMagnitudeIntegral": 739.7298719165393,
+            "RThelperFirst": 1.4
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 2531.432562210924,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 2252.596791951541,
+            "helperResultantMagnitudeIntegral": 238.2138438769486,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 2163.2090586544896,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 1312.2562750558868,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.477640290559,
+            "y": 19.90314215125529
+          },
+          "vel": {
+            "x": 1.4208373871053819,
+            "y": -0.7115608937721386
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "normalFit": {
+          "tickStart": 3,
+          "phase": "dead",
+          "until": 3.05,
+          "pos": {
+            "x": 34.09512478005785,
+            "y": 19.169783317652012
+          },
+          "vel": {
+            "x": -0.3713691159729172,
+            "y": -1.4543955462695681
+          },
+          "state": "down",
+          "LOSfirst": null
+        },
+        "continuity": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.19305799809676,
+            "y": 19.08608473519015
+          },
+          "vel": {
+            "x": -0.5825434997922203,
+            "y": -0.7574753829876438
+          },
+          "state": "falling",
+          "LOSfirst": null
+        }
+      },
+      "selectedAchievedSamples": [
+        {
+          "tickStart": 1.5,
+          "reference": {
+            "YminusDEdepthBefore": -0.5789105775937884,
+            "YwidthAfter": 2.0260424142998126,
+            "YdepthAfter": 0.6626548592772323,
+            "RTwidthAfter": 2.44937450514745,
+            "RTdepthAfter": 0.20717214653825522,
+            "actualKeeperControl": -0.177266514655368,
+            "actualHands": {
+              "normal": 574.6027881033401,
+              "tangent": 6.676469954222039,
+              "extension": 0.8148892765715401
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": -0.13477374298096834,
+            "YwidthAfter": 2.5880711424716125,
+            "YdepthAfter": 0.7296706920306661,
+            "RTwidthAfter": 2.799185979534588,
+            "RTdepthAfter": 0.376742245729595,
+            "actualKeeperControl": -0.14502803550978977,
+            "actualHands": {
+              "normal": 515.627397492962,
+              "tangent": -241.42235581335578,
+              "extension": 0.8103490240918712
+            }
+          }
+        },
+        {
+          "tickStart": 2,
+          "reference": {
+            "YminusDEdepthBefore": -0.5792076484048039,
+            "YwidthAfter": 2.4564807790770864,
+            "YdepthAfter": 0.4973436325600318,
+            "RTwidthAfter": 3.066016184571538,
+            "RTdepthAfter": 0.7728410461381614,
+            "actualKeeperControl": -0.26173884973598116,
+            "actualHands": {
+              "normal": 642.4191033134856,
+              "tangent": 132.41295517226533,
+              "extension": 0.8267857970953931
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": -0.08117871712661895,
+            "YwidthAfter": 3.4775286205623317,
+            "YdepthAfter": 0.7800868072127116,
+            "RTwidthAfter": 3.5720228309001385,
+            "RTdepthAfter": 0.7827911914425982,
+            "actualKeeperControl": -0.21160777595903962,
+            "actualHands": {
+              "normal": 495.98828824217964,
+              "tangent": -218.21347285445762,
+              "extension": 0.8197256708718073
+            }
+          }
+        },
+        {
+          "tickStart": 2.5,
+          "reference": {
+            "YminusDEdepthBefore": -0.5801184885784707,
+            "YwidthAfter": 3.1032134970724776,
+            "YdepthAfter": 0.4025871007293276,
+            "RTwidthAfter": 3.736365191697381,
+            "RTdepthAfter": 1.0243478509696615,
+            "actualKeeperControl": -0.03432598633282541,
+            "actualHands": {
+              "normal": 459.84687522635556,
+              "tangent": 202.22537099174227,
+              "extension": 0.8447584854994487
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": 0.1816140762540428,
+            "YwidthAfter": 4.2793007496599955,
+            "YdepthAfter": 0.7575767433234759,
+            "RTwidthAfter": 4.827741304133578,
+            "RTdepthAfter": 1.3081094546988936,
+            "actualKeeperControl": -0.38640412246989253,
+            "actualHands": {
+              "normal": 547.9312564172362,
+              "tangent": -277.5934911595087,
+              "extension": 0.8443428230054191
+            }
+          }
+        }
+      ],
+      "teammateContactCount": {
+        "reference": 0,
+        "normalFit": 5,
+        "continuity": 8
+      }
+    },
+    {
+      "case": "A039",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "sourcesAndHashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A039.json.gz",
+          "sha256": "3708573de2e5970230c4c8db838cf935b35e1384a4a1c61e0f531377d7b4baf1",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "normalFit": {
+          "file": "/workspace/paired-stretch-normal-fit-native/A039.json.gz",
+          "sha256": "286b8f0f60c06dbb719c1542da0028f17991b182e48c60c56e9f9190e09fa358",
+          "source": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "continuity": {
+          "file": "/workspace/paired-stretch-continuity-native/A039.json.gz",
+          "sha256": "cd50539b0e04a1080103818d9827bc38d3990b410ae5c3fa11aa1ea78031ba09",
+          "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "normalFit": true,
+        "continuity": true
+      },
+      "firstRNGVersusReference": {
+        "reference": null,
+        "normalFit": 1.05,
+        "continuity": 1.05
+      },
+      "load": {
+        "reference": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 984.4992343673714,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 728.359451963622,
+            "helperResultantMagnitudeIntegral": 151.3386216721311,
+            "RThelperFirst": 1.6
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 1738.6710932558935,
+            "first": 0.55,
+            "positiveNormalMagnitudeIntegral": 1321.996129422671,
+            "helperResultantMagnitudeIntegral": 0.0,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 960.2389771464916,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 220.76183953121142,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 220.53252457848401,
+            "first": 1.85,
+            "positiveNormalMagnitudeIntegral": 191.35710284182966,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "normalFit": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 1323.9154418876576,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 1133.8505440781971,
+            "helperResultantMagnitudeIntegral": 0.0,
+            "RThelperFirst": null
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 1288.9431464327993,
+            "first": 0.55,
+            "positiveNormalMagnitudeIntegral": 970.765940545317,
+            "helperResultantMagnitudeIntegral": 36.17308105956135,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 1115.889864752381,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 524.7427642242623,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "first": null,
+            "positiveNormalMagnitudeIntegral": 0,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 300.6529027212136,
+            "first": 1.95,
+            "positiveNormalMagnitudeIntegral": 99.32777098559146,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "continuity": {
+          "12": {
+            "primaryResultantMagnitudeIntegral": 1280.3851828738354,
+            "first": 0.6,
+            "positiveNormalMagnitudeIntegral": 1137.520571247593,
+            "helperResultantMagnitudeIntegral": 144.72943490565243,
+            "RThelperFirst": 1.95
+          },
+          "13": {
+            "primaryResultantMagnitudeIntegral": 1296.6837568858523,
+            "first": 0.55,
+            "positiveNormalMagnitudeIntegral": 969.7034959253134,
+            "helperResultantMagnitudeIntegral": 36.17308105956135,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryResultantMagnitudeIntegral": 1061.0839629621016,
+            "first": 0.5,
+            "positiveNormalMagnitudeIntegral": 477.2208490575277,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryResultantMagnitudeIntegral": 268.87708535059295,
+            "first": 2.6,
+            "positiveNormalMagnitudeIntegral": 244.01888599854985,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryResultantMagnitudeIntegral": 304.86537077740047,
+            "first": 1.95,
+            "positiveNormalMagnitudeIntegral": 100.32040006105754,
+            "helperResultantMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 36.45160038058175,
+            "y": 18.610663496907623
+          },
+          "vel": {
+            "x": 1.5211836463556547,
+            "y": -3.2547067572380577
+          },
+          "state": "falling",
+          "LOSfirst": 2.6
+        },
+        "normalFit": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.346718526640466,
+            "y": 20.571910467103148
+          },
+          "vel": {
+            "x": -0.6071265859230739,
+            "y": -0.2398902843983094
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "continuity": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 37.2668544752526,
+            "y": 17.425098537027587
+          },
+          "vel": {
+            "x": 5.688726054395031,
+            "y": -3.7526363205818014
+          },
+          "state": "up",
+          "LOSfirst": 2.6
+        }
+      },
+      "selectedAchievedSamples": [
+        {
+          "tickStart": 1.5,
+          "reference": {
+            "YminusDEdepthBefore": 0.03365659000223786,
+            "YwidthAfter": 2.150915360229316,
+            "YdepthAfter": 1.505841492440112,
+            "RTwidthAfter": 3.2638825146849335,
+            "RTdepthAfter": 0.6541071815185688,
+            "actualKeeperControl": 0.1935512149037222,
+            "actualHands": {
+              "normal": 384.8790313944825,
+              "tangent": 207.44373125270414,
+              "extension": 0.7539581194563674
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": -0.524846018779968,
+            "YwidthAfter": 2.5032285082992694,
+            "YdepthAfter": 0.5889933234358864,
+            "RTwidthAfter": 2.8881730383293736,
+            "RTdepthAfter": 0.026721240210008546,
+            "actualKeeperControl": 0.31251809596694685,
+            "actualHands": {
+              "normal": 447.42966011117807,
+              "tangent": -72.18846441044337,
+              "extension": 0.7706630523389952
+            }
+          }
+        },
+        {
+          "tickStart": 2,
+          "reference": {
+            "YminusDEdepthBefore": 0.3094808374247435,
+            "YwidthAfter": 3.188787645701506,
+            "YdepthAfter": 1.498479905571429,
+            "RTwidthAfter": 4.4418379679576,
+            "RTdepthAfter": 0.7367924934142991,
+            "actualKeeperControl": 0.23408149084478125,
+            "actualHands": {
+              "normal": 406.18911550795167,
+              "tangent": 225.4753408871781,
+              "extension": 0.7596492457030911
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": -0.526787343036581,
+            "YwidthAfter": 3.4685831962886553,
+            "YdepthAfter": 0.5317063598714427,
+            "RTwidthAfter": 4.032664147459798,
+            "RTdepthAfter": 0.5757868758941953,
+            "actualKeeperControl": 0.37343452805485466,
+            "actualHands": {
+              "normal": 479.45841544394614,
+              "tangent": 287.4724408330194,
+              "extension": 0.7792167346780057
+            }
+          }
+        },
+        {
+          "tickStart": 2.5,
+          "reference": {
+            "YminusDEdepthBefore": 0.798989045517402,
+            "YwidthAfter": 4.758154230682997,
+            "YdepthAfter": 0.8171050242430198,
+            "RTwidthAfter": 5.196944746129265,
+            "RTdepthAfter": 0.6132681399804056,
+            "actualKeeperControl": 0.2896162778135671,
+            "actualHands": {
+              "normal": 0,
+              "tangent": 250.18234266557883,
+              "extension": 0.7674472553732915
+            }
+          },
+          "continuity": {
+            "YminusDEdepthBefore": -0.5252621989919248,
+            "YwidthAfter": 4.635725715091805,
+            "YdepthAfter": 0.5487873592480099,
+            "RTwidthAfter": 4.578356523280938,
+            "RTdepthAfter": 1.5416278559177599,
+            "actualKeeperControl": 0.38289868101949753,
+            "actualHands": {
+              "normal": 484.4344954497318,
+              "tangent": -291.68297006868426,
+              "extension": 0.7805456594901242
+            }
+          }
+        }
+      ],
+      "teammateContactCount": {
+        "reference": 0,
+        "normalFit": 19,
+        "continuity": 0
+      }
+    },
+    {
+      "case": "A003",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "candidateSource": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+      "candidateSHA256": "bc6d7ae3f944b4c946904911eb710b4e57ed44880462f38d5b62d4e42fae1f8a",
+      "referenceSHA256": "e70b3275e3315077d0e2d5ba24480ee6930251eef72a03c93f5fcad2f8dcc37e",
+      "compatible": true,
+      "firstRNG": 1.3,
+      "firstContact": [
+        {
+          "t": 3.05,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 34.99,
+            "y": 18.85
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 33.97,
+            "y": 20.42
+          },
+          "note": "grasp"
+        }
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 969.8976000617009,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 0.7733780912436861
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 665.7954318823447,
+            "samples": 37,
+            "first": 0.6,
+            "maxSep": 0.9871333551151746
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 2189.8817223895157,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.3917713878266336
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 1526.9964444335988,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.3636122077827206
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 1741.0584537326292,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.017963007489266
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 1722.5841289969765,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.3353763922481732
+          }
+        },
+        "Mike": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 482.9712884220883,
+            "samples": 16,
+            "first": 2.3,
+            "maxSep": 1.5448827766876385
+          }
+        },
+        "Will": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 34.98528834021104,
+            "y": 18.854238531833545
+          },
+          "v": {
+            "x": 2.4509068997549397,
+            "y": -4.167588724456876
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 34.389762665835164,
+            "y": 18.943347966304053
+          },
+          "v": {
+            "x": -0.7429720268034348,
+            "y": -1.6873198670397296
+          },
+          "state": "falling",
+          "LOSfirst": null
+        }
+      },
+      "spanMatched": true
+    },
+    {
+      "case": "A027",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "candidateSource": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "804bffd02cb7aa9b8978d45b4cce245b991fb8368594cb0262cb96651f9ce403",
+      "candidateSHA256": "86b475998ddd7be9ff1224c2be49c8796f8dbcfdb607b57849ab0289fbc60723",
+      "referenceSHA256": "3fb82b4989cbd9106f8c54ae03e29b180ea5011257f58fcb127700c8b7f61427",
+      "compatible": true,
+      "firstRNG": 1.8,
+      "firstContact": [
+        {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.01,
+            "y": 20.42
+          },
+          "note": "grasp"
+        },
+        null
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 2050.3112979306916,
+            "samples": 49,
+            "first": 0.65,
+            "maxSep": 1.1237239189754826
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 2267.080741545286,
+            "samples": 49,
+            "first": 0.65,
+            "maxSep": 0.8832935758801226
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 3439.149203482836,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.125609048431903
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 3357.722887190478,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.1256205879396455
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 648.8858512510557,
+            "samples": 43,
+            "first": 0.5,
+            "maxSep": 1.6969785881941564
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 645.8069804949176,
+            "samples": 43,
+            "first": 0.5,
+            "maxSep": 1.7431250107158769
+          }
+        },
+        "Mike": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        },
+        "Will": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 35.402422419498414,
+            "y": 19.706493376753286
+          },
+          "v": {
+            "x": 0.861560262451781,
+            "y": -2.8781309665259083
+          },
+          "state": "up",
+          "LOSfirst": 2.8
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 34.11023053774638,
+            "y": 20.557347094364893
+          },
+          "v": {
+            "x": 1.0339155576277748,
+            "y": -1.043759684149298
+          },
+          "state": "up",
+          "LOSfirst": null
+        }
+      },
+      "spanMatched": true
+    },
+    {
+      "case": "A002",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "candidateSource": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "c89114b0e70a701a69f3429a69e709d4897b825b4547fbd5ee0834b2b2dd8c2f",
+      "candidateSHA256": "5f95cc5f3dcc4bfc8f117cbfe49dc6430594a1727afd79df0c1df04e746ab7d2",
+      "referenceSHA256": "f912c90b916e13ed7a5756331e58eec78ff7d52dae25bd49319f45e42d9480e8",
+      "compatible": true,
+      "firstRNG": 2.4,
+      "firstContact": [
+        {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 36.56,
+            "y": 20.42
+          },
+          "note": "body collision"
+        },
+        {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 35.8,
+            "y": 20.08
+          },
+          "note": "body collision"
+        }
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 2456.2508741615147,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.0463382708656381
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 2306.5781367685036,
+            "samples": 51,
+            "first": 0.55,
+            "maxSep": 1.1194474850594764
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 1521.8163557390076,
+            "samples": 52,
+            "first": 0.45,
+            "maxSep": 1.0734635252902034
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 1514.0495821271877,
+            "samples": 53,
+            "first": 0.45,
+            "maxSep": 1.0734635252902034
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 447.9078577076085,
+            "samples": 34,
+            "first": 0.7,
+            "maxSep": 1.6531903594552546
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 447.9078577076085,
+            "samples": 34,
+            "first": 0.7,
+            "maxSep": 1.655509502995304
+          }
+        },
+        "Mike": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 467.2362078347295,
+            "samples": 17,
+            "first": 2.25,
+            "maxSep": 1.6664626755183907
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 191.71224220408334,
+            "samples": 12,
+            "first": 2.4,
+            "maxSep": 1.6158834478385775
+          }
+        },
+        "Will": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 37.58401992282306,
+            "y": 19.105884739262017
+          },
+          "v": {
+            "x": 3.170615252880758,
+            "y": -4.195522365356145
+          },
+          "state": "up",
+          "LOSfirst": 2.45
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 36.37345229954012,
+            "y": 18.938964387571247
+          },
+          "v": {
+            "x": 1.1647627003680434,
+            "y": -3.1938790200905474
+          },
+          "state": "up",
+          "LOSfirst": 2.5
+        }
+      },
+      "spanMatched": true
+    },
+    {
+      "case": "F002",
+      "candidateHead": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "candidateSource": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "baseSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "input": "09e74ac4bf76cc1f7fe96d02b3384792f3573c8c787f13fbc8f5dbd69f20b760",
+      "candidateSHA256": "1a9a9e7b1dd81a105989c9d7dd6b94a9317171a3e8ff1a12f51cdf1e435cc690",
+      "referenceSHA256": "060ad6ca3dbc5977a53f97eb717f4663bbeff0c9a510a997eab4f3f2f9af306c",
+      "compatible": true,
+      "firstRNG": 1.55,
+      "firstContact": [
+        {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 34.64,
+            "y": 20.32
+          },
+          "note": "grasp"
+        },
+        null
+      ],
+      "loads": {
+        "DE_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 909.726459901205,
+            "samples": 48,
+            "first": 0.45,
+            "maxSep": 1.732529379630341
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 994.4545637261766,
+            "samples": 50,
+            "first": 0.45,
+            "maxSep": 1.6336437376695823
+          }
+        },
+        "DT_S": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 1989.3758557195765,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0697213817978752
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 1980.4362268331606,
+            "samples": 52,
+            "first": 0.5,
+            "maxSep": 1.0697213817978752
+          }
+        },
+        "DT_W": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 980.80198343045,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 1.0432841904360886
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 1053.7241456957634,
+            "samples": 50,
+            "first": 0.6,
+            "maxSep": 0.962754268850812
+          }
+        },
+        "Mike": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 224.03237462141848,
+            "samples": 19,
+            "first": 2.15,
+            "maxSep": 1.6053256728559517
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 124.41502232251126,
+            "samples": 11,
+            "first": 2.15,
+            "maxSep": 1.6017217964408186
+          }
+        },
+        "Will": {
+          "reference": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          },
+          "candidate": {
+            "primaryResultantMagnitudeIntegral": 0,
+            "samples": 0,
+            "first": null,
+            "maxSep": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "t": 3.05,
+          "p": {
+            "x": 34.83503588087236,
+            "y": 19.92364656767129
+          },
+          "v": {
+            "x": 0.9016280234451234,
+            "y": -2.0324105227906286
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "candidate": {
+          "t": 3.05,
+          "p": {
+            "x": 34.442328931899304,
+            "y": 21.03577775232751
+          },
+          "v": {
+            "x": 3.1701708652958644,
+            "y": -2.073724218410379
+          },
+          "state": "up",
+          "LOSfirst": null
+        }
+      },
+      "spanMatched": true
+    }
+  ],
+  "recoveryStage": [
+    {
+      "case": "A003",
+      "hashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A003.json.gz",
+          "sha256": "e70b3275e3315077d0e2d5ba24480ee6930251eef72a03c93f5fcad2f8dcc37e",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a"
+        },
+        "continuity": {
+          "file": "/workspace/paired-stretch-continuity-transfer/A003.json.gz",
+          "sha256": "bc6d7ae3f944b4c946904911eb710b4e57ed44880462f38d5b62d4e42fae1f8a",
+          "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+          "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a"
+        },
+        "recovery": {
+          "file": "/workspace/paired-stretch-recovery-native/A003.json.gz",
+          "sha256": "a2ccdabcc321b0e60a01a2406db8f81e2613d716050fe890d83bd7970f06390b",
+          "source": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+          "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "continuity": true,
+        "recovery": true
+      },
+      "firstRNG": {
+        "reference": null,
+        "continuity": 1.3,
+        "recovery": 1.3
+      },
+      "events": {
+        "reference": [
+          {
+            "t": 2.1,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 3.05,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "note": "grasp"
+          }
+        ],
+        "continuity": [
+          {
+            "t": 1.45,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1.7,
+            "type": "block_climb",
+            "a": 5,
+            "b": 16,
+            "note": "secured DT_S; C stays"
+          },
+          {
+            "t": 2.35,
+            "type": "block_contact",
+            "a": 2,
+            "b": 15,
+            "note": "run"
+          },
+          {
+            "t": 2.45,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "note": "grasp"
+          },
+          {
+            "t": 3,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          }
+        ],
+        "recovery": [
+          {
+            "t": 1.45,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1.7,
+            "type": "block_climb",
+            "a": 5,
+            "b": 16,
+            "note": "secured DT_S; C stays"
+          },
+          {
+            "t": 2.4,
+            "type": "block_contact",
+            "a": 2,
+            "b": 15,
+            "note": "run"
+          },
+          {
+            "t": 2.45,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          }
+        ]
+      },
+      "load": {
+        "reference": {
+          "12": {
+            "primaryMagnitudeIntegral": 969.8976000617009,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 829.0747013096438,
+            "helperMagnitudeIntegral": 56.61998734381021,
+            "RThelperFirst": 2
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 2189.8817223895157,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 1823.6212415894893,
+            "helperMagnitudeIntegral": 154.28597629189338,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 1741.0584537326292,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 512.2171964202083,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 0,
+            "first": null,
+            "primaryPositiveNormalIntegral": 0,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 0,
+            "first": null,
+            "primaryPositiveNormalIntegral": 0,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "continuity": {
+          "12": {
+            "primaryMagnitudeIntegral": 665.7954318823447,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 572.3574010218149,
+            "helperMagnitudeIntegral": 121.15135022104468,
+            "RThelperFirst": 1.3
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 1526.9964444335988,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 1218.562593438158,
+            "helperMagnitudeIntegral": 196.8490174083804,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 1722.5841289969765,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 293.05454491332125,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 482.9712884220883,
+            "first": 2.3,
+            "primaryPositiveNormalIntegral": 206.01009534765086,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 0,
+            "first": null,
+            "primaryPositiveNormalIntegral": 0,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "recovery": {
+          "12": {
+            "primaryMagnitudeIntegral": 669.2346282470704,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 573.3675061632306,
+            "helperMagnitudeIntegral": 112.28847691012747,
+            "RThelperFirst": 1.3
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 1530.7530719053696,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 1218.562593438158,
+            "helperMagnitudeIntegral": 196.8490174083804,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 1708.2698181507028,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 293.05454491332125,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 582.4460410023087,
+            "first": 2.35,
+            "primaryPositiveNormalIntegral": 416.5490418394245,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 0,
+            "first": null,
+            "primaryPositiveNormalIntegral": 0,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.98528834021104,
+            "y": 18.854238531833545
+          },
+          "vel": {
+            "x": 2.4509068997549397,
+            "y": -4.167588724456876
+          },
+          "state": "up",
+          "LOSfirst": null
+        },
+        "continuity": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.389762665835164,
+            "y": 18.943347966304053
+          },
+          "vel": {
+            "x": -0.7429720268034348,
+            "y": -1.6873198670397296
+          },
+          "state": "falling",
+          "LOSfirst": null
+        },
+        "recovery": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 34.73216938771276,
+            "y": 17.94284498875037
+          },
+          "vel": {
+            "x": -0.25195503979514183,
+            "y": -2.3344883725013377
+          },
+          "state": "falling",
+          "LOSfirst": null
+        }
+      }
+    },
+    {
+      "case": "A039",
+      "hashes": {
+        "reference": {
+          "file": "/workspace/outer-d-span-coupled/A039.json.gz",
+          "sha256": "3708573de2e5970230c4c8db838cf935b35e1384a4a1c61e0f531377d7b4baf1",
+          "source": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "continuity": {
+          "file": "/workspace/paired-stretch-continuity-native/A039.json.gz",
+          "sha256": "cd50539b0e04a1080103818d9827bc38d3990b410ae5c3fa11aa1ea78031ba09",
+          "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        },
+        "recovery": {
+          "file": "/workspace/paired-stretch-recovery-native/A039.json.gz",
+          "sha256": "5672be1c5425f8e2e22dffbbc8aa073149de3ee9eb6301f58f0dfe746837b9a1",
+          "source": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+          "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d"
+        }
+      },
+      "compatible": {
+        "reference": true,
+        "continuity": true,
+        "recovery": true
+      },
+      "firstRNG": {
+        "reference": null,
+        "continuity": 1.05,
+        "recovery": 1.05
+      },
+      "events": {
+        "reference": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 1.75,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1.9,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2.1,
+            "type": "fall",
+            "a": 16,
+            "note": "contact"
+          },
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "note": "grasp"
+          },
+          {
+            "t": 3.05,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          }
+        ],
+        "continuity": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 2,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2.05,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.65,
+            "type": "block_contact",
+            "a": 2,
+            "b": 15,
+            "note": "run"
+          }
+        ],
+        "recovery": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 2,
+            "type": "block_contact",
+            "a": 3,
+            "b": 16,
+            "note": "run"
+          },
+          {
+            "t": 2,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.6,
+            "type": "block_contact",
+            "a": 2,
+            "b": 15,
+            "note": "run"
+          },
+          {
+            "t": 2.7,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "note": "grasp"
+          },
+          {
+            "t": 3,
+            "type": "fall",
+            "a": 6,
+            "note": "legs"
+          },
+          {
+            "t": 3.05,
+            "type": "fall",
+            "a": 12,
+            "note": "contact"
+          }
+        ]
+      },
+      "load": {
+        "reference": {
+          "12": {
+            "primaryMagnitudeIntegral": 984.4992343673714,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 728.359451963622,
+            "helperMagnitudeIntegral": 151.3386216721311,
+            "RThelperFirst": 1.6
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 1738.6710932558935,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 1321.996129422671,
+            "helperMagnitudeIntegral": 0.0,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 960.2389771464916,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 220.76183953121142,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 0,
+            "first": null,
+            "primaryPositiveNormalIntegral": 0,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 220.53252457848401,
+            "first": 1.85,
+            "primaryPositiveNormalIntegral": 191.35710284182966,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "continuity": {
+          "12": {
+            "primaryMagnitudeIntegral": 1280.3851828738354,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 1137.520571247593,
+            "helperMagnitudeIntegral": 144.72943490565243,
+            "RThelperFirst": 1.95
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 1296.6837568858523,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 969.7034959253134,
+            "helperMagnitudeIntegral": 36.17308105956135,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 1061.0839629621016,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 477.2208490575277,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 268.87708535059295,
+            "first": 2.6,
+            "primaryPositiveNormalIntegral": 244.01888599854985,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 304.86537077740047,
+            "first": 1.95,
+            "primaryPositiveNormalIntegral": 100.32040006105754,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        },
+        "recovery": {
+          "12": {
+            "primaryMagnitudeIntegral": 1008.0915592683685,
+            "first": 0.6,
+            "primaryPositiveNormalIntegral": 930.6256895436668,
+            "helperMagnitudeIntegral": 50.43065046136379,
+            "RThelperFirst": 1.9
+          },
+          "13": {
+            "primaryMagnitudeIntegral": 1253.0485363958073,
+            "first": 0.55,
+            "primaryPositiveNormalIntegral": 924.0306781970027,
+            "helperMagnitudeIntegral": 44.49048663849129,
+            "RThelperFirst": null
+          },
+          "14": {
+            "primaryMagnitudeIntegral": 1169.7297795033444,
+            "first": 0.5,
+            "primaryPositiveNormalIntegral": 663.4081356334383,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "15": {
+            "primaryMagnitudeIntegral": 600.5062688857911,
+            "first": 2.55,
+            "primaryPositiveNormalIntegral": 525.5210988663518,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          },
+          "16": {
+            "primaryMagnitudeIntegral": 211.99203495733272,
+            "first": 1.95,
+            "primaryPositiveNormalIntegral": 74.35766336926525,
+            "helperMagnitudeIntegral": 0,
+            "RThelperFirst": null
+          }
+        }
+      },
+      "end": {
+        "reference": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 36.45160038058175,
+            "y": 18.610663496907623
+          },
+          "vel": {
+            "x": 1.5211836463556547,
+            "y": -3.2547067572380577
+          },
+          "state": "falling",
+          "LOSfirst": 2.6
+        },
+        "continuity": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 37.2668544752526,
+            "y": 17.425098537027587
+          },
+          "vel": {
+            "x": 5.688726054395031,
+            "y": -3.7526363205818014
+          },
+          "state": "up",
+          "LOSfirst": 2.6
+        },
+        "recovery": {
+          "tickStart": 3.05,
+          "phase": "live",
+          "until": 3.1,
+          "pos": {
+            "x": 36.07845003910391,
+            "y": 17.763103433247817
+          },
+          "vel": {
+            "x": 1.3554111686949784,
+            "y": -2.516503741339354
+          },
+          "state": "falling",
+          "LOSfirst": 2.65
+        }
+      }
+    }
+  ],
+  "keyMechanism": {
+    "A039at702": {
+      "referenceSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "firstRNGDifference": 1.05,
+      "YwidthAtTick1_50": [
+        2.151,
+        2.503
+      ],
+      "YwidthAtTick2_00": [
+        3.189,
+        3.469
+      ],
+      "YdepthAtTick2_00": [
+        1.498,
+        0.532
+      ],
+      "YnormalAround2_50": 484,
+      "YkeeperControlAround2_50": 0.37,
+      "RTRepEntry": 1.8,
+      "RTHelperLoadFirst": 1.95,
+      "RTDeparture": 2.05,
+      "RTMikeBlockEvent": 2.65,
+      "RTMikeFirstSampledLoad": 2.6,
+      "MikePrimaryMagnitudeIntegral": [
+        0,
+        268.87708535059295
+      ],
+      "RTYImpactCount": 0,
+      "allOffensiveTeammateImpactCount": 0,
+      "RBLOS": [
+        2.6,
+        2.6
+      ],
+      "RBLastState": "up",
+      "RBLastPosition": {
+        "x": 37.2668544752526,
+        "y": 17.425098537027587
+      },
+      "RBLastVelocity": {
+        "x": 5.688726054395031,
+        "y": -3.7526363205818014
+      },
+      "RBContactThrough3_10": false,
+      "limit": "Earned local movement/protection; lower keeper depth and divergent RNG prevent broad gain claim."
+    },
+    "A003at702": {
+      "RTDeparture": [
+        2.1,
+        1.45
+      ],
+      "MikePrimaryMagnitudeIntegral": [
+        0,
+        482.9712884220883
+      ],
+      "lastPositiveYNormal": 2.25,
+      "DEFirstRBContact": [
+        null,
+        2.45
+      ],
+      "referenceFirstRunnerContact": "Will3.05",
+      "candidateRunnerFall": 3.0,
+      "candidateLOS": null,
+      "teammateImpacts": 0,
+      "cause": "Keeper loses inside/backfield relationship and compressive normal fit despite track continuity and useful Mike collection."
+    },
+    "matchedTransfer": "A002 OZ adverse persists on exactD+span source720c: Mike magnitude integral467.2->191.7, first sampled load2.25->2.40, RT/RG shallower before RNG divergence2.40. F002 neither crossesLOS; candidate keeper depth/Mike load lower. A027 remains behindLOS; no-contact prefix is exposure/timing, not benefit.",
+    "backstepSameStateProof": {
+      "A003": {
+        "tick": 0.85,
+        "all22BeforeBodiesAndRngBeforeEqual": true,
+        "YFinalRequestBefore": [
+          0,
+          0.68747
+        ],
+        "YFinalRequestAfter": [
+          -1,
+          0.68747
+        ],
+        "anchorSuppressesY": false,
+        "crossingContinuityAndRecovery": 2.15,
+        "lastYPositiveNormalBoth": 2.25,
+        "DEContactsRBBoth": 2.45
+      },
+      "A039": {
+        "tick": 0.8,
+        "all22BeforeBodiesAndRngBeforeEqual": true,
+        "RGNormalFinalRequest": [
+          0,
+          -0.18614
+        ],
+        "YRequestInitiallyUnchanged": true,
+        "DERecoveryRBContact": 2.7,
+        "RBRecoveryFall": 3.0
+      }
+    },
+    "firstRemainingCause": "Same-half tracking cannot reliably maintain inside/backfield keeper relationship under actual defender slant and load. Existing -1 backstep executes but does not resolve the tradeoff. No universally useful achievable alternative established."
+  },
+  "matchedSpanCorrection": {
+    "referenceHead": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+    "referenceSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+    "path": "/workspace/outer-d-span-transfer-reference",
+    "correctedClaim": "Earlier F002 no-active-span assertion was wrong. Isolated framed contacts also use span guard. F002 RT-DE2.85; A002 Y-NB(slot19)1.60; A027 LG-DT_W2.65 are active saved-state checks. Exact matched references replace confounded D-only behavior comparisons; historical D-only results remain tied to original pins."
+  },
+  "nextUntestedComparison": {
+    "status": "Witness retained; no alternative run by packaging contributor. Later separate installed-inline eligibility trial f464985 is pending independent review, outside held branch; stop current bound tuning.",
+    "source": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+    "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+    "tickStart": 1.45,
+    "actor": 7,
+    "own": {
+      "pos": {
+        "x": 35.01554134056046,
+        "y": 20.496990320552356
+      },
+      "vel": {
+        "x": -0.0516181230009321,
+        "y": -1.294475875125039
+      },
+      "facing": 1.0658139897649053,
+      "profile": {
+        "vmax": 9.091568265839689,
+        "tau": 1.2043871637504968,
+        "brake": 6.717108843537414,
+        "lateral": 7.217833333333336,
+        "turnRate": 9.773333333333333,
+        "backpedal": 0.536734693877551,
+        "shuffle": 0.5448000000000001,
+        "massKg": 108.8621688,
+        "heightYd": 2.102777777777778,
+        "radius": 0.29454545454545455,
+        "reach": 1.0008333333333332,
+        "maxCatchHeight": 3.5833611111111114,
+        "reactReach": 3.0916944444444447,
+        "reactionTime": 0.2239183673469388,
+        "power": 98.89794783942857,
+        "balance": 0.3163265306122449,
+        "bend": 0.7159319727891157,
+        "stepSpeed": 3.8057959183673464,
+        "getUp": 0.8659999999999999
+      }
+    },
+    "ownFeltLoad": {
+      "x": -258.25719245195506,
+      "y": -946.0306964667004
+    },
+    "acquiredTarget": [
+      {
+        "a": 7,
+        "b": 12,
+        "seen": {
+          "pos": {
+            "x": 35.21057675998567,
+            "y": 21.050625680234784
+          },
+          "vel": {
+            "x": -0.4478009286335762,
+            "y": -0.802750883812764
+          },
+          "stance": null,
+          "facing": 3.9425761867061473,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ],
+    "acquiredObservationTime": 1.2,
+    "installedDrive": {
+      "x": 0.485642931178632,
+      "y": -0.8741572761215376
+    },
+    "ownCommand": {
+      "vel": {
+        "x": 0,
+        "y": -0.7678750789444494
+      },
+      "facing": 1.063846048696315,
+      "push": 1,
+      "posture": 0.85,
+      "cutSkill": 1.009387755102041
+    },
+    "ownContactHasHelpers": false,
+    "possibleQuestion": "At same own responsibility and acquired cue, compare existing readZoneReach/seal technique for slant/penetration, preserving hand surface, uncertainty, traction and successful A039 opposing case. This has not been demonstrated useful."
+  },
+  "receipts": [
+    {
+      "path": "/workspace/outer-d-span-control/out/outer-d-span/coupled.json",
+      "sha256": "a8c56d68f814d73167f359b4fa47e5869d752f383e497fd1f0a56cc503eebf37",
+      "commit": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+      "sourceSha256": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "validationSha256": "4afdfe47727113ec46141e6b303d577f49e2e7e0ece5f598f76ac94f0761ffa4",
+      "startedAt": "2026-10-16T08:50:04.425Z",
+      "finishedAt": "2026-10-16T08:50:07.490Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A003,A015,A039,A025",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/outer-d-span-coupled"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.0626620430000004
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-footwork-check/out/paired-footwork/contracts.json",
+      "sha256": "14b5d57b710bcd95d16d63d0a4f1d5709a4e0fac360ad7392417c5ae4568ee62",
+      "commit": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+      "sourceSha256": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "validationSha256": "4afdfe47727113ec46141e6b303d577f49e2e7e0ece5f598f76ac94f0761ffa4",
+      "startedAt": "2026-10-16T08:51:10.949Z",
+      "finishedAt": "2026-10-16T08:51:11.469Z",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.517459314
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-footwork-check/out/paired-footwork/contracts-fixed.json",
+      "sha256": "b28377a4e6c8da5c5c240e9a42c19b6b408304e51f0bc8caaf5f78fbf0962804",
+      "commit": "092c413a9fe406d9c6bcd645aa195dfb4fe7f647",
+      "sourceSha256": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "validationSha256": "0e7ce118f34d9d495eedce46ce93a49fbe8ef121a99a871bb1f640f95538afe7",
+      "startedAt": "2026-10-16T08:51:35.928Z",
+      "finishedAt": "2026-10-16T08:51:37.632Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.701553768
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-footwork-check/out/paired-footwork/corrected-route.json",
+      "sha256": "640fb511876c4925dc7db5ec7f3cfedf1964dc99875160aca1a7db64ba6cb77f",
+      "commit": "092c413a9fe406d9c6bcd645aa195dfb4fe7f647",
+      "sourceSha256": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "validationSha256": "0e7ce118f34d9d495eedce46ce93a49fbe8ef121a99a871bb1f640f95538afe7",
+      "startedAt": "2026-10-16T08:51:43.883Z",
+      "finishedAt": "2026-10-16T08:51:46.794Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A003,A015,A039,F002",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/paired-stretch-corrected-route"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.9081284600000004
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-normal-fit/out/paired-normal-fit/red.json",
+      "sha256": "e179aea2642333639512db7fcfc4b68d6809667d55a98748216d59569eee221b",
+      "commit": "092c413a9fe406d9c6bcd645aa195dfb4fe7f647",
+      "sourceSha256": "76e02a940a5eefac350868a9a924cb4ab2f6b6ffd446aac04635684caf03bc88",
+      "validationSha256": "e686920f4c4c196b1fbf247ce4f421c29e34c7f7dc7a469db3c968df29568bb3",
+      "startedAt": "2026-10-16T09:00:08.662Z",
+      "finishedAt": "2026-10-16T09:00:10.347Z",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.682950289
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-normal-fit/out/paired-normal-fit/after.json",
+      "sha256": "4364b26d1c9964da3faa8f8e97cad577d5612ddc4f2e84dbbbff9556b1e56c78",
+      "commit": "02d034b63e83c2616d3962a9d7472ef17ca0ab84",
+      "sourceSha256": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+      "validationSha256": "e686920f4c4c196b1fbf247ce4f421c29e34c7f7dc7a469db3c968df29568bb3",
+      "startedAt": "2026-10-16T09:00:23.783Z",
+      "finishedAt": "2026-10-16T09:00:25.502Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.7168378290000001
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-normal-fit/out/paired-normal-fit/native.json",
+      "sha256": "8f32e08f28e4593968551a061a9699e2e20205de95d464137bfb5a089dc64669",
+      "commit": "02d034b63e83c2616d3962a9d7472ef17ca0ab84",
+      "sourceSha256": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+      "validationSha256": "e686920f4c4c196b1fbf247ce4f421c29e34c7f7dc7a469db3c968df29568bb3",
+      "startedAt": "2026-10-16T09:00:38.861Z",
+      "finishedAt": "2026-10-16T09:00:40.754Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A015,A039",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/paired-stretch-normal-fit-native"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.890671779
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-continuity/out/paired-continuity/red.json",
+      "sha256": "34c624c4a9625caf31f33e2c8a5a0ec74ec653684d2cc79a9dadf562dc991334",
+      "commit": "02d034b63e83c2616d3962a9d7472ef17ca0ab84",
+      "sourceSha256": "b4474714aedadfd75508da4d310e43e570913de39ad464b796adc7dd3b6ef984",
+      "validationSha256": "97073c2fbd383e0a1ab9039110fc16930ae6a98d25900c31ee91a9b420283f2f",
+      "startedAt": "2026-10-16T09:06:30.837Z",
+      "finishedAt": "2026-10-16T09:06:32.676Z",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.8363868599999997
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-continuity/out/paired-continuity/after.json",
+      "sha256": "ba499ea7ab84a3746da2e1b32755a54e572065c0dfb99ed18af70b801490e70a",
+      "commit": "25f1380605f732a79448c8490b55bbe9ed8c22c8",
+      "sourceSha256": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "validationSha256": "97073c2fbd383e0a1ab9039110fc16930ae6a98d25900c31ee91a9b420283f2f",
+      "startedAt": "2026-10-16T09:07:01.116Z",
+      "finishedAt": "2026-10-16T09:07:02.895Z",
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.776385851
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-continuity/out/paired-continuity/role-controls.json",
+      "sha256": "dfd4406396d36e83ca44ff6869575935e2c2a46b2b0e760a3ab88bac350ad167",
+      "commit": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "sourceSha256": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "validationSha256": "b890cbad987b321de61da242c0d55cebd9f9559811a3bec8455df20f0859518b",
+      "startedAt": "2026-10-16T09:07:50.054Z",
+      "finishedAt": "2026-10-16T09:07:51.802Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.745057277
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-continuity/out/paired-continuity/native.json",
+      "sha256": "f823c40257005022e10df6c7fc41ed592ccbc7f1b179c4fdfa03b0c88731a324",
+      "commit": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "sourceSha256": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "validationSha256": "b890cbad987b321de61da242c0d55cebd9f9559811a3bec8455df20f0859518b",
+      "startedAt": "2026-10-16T09:07:57.008Z",
+      "finishedAt": "2026-10-16T09:07:58.930Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A015,A039",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/paired-stretch-continuity-native"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.919618992
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-continuity/out/paired-continuity/transfer.json",
+      "sha256": "4680f8a327fd99bfa19a7eb9f91d518e575ec57a7705e50c4e186090e74b9480",
+      "commit": "7027c9b9ba71dd59f3b292e56d486d7075fa8f19",
+      "sourceSha256": "ed2a251a41423a899313787345c7e44bb8543ebafceadc3772d43d07267e8fc9",
+      "validationSha256": "b890cbad987b321de61da242c0d55cebd9f9559811a3bec8455df20f0859518b",
+      "startedAt": "2026-10-16T09:09:14.609Z",
+      "finishedAt": "2026-10-16T09:09:18.056Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A003,F002,A027,A002",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/paired-stretch-continuity-transfer"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.444347328
+        }
+      ]
+    },
+    {
+      "path": "/workspace/outer-d-span-control/out/outer-d-span/transfer-reference.json",
+      "sha256": "afc02c811a74259f03e652262bdd5463f22ad2cf06783335d037878c21dca7f7",
+      "commit": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+      "sourceSha256": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "validationSha256": "4afdfe47727113ec46141e6b303d577f49e2e7e0ece5f598f76ac94f0761ffa4",
+      "startedAt": "2026-10-16T09:13:02.328Z",
+      "finishedAt": "2026-10-16T09:13:04.752Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "F002,A002,A027",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/outer-d-span-transfer-reference"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.420941527
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-recovery/out/paired-recovery/contracts.json",
+      "sha256": "695ce047167f92721e77c9b1ba12242ed3c958280fbad56cfa24739188427d5d",
+      "commit": "dc7741da5df0af377a992d2c80b7df24b055b47c",
+      "sourceSha256": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+      "validationSha256": "cb5b87614dea22dfc41aa189c34dab6f5a4dea30728f8fc827c34876f08aa4bb",
+      "startedAt": "2026-10-16T09:13:28.631Z",
+      "finishedAt": "2026-10-16T09:13:30.415Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/paired-stretch-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.781819576
+        }
+      ]
+    },
+    {
+      "path": "/workspace/paired-stretch-recovery/out/paired-recovery/native.json",
+      "sha256": "a7a7877ecb34ae102370a58f8a6167ec53831bfd296db0d93c799bf2aa5cb344",
+      "commit": "dc7741da5df0af377a992d2c80b7df24b055b47c",
+      "sourceSha256": "600c8384d69280a4a2ffa4359fcf9cd5dfd538b5162a9b5ce76262818567cb09",
+      "validationSha256": "cb5b87614dea22dfc41aa189c34dab6f5a4dea30728f8fc827c34876f08aa4bb",
+      "startedAt": "2026-10-16T09:13:36.325Z",
+      "finishedAt": "2026-10-16T09:13:38.455Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A003,A039",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/paired-stretch-recovery-native"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.126818437
+        }
+      ]
+    }
+  ],
+  "costSeconds": {
+    "failedAttemptsIncluded": true,
+    "packagingTests": 0,
+    "packagingNative": 0,
+    "packagingPreviews": 0,
+    "fullSuites": 0,
+    "rootGrandCostManifest": "/tmp/run-game-turn-costs.json",
+    "rootGrandFinalTotal": "Separate root turn-cost bill includes prior rejected and later installed-inline technique work, outside clean ancestry. May receive docs-only update; not represented by this30.531639330s family bill.",
+    "pairedAndExactDSpanComparatorCommands": 30.53163933,
+    "fullTypecheck": "Not run for held/rejected variant: cannot change football HOLD decision; no automatic9s repeat. Final13 focused contracts pass."
+  },
+  "environment": {
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "provenance": {
+    "reviewArtifacts": [
+      {
+        "localPath": "/tmp/zone-evidence-agent/PAIRED-CLEAN-ASSESSMENT.md",
+        "sha256": "d35d0b4870990d59880b8e9b7d3ecc6b49a2613451a0848b6785198b6579bf19"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/paired-clean-compact.json",
+        "sha256": "65baba82fcfbfd59caced014007070626dd5326928017e72e25b7044267d2b22"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/NORMAL-FIT-ASSESSMENT.md",
+        "sha256": "ef0081fb3ccb282e2945452d99c33419be331b1ff70bfa4a5ebf14e7cc9ddb40"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/normal-fit-compact.json",
+        "sha256": "628fccbb65bd942833fc32a1fcb9884100d73878dadf8068c071ce2e1bcd9ee3"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/CONTINUITY-ASSESSMENT.md",
+        "sha256": "e98a1e1ad297da5d4befd645eaed558c9984948e6a715537bdf7e5b3bf2ddffa"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/continuity-compact.json",
+        "sha256": "ba1496db42102d346dec890600c760411c7419a697fbd7f306faaf51d7667cfa"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/RECOVERY-ASSESSMENT.md",
+        "sha256": "47e9a1c36773761df6cc7a958d840d4af75083614e1245647ddfc510145bcd01"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/recovery-compact.json",
+        "sha256": "6d4439b11f2451f9102cd93d78a9eed1f24eb1166cbb518657028a3f1dd0d4ff"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/earlier-keeper-technique-state.json",
+        "sha256": "e11dfd7fb6a11512782915749e2c5f12c254708535e1c818bf9f9093dd805ca1"
+      },
+      {
+        "localPath": "/tmp/zone-evidence-agent/span-control-attribution.json",
+        "sha256": "7f058c032e569e0e11fddf4e453227410840d06a72e801e9620019fc14e1f687"
+      }
+    ],
+    "rawRetention": "Native tapes at exact local paths in hashes; ignored raw telemetry/film is not committed. Compact summary preserves input/tape/operator/receipt hashes and failures.",
+    "reproducer": "scripts/diag/outer-d-gap-replay.ts",
+    "reproducerSha256": "102ca5637fd257a491cc91ac7b45c5f4278d0ef868657926e107a0f1e52b74e5",
+    "capturedHistoricalOperatorSha256": "4fabe58fe9d4b5e9a2f25738967c27cd48fe063266d089307c79afbe3402dda1",
+    "toolQualification": "Captures used historical4fabe no-intervention path. Distributed102ca removes inactive intervention CLI/branch only; no new parity capture or behavior substitution.",
+    "inputManifest": "data/reviews/current/outer-d-gap/input-manifest.json",
+    "inputManifestSha256": "8c793f46ff765bf88c4ef9e156c25c4c9d9a6510631b10fa847d348c468ed8c3",
+    "inputQualification": "Seven exact setup/initialBodies/actors; historical frames omitted. savedFramePrefixEqual=false expected with condensed inputs. F002actualsetup09e74ac4 is authoritative, inherited originalStoredInputSha is stale metadata."
+  },
+  "recommendation": "HOLD every general paired behavior; preserve A039 mechanistic result and all adverse/control/failed evidence. Publish evidence branch only. Advance independent D/span correctness PRs after review; Run #98 separate; no combined adoption or hidden-state/physics promotion.",
+  "separatePendingTechniqueTrial": {
+    "head": "f46498544ff3ec83e293789d75890e371cde34f0",
+    "source": "7d46f70b508005afe09e65fc6e97af23127a7c0555825b0cab7912672467b4c8",
+    "branch": "codex/inline-zone-technique",
+    "status": "Root-owned separate installed-role eligibility comparison; independent two-case evidence review pending. No new result/adoption claim in this held package."
+  }
+}
