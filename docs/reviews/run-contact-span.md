@@ -74,11 +74,51 @@ Command time: baseline failing check 1.655 s; candidate checks 1.913 s;
 typecheck 9.479 s; **13.047 s total**. The earlier independent two-body probe
 took 8.4 ms native / 0.631 s command wall and is counted separately.
 
+## Reused reacting continuation: D-gap correction plus span
+
+Root then ran the four short matched continuations at combined commit
+`71ff14cfe926ddc02599d27948a9fab0063bd3ee`, source
+`720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd`.
+Its parent `6cf700d` is the standalone D-gap correction; the only additional
+runtime change is this exact span hunk. No stretch-footwork trial is included.
+
+Compared with saved D-only source
+`e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068`,
+**A003, A015, A039 and A025 are exactly identical in every captured frame
+field through 3.10 seconds** (62 frames each, 248 total): full before/after
+bodies, goals, commands, producer/read diagnostics, hand states, contact/work
+reports and RNG. Initial bodies, inputs, flags, World settings and events also
+match. There is no first physical divergence or newly demonstrated native
+release. These prefixes contain no active isolated rep beyond the full-arm
+limit, so the new ending condition has no demonstrated effect here.
+
+Real near-contact load remains, with identical examples in both arms:
+
+| Case | Sample | Contact | Before distance / full span (yd) | Actual normal force |
+| --- | --- | --- | --- | --- |
+| A003 | 3.05 s | Y–DE_S | 0.541738 / 1.505657 | 447.149 |
+| A015 | 3.05 s | RT–DE_S | 0.707486 / 1.637980 | 484.755 |
+| A039 | 2.75 s | LG–DT_W | 0.897757 / 1.665051 | 489.241 |
+| A025 | 3.05 s | LG–LB_W | 0.908768 / 1.554596 | 856.065 |
+
+These are simulator force units, not measured NFL loads. The cases remain live
+at the cutoff. This establishes bounded preservation of the D-gap correction's
+movement/blocking, **not an additional football benefit from the span change**.
+The original remote-steering defect occurred in the separate stretch-footwork
+research, and that justification remains separate.
+
+[Compact comparison with trace hashes](../../data/reviews/current/run-contact-span/coupled-summary.json)
+and [root-owned receipt](../../data/reviews/current/run-contact-span/coupled-receipt.json).
+Raw traces stay local. Root's existing collection cost was 2.694489 s in the
+collector summary / 3.062662 s command time; this comparison added **zero
+simulation or tests**. The earlier focused checks were not repeated.
+
 ## Limits and next decision
 
 This corrects a demonstrated physical-contact validity failure. It does not
-establish better native run production. Root owns the reacting coupled
-continuation and publication decision; no PR or merge was created here.
+establish better native run production. The bounded coupled test preserves
+all four D-only prefixes exactly. Root owns the publication decision; no PR
+or merge was created here.
 
 The 20 Hz check guarantees validity at the decision boundary, not an exact
 substep reach cutoff. The longer arm plus both radii is deliberately generous;
