@@ -14,6 +14,19 @@ require an explicit major-change checkpoint; default invocation plans zero
 snaps. Build frozen source/input/settings evidence, resume/comparison and
 failure/censor reporting. Reuse run-suite protocol, not its run measurements.
 
+Implemented on tested `3d01f26`: 3,198 frozen distinct inputs, 508 paired
+controls, default zero-snap planning, explicit checkpoint execution, resumable
+hashed caches, same-manifest reference/candidate comparison and standalone
+searchable reports. [Usage/coverage/limits](PASS_GAME_SUITE.md);
+[focused receipt](../data/reviews/current/pass-game-suite-validation.json).
+13 focused checks and build/typecheck pass; 18 selected native finishes;
+18/18 physical signatures unchanged by the passive recent-cue retention fix;
+resume and comparison each add zero live steps. Full broad collection has not
+run. Initial illegal y=4 snap failure and skipped tail remain in the receipt;
+field-position inputs now use the two NFL hashes. Integration owns combined
+verification; no runtime/default/accepted-pin changes supplied. Ready for
+independent tooling and measurement-definition review, not a YAC-improvement claim.
+
 ## Active recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus

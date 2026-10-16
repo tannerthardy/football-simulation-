@@ -24,6 +24,16 @@ Manifest content SHA-256:
 `2004a6e31f4afa98db8d2ed4eb93983815cbb106d7389f0512a219c5bdab5e14`.
 This identifies the input design, **not** a completed baseline campaign.
 
+The [tooling validation receipt](../data/reviews/current/pass-game-suite-validation.json)
+pins tested code `3d01f26`, all flags/operator hashes and 18 selected native
+inputs. Thirteen focused checks and the TypeScript build pass. All 18 inputs
+finish, preserve their prior physical signatures after the bounded cue-log
+correction, and reuse through both resume/comparison with zero new native steps.
+The native collection loop took 7.22 s; its wrapper including preflight took
+9.72 s. This validates the tool, not passing-game calibration. The receipt also
+retains an earlier blocked input: an incorrect four-yard sideline snap was
+replaced with the legal NFL hashes. No full broad campaign has run.
+
 | Area | Exposures | Football question |
 | --- | ---: | --- |
 | Catalog | 1,632 | All 17 native concepts × 12 principal coverages × two ordinary rosters × two execution seeds × both directions |
