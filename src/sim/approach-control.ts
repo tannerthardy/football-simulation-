@@ -14,14 +14,6 @@ import type { Perceived } from './perception.js';
 const LOOKAHEAD_STEPS = 12; // 0.6 s of ordinary 20 Hz movement, a few running steps.
 const CHOICE_MARGIN = .1; // yd; avoid switching on a negligible forecast difference.
 
-/** Installed support is an approach shoulder, not just a landmark. An alley
- * needs both its owner's current run read and an acquired carrying picture;
- * unavailable/contradictory evidence never borrows live possession. */
-export function outsideShoulder(a: Agent, seen: Perceived): boolean {
-  return a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box')
-    || (a.runFit?.kind === 'alley' && a.recog?.read === 'run' && seen.carrying === true);
-}
-
 /** Only replace an unconstrained sprint that benefits from redirecting sooner.
  * Close strikes and the square-on approach remain owned by the tackle policy.
  */
@@ -52,7 +44,7 @@ export function chooseApproach(a: Agent, seen: Perceived, contact: number,
   // Match the observed runner's motion while shedding excess approach speed.
   // This is a requested velocity; the physics still limits the braking/turn.
   const brake: Intent = { vel: { ...seen.vel }, cutSkill, posture: arrival.posture };
-  const force = outsideShoulder(a, seen);
+  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   function score(command: Intent): number {
     const samples = previewFreeMovement(a.body, command, now, LOOKAHEAD_STEPS);
     let previous = { x: a.pos.x - goal.x, y: a.pos.y - goal.y };
