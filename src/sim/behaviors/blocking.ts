@@ -947,6 +947,9 @@ export class RunBlocker implements Behavior {
     // Within reach the ordinary fit/engage owns contact, except during the
     // first step, which never strikes: it is where the lateral start is won.
     const firstStep = sim.t < .24 + a.mind.snapDelay;
+    // An installed backside wall owns its approach after the opening foot.
+    // The generic playside tempo would carry him away from that outside man.
+    if (this.plan.contactFit && !firstStep) return null;
     if (d < contact + .25 && !firstStep) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
     // Lateral intent: what it takes to be on his playside shoulder when we
