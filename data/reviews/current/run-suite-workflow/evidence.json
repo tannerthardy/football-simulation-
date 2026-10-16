@@ -1,0 +1,82 @@
+{
+  "schema": "run-suite-workflow-evidence-v1",
+  "testedRevision": "5224cf1f333ba9bb644c353ffe86ac21ad05d580",
+  "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "collectorSha256": "373519763bb486614009cc723160578fe8ad32f9a25de0b128a1d798e9b03476",
+  "orchestratorSha256": "cbd7c6df01a4bd38a0be23fcc44aa0dc6ae1ca0f02ad976cdf337cbbdb941f95",
+  "newNativeSnaps": 0,
+  "cacheOnly": {
+    "cases": 3,
+    "reused": 3,
+    "retainedCensors": 2,
+    "physicalIdentity": true
+  },
+  "reserveStatus": "8 declared, 0 opened or simulated",
+  "checks": [
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/cache-only.json",
+      "exitCode": 0,
+      "commandSeconds": 0.857462039,
+      "validationSha256": "b85e20fc8019f99be0022f0c1197d101ca2e1ae71d1c51ad1617be6ca27366c8"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/final-focused.json",
+      "exitCode": 0,
+      "commandSeconds": 2.280897493,
+      "validationSha256": "b85e20fc8019f99be0022f0c1197d101ca2e1ae71d1c51ad1617be6ca27366c8"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/final-typecheck.json",
+      "exitCode": 0,
+      "commandSeconds": 10.571002886,
+      "validationSha256": "b85e20fc8019f99be0022f0c1197d101ca2e1ae71d1c51ad1617be6ca27366c8"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/focused.json",
+      "exitCode": 0,
+      "commandSeconds": 2.223470589,
+      "validationSha256": "eaa6fe5b40f7567c53847cc8620adebd78eef93654df41132cfcefaa19fdd50b"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/pa-plan.json",
+      "exitCode": 0,
+      "commandSeconds": 0.895301669,
+      "validationSha256": "eaa6fe5b40f7567c53847cc8620adebd78eef93654df41132cfcefaa19fdd50b"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/registry.json",
+      "exitCode": 0,
+      "commandSeconds": 0.7715432120000001,
+      "validationSha256": "b85e20fc8019f99be0022f0c1197d101ca2e1ae71d1c51ad1617be6ca27366c8"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/reserve-plan.json",
+      "exitCode": 0,
+      "commandSeconds": 0.725930114,
+      "validationSha256": "b85e20fc8019f99be0022f0c1197d101ca2e1ae71d1c51ad1617be6ca27366c8"
+    },
+    {
+      "receipt": "data/reviews/current/run-suite-workflow/receipts/typecheck.json",
+      "exitCode": 0,
+      "commandSeconds": 10.301788342,
+      "validationSha256": "eaa6fe5b40f7567c53847cc8620adebd78eef93654df41132cfcefaa19fdd50b"
+    }
+  ],
+  "totalCommandSeconds": 28.627396344,
+  "files": {
+    "data/reviews/current/run-suite-workflow/cache/2325d5f7d83cd33aed77cc5b31ea560ffbfe2cf3917150360fb38d4e48f19974.json.gz": "759d2a11d0a062e193c74a8f58533c3291e78892c20ec6cd3066e1277bc440c1",
+    "data/reviews/current/run-suite-workflow/cache/9b3b518f49d2a61738110a8bfbd792a7da2f912c56ae40fc061258465e3f7e50.json.gz": "1de63d19bf6a682f0b7ea2528a4784f7c4be19b15f4b058793c7f092c05659e2",
+    "data/reviews/current/run-suite-workflow/cache/c7d27c6a3907b258a20dfcf62a990c288a62dd03f8bdc9c4b4727af179226f27.json.gz": "f88986644f2661f9f71064d7246218b09a071728b04f17b9d27d48bc8f2f18df",
+    "data/reviews/current/run-suite-workflow/receipts/cache-only-index-original.json": "daf07f34d5176e9318dafe3fee484ae4b31292519a5d17b023a7a7e7d56a7b32",
+    "data/reviews/current/run-suite-workflow/receipts/cache-only.json": "38af395fac116a61cbf50c30038c1009abcf16d7ebdbbf912d413d5fd87b46ce",
+    "data/reviews/current/run-suite-workflow/receipts/final-focused.json": "05eec562712cbace6771cc93dd599e9c93f186ad1e1065917029cbd7be8a9f84",
+    "data/reviews/current/run-suite-workflow/receipts/final-typecheck.json": "98134d0c9261307b014fb58b110e4c4b67e10cbc002c327eaa3085f39d442f42",
+    "data/reviews/current/run-suite-workflow/receipts/focused.json": "ffa63015ceb4d3516b08b3af91890335b26d4edd10867cd0b0ef391a410514c7",
+    "data/reviews/current/run-suite-workflow/receipts/pa-plan.json": "e29ec37a2333191e65d46756e51ef843447338efd32b277557b30a19e9ba477f",
+    "data/reviews/current/run-suite-workflow/receipts/registry.json": "9a7650f4ac5b7097f694616e8fd5afa3fec04ba54388dd6f8e0a1ed81c8e7aa1",
+    "data/reviews/current/run-suite-workflow/receipts/reserve-plan.json": "009339df95c573425944e56204fecf5d4fc20c80eb216080d278ec9416a2cfac",
+    "data/reviews/current/run-suite-workflow/receipts/typecheck.json": "567acbe56e2d234a7d461bce6ccfd7488c972b383963dce71d7c11de983de0cb",
+    "data/reviews/current/run-suite-workflow/reused-index.json": "19b6263786c9cc3aba5cc768b7d66cb9bb04517bad629e66b9976c53be68e6e5",
+    "data/reviews/current/run-suite-workflow/shared-pa-registry.json.gz": "dcdfb122dd202cd489ff5e73d3c422343399038acf1fc0624796f34c33103eea"
+  }
+}

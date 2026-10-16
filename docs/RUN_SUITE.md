@@ -149,6 +149,15 @@ new reserve before further tuning. This local guard is not a cross-checkout
 blindness guarantee. Partial runs also expose their declared selection. No
 reserve was opened to validate this tooling change.
 
+Tooling freeze5224cf1f333ba9bb644c353ffe86ac21ad05d580 passes eight zero-tick
+workflow checks and typecheck. A real cache-only CLI rehearsal reuses3/3 selected
+cases, preserves both20s censors and all physical signatures, and executes zero
+new snaps. Total command cost28.627s, including initial/final checks and plans/
+exports. [Exact receipts and file hashes](../data/reviews/current/run-suite-workflow/evidence.json),
+[canonical PA registry](../data/reviews/current/run-suite-workflow/shared-pa-registry.json.gz)
+and [portable three-case index](../data/reviews/current/run-suite-workflow/reused-index.json)
+are published; the latter points to byte-identical copied raw cache files.
+
 ## Reporting and choosing the next mechanism
 
 At a broad checkpoint, Measurement reports distributions by accepted/prototype,

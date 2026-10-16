@@ -13,6 +13,17 @@ broad checkpoints on Integration's exact pin. Share canonical PA pair IDs,
 predeclare unrun transfer inputs and report recurring mechanisms without
 outcome locks. No census, games or full code suite needed for this workflow edit.
 
+Completed at tooling freeze5224cf1f333ba9bb644c353ffe86ac21ad05d580:
+8 zero-tick workflow tests/typecheck pass. Cache-only3-case rehearsal reuses all3,
+retains both20s censors and exact physical signatures; zero new native snaps.
+Eight new execution-seed reserve inputs remain unopened. Command cost28.627s
+including initial/final checks and zero-snap exports/plans. Original collector,
+engine, census inputs/results and historical films remain byte-identical.
+[Practical workflow](RUN_SUITE.md), [ranked next decisions](reviews/run-playaction-stress/TRIAGE.md),
+[portable receipt/PA registry/reused cases](../data/reviews/current/run-suite-workflow/evidence.json).
+Integration receives independent tooling-review request; Catching/Measurement
+receive canonical PA IDs and reporting contract. No new production promotion.
+
 ## Run: extensive run / play-action stress suite — 2026-10-16
 
 Explicit user checkpoint: design and execute a broad, complete installed-run
