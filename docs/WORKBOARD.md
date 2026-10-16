@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Bounded short movement through acquired teammate traffic — 2026-10-15
+
+Do-It-All owns only `scripts/diag/mesh-short-adjustment.ts` and its new
+evidence/report. Reuse deliberately pinned6e19ad2's observed mesh host and
+saved A044/A008 baseline; accepted86250bb's Duo-only behavior is separate.
+No current-develop or adoption claim. Keep cost candidate d80dcd3/c6c8b48 frozen.
+One local transverse-velocity match, checked against actual own movement and
+the original consumed objective. No role/route/coverage, production spacing,
+physics/body or perception change; all22 react. Catching notified on #75,
+Run/Integration on #81. Earlier point-target failure stays preserved; no angle
+sweep, whole-route certificate, forced catch or full-game campaign.
+
 ## Bounded mesh lateral approach research — 2026-10-15
 
 Do-It-All owns `scripts/diag/mesh-lateral-approach.ts` and its new evidence/report

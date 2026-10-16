@@ -1,0 +1,170 @@
+/** Research only: one acquired-peer transverse velocity match. No production hook.
+ * Reuses the already consumed spacing pictures and ordinary free World preview.
+ * A transient passing side is retained until the peer has passed, rather than
+ * dropping the adjustment merely because a requested turn becomes small.
+ */
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { gunzipSync, gzipSync } from 'node:zlib';
+import { type Body } from '../../src/physics/kinematics.js';
+import { previewFreeMovement, type MovementSample } from '../../src/physics/movement-preview.js';
+import type { Intent } from '../../src/physics/world.js';
+import { observeCommands, type CommandObservation } from '../../src/sim/command-observer.js';
+import type { Perceived } from '../../src/sim/perception.js';
+import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
+import { sourceVersion } from '../source-version.js';
+
+type V = { x: number; y: number };
+interface Peer { idx: number; seen: Perceived; touch: number }
+interface Goal { pos: V; vel: V; helper: string; at: number }
+interface Passing { peer: number; forward: V; normal: V }
+const dot = (a: V, b: V) => a.x*b.x+a.y*b.y;
+const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
+const read = (p: string) => JSON.parse(gunzipSync(readFileSync(p)).toString());
+const steps = 12, horizon = steps*.05;
+function encounter(body: Body, samples: MovementSample[], p: Peer) {
+  let x=body.pos.x-p.seen.pos.x,y=body.pos.y-p.seen.pos.y;
+  let minimum=Math.hypot(x,y)-p.touch, at=0;
+  for (const s of samples) {
+    const rx=s.pos.x-p.seen.pos.x-p.seen.vel.x*s.t,ry=s.pos.y-p.seen.pos.y-p.seen.vel.y*s.t;
+    const ex=rx-x,ey=ry-y,u=Math.max(0,Math.min(1,-(x*ex+y*ey)/Math.max(1e-12,ex*ex+ey*ey)));
+    const gap=Math.hypot(x+u*ex,y+u*ey)-p.touch;
+    if(gap<minimum){minimum=gap;at=s.t-.05+.05*u;} x=rx;y=ry;
+  }
+  return {gap:minimum,at};
+}
+function objective(events: CommandObservation[]): Goal | undefined {
+  const e=events.filter(e=>e.stage==='objective').at(-1);
+  if(!e)return;
+  const pos=e.target as V,velocity=e.targetVel as V|undefined;
+  if(!pos||![pos.x,pos.y].every(Number.isFinite))return;
+  if(e.helper==='track'&&velocity&&[velocity.x,velocity.y].every(Number.isFinite))
+    return {pos,vel:velocity,helper:'track',at:e.t};
+  // The catch-drive producer supplies a fixed predicted catch point, not an
+  // unknown receiver velocity. Never replace missing observed motion by zero.
+  if(e.helper==='playBall.catch-drive')return {pos,vel:{x:0,y:0},helper:'fixed catch-window point',at:e.t};
+}
+function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: number, passing?: Passing, earlier=true, goal?:Goal) {
+  const speed=Math.hypot(raw.vel.x,raw.vel.y);
+  if(!goal)return {reason:'unavailable-objective',passing:undefined};
+  if(speed<1e-9||peers.length!==10||peers.some(p=>!Number.isFinite(p.seen.age)
+    ||![p.seen.pos.x,p.seen.pos.y,p.seen.vel.x,p.seen.vel.y].every(Number.isFinite)))return {reason:'unknown-picture',passing:undefined};
+  const rawPath=previewFreeMovement(body,raw,now,steps);
+  const worst=peers.map(p=>({p,...encounter(body,rawPath,p)})).sort((a,b)=>a.gap-b.gap)[0];
+  const residual=earlier?previewFreeMovement(body,{...raw,vel:{...body.vel}},now,steps):rawPath;
+  const residualWorst=peers.map(p=>({p,...encounter(body,residual,p)})).sort((a,b)=>a.gap-b.gap)[0];
+  if(passing){
+    const previous=passing,p=peers.find(p=>p.idx===previous.peer)!;
+    if(dot({x:p.seen.pos.x-body.pos.x,y:p.seen.pos.y-body.pos.y},passing.forward)<=0)passing=undefined;
+  }
+  if(!passing){
+    if(worst.gap>=0&&residualWorst.gap>=0)return {reason:'no-local-conflict',passing:undefined};
+    const conflict=worst.gap<0?worst:residualWorst;
+    const forward={x:raw.vel.x/speed,y:raw.vel.y/speed},normal={x:-forward.y,y:forward.x};
+    const toward=dot(normal,{x:conflict.p.seen.pos.x-body.pos.x,y:conflict.p.seen.pos.y-body.pos.y});
+    if(toward>0){normal.x=-normal.x;normal.y=-normal.y;}
+    passing={peer:conflict.p.idx,forward,normal};
+  }
+  const p=peers.find(p=>p.idx===passing!.peer)!,n=passing.normal;
+  // Preserve existing braking along the passing direction and match only
+  // the acquired peer's transverse motion. Physics supplies the actual turn;
+  // this changes no body velocity and promises no route through the play.
+  const correction=dot(p.seen.vel,n)-dot(chosen.vel,n);
+  const requested={x:chosen.vel.x+n.x*correction,y:chosen.vel.y+n.y*correction};
+  const magnitude=Math.hypot(requested.x,requested.y),scale=Math.min(1,speed/Math.max(1e-9,magnitude));
+  const command:Intent={...raw,vel:{x:requested.x*scale,y:requested.y*scale}};
+  const path=previewFreeMovement(body,command,now,steps),oldPath=previewFreeMovement(body,chosen,now,steps);
+  const gaps=peers.map(p=>encounter(body,path,p).gap),oldGaps=peers.map(p=>encounter(body,oldPath,p).gap);
+  const progress=(path:MovementSample[])=>dot({x:path.at(-1)!.pos.x-body.pos.x,y:path.at(-1)!.pos.y-body.pos.y},
+    {x:raw.vel.x/speed,y:raw.vel.y/speed});
+  const goalError=(path:MovementSample[])=>{
+    const end=path.at(-1)!;return Math.hypot(end.pos.x-goal.pos.x-goal.vel.x*end.t,end.pos.y-goal.pos.y-goal.vel.y*end.t);
+  };
+  const minimum=Math.min(...gaps),previous=Math.min(...oldGaps),advance=progress(path),oldAdvance=progress(oldPath);
+  const accepted=path.every(s=>s.support==='up')&&advance>0&&goalError(path)<goalError(oldPath)
+    &&!gaps.some((g,i)=>oldGaps[i]>=0&&g<0)
+    &&(previous<0?minimum>previous+.05:minimum>=0);
+  return {reason:accepted?'lateral':'not-better',passing,command:accepted?command:undefined,
+    detail:{peer:p.idx,age:p.seen.age,normal:n,transverseCorrection:correction,objective:goal,
+      raw:structuredClone(raw),chosen:structuredClone(chosen),alternative:command,rawGap:worst.gap,residualGap:residualWorst.gap,
+      chosenGap:previous,lateralGap:minimum,chosenProgress:oldAdvance,lateralProgress:advance,
+      chosenObjectiveError:goalError(oldPath),lateralObjectiveError:goalError(path),allUp:path.every(s=>s.support==='up')}};
+}
+const args=process.argv.slice(2),outIndex=args.indexOf('--out'),out=outIndex<0?'out/mesh-short/v1':args[outIndex+1];
+const earlier=!args.includes('--later-only');
+const root='data/reviews/current/mesh-motion-admission/current-candidate';
+const source='data/reviews/current/mesh-command-attribution',input=`${source}/flex-windows.json.gz`;
+const plan={question:'Can a short acquired-peer transverse velocity match improve actual progress toward the original objective through A044 traffic?',
+  host:'6e19ad2d4aac73e71ae57c1893a9b389074eeaa5',accepted:'7eb2554f5dbb497cff169f386704a5b0f4cf43fe',
+  cases:[{id:'A044',until:3.55},{id:'A008',until:3.4}],forecastSteps:steps,actor:21,
+  earlierResidualAdmission:earlier,existingBaseline:root,batchWallCapMs:15000,productionChange:false,fullGames:0,generatedRosters:0};
+if(!args.includes('--offline')&&!args.includes('--run')){console.log(JSON.stringify(plan,null,2));process.exit(0);}
+if(createHash('sha256').update(readFileSync(input)).digest('hex')!=='11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191')throw Error('Input mismatch');
+const saved=read(input),profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
+const flags=Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null]));
+if(hash(flags)!==hash(profile.flags)||process.versions.node!==profile.nodeVersion)throw Error('Use pinned baseline launcher');
+if(existsSync(`${out}/summary.json`))throw Error('Preserve existing evidence');
+mkdirSync(out,{recursive:true});
+const provenance={sourceSha256:sourceVersion(),scriptSha256:createHash('sha256').update(readFileSync('scripts/diag/mesh-short-adjustment.ts')).digest('hex'),flags,node:process.version,worldDefaults:profile.worldDefaults};
+writeFileSync(`${out}/plan.json`,JSON.stringify({...plan,provenance},null,2)+'\n');
+const start=performance.now(),cpu=process.cpuUsage(),rows:any[]=[];
+if(args.includes('--offline')){
+  const d=read(`${root}/A044.json.gz`),meta=read(`${source}/capture-v1/A044.json.gz`);
+  let passing:Passing|undefined;
+  for(const t of earlier?[1.8,1.85,1.9,1.95,2,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4,2.45,2.5,2.55]:[2.2,2.35,2.55]){
+    const observations:CommandObservation[]=d.stages.filter((e:CommandObservation)=>e.actor===21&&e.t===t);
+    const original=observations.find(e=>e.stage==='behavior')!,body=original.body as Body,raw=original.command as Intent;
+    const chosen=observations.find(e=>e.stage==='spacing')!.command as Intent;
+    const peers:Peer[]=observations.filter(e=>e.stage==='spacing-picture').map(e=>({idx:e.peer as number,seen:e.used as Perceived,
+      touch:.9*(body.profile.radius+meta.actors[e.peer as number].profile.radius)}));
+    const before=hash(body),result=choose(body,raw,chosen,peers,t,earlier?passing:undefined,earlier,objective(observations));passing=result.passing;
+    if(hash(body)!==before)throw Error('Preview mutated body');
+    rows.push({t,bodySha256:before,peersSha256:hash(peers),result});
+  }
+}else for(const c of plan.cases){
+  const spec=saved.cases.find((s:any)=>s.caseId===c.id),baseline=read(`${root}/${c.id}.json.gz`);
+  if(hash(spec.setup)!==spec.inputSha256||baseline.provenance.sourceSha256!==provenance.sourceSha256)throw Error('Incompatible input/source baseline');
+  const begin=performance.now(),sim=new PlaySim(structuredClone(spec.setup) as PlaySetup),stages:CommandObservation[]=[],ticks:any[]=[],decisions:any[]=[];
+  let observations:CommandObservation[]=[],passing:Passing|undefined;
+  const remove=observeCommands(sim,sim.agents,e=>{observations.push(e);if(['behavior','spacing'].includes(e.stage)||[15,19,21].includes(e.actor)&&sim.t>=1.8&&sim.t<=3)stages.push(e);});
+  const step=sim.world.step.bind(sim.world);
+  sim.world.step=(intents,dt)=>{
+    const a=sim.agents[21],s=a.body.support,command=intents[a.idx];
+    if(sim.t>=1.8&&command&&a.behavior.kind==='man'&&!a.engagement&&!a.isDown(sim.t)&&!command.free&&!command.dive&&!command.lunge
+      &&!(command.push??0)&&!(command.squeeze??0)&&!(a.body.squeeze??0)&&s?.state==='up'&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6
+      &&!sim.lastStep?.contacts.some(p=>p.i===a.idx||p.j===a.idx)
+      &&!sim.world.joints.some(j=>(j.kind!=='grasp'||!j.broken)&&(j.a===a.body||j.b===a.body))){
+      const own=observations.filter(e=>e.actor===a.idx),rawEvent=own.find(e=>e.stage==='behavior');
+      if(rawEvent){
+        const peers:Peer[]=own.filter(e=>e.stage==='spacing-picture').map(e=>({idx:e.peer as number,seen:e.used as Perceived,
+          touch:.9*(a.profile.radius+sim.agents[e.peer as number].profile.radius)}));
+        const result=choose(a.body,rawEvent.command as Intent,command,peers,sim.t,passing,earlier,objective(own));passing=result.passing;
+        if(result.detail)decisions.push({t:sim.t,reason:result.reason,passing:structuredClone(passing),detail:result.detail});
+        if(result.command){if(intents!==sim.intents)throw Error('Wrong command array');sim.intents[a.idx]=result.command;}
+      }
+    }else passing=undefined;
+    return step(intents,dt);
+  };
+  sim.event('snap',sim.slot('C')??sim.qb);
+  while(sim.phase==='live'&&sim.t<c.until){
+    if(performance.now()-start>plan.batchWallCapMs)throw Error('Budget exhausted');
+    observations=[];const t=sim.t;sim.tick();
+    ticks.push({t,after:sim.t,agents:sim.agents.map(a=>({idx:a.idx,pos:{...a.pos},vel:{...a.vel},state:a.body.support?.state})),
+      commands:structuredClone(sim.intents),contacts:sim.lastStep?.contacts});
+  }
+  remove();
+  const old=new Map<number,any>(baseline.ticks.map((t:any)=>[t.t,t]));let firstDifference:any=null;
+  for(const tick of ticks){const before=old.get(tick.t);if(!before)continue;
+    const actors=tick.agents.filter((a:any,i:number)=>hash(a)!==hash(before.agents[i])||hash(tick.commands[i])!==hash(before.commands[i])).map((a:any)=>a.idx);
+    if(actors.length){firstDifference={t:tick.t,actors};break;}}
+  const data={schema:'mesh-short-v1',caseId:c.id,provenance,setupSha256:hash(spec.setup),stages,ticks,decisions,firstDifference,
+    events:sim.events,rng:{...sim.rng},stoppedAt:sim.t,phase:sim.phase,elapsedMs:performance.now()-begin};
+  const bytes=gzipSync(JSON.stringify(data));writeFileSync(`${out}/${c.id}.json.gz`,bytes);
+  rows.push({caseId:c.id,firstDifference,changes:decisions.filter(d=>d.reason==='lateral').map(d=>({t:d.t,...d.detail})),
+    impacts:ticks.flatMap(t=>(t.contacts??[]).filter((p:any)=>p.i===15&&p.j===21||p.i===21&&p.j===15).map((p:any)=>({t:t.t,...p}))),
+    events:sim.events,stoppedAt:sim.t,elapsedMs:data.elapsedMs,sha256:createHash('sha256').update(bytes).digest('hex')});
+}
+const used=process.cpuUsage(cpu),summary={...plan,provenance,offline:args.includes('--offline'),rows,elapsedMs:performance.now()-start,cpuMs:(used.user+used.system)/1000};
+writeFileSync(`${out}/summary.json`,JSON.stringify(summary,null,2)+'\n');
+console.log(JSON.stringify({offline:summary.offline,elapsedMs:summary.elapsedMs,rows:rows.map(r=>r.caseId?{caseId:r.caseId,changes:r.changes.map((d:any)=>({t:d.t,peer:d.peer,chosenGap:d.chosenGap,lateralGap:d.lateralGap,progress:d.lateralProgress})),impacts:r.impacts,firstDifference:r.firstDifference,stoppedAt:r.stoppedAt}:r)}));
