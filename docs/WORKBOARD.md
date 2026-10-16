@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Run: current N1 zone combination access — 2026-10-16
+
+`codex/zone-second-level-access`, acceptedbb6d4c7/source668acb1. Use Measurement's
+new current48 nomination N1. First inspect saved ordinary A025/A027 and useful
+A002 collection/defensive-win contrast; collect only missing native producer,
+acquired-cue and security stages for the two ordinary failures. No repeated
+panel or A018/#88 repair. Investigate RunBlocker first-level approach and
+optional/joined responsibility transition before choosing one correction.
+No production edit claimed until its cause is demonstrated. Run owns the
+bounded blocking functions; Do-It-All retains #92 spacing forecast reuse and
+generic movement, Physics retains laws/capacities. Keeper/clear-climb/defensive
+win controls remain required. Frozen settings/input/operator receipts precede
+native work; Integration receives exact candidate or limitation directly.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
