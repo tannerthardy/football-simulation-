@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Catching: broad pass-defense mechanism panel — 2026-10-16
+
+User explicitly requested an independent suite of passing situations. Start
+`codex/pass-defense-panel` from accepted/fetched `bb6d4c73948d53ba841dd9338dd240146c739f8c`.
+Initial scope: one diagnostic collector/report, 32 predeclared native snaps
+(16 concept/coverage pairs, two generated cohorts), max30 wall seconds per batch,
+5 seconds per snap and16 simulated seconds per play; preserve censored prefixes.
+Question: which initiating coverage/approach decision repeatedly leaves useful
+contact unavailable, versus failure after acquired contact? Capture consumed
+cues, raw/applied requests, achieved movement and actual catcher/defender IDs.
+#95 stays independently held; no import or new rat variant. Claim a bounded
+controller correction only after the panel supports a repeated mechanism;
+coordinate any shared movement-modifier edit with Flex. Physics/capabilities,
+helper policy and Integration's combined verification remain separate.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
