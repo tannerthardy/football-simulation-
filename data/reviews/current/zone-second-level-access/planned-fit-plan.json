@@ -1,0 +1,11 @@
+{
+  "question": "Does a default planned climb bypass the existing moving near-strike fit and overrun the backfield blocking surface, and can routing that near phase through the existing fit produce actual protection?",
+  "evidence": "Current code returns plannedClimb before secondLevelBlockApproach. In acquired edge-check A039, RT gets Mike load2.35 but closes normal depth from+.35 atstrike to-.24 at2.50 while runner arrives; hand control is about+.1, no defender hand-win is being erased. Need distinguish attainable correct entry from merely contact.",
+  "singleProductionCandidate": "RunBlocker.attack planned-climb branch only: outside existing physical near envelope contact+bodyContact preserve exact original planner; inside apply existing secondLevelBlockApproach to that planned command and held meet, using the already-consumed target picture/error. No release, assignment, planner scoring/cadence, force, spacing or capacity change.",
+  "standaloneFirstControls": [
+    "A015 saved native released-Y WZ limitation, no release experiment",
+    "A002 useful acquired second-level work plus end defensive win",
+    "A039 unaltered current release path; saved baseline reusable"
+  ],
+  "budget": "First candidate A015/A002 pair only, max5simseconds/5wallseconds each. One combined edge-check witness only after standalone evidence, to diagnose the independent near-fit boundary. No parameter tuning or broader panel."
+}
