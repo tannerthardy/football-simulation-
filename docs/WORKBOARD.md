@@ -1,5 +1,15 @@
 # Current work ownership
 
+## Catching: seam delivery independent experiment — 2026-10-16
+
+`codex/seam-delivery-contract` starts from fetched/canonical accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c`. Scope only
+`seamCurlFlat`'s c3_curl_flat depth exit and existing observed roof check,
+focused contracts and paired native evidence. Test independently of cushion
+publication `codex/match-release-cushion`, then combine only after both
+mechanisms have evidence. No estimator, Q-apex delivery, helper pursuit,
+physics or movement-modifier change. #97 remains separate.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in

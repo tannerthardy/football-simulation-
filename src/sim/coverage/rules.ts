@@ -17,6 +17,7 @@ import type { ManOptions } from '../behaviors/defense.js';
 import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
+import { hasVisibleCap } from './judgment.js';
 
 export type Directive =
   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
@@ -91,11 +92,15 @@ function c3Corner(c: RuleCtx): Directive {
 }
 
 /** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone. */
-function seamCurlFlat(c: RuleCtx, carry: number): Directive {
+function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   const two = ref(c, 2);
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
   if (vertical(two, 3)) {
     if (two.depth > carry) {
+      // Installed depth permits delivery; it does not establish replacement.
+      // Keep the acquired vertical when the existing observed roof estimate
+      // cannot sustain help. No hidden flight or teammate assignment enters.
+      if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
       c.state.mode = 'zoned';
       return zoneOf(c);
     }
@@ -301,7 +306,7 @@ function invertSafety(c: RuleCtx): Directive {
 export function runRule(rule: MatchRule, c: RuleCtx): Directive {
   switch (rule) {
     case 'c3_corner': return c3Corner(c);
-    case 'c3_curl_flat': return seamCurlFlat(c, 12);
+    case 'c3_curl_flat': return seamCurlFlat(c, 12, true);
     case 'c3_seam': return seamCurlFlat(c, 99);
     case 'c3_hook': return c3Hook(c);
     case 'mike_3': return mike3(c);
