@@ -1,0 +1,339 @@
+{
+  "cases": [
+    {
+      "caseId": "A028",
+      "until": 2.8,
+      "arms": {
+        "accepted": {
+          "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+          "inputSha256": "c8626267423e833a115723b4922e01722a3340b882ba2671f1fc465590bae5bd",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [
+            {
+              "t": 1.45,
+              "i": 2,
+              "j": 5,
+              "impulse": 75.36060135204131,
+              "closing": 0.8402829185702784
+            },
+            {
+              "t": 1.5,
+              "i": 2,
+              "j": 7,
+              "impulse": 105.12679408383796,
+              "closing": 1.5658505503099587
+            },
+            {
+              "t": 1.55,
+              "i": 2,
+              "j": 5,
+              "impulse": 147.43762462151884,
+              "closing": 0.6799271312205984
+            },
+            {
+              "t": 1.55,
+              "i": 2,
+              "j": 7,
+              "impulse": 103.9984449732512,
+              "closing": 0.6330266488003826
+            },
+            {
+              "t": 1.6,
+              "i": 2,
+              "j": 5,
+              "impulse": 11.25423042279594,
+              "closing": 0
+            },
+            {
+              "t": 1.6,
+              "i": 2,
+              "j": 7,
+              "impulse": 16.315002704871635,
+              "closing": 0.008044931940875147
+            },
+            {
+              "t": 1.65,
+              "i": 2,
+              "j": 5,
+              "impulse": 0.9639779704257064,
+              "closing": 0
+            },
+            {
+              "t": 1.65,
+              "i": 2,
+              "j": 7,
+              "impulse": 9.12452240296141,
+              "closing": 0.008332935607384837
+            },
+            {
+              "t": 1.7,
+              "i": 2,
+              "j": 5,
+              "impulse": 20.139321506481203,
+              "closing": 0.007473268344245998
+            },
+            {
+              "t": 1.75,
+              "i": 2,
+              "j": 5,
+              "impulse": 15.150579939181567,
+              "closing": 0.008537973322993442
+            },
+            {
+              "t": 1.8,
+              "i": 2,
+              "j": 5,
+              "impulse": 16.35510448474716,
+              "closing": 0.00467768376288219
+            }
+          ],
+          "sumSampledPeerImpulse": 521.226204462114,
+          "runnerEndPosition": {
+            "x": 34.4315784189911,
+            "y": 25.33909425648791
+          }
+        },
+        "all-body-trial": {
+          "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+          "inputSha256": "c8626267423e833a115723b4922e01722a3340b882ba2671f1fc465590bae5bd",
+          "firstStageDifference": 1.25,
+          "allCapturedStagesEqual": false,
+          "eventsEqual": false,
+          "sampledPeerImpacts": [],
+          "sumSampledPeerImpulse": 0,
+          "runnerEndPosition": {
+            "x": 33.60530141030205,
+            "y": 24.911790494482812
+          }
+        },
+        "free-footwork": {
+          "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+          "inputSha256": "c8626267423e833a115723b4922e01722a3340b882ba2671f1fc465590bae5bd",
+          "firstStageDifference": 1.25,
+          "allCapturedStagesEqual": false,
+          "eventsEqual": false,
+          "sampledPeerImpacts": [],
+          "sumSampledPeerImpulse": 0,
+          "runnerEndPosition": {
+            "x": 33.60530141030205,
+            "y": 24.911790494482812
+          }
+        }
+      }
+    },
+    {
+      "caseId": "A018",
+      "until": 3.95,
+      "arms": {
+        "accepted": {
+          "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+          "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [
+            {
+              "t": 3.8,
+              "i": 3,
+              "j": 4,
+              "impulse": 41.953048271932815,
+              "closing": 0.5320005605162567
+            },
+            {
+              "t": 3.85,
+              "i": 3,
+              "j": 4,
+              "impulse": 4.598792680387687,
+              "closing": 0.017721467795795705
+            }
+          ],
+          "sumSampledPeerImpulse": 46.551840952320504,
+          "runnerEndPosition": {
+            "x": 42.39250745169884,
+            "y": 19.278955838440215
+          }
+        },
+        "all-body-trial": {
+          "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+          "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+          "firstStageDifference": 3.55,
+          "allCapturedStagesEqual": false,
+          "eventsEqual": false,
+          "sampledPeerImpacts": [
+            {
+              "t": 3.9,
+              "i": 3,
+              "j": 4,
+              "impulse": 66.53576670430218,
+              "closing": 0.7723380987561179
+            }
+          ],
+          "sumSampledPeerImpulse": 66.53576670430218,
+          "runnerEndPosition": {
+            "x": 42.39250745169884,
+            "y": 19.278955838440215
+          }
+        },
+        "free-footwork": {
+          "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+          "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [
+            {
+              "t": 3.8,
+              "i": 3,
+              "j": 4,
+              "impulse": 41.953048271932815,
+              "closing": 0.5320005605162567
+            },
+            {
+              "t": 3.85,
+              "i": 3,
+              "j": 4,
+              "impulse": 4.598792680387687,
+              "closing": 0.017721467795795705
+            }
+          ],
+          "sumSampledPeerImpulse": 46.551840952320504,
+          "runnerEndPosition": {
+            "x": 42.39250745169884,
+            "y": 19.278955838440215
+          }
+        }
+      }
+    },
+    {
+      "caseId": "A006",
+      "until": 3.95,
+      "arms": {
+        "accepted": {
+          "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+          "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [],
+          "sumSampledPeerImpulse": 0,
+          "runnerEndPosition": {
+            "x": 42.69908385597724,
+            "y": 18.687300909373405
+          }
+        },
+        "all-body-trial": {
+          "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+          "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [],
+          "sumSampledPeerImpulse": 0,
+          "runnerEndPosition": {
+            "x": 42.69908385597724,
+            "y": 18.687300909373405
+          }
+        },
+        "free-footwork": {
+          "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+          "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+          "firstStageDifference": null,
+          "allCapturedStagesEqual": true,
+          "eventsEqual": true,
+          "sampledPeerImpacts": [],
+          "sumSampledPeerImpulse": 0,
+          "runnerEndPosition": {
+            "x": 42.69908385597724,
+            "y": 18.687300909373405
+          }
+        }
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "file": "receipts/candidate-native.json",
+      "commit": "415f45db9cb8b6e6385667d5589b6c851defe88f",
+      "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+      "exitCode": 0,
+      "seconds": 5.456571345
+    },
+    {
+      "file": "receipts/capture-launch.json",
+      "commit": "817e8f876c3d5e6ff25220c0298f7e7fb8372d94",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 5.18091056
+    },
+    {
+      "file": "receipts/focused-initial.json",
+      "commit": "817e8f876c3d5e6ff25220c0298f7e7fb8372d94",
+      "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+      "exitCode": 1,
+      "seconds": 1.476957947
+    },
+    {
+      "file": "receipts/focused.json",
+      "commit": "817e8f876c3d5e6ff25220c0298f7e7fb8372d94",
+      "source": "c8d65c4cb03ae7be769e29c103dc8020ffc95fc4a3df04aeb304dcd1b849e4f5",
+      "exitCode": 0,
+      "seconds": 3.1937254709999996
+    },
+    {
+      "file": "receipts/parked-focused.json",
+      "commit": "4a7eebdc70acf50b867a79dbc241019e4e6f8e46",
+      "source": "cf081fb58fc54fe427a5e967e17cb283b55b7b0ac0ca5cf89b280719e65888df",
+      "exitCode": 0,
+      "seconds": 4.586053506
+    },
+    {
+      "file": "receipts/parked-typecheck.json",
+      "commit": "4a7eebdc70acf50b867a79dbc241019e4e6f8e46",
+      "source": "cf081fb58fc54fe427a5e967e17cb283b55b7b0ac0ca5cf89b280719e65888df",
+      "exitCode": 0,
+      "seconds": 10.298704523
+    },
+    {
+      "file": "receipts/scoped-focused.json",
+      "commit": "07796edce0346e3e7f5823f9a60f007f8d1ba6aa",
+      "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+      "exitCode": 0,
+      "seconds": 3.183411187
+    },
+    {
+      "file": "receipts/scoped-native.json",
+      "commit": "07796edce0346e3e7f5823f9a60f007f8d1ba6aa",
+      "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+      "exitCode": 0,
+      "seconds": 5.127947141000001
+    },
+    {
+      "file": "receipts/typecheck-corrected.json",
+      "commit": "bfca0d8986c6dfd2791728dba08311ffd62191cb",
+      "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+      "exitCode": 1,
+      "seconds": 8.455423943
+    },
+    {
+      "file": "receipts/typecheck-final.json",
+      "commit": "dc373db91683f677fa9c363dd090b57d8aea871b",
+      "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+      "exitCode": 0,
+      "seconds": 9.76630225
+    },
+    {
+      "file": "receipts/typecheck.json",
+      "commit": "07796edce0346e3e7f5823f9a60f007f8d1ba6aa",
+      "source": "2a3e6e8edcf451f8f08ed9d37a7e57e047acd28ca936c31254efcff59ad5b2ff",
+      "exitCode": 1,
+      "seconds": 8.442879571999999
+    }
+  ],
+  "totalLauncherSeconds": 65.168887445,
+  "nativeContinuations": 9,
+  "nativeSimulatedSeconds": 32.099999999999994,
+  "finalCandidate": "4a7eebdc70acf50b867a79dbc241019e4e6f8e46",
+  "nativeReuse": "07796ed runtime 2a3e6e8; final adds only own isDown guard. These ordinary setups leave downUntil=-1; body up was already required. Only lab files assign downUntil. Focused parked control covers the distinct branch."
+}
