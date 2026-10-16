@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Run: earned collection candidate, independent review pending
+
+`codex/earned-collection` is the minimal extraction from accepted86250bb4f0c6f421878c204161864d523c3e30b6.
+Run's boundary is `blocking.ts`'s `leaveCombination`/`climbRoute` plus the
+focused collection test/fixture only. Post-release clearance ends at existing
+strike range; release admission, acquired information, keeper work, spacing,
+capabilities and physics remain. Do-It-All's forecast-cost/spacing/carrier work
+and Physics's solver stay separate. [Evidence, exact pins and limits](reviews/earned-collection.md).
+71 focused checks/typecheck pass on byte-identical source/tests. Independent
+acceptance and exact combined verification belong to Integration. No new game,
+broad panel or full suite requested; #86 remains diagnostic evidence only.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
