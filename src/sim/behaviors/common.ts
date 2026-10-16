@@ -181,7 +181,22 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
         const speed = Math.hypot(vel.x, vel.y), cap = a.profile.vmax * a.speedScale;
         if (speed > cap) { vel.x *= cap / speed; vel.y *= cap / speed; }
       }
-      near = {vel,facing:Math.atan2(uy, ux),cutSkill,push:dist<contact+.5?1:undefined,
+      let facing = Math.atan2(uy, ux);
+      // A large radial closing speed can trigger gathering while the
+      // relative path still misses the hip. Keep working that moving angle
+      // instead of braking toward the current landmark. As the final steps
+      // arrive, blend back to the same close-contact technique below.
+      const rvx = a.vel.x-seen.vel.x, rvy = a.vel.y-seen.vel.y;
+      const miss = dist*Math.abs(ux*rvy-uy*rvx)/Math.max(.1,Math.hypot(rvx,rvy));
+      const collision = clamp((contact+.5-miss)/.75,0,1);
+      const working = clamp((dist-contact-2.5)/.75,0,1)*(1-collision);
+      if (working > 0) {
+        const moving = track(a,goal,seen.vel,{speed:a.speedScale,cutSkill});
+        vel.x += (moving.vel.x-vel.x)*working;
+        vel.y += (moving.vel.y-vel.y)*working;
+        facing += angleDiff(facing,angleOf(moving.vel))*working;
+      }
+      near = {vel,facing,cutSkill,push:dist<contact+.5?1:undefined,
         posture:.4+.25*tackle} as MoveCommand;
     }
   }
