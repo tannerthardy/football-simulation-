@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Completed #91 / #87 exact integration boundary
+
+Integration's isolated `codex/mesh-policy-integration` extracts only the approved
+seven-file patch from9760de0 on accepted9adb7b3 plus queue12956c6. Five runtime
+files and traffic-step test/fixture match both independent reviews. One separately
+reviewed pull-fit reload adapter preserves full physical/goal equality across
+flag-module instances. Source668acb1; accepted #88/#89/cost preserved.
+Freeze d8a63f3 passes1,780 TS/151 files,
+145 Python,typecheck/build;200.787s,44flags/components1. Adopted asbb6d4c7
+through #91; entire merged tree equals publication and protected files equal
+the passing freeze. First failed200.811s receipt and one1.533s diagnostic remain;
+total command cost403.132s. Boundary released; no unchanged suite/native/panel/game
+repeat. Do-It-All/Catching/Run reconcile relevant movement/support investigations
+at clean checkpoints. Censored outcomes, off-ball effects, RNG limits and prior
+adverse evidence remain; no observer/old variants or experimental Physics.
+[Actual pin, receipts and handoff](INTEGRATION.md#accepted-development).
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
@@ -14,22 +31,6 @@ typecheck/build,195.589s,44flags/components1. Adopted as9adb7b3 through #90;
 entire merged tree equals publication and protected files equal passing freeze.
 Integration boundary released; no unchanged suite/native/panel/game repeat.
 [Actual pin, receipts and owner handoff](INTEGRATION.md#accepted-development).
-
-## Active #87 exact integration boundary
-
-Integration owns `codex/mesh-policy-integration` on accepted9adb7b3 plus metadata
-12956c6. Extract only the independently accepted seven-file patch plus independently reviewed pull-fit test-only reload adapter: spacing.ts,
-movement-objective.ts, behaviors/common.ts, behaviors/defense.ts,
-catch-approach.ts, traffic-step.test.ts and its fixture. All seven blobs equal
-reviewed9760de0; composed source668acb1. Run accepts whole movement policy/#89
-interaction at b1c75b8; Catching producer approval retained. Accepted #88/#89 and
-settled-line cost proof/tests remain. Integration owns one frozen combined run;
-contributors supply compatible39 focused/typecheck and source-pinned native
-receipts. First exact run failed6 cross-module Symbol identity comparisons;
-independent semantic comparison review accepts the test-only repair,12 focused
-checks pass. Source668acb1 unchanged; final validation tree is a distinct candidate.
-No old dependency ancestry, observer, variants, experimental Physics
-or extra campaign. Preserve off-ball costs, censored outcomes and RNG limits.
 
 ## Historical completed #85 Duo-only adoption — then #81 held separately
 

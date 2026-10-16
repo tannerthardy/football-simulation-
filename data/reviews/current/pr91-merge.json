@@ -1,0 +1,346 @@
+{
+  "schema": "pr91-adoption-v1",
+  "pr": 91,
+  "previousAcceptedDevelop": "9adb7b3f730c5637e5a6547f9bc151a17ce301b2",
+  "testedCommit": "d8a63f3826af9d85b62dc259ac113127bf59df74",
+  "reviewedAuthorHead": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+  "authorExecuted": "52518bebea74e8668f6b3c0628f3a3a1e5253008",
+  "independentReview": "b1c75b872428237a8d9813ba4724b87f924c042d",
+  "approvals": {
+    "producer": "https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6206671363",
+    "consumerAnd89Interaction": "https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6208072709"
+  },
+  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "validationSha256": "709b58e8c0938c5075a36f275c6a99dfbea1901f07dafab8cd242a632f6777f8",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1780,
+    "typescriptFiles": 151,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": "Exact seven-file post-dependency #87 compound brake/transverse coverage-traffic policy plus independently reviewed test-only module-reload comparison repair. Existing own objectives, acquired peer pictures, World movement, original speed/posture/containment and contact/load exclusions.",
+  "protectedFiles": {
+    "src/sim/behaviors/common.ts": "8e647b8b63ba5d09c7fb487e40f682aef54d3913ab39368700e2b82cdbba4062",
+    "src/sim/behaviors/defense.ts": "e0c21983ff3cd8b80ca03ffcf526ea687f36b64d529c2fded3bcdb84b13f3418",
+    "src/sim/catch-approach.ts": "9a194eb08d5f8cb4f40a8815c77b88613aa627fb4ef51aff2d900e0e74296108",
+    "src/sim/movement-objective.ts": "09020c175a9aa4f8dbe2bd83ee9f12277af637f994fa646a36a2d8f72cb210a2",
+    "src/sim/spacing.ts": "a86f941945d44247f11de5e6a2a45f8a2e6038572b93cb9fd1bdc18ae6cd2873",
+    "test/fixtures/traffic-step.json.gz": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+    "test/traffic-step.test.ts": "2dafeead922b5149e4cb45b82b918edeec7e9e0c6295d5fdd6ab3e2152dee605",
+    "test/pull-fit-plan.test.ts": "1d4e465dd0faf642d710dcab853d3a0c8cd9a35ec6edd2b072eff848b3dc65e7"
+  },
+  "testContractReconciliation": {
+    "schema": "mesh-policy-verification-reconciliation-v1",
+    "originalIntake": "intake.json",
+    "failedReceipt": "failed-receipt.json",
+    "failedFreeze": "b3caeb84c4fe72b603dbf68ef48b2628889d24ce",
+    "runtimeSourceUnchanged": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+    "additionalProtectedFile": {
+      "path": "test/pull-fit-plan.test.ts",
+      "sha256": "1d4e465dd0faf642d710dcab853d3a0c8cd9a35ec6edd2b072eff848b3dc65e7",
+      "purpose": "Module-local symbol identity normalization in test-only off/on comparison; entire physical and own-objective semantic equality preserved.",
+      "independentReview": "pull-fit-contract-review.json"
+    },
+    "focusedDiagnostic": {
+      "receipt": "pull-fit-contract.json",
+      "passed": 12,
+      "commandSeconds": 1.533428496,
+      "newNative": 0,
+      "newGames": 0
+    },
+    "whyAnotherVerification": "Original exact candidate failed6 existing comparison contracts. Independent review accepts the minimal test-harness correction, materially changing validation tree while preserving production source. Run required phases for this reconciled exact candidate once; no repeat merely to publish or merge.",
+    "allSevenAuthorBlobsRemainUnchanged": true,
+    "noFootballAssertionWaiver": true
+  },
+  "independentContractReview": {
+    "schema": "pr87-reload-contract-independent-review-v1",
+    "reviewer": "/root/review_87_reload_contract",
+    "decision": "ACCEPT exact test-only reload correction; no material Run/Catching contract ambiguity. Production and football reviews remain independently source-qualified.",
+    "reviewedCommit": "618a65f9820698bac50887e335657e66e636224c",
+    "failedFreeze": "b3caeb84c4fe72b603dbf68ef48b2628889d24ce",
+    "path": "test/pull-fit-plan.test.ts",
+    "blob": "079f42e5eff993821d2e8143b1fdf7dbb36f4f1f",
+    "sha256": "1d4e465dd0faf642d710dcab853d3a0c8cd9a35ec6edd2b072eff848b3dc65e7",
+    "patchSha256": "4d90527d79dd07672b656b1b0fa3eccfe6146509c68eabc21184a624a3ca43cf",
+    "sourceTreeUnchanged": "801eb5a54242dfdb40a90626f8d7e761ae712f02",
+    "checks": [
+      "Only controller() helper changes versus failed freeze.",
+      "Each flag arm imports its own movementObjective reader and asserts exactly one expected private symbol.",
+      "Goal is defined; symbol value equals module-reader output.",
+      "Only module-specific symbol identity is canonicalized; all enumerable physical fields and complete objective payload remain in existing whole-command equality.",
+      "All physical,target,body and positive/negative planner assertions remain.",
+      "Production Symbol ownership, source, settings, scripts, dependencies and tooling unchanged."
+    ],
+    "limits": [
+      "Accepts semantic comparison repair only; does not certify football merit or final verification.",
+      "MoveCommand fields in these fixtures are ordinary enumerable fields. No new runtime or test scope was requested."
+    ],
+    "newTests": 0,
+    "newSimulations": 0,
+    "edits": 0,
+    "externalPublications": 0
+  },
+  "checks": {
+    "allSevenAuthorBlobsMatchIndependentRuntimeReviews": true,
+    "additionalTestHelperMatchesIndependentContractReview": true,
+    "onlyEightProtectedFilesDifferFromAcceptedBase": true,
+    "accepted88Blocking89RunFitsAndCostTestsUnchanged": true,
+    "acceptedSettledLineCostProofPreserved": true,
+    "noSourceTestSettingsOrToolingDriftDuringVerification": true,
+    "physicsCapabilitiesDefaultsFlagsDependenciesUnchanged": true,
+    "publishedEvidencePayloadHashesVerified": 30,
+    "priorReceiptsAndBranchesPreserved": true
+  },
+  "evidenceReuse": {
+    "focusedChecks": 39,
+    "typecheck": "pass",
+    "originalNative": "A044/A008 source-pinned dependency host; unchanged7 payloads, not relabeled current-build outcomes.",
+    "currentInteraction": "Run independent9adb7b3/composed668acb1 A042 pair through3.80; primary bodies/commands/rootRNG exact, all22 react and off-ball changes retained.",
+    "reviewLauncherQualification": "Review launcher source is accepted host; exact source archives are imported and statically hashed. No candidate branch edit."
+  },
+  "evidenceFor": [
+    "Original A044 SS/robber impact139.0033 removed, no replacement contact through3.55, earned receiver separation preserved; candidate unfinished. This is source-pinned dependency-host evidence, not a newly executed current-build panel.",
+    "Original A008 actual catcherY7/wrapperNB19 full bodies/commands, catch/wrap/events/rootRNG exact only through3.40; support actors differ.",
+    "Run independent current-composition A042 pair: runner6/alleySS21/FS20 bodies/commands/rootRNG exact through3.80, same SS grip3.25/.863yd/FSassist3.70,10 block-contact times/pairs exact, zero teammate contacts. Off-ball positions/forces differ up to.248yd; both arms remain live/censored.",
+    "Achievable saved World first step matches prediction; missing objective/peer motion/age, constrained support and obstruction controls are preserved. A genuinely blocked route remains blocked; local relief is not certified clearance."
+  ],
+  "adverseEvidenceAndLimits": [
+    "A042 new pair is explicitly live/censored3.80, no finish/gain claim.",
+    "Synthetic alley encounter remains obstructed; selected relief is not a certified clear route.",
+    "Off-ball positions/forces change; primary identity is not all22 identity.",
+    "Original A044 drop/catch changes through root draw scheduling, not a higher receiver probability.",
+    "Original A008 evidence stops3.40; preserved wrap does not claim a new terminal tackle.",
+    "No whole-engine runtime, global coverage, universal avoidance, physical-law or YAC certification.",
+    "Accepted #88 A018 later C/LG impact and A030 shorter ending remain; #89 A006 broken first hold/later FS acquisition remain. No claim they are resolved by #87.",
+    "Compound previews add conditional controller evaluation cost; unchanged clear-lane zero-preview contracts remain. No whole-engine cost guarantee.",
+    "Catching supplied/clamped sideline anchor note remains nonblocking; finite acquired pictures remain conditional, without global perception/expiry repair."
+  ],
+  "evidenceLinks": [
+    "https://github.com/tannerthardy/football-simulation-/blob/9760de031cae3bda7c926735f8edeb97fa4574e5/docs/reviews/mesh-traffic-controller.md",
+    "https://github.com/tannerthardy/football-simulation-/blob/b1c75b872428237a8d9813ba4724b87f924c042d/docs/reviews/pr87-run-policy-review.md",
+    "https://github.com/tannerthardy/football-simulation-/blob/20fcabd11e8146aa892e4a856931e6caa9a695d4/docs/reviews/pr87-own-objective-review.md"
+  ],
+  "cost": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.201215367000001
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.209619185
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 178.620889711
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7552764610000013
+      }
+    ],
+    "combinedCommandSeconds": 200.787000724,
+    "finalReconciledCandidateVerifications": 1,
+    "initialFailedCandidateVerifications": 1,
+    "initialFailedCandidateCommandSeconds": 200.811354099,
+    "targeted12TestDiagnosticCommandSeconds": 1.533428496,
+    "totalIntegrationCommandSeconds": 403.131783319,
+    "whyNewVerification": "Original exact candidate failed6 existing comparison contracts. Independent review accepts the minimal test-harness correction, materially changing validation tree while preserving production source. Run required phases for this reconciled exact candidate once; no repeat merely to publish or merge.",
+    "focusedChecksReused": 39,
+    "newStandaloneNativeExecutions": 0,
+    "newPanels": 0,
+    "newEvaluationGames": 0,
+    "suiteGames": "Existing preserved game/ensemble assertions only.",
+    "noUnchangedRepeatForPublicationOrMerge": true
+  },
+  "held": [
+    "old dependency ancestry and ten-file bundle",
+    "observer/tooling",
+    "rejected shoulder/gather/lateral/low-speed variants",
+    "76 carrier override",
+    "unused observation transport/navigation",
+    "experimental Physics",
+    "laws/capacities/defaults/flags/dependency/tooling changes"
+  ],
+  "artifacts": {
+    "intake.json": {
+      "bytes": 13167,
+      "sha256": "d78a71cd352aef627cf6cec52a3247634321cb7946c2b5e0ac1d02346f1cbb8c"
+    },
+    "independent-review.json": {
+      "bytes": 12347,
+      "sha256": "250be2c42349fe114a5c1f3976009d76ced6178b2117fb025f0abf73030a89f8"
+    },
+    "independent-static.json": {
+      "bytes": 3675,
+      "sha256": "32411474825e035426ae17273169233fa1c1cb6f546162c22d5f5a55a21611c3"
+    },
+    "traffic-controller.patch": {
+      "bytes": 34341,
+      "sha256": "2eed36e711164fbc468879e86d1283fa65e80fbbd451f1f01549d1177cd9054d"
+    },
+    "failed-receipt.json": {
+      "bytes": 2071,
+      "sha256": "9882899c6be42e3a54e6d8332014e9ddda16e2f7a95f07af63df266df8fada9b"
+    },
+    "failed-combined.json": {
+      "bytes": 2616,
+      "sha256": "b70d75589aa1d77173ca505a8c675b73c945472f19fa88391e85e634b95ae126"
+    },
+    "failed-combined.log": {
+      "bytes": 20780,
+      "sha256": "4c09a619b0bef5263fe0e8b9733d24e078d304723a979df8a99c6db51a325fcd"
+    },
+    "pull-fit-contract.json": {
+      "bytes": 2300,
+      "sha256": "34f7bd9d57a02c2566e6e1affb5b67d9fd76daeb57d80d96d47dbaf9df53f480"
+    },
+    "pull-fit-contract.log": {
+      "bytes": 630,
+      "sha256": "9f15085bb45d815a897d0bbaf579d9bed693740ac1343f61a3c0e2b7c2ce0247"
+    },
+    "pull-fit-contract.patch": {
+      "bytes": 1421,
+      "sha256": "4d90527d79dd07672b656b1b0fa3eccfe6146509c68eabc21184a624a3ca43cf"
+    },
+    "pull-fit-contract-review.json": {
+      "bytes": 1667,
+      "sha256": "fb98b39dfdbfb7a225d97953477709b2facdd3389c2aed402f1e8531c8e9a438"
+    },
+    "candidate-reconciliation.json": {
+      "bytes": 1245,
+      "sha256": "0340c638fcb410a64edfe93345373b983ed8c29e3b8dfd6623053ef35f60cdf9"
+    },
+    "final-combined.json": {
+      "bytes": 2622,
+      "sha256": "48675bd8cd062d8b0f96b38808e358188ca93150d597ff16d980aaf6fb5d6f9b"
+    },
+    "final-combined.log": {
+      "bytes": 15463,
+      "sha256": "d58e6bca2804bb5c531e15352d3a8c772ba0788e1e52aa69f72dd9abc4af30b5"
+    }
+  },
+  "preparationNotes": [
+    "Initial offline digest sorted Path components rather than canonical full path strings. Corrected the reader; canonical launcher and string digest agree668acb1. No candidate source edit or test/simulation execution.",
+    "The exact portable patch retains standard blank-context whitespace. Broad git diff --check reports those archived patch lines; protected source/test/docs scoped check passes. Immutable patch bytes were preserved, not rewritten."
+  ],
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "decision": "Recommend routine adoption after fresh mutable-ref/review and exact merge-tree checks under standing user authority. No new baseline/default/experimental authority.",
+  "nextOwners": "Do-It-All/Catching/Run reconcile relevant movement and support investigations at clean checkpoints. Original native evidence stays source-qualified; no automatic panel or game evaluation. Measurement/CEO choose any separately budgeted checkpoint for a named unresolved decision.",
+  "acceptedDevelop": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "reviewedPublication": "4c3ae29252105baaf33ad290948ec58c010d8557",
+  "routineMergeAuthority": "Standing user routine-correction authority after independent review and required exact verification.",
+  "entireMergedTreeEqualsPublication": true,
+  "protectedTreeMatchesPassingReceipt": true,
+  "mergedTree": "c79922c153877ff45af944d28efd6f42193c2c12",
+  "mergePreview": {
+    "base": "9adb7b3f730c5637e5a6547f9bc151a17ce301b2",
+    "publication": "4c3ae29252105baaf33ad290948ec58c010d8557",
+    "preview": "d9b4e971f40f4093bf437d511a9a52bd0921b726",
+    "parents": [
+      "9adb7b3f730c5637e5a6547f9bc151a17ce301b2",
+      "4c3ae29252105baaf33ad290948ec58c010d8557"
+    ],
+    "tree": "c79922c153877ff45af944d28efd6f42193c2c12",
+    "entirePreviewEqualsPublication": true,
+    "protectedTreeEqualsPassingFreeze": true,
+    "stalePreviewGuard": "First preview referenced pre-publication freeze; waited for regenerated exact publication parents, retained both inspection refs. One read-only fetch had transient authentication failure and succeeded on retry. No forced update or extra suite."
+  },
+  "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/4c3ae29252105baaf33ad290948ec58c010d8557/data/reviews/current/mesh-policy-integration/final-receipt.json",
+  "handoffUrl": "https://github.com/tannerthardy/football-simulation-/pull/91#issuecomment-6208289485",
+  "dispositions": [
+    {
+      "pr": 87,
+      "head": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+      "state": "closed as incorporated by minimal extraction; original branch/evidence/rejected history retained",
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6208290031"
+    }
+  ]
+}

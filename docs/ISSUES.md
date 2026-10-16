@@ -154,17 +154,28 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
-Current: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
+Current: #87's independently reviewed seven-file policy is adopted through
+#91 asbb6d4c7. Exact verification passes1,780 TS/145 Python/typecheck/build
+in200.787s. Compound achievable brake/transverse control retains own objective,
+acquired peer limits, contact/load exclusions and accepted cost proof. Accepted
+#88/#89 source lines remain. Original A044 collision relief does not establish
+postcatch benefit; catch/drop changes via RNG scheduling at identical probability.
+A008 cap3.40 and current-composition A042 cap3.80 remain censored; off-ball
+positions/forces differ. No universal path/coverage/YAC claim. Owners reconcile
+this accepted pin at clean checkpoints; no repeated suite or new campaign.
+[Actual merge](../data/reviews/current/pr91-merge.json).
+
+Earlier #90 adoption and subsequent #87 review: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
 cost successor; original zero-preview test is unchanged and counts0/0/0. The
 old failed combined receipt remains failed. This reviewed successor is adopted
 with independently accepted #88/#89 through #90 as9adb7b3. One exact combined
 verification passes1,772 TS/145 Python/typecheck/build in195.589s; no rerun.
 [Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 now has Run's independent whole-policy/interaction ACCEPT6208072709 on
 accepted9adb7b3, plus Catching producer approval. Its exact seven-file successor
-is assembled for Integration verification; not yet adopted. First exact run
+was assembled for Integration verification, now adopted above. First exact run
 fails6 module-reload Symbol identity comparisons; independent test-only repair
 retains full physical/goal equality and passes12 focused checks. Source668acb1
-unchanged; final validation tree requires a distinct exact receipt.
+unchanged; final validation tree has the distinct passing receipt above.
 Current A042 primary bodies/requests and RNG match through3.80; off-ball changes
 and censoring remain. The old A044 catch/drop is a draw-scheduling change, not
 a catchability or postcatch benefit. [Intake](../data/reviews/current/mesh-policy-integration/intake.json).
@@ -227,7 +238,7 @@ release/range/force change. Existing obstruction/keeper controls pass. Later
 A018 C/LG impact, A030 shorter ending and D07 unfinished remain. Integration
 adopts the exact three-file #88 scope with compatible cost/#89 through #90 as
 9adb7b3 after one passing exact verification. #86 research is not a dependency;
-#87 remains separately held. Run reconciles ongoing access investigations at
+#87 is subsequently adopted through #91. Run reconciles ongoing access investigations at
 clean checkpoints. Earlier #84 findings below remain source-pinned.
 
 Earlier adopted #84: head4af71ac/codeaebb0ab/evidence70ed238 was a ready Duo-only

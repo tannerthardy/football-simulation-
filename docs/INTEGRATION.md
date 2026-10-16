@@ -49,6 +49,60 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@bb6d4c73948d53ba841dd9338dd240146c739f8c`** is accepted after routine
+[#91](https://github.com/tannerthardy/football-simulation-/pull/91) adoption.
+Its entire tree equals publication `4c3ae29252105baaf33ad290948ec58c010d8557`;
+protected source/tests/settings/tooling equal passing freeze
+`d8a63f3826af9d85b62dc259ac113127bf59df74`.
+[Actual merge/preservation receipt](../data/reviews/current/pr91-merge.json).
+
+Included **#87's exact seven-file post-dependency policy**: existing own-objective
+metadata and an achievable compound brake/transverse option for man/zone traffic.
+Catching approved producer semantics; Run approved the whole movement policy
+and its #89 interaction on accepted9adb7b3. All seven blobs match reviewed9760de0.
+Accepted #88 blocking, #89 acquired alley-flow line and original cost tests are
+byte-identical; the settled-line proof is preserved in its extracted helper.
+Original dependencies/observer/research ancestry are not merged. An eighth
+protected file is the independently reviewed test-only module-reload adapter:
+all physical command fields and the full own goal remain compared; private key
+identity is normalized only across the test's separately loaded flag modules.
+
+**1,780 TS/151 files,145 Python,typecheck/build pass**;200.787 command seconds,
+Node22.23.3,44 accepted flags/components1, no skipped phases/input drift.
+Final reconciled candidate verified once; initial failed200.811s receipt and
+one1.533s focused diagnostic remain preserved. Total command cost403.132s.
+The validation tree changed after six module-identity failures, with no runtime
+source change or football-assertion waiver. No unchanged repeat to publish/merge.
+Source `668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac`;
+validation `709b58e8c0938c5075a36f275c6a99dfbea1901f07dafab8cd242a632f6777f8`.
+[Complete exact receipt](../data/reviews/current/mesh-policy-integration/final-receipt.json).
+Reused39 focused/typecheck plus source-qualified A044/A008 and Run's one A042
+interaction pair. No new standalone native case, panel or evaluation game here.
+
+The traffic repair preserves earned separation. Original A044 drop/catch changes
+through existing RNG scheduling at identical probability; no postcatch benefit.
+A008 identity ends at3.40; current-composition A042 primary bodies/requests/RNG
+remain exact only through3.80, with off-ball changes and both arms live/censored.
+An obstructed route remains obstructed; improved local clearance is not a
+certified clear path. Necessary extra option forecasts have a cost; no universal
+coverage/YAC or whole-engine speedup claim. Earlier #88/#89 adverse outcomes,
+failed #81 receipt and rejected trials remain visible.
+
+[#91 accepted-pin and affected-owner handoff](https://github.com/tannerthardy/football-simulation-/pull/91#issuecomment-6208289485).
+#87's review/verification gate is complete and its delivered PR is closed as
+incorporated by minimal extraction, with branch/evidence history retained.
+Do-It-All/Catching/Run reconcile relevant movement/support work at clean
+checkpoints, without forced rebases or contributor suite repetitions. The next
+queue item needs its own independent readiness; this receipt applies to this
+exact tree. Measurement/CEO may choose a separately budgeted checkpoint for a
+named open football question; no automatic panel or four-game evaluation.
+#76, unused transport/navigation, rejected variants and experimental Physics stay
+separate. Historical4ded6b6, GitHub default, physical laws/capacities/defaults,
+all branches and prior evidence are preserved.
+
+<details>
+<summary>Previous accepted #90 /9adb7b3 record — historical</summary>
+
 **`develop@9adb7b3f730c5637e5a6547f9bc151a17ce301b2`** is accepted after routine
 [#90](https://github.com/tannerthardy/football-simulation-/pull/90) adoption.
 Its entire tree equals publication `b19f87bad2a1b931f3749278eb4c27c70b9e56f0`;
@@ -89,6 +143,8 @@ records; every branch, original finding and receipt remains available.
 #76, unused transport/navigation, rejected variants and experimental Physics stay
 separate. Historical4ded6b6, GitHub default and physical capabilities/defaults
 unchanged. Existing audit/panel remains source-pinned; no automatic recollection.
+
+</details>
 
 <details>
 <summary>Previous accepted #85 /86250bb record — historical</summary>
@@ -207,16 +263,16 @@ silently become approval; investigate a disagreement with this ledger.
 <a id="audit-priorities-and-access"></a>
 ## Current investigations and saved audit access
 
-Accepted development is9adb7b3 after #90; #69 is complete through #78. Do not repeat
+Accepted development isbb6d4c7 after #91; #69 is complete through #78. Do not repeat
 completed reviews or unchanged verification. The saved audit is a separate
-**8ca8dee** observation, not a measurement of current9adb7b3 behavior.
+**8ca8dee** observation, not a measurement of currentbb6d4c7 behavior.
 [Published diagnosis and caveats](https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md).
 
 | Investigation | Accountable owner / smallest next question | Saved evidence and controls |
 | --- | --- | --- |
 | Second-level blocking access | Run Game: #84 Duo admission and #88 strike-access collection are now accepted through #90. Reconcile ongoing access work against9adb7b3 at a clean checkpoint; trace remaining unachieved jobs and late contacts, without discarding useful keeper load. | A018 now earns Mike load in the saved #88 candidate but retains a later C/LG collision; A030 has a shorter ending. Original A018/A030/A027 and A006/A042 remain source-pinned. Nine unachieved jobs in24 old runs are not nine current defects; distinguish access, upstream loss and legitimate defensive wins. |
 | Run-support continuity | Catching owns continuity through zone-to-man replacement; consult Run on installed insertion/alley responsibility. Preserve useful acquired support or identify a legitimate cancellation/handoff inside existing architecture. | Eight of eight selected Quarters runs reverse support requests after reassignment; outcome cost is not isolated. Preserve alley leverage, vertical responsibility and legitimate PA uncertainty; no permanent run-belief latch or hidden possession. #75 contracts are reconciled and #75/#80 adopted; remaining support leverage/outcomes need source-pinned evidence, not a latch. |
-| Mesh approach coordination | Flex/Do-It-All retains frozen #87. Run reviews its whole movement policy and interaction with accepted #89, consulting Catching's producer approval. Minimal #81/cost dependency is already adopted; do not import observer or old trials. | Saved A020/A044, controls A008/A032 and published #87 prefixes are accessible. Reuse them; no recollection or suite while awaiting review. Preserve A044's unchanged catch probability/changed RNG explanation and unvalidated later offensive block. Final intents cannot recover discarded stages. |
+| Mesh approach coordination | Do-It-All/Catching/Run reconcile adopted #87 at clean checkpoints. Both independent review gates and exact verification are complete through #91. Address a named remaining mechanism using source-qualified evidence; observer and old trials remain separate. | Saved A020/A044, controls A008/A032 and published #87 prefixes are accessible. Reuse them; no recollection or suite while awaiting review. Preserve A044's unchanged catch probability/changed RNG explanation and unvalidated later offensive block. Final intents cannot recover discarded stages. |
 
 Measurement supports saved-data distribution/validation and a named remaining
 geometry/timing question. Use stored body velocities, stable identities, actual
@@ -250,13 +306,14 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
 
-### Current #87 policy candidate — 2026-10-15
+### Completed #91 / #87 policy adoption — 2026-10-15
 
-Accepted develop remains9adb7b3. Run's independent review b1c75b8 accepts the
-exact seven-file post-dependency policy on that pin; Catching approved its own
-objective producers. The portable patch applies directly and all seven blobs
+Accepted develop is **bb6d4c73948d53ba841dd9338dd240146c739f8c** through #91.
+Run's independent review b1c75b8 accepted the
+exact seven-file post-dependency policy on prior accepted9adb7b3; Catching approved
+its own objective producers. The portable patch applied directly; all seven blobs
 equal reviewed author9760de0. Source668acb1 includes accepted #88/#89/cost.
-Integration owns one exact combined verification in `codex/mesh-policy-integration`.
+Integration completed the exact candidate verifications below in `codex/mesh-policy-integration`.
 
 Passing reconciled freeze `d8a63f3826af9d85b62dc259ac113127bf59df74`: **1,780 TS/151 files,145 Python,
 typecheck/build pass**;200.787s,44flags/components1,Node22.23.3, no skips/input
@@ -265,7 +322,9 @@ drift. Source668acb1, validation709b58e.
 Final candidate has seven reviewed author files plus the independently reviewed
 test-only reload adapter. Initial200.811s failure and1.533s focused diagnostic
 remain preserved; total integration command cost403.132s.
-Publication changes only docs/evidence; adoption awaits final ref/tree checks.
+Publication changed only docs/evidence. Fresh preview and actual merged tree
+equal publication; protected files equal the passing freeze.
+[Actual merge](../data/reviews/current/pr91-merge.json).
 No additional standalone native cases, panel or evaluation games.
 
 **Initial failed verification — preserved:** freezeb3caeb8 completes all phases with six existing
@@ -278,8 +337,8 @@ physical field and the complete own-objective value, asserting exactly the
 expected private key. All12 pull-fit checks pass in1.533s; no runtime change.
 [Contract review](../data/reviews/current/mesh-policy-integration/pull-fit-contract-review.json)
 and [candidate reconciliation](../data/reviews/current/mesh-policy-integration/candidate-reconciliation.json).
-The original failed receipt remains failed. Final candidate adds only this eighth
-protected file; Integration runs required phases once for its changed validation
+The original failed receipt remains failed. The final candidate added only this
+eighth protected file; required phases completed once for its changed validation
 tree before adoption. No additional native cases or football-contract waiver.
 [Intake, approvals and thirty evidence hash checks](../data/reviews/current/mesh-policy-integration/intake.json).
 [Fetchable exact patch](../data/reviews/current/mesh-policy-integration/traffic-controller.patch).
@@ -321,7 +380,7 @@ No additional standalone native execution, panel or evaluation games.
 | #88 collection | `6573521bc28ea09c2aa6c05770f20b2089cc9fe6`: post-release blocking.ts clearance, direct test/fixture only | [Do-It-All ACCEPT6206668974](https://github.com/tannerthardy/football-simulation-/pull/88#issuecomment-6206668974). Actual A018 Mike load while RT retains DT; release unchanged. Later C/LG collision49.969 remains; A030 shorter ending/D05 changed same attempt/D07 censored. #86 diagnostic is not a dependency. |
 | #81 minimal admission + cost | `f04235ed91ad41ca79cbd22cbfccab48477d06db` + `d80dcd3015358e604f91cb026f562f6f4f4781e5`, evidence `c6c8b4823acb27c13769f32305a79d5628cf19b2`; four files | [Run ACCEPT6206768415](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6206768415). Original clear-lane zero-preview assertion unchanged; counts0/0/0, residual/recovery/crossing still forecast. No movement-law or full-engine speedup claim. Old #81 head/failed receipt stay distinct and unchanged. |
 | #89 moving alley | `78a00645e4f821d45604a1ed68c35592de1f5926`: one run-fits.ts lateral velocity input + four coverage contracts | [Run ACCEPT6206768642](https://github.com/tannerthardy/football-simulation-/pull/89#issuecomment-6206768642). Existing acquired lateral motion, fixed longitudinal cap. Better A042/A006 entry; A006 hold still breaks and later FS acquisition worsens3.75→3.90. A003 late changes; censored controls remain censored. |
-| #87 policy gate now resolved; current candidate above | `9760de031cae3bda7c926735f8edeb97fa4574e5`, executed52518be | Catching approves objective producers; [Run ACCEPT6208072709](https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6208072709) closes the remaining policy/interaction gate on9adb7b3. Seven-file successor assembled above; no #87 was included in completed #90. |
+| #87 adopted through #91; completed record above | `9760de031cae3bda7c926735f8edeb97fa4574e5`, executed52518be | Catching approves objective producers; [Run ACCEPT6208072709](https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6208072709) closes the remaining policy/interaction gate on9adb7b3. Seven-file successor assembled above; no #87 was included in completed #90. |
 
 Three disjoint production hunks preserve shared physics/capacities/defaults,
 keeper security, acquired-picture ownership and installed responsibilities.
