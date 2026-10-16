@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Catching: next coverage-objective / approach question — 2026-10-15
+
+`codex/coverage-approach-duty` starts accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c` (#91). Reuse saved A020/A042 and
+ordinary controls to identify one repeated pre-contact decision: installed duty,
+consumed cue, attainable objective, request and achieved motion. Initial boundary
+is a diagnostic/report only; no runtime edits claimed yet. A020/A042 initiating
+causes remain distinct. Coordinate any spacing/common movement-modifier change
+with Flex/Do-It-All before editing. Preserve all accepted recognition/support/
+lateral-flow/traffic corrections and real contact physics. Integration owns
+combined verification; no automatic panel or suite repeat.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
