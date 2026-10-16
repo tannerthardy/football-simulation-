@@ -139,7 +139,7 @@ def outputs(catalog):
                  family['description'], ''] + table_header
         rows.extend(source_row(d) for d in docs if family['key'] in d['interpretation']['families'])
         rows.append('')
-    pages['CONCEPTS.md'] = '\n'.join(rows) + '\n'
+    pages['CONCEPTS.md'] = '\n'.join(rows).rstrip() + '\n'
     for doc in docs:
         pages[doc['text']] = source_card(doc, families)
 
