@@ -1,0 +1,72 @@
+{
+  "schema": "claude-zone-review-evidence-v1",
+  "authorCommit": "50f6a080eacb8bf5d12fec8c9af53550ee8b4a96",
+  "acceptedCommit": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "sourceSha256": "6753fa98966622ab758e4c4c56104dedf00b111c1429d7be66c5fad62531cd21",
+  "disposition": "HOLD RUN_LANE and CLIMB_EXIT",
+  "nativeContinuations": 12,
+  "terminal": 8,
+  "explicitCensors": 4,
+  "commandSeconds": 17.937722733,
+  "receipts": [
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/candidate-typecheck.json",
+      "seconds": 10.002429015
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/native-lane-receipt.json",
+      "seconds": 1.2487504470000002
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/native-both-receipt.json",
+      "seconds": 1.348392619
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/native-base-receipt.json",
+      "seconds": 1.374816721
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/focused-author.json",
+      "seconds": 2.096399418
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/decision-probes-receipt.json",
+      "seconds": 0.291946871
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/native-exit-receipt.json",
+      "seconds": 1.266807672
+    },
+    {
+      "path": "data/reviews/current/claude-zone-independent-review/production-decision-probes-receipt.json",
+      "seconds": 0.30817997
+    }
+  ],
+  "files": {
+    "data/reviews/current/claude-zone-independent-review/candidate-typecheck.json": "7030fac0a64112b320a4085eab6c45567ab8419aea890e056821b2fe62f7c48c",
+    "data/reviews/current/claude-zone-independent-review/decision-probes-receipt.json": "624dfb37b704d2397bd8d9439d34913d0e8546c8a1ffd812bec092b682eabe63",
+    "data/reviews/current/claude-zone-independent-review/decision-probes.json": "11e4bbf92919b4a81c017ce8c393eb82501abea0b139364d9b2d1a7721496558",
+    "data/reviews/current/claude-zone-independent-review/decision-probes.log": "40c1557054e0d1fcd9b286c56321caebcea59c20e1df7c29659c28a99494a38b",
+    "data/reviews/current/claude-zone-independent-review/focused-author.json": "21305429fa34b39e7ee70a8fb816cac0aba94005ef5ff003e27d9b12c95d757f",
+    "data/reviews/current/claude-zone-independent-review/inputs.json": "143b2852f241b07bc0601c55cb55c87ea623fa28add26ab63b21cf80333815f5",
+    "data/reviews/current/claude-zone-independent-review/native-base-receipt.json": "95148c5084509c1f8b3dd401dd32d9395793dad07c0b0b03a1f3feaa5ba02fe9",
+    "data/reviews/current/claude-zone-independent-review/native-base.json.gz": "e298139f2cc8afe6baba7005f2c60c0a54d41a50c91a5dc0287456c25b859dee",
+    "data/reviews/current/claude-zone-independent-review/native-base.log": "bf812a2ac5b83a29c14e9dd4a36cfafcbd84f205cd06a2da3dbb2f8db35ce12d",
+    "data/reviews/current/claude-zone-independent-review/native-both-receipt.json": "efaf4f1c49b9d68bc43b645b249dab1622c2fb84b8793bc5e2ac79868e38ef25",
+    "data/reviews/current/claude-zone-independent-review/native-both.json.gz": "e8f66be0a3d9e1c3853f639456bdb045bdb253ce59e5e8cfa69696274dddd146",
+    "data/reviews/current/claude-zone-independent-review/native-both.log": "1605938b998364d5e1b7c7aceceb2c59ef8e918ec32cd4066f5454564526d6be",
+    "data/reviews/current/claude-zone-independent-review/native-exit-receipt.json": "8fbf0de7999f3dad2405ef71d60cab59a75c7f095be1b22e21c9299e7e703568",
+    "data/reviews/current/claude-zone-independent-review/native-exit.json.gz": "0c283f362a9c07d967d914818e9a722dc5f9148ee2d516f5a742bbf7fff98148",
+    "data/reviews/current/claude-zone-independent-review/native-exit.log": "5b24cf8b4a558637c317d236155e34b91695a356b7739e99d6b6cbae206b6c81",
+    "data/reviews/current/claude-zone-independent-review/native-lane-receipt.json": "63be1f4f5b6bf43fd78388187aa275698cf71fae7c2dcc12b15d0ad97dfd64bf",
+    "data/reviews/current/claude-zone-independent-review/native-lane.json.gz": "6965ea7b0d88adaa637de09faa09ed2633a773f0f63232a2aa8da8f8c26a5a25",
+    "data/reviews/current/claude-zone-independent-review/native-lane.log": "44dfd283c578bef84a8b4d859b406ae03a1bc7d1fb7a0018e03ea603445b6e3a",
+    "data/reviews/current/claude-zone-independent-review/native-summary.json": "f98101070af030066475be4691e95b95bba34eac740a24804ecd48375d47a089",
+    "data/reviews/current/claude-zone-independent-review/production-decision-probes-receipt.json": "91ca8bd5505e1f72fcccf93af1669faf8e7ca693e01a88eaadb65b7fffd05092",
+    "data/reviews/current/claude-zone-independent-review/production-decision-probes.json": "8a74173534df7c33d26beee44ceb7ea29699137d8c38aa3396c7e8333a95d76b",
+    "data/reviews/current/claude-zone-independent-review/production-decision-probes.log": "b908c4db9605f55836cced377ab43e79011478ba87d9682b50af62882669825a",
+    "data/reviews/current/claude-zone-independent-review/repro/decisions.ts": "8bd5e94542ae0441e6fd085f60d55197af07075a86584c0f7d408c17bbddccbd",
+    "data/reviews/current/claude-zone-independent-review/repro/native.ts": "f697256c55a9e8aaf2013e4a12a97b3c09a4542ff99ac7271da4bceb2506c580",
+    "data/reviews/current/claude-zone-independent-review/review-checks.json": "efa2bd28b55f920bd14b54b4d4aa0a756bc56dc1553e2e3960d7c1485ad8e488"
+  }
+}

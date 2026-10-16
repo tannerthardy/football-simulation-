@@ -1,0 +1,231 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate --flag CF_FLOW=none --flag RUN_LANE=1 --flag CLIMB_EXIT=1 --receipt out/claude-zone-review/production-decision-probes-receipt.json -- node --import tsx scripts/diag/claude-zone-decision-probes.ts out/claude-zone-review/production-decision-probes.json
+
+Profile candidate: run-game-2026-10-13, commit 50f6a080eacb8bf5d12fec8c9af53550ee8b4a96, source 6753fa98966622ab758e4c4c56104dedf00b111c1429d7be66c5fad62531cd21
+Running node --import tsx scripts/diag/claude-zone-decision-probes.ts out/claude-zone-review/production-decision-probes.json
+{
+  "protection": [
+    {
+      "mirror": 1,
+      "incidental": false,
+      "selected": {
+        "x": 38.8,
+        "y": 19.67
+      },
+      "command": {
+        "vel": {
+          "x": 0.41831769587373,
+          "y": -9.412148157158962
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "occupiedEntry": {
+        "entry": {
+          "x": 40.5,
+          "y": 28.67
+        },
+        "risk": 8.557297854567143,
+        "score": 8.557297854567143
+      },
+      "defender": {
+        "pos": {
+          "x": 40.5,
+          "y": 28.67
+        },
+        "radius": 0.3
+      },
+      "runnerRadius": 0.28727272727272724,
+      "receiver": {
+        "pos": {
+          "x": 14,
+          "y": 2
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "radius": 0.22818181818181818
+      },
+      "gap": 37.068877907280765,
+      "actualEngagement": false
+    },
+    {
+      "mirror": 1,
+      "incidental": true,
+      "selected": {
+        "x": 40.5,
+        "y": 28.67
+      },
+      "command": {
+        "vel": {
+          "x": 9.421439519892484,
+          "y": 0
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0.9535714285714285
+      },
+      "occupiedEntry": {
+        "entry": {
+          "x": 40.5,
+          "y": 28.67
+        },
+        "risk": 0,
+        "score": 0
+      },
+      "defender": {
+        "pos": {
+          "x": 40.5,
+          "y": 28.67
+        },
+        "radius": 0.3
+      },
+      "runnerRadius": 0.28727272727272724,
+      "receiver": {
+        "pos": {
+          "x": 41.128181818181815,
+          "y": 28.67
+        },
+        "vel": {
+          "x": 5,
+          "y": 0
+        },
+        "radius": 0.22818181818181818
+      },
+      "gap": 0.09999999999999712,
+      "actualEngagement": false
+    },
+    {
+      "mirror": -1,
+      "incidental": false,
+      "selected": {
+        "x": 38.8,
+        "y": 33.67
+      },
+      "command": {
+        "vel": {
+          "x": 0.41831769587373,
+          "y": 9.412148157158962
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "occupiedEntry": {
+        "entry": {
+          "x": 40.5,
+          "y": 24.67
+        },
+        "risk": 8.557297854567143,
+        "score": 8.557297854567143
+      },
+      "defender": {
+        "pos": {
+          "x": 40.5,
+          "y": 24.67
+        },
+        "radius": 0.3
+      },
+      "runnerRadius": 0.28727272727272724,
+      "receiver": {
+        "pos": {
+          "x": 14,
+          "y": 2
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "radius": 0.22818181818181818
+      },
+      "gap": 34.34557479047737,
+      "actualEngagement": false
+    },
+    {
+      "mirror": -1,
+      "incidental": true,
+      "selected": {
+        "x": 40.5,
+        "y": 24.67
+      },
+      "command": {
+        "vel": {
+          "x": 9.421439519892484,
+          "y": 0
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0.9535714285714285
+      },
+      "occupiedEntry": {
+        "entry": {
+          "x": 40.5,
+          "y": 24.67
+        },
+        "risk": 0,
+        "score": 0
+      },
+      "defender": {
+        "pos": {
+          "x": 40.5,
+          "y": 24.67
+        },
+        "radius": 0.3
+      },
+      "runnerRadius": 0.28727272727272724,
+      "receiver": {
+        "pos": {
+          "x": 41.128181818181815,
+          "y": 24.67
+        },
+        "vel": {
+          "x": 5,
+          "y": 0
+        },
+        "radius": 0.22818181818181818
+      },
+      "gap": 0.09999999999999712,
+      "actualEngagement": false
+    }
+  ],
+  "cadence": [
+    {
+      "changed": false,
+      "deadline": 1.1941726024929096,
+      "decisionInterval": 0.19417260249290955,
+      "first": {
+        "vel": {
+          "x": 2.442980486110906,
+          "y": 5.13273088222508
+        },
+        "facing": 0.6067442431765229
+      },
+      "second": {
+        "vel": {
+          "x": 2.442980486110906,
+          "y": 5.13273088222508
+        },
+        "facing": 0.6067442431765229
+      }
+    },
+    {
+      "changed": true,
+      "deadline": 1.1941726024929096,
+      "decisionInterval": 0.19417260249290955,
+      "first": {
+        "vel": {
+          "x": 2.442980486110906,
+          "y": 5.13273088222508
+        },
+        "facing": 0.6067442431765229
+      },
+      "second": {
+        "vel": {
+          "x": 5.648306929503264,
+          "y": 0.642195750806866
+        },
+        "facing": 0.6334991162169075
+      }
+    }
+  ]
+}
+Validation receipt: out/claude-zone-review/production-decision-probes-receipt.json; exit 0

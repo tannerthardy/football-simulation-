@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Run: independent Claude zone review — 2026-10-16
+
+User requests validation and integration disposition. Review host
+`codex/claude-zone-independent-review` pins Claude50f6a080eacb8bf5d12fec8c9af53550ee8b4a96,
+directly on accepted developc3264b0bad72bd2c208602e0ecf0461c00d9669f;
+canonical queue625f3b4f545cf0c7f414b672e3776f916928f158 agrees. This is an
+explicit dependent review host, not a new accepted baseline. Run owns only
+review probes/tests/evidence/report. No authored controller/physics changes,
+experimental default promotion, author-branch edits or broad lab repetition.
+Review RUN_LANE and CLIMB_EXIT independently; ZONE_COMBO/CLIMB_SPACE/COMBO_SECURE
+remain parked. #101's collector failure-recording hold remains independent.
+
+Independent disposition: HOLD both runtime candidates. Authored5 checks and
+typecheck pass;12 bounded native continuations separate both candidates and
+their interaction. Mirrored real-carrier witness falsely assigns zero risk to
+an occupied entry when a receiver passes beyond D. Exit ignores installed
+read boundary; useful RT–Mike load starts earlier but ends before arrival.
+No source/default changes.17.938 command seconds;8 native endings and4 explicit
+3.5s censors, no games/census. [Exact review](reviews/claude-zone-independent-review.md).
+
 ## Claude zone run game investigation — 2026-10-16
 
 Claude owns `claude/zone-run-breakthrough` from accepted c3264b0 (not
