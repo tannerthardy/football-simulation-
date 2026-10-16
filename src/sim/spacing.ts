@@ -43,6 +43,46 @@ interface PeerPicture {
   touch: number;
 }
 
+interface ClosingLimit { nx:number; ny:number; speed:number }
+
+/** Later radial corrections must not undo earlier teammate headway. Choose
+ * the closest requested velocity satisfying the already admitted limits and
+ * existing speed cap. This is a command projection, not achievable clearance:
+ * momentum, contacts and the next acquired picture still govern movement.
+ * A squeezed/inconsistent picture can have no feasible request; retain the
+ * ordinary response there rather than inventing room or moving a teammate.
+ */
+function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:number},
+  limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
+  const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
+    &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
+  if(feasible(ordinary))return ordinary;
+  let best:{x:number;y:number}|undefined,bestError=Infinity;
+  function consider(x:number,y:number):void {
+    const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
+    if(error<bestError&&feasible(v)){best=v;bestError=error;}
+  }
+  const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
+  consider(raw.x*scale,raw.y*scale);
+  for(let i=0;i<limits.length;i++){
+    const c=limits[i],excess=raw.x*c.nx+raw.y*c.ny-c.speed;
+    consider(raw.x-c.nx*excess,raw.y-c.ny*excess);
+    // An optimum lies on one limit, two intersecting limits, or the cap.
+    const tangent2=cap*cap-c.speed*c.speed;
+    if(tangent2>=0){
+      const tangent=Math.sqrt(tangent2);
+      consider(c.nx*c.speed-c.ny*tangent,c.ny*c.speed+c.nx*tangent);
+      consider(c.nx*c.speed+c.ny*tangent,c.ny*c.speed-c.nx*tangent);
+    }
+    for(let j=0;j<i;j++){
+      const d=limits[j],cross=c.nx*d.ny-c.ny*d.nx;
+      if(Math.abs(cross)>1e-12)consider((c.speed*d.ny-c.ny*d.speed)/cross,
+        (c.nx*d.speed-c.speed*d.nx)/cross);
+    }
+  }
+  return best??ordinary;
+}
+
 function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture):number {
   let px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
   let minimum=Math.hypot(px,py)-peer.touch;
@@ -216,6 +256,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
+    const limits:ClosingLimit[]=[];
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
       const b = agents[j];
@@ -246,6 +287,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
+      limits.push({nx,ny,speed:allowed+seen.vel.x*nx+seen.vel.y*ny});
       if (closing > allowed) {
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
@@ -254,7 +296,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
-      spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
+      spaced = { ...ia, vel: jointClosingRequest(ia.vel,{ x: vx*scale, y: vy*scale },limits,cap) };
     }
     const gathered=gatherForMotion(a,spaced,peers,context);
     intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
