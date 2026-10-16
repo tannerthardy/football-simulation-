@@ -4,6 +4,7 @@ import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {gzipSync} from 'node:zlib';
 import {PlaySim} from '../../src/sim/playsim.js';
 import {runContactObservers} from '../../src/sim/run-contact-observer.js';
+import {runReadObservers} from '../../src/sim/run-read-observer.js';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.js';
 import {sourceVersion} from '../source-version.js';
 
@@ -18,7 +19,7 @@ mkdirSync(out,{recursive:true});const start=performance.now(),results=[];
 for(const id of ids){
  const saved=JSON.parse(readFileSync(`${input}/${id}.json`,'utf8')),sim=new PlaySim(structuredClone(saved.setup));
  if(sha(sim.agents.map(a=>({idx:a.idx,id:a.player.id,body:a.body})))!==sha(saved.initialBodies))throw Error('Initial state differs');
- const events:any[]=[],reads:any[]=[],calls:any[]=[],frames:any[]=[];
+ const events:any[]=[],reads:any[]=[],calls:any[]=[],frames:any[]=[],footballReads:any[]=[];
  const earlyAt=args.includes('--early-check-at')?Number(arg('--early-check-at')):null;let intervention:any=null;
  const plain=(p:any)=>p?{kind:p.kind,target:p.target?.idx,drive:p.drive,
   combination:p.combination?{members:p.combination.members.map((a:any)=>a.idx),defender:p.combination.defender.idx,backer:p.combination.backer?.idx,released:p.combination.released}:null,
@@ -57,18 +58,19 @@ for(const id of ids){
    };
   }
   if(typeof behavior.calledMotion==='function'){const called=behavior.calledMotion;behavior.calledMotion=function(...values:any[]){const result=called.apply(this,values);const last=reads[reads.length-1];if(last?.b===a.idx)last.called=structuredClone(result);return result;};}
-  for(const name of ['zoneFlow','attack','leaveCombination'])if(typeof behavior[name]==='function'){
+  for(const name of ['zoneFlow','attack','leaveCombination','readZone'])if(typeof behavior[name]==='function'){
    const method=behavior[name];behavior[name]=function(...values:any[]){const result=method.apply(this,values);calls.push({a:a.idx,name,plan:plain(this.plan),returned:structuredClone(result),departureRead:structuredClone(this.departureRead)});return result;};
   }
  }
+ runReadObservers.set(sim,e=>{footballReads.push(structuredClone(e));});
  runContactObservers.set(sim,(e,phase,data)=>{events.push({owner:e.blocker.idx,defender:e.defender.idx,helpers:e.helpers.map(a=>a.idx),phase,data:structuredClone(data)});});
  let goals:any=null;const step=sim.world.step.bind(sim.world);sim.world.step=(...values)=>{goals=structuredClone((sim as any).cmds);return step(...values);};
  sim.event('snap',sim.slot('C')??sim.qb);
  while(sim.phase==='live'&&sim.t<until){
   if(performance.now()-start>20000)throw Error('Native budget exhausted');
-  events.length=0;reads.length=0;calls.length=0;
+  events.length=0;reads.length=0;calls.length=0;footballReads.length=0;
   const t=sim.t,before=sim.agents.map(a=>structuredClone(a.body)),jobs=sim.agents.map(a=>plain((a.behavior as any).plan)),rngBefore=JSON.stringify(sim.rng);
-  sim.tick();frames.push({t,before,jobs,goals,commands:structuredClone(sim.intents),calls:[...calls],reads:[...reads],movement:[...events],
+  sim.tick();frames.push({t,before,jobs,goals,commands:structuredClone(sim.intents),calls:[...calls],reads:[...reads],movement:[...events],footballReads:[...footballReads],
    after:sim.agents.map(a=>structuredClone(a.body)),contacts:structuredClone(sim.lastStep?.contacts),
    work:sim.lastStep?.work,rngBefore,rngAfter:JSON.stringify(sim.rng),
    blocks:sim.engagements.map(e=>({b:e.blocker.idx,d:e.defender.idx,helpers:e.helpers.map(a=>a.idx),surfaceAxis:e.surfaceAxis,drive:e.drive,phi:e.phi,control:e.control,

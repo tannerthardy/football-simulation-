@@ -757,7 +757,7 @@ export class RunBlocker implements Behavior {
 
   contactMotion(a: Agent): Vec2 | null {
     const e = a.engagement, read = this.zoneRead, held = this.stretchTrackRead;
-    if (e?.blocker === a && held && this.stretchStep && e.defender === held.target
+    if (e?.blocker === a && !e.surfaceAxis && held && this.stretchStep && e.defender === held.target
       && this.plan.target === held.target && this.plan.combination === held.combo && !held.combo.released)
       return this.stretchStep;
     if (!RUN_CONTACT_TRACK) return null;
