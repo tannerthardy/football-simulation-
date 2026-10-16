@@ -154,7 +154,14 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     const decel=Math.max(.1,-brake.x*ux-brake.y*uy);
     const closing=Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
     const through=2.5+2*(1-tackle);
-    const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
+    const rvx = a.vel.x - seen.vel.x, rvy = a.vel.y - seen.vel.y;
+    // Radial closure is not a collision course. If the observed relative
+    // path passes outside the hip corridor, keep working the interception
+    // angle instead of spending its lateral movement on an early gather.
+    // The ordinary close-distance gather below still owns the final steps.
+    const relativeMiss = dist * Math.abs(ux * rvy - uy * rvx) / Math.max(.1, Math.hypot(rvx, rvy));
+    const collision = clamp((contact + .5 - relativeMiss) / .75, 0, 1);
+    const stopping=Math.max(0,(closing*closing-through*through)/(2*decel)) * collision;
     // One arrival budget across incoming and crossing approaches. A small
     // heading change blends technique instead of selecting a new speed policy.
     // Near gathers start from available braking; far oblique angles still run.

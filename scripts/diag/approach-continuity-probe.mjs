@@ -19,11 +19,11 @@ import {sourceVersion} from '../source-version.ts';
 const [dir,out,modeArg]=process.argv.slice(2),start=performance.now(),hash=b=>createHash('sha256').update(b).digest('hex');
 assert.ok(!existsSync(out));
 const fixtures=[];
-for(const [name,t]of [['A020',3.75],['A042',2.65],['A008',2.5]]){
+for(const [name,t,label]of [['A020',3.75],['A042',2.65],['A008',2.5],['A020',3.4,'A020-early'],['A042',2.3,'A042-early']]){
  const b=readFileSync(`${dir}/${name}.json`),raw=JSON.parse(b),
   capture=JSON.parse(gunzipSync(readFileSync(`${dir}/${name}-capture.json.gz`))),
   row=capture.rows.find(r=>r.t===t),seen=row.cues.find(c=>c.caller.includes('at chase ')).picture;
- fixtures.push({name,raw,row,seen,inputHash:hash(b),captureHash:hash(readFileSync(`${dir}/${name}-capture.json.gz`))});
+ fixtures.push({name:label??name,actor:capture.actor,target:capture.target,raw,row,seen,inputHash:hash(b),captureHash:hash(readFileSync(`${dir}/${name}-capture.json.gz`))});
 }
 const base=fixtures[1];
 for(const [name,pos,vel,runnerPos,runnerVel]of [
@@ -55,10 +55,8 @@ function planned(a,seen,contact,offset,ordinary){
  return{...ordinary,vel,facing:Math.atan2(vel.y,vel.x)};
 }
 const rows=[];
-for(const f of fixtures)for(const side of [1,-1])for(const mode of ['baseline','coherent']){
- const sim=new PlaySim(structuredClone(f.raw.setup)),d=sim.agents[f.raw.actors.find(a=>a.id===
-  (f.name==='A020'?'S74D-CB3':f.name==='A008'?'S30D-CB3':'S69D-S1')).idx],
-  target=sim.agents[f.name==='A020'?10:f.name==='A008'?7:6];
+for(const f of fixtures)for(const side of [1,-1])for(const mode of modeArg==='--production-only'?['baseline']:['baseline','coherent']){
+ const sim=new PlaySim(structuredClone(f.raw.setup)),d=sim.agents[f.actor],target=sim.agents[f.target];
  d.body=structuredClone(f.row.body);d.runFit=structuredClone(f.row.runFit);d.r=k=>f.row.ratings[k]??.5;
  if(side<0){d.body.pos.y=FIELD_WIDTH-d.body.pos.y;d.body.vel.y*=-1;d.body.facing*=-1;if(d.runFit)d.runFit.side*=-1;}
  const initial=structuredClone(f.seen),mirror=p=>({x:p.x,y:side>0?p.y:FIELD_WIDTH-p.y}),
