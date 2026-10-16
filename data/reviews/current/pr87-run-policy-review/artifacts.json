@@ -1,0 +1,38 @@
+{
+  "A042-paired.json.gz": {
+    "bytes": 2190039,
+    "sha256": "010d788f7b00b3b2c34095bcd4087fdfe627830d63c2c3650d4a2f7581ff9438"
+  },
+  "A042-setup.json": {
+    "bytes": 47998,
+    "sha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa"
+  },
+  "candidate-launcher.json": {
+    "bytes": 2251,
+    "sha256": "a2654a470908de97278ad513f414ae012bb19c3bde727a2eecd96634d408a907"
+  },
+  "receipt.json": {
+    "bytes": 12347,
+    "sha256": "250be2c42349fe114a5c1f3976009d76ced6178b2117fb025f0abf73030a89f8"
+  },
+  "reference-launcher.json": {
+    "bytes": 2258,
+    "sha256": "72eb8ef2d7ef6aa82cbe814f49bb74484467c21b2b39aef871278f87292af4ef"
+  },
+  "static.json": {
+    "bytes": 3675,
+    "sha256": "32411474825e035426ae17273169233fa1c1cb6f546162c22d5f5a55a21611c3"
+  },
+  "traffic-controller.patch": {
+    "bytes": 34341,
+    "sha256": "2eed36e711164fbc468879e86d1283fa65e80fbbd451f1f01549d1177cd9054d"
+  },
+  "unit-launcher.json": {
+    "bytes": 2249,
+    "sha256": "16db882856b537da670e26ccb6b5e23f72a447885f4926dc2aef4b85c15e7d5d"
+  },
+  "unit.json": {
+    "bytes": 27572,
+    "sha256": "33271161764ee33dc1ffd0237e656eafb6eab44fbe28318731e5caf44d34755e"
+  }
+}

@@ -2,6 +2,15 @@
 
 ## Run: independent #87 movement-policy / accepted #89 interaction review
 
+Completed: **ACCEPT exact seven-file post-dependency policy** on9adb7b3;
+composed runtime668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac.
+[Findings, limits and direct handoff](reviews/pr87-run-policy-review.md).
+Preserves accepted #89/#88 files and cost proof; reuses39 focused/typecheck.
+One bounded A042 pair keeps runner/SS/FS bodies and requests/root RNG exact
+through explicit3.80 censor, with off-ball/block-force changes retained.
+New launchers2.508s, no repeated native panel/game/suite or production edit.
+Integration owns exact combined verification/adoption; no further variant.
+
 Requested review of frozen #87 at9760de031cae3bda7c926735f8edeb97fa4574e5,
 implementation52518be, on accepted9adb7b3f730c5637e5a6547f9bc151a17ce301b2
 (published queue12956c66 agrees). Review the seven-file post-dependency scope:

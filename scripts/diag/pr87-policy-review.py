@@ -86,7 +86,12 @@ for case in ['A044', 'A008']:
     assert old['provenance']['worldDefaults'] == new['provenance']['worldDefaults']
     assert old['provenance']['node'] == new['provenance']['node'] == 'v22.23.3'
     assert old['ticks'][0]['inputs'] == new['ticks'][0]['inputs']
-    first = next((a['t'] for a, b in zip(old['ticks'], new['ticks']) if a['inputs'] != b['inputs'] or a['agents'] != b['agents']), None)
+    # New metadata is present before any movement changes. Do not call the
+    # mere recorded symbol/objective difference a physical/controller fork.
+    first = next((a['t'] for a, b in zip(old['ticks'], new['ticks'])
+                  if a['commands'] != b['commands'] or a['agents'] != b['agents']
+                  or any(x['body'] != y['body'] or x.get('raw', {}).get('command') != y.get('raw', {}).get('command')
+                         for x, y in zip(a['inputs'], b['inputs']))), None)
     def contacts(r):
         return [{'t': t['t'], **c} for t in r['ticks'] for c in t['contacts'] if c['i'] in [15, 21] or c['j'] in [15, 21]]
     primary = [10] if case == 'A044' else [7, 19]
