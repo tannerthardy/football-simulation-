@@ -311,6 +311,13 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 Accepted develop remainsbb6d4c7. Five routine scopes are assembled in
 `codex/recent-controller-integration`; Integration owns one exact verification.
 Only16 source/test/fixture files; no diagnostics or experimental ancestry.
+
+Passing freeze `75c76583e5cc5a3a4039f0626cd7c7d88df44573`: **1,816 TS/156 files,145 Python,
+typecheck/build pass**;222.569s,Node22.23.3,44flags/components1, no skips/input
+drift. Ten focused overlap checks cost1.050s; total223.619s.
+[Final exact receipt](../data/reviews/current/recent-controller-integration/final-receipt.json).
+Publication changes only docs/evidence; adoption awaits final ref/tree checks.
+No extra native panel, roster screen or evaluation games.
 [Exact pins, independent decisions and preservation checks](../data/reviews/current/recent-controller-integration/intake.json).
 
 | Item | Scope | Current decision |
@@ -336,6 +343,18 @@ has no new native claim. Initial setup and D-objective corrections can change
 trajectories; preserved adverse results are not required to revert to old gains.
 No new roster/panel/game campaign. Held work holds only itself. Historical4ded6b6,
 default, physical laws/capacities/settings and research branches stay unchanged.
+
+Posted independent review requests (no repeat broad evidence collection):
+
+- [Run / independent coverage review: #100](https://github.com/tannerthardy/football-simulation-/pull/100#issuecomment-6220457199).
+- [Run / independent inline-zone review: #104](https://github.com/tannerthardy/football-simulation-/pull/104#issuecomment-6220458186).
+- [Physics / independent lifecycle review: #102](https://github.com/tannerthardy/football-simulation-/pull/102#issuecomment-6220459277).
+- [Measurement / independent tooling and evidence review: #101](https://github.com/tannerthardy/football-simulation-/pull/101#issuecomment-6220460164).
+- [Do-It-All / independent rat-policy review: #95](https://github.com/tannerthardy/football-simulation-/pull/95#issuecomment-6220461119).
+- [Catching composed97/100 extraction boundary](https://github.com/tannerthardy/football-simulation-/pull/97#issuecomment-6220462094).
+
+[Copyable exact requests](../data/reviews/current/recent-controller-integration/review-requests.json).
+
 
 ### Completed #91 / #87 policy adoption — 2026-10-15
 
