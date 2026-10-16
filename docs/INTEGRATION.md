@@ -258,7 +258,17 @@ objective producers. The portable patch applies directly and all seven blobs
 equal reviewed author9760de0. Source668acb1 includes accepted #88/#89/cost.
 Integration owns one exact combined verification in `codex/mesh-policy-integration`.
 
-**Verification HOLD:** freezeb3caeb8 completes all phases with six existing
+Passing reconciled freeze `d8a63f3826af9d85b62dc259ac113127bf59df74`: **1,780 TS/151 files,145 Python,
+typecheck/build pass**;200.787s,44flags/components1,Node22.23.3, no skips/input
+drift. Source668acb1, validation709b58e.
+[Final exact receipt](../data/reviews/current/mesh-policy-integration/final-receipt.json).
+Final candidate has seven reviewed author files plus the independently reviewed
+test-only reload adapter. Initial200.811s failure and1.533s focused diagnostic
+remain preserved; total integration command cost403.132s.
+Publication changes only docs/evidence; adoption awaits final ref/tree checks.
+No additional standalone native cases, panel or evaluation games.
+
+**Initial failed verification — preserved:** freezeb3caeb8 completes all phases with six existing
 pull-fit whole-command comparison failures:1,774 TS pass/6 fail,145 Python,
 typecheck/build pass;200.811s, no skipped phase/input drift.
 [Preserved failed receipt](../data/reviews/current/mesh-policy-integration/failed-receipt.json).
