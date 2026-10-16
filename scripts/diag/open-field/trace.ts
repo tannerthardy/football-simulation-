@@ -135,7 +135,10 @@ function trace(c: LabCase, R: ReturnType<typeof rosters>) {
     common: { id: caseId(c), source: 'sim', kind: 'run', yards: r2(res.offenseYards), dt: .1, xy, carrier: sim.slot('RB')!.idx,
       ball_y: r2(dir > 0 ? sim.ballY : W - sim.ballY),
       players: sim.agents.map(a => ({ side: a.team, group: ({ QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' } as Record<string, string>)[a.player.position] ?? 'OTHER' })),
-      events: { handoff: sim.handoffAt >= 0 ? r2(sim.handoffAt) : undefined, end: r2(sim.t) } },
+      events: { handoff: sim.handoffAt >= 0 ? r2(sim.handoffAt) : undefined, end: r2(sim.t),
+        // Same first-contact definition as scripts/mechanics/sim-export.ts.
+        first_contact: sim.events.find(e => (e.type === 'carrier_contact' && (e.a === sim.slot('RB')!.idx || e.b === sim.slot('RB')!.idx))
+          || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === sim.slot('RB')!.idx))?.t } },
     events: ev, holds: H, enc: [...enc.values()].map(({ n, ...e }) => e), snap, path: path.filter((_, i) => i % 2 === 0), dir, los: sim.los,
     approach: [...approach.entries()].map(([d, a]) => ({ d: d.slot, min: r2(a.min), t: r2(a.t), inRange: a.inRange, attempts: a.attempts, ...a.rel }))
       .filter(a => a.min < 4).sort((x, y) => x.t - y.t) };

@@ -4,9 +4,12 @@
 
 Claude owns `claude/open-field-tackling`, stacked on `claude/zone-run-breakthrough`
 `50f6a08` (accepted base c3264b0; not integrated). Edited: `run-fits.ts` new
-`isRunCap`/`capFit` and one flag-gated line in `executeRunFit`; `DEEP_CAP` is
-default-off and parked (better secondary depth and conditional tail, but it
-exposes soft box fits). Diagnostics under `scripts/diag/open-field/`. No
+`isRunCap`/`capFit` and one flag-gated line in `executeRunFit`;
+`engagement.ts` flag-gated `DL_ESCAPE` trigger and `LB_SHED` condition in
+`stepRunRep`. All default-off: `DL_ESCAPE` is the recommended candidate;
+`DEEP_CAP` and `LB_SHED` are parked (cap exposes the box). Diagnostics under
+`scripts/diag/open-field/`. Open: zone lateral race (controller) and
+weight-decided contact (physics). No
 World, tackle-law or capacity edits; two physics questions handed off in the
 [review](reviews/open-field-tackling.md).
 

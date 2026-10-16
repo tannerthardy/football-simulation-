@@ -655,6 +655,17 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
 const runSheds = new WeakMap<Engagement, { until: number; side: number }>();
+/** DL_ESCAPE (experimental, off): the defender's counterpart of the blocker's
+ * lost-depth anchor. A defender who feels himself driven back stops shoving
+ * square, which a heavier blocker wins, and works off the block to his
+ * installed shoulder with the ordinary physical shed. Felt through his own
+ * body; the release, and any ground he gives meanwhile, stay physical. */
+const DL_ESCAPE = process.env.DL_ESCAPE === '1';
+/** LB_SHED (experimental, off): a second-level defender (no line gap to hold)
+ * who reads run and sees the runner works off a block toward him at once,
+ * rather than waiting for the runner to come within 3.5 yd. Same physical
+ * shed; the blocker's hands and body decide whether he gets off. */
+const LB_SHED = process.env.LB_SHED === '1';
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -982,7 +993,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // standing at the mesh before the handoff.
   if (read.threat && t >= e.nextMoveAt) {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
-    if (dc < 3.5) {
+    const second = LB_SHED && !!d.runFit && d.runFit.kind !== 'interior' && d.runFit.kind !== 'edge';
+    if (dc < 3.5 || (second && SHED_PHYSICAL)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
@@ -1006,6 +1018,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         e.control = Math.min(1, e.control + 0.2);
         e.nextMoveAt = t + 0.4 + rng.range(0, 0.3);
       }
+    }
+  }
+  if (DL_ESCAPE && read.stack && !(runSheds.get(e)?.until! > t) && t >= e.nextMoveAt) {
+    const up = sim.attackDir(b.team), felt = d.body.support?.felt;
+    if (felt && felt.x * up > 0.25 * d.profile.massKg * G && d.vel.x * up > 0.15) {
+      runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: e.side });
+      e.nextMoveAt = t + d.mind.decisionInterval * 2;
+      d.tags.add('escape-drive');
     }
   }
   const shed = runSheds.get(e);

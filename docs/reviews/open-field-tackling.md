@@ -22,6 +22,9 @@ has also been propping up a soft front seven.
   tackles 83% (75% against the elite pair11 back), and holds break 6% of the time.
 - The same operator on 2022 NFL tracking and on the sim shows the deep secondary
   is gone in the sim by 3 s. The runner's timing matches the NFL.
+- Part 2 follows the cap into the box: the line loses the contest (no lateral
+  zone race; single blocks decided by weight). `DL_ESCAPE=1` (default-off,
+  recommended candidate) moves several first-contact measures onto the NFL's.
 - Restoring a deep cap (`DEEP_CAP=1`, default-off) makes the conditional tail far
   more NFL-like. It also exposes a soft box: 10+ yd runs more than double, and
   the runner reaches the safety untouched. Promotion needs the box fixed first.
@@ -200,6 +203,122 @@ if (CHASE_REACH && waitForBetter && window.currentQuality > 0) {
 }
 ```
 
+## Part 2: the box behind the cap
+
+With full ownership granted, I followed the cap's exposed weakness into the
+box. Same lab and operators. NFL figures are 2022 runs through the same code
+on the common play format.
+
+### Who should make the first contact
+
+Nearest defender at first contact (a proxy for the first tackler), by group
+and depth at the snap (`firsttackler.py`):
+
+| | NFL | Candidate | Candidate + cap |
+|---|---|---|---|
+| Defensive line | 41.1% (ybc 0.2) | 33.6% (−0.3) | 32.7% |
+| Linebackers | 35.5% | 39.4% | 39.3% |
+| DB 10+ deep at the snap | 5.1% (ybc 6.7) | 10.1% (3.9) | 10.9% (8.8) |
+
+The sim's deep safety makes contacts that NFL defensive linemen make. With
+the cap on, nobody replaces them, and yards before contact p90 goes from 3.7
+to 7.8 (NFL 4.7).
+
+### The trench, measured the same way
+
+- **Placement at the line crossing is fine.** When the runner crosses the
+  line, the nearest free second-level defender is 3.2 yd away (NFL 3.6), and
+  more sim defenders are free within 3 yd (`second.py`).
+- **Get-off** (`getoff.py`, time to move 0.15 yd): NFL box defenders and OL
+  both move at 0.3 s on runs and passes. Sim box defenders take 0.5 s, sim OL
+  0.4 s. Sim defensive latency is `snapDelay + reactionTime·(1 − 0.4·anticipation)`
+  (0.15–0.27 s), which the code itself calls an unfitted assumption. Halving
+  it (diagnostic only, not kept) brings the early contest toward the NFL: a
+  lineman's ground at 2 s goes from +0.1 to −0.2 (NFL −0.5), 40+ from 3.7% to
+  3.0%. The driven-back tail does not change.
+- **Single blocks are decided by weight**, as in `trench-deep-dive.md`.
+  Defender's median ground at 3 s (+ = driven back) by blocker/defender mass
+  ratio: < 0.95 → −1.42; 0.95–1.05 → −0.98; 1.05–1.15 → −0.60; > 1.15 → +1.16,
+  with 29% driven 2.5+ yd. NFL outcomes do not track the ratio.
+- **No lateral race** (`scripts/diag/trench/timeline.py`):
+
+  | At 2.0 s | NFL | Sim |
+  |---|---|---|
+  | Outside zone OL / DL / LB lateral flow (yd) | 4.9 / 4.5 / 4.8 | 1.6 / 1.0 / 2.6 |
+  | Outside zone engaged OL lateral speed (yd/s) | 3.0 | 0.75 |
+  | Inside zone OL / DL lateral flow (yd) | 2.2 / 1.9 | 1.0 / 0.6 |
+  | Inside zone engaged DL depth, 2 s / 3 s (yd) | 0.65 / 1.37 | 1.6 / 2.6 |
+
+  A rep trace (`oz/strong/over3/pair11/77`) shows the mechanism. The
+  play-side end requests 4.8 yd/s play side and achieves 1.4–2.0. The tight
+  end blocking him requests 0.5–0.9 yd/s lateral plus 2.4 forward.
+  1. On a stretch, the blocker's lateral request is the larger of his seal
+     correction and the defender's achieved lateral speed.
+  2. The hand joint (legal steer force) slows the defender.
+  3. The blocker then matches that slower speed.
+
+  Each side follows the other, so the pair settles at a slow equilibrium. NFL
+  zone blockers lead: their footwork drives the race. Two attempts failed and
+  were removed:
+  - `DL_HOLD`: attacking fits defend their contact depth, as control fits do.
+    Lateral flow was unchanged and linemen were driven further (inside zone
+    3 s: 3.15 yd).
+  - The existing `RUN_CONTACT_TRACK`: no change.
+
+  Next owner: zone reach footwork has to lead the race (blockers'
+  `mirror` cap 2.2–2.7 yd/s is also below the NFL's 3.0 engaged speed), and
+  steering must not become a lateral hold.
+
+### `DL_ESCAPE` (kept, default-off, recommended candidate)
+
+This is the defender's counterpart of the blocker's lost-depth anchor. A
+first-level fit who feels himself driven back stops shoving square and works
+off the block to his installed shoulder with the ordinary physical shed. Two
+conditions trigger it: felt load toward his backfield above 0.25 body weight,
+and backward speed above 0.15 yd/s. It uses only his own body and the shed's
+existing timer. It frees almost nobody (1 shed in 517 triggers) and leaves
+the weight dependence unchanged. What it changes is when defenders come off
+blocks, and several independent measures move to the NFL:
+
+| | Candidate | + `DL_ESCAPE` | NFL |
+|---|---|---|---|
+| Line makes first contact | 33.6% | 40.7% | 41.1% |
+| Yards before contact median (mean) | 0.8 (1.18) | 0.5 (0.90) | 0.6 (1.17) |
+| First block length, IZ / OZ (s) | 2.9 / 2.6 | 2.5 / 2.5 | 2.6 / 2.4 |
+| Mean / median gain | 6.37 / 3.3 | 5.92 / 2.8 | 4.45 / 3.0 |
+| 10+ / 40+ | 9.9 / 4.1% | 9.0 / 3.9% | 11.7 / 0.67% |
+
+Transfer:
+- Gun/pistol/I zone (1,800 runs): mean 5.93 → 5.28, 20+ 4.3 → 2.8%, 40+
+  3.3 → 2.5%, line first contact 32 → 36%.
+- Power/counter/duo/trap (1,600 runs): neutral (7.52 → 7.48). Those linemen
+  are washed sideways, not driven straight back.
+- With the cap: 10+ 24.8 → 22.8%, 40+ 3.7 → 3.75%.
+
+Contract tests: `test/dl-escape.test.ts`.
+
+### `LB_SHED` (kept, default-off, parked)
+
+A second-level defender who reads run works off a block toward the runner at
+once, instead of waiting for the runner within 3.5 yd. Alone it is null
+(10+ 9.3%, 40+ 4.2%). With escape and cap, 40+ goes from 3.75% to 2.92%, but
+linebackers passed while blocked stay at 57%. NFL is 40% in 10+ runs; sim
+free-near linebackers trail the runner's flow by 1.9 yd (NFL 0.5;
+`lbpass.py`). Linebackers decide to get off blocks but physically do not:
+the same weight-decided contact as the line.
+
+### Where this leaves the run defense
+
+The tail needs two things together: a real last level (`DEEP_CAP`), and a box
+that holds without it. The box needs, in order:
+1. A lateral zone race (controller: reach footwork leads and does not follow
+   the defender's achieved speed).
+2. Contact outcomes that do not follow body weight (physics: the deep dive's
+   leverage and eccentric work, unimported).
+3. Defensive get-off measured against tracking (perception latency).
+
+`DL_ESCAPE` is the one controller piece that moves NFL measures now.
+
 ## Reproduce
 
 ```sh
@@ -212,6 +331,12 @@ python3 -I scripts/diag/open-field/timing.py out/open-field/all/lane.jsonl.gz --
 python3 -I scripts/diag/open-field/summary.py 'out/open-field/lane-[0-3].jsonl.gz'      # holds, events
 python3 -I scripts/diag/open-field/encounters.py 'out/open-field/lane-[0-3].jsonl.gz'   # first encounters
 node --import tsx scripts/diag/open-field/space.ts --seeds 3                            # one-on-one drill, about 8 s
+# Part 2 (PY = a python3; common.sh also writes a concept-tagged file for the trench timeline)
+scripts/diag/open-field/run.sh esc RUN_LANE=1 CLIMB_EXIT=1 DL_ESCAPE=1 && scripts/diag/open-field/common.sh esc
+python3 -I scripts/diag/open-field/firsttackler.py out/open-field/all/esc.jsonl.gz --sim-trace   # also on NFL without the flag
+python3 -I scripts/diag/open-field/mech.py out/open-field/all/esc.jsonl.gz                      # shared run metrics beside NFL
+python3 -I scripts/diag/trench/timeline.py out/mechanics/nfl-plays.jsonl.gz out/open-field/all/esc-common.jsonl.gz
+python3 -I scripts/diag/open-field/getoff.py FILE [--sim-trace]; second.py, lbpass.py, trench.py likewise
 ```
 
 `run.sh` sets a scratch Node path for this environment; elsewhere put Node 22
