@@ -1,0 +1,189 @@
+{
+  "caseId": "A002",
+  "inputSha256": "c89114b0e70a701a69f3429a69e709d4897b825b4547fbd5ee0834b2b2dd8c2f",
+  "lineup": "speed-gap",
+  "setup": {
+    "offCall": {
+      "formation": {
+        "id": "ace_11",
+        "name": "Singleback Ace",
+        "personnel": "11",
+        "qb": "under",
+        "tags": [
+          "pro",
+          "2x2"
+        ],
+        "slots": {
+          "X": {
+            "side": "L",
+            "split": "wide",
+            "depth": 0.6
+          },
+          "H": {
+            "side": "L",
+            "split": "slot",
+            "depth": 1.2
+          },
+          "Y": {
+            "side": "R",
+            "split": "inline",
+            "depth": 0.6
+          },
+          "Z": {
+            "side": "R",
+            "split": "wide",
+            "depth": 1.2
+          },
+          "RB": {
+            "side": "C",
+            "split": 0,
+            "depth": 6.8
+          }
+        }
+      },
+      "flip": false,
+      "kind": "run",
+      "run": {
+        "id": "oz_strong",
+        "name": "Outside Zone",
+        "scheme": "outsideZone",
+        "direction": "strong",
+        "aim": "C",
+        "meshTime": 1.15,
+        "pullers": [],
+        "beats": [
+          "penetrating",
+          "light-box"
+        ]
+      },
+      "label": "Singleback Ace \u00b7 Outside Zone"
+    },
+    "defCall": {
+      "personnel": "nickel",
+      "front": {
+        "id": "under",
+        "name": "4-3 Under",
+        "personnel": [
+          "base43",
+          "nickel"
+        ],
+        "slots": {
+          "DE_S": {
+            "tech": "5",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_S": {
+            "tech": "1",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_W": {
+            "tech": "3",
+            "side": "W",
+            "depth": 0.9
+          },
+          "DE_W": {
+            "tech": "w9",
+            "side": "W",
+            "depth": 0.9
+          },
+          "LB_S": {
+            "tech": "9",
+            "side": "S",
+            "depth": 1
+          },
+          "LB_M": {
+            "tech": "3",
+            "side": "S",
+            "depth": 4.8999999999999995
+          },
+          "LB_W": {
+            "tech": "2",
+            "side": "W",
+            "depth": 4.6
+          }
+        }
+      },
+      "coverage": {
+        "id": "cover1",
+        "name": "Cover 1 (Man-Free)",
+        "family": "cover1",
+        "shell": "one-high",
+        "man": true,
+        "press": true,
+        "note": "Press man with a post safety; the spare backer plays robber.",
+        "roles": {
+          "CB_S": {
+            "kind": "man",
+            "prefer": [
+              "S1"
+            ]
+          },
+          "CB_W": {
+            "kind": "man",
+            "prefer": [
+              "W1"
+            ]
+          },
+          "NB": {
+            "kind": "man",
+            "prefer": [
+              "S2",
+              "W2"
+            ]
+          },
+          "DB": {
+            "kind": "man",
+            "prefer": [
+              "W2",
+              "S3"
+            ]
+          },
+          "SS": {
+            "kind": "man",
+            "prefer": [
+              "S3",
+              "S2",
+              "W2"
+            ]
+          },
+          "FS": {
+            "kind": "zone",
+            "zone": "deep_mid"
+          },
+          "LB_S": {
+            "kind": "man",
+            "prefer": [
+              "S3",
+              "B"
+            ]
+          },
+          "LB_M": {
+            "kind": "zone",
+            "zone": "robber"
+          },
+          "LB_W": {
+            "kind": "man",
+            "prefer": [
+              "B",
+              "W2"
+            ]
+          }
+        },
+        "underneath": []
+      },
+      "pressure": null,
+      "label": "4-3 Under \u00b7 Cover 1 (Man-Free)"
+    },
+    "los": 35,
+    "ballY": 26.666666666666668,
+    "firstDownX": 45,
+    "down": 1,
+    "seed": 71002,
+    "audibles": false,
+    "record": true,
+    "recordEvery": 1,
+    "recordLevel": "full"
+  }
+}

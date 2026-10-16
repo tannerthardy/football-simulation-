@@ -12,6 +12,13 @@ in-play correction, added observations/RNG, capacity or force changes. Shared
 alignment boundary coordinated through #95 comment6210664704; no active owner
 conflict found. Main stretch-contact feet and held #94/#96 remain separate.
 
+Completed runtime/test candidate c574615d90943c9e839c506882989a1be6bc89eb
+(source34375c7); root independently accepts the bounded initial-stance rule.
+24 distinct focused checks and typecheck pass. Four short native executions
+retain A003 exact through2.80 and A002's adverse earlier DE tackle/lost Mike load.
+This removes impossible starting overlap; it establishes no rushing benefit.
+See [report](reviews/press-front-stance.md) for pins, all costs and limitations.
+
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 

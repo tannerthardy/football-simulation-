@@ -1,0 +1,168 @@
+{
+  "caseId": "A003",
+  "inputSha256": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+  "lineup": "speed-gap",
+  "setup": {
+    "offCall": {
+      "formation": {
+        "id": "ace_11",
+        "name": "Singleback Ace",
+        "personnel": "11",
+        "qb": "under",
+        "tags": [
+          "pro",
+          "2x2"
+        ],
+        "slots": {
+          "X": {
+            "side": "L",
+            "split": "wide",
+            "depth": 0.6
+          },
+          "H": {
+            "side": "L",
+            "split": "slot",
+            "depth": 1.2
+          },
+          "Y": {
+            "side": "R",
+            "split": "inline",
+            "depth": 0.6
+          },
+          "Z": {
+            "side": "R",
+            "split": "wide",
+            "depth": 1.2
+          },
+          "RB": {
+            "side": "C",
+            "split": 0,
+            "depth": 6.8
+          }
+        }
+      },
+      "flip": false,
+      "kind": "run",
+      "run": {
+        "id": "wz_strong",
+        "name": "Wide Zone",
+        "scheme": "wideZone",
+        "direction": "strong",
+        "aim": "D",
+        "meshTime": 1.2,
+        "pullers": [],
+        "beats": [
+          "light-box"
+        ]
+      },
+      "label": "Singleback Ace \u00b7 Wide Zone"
+    },
+    "defCall": {
+      "personnel": "nickel",
+      "front": {
+        "id": "wide9",
+        "name": "Wide-9 Nickel",
+        "personnel": [
+          "nickel",
+          "dime"
+        ],
+        "slots": {
+          "DE_S": {
+            "tech": "w9",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_S": {
+            "tech": "3",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_W": {
+            "tech": "2i",
+            "side": "W",
+            "depth": 0.9
+          },
+          "DE_W": {
+            "tech": "w9",
+            "side": "W",
+            "depth": 0.9
+          },
+          "LB_M": {
+            "tech": "2",
+            "side": "S",
+            "depth": 4.8999999999999995
+          },
+          "LB_W": {
+            "tech": "2",
+            "side": "W",
+            "depth": 4.6
+          }
+        }
+      },
+      "coverage": {
+        "id": "cover4",
+        "name": "Quarters (MOD)",
+        "family": "cover4",
+        "shell": "two-high",
+        "man": false,
+        "press": false,
+        "note": "Corners MOD on #1; safeties read #2 (vertical: carry; out/under: help #1); apexes wall #2.",
+        "roles": {
+          "CB_S": {
+            "kind": "zone",
+            "zone": "quarter_s_out",
+            "rule": "q_corner_mod"
+          },
+          "SS": {
+            "kind": "zone",
+            "zone": "quarter_s_in",
+            "rule": "q_safety"
+          },
+          "CB_W": {
+            "kind": "zone",
+            "zone": "quarter_w_out",
+            "rule": "q_corner_mod"
+          },
+          "FS": {
+            "kind": "zone",
+            "zone": "quarter_w_in",
+            "rule": "q_safety"
+          }
+        },
+        "underneath": [
+          {
+            "zone": "curl_flat_s",
+            "rule": "q_apex"
+          },
+          {
+            "zone": "curl_flat_w",
+            "rule": "q_apex"
+          },
+          {
+            "zone": "hook_mid",
+            "rule": "mike_3"
+          },
+          "hook_s",
+          "hook_w"
+        ],
+        "checks": {
+          "3x1": [
+            "cover4_poach",
+            "cover4_stubbie"
+          ]
+        }
+      },
+      "pressure": null,
+      "label": "Wide-9 Nickel \u00b7 Quarters (MOD)"
+    },
+    "los": 35,
+    "ballY": 26.666666666666668,
+    "firstDownX": 45,
+    "down": 1,
+    "seed": 71001,
+    "audibles": false,
+    "record": true,
+    "recordEvery": 1,
+    "recordLevel": "full"
+  }
+}

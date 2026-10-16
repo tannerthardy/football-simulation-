@@ -1,0 +1,55 @@
+{
+  "schema": "press-front-stance-artifacts-v1",
+  "files": [
+    {
+      "path": "comparison.json",
+      "bytes": 106792,
+      "sha256": "2d0f175d39e0c8cbfaa1f9823f9ea5abca3fd1337aa7aa6cadd6e17209da3919"
+    },
+    {
+      "path": "inputs/A002.json",
+      "bytes": 4043,
+      "sha256": "f3f74ee72e39c648c8691109a6c17687bbe6f976d9bcadf04ba4fc4cf966f03f"
+    },
+    {
+      "path": "inputs/A003.json",
+      "bytes": 3772,
+      "sha256": "1c8e1c8b0e9134904f0b8c48b791583cb560abea3b95cda09a3f00a8c3bac196"
+    },
+    {
+      "path": "receipts/candidate-native.json",
+      "bytes": 2410,
+      "sha256": "bc65d6f6f2ca220334f066e21a3df3b07b40af30b0a670cf5919b499a3ded640"
+    },
+    {
+      "path": "receipts/creep.json",
+      "bytes": 2316,
+      "sha256": "0d01147d314f420ba80652b07e66938b5b6d4869ecdb86a6c2286efd2097a618"
+    },
+    {
+      "path": "receipts/focused.json",
+      "bytes": 2355,
+      "sha256": "b15ec83ce25c185bc2aad9d6b4ee631c90bb91d88d927a82229eb39a5cb21421"
+    },
+    {
+      "path": "receipts/presnap.json",
+      "bytes": 2374,
+      "sha256": "f3b3197d8d064f38bdbae5937f078bbd7e8234fe1b06d63ae4656958b3e4cb68"
+    },
+    {
+      "path": "receipts/reference-native.json",
+      "bytes": 2419,
+      "sha256": "114826ca1f4323417e9d18fdbb6d293992bd2b4f97169cad2cf9110d585d978f"
+    },
+    {
+      "path": "receipts/setup-final.json",
+      "bytes": 2269,
+      "sha256": "34391ce28dec32d3a889ce35a496f21008e41236c755b3b10e49c3947a33adc8"
+    },
+    {
+      "path": "receipts/typecheck.json",
+      "bytes": 2249,
+      "sha256": "aa99c71b3bcbbe272c3db431cb39c03384379e8f35b7a799d0bdfb70ada4e197"
+    }
+  ]
+}
