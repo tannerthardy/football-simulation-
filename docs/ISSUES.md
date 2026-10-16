@@ -132,7 +132,7 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
 
-2026-10-16 update: Do-It-All accepts exact #97/#100 release-read/provisional-block composition and separate #95 acquired rat duty at ba399712 on3723204. Integration has reconciled the shared entry producer once;20 existing overlap checks pass, exact combined verification pending. Drive high/low losses, exposed seam, changed targets/RNG and rat collision/fall/lost availability remain accepted local costs, not proof of overall coverage/tackling improvement. [Current scope](INTEGRATION.md#ready-blocked-experimental). The earlier review-request paragraph below describes the prior stage.
+2026-10-16 update: Do-It-All accepts exact #97/#100 release-read/provisional-block composition and separate #95 acquired rat duty at ba399712 on3723204. Integration has reconciled the shared entry producer once;20 existing overlap checks and exact #107 freeze90240f5 pass:1,890 TS/145 Python/typecheck/build. Guarded adoption pending, no unchanged rerun. Drive high/low losses, exposed seam, changed targets/RNG and rat collision/fall/lost availability remain accepted local costs, not proof of overall coverage/tackling improvement. [Current scope](INTEGRATION.md#ready-blocked-experimental). The earlier review-request paragraph below describes the prior stage.
 
 Current review queue: #97 provisional block key and #100 release cushion/seam
 delivery overlap in acquired-entry and three block conditions. Independent Run
@@ -653,7 +653,7 @@ of grip CPU work. [Exact evidence](https://github.com/tannerthardy/football-simu
 <a id="PHY-004"></a>
 ### PHY-004 — Contact validity stays an explicit caller responsibility
 
-2026-10-16: Physics independently ACCEPTS #102 head7b09c65 / implementation84a71af as enforcement of the existing solo-run full-span validity bound, not added reach/strength or a new force law. Exact extraction prepared for combined verification. Ordinary disengage removes World joints and actor pointers. Helpers and active pass preserve legacy behavior; converted solo pass-to-run uses the new bound.20Hz validity misses possible within-tick excursions. Earlier F002/A002 defensive access and A027 changed fumble/draw stream remain adverse/source-qualified; all transfer prefixes are live at3.10s. No new mechanical law or experimental solver promotion. [Review](https://github.com/tannerthardy/football-simulation-/pull/102#issuecomment-6220760634).
+2026-10-16: Physics independently ACCEPTS #102 head7b09c65 / implementation84a71af as enforcement of the existing solo-run full-span validity bound, not added reach/strength or a new force law. Exact extraction passes combined #107 freeze90240f5 (1,890 TS/145 Python/typecheck/build); guarded adoption pending. Ordinary disengage removes World joints and actor pointers. Helpers and active pass preserve legacy behavior; converted solo pass-to-run uses the new bound.20Hz validity misses possible within-tick excursions. Earlier F002/A002 defensive access and A027 changed fumble/draw stream remain adverse/source-qualified; all transfer prefixes are live at3.10s. No new mechanical law or experimental solver promotion. [Review](https://github.com/tannerthardy/football-simulation-/pull/102#issuecomment-6220760634).
 
 The saved synthetic unreachable hand joint still transmits shear. This is not
 a demonstrated native controller occurrence. Acquisition/reach/geometry/clearance

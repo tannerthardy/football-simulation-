@@ -47,7 +47,7 @@ does not establish overall coverage, protection or statistical realism.
   verification, held items, football limits and next decision in one handoff.
 
 <a id="accepted-development"></a>
-## Current approved batch — exact verification pending
+## Current approved batch — #107 verified; guarded adoption pending
 
 Accepted develop remains **3723204bd0743713bca3e87f10ca01bfebf00a15** until adoption.
 Integration owns isolated `codex/coverage-run-integration` from that pin plus
@@ -59,9 +59,12 @@ hold; this is user approval, not an independent author review.
 
 Fourteen protected files/six runtime files. Shared acquired entry occurs once;
 #95's cut is reconciled separately. #104 retains accepted #96 near-fit work.
-Existing 20 rat/provisional-block overlap checks pass; all other focused/native
-receipts are reused within their original source limits. Integration will freeze
-and verify this exact compatible tree once with all44 flags/components1.
+Existing20 overlap checks pass; compatible focused/native receipts are reused.
+Exact freeze90240f5 passes **1,890 TS/162files,145 Python,typecheck/build**,
+226.175s,Node22.23.3,44flags/components1; no drift/skips. Targeted overlap1.873s,
+total228.048s. One combined run, no unchanged repeat to publish/merge.
+[Final receipt and complete raw log](../data/reviews/current/coverage-run-integration/final-receipt.json).
+[Guarded adoption PR #107](https://github.com/tannerthardy/football-simulation-/pull/107).
 [Intake, approval, reviews, overlay and extraction audit](../data/reviews/current/coverage-run-integration/intake.json).
 [Pinned independent coverage/rat adjudication](reviews/coverage-contract-review.md).
 

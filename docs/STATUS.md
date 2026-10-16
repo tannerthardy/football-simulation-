@@ -4,7 +4,7 @@ Updated **2026-10-16 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Approved next batch, verification pending:** #97/#100 release contracts, #95 acquired rat duty, #102 bounded contact-span validity and user-approved #104 inline role. Fourteen protected files;20 existing overlap checks pass. Accepted develop stays3723204 until exact verification/adoption. #101 tooling-HOLD: Run repairs lost wall-censor accounting/exception traces; Measurement reviews without a study rerun. [Exact scope and owners](INTEGRATION.md#ready-blocked-experimental).
+- **#107 verified, guarded adoption pending:** #97/#100 release contracts, #95 acquired rat duty, #102 bounded contact-span validity and user-approved #104 inline role. Fourteen protected files; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build,226.175s plus1.873s overlap,total228.048s. Accepted develop stays3723204 until guarded adoption. #101 tooling-HOLD: Run repairs lost wall-censor accounting/exception traces; Measurement reviews without a study rerun. [Exact scope and owners](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #105:** #92/#94/#96/#98/#103 adopted as3723204 after independent
   reviews and one exact verification:1,816 TS/156 files,145 Python,typecheck/build
   pass;222.569s plus1.050s overlap screen,total223.619s. Adverse evidence retained.
