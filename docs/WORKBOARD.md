@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Do-It-All movement continuation — 2026-10-15
+
+Fetched/accepted bb6d4c73948d53ba841dd9338dd240146c739f8c; isolated branch
+codex/traffic-followup. #94 remains frozen at4564a66 and #92 remains separate.
+First own saved A028 request/motion attribution and a bounded follow-up only
+after a mechanism is supported. Existing #94 tapes are source-qualified research
+evidence, not accepted development. No new full panel or contributor suite.
+Run's #96 attack/near-fit and Catching's objective/coverage functions stay with
+their owners; agree any common helper edit before proceeding. Independent #96
+review may reuse its evidence, without replacing this movement objective.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
