@@ -1,0 +1,7 @@
+{
+  "question": "Can the existing flowing-backer cue authorize useful edge check before forced outward joining, with every keeper/corridor constraint retained?",
+  "reDiagnosis": "Edge check installation alone exactly preserves A039. It accumulates a legitimate secure history from1.25, but at1.45 the unjoined branch tests only current acquired backer distance (>4.2), unlike joined backerShows (default FLOW_RELEASE). At1.65 it is already joined and must complete the later1.75 release. No frame/control waiver is proposed.",
+  "singleFeature": "For newly installed stretch edge checks, consume the same existing backerShows/FLOW_RELEASE cue as joined stretch work; no change to existing IZ/split check triggers, torso checks, hands, dwell, corridor, assignment target or movement.",
+  "componentEvidence": "Policy-alone A039 full output unchanged (saved current base source668acb1). Flow-only code is unreachable on baseline A039 because no stretch edge check exists; its normal output therefore reuses baseline. Combined source is tested explicitly.",
+  "budget": "One A039 native continuation max5simseconds/5wallseconds before relevant controls. Earlier block_climb is insufficient; require actual keeper and Mike protection through natural runner arrival."
+}
