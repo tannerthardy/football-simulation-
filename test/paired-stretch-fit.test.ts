@@ -115,7 +115,7 @@ describe('paired stretch fits use the acquired picture and their installed half'
     f.blocker.body.vel = { x: 2.8, y: -1 };
     const before = structuredClone(f.blocker.body);
     const command = f.update()!;
-    expect(command.x).toBe(0);
+    expect(command.x).toBeLessThan(0);
     expect(f.blocker.body).toEqual(before);
     expect(f.combo.released).toBe(false);
   });

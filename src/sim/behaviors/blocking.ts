@@ -1252,10 +1252,10 @@ export class RunBlocker implements Behavior {
     const arrival = movingArrivalVelocity(a.body,
       goal, seen.vel,
       a.profile.vmax, 0, 0, .8 + .3 * a.r('runBlock'), capacity);
-    // Brake the normal approach too, rather than running past the struck
-    // half. Preserve the ordinary drive ceiling and do not chase a
-    // penetrator backward; the existing felt-load anchor still opposes him.
-    this.stretchStep = { x: dir * clamp(arrival.x * dir, 0, 2.4), y: arrival.y };
+    // Keep the struck relationship in both axes. A short retreat can replace
+    // feet after overrunning the half; use the existing stretch recovery and
+    // drive bounds. The felt-load anchor still opposes actual lost depth.
+    this.stretchStep = { x: dir * clamp(arrival.x * dir, -1, 2.4), y: arrival.y };
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
