@@ -689,7 +689,10 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     }
     // Contact that has come apart (a bump, a spin away) ends the rep.
     const apart = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - (b.profile.radius + d.profile.radius);
-    if (apart > Math.max(traits(b).arm, traits(d).arm) / 36 + 0.35) {
+    // An isolated run contact cannot steer through air beyond either full
+    // arm. Preserve the existing pass and shared-helper contact lifecycle.
+    const grace = e.type === 'run' && !e.helpers.length ? 0 : 0.35;
+    if (apart > Math.max(traits(b).arm, traits(d).arm) / 36 + grace) {
       if (e.type === 'run') runContactObservers.get(sim)?.(e, 'end', { reason: 'separation', apart });
       sim.disengage(e);
       continue;

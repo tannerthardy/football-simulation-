@@ -12,6 +12,16 @@ and velocity after a departed center leaves more than three outward bodies.
 No native simulations by this contributor; Run/Do-It-All root owns the
 separate reacting continuation and Integration owns combined verification.
 
+## Do-It-All run contact span — 2026-10-16
+
+Portable candidate on accepted bb6d4c73948d53ba841dd9338dd240146c739f8c.
+Own only updateEngagements' separation grace for a run rep without helpers,
+plus test/run-contact-span.test.ts and its fixture. Physics/Run scope coordinated
+at PR #4 comment6211623671. Saved A015/A003 expose steering beyond both players'
+full arm span; preserve pass behavior, helper contacts, near/full-extension
+contacts, real cloth holds and all physical capacities. No World edits, full
+plays or new PR here; root owns coupled testing and Integration handoff.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
