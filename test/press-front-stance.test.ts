@@ -105,7 +105,7 @@ function setup(front: string, coverage: string): PlaySetup {
   return { ...panel.matchups[0],
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'OZ' },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID[coverage], pressure: null, label: 'stance setup' },
-    los: 35, ballY: FIELD_WIDTH / 2, firstDownX: 45, seed: 71001, audibles: false };
+    los: 35, ballY: FIELD_WIDTH / 2, firstDownX: 45, seed: coverage === 'cover1' ? 71002 : 71001, audibles: false };
 }
 
 describe('initial PlaySim staging hook', () => {
@@ -126,6 +126,14 @@ describe('initial PlaySim staging hook', () => {
     // The first legitimate picture must reflect the installed physical stance.
     expect(sim.see(sim.slot('RT')!, nb).pos.x).toBeCloseTo(nb.pos.x, 12);
     expect(sim.snapX[nb.idx]).toBe(nb.pos.x);
+    const endPosition = { ...end.pos }, nbPosition = { ...nb.pos };
+    sim.tick();
+    // Neither player has reacted: no initial overlap should move the front
+    // through positional contact correction before either requests a step.
+    expect(sim.intents[end.idx].vel).toEqual({ x: 0, y: 0 });
+    expect(sim.intents[nb.idx].vel).toEqual({ x: 0, y: 0 });
+    expect(end.pos).toEqual(endPosition);
+    expect(nb.pos).toEqual(nbPosition);
   });
 
   it('keeps every clear Wide9/Quarters body at its original scattered stance', () => {
