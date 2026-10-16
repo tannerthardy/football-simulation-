@@ -1,0 +1,568 @@
+{
+  "cases": [
+    {
+      "id": "A044",
+      "until": 3.55
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "provenance": {
+    "sourceSha256": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "scriptSha256": "73f35443e92a77bec3339ee24a189048ddde00013c5f16a4f4476208d7f32f4b",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "rows": [
+    {
+      "caseId": "A044",
+      "sha256": "efaea5234e874901b4e9c55a8dfbc2e90b1bfc46ba8f26d1266b30313873d3f3",
+      "stoppedAt": 3.55,
+      "phase": "dead",
+      "elapsedMs": 433.211214,
+      "events": [
+        {
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "pos": {
+            "x": 34.45,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 0.35,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 34.62313956996969,
+            "y": 23.989451252799554
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 35.8,
+            "y": 23.35
+          },
+          "note": "pass; pPass=0.89 focus=0.93 urgency=0.67"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 39,
+            "y": 34.63
+          },
+          "note": "pass; pPass=0.79 focus=1.00 urgency=0.81"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 35.77,
+            "y": 28.58
+          },
+          "note": "pass; pPass=0.73 focus=0.87 urgency=0.78"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 39.97,
+            "y": 24.85
+          },
+          "note": "pass; pPass=0.75 focus=0.86 urgency=0.72"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 39.97,
+            "y": 27.57
+          },
+          "note": "pass; pPass=0.72 focus=0.80 urgency=0.81"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 48.08,
+            "y": 26.64
+          },
+          "note": "pass; pPass=0.71 focus=1.00 urgency=0.84"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 35.66,
+            "y": 26.2
+          },
+          "note": "pass; pPass=0.78 focus=0.88 urgency=0.78"
+        },
+        {
+          "t": 0.65,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 34.09900723824608,
+            "y": 26.47523263911931
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.65,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 34.08836296615697,
+            "y": 27.913139252071502
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "jam",
+          "a": 18,
+          "b": 8,
+          "pos": {
+            "x": 36.54,
+            "y": 43.94
+          }
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 34.48346237832633,
+            "y": 30.2664210799557
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.8,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 35.08,
+            "y": 31.03
+          },
+          "note": "pass; pPass=0.72 focus=0.53 urgency=0.63"
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 36.73,
+            "y": 43.99
+          },
+          "note": "pass; pPass=0.72 focus=0.91 urgency=0.84"
+        },
+        {
+          "t": 0.95,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 36.78,
+            "y": 9.36
+          },
+          "note": "pass; pPass=0.73 focus=0.95 urgency=0.83"
+        },
+        {
+          "t": 1.2,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 36.84,
+            "y": 23.87
+          },
+          "note": "pass; pPass=0.74 focus=0.84 urgency=0.86"
+        },
+        {
+          "t": 2.25,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "pos": {
+            "x": 27.11,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.9,
+          "type": "drop",
+          "a": 10,
+          "pos": {
+            "x": 40.12,
+            "y": 24.35
+          }
+        },
+        {
+          "t": 3.5,
+          "type": "incomplete"
+        }
+      ],
+      "impacts": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ]
+    },
+    {
+      "caseId": "A008",
+      "sha256": "d0e17665d3f34948250e095ba13a3b0ee3e1cf273d71191c547e262edb55fafc",
+      "stoppedAt": 3.4,
+      "phase": "live",
+      "elapsedMs": 355.9584249999999,
+      "events": [
+        {
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "pos": {
+            "x": 34.45,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 39.92,
+            "y": 24.82
+          },
+          "note": "pass; pPass=0.73 focus=0.85 urgency=0.69"
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 39.98,
+            "y": 27.57
+          },
+          "note": "pass; pPass=0.75 focus=0.83 urgency=0.74"
+        },
+        {
+          "t": 0.35,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 34.61216647671818,
+            "y": 23.99080519530909
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 35.82,
+            "y": 23.33
+          },
+          "note": "pass; pPass=0.75 focus=0.90 urgency=0.71"
+        },
+        {
+          "t": 0.35,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 39,
+            "y": 34.62
+          },
+          "note": "pass; pPass=0.77 focus=1.00 urgency=0.73"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 35.79,
+            "y": 26.22
+          },
+          "note": "pass; pPass=0.76 focus=0.90 urgency=0.77"
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 34.28067301188336,
+            "y": 26.566555842549487
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.55,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 35.67,
+            "y": 28.54
+          },
+          "note": "pass; pPass=0.72 focus=0.84 urgency=0.79"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 48.31,
+            "y": 26.64
+          },
+          "note": "pass; pPass=0.70 focus=1.00 urgency=0.82"
+        },
+        {
+          "t": 0.75,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 34.48717907820439,
+            "y": 30.290722339252596
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 34.02072464419829,
+            "y": 27.90016668669368
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.75,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 35.11,
+            "y": 31.08
+          },
+          "note": "pass; pPass=0.75 focus=0.53 urgency=0.73"
+        },
+        {
+          "t": 0.8,
+          "type": "jam",
+          "a": 18,
+          "b": 8,
+          "pos": {
+            "x": 36.56,
+            "y": 43.94
+          }
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 36.63,
+            "y": 9.4
+          },
+          "note": "pass; pPass=0.73 focus=0.97 urgency=0.77"
+        },
+        {
+          "t": 0.85,
+          "type": "jam",
+          "a": 17,
+          "b": 9,
+          "pos": {
+            "x": 36.63,
+            "y": 9.4
+          }
+        },
+        {
+          "t": 1,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 37.01,
+            "y": 44.02
+          },
+          "note": "pass; pPass=0.70 focus=0.90 urgency=0.86"
+        },
+        {
+          "t": 1.2,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 36.85,
+            "y": 23.85
+          },
+          "note": "pass; pPass=0.74 focus=0.85 urgency=0.89"
+        },
+        {
+          "t": 2,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "pos": {
+            "x": 27.13,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.45,
+          "type": "fall",
+          "a": 5,
+          "pos": {
+            "x": 31.21,
+            "y": 24.94
+          },
+          "note": "contact"
+        },
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 38.5,
+            "y": 27.94
+          }
+        },
+        {
+          "t": 2.55,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 30.90881930419616,
+            "y": 25.58012073872421
+          },
+          "note": "run"
+        },
+        {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 7,
+          "b": 19,
+          "pos": {
+            "x": 38.52,
+            "y": 28.18
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.5,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.48,
+            "y": 27.65
+          },
+          "note": "initial"
+        },
+        {
+          "t": 2.8,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 30.111334291470545,
+            "y": 23.951302623649703
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.1,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 29.60276883874612,
+            "y": 31.52160615938188
+          },
+          "note": "run"
+        }
+      ],
+      "impacts": []
+    }
+  ],
+  "elapsedMs": 1035.472961,
+  "cpuMs": 1918.219
+}

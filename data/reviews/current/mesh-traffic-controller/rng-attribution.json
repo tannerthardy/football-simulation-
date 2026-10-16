@@ -1,0 +1,16 @@
+{
+  "firstRootDivergence": 2.7,
+  "cause": "playBall near-path looking chance runs in a different tick; root draw sequence changes",
+  "catchBefore": {
+    "p": 0.782038569970415,
+    "u": 0.7931172286625952,
+    "caught": false
+  },
+  "catchAfter": {
+    "p": 0.782038569970415,
+    "u": 0.6582075736951083,
+    "caught": true
+  },
+  "sameReceiverBodyAndCommandBeforeResolution": true,
+  "claim": "No physical catch-probability improvement or postcatch pursuit benefit established."
+}

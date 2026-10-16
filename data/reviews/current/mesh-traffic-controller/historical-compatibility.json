@@ -1,0 +1,18 @@
+[
+  {
+    "case": "A044",
+    "referenceSource": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "historicalSource": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+    "actualMotionCommandsContactsEqual": true,
+    "eventsAndTerminalRngEqual": true,
+    "ticks": 71
+  },
+  {
+    "case": "A008",
+    "referenceSource": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "historicalSource": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+    "actualMotionCommandsContactsEqual": true,
+    "eventsAndTerminalRngEqual": true,
+    "ticks": 68
+  }
+]

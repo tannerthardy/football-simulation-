@@ -1,0 +1,196 @@
+{
+  "cases": [
+    {
+      "caseId": "A044",
+      "firstDifference": {
+        "t": 2.05,
+        "actors": [
+          21
+        ]
+      },
+      "changedActors": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "eventsEqual": false,
+      "firstRngDifference": 2.7,
+      "primaryFullBodiesEqual": {
+        "10": true
+      },
+      "primaryCommandsEqual": {
+        "10": true
+      },
+      "before": {
+        "ssSpeedAt285": 4.350072590949629,
+        "ssHGapAt285": 2.8649893454326363,
+        "robberHGapAt285": 2.841935172622467,
+        "contactsInvolvingEither": [
+          {
+            "t": 2.75,
+            "i": 15,
+            "j": 21,
+            "impulse": 139.00326883260303,
+            "closing": 2.71611805936524
+          }
+        ],
+        "stoppedAt": 3.55,
+        "phase": "dead",
+        "collection": [
+          {
+            "t": 2.9,
+            "type": "drop",
+            "a": 10,
+            "pos": {
+              "x": 40.12,
+              "y": 24.35
+            }
+          },
+          {
+            "t": 3.5,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "after": {
+        "ssSpeedAt285": 5.414492656195875,
+        "ssHGapAt285": 2.8485159062430014,
+        "robberHGapAt285": 2.8182755165210236,
+        "contactsInvolvingEither": [],
+        "stoppedAt": 3.55,
+        "phase": "live",
+        "collection": [
+          {
+            "t": 2.9,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 40.12,
+              "y": 24.35
+            }
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "A008",
+      "firstDifference": {
+        "t": 2.15,
+        "actors": [
+          21
+        ]
+      },
+      "changedActors": [
+        0,
+        4,
+        6,
+        14,
+        15,
+        21
+      ],
+      "eventsEqual": true,
+      "firstRngDifference": null,
+      "primaryFullBodiesEqual": {
+        "7": true,
+        "19": true
+      },
+      "primaryCommandsEqual": {
+        "7": true,
+        "19": true
+      },
+      "before": {
+        "ssSpeedAt285": 2.181894908997534,
+        "ssHGapAt285": 2.361576694237696,
+        "robberHGapAt285": 1.990271683219518,
+        "contactsInvolvingEither": [],
+        "stoppedAt": 3.4,
+        "phase": "live",
+        "collection": [
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            }
+          },
+          {
+            "t": 2.5,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.48,
+              "y": 27.65
+            },
+            "note": "initial"
+          }
+        ]
+      },
+      "after": {
+        "ssSpeedAt285": 2.2006162303076664,
+        "ssHGapAt285": 2.372944581141506,
+        "robberHGapAt285": 1.9851525571479622,
+        "contactsInvolvingEither": [],
+        "stoppedAt": 3.4,
+        "phase": "live",
+        "collection": [
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            }
+          },
+          {
+            "t": 2.5,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.48,
+              "y": 27.65
+            },
+            "note": "initial"
+          }
+        ]
+      }
+    }
+  ],
+  "newLauncherSeconds": {
+    "focused-v2.json": 1.8732263359999999,
+    "focused-v3.json": 1.666661346,
+    "type-v2.json": 10.157162324,
+    "focused-v1.json": 1.9243828799999998,
+    "type-v1.json": 10.354116566,
+    "reference-native.json": 1.442545291,
+    "candidate-native-v1.json": 1.667780918
+  },
+  "totalNewLauncherSeconds": 29.085875661,
+  "nativeLauncherSeconds": 3.110326209,
+  "nativeExecutions": 4,
+  "fullGames": 0,
+  "newRosters": 0
+}
