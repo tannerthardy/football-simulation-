@@ -1,0 +1,174 @@
+{
+  "schema": "spacing-preview-cost-adjudication-v1",
+  "decision": "Keep the zero-preview contract. The cost is avoidable with a sound settled-travel-line clearance rejection; no movement failure or assertion waiver.",
+  "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "minimalAdmissionExtraction": "f04235ed91ad41ca79cbd22cbfccab48477d06db",
+  "costCorrection": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+  "sourceSha256": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+  "originalFailedCombined": "bbc4f82fea8ffe70cc52e5f747ddad3bb80468e5",
+  "originalFailedSource": "544fea1cc8cd60649d438613e575c914a66424d9357288f8c92a110d73238162",
+  "extractedOriginalProtectedTreeEqualsFailedCombined": true,
+  "cachedBefore": {
+    "operator": "traffic-lanes-diagnostic.test.ts.txt",
+    "config": "traffic-lanes-diagnostic.config.ts.txt",
+    "results": "traffic-lanes-diagnostic.json",
+    "launcher": "traffic-lanes-diagnostic-launcher.json",
+    "mechanicalWorldSteps": 48,
+    "nativeFootballContinuations": 0,
+    "launcherSeconds": 1.451017638,
+    "rows": [
+      {
+        "kind": "original straight",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.2000000000001,
+        "previewCalls": 15,
+        "previewMilliseconds": 11.60696500000006,
+        "totalMilliseconds": 22.413005999999996
+      },
+      {
+        "kind": "parallel",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.200000000000045,
+        "previewCalls": 0,
+        "previewMilliseconds": 0,
+        "totalMilliseconds": 4.022623999999951
+      },
+      {
+        "kind": "close passable",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 54.00000000000014,
+        "previewCalls": 14,
+        "previewMilliseconds": 6.672929999999951,
+        "totalMilliseconds": 15.563411000000087
+      }
+    ],
+    "decision": "Original movement/contact/budget controls hold in all3 existing cases. New preview cost remains an owner-adjudicated contract; no assertion was edited."
+  },
+  "after": {
+    "proof": "Unchanged original test loop passes all3 zero-call assertions after16 command/contact/budget checked ticks each. No baseline rerun.",
+    "lanes": [
+      {
+        "kind": "original straight",
+        "previewCalls": 0,
+        "frames": 16,
+        "commandsPreserved": true,
+        "noContacts": true,
+        "physicalBudgetsPass": true
+      },
+      {
+        "kind": "parallel",
+        "previewCalls": 0,
+        "frames": 16,
+        "commandsPreserved": true,
+        "noContacts": true,
+        "physicalBudgetsPass": true
+      },
+      {
+        "kind": "close passable",
+        "previewCalls": 0,
+        "frames": 16,
+        "commandsPreserved": true,
+        "noContacts": true,
+        "physicalBudgetsPass": true
+      }
+    ]
+  },
+  "positiveAndOpposingControls": {
+    "exactSavedResidualMotion": "still previews when requested turn=.8749657976; private peer getters throw if read; own state untouched",
+    "recoveringSupport": "matched request with xi.y=.1 still previews",
+    "acquiredCrossingPeer": "matched original request with an acquired crossing peer still previews, while private peer remains stationary",
+    "existingControls": "mirrored curved gathers, explicit facing, trailing conflict, loaded constraint/grip, shoulder-turn scope, parallel, far-clear and unavoidable close contact all pass"
+  },
+  "originalClearLaneTestUnchanged": true,
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "validation": {
+    "focused": {
+      "tests": 23,
+      "files": 3,
+      "result": "pass"
+    },
+    "typecheck": "pass"
+  },
+  "newNativeFootballContinuations": 0,
+  "newGames": 0,
+  "newFullSuites": 0,
+  "runtime": {
+    "focusedLauncherSeconds": 1.917073016,
+    "typecheckLauncherSeconds": 10.893664665000001,
+    "newLauncherSeconds": 12.810737681,
+    "cachedDiagnosticLauncherSeconds": 1.451017638,
+    "cachedFailedSuiteSeconds": 202.275426376
+  },
+  "limits": [
+    "Only exactly matched own/requested velocity and fully settled own support qualify. Any residual request mismatch/recovery/near crossing uses the existing tube/World preview.",
+    "No wall-clock or whole-engine speedup is inferred from cached timing measured elsewhere. Preview counts are the supported cost contract.",
+    "Physics, acquired peer pictures, original full/half/gather selection and low-speed/contact exclusions unchanged.",
+    "No football avoidance/navigation benefit claim; original A044 collision/drop evidence remains unchanged/source-pinned.",
+    "Run independently reviews the new proof/cost delta; Integration owns combined verification/adoption. Original failed receipt stays failed."
+  ]
+}

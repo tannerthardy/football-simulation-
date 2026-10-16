@@ -1,5 +1,27 @@
 # Current work ownership
 
+## #81 forecast-cost adjudication — 2026-10-15
+
+Do-It-All owns only spacing's cheap preview-admission cost boundary and the
+directly relevant traffic/residual-motion controls on `codex/spacing-cost-adjudication`
+from accepted86250bb. Run is notified on #81/#76 as independent contract reviewer.
+Reuse the failed bbc4f82 receipt and original three-lane diagnostic. Determine
+whether a sound cheap clearance rejection can preserve the existing zero-preview
+contract while keeping positive residual-motion admission. No angle shortcut,
+assertion waiver, lateral/low-speed policy, observer, blocker/collection edits,
+native football continuation or full suite. Integration owns exact combined
+verification/adoption; the original failed receipt stays failed.
+
+Adjudication: preserve the original zero-preview contract. Cost was avoidable,
+not a demonstrated movement defect. Code d80dcd3 adds an exact matched-velocity,
+settled-support travel-line clearance rejection; three original lanes0/0/0
+previews versus cached15/0/14. No existing assertion changes.23 focused checks
+and typecheck pass; residual motion, recovery/crossing and all existing physical
+opposing controls preserved. New launcher cost12.811s; no native football or
+full-suite run. Minimal extraction f04235e + cost delta d80dcd3 is on accepted
+86250bb, with no observer/lateral/low-speed/physics ancestry. Run re-review
+and Integration's combined verification remain; #81's old head remains held.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.

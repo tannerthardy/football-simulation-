@@ -1,0 +1,18 @@
+{
+  "data/reviews/current/spacing-cost-adjudication/focused.json": {
+    "bytes": 2443,
+    "sha256": "d4e171b446b12c6d02356dab6a6ad9992d44239616ebd1c431faa65d1c8e43e2"
+  },
+  "data/reviews/current/spacing-cost-adjudication/review.json": {
+    "bytes": 6366,
+    "sha256": "c60b90fd5ac8d2aaea78e8dfe7cce3d87a8aef9bd40641a145a2ced05ecbf6dc"
+  },
+  "data/reviews/current/spacing-cost-adjudication/runtime-and-tests.patch": {
+    "bytes": 13411,
+    "sha256": "b8d28cc1a1b23973b03d10bdbd6509735f4b8407160a2cca3aae578e8692b849"
+  },
+  "data/reviews/current/spacing-cost-adjudication/typecheck.json": {
+    "bytes": 2203,
+    "sha256": "c3365a37b7d1924c45c44cb3320749d1f86b17d29100e1cf8d29be7cc0b8dcd4"
+  }
+}
