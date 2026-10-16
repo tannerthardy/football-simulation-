@@ -1,3 +1,7 @@
+# Measurement: post-Duo individual-play assessment
+
+Own only scripts/diag/post-duo-play-assessment.py, docs/reviews/post-duo-play-assessment.md and compact data/reviews/current/post-duo-play-assessment. Base86250bb; reuse #84 A018/A030/A027/preselected Under paired tapes, author66 focused/typecheck/seven controls and Integration passing exact receipt. No new simulation batch or full games; no runtime/test edits. Original #82 panel remains7eb2554 historical evidence. Named separate NFL question: how can a different fixed lead defender provide near-catch support when the release-nearest defender trails? Use completed contained returns/geometry only, no raw query or new sample/filter.
+
 # Current work ownership
 
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
