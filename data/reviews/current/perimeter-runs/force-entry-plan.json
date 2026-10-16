@@ -1,0 +1,8 @@
+{
+  "question": "Is the new first-force job incorrectly using a short kickout's flat-pull rule to chase a deep support defender's full lateral width behind the LOS?",
+  "witness": "C01 RT1.00: x39.113/y23.155, second waypoint rewritten to y18.458 for CB47.705/y17.931 instead of clearing the installed edge21.254 and turning up. RT2.00 still behind LOS atx38.827; RB2.00 x36.273/y23.763. CB reaches RB3.20 while RT still has no hands. Buck/Pin likewise target deep SS as the old kick job.",
+  "change": "New explicit perimeter force pull role, separate from a reserved first-level kick: retain installed perimeter corner, consume existing readPull wall clearance, then use existing acquired interception/second-level fit after the corner. Existing kick/trap jobs and ordinary Counter/Power untouched. Retain existing observed log response and runner's known kick key for this new role.",
+  "isolation": "Buck wide-mesh and Pin free-climber corrections were each replayed separately before this shared new-role refinement. No solver/capacity/spacing/RB navigation or coverage change.",
+  "cases": ["B01", "P01", "C01"],
+  "budget": "Three exact native inputs max5simseconds/5wallseconds each, same roster/seed/flags, no panel/game. Compare first altered request, achieved corner/intercept, actual load through runner arrival and traffic. Do not require a gain, tackle or successful first force block."
+}
