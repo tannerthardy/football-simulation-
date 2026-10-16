@@ -10,6 +10,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {Agent} from '../../src/sim/agent.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
+import {movementObjective} from '../../src/sim/movement-objective.js';
 import {sourceVersion} from '../source-version.ts';
 
 const [inputPath,out,actorText,startText,stopText]=process.argv.slice(2),
@@ -39,12 +40,14 @@ function run(observe){
     pending={t:sim.t,body,ratings:{tackling:a.r('tackling'),awareness:a.r('awareness'),pursuit:a.r('pursuit'),anticipation:a.r('anticipation')},
      speedScale:a.speedScale,runFit:snap(a.runFit??null),down:a.isDown(sim.t),engaged:!!a.engagement,
      bonded:!!sim.bond?.tacklers.includes(a),hasJoint:sim.world.joints.some(j=>j.a===a.body||j.b===a.body),
-     job:a.behavior.job??a.behavior.kind,target:a.behavior.target?.idx??null,cues,command:snap(command)};
+     job:a.behavior.job??a.behavior.kind,target:a.behavior.target?.idx??null,cues,command:snap(command),
+     objective:snap(movementObjective(command)??null)};
     return command;};return b;};
   let behavior=wrap(d.behavior);Object.defineProperty(d,'behavior',{get:()=>behavior,set:b=>{behavior=wrap(b);}});
   const step=sim.world.step.bind(sim.world);
   sim.world.step=(intents,dt)=>{const before=snap(d.body),result=step(intents,dt);
-   if(pending){rows.push({...pending,worldBefore:before,applied:snap(intents[actor]),worldAfter:snap(d.body),
+   if(pending){rows.push({...pending,worldBefore:before,applied:snap(intents[actor]),
+    appliedObjective:snap(movementObjective(intents[actor])??null),worldAfter:snap(d.body),
     contacts:snap(result.contacts.filter(c=>c.i===actor||c.j===actor))});pending=null;}
    return result;};
  }
