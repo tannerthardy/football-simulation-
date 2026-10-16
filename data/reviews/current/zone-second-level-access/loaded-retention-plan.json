@@ -1,0 +1,8 @@
+{
+  "question": "Can the existing acquired helper foot-recovery action retain useful first-level normal depth before crossing behind the surface, making a supported takeover possible?",
+  "witness": "A025, reference native source668acb1",
+  "observedMismatch": "Existing helper recovery goal targets half a body-contact depth, but any loaded positive-depth contact suppresses recovery until depth crosses zero; A025 keeper eligibility1.45 is lost before1.70 while RT continues forward.",
+  "singleDiagnostic": "Use that existing half-contact depth as the loaded retention boundary; preserve the same acquired goal geometry, ordinary read cadence, normal runner reactions, teammate spacing, release/security/hand laws and capacities. Only helperFit changes.",
+  "budget": "One A025 native continuation to5simseconds/max5wallseconds; diagnose before any opposing/transfer executions. No second variant automatically.",
+  "notClaims": "A still-loaded block is not a proven keeper and an earlier release is not success. Need actual normal depth, support/keeper continuity, achieved Mike work through runner arrival."
+}
