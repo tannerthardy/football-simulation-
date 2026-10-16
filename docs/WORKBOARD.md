@@ -17,6 +17,18 @@ Integration keeps full-suite/promotion authority; this user-requested broad
 campaign is a diagnostic exception to routine small-worker checks, not a new
 mandatory screen or an automatic game campaign.
 
+Completed:1,848 native cases (1,608 accepted,240 separate99),1,846 native endings,
+two shared I21/Wide9 mesh censors at20s,0skipped/accounting failures. Accepted
+collector pin579a20e/source668acb1; prototype9163ef5/sourceca40378.8 focused
+collector tests/typecheck pass; total launch/check350.612s, no games/full suite.
+Generic PA changes initial OL show and QB/RB action; fake scheme strings do not
+install zone/pull/slice/boot action. Repeated draw first-load delay, loaded-edge
+access and package sensitivity remain separate. No production change/promotion.
+[Complete findings, charts, exact manifests and film](reviews/run-playaction-stress/README.md).
+Run owns a bounded stranded-mesh recovery test next; coordinate shared spacing
+with Do-It-All. Draw pass-style contact and true Ace WZ/PA coupling are distinct
+subsequent questions; Catching gets the native PA response/recovery evidence.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in

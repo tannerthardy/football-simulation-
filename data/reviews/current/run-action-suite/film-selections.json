@@ -1,0 +1,182 @@
+[
+  {
+    "title": "primary \u00b7 counter \u00b7 quartile contrasts",
+    "left": "primary/counter/i_pro_21/under3/pair11/77/strong/neutral/run/",
+    "right": "primary/counter/i_pro_21/over3/pair31/77/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 draw \u00b7 quartile contrasts",
+    "left": "primary/draw/gun_doubles_11/over2/pair11/77/strong/neutral/run/",
+    "right": "primary/draw/gun_doubles_11/tite4/pair11/71001/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 duo \u00b7 quartile contrasts",
+    "left": "primary/duo/ace_12/over2/pair11/77/strong/neutral/run/",
+    "right": "primary/duo/ace_12/over2/pair31/71001/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 insideZone \u00b7 quartile contrasts",
+    "left": "primary/insideZone/ace_12/over2/pair31/77/strong/neutral/run/",
+    "right": "primary/insideZone/ace_12/off1/pair11/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 outsideZone \u00b7 quartile contrasts",
+    "left": "primary/outsideZone/ace_12/over3/pair31/71001/weak/neutral/run/",
+    "right": "primary/outsideZone/ace_12/odd3/pair11/71001/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 power \u00b7 quartile contrasts",
+    "left": "primary/power/i_pro_21/tite4/pair11/77/weak/neutral/run/",
+    "right": "primary/power/i_pro_21/over4/pair31/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 qbDraw \u00b7 quartile contrasts",
+    "left": "primary/qbDraw/gun_doubles_11/off1/pair11/71001/weak/neutral/run/",
+    "right": "primary/qbDraw/gun_doubles_11/wide9/pair11/77/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 splitZone \u00b7 quartile contrasts",
+    "left": "primary/splitZone/gun_wing_12/under3/pair11/71001/weak/neutral/run/",
+    "right": "primary/splitZone/gun_wing_12/off1/pair31/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 toss \u00b7 quartile contrasts",
+    "left": "primary/toss/ace_12/bear1/pair11/71001/strong/neutral/run/",
+    "right": "primary/toss/ace_12/tite4/pair11/71001/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 trap \u00b7 quartile contrasts",
+    "left": "primary/trap/ace_12/over3/pair11/77/strong/neutral/run/",
+    "right": "primary/trap/ace_12/odd3/pair31/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "primary \u00b7 wideZone \u00b7 quartile contrasts",
+    "left": "primary/wideZone/ace_12/over3/pair11/77/weak/neutral/run/",
+    "right": "primary/wideZone/ace_12/tite4/pair11/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "perimeter \u00b7 buckSweep \u00b7 quartile contrasts",
+    "left": "perimeter/buckSweep/ace_12/over3/pair31/71001/strong/neutral/run/",
+    "right": "perimeter/buckSweep/ace_12/over4/pair11/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "perimeter \u00b7 crackToss \u00b7 quartile contrasts",
+    "left": "perimeter/crackToss/ace_nasty_12/bear1/pair11/71001/strong/neutral/run/",
+    "right": "perimeter/crackToss/ace_nasty_12/mike1/pair11/77/strong/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "perimeter \u00b7 pinPull \u00b7 quartile contrasts",
+    "left": "perimeter/pinPull/ace_12/tite4/pair31/77/strong/neutral/run/",
+    "right": "perimeter/pinPull/ace_12/bear1/pair11/71001/weak/neutral/run/",
+    "labels": [
+      "Lower quartile gain",
+      "Upper quartile gain"
+    ]
+  },
+  {
+    "title": "PA / postdig \u00b7 largest early LB movement effect",
+    "left": "pa/insideZone/ace_12/over2/pair31/71001/strong/neutral/pa/postdig",
+    "right": "pa/insideZone/ace_12/over2/pair31/71001/strong/neutral/plain/postdig",
+    "labels": [
+      "Native generic play action",
+      "Matched no-fake pass"
+    ]
+  },
+  {
+    "title": "PA / flood \u00b7 largest early LB movement effect",
+    "left": "pa/wideZone/ace_12/over2/pair31/71001/strong/neutral/pa/flood",
+    "right": "pa/wideZone/ace_12/over2/pair31/71001/strong/neutral/plain/flood",
+    "labels": [
+      "Native generic play action",
+      "Matched no-fake pass"
+    ]
+  },
+  {
+    "title": "PA / shot \u00b7 largest early LB movement effect",
+    "left": "pa/power/i_pro_21/over2/pair31/71001/strong/neutral/pa/shot",
+    "right": "pa/power/i_pro_21/over2/pair31/71001/strong/neutral/plain/shot",
+    "labels": [
+      "Native generic play action",
+      "Matched no-fake pass"
+    ]
+  },
+  {
+    "title": "Adverse PA \u00b7 flood / third & 8 \u00b7 largest gain loss",
+    "left": "pa/wideZone/ace_12/over4/pair11/71001/strong/passalert/pa/flood",
+    "right": "pa/wideZone/ace_12/over4/pair11/71001/strong/passalert/plain/flood",
+    "labels": [
+      "Native generic play action",
+      "Matched no-fake pass"
+    ]
+  },
+  {
+    "title": "Unfinished exchange \u00b7 I21 / Wide9 (20s censor)",
+    "left": "transfer/outsideZone/i_pro_21/wide9/pair11/77/strong/neutral/run/",
+    "right": "transfer/wideZone/i_pro_21/wide9/pair11/77/strong/neutral/run/",
+    "labels": [
+      "Outside zone \u00b7 still live",
+      "Wide zone \u00b7 still live"
+    ]
+  },
+  {
+    "title": "Draw / inside zone \u00b7 same gun players and defensive look",
+    "left": "primary/draw/gun_doubles_11/over3/pair11/77/strong/neutral/run/",
+    "right": "transfer/insideZone/gun_doubles_11/over3/pair11/77/strong/neutral/run/",
+    "labels": [
+      "Draw presentation",
+      "Inside-zone contrast (multiple techniques differ)"
+    ]
+  }
+]

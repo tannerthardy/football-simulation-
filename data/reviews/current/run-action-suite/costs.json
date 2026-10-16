@@ -1,0 +1,128 @@
+[
+  {
+    "receipt": "run-1792138529159-293382.json",
+    "exitCode": 1,
+    "commands": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/run-action-suite.test.ts"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 4.3970228239999996
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138557058-293593.json",
+    "exitCode": 0,
+    "commands": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/run-action-suite.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 5.677596171
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138557058-293594.json",
+    "exitCode": 1,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 2,
+        "elapsedSeconds": 10.685300724000001
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138598964-294048.json",
+    "exitCode": 0,
+    "commands": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/run-action-suite.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 6.06591302
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138598980-294055.json",
+    "exitCode": 0,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.664715678
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138624502-294264.json",
+    "exitCode": 0,
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/run-action-suite.ts",
+          "run",
+          "data/reviews/current/run-action-suite/accepted-manifest.json.gz",
+          "out/run-action-accepted",
+          "--checkpoint",
+          "User-requested extensive run and play-action audit, 1608 frozen native cases, 30 minute wall limit, no controller changes"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 267.290936902
+      }
+    ]
+  },
+  {
+    "receipt": "run-1792138921080-294608.json",
+    "exitCode": 0,
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/run-action-suite.ts",
+          "run",
+          "data/reviews/current/run-action-suite/perimeter-manifest.json.gz",
+          "out/run-action-perimeter",
+          "--checkpoint",
+          "User-requested separate PR99 prototype sweep, 240 frozen cases, eight minute wall limit; accepted production results separate"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 45.830576854
+      }
+    ]
+  }
+]

@@ -85,3 +85,11 @@ replay only if a missing trace could change the diagnosis. Publish summaries,
 direct charts, exact manifests/settings and accessible film when generated.
 Recommend a concrete next mechanism from the results, keeping current accepted
 code and prototype work separate.
+
+Post-collection clarification: PassProtector includes a generic .35s low-pad /
+forward-interior run show when fake is set. It is not the named run technique.
+PA/plain comparisons change that existing OL cue as well as QB/RB action, while
+preserving protection responsibilities. QB draw has a central keeper landmark;
+its side variants change blocking orientation rather than guarantee mirrored
+QB paths. Exact .5s opening states were not sampled: report the .4/.6s bracket
+without interpolation. These qualifications do not change the frozen inputs.
