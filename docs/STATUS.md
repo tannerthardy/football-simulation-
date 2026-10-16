@@ -4,7 +4,7 @@ Updated **2026-10-16 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Verified #112, guarded adoption pending:** #110 acquired run-entry reasoning plus final #111 connection travel, six exact reviewed files on acceptedc3264b0. Independent review de3de0c accepts their composition; Freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s with44 flags/components1. Reuse focused/native evidence, retain earlier contact/shorter IZ/Duo censor costs. No Physics/departure activation or new game campaign. [Queue](INTEGRATION.md#ready-blocked-experimental).
+- **Completed #112:** #110 acquired run-entry reasoning plus final #111 connection travel, six exact reviewed files on acceptedc3264b0. Independent review de3de0c accepts their composition; adopted asd682b1f. Freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s with44 flags/components1. Reuse focused/native evidence, retain earlier contact/shorter IZ/Duo censor costs. No Physics/departure activation or new game campaign. [Queue](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #107:** #97/#100 release contracts, #95 acquired rat duty, #102 bounded contact-span validity and user-approved #104 inline role. Fourteen protected files; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build,226.175s plus1.873s overlap,total228.048s. Adopted asc3264b0; actual tree equals publication/protected passing freeze. #101 tooling-HOLD: Run repairs lost wall-censor accounting/exception traces; Measurement reviews without a study rerun. [Exact scope and owners](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #105:** #92/#94/#96/#98/#103 adopted as3723204 after independent
   reviews and one exact verification:1,816 TS/156 files,145 Python,typecheck/build
@@ -22,7 +22,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `c3264b0bad72bd2c208602e0ecf0461c00d9669f`**, merged #107 with reviewed coverage/rat/span and user-approved inline-role corrections; #105 and earlier accepted controllers retained. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr107-merge.json).
+- **Accepted develop: `d682b1f474cb6ba260a7b8b1119a62919c5a2159`**, merged #112 with reviewed acquired run entries and final connection travel; #107 and all earlier accepted controllers retained. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr112-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -74,7 +74,7 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop isc3264b0; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop isd682b1f; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
 Measurement completed/published the one frozen48 comparison at40af332; no

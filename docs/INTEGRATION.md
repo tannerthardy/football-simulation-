@@ -46,9 +46,58 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
-## Verified #112 candidate — guarded adoption pending
+<a id="accepted-development"></a>
+## Accepted development reference
 
-Accepted develop remains `c3264b0bad72bd2c208602e0ecf0461c00d9669f` pending adoption.
+**`develop@d682b1f474cb6ba260a7b8b1119a62919c5a2159`** is accepted through
+[#112](https://github.com/tannerthardy/football-simulation-/pull/112).
+Entire actual merged tree equals publication `ea0f6f33ab75eee652f762884b05c7b8a3cea485`;
+protected source/tests/settings/tooling equal passing freeze
+`df900af6960988dc2eca4bb2ba220ce4ac126cc1`.
+[Actual merged-pin preservation receipt](../data/reviews/current/pr112-merge.json).
+
+Included only independently accepted **#110** acquired entry reasoning and final
+**#111** emitted-direction connection travel: three runtime files and their three
+proper tests. Six exact blobs and sourcebed3c36 match independent reviewde3de0c;
+no diagnostic ancestry or experimental activation. All earlier accepted controllers,
+contact validity, physical laws, capacities and44 settings remain preserved.
+
+**1,906 TS/164 files,145 Python,typecheck/build pass** in213.321 command seconds,
+Node22.23.3,components1,CF_FLOW unset, no skipped phase/input drift. One exact
+combined verification; published65/66 focused/typecheck evidence reused rather
+than called131 unique checks. No additional focused/native/panel/evaluation-game
+execution and no unchanged rerun to publish/merge.
+[Final receipt and complete raw log](../data/reviews/current/run-entry-connection-integration/final-receipt.json).
+Source `bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616`;
+validation `accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638`.
+
+Preserve the small strong-choice margins, earlier weak/fresh contact, closure-only
+weak loss and shorter110 fresh-IZ4.35→3.67 ending. Duo identity applies to adding111:
+110 itself advances SS contact3.45→3.25s, both censored3.50s. Strong achieved access
+needs both patches; no robust league-gain claim. Old all-off6753 source is not
+relabeled literal accepted4658; inherited reader/route/contact limits remain.
+[Pinned review and portability/limits](reviews/pr110-111-independent-review.md).
+
+[Consolidated owner handoff](https://github.com/tannerthardy/football-simulation-/pull/112#issuecomment-6226301632).
+Run/Do-It-All reconcile entry/closure/keeper and second-level access at clean
+checkpoints; Catching/Measurement qualify older coverage/contact tapes. Physics
+retains its separate hand-retention/ownership question. No forced rebase or old
+source relabeling. Delivered110/111 are closed as incorporated by minimal extraction;
+all original branches, experiments, failures and evidence remain.
+[Exact dispositions](../data/reviews/current/run-entry-connection-integration/dispositions.json).
+
+Carry forward the existing shared frozen-panel checkpoint, not another collection
+merely for this merge. If not frozen, coordinate this coherent accepted pin under
+the existing budget; if frozen/completed on107, preserve its real source/results,
+with no automatic restart/recollection. Four-game context needs a separate CEO
+call. #101 tooling repair, rejected gradient, CLIMB_EXIT/departure/release and
+experimental Physics remain separate. Historical4ded6b6/default unchanged.
+
+<details>
+<summary>Completed #112 preparation and earlier #107 integration boundary — historical</summary>
+## Completed #112 integration preparation
+
+Prepared on acceptedc3264b0; adopted asd682b1f through112, with actual tree equal publication and protected files equal passing freeze. The extraction boundary is released.
 Integration owns `codex/run-entry-connection-integration`, based on that accepted
 pin plus queue625f3b4. The independently accepted six-file composition contains
 #110's acquired entry reader and #111's final emitted-direction connection travel:
@@ -61,7 +110,7 @@ checks or a composed-suite pass. Exact freeze `df900af6960988dc2eca4bb2ba220ce4a
 Node22.23.3, unchanged44 flags, components1 and CF_FLOW unset; no skips/input drift.
 One exact combined run; no unchanged rerun to publish/merge.
 [Final receipt and raw log](../data/reviews/current/run-entry-connection-integration/final-receipt.json).
-[Guarded adoption PR #112](https://github.com/tannerthardy/football-simulation-/pull/112). No remaining
+[Merged PR #112](https://github.com/tannerthardy/football-simulation-/pull/112). No remaining
 local contract calls for another focused test, native continuation, panel or game.
 [Pinned independent review and portable patches](reviews/pr110-111-independent-review.md).
 [Intake, exact approval and risks](../data/reviews/current/run-entry-connection-integration/intake.json).
@@ -110,8 +159,11 @@ source-qualified; **do not recollect the study**. Additional workflow/report
 publication does not clear the defect. #99/perimeter, stranded-mesh diagnosis,
 consent proposals and experimental Physics remain separate.
 
-<a id="accepted-development"></a>
-## Accepted development reference
+
+</details>
+
+<details>
+<summary>Previous accepted #107 /c3264b0 record — historical</summary>
 
 **`develop@c3264b0bad72bd2c208602e0ecf0461c00d9669f`** is accepted through
 [#107](https://github.com/tannerthardy/football-simulation-/pull/107).
@@ -151,6 +203,9 @@ branches/evidence retained. [Exact closure dispositions](../data/reviews/current
 Measurement/Run review stub controls, not another1848-study campaign. The existing
 frozen-panel comparison is the next shared measurement checkpoint; games need a
 separate CEO call. Historical4ded6b6/default/remaining research remain unchanged.
+
+
+</details>
 
 <details>
 <summary>Previous accepted #105 /3723204 record — historical</summary>
@@ -461,10 +516,10 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 <a id="ready-blocked-experimental"></a>
 
-**Next approved batch:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate #112 passes its exact verification on acceptedc3264b0; guarded adoption pending. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
+**Delivered via #112:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate adopted asd682b1f after its exact passing verification. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
 
 
-### Current disposition after merged #107
+### Retained earlier dispositions after merged #107
 
 - **Delivered:**95/97/100/102/104 are adopted atc3264b0; exact reviewed pins,
   approval, dependencies and preservation are in [intake](../data/reviews/current/coverage-run-integration/intake.json).
@@ -783,7 +838,7 @@ merge authority does not clear these unresolved contract failures.
 <a id="frozen-panel-comparison"></a>
 ### One frozen-panel comparison after a meaningful accepted controller batch
 
-The next meaningful accepted checkpoint is #107/c3264b0. Measurement/CEO coordinate one comparison using the existing frozen48 panel and compatible established operator (not held101). Preserve the existing budget below; no baseline recollection or automatic games. #82 results remain historical evidence.
+Carry forward the existing #107 shared checkpoint after #112/d682b1f. If not yet frozen, Measurement/CEO coordinate the new coherent accepted pin with the same frozen48 panel, established compatible operator and existing budget below. If already frozen/completed, retain its actual source and results; no second panel or restart merely for this merge. No baseline recollection or automatic games. #82 results remain historical evidence.
 
 Use the existing48-case panel once at a meaningful accepted controller checkpoint,
 after a meaningful independently reviewed controller batch. #82 is now that
