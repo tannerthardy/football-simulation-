@@ -1,0 +1,14 @@
+{
+  "ref": "codex/accepted-panel-bb6d4c7-evidence-v1",
+  "commit": "96cf636562ab0aec39bc8d60d7a1d2f3191d7f3e",
+  "files": [
+    "accepted-bb6d4c7-48snap-v1.tar.gz",
+    "README.md",
+    "receipt.json"
+  ],
+  "rawSourceTreeChanged": false,
+  "referenceReuploaded": false,
+  "remoteVerification": "Fresh shallow remote fetch: exact artifact commit, archive bytes/SHA256 and48 native member hashes independently verified.",
+  "verifiedNativeCases": 48,
+  "remoteVerificationWallSeconds": 3.3856764580050367
+}

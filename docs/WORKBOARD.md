@@ -1,6 +1,6 @@
 # Measurement: one frozen48 current arm atbb6d4c7
 
-Own config/accepted-broad-audit.json, unchanged portable scripts/diag/accepted-broad-audit.ts, specific panel launcher/reducer, docs/reviews/panel-bb6d4c7.md, compact data/reviews/current/panel-bb6d4c7. User ceiling48 attempts/60 launcher seconds, one current arm only. Reference7eb2554 complete48, no recollection; inner50s/5s caps. No runtime/tests/settings edits, extra cases, retries, rosters or games. Preserve failures/censoring/unrun. Review both teams/protection at arrival, responsibility, approach/contact independently of gain, at most3 recurring nominations and direct owner handoffs.
+Completed48/48 once in21.815 launcher seconds, no collection failures/censoring/unrun/retry. Two nominations and all outcomes published with verified native transport. Own config/accepted-broad-audit.json, unchanged portable scripts/diag/accepted-broad-audit.ts, specific panel launcher/reducer, docs/reviews/panel-bb6d4c7.md, compact data/reviews/current/panel-bb6d4c7. User ceiling48 attempts/60 launcher seconds, one current arm only. Reference7eb2554 complete48, no recollection; inner50s/5s caps. No runtime/tests/settings edits, extra cases, retries, rosters or games. Preserve failures/censoring/unrun. Review both teams/protection at arrival, responsibility, approach/contact independently of gain, at most3 recurring nominations and direct owner handoffs.
 
 # Current work ownership
 

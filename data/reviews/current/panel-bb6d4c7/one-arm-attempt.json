@@ -1,0 +1,35 @@
+{
+  "schema": "one-arm-60s-launcher-v1",
+  "command": [
+    "/workspace/.football-tools/node-v22.23.3-linux-x64/bin/node",
+    "scripts/baseline.mjs",
+    "--candidate",
+    "--receipt",
+    "out/accepted-broad-audit/run-receipt.json",
+    "--",
+    "node",
+    "--import",
+    "tsx",
+    "scripts/diag/accepted-broad-audit.ts",
+    "--run",
+    "--checkpoint",
+    "Rank recurring visible football problems on one accepted build across preselected ordinary runs and passes before another feature wave"
+  ],
+  "maxSeconds": 60,
+  "maxAttempts": 48,
+  "retry": false,
+  "innerBatchMs": 50000,
+  "caseMs": 5000,
+  "manifestSha256": "111e1f5513b4c831b8f900dc443b3803e0c7b3cdbc09a683d4966174fadda13b",
+  "startedAtUnix": 1792128336.3423338,
+  "exitCode": 0,
+  "hardBudgetExhausted": false,
+  "launcherWallSeconds": 21.81459311999788,
+  "preservedSummary": {
+    "status": "complete",
+    "attempted": 48,
+    "complete": 48,
+    "partial": 0,
+    "skipped": []
+  }
+}

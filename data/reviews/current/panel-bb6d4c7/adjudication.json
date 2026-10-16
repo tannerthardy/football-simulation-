@@ -1,0 +1,4683 @@
+{
+  "schema": "panel-bb6d4c7-two-sided-review-v1",
+  "question": "Do accepted blocking/support/traffic corrections combine into convincing football across the existing controlled contexts?",
+  "assessment": "Mixed. Four Duo sequences demonstrate useful loaded protection at runner arrival and A044 achieved traffic clearance improves. Eight IZ/WZ Mike access questions and selected postcontact escape/support sequences remain; neither nomination is a proven defect count.",
+  "reviewCoverage": {
+    "currentAttempted": 48,
+    "currentComplete": 48,
+    "failed": 0,
+    "censored": 0,
+    "unrun": 0,
+    "referenceReused": 48,
+    "newBaselineRuns": 0,
+    "newCurrentArms": 1,
+    "currentLauncherSeconds": 21.81459311999788,
+    "scope": "All48 paired event/phase/identity/load/velocity review; focused native windows for material changes, not a claim of exhaustive fresh live-film or discarded-stage adjudication."
+  },
+  "exposures": [
+    {
+      "plannedRuns": 24,
+      "calledPasses": 24,
+      "runOutcomes": {
+        "tackle": 24
+      },
+      "passOutcomes": {
+        "tackle": 19,
+        "touchdown": 1,
+        "incomplete": 4
+      },
+      "completions": 16,
+      "sacks": 2,
+      "scrambles": 2,
+      "fumblePlays": [
+        "A033"
+      ],
+      "reportedBrokenTacklePlays": [
+        "A005",
+        "A006",
+        "A011",
+        "A019",
+        "A020",
+        "A029",
+        "A042"
+      ],
+      "reportedBrokenTackles": 9
+    },
+    {
+      "plannedRuns": 24,
+      "calledPasses": 24,
+      "runOutcomes": {
+        "tackle": 23,
+        "touchdown": 1
+      },
+      "passOutcomes": {
+        "tackle": 19,
+        "incomplete": 4,
+        "touchdown": 1
+      },
+      "completions": 16,
+      "sacks": 2,
+      "scrambles": 2,
+      "fumblePlays": [
+        "A027",
+        "A033"
+      ],
+      "reportedBrokenTacklePlays": [
+        "A009",
+        "A011",
+        "A018",
+        "A020",
+        "A029",
+        "A030"
+      ],
+      "reportedBrokenTackles": 10
+    }
+  ],
+  "nominations": [
+    {
+      "id": "N1",
+      "name": "Unrealized Mike collection in selected Inside/Wide Zone combinations",
+      "owner": "Run",
+      "witnessIds": [
+        "A001",
+        "A003",
+        "A013",
+        "A015",
+        "A025",
+        "A027",
+        "A037",
+        "A039"
+      ],
+      "exposure": "4 selected Inside Zone +4 Wide Zone calls; all8 first meet an unloaded Mike despite installed RT/Y combination-to-Mike job. This is not8 proven bad releases.",
+      "phase": "Before useful blocker contact.",
+      "question": "Which cases reflect unsafe/never-earned keeper release versus an informed but unavailable departure/collection path or legitimate defender win?",
+      "preserve": "Current4 Duo RG/Mike loads at runner arrival; weak-side blocks; legitimate first-level security and defender wins.",
+      "confidence": "High observation, unknown alternative/cause and simulator frequency."
+    },
+    {
+      "id": "N2",
+      "name": "Approach-to-hold conversion and backup after first carrier contact",
+      "owner": "Catching consulting Flex; Physics only if a contact-law violation is demonstrated",
+      "witnessIds": [
+        "A018",
+        "A020",
+        "A030"
+      ],
+      "exposure": "First holds break in2/4 selected Duo runs (A018/A030); A020 is1/4 current mesh catches with a late corner reach/broken hold/TD. Other broken holds are descriptive, not automatically nominated.",
+      "phase": "Actual carrier contact exists; subsequent hold/backup finish is the question.",
+      "question": "Does attained entry/leg-drive and available help explain the break, or was a useful informed movement/contact request discarded? Final intents cannot settle producer causality.",
+      "preserve": "A006/A042 useful first form holds; A044 successful corner reach; unchanged A011 legitimate offensive escapes and final defensive finish. No stronger-grip/forced-win tuning.",
+      "confidence": "High contact/escape observations, uncertain decision/execution attribution; only final request sampled here."
+    }
+  ],
+  "overlap": {
+    "N1AndN2WitnessIds": [],
+    "countsAreDefectRate": false
+  },
+  "rows": [
+    {
+      "id": "A001",
+      "concept": "iz_strong",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "40fbfeffb0118b4c52653fb7abecf3ffcc84d21fbd0f7f257cbf00fbfbac8b97",
+        "243f521d538b3379bcbfa63e978acaeca90b4e65b4f44f037d5eed41f72cdfaf"
+      ],
+      "yardsDescriptiveOnly": [
+        1.97,
+        2.98
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 0.6525019950066451
+        },
+        {
+          "tacklers": [
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 1.0463263691621734
+        }
+      ],
+      "offenseAssessment": "LG loads weak LB; runner advances through the crease. RT/Y keep first-level DE work but planned Mike access is unrealized.",
+      "defenseAssessment": "Mike closes and wraps2.80, then finishes. Review release feasibility before blaming movement or contact force.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 3.35,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A002",
+      "concept": "oz_strong",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "9af7ce522d814e5eb0ee6804608b3eb2b4843ba83158ee099b2147d315d7b2e2",
+        "e093e5914788e435031ef7ebf27145f0504defcfcdb082617c690329b645f804"
+      ],
+      "yardsDescriptiveOnly": [
+        2.52,
+        5.04
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB3",
+            "S30D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 1.949381042009776
+        },
+        {
+          "tacklers": [
+            "S30D-CB2",
+            "S30D-CB6"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 1.8161886358425292
+        }
+      ],
+      "offenseAssessment": "RG achieves Mike load2.30 before runner arrival; runner keeps useful outside progress.",
+      "defenseAssessment": "DE_W provides first body contact2.75, with defensive recovery/finish despite an earned second-level block.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.6,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.55,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 3.75,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A003",
+      "concept": "wz_strong",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "dca3f977354ed4c1f678d65003611bd17d12faac9953d812fafe3a7d5733a83e",
+        "0480459d1a2bd3a8fea70ef6ee23672fbd14224fae8b4ea1a4a6c8b494b3d5d5"
+      ],
+      "yardsDescriptiveOnly": [
+        0.92,
+        1
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB3",
+            "S30D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 0.16707999048806954
+        },
+        {
+          "tacklers": [
+            "S30D-LB3",
+            "S30D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 0.43104489052837636
+        }
+      ],
+      "offenseAssessment": "RT leaves the DE combination2.10 but never loads Mike before2.60 carrier contact. Runner is moving, not frozen.",
+      "defenseAssessment": "Mike remains free to meet RB and finish. No demonstrated post-contact block/grip failure.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.55,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.55,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 3.15,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A004",
+      "concept": "power",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "6558511cc67599aa02745d29302a37df822321cc29249de61f65138860e2ec8d",
+        "6a50b71d56e5a745948055f9f6d072999b6fdc9a6200694bf5ebae90aa294623"
+      ],
+      "yardsDescriptiveOnly": [
+        -0.34,
+        -0.34
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-EDGE1",
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": -1.6451992181967796
+        },
+        {
+          "tacklers": [
+            "S30D-EDGE1",
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": -1.6451992181967796
+        }
+      ],
+      "offenseAssessment": "Y achieves weak-backer load before the runner is stopped; RT/RG have a small earlier sampled collision.",
+      "defenseAssessment": "DE_W wins upstream before RB reaches LOS. Useful other-side block does not remove that defender.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.4,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 3.1,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A005",
+      "concept": "counter",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "e1b78aaaec63f049268734e0873fc08310ee99f838796c55b9d21e3add76a970",
+        "08f92c30deaf7b50717240e6fc89eaefedc38e19cbd243ff61adb191de8a8b4e"
+      ],
+      "yardsDescriptiveOnly": [
+        4.74,
+        2.82
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB1",
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 2.649688889692321
+        },
+        {
+          "tacklers": [
+            "S30D-CB3",
+            "S30D-LB1",
+            "S30D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 1.2570896338255935
+        }
+      ],
+      "offenseAssessment": "LT collects penetration before climbing and eventually loads weak LB3.05; runner still reaches the line.",
+      "defenseAssessment": "NB gets first wrap3.50 and SS/Mike assist. Shorter gain follows actual defensive access; not proof of a worse pull.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.6,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 4.3,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A006",
+      "concept": "duo",
+      "kind": "run",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195",
+        "d3870eac432961698b55701049941e995837ed759b62e832332d3a35482d4161"
+      ],
+      "yardsDescriptiveOnly": [
+        15.61,
+        8.18
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-CB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 5.028981420704106
+        },
+        {
+          "tacklers": [
+            "S30D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S30O-RB1",
+          "yardsBeforeContact": 4.656603189170134
+        }
+      ],
+      "offenseAssessment": "RT keeps loaded DT work while RG loads Mike2.00 before RB arrival. Earned Duo crease remains.",
+      "defenseAssessment": "SS form entry3.20 survives through3.95 finish. Useful opposing control for first-contact conversion; FS help is not required for every stop.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.55,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.4,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 3.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A007",
+      "concept": "slant_flat",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "e356c740b55e9556168268f9bb92e89dba8e8b736b200555b0a058fb1bfd6da8",
+        "b510edf8a5571223c92a1b997f744fcb2f3cea4a92b512f2b1c1a85a1d2a2714"
+      ],
+      "yardsDescriptiveOnly": [
+        20.89,
+        20.89
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-CB6"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 1.95,
+          "target": "S30O-TE2",
+          "airYards": 3.410709165570438,
+          "separation": 3.9,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 2.2352151497040964,
+          "yac": 18.653141620117097
+        },
+        {
+          "tacklers": [
+            "S30D-CB6"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 1.95,
+          "target": "S30O-TE2",
+          "airYards": 3.410709165570438,
+          "separation": 3.9,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 2.2352151497040964,
+          "yac": 18.653141620117097
+        }
+      ],
+      "offenseAssessment": "Same actual Y completion and useful run after catch; intended target identity remains separate.",
+      "defenseAssessment": "Same eventual finish; early off-ball changes mean this is a principal-sequence control, not full22 identity.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.2,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 1.95,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.7,
+          "idx": 7,
+          "id": "S30O-TE2"
+        },
+        {
+          "t": 6.4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A008",
+      "concept": "mesh",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "aa2b701aacad149f5a45299d076da2ff8ce47d93465d70407086c58ed43c5e1c",
+        "41908838a015a3a99ebccc1fc5d07ed29d4d38f58e1de31427be78b9593d016e"
+      ],
+      "yardsDescriptiveOnly": [
+        5.79,
+        5.79
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 2,
+          "target": "S30O-WR1",
+          "airYards": 5.169372356481823,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 3.4991108575264107,
+          "yac": 2.294468335022742
+        },
+        {
+          "tacklers": [
+            "S30D-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 2,
+          "target": "S30O-WR1",
+          "airYards": 5.169372356481823,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 3.4991108575264107,
+          "yac": 2.294468335022742
+        }
+      ],
+      "offenseAssessment": "Intended H remains distinct from actual Y catcher; completion and2.29YAC survive.",
+      "defenseAssessment": "NB wrap2.50 and tackle3.80 remain; do not mark the nearby assigned SS as the actual catch defender.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2.15,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 2,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.45,
+          "idx": 7,
+          "id": "S30O-TE2"
+        },
+        {
+          "t": 3.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A009",
+      "concept": "smash",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "f3b769c1936f7d91ffb8bdf31ed0439e182bfdf21e8d550ed0c55457e2ff503e",
+        "e873e70fc1b3ff5aed691d5152294e97e92e52d8c90f93f566b0e21b53021dce"
+      ],
+      "yardsDescriptiveOnly": [
+        22.3,
+        28.2
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-CB6"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 4.05,
+          "target": "S30O-RB1",
+          "airYards": 4.419812189757721,
+          "separation": 8,
+          "receiver": "S30O-RB1",
+          "completedAirYards": 4.132085243973769,
+          "yac": 18.167990306267875
+        },
+        {
+          "tacklers": [
+            "S30D-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 4.05,
+          "target": "S30O-RB1",
+          "airYards": 4.419463993996345,
+          "separation": 8.1,
+          "receiver": "S30O-RB1",
+          "completedAirYards": 4.116169035464992,
+          "yac": 24.088590703803078
+        }
+      ],
+      "offenseAssessment": "RB outlet route/movement changes before the throw; earns longer run and two reported broken tackles.",
+      "defenseAssessment": "A lunge/behind first hold and later defensive finish are both retained. Gain is not a force-law diagnosis.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.85,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 4.05,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 4.65,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 9.35,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A010",
+      "concept": "four_verts",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "bb09fc5fb42beb11ca6bddc0aa316c7e2ecd7ab124a28e16dabf5c8b4389c0a9",
+        "98f90d73f11e66a4389a37ad3a5d11870ba422aef674e45f197f4543a965e4cd"
+      ],
+      "yardsDescriptiveOnly": [
+        13.38,
+        13.38
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB3",
+            "S30D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 2,
+          "target": "S30O-TE2",
+          "airYards": 7.35861438191575,
+          "separation": 2.8,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 6.2133220157083855,
+          "yac": 7.163652322791307
+        },
+        {
+          "tacklers": [
+            "S30D-LB3",
+            "S30D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S30O-QB2",
+          "timeToThrow": 2,
+          "target": "S30O-TE2",
+          "airYards": 7.35861438191575,
+          "separation": 2.8,
+          "receiver": "S30O-TE2",
+          "completedAirYards": 6.2133220157083855,
+          "yac": 7.163652322791307
+        }
+      ],
+      "offenseAssessment": "Full result equal: Y completion and useful postcatch movement.",
+      "defenseAssessment": "Full result equal: defensive pursuit/contact/finish retained.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 2,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.55,
+          "idx": 7,
+          "id": "S30O-TE2"
+        },
+        {
+          "t": 4.05,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A011",
+      "concept": "pa_flood",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "e1092ab612d9b848265c6398199cf35a562eec74f885c955d68f1ef81048d45b",
+        "6ec2b66a455a6f8e90193510505e6e4193efe8a7d0c1709a3c7ed7e188ca709e"
+      ],
+      "yardsDescriptiveOnly": [
+        19.55,
+        19.55
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-LB1",
+            "S30D-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S30D-EDGE2",
+          "passer": "S30O-QB2",
+          "timeToThrow": 4.3,
+          "target": "S30O-RB1",
+          "airYards": 6.676401157671705,
+          "separation": 3.9,
+          "receiver": "S30O-RB1",
+          "completedAirYards": 5.088310097014954,
+          "yac": 14.457204305199319
+        },
+        {
+          "tacklers": [
+            "S30D-LB1",
+            "S30D-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S30D-EDGE2",
+          "passer": "S30O-QB2",
+          "timeToThrow": 4.3,
+          "target": "S30O-RB1",
+          "airYards": 6.676401157671705,
+          "separation": 3.9,
+          "receiver": "S30O-RB1",
+          "completedAirYards": 5.088310097014954,
+          "yac": 14.457204305199319
+        }
+      ],
+      "offenseAssessment": "Full result equal, including two reported broken tackles and earned PA outlet progress.",
+      "defenseAssessment": "Full result equal, including later supported finish. Opposing control against calling every escape a new grip defect.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 4.3,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 5.65,
+          "idx": 6,
+          "id": "S30O-RB1"
+        },
+        {
+          "t": 8.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A012",
+      "concept": "y_cross",
+      "kind": "pass",
+      "matchup": "speed-gap",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "653edf6ea60367dbd3b28b03a1de8bc0c7cebb32eda5308b4a74c76e413e6e3e",
+        "ed4c3f1e449837c73f9eb346ad5297a776ebb2cd30aadb3d321b85bdde882352"
+      ],
+      "yardsDescriptiveOnly": [
+        -7.45,
+        -7.45
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S30D-DT2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "hurriedBy": "S30D-DT2",
+          "rusher": "S30O-QB2",
+          "yardsBeforeContact": -7.651135230303929
+        },
+        {
+          "tacklers": [
+            "S30D-DT2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "hurriedBy": "S30D-DT2",
+          "rusher": "S30O-QB2",
+          "yardsBeforeContact": -7.651135230303929
+        }
+      ],
+      "offenseAssessment": "Same failed QB scramble ending; no demonstrated generic frozen-QB defect.",
+      "defenseAssessment": "Actual pressure/finish remain useful; off-ball pursuit changes do not invalidate the stop.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S30O-QB2"
+        },
+        {
+          "t": 3.9,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A013",
+      "concept": "iz_strong",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "70286192be7262c641d4272e2d1b921fa4c2e3a7b19b7fa2a526f20b78f71ba8",
+        "4f13f55bf3b5a927d52532b052e210c2b9e509800a21698e377afb325e6d59bf"
+      ],
+      "yardsDescriptiveOnly": [
+        -1.24,
+        1.46
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-DT1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": -1.4201567776684456
+        },
+        {
+          "tacklers": [
+            "S74D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 0.4569614168297562
+        }
+      ],
+      "offenseAssessment": "First-level protection allows later RB arrival than the old upstream DT loss, but RT/Y never achieve Mike load.",
+      "defenseAssessment": "Mike is now the first carrier-contact defender2.90. Later C/LG contact does not explain the earlier absent collection.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.5,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 3.4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A014",
+      "concept": "oz_strong",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "73eac7a95cc30b2b7f6a4417d4c1e8e0bbf5c4d102ba5b149ada41b2f31c296f",
+        "b933b84600656362fb96cc4ba8d4c34ebc77dec3e367f576d0dbbcc3fcc02ff4"
+      ],
+      "yardsDescriptiveOnly": [
+        0.95,
+        0.64
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-S2",
+            "S74D-CB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 0.015323480462193118
+        },
+        {
+          "tacklers": [
+            "S74D-LB1",
+            "S74D-DT3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 0.20631005621314102
+        }
+      ],
+      "offenseAssessment": "RT finds work after original target is unavailable and loads Mike3.25 before3.40 runner contact.",
+      "defenseAssessment": "LB sheds earlier work and still reaches runner. Useful pickup and useful defense coexist despite smaller gain.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.5,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.55,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 4.25,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A015",
+      "concept": "wz_strong",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "9931ed6b035966d38d8def580deaa7c6050edc10f4afa15800d5e909093a2389",
+        "f88f334bce6fa730ec4fefd9f90d27c99a4e30965436575d7e68a66530ab1bfe"
+      ],
+      "yardsDescriptiveOnly": [
+        -0.29,
+        -0.49
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": -0.5563771672668452
+        },
+        {
+          "tacklers": [
+            "S74D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": -0.6809369126886722
+        }
+      ],
+      "offenseAssessment": "Y leaves2.05 but never loads Mike; weak-side climb also does not produce a loaded backer pair.",
+      "defenseAssessment": "Mike reaches runner before LOS. Release/route feasibility remains unresolved; no grip can fail on an absent block.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.55,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 3.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A016",
+      "concept": "power",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "ddf5ace95d70607749fe78b2f685747e1914b633ea2e33eb5b32baa4099054d8",
+        "55487eb3f56fa9c2270babdeccbcf00853b0626791e9c91bae8c36f60d3cffd7"
+      ],
+      "yardsDescriptiveOnly": [
+        -1.55,
+        -1.42
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-DT1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": -1.9142684318342802
+        },
+        {
+          "tacklers": [
+            "S74D-DT1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": -1.9201705507057127
+        }
+      ],
+      "offenseAssessment": "Y achieves weak-LB work1.75, while upstream penetration remains.",
+      "defenseAssessment": "DT_S stops RB before LOS. Later RT/LG collision is after first carrier contact, not proof of its cause.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.55,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 3.55,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A017",
+      "concept": "counter",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "409042b55d2b529e41e5879e769430b2c714598de62fc9aa3df29cef5f19dfaa",
+        "d36e9d440d56f4f406ec3d3f8e004b3651eec77cb6068719827c5ac46bb2ccdd"
+      ],
+      "yardsDescriptiveOnly": [
+        5.91,
+        1.69
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-CB4",
+            "S74D-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 3.3211819823380324
+        },
+        {
+          "tacklers": [
+            "S74D-LB1",
+            "S74D-LB3",
+            "S74D-CB4"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 0.8385980927968077
+        }
+      ],
+      "offenseAssessment": "LT collects penetration and loads weak LB3.00; runner remains active.",
+      "defenseAssessment": "DT_W misses a dive, then Mike/weak-LB/SS combine to finish. Preserve the earned recovery rather than restoring a required gain.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.5,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 4.45,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A018",
+      "concept": "duo",
+      "kind": "run",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "c2644a9606b2ae36a243e36ee0066bfb1f52dc4a90303c1a7bdd122647240878",
+        "7fa4aad5bc3d19e593d32f0629f2e8fd9761e468fbb9a98b9f0e7235cf878832"
+      ],
+      "yardsDescriptiveOnly": [
+        1.53,
+        10.74
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-LB1",
+            "S74D-DT1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 0.4353031781220409
+        },
+        {
+          "tacklers": [
+            "S74D-S1",
+            "S74D-CB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S74O-RB1",
+          "yardsBeforeContact": 4.291790974271073
+        }
+      ],
+      "offenseAssessment": "RG now loads Mike2.30 before runner arrival while RT keeps DT work. The older post-Duo access miss is repaired in this current sequence.",
+      "defenseAssessment": "SS first hold3.40 breaks, FS/corner reacquire3.95/4.00 and finish4.50. Later C/LG impact3.80 remains; no isolated final-yardage claim.",
+      "nominations": [
+        "N2"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.45,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 4.5,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A019",
+      "concept": "slant_flat",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "1dab562f5c2a57400889bd5d2d5aba9963bb8670f252f20af6c3897c7894c50b",
+        "a31b607e84f6b7c67d0900812157af7c24e6039a9b51fb80f7b902173a8422b1"
+      ],
+      "yardsDescriptiveOnly": [
+        20.85,
+        0
+      ],
+      "outcomes": [
+        "tackle",
+        "incomplete"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-S1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 1.9,
+          "target": "S74O-FB1",
+          "airYards": 3.092062906661475,
+          "separation": 1.8,
+          "receiver": "S74O-FB1",
+          "completedAirYards": 2.7115724756532416,
+          "yac": 18.138892482768732
+        },
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.3,
+          "target": "S74O-WR3",
+          "airYards": 8.082973647824517,
+          "passDefendedBy": "S74D-LB3"
+        }
+      ],
+      "offenseAssessment": "Earlier reference Y completion is not reproduced: current QB throws later2.30 to X. Assess changed target/pressure context, not a lost receiver catch.",
+      "defenseAssessment": "LB_W bats the ball2.40 and earns an incompletion. This is actual ball defense, not an inferred proximity contest.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.15,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 2.3,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A020",
+      "concept": "mesh",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4",
+        "65f03a9ce5b2a7faa4ce84a3ecf17b9182a37b01ecb7f3406319727c18629d8e"
+      ],
+      "yardsDescriptiveOnly": [
+        75,
+        75
+      ],
+      "outcomes": [
+        "touchdown",
+        "touchdown"
+      ],
+      "stats": [
+        {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.5,
+          "target": "S74O-WR2",
+          "airYards": 5.77054275453596,
+          "separation": 4.1,
+          "receiver": "S74O-WR2",
+          "completedAirYards": 6.754091031351059,
+          "yac": 68.24590896864893
+        },
+        {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.5,
+          "target": "S74O-WR2",
+          "airYards": 5.77054275453596,
+          "separation": 4.1,
+          "receiver": "S74O-WR2",
+          "completedAirYards": 6.754091031351059,
+          "yac": 68.24590896864893
+        }
+      ],
+      "offenseAssessment": "H retains the long offensive win, with a reported broken tackle after actual corner contact4.65.",
+      "defenseAssessment": "SS compound request replaces the prior zero request, yet useful catch/finish access remains late. Corner reach has little nearby backup; TD is unresolved postcontact evidence.",
+      "nominations": [
+        "N2"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2.05,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 2.5,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 3.35,
+          "idx": 10,
+          "id": "S74O-WR2"
+        },
+        {
+          "t": 12,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A021",
+      "concept": "smash",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "5ec5cbc5b85f2cc27661647db5c9060525320c111b4dcd375fc5d43536af79dc",
+        "4c2ef0ccf7b7b2e70031109045d3d78c7b7b413c1ab9c256e038460460c5fb45"
+      ],
+      "yardsDescriptiveOnly": [
+        34.91,
+        34.91
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-S1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.9,
+          "target": "S74O-WR2",
+          "airYards": 24.824886230885298,
+          "separation": 4,
+          "receiver": "S74O-WR2",
+          "completedAirYards": 22.62888629335758,
+          "yac": 12.282919803856814
+        },
+        {
+          "tacklers": [
+            "S74D-S1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.9,
+          "target": "S74O-WR2",
+          "airYards": 24.824886230885298,
+          "separation": 4,
+          "receiver": "S74O-WR2",
+          "completedAirYards": 22.62888629335758,
+          "yac": 12.282919803856814
+        }
+      ],
+      "offenseAssessment": "Legitimate deep-corner completion/progress remains; same34.91 ending.",
+      "defenseAssessment": "Recovery/finish remains. Only late off-ball changes preclude full-result equality.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 5.2,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 2.9,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 4.4,
+          "idx": 10,
+          "id": "S74O-WR2"
+        },
+        {
+          "t": 6.3,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A022",
+      "concept": "four_verts",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "b1d19620f8a5461265d9a4e551096852bf01251b19564f1c53faea2f77b6e229",
+        "798c1134e8d73a534f146d143064de7e0236b08edb17de154c78971ad83bc624"
+      ],
+      "yardsDescriptiveOnly": [
+        0,
+        0
+      ],
+      "outcomes": [
+        "incomplete",
+        "incomplete"
+      ],
+      "stats": [
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 1.95,
+          "target": "S74O-FB1",
+          "airYards": 5.235731780454074,
+          "separation": 4.7
+        },
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 1.95,
+          "target": "S74O-FB1",
+          "airYards": 5.235731780454074,
+          "separation": 4.7
+        }
+      ],
+      "offenseAssessment": "Full result equal, including a recorded drop/incompletion.",
+      "defenseAssessment": "Full result equal. Do not credit an unchanged offensive drop as improved ball defense.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 1.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A023",
+      "concept": "pa_flood",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "9dd63a90c2267897ccf4aad8e1d92c082fb8b48601ec8d5abc6ef7a9b2d0eae9",
+        "41ecc13239a518f9840604a3823ee4cd4544fc1b56f1934612eebc87a7aa9cfe"
+      ],
+      "yardsDescriptiveOnly": [
+        0,
+        0
+      ],
+      "outcomes": [
+        "incomplete",
+        "incomplete"
+      ],
+      "stats": [
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S74D-EDGE1",
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.95,
+          "target": "S74O-WR2",
+          "airYards": 4.769326938581571
+        },
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S74D-EDGE1",
+          "passer": "S74O-QB1",
+          "timeToThrow": 2.95,
+          "target": "S74O-WR2",
+          "airYards": 4.769326938581571
+        }
+      ],
+      "offenseAssessment": "Current incomplete remains; RB outlet path differs before throw, so no matched completion claim.",
+      "defenseAssessment": "Defense still denies completion; outcome alone does not identify the changed cause.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.4,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 2.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A024",
+      "concept": "y_cross",
+      "kind": "pass",
+      "matchup": "technique-elusive",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "fa9a2cb4c88179c06e550ef43d7c46fe58406d04618a07b7f8406225111aa32d",
+        "7998d39bfa51a289b0f9943f3bccb03546190d56e2527572c28460fa4888b05c"
+      ],
+      "yardsDescriptiveOnly": [
+        4.9,
+        4.88
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S74D-LB3",
+            "S74D-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 3.75,
+          "target": "S74O-RB1",
+          "airYards": 4.597822384598651,
+          "separation": 3.7,
+          "receiver": "S74O-RB1",
+          "completedAirYards": 4.377897821271375,
+          "yac": 0.5196655001142005
+        },
+        {
+          "tacklers": [
+            "S74D-LB3",
+            "S74D-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S74O-QB1",
+          "timeToThrow": 3.75,
+          "target": "S74O-RB1",
+          "airYards": 4.597822384598651,
+          "separation": 3.7,
+          "receiver": "S74O-RB1",
+          "completedAirYards": 4.377897821271375,
+          "yac": 0.4995970978628179
+        }
+      ],
+      "offenseAssessment": "RB completion and small postcatch progress remain at4.88 total.",
+      "defenseAssessment": "Contact/finish remain, with small arrival differences; no new defect asserted from hundredths of yardage.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2.05,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S74O-QB1"
+        },
+        {
+          "t": 3.75,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 4.35,
+          "idx": 6,
+          "id": "S74O-RB1"
+        },
+        {
+          "t": 5.75,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A025",
+      "concept": "iz_strong",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "64b58957cb3ea69726f362b55a9416d795fd7f0e674951b7e3a57094128c68a1",
+        "013b170d4208160f8216e31de7c0f77c150e04211a7fcc1cbea5438405584d26"
+      ],
+      "yardsDescriptiveOnly": [
+        4.04,
+        5.81
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 1.5117479547328756
+        },
+        {
+          "tacklers": [
+            "S88D-LB2",
+            "S88D-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 1.4462115241100122
+        }
+      ],
+      "offenseAssessment": "LG earns weak-LB load1.65 and RB gains useful space; RT/Y never achieve Mike collection.",
+      "defenseAssessment": "Mike still supplies first contact2.95 and defensive finish. Retained first-level double may be useful; leaving earlier is not assumed safe.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.5,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 4.05,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A026",
+      "concept": "oz_strong",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "fe1ab913661f3dd6bf4c355b891991bb95625dbacac3aac9d8318d14e9e3fdbd",
+        "4969b5ab06e9c0ea3c9f948a456da20388821697bad09eeba9a9d907a71ac101"
+      ],
+      "yardsDescriptiveOnly": [
+        -1.1,
+        -1.1
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-DT2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": -1.7981485168421827
+        },
+        {
+          "tacklers": [
+            "S88D-DT2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": -1.7981484086159014
+        }
+      ],
+      "offenseAssessment": "Upstream edge access stops runner before LOS; no useful second-level load is established.",
+      "defenseAssessment": "DE_W wins at2.05. Earlier RT/RG contact is recorded, but its causal cost is not isolated.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.5,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.6,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 2.7,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A027",
+      "concept": "wz_strong",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "4947066ec75644edb40822a9b9e7a65e1588e38ac753d7818a8d7ecf89fe39a2",
+        "28cff8ae99eaa2ac0ca9a3615ca973ec74c99c7fb9bb3bc3baae1342f05b9615"
+      ],
+      "yardsDescriptiveOnly": [
+        0.8,
+        -1.1
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 0.2417124359554137
+        },
+        {
+          "tacklers": [
+            "S88D-LB2",
+            "S88D-LB3",
+            "S88D-DT5",
+            "S88D-CB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S88O-RB2",
+          "fumbledBy": "S88O-RB2",
+          "fumbleRecoveredBy": "S88O-OT3",
+          "yardsBeforeContact": -1.0987327869217864
+        }
+      ],
+      "offenseAssessment": "Historical useful Y/Mike block is not reproduced. RB fumbles after Mike hit2.80; LT S88O-OT3 recovers3.50. Preserve the recovery as a distinct possession.",
+      "defenseAssessment": "Mike earns hit/fumble and later tackles LT, not RB. Final negative yardage is not a failed postcatch or RB tackle-grip example.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.55,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.6,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 2.8,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 3.5,
+          "idx": 1,
+          "id": "S88O-OT3"
+        },
+        {
+          "t": 4.4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A028",
+      "concept": "power",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "cb0eb784ed4886971461fdd15d330edd808b648fd80f537b1351f4060230a161",
+        "92c2bfae577824d0390d393d77958d240b7b33f7beb45cf3e34b043e61f00164"
+      ],
+      "yardsDescriptiveOnly": [
+        4.5,
+        4.32
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB2",
+            "S88D-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 1.7404770223671946
+        },
+        {
+          "tacklers": [
+            "S88D-LB2",
+            "S88D-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 1.7196927040490948
+        }
+      ],
+      "offenseAssessment": "Runner reaches LOS, but no loaded Mike/weak-LB pair develops. RT/RG and RT/Y sampled collisions are adverse traffic evidence without isolated cost.",
+      "defenseAssessment": "Mike reaches RB3.25 and finishes. Comparable gain does not certify the approach or blame the collisions.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.55,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 3.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A029",
+      "concept": "counter",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "20c6982292e98632ea5bdfc37fcae62e0da87e7582f80eb627f789b718934335",
+        "35bcc42f1d8414e5af21aab45908c6bb91af2d2cf5120d1d1f7aaf2ee64a08aa"
+      ],
+      "yardsDescriptiveOnly": [
+        2.35,
+        3.23
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": -0.9952940671310557
+        },
+        {
+          "tacklers": [
+            "S88D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": -0.9963676096010161
+        }
+      ],
+      "offenseAssessment": "Runner escapes one reported hold and reaches positive total yards after early edge contact.",
+      "defenseAssessment": "DE_S supplies first contact before LOS and eventual defense still finishes. An escape can be an earned offensive win.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.6,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.5,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 3.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A030",
+      "concept": "duo",
+      "kind": "run",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "f15d553f4cff5245e7f434754d1743dc0c28081f3d4d90759a18ab1f09a5db35",
+        "0b3bf4bfbc838eee49bd7492922e324b78826895558dfee78c29ce0d80bc0213"
+      ],
+      "yardsDescriptiveOnly": [
+        2.01,
+        75
+      ],
+      "outcomes": [
+        "tackle",
+        "touchdown"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 0.535912931127605
+        },
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 3,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S88O-RB2",
+          "yardsBeforeContact": 4.660857859976453
+        }
+      ],
+      "offenseAssessment": "RG/Mike load2.05 and RT/DT load coexist at arrival; C also supplies weak-LB work. Useful protection precedes the touchdown.",
+      "defenseAssessment": "SS wraps3.30, FS3.80 and corner3.90, but three reported holds break; FS/corner dives remain. Separate achieved access from unsuccessful contact/backup finish.",
+      "nominations": [
+        "N2"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.45,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 11.6,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A031",
+      "concept": "slant_flat",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "fb02349a667f78bf0dd5023784d3c7683a1107e73450ca9dd0d0f267977844f2",
+        "27c815ea1db9a5290aaf074909059e2c56258d6510c21031b00b5cf82776439b"
+      ],
+      "yardsDescriptiveOnly": [
+        2.44,
+        2.46
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-CB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 1.95,
+          "target": "S88O-TE1",
+          "airYards": 3.087126142407371,
+          "separation": 2.3,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 2.5506519150590634,
+          "yac": -0.11042799392168234
+        },
+        {
+          "tacklers": [
+            "S88D-CB2",
+            "S88D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 1.95,
+          "target": "S88O-TE1",
+          "airYards": 3.087126142407371,
+          "separation": 2.3,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 2.5506519150590634,
+          "yac": -0.0863962830832179
+        }
+      ],
+      "offenseAssessment": "Short completion and negative/small YAC control survives.",
+      "defenseAssessment": "Useful short finish survives; small yardage difference is not an assignment-grade change.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.5,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 1.95,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.6,
+          "idx": 7,
+          "id": "S88O-TE1"
+        },
+        {
+          "t": 4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A032",
+      "concept": "mesh",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "438fa21833f26ff7a7b939b69bdb1e15f7ac35a5b5551f4b2adb6f88110381c3",
+        "c38a4e2c9ae782bbbe0bf29c6a0f1ecc1a4426b561a5430c9d5a237ae8a3cacf"
+      ],
+      "yardsDescriptiveOnly": [
+        3.13,
+        3.13
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.25,
+          "target": "S88O-TE1",
+          "airYards": 3.144592298591,
+          "separation": 0.6,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 2.8942256198984566,
+          "yac": 0.23870933720025533
+        },
+        {
+          "tacklers": [
+            "S88D-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.25,
+          "target": "S88O-TE1",
+          "airYards": 3.144592298591,
+          "separation": 0.6,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 2.8942256198984566,
+          "yac": 0.23867958960710922
+        }
+      ],
+      "offenseAssessment": "Y completes under pressure at the catch point.",
+      "defenseAssessment": "NB wraps at2.80 and finishes3.40; successful catch-adjacent defensive access remains.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2.05,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 2.25,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.8,
+          "idx": 7,
+          "id": "S88O-TE1"
+        },
+        {
+          "t": 3.4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A033",
+      "concept": "smash",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "355b0c907d0115cb1ba8a07fff79b0d273151084f075df21d0099203cfe7ff46",
+        "9b91e0d82221920a7af0c0d427c0f61bbee80697be0d2b3329afa034b9999190"
+      ],
+      "yardsDescriptiveOnly": [
+        -3.63,
+        -3.63
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-DT5"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "rusher": "S88O-QB2",
+          "fumbledBy": "S88O-QB2",
+          "fumbleRecoveredBy": "S88O-C1",
+          "yardsBeforeContact": -3.626513351706137
+        },
+        {
+          "tacklers": [
+            "S88D-DT5"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "rusher": "S88O-QB2",
+          "fumbledBy": "S88O-QB2",
+          "fumbleRecoveredBy": "S88O-C1",
+          "yardsBeforeContact": -3.626513351706137
+        }
+      ],
+      "offenseAssessment": "Same QB scramble/fumble3.30; center S88O-C1 recovers3.85. Preserve that recovery and distinguish QB from the eventual carrier.",
+      "defenseAssessment": "Defensive hit forces the QB fumble; DT5 later tackles center4.65. Native possession sequence remains useful defensive work, not a QB tackle or catch.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 4.2,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 3.3,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 3.85,
+          "idx": 3,
+          "id": "S88O-C1"
+        },
+        {
+          "t": 4.65,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A034",
+      "concept": "four_verts",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "d26e028db7e9b253f1d33285bd6426d4b80e027ede35388e10e439ff0ffd4aff",
+        "38887cc9b51d529878f9da8dbd55a2ec1ee292bc434bceb541bb25ba22c6447e"
+      ],
+      "yardsDescriptiveOnly": [
+        15.12,
+        15.12
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB3",
+            "S88D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.3,
+          "target": "S88O-TE1",
+          "airYards": 6.5254176805748045,
+          "separation": 4.9,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 5.150164666714296,
+          "yac": 9.970844190711105
+        },
+        {
+          "tacklers": [
+            "S88D-LB3",
+            "S88D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.3,
+          "target": "S88O-TE1",
+          "airYards": 6.5254176805748045,
+          "separation": 4.9,
+          "receiver": "S88O-TE1",
+          "completedAirYards": 5.150164666714296,
+          "yac": 9.970844190711105
+        }
+      ],
+      "offenseAssessment": "Same Four Verticals completion/progress; later off-ball QB movement changes.",
+      "defenseAssessment": "Catch/contact principal sequence remains, without full-result identity.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 4,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 2.3,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.9,
+          "idx": 7,
+          "id": "S88O-TE1"
+        },
+        {
+          "t": 4.9,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A035",
+      "concept": "pa_flood",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "82c400e762c6168b6bc5090bd274c3385dfb6a319bb00f798b23e0e801a95c60",
+        "9f9d0de3af4974a6930e06da5d1d2d42282ee90609f66691e251f656f12cc36d"
+      ],
+      "yardsDescriptiveOnly": [
+        12.56,
+        12.26
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-CB1",
+            "S88D-S1",
+            "S88D-CB2",
+            "S88D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S88D-EDGE2",
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.55,
+          "target": "S88O-WR1",
+          "airYards": 12.576570716150876,
+          "separation": 2.1,
+          "receiver": "S88O-WR1",
+          "completedAirYards": 10.953449806877174,
+          "yac": 1.6039744102865399
+        },
+        {
+          "tacklers": [
+            "S88D-S1",
+            "S88D-CB2",
+            "S88D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 2,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S88D-EDGE2",
+          "passer": "S88O-QB2",
+          "timeToThrow": 2.55,
+          "target": "S88O-WR1",
+          "airYards": 12.576570716150876,
+          "separation": 2.1,
+          "receiver": "S88O-WR1",
+          "completedAirYards": 10.953449806877174,
+          "yac": 1.3039874795622879
+        }
+      ],
+      "offenseAssessment": "PA completion and useful receiver progress remain.",
+      "defenseAssessment": "Two missed attempts are recorded but eventual defense finishes. Do not classify attempts as actual wraps or force failures.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 2.55,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 3.45,
+          "idx": 8,
+          "id": "S88O-WR1"
+        },
+        {
+          "t": 4.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A036",
+      "concept": "y_cross",
+      "kind": "pass",
+      "matchup": "ordinary",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "b326cdf0196eda3ac7fa36432e621909877ee44a2452e01063fe5d704767be8c",
+        "13603a775bac7e3913c07f1f9d413d6eb3c21f1948529d1f8479e45cc62ab4c0"
+      ],
+      "yardsDescriptiveOnly": [
+        6.68,
+        6.68
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S88D-LB3",
+            "S88D-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 3.65,
+          "target": "S88O-RB2",
+          "airYards": 4.585869049292775,
+          "separation": 3.1,
+          "receiver": "S88O-RB2",
+          "completedAirYards": 4.639895757618504,
+          "yac": 2.0352791852540193
+        },
+        {
+          "tacklers": [
+            "S88D-LB3",
+            "S88D-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S88O-QB2",
+          "timeToThrow": 3.65,
+          "target": "S88O-RB2",
+          "airYards": 4.585869049292775,
+          "separation": 3.1,
+          "receiver": "S88O-RB2",
+          "completedAirYards": 4.639895757618504,
+          "yac": 2.0352791852540193
+        }
+      ],
+      "offenseAssessment": "Full result equal: RB outlet completion/progress.",
+      "defenseAssessment": "Full result equal: LB arrival and finish.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S88O-QB2"
+        },
+        {
+          "t": 3.65,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 4.25,
+          "idx": 6,
+          "id": "S88O-RB2"
+        },
+        {
+          "t": 5.5,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A037",
+      "concept": "iz_strong",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "1b802efacede89b489a2f6d9039964f8f90a95f45fa2810e18b11d3f5c5ea38a",
+        "0a0b80f2efb22a4f0318fba9c0d99417743af74ba66eb4507e011087e5fef396"
+      ],
+      "yardsDescriptiveOnly": [
+        1.13,
+        1.19
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 0.05139678093765809
+        },
+        {
+          "tacklers": [
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 0.06266393164389683
+        }
+      ],
+      "offenseAssessment": "Weak-side load exists, but RT/Y Mike collection never occurs; runner reaches the line.",
+      "defenseAssessment": "Mike wraps at the LOS sample and finishes. Capability/keeper-security alternatives remain.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.65,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.35,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 3.1,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A038",
+      "concept": "oz_strong",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "56f293690b9bd30e2e738a850f2506c1eb4d72a7ac3ebfe6bc5c975b89c3370d",
+        "e30af8b54033241075247c7ac35e9256898d115574f8c9ee77a9993f2fe7ea6b"
+      ],
+      "yardsDescriptiveOnly": [
+        3.72,
+        3.65
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-CB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 1.9036558006984734
+        },
+        {
+          "tacklers": [
+            "S69D-CB1",
+            "S69D-CB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 3.0351632904953263
+        }
+      ],
+      "offenseAssessment": "Outside run retains earned progress; no RB teammate-impact jam is recorded.",
+      "defenseAssessment": "Corner reaches and finishes after a missed attempt elsewhere. Earlier RT/RG collision is not an automatic defect.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.45,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 3.65,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A039",
+      "concept": "wz_strong",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "fb51a04ff22ec9de96a5bdeb3737221fe7f2cb16e3ce0eb5f1ad2f75af00f677",
+        "5a87dac08f135d47d1cf019ce0a74fc29e0a21d985fe14289030000350930603"
+      ],
+      "yardsDescriptiveOnly": [
+        2.78,
+        3.26
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 0.9871587477050596
+        },
+        {
+          "tacklers": [
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 0.7508068516826469
+        }
+      ],
+      "offenseAssessment": "C loads weak LB1.85; RT leaves1.75 but never loads Mike before runner contact.",
+      "defenseAssessment": "Mike closes2.50 and finishes. Useful weak-side block does not establish strong-side collection.",
+      "nominations": [
+        "N1"
+      ],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.45,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.45,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 3.15,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A040",
+      "concept": "power",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "9a66f24171a61939f9c77df576b7351417e06049503dabf4f8353aaadaaafbc7",
+        "e0ce2078903b15ff14013a8116c38f71e7be6eb7cb3eecde70354642199c60e0"
+      ],
+      "yardsDescriptiveOnly": [
+        -0.29,
+        -0.24
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-LB3",
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": -1.1596185096897713
+        },
+        {
+          "tacklers": [
+            "S69D-LB3",
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": -1.1596185096897713
+        }
+      ],
+      "offenseAssessment": "Y earns weak-LB load before upstream stop.",
+      "defenseAssessment": "DE_W wins before LOS and finishes. Preserve a legitimate defender win despite useful other-side work.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.5,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.35,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 2.95,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A041",
+      "concept": "counter",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "873b18a868f6544fd6f36036dabd625a4b3148cf3ea73e673717a3f922ff5919",
+        "1ffc8ee303adf1c7f5e0223bfd173f229d6d062e7767528ad78a82a2a1b4c0a4"
+      ],
+      "yardsDescriptiveOnly": [
+        4.33,
+        3.47
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-S2",
+            "S69D-S1",
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 3.2445427178784882
+        },
+        {
+          "tacklers": [
+            "S69D-S2",
+            "S69D-LB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 1.817378698778242
+        }
+      ],
+      "offenseAssessment": "Counter advances with useful first-level work; no loaded backer pair is achieved.",
+      "defenseAssessment": "NB reaches3.30 and finishes with pursuit. Smaller gain is not sufficient to call the pull wrong.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.5,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.35,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 4,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A042",
+      "concept": "duo",
+      "kind": "run",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0",
+        "3f179195372fadeddf17d75f84bd421aadcba5d6df5c0eb6ca0987a15d253055"
+      ],
+      "yardsDescriptiveOnly": [
+        12.73,
+        8.12
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-CB3",
+            "S69D-CB1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 5.675187251391115
+        },
+        {
+          "tacklers": [
+            "S69D-S1",
+            "S69D-CB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "S69O-RB1",
+          "yardsBeforeContact": 5.283027456421003
+        }
+      ],
+      "offenseAssessment": "RG loads Mike2.05, RT retains DT protection and RB gets an earned crease.",
+      "defenseAssessment": "SS form entry3.25 has sustained support and finishes3.80 with FS help. Useful opposing control for A018/A030 escape sequences.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.45,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.35,
+          "idx": 6,
+          "id": "S69O-RB1"
+        },
+        {
+          "t": 3.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A043",
+      "concept": "slant_flat",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "c156fba3242379b230623144e2d7ace095e3091d8bc121852d60b831be4dd087",
+        "f0a2c954789112a90a382e9c00fd909f069edabe7414124f9f9f491a2632b7b6"
+      ],
+      "yardsDescriptiveOnly": [
+        0,
+        0
+      ],
+      "outcomes": [
+        "incomplete",
+        "incomplete"
+      ],
+      "stats": [
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 1.5,
+          "target": "S69O-WR2",
+          "airYards": 5.752023804483642,
+          "passDefendedBy": "S69D-S1"
+        },
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 1.5,
+          "target": "S69O-WR2",
+          "airYards": 5.752023804483642,
+          "passDefendedBy": "S69D-S1"
+        }
+      ],
+      "offenseAssessment": "Offense remains incomplete; there is no required offensive gain.",
+      "defenseAssessment": "SS ball-defense control survives; current source changes off-ball movement but actual PBU remains.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 1.35,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.5,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A044",
+      "concept": "mesh",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "be2a7dca189afc22a3722e1603bcffa8e7531431edce377398cf4e5f8524c9a7",
+        "16b81f47bbda80ddd842fd6bb041b534a396bf758259d54c722d0f41c51d9376"
+      ],
+      "yardsDescriptiveOnly": [
+        0,
+        20.37
+      ],
+      "outcomes": [
+        "incomplete",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 2.25,
+          "target": "S69O-WR3",
+          "airYards": 5.567648043226598,
+          "separation": 3
+        },
+        {
+          "tacklers": [
+            "S69D-CB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 2.25,
+          "target": "S69O-WR3",
+          "airYards": 5.567648043226598,
+          "separation": 2.9,
+          "receiver": "S69O-WR3",
+          "completedAirYards": 5.117013611059413,
+          "yac": 15.256036070605688
+        }
+      ],
+      "offenseAssessment": "Same targeted H catch opportunity becomes a completion and15.26YAC. Current Z/corner hand block is not recorded; historical useful block remains source-pinned.",
+      "defenseAssessment": "No sampled SS/robber collision remains. SS preserves more catch speed; corner reaches H5.10 and finishes5.80. Catch/drop exposure and RNG prevent attributing all yardage to traffic.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 2.05,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 2.25,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.9,
+          "idx": 10,
+          "id": "S69O-WR3"
+        },
+        {
+          "t": 5.8,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A045",
+      "concept": "smash",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "fdc1d3eb6733d8b151a463f7046ca185f47f10975eac6499bbe12ceb39d64d9c",
+        "d2d47e4957e83bfd7a8396cbdef58862468288624c336d587516ae9c0b4c9eb1"
+      ],
+      "yardsDescriptiveOnly": [
+        34.29,
+        34.29
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 3.15,
+          "target": "S69O-WR3",
+          "airYards": 27.186361709014875,
+          "separation": 3.9,
+          "receiver": "S69O-WR3",
+          "completedAirYards": 24.04783966844837,
+          "yac": 10.242333240848332
+        },
+        {
+          "tacklers": [
+            "S69D-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover2",
+            "post": "cover2"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 3.15,
+          "target": "S69O-WR3",
+          "airYards": 27.186361709014875,
+          "separation": 3.9,
+          "receiver": "S69O-WR3",
+          "completedAirYards": 24.04783966844837,
+          "yac": 10.242333240848332
+        }
+      ],
+      "offenseAssessment": "Full result equal: legitimate deep offensive window/progress.",
+      "defenseAssessment": "Full result equal: FS recovery/finish after that earned completion.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 3.15,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 4.65,
+          "idx": 10,
+          "id": "S69O-WR3"
+        },
+        {
+          "t": 6.2,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A046",
+      "concept": "four_verts",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "febbbf181b0c5aba3d5f506f7042c9b037e154c0ddb1c7ebf0c061701d863a2a",
+        "b5e22e258e13014954efd354938d00eb306173cffde6d66465253f16a35c8fbb"
+      ],
+      "yardsDescriptiveOnly": [
+        8.86,
+        8.86
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 1.85,
+          "target": "S69O-TE2",
+          "airYards": 8.468766559246156,
+          "separation": 2.6,
+          "receiver": "S69O-TE2",
+          "completedAirYards": 6.565751999308546,
+          "yac": 2.2944654151240087
+        },
+        {
+          "tacklers": [
+            "S69D-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "S69O-QB1",
+          "timeToThrow": 1.85,
+          "target": "S69O-TE2",
+          "airYards": 8.468766559246156,
+          "separation": 2.6,
+          "receiver": "S69O-TE2",
+          "completedAirYards": 6.565751999308546,
+          "yac": 2.2944654151240087
+        }
+      ],
+      "offenseAssessment": "Full result equal: short Four Verticals completion.",
+      "defenseAssessment": "Full result equal: short LB contact and finish.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 1.85,
+          "idx": -1,
+          "id": null
+        },
+        {
+          "t": 2.5,
+          "idx": 7,
+          "id": "S69O-TE2"
+        },
+        {
+          "t": 3.5,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A047",
+      "concept": "pa_flood",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "331ff1152e9abe6c4a965c20b9d75f8325835d004dae06f808adeb09c4849240",
+        "12d1f074ad1f650e235df7779a5063318b9ec391cfe4c42b21107d8ed0d35c24"
+      ],
+      "yardsDescriptiveOnly": [
+        -6.24,
+        -6.24
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-EDGE1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": true,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S69D-EDGE1",
+          "sackedBy": [
+            "S69D-EDGE1"
+          ]
+        },
+        {
+          "tacklers": [
+            "S69D-EDGE1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": true,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "S69D-EDGE1",
+          "sackedBy": [
+            "S69D-EDGE1"
+          ]
+        }
+      ],
+      "offenseAssessment": "QB is sacked; no inferred static-QB failure is added.",
+      "defenseAssessment": "Useful sack control persists despite earlier off-ball support changes.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": false,
+      "firstRecordedAgentStateDifference": 0.6,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 3.3,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    },
+    {
+      "id": "A048",
+      "concept": "y_cross",
+      "kind": "pass",
+      "matchup": "offensive-advantage",
+      "sourcePins": [
+        "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+        "bb6d4c73948d53ba841dd9338dd240146c739f8c"
+      ],
+      "rawSha256": [
+        "5e02ed4a0d4d719db2865ac98687f38324838139373cd53b991d06e04e173345",
+        "24dfdbccf925a0973b6c3ece26537793b6ef0ed8df8dadb618c54903a21cbb78"
+      ],
+      "yardsDescriptiveOnly": [
+        -7.88,
+        -7.88
+      ],
+      "outcomes": [
+        "tackle",
+        "tackle"
+      ],
+      "stats": [
+        {
+          "tacklers": [
+            "S69D-EDGE3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": true,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "hurriedBy": "S69D-EDGE3",
+          "sackedBy": [
+            "S69D-EDGE3"
+          ]
+        },
+        {
+          "tacklers": [
+            "S69D-EDGE3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": true,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "hurriedBy": "S69D-EDGE3",
+          "sackedBy": [
+            "S69D-EDGE3"
+          ]
+        }
+      ],
+      "offenseAssessment": "Full result equal: sack outcome retained.",
+      "defenseAssessment": "Full result equal: pressure/finish control retained.",
+      "nominations": [],
+      "causeConfidence": "Recorded facts high; available alternative, causal yardage and general defect classification remain unproved.",
+      "fullResultExactlyEqual": true,
+      "firstRecordedAgentStateDifference": null,
+      "possessionTransitions": [
+        {
+          "t": 0,
+          "idx": 0,
+          "id": "S69O-QB1"
+        },
+        {
+          "t": 2.7,
+          "idx": -1,
+          "id": null
+        }
+      ]
+    }
+  ]
+}

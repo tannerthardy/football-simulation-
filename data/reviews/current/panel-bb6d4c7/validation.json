@@ -1,0 +1,44 @@
+{
+  "schema": "panel-bb6d4c7-final-validation-v1",
+  "collection": {
+    "attempted": 48,
+    "complete": 48,
+    "failures": [],
+    "censored": [],
+    "unrun": [],
+    "currentArms": 1,
+    "baselineExecutions": 0,
+    "launcherWallSeconds": 21.81459311999788
+  },
+  "sourceAndSettingsUnchanged": true,
+  "pythonCompile": "pass",
+  "whitespace": "pass",
+  "pairedIntegrityChecks": 96,
+  "actualPossessionEpisodes": "All48 retained; A027 RB\u2192loose\u2192LT, A033 QB\u2192loose\u2192C, final tackle identities explicitly validated.",
+  "helperForcePolicy": "Membership retained; primary engagement hands never attributed as individual helper force.",
+  "analysisDiagnostics": [
+    {
+      "error": "Two exploratory saved-data print commands had Python token-spacing SyntaxErrors.",
+      "correction": "Corrected read-only commands; no native execution, source mutation or evidence loss."
+    },
+    {
+      "error": "Initial phase indexing used caught receivers only for called passes.",
+      "correction": "Scramble/sack QB episodes and subsequent recoveries now explicit; no invented event labels. Original collection unchanged."
+    }
+  ],
+  "savedDataReductionLastWallSeconds": 11.739210339001147,
+  "files": {
+    "paired.json.gz": {
+      "bytes": 871996,
+      "sha256": "fa0cacd0ff0e2651f272efb28ad173c8cc6e7962b8726f96b2e5767c5b1a49aa"
+    },
+    "phases.json.gz": {
+      "bytes": 4343963,
+      "sha256": "939b71ca7c9294c9296c995b948d7c5d027aae3fb935a66e13b646cb04a5752d"
+    },
+    "adjudication.json": {
+      "bytes": 132048,
+      "sha256": "546604faefbd00f262f404883e5ee76ae83e74adc9bf46cbb121ae245b4bea21"
+    }
+  }
+}
