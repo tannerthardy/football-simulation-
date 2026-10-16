@@ -48,7 +48,8 @@ export interface RuleCtx {
 // ------------------------------------------------------------ helpers
 
 const zoneOf = (c: RuleCtx, zone: ZoneId = c.zone): Directive => ({ t: 'zone', zone, style: c.style });
-const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive => ({ t: 'man', r: rd.r, opts });
+const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive =>
+  ({ t: 'man', r: rd.r, opts: { ...opts, initialPosition: { ...rd.pos } } });
 
 function ref(c: RuleCtx, n: 1 | 2 | 3, side: 'S' | 'W' = c.side): ReceiverRead | null {
   return c.reader.readRef(c.sim, `${side}${n}`);
