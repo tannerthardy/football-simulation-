@@ -1,0 +1,9 @@
+{
+  "question": "Does the standalone planned near-fit retain Under Mike protection with the reference first hand exchange, rather than relying on its better initial hand draw?",
+  "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c/source668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "candidate": "353d8caaedb141a58bb29d1f52b14db4a670eceb/source6d16f77e41a5f02805b110da04cf09b767c0c2bf2b95e0cc66857db31cf5ccc7",
+  "whyNeeded": "Under's first RT/Mike control is .05336 reference vs .22074 candidate. A controller-induced event schedule changes the global RNG draws. Geometry and execution must be distinguished before assigning credit.",
+  "scope": "Record reference first RT/Mike exchange through 1.90; substitute only those same range/normal variates in candidate's first named exchange through 3.60, consuming candidate native draws. All22 otherwise native; no altered force/control/body/commands. Later native noise remains a limitation.",
+  "budget": "One reference prefix plus one candidate prefix, 5wallseconds each, no games, panel or new inputs.",
+  "decision": "If useful protection disappears, hold attribution/adoption; if it persists with comparable weak initial hands, inspect achieved geometry and later control before recommendation. Do not require old Under recovery or A030 touchdown."
+}
