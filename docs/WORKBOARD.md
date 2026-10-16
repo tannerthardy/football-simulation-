@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Catching: #87 own-objective review completed — 2026-10-15
+
+Review-only branch `codex/review-87-own-objective` starts accepted
+`86250bb4f0c6f421878c204161864d523c3e30b6` (#85's verified merge).
+Boundary: [independent metadata review](reviews/pr87-own-objective-review.md)
+and its four small diagnostic artifacts only. No controller/test/settings edits.
+Approve producer semantics at #87 head9760de0; independent cost and Integration
+decisions remain with their owners. #89 remains frozen at78a0064; no further
+approach variants. Reused existing focused/native evidence; one paired local
+metadata probe, zero new PlaySim runs or suite repetition.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
