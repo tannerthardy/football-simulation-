@@ -10,7 +10,7 @@ import { movementObjective, withMovementObjective, type MovementObjective } from
 import { spaceTeammates } from '../src/sim/spacing.js';
 
 const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz',import.meta.url))).toString());
-function run(kind='ordinary') {
+function run(kind='ordinary',objective=true) {
   const first=fixture.rows[0];
   const a=new Agent(fixture.actor,'D','SS',fixture.player,first.body.profile,structuredClone(first.body),
     {kind:'man',update(){throw Error('Do not repeat the football decision');}});
@@ -32,7 +32,7 @@ function run(kind='ordinary') {
     });
     const raw:Intent=structuredClone(row.command),goal:MovementObjective=structuredClone(row.goal);
     if(kind==='unknown-goal'){goal.kind='moving';if(goal.kind==='moving')delete goal.velocity;}
-    const command=kind==='no-goal'?raw:withMovementObjective(raw,goal);
+    const command=kind==='no-goal'||!objective?raw:withMovementObjective(raw,goal);
     const source=structuredClone(a.body),picture=structuredClone([...pictures]);let reads=0;
     const intents:Intent[]=[command,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
     spaceTeammates([a,...peers],intents,(_a,p)=>{reads++;return pictures.get(p.idx);},
@@ -72,10 +72,10 @@ describe('compound traffic movement preserves the football objective',()=>{
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
   });
   it.each(['unknown-goal','unknown-peer','unknown-age','loaded','obstruction'])('does not invent a certified alternative with %s',kind=>{
-    const rows=run(kind),native=run('no-goal');
+    const rows=run(kind),native=run(kind,false);
     // Information/constraint controls do not use the new alternative. A
     // genuinely blocked route is allowed to remain blocked.
-    if(kind!=='obstruction'&&kind!=='unknown-peer')expect(rows.map(r=>r.command.vel)).toEqual(native.map(r=>r.command.vel));
+    if(kind!=='obstruction')expect(rows.map(r=>r.command.vel)).toEqual(native.map(r=>r.command.vel));
     const last=rows.at(-1)!;
     if(kind==='obstruction')expect(clearance(last.source,last.command,last.row.t,last.pictures,last.row.peers)).toBeLessThan(0);
   });

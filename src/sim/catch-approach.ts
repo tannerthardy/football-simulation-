@@ -10,6 +10,7 @@ import {availability,supportParams} from '../physics/support.js';
 import type {Agent} from './agent.js';
 import type {Perceived} from './perception.js';
 import type {PlaySim} from './playsim.js';
+import {withMovementObjective} from './movement-objective.js';
 
 interface CatchWindow {p:Vec2;t:number;receiver:Agent;seen:Perceived}
 interface BallOpportunity {p:Vec2;t:number}
@@ -51,5 +52,5 @@ export function movingCatchApproach(a:Agent,sim:PlaySim,original:MoveCommand,
  const capacity=support?availability(support,supportParams(a.profile),fatigueFactor(a.body.energy)):1,
   vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,contact,
    2.5+2*(1-a.r('tackling')),1,capacity);
- return {...original,vel};
+ return withMovementObjective({...original,vel},{kind:'moving',point:goal,velocity:seen.vel});
 }

@@ -143,7 +143,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
   if((a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<1e-9
     ||![goal.point.x,goal.point.y].every(Number.isFinite)
     ||(goal.kind==='moving'&&(!goal.velocity||![goal.velocity.x,goal.velocity.y].every(Number.isFinite)))
-    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0
+    ||peers.some(p=>!Number.isFinite(p.age)||p.age! < 0
       ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
     ||!forecastPeers(a,raw,peers,context).length)return clear();
   const now=context!.now,flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
