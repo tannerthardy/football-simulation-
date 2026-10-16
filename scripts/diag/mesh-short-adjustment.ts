@@ -66,31 +66,42 @@ function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: num
     passing={peer:conflict.p.idx,forward,normal};
   }
   const p=peers.find(p=>p.idx===passing!.peer)!,n=passing.normal;
-  // Preserve existing braking along the passing direction and match only
-  // the acquired peer's transverse motion. Physics supplies the actual turn;
-  // this changes no body velocity and promises no route through the play.
-  const correction=dot(p.seen.vel,n)-dot(chosen.vel,n);
-  const requested={x:chosen.vel.x+n.x*correction,y:chosen.vel.y+n.y*correction};
-  const magnitude=Math.hypot(requested.x,requested.y),scale=Math.min(1,speed/Math.max(1e-9,magnitude));
-  const command:Intent={...raw,vel:{x:requested.x*scale,y:requested.y*scale}};
-  const path=previewFreeMovement(body,command,now,steps),oldPath=previewFreeMovement(body,chosen,now,steps);
-  const gaps=peers.map(p=>encounter(body,path,p).gap),oldGaps=peers.map(p=>encounter(body,oldPath,p).gap);
+  const oldPath=previewFreeMovement(body,chosen,now,steps);
+  const oldGaps=peers.map(p=>encounter(body,oldPath,p).gap),previous=Math.min(...oldGaps);
   const progress=(path:MovementSample[])=>dot({x:path.at(-1)!.pos.x-body.pos.x,y:path.at(-1)!.pos.y-body.pos.y},
     {x:raw.vel.x/speed,y:raw.vel.y/speed});
   const goalError=(path:MovementSample[])=>{
     const end=path.at(-1)!;return Math.hypot(end.pos.x-goal.pos.x-goal.vel.x*end.t,end.pos.y-goal.pos.y-goal.vel.y*end.t);
   };
-  const minimum=Math.min(...gaps),previous=Math.min(...oldGaps),advance=progress(path),oldAdvance=progress(oldPath);
-  const accepted=path.every(s=>s.support==='up')&&advance>0&&goalError(path)<goalError(oldPath)
-    &&!gaps.some((g,i)=>oldGaps[i]>=0&&g<0)
-    &&(previous<0?minimum>previous+.05:minimum>=0);
-  return {reason:accepted?'lateral':'not-better',passing,command:accepted?command:undefined,
-    detail:{peer:p.idx,age:p.seen.age,normal:n,transverseCorrection:correction,objective:goal,
-      raw:structuredClone(raw),chosen:structuredClone(chosen),alternative:command,rawGap:worst.gap,residualGap:residualWorst.gap,
-      chosenGap:previous,lateralGap:minimum,chosenProgress:oldAdvance,lateralProgress:advance,
-      chosenObjectiveError:goalError(oldPath),lateralObjectiveError:goalError(path),allUp:path.every(s=>s.support==='up')}};
+  const stationaryGoalError=Math.hypot(body.pos.x-goal.pos.x-goal.vel.x*horizon,body.pos.y-goal.pos.y-goal.vel.y*horizon);
+  function evaluate(base:Intent,mode:string){
+    // Compose the same small transverse match with the existing braking
+    // request. A directional option need not throw away a useful speed change.
+    const correction=dot(p.seen.vel,n)-dot(base.vel,n);
+    const requested={x:base.vel.x+n.x*correction,y:base.vel.y+n.y*correction};
+    const magnitude=Math.hypot(requested.x,requested.y),scale=Math.min(1,speed/Math.max(1e-9,magnitude));
+    const command:Intent={...base,vel:{x:requested.x*scale,y:requested.y*scale}};
+    const path=previewFreeMovement(body,command,now,steps),gaps=peers.map(p=>encounter(body,path,p).gap);
+    const minimum=Math.min(...gaps),advance=progress(path),error=goalError(path);
+    const accepted=path.every(s=>s.support==='up')&&advance>0
+      &&!gaps.some((g,i)=>oldGaps[i]>=0&&g<0)
+      &&(previous<0?minimum>previous+.05&&error<stationaryGoalError:minimum>=0&&error<goalError(oldPath));
+    return {accepted,command,detail:{mode,peer:p.idx,age:p.seen.age,normal:n,transverseCorrection:correction,objective:goal,
+      raw:structuredClone(raw),chosen:structuredClone(chosen),base:structuredClone(base),alternative:command,
+      rawGap:worst.gap,residualGap:residualWorst.gap,chosenGap:previous,lateralGap:minimum,
+      chosenProgress:progress(oldPath),lateralProgress:advance,chosenObjectiveError:goalError(oldPath),
+      lateralObjectiveError:error,stationaryGoalError,allUp:path.every(s=>s.support==='up')}};
+  }
+  let option=evaluate(chosen,'current-modifier');
+  // One additional combination only when the native request still overlaps:
+  // its existing half-speed approach plus the same transverse adjustment.
+  // Do not compare safe progress against an unsafe unloaded sprint as though
+  // that sprint will attain its forecast endpoint through contact.
+  if(!option.accepted&&previous<0)option=evaluate({...raw,vel:{x:raw.vel.x*.5,y:raw.vel.y*.5}},'half-plus-transverse');
+  return {reason:option.accepted?'lateral':'not-better',passing,command:option.accepted?option.command:undefined,detail:option.detail};
+
 }
-const args=process.argv.slice(2),outIndex=args.indexOf('--out'),out=outIndex<0?'out/mesh-short/v1':args[outIndex+1];
+const args=process.argv.slice(2),outIndex=args.indexOf('--out'),out=outIndex<0?'out/mesh-short/v2':args[outIndex+1];
 const earlier=!args.includes('--later-only');
 const root='data/reviews/current/mesh-motion-admission/current-candidate';
 const source='data/reviews/current/mesh-command-attribution',input=`${source}/flex-windows.json.gz`;
