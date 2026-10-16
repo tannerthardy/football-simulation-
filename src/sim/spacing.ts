@@ -300,7 +300,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // This is free footwork. A loaded blocker or committed strike cannot
       // be allocated a new joint velocity from radial headway alone: the
       // contact controller owns that work, and the World resolves its load.
-      const free=context&&Number.isFinite(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
+      const free=context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
         &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
         &&!s.foot&&!s.strike&&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
       spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };

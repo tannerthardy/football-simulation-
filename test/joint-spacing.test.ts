@@ -42,6 +42,10 @@ describe('neighboring teammate closing limits',()=>{
     {now:f.t,constrained:new Set([s.a.body])});
   expect(s.commands[0]).toEqual(f.ordinary);
  });
+ it('leaves a scenario-parked actor outside free footwork',()=>{
+  const f=fixtures[0],s=stage(f);s.a.isDown=()=>true;s.run();
+  expect(s.commands[0]).toEqual(f.ordinary);
+ });
  it('keeps the ordinary response when moving peers make the limits inconsistent',()=>{
   const f=structuredClone(fixtures[0]);f.body.pos={x:0,y:0};f.body.vel={x:0,y:0};f.body.support=newSupport();
   f.body.profile.radius=.3;f.raw={vel:{x:0,y:0}};
