@@ -1188,7 +1188,15 @@ export class RunBlocker implements Behavior {
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = this.plannedClimb(a, sim, target, contact);
-      if (fit) return fit;
+      if (fit) {
+        const bodyContact = a.profile.radius + target.profile.radius;
+        // Interception supplies the approach, not permission to run through
+        // the man. Use the same acquired near-strike fit as other climbs.
+        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+          return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
+            placementError, contact, bodyContact, fit, sim.t);
+        return fit;
+      }
     }
     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
