@@ -1,0 +1,23 @@
+{
+  "rows": [
+    {
+      "caseId": "A028",
+      "ticks": 56,
+      "stoppedAt": 2.8,
+      "equalSavedFrames": true
+    },
+    {
+      "caseId": "A018",
+      "ticks": 79,
+      "stoppedAt": 3.95,
+      "equalSavedFrames": true
+    },
+    {
+      "caseId": "A006",
+      "ticks": 79,
+      "stoppedAt": 3.95,
+      "equalSavedFrames": true
+    }
+  ],
+  "elapsedSeconds": 4.848404684999999
+}

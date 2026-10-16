@@ -13,6 +13,14 @@ perception/memory, collision geometry or all-role avoidance expansion. No new
 panel or contributor full suite. Claim a specific runtime boundary only after
 the mechanism and owner contract are established.
 
+Delivered boundary: spacing.ts joint projection of already admitted local
+closing limits for own free/unloaded footwork, plus joint-spacing test/fixture.
+#91 coordination6209226826/6209273065 leaves Run helperFit and Catching producers
+untouched. All-body trial415f45d is held after loaded A018 worsens; final4a7eebd
+keeps A018/A006 exact while A028's short RT passage removes recorded peer
+impacts. Preserve slower A028 runner progress and censored openings. Independent
+review/combined verification remain with Integration; #92 stays separate.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
