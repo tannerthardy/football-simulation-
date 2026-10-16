@@ -42,6 +42,11 @@ const fresh = [
  {id:'F2',cohort:3,concept:'drive',coverage:'cover4',offenseSeed:701,defenseSeed:702,playSeed:9202,flip:false,ballY:26},
  {id:'F3',cohort:4,concept:'four_verts',coverage:'cover3_match',offenseSeed:907,defenseSeed:908,playSeed:9203,flip:true,ballY:20},
  {id:'F4',cohort:4,concept:'pa_post_dig',coverage:'cover4',offenseSeed:907,defenseSeed:908,playSeed:9204,flip:true,ballY:20},
+ // Untouched release/delivery transfer, fixed before either arm is observed.
+ {id:'T1',cohort:5,concept:'four_verts',coverage:'cover3_match',offenseSeed:1301,defenseSeed:1302,playSeed:14101,flip:false,ballY:26},
+ {id:'T2',cohort:5,concept:'drive',coverage:'cover4',offenseSeed:1301,defenseSeed:1302,playSeed:14102,flip:false,ballY:26},
+ {id:'T3',cohort:6,concept:'dagger',coverage:'cover3_match',offenseSeed:1601,defenseSeed:1602,playSeed:14103,flip:true,ballY:20},
+ {id:'T4',cohort:6,concept:'pa_post_dig',coverage:'cover4',offenseSeed:1601,defenseSeed:1602,playSeed:14104,flip:true,ballY:20},
 ];
 const selected = selection && selection!=='all' ? [...fixtures,...fresh].filter(f=>selection.split(',').includes(f.id)) : fixtures;
 assert.ok(selected.length && selected.length<=32);
@@ -67,7 +72,7 @@ function trial(f,observe) {
   runFit:a.runFit,body:a.body,player:a.player}))),rows=[];
  const see=sim.see.bind(sim);let pictures=new Map(),requests=[],queryCount=0,active=-1;
  sim.see=(a,b,...rest)=>{queryCount++;const cue=see(a,b,...rest);
-  if(observe&&a.team==='D'&&b.team==='O'&&!['LT','LG','C','RG','RT'].includes(b.slot))
+  if(observe&&a.team==='D'&&(b.team==='D'||!['LT','LG','C','RG','RT'].includes(b.slot)))
    pictures.set(`${a.idx}/${b.idx}/${rest[0]??1}/${active===a.idx?'controller':'modifier'}`,
     {observer:a.idx,target:b.idx,scale:rest[0]??1,phase:active===a.idx?'controller':'modifier',cue:copy(cue)});
   return cue;};

@@ -13,6 +13,15 @@ installed #2 read preserve cushion before a vertical match activates without
 stealing genuine shallow/flat or run duties? Compare achieved velocity/leverage,
 then assess whether the later handoff remains the first useful next correction.
 
+Cushion stage `f8d7131` passes140 focused contracts/typecheck, with an adverse
+R1-C02 H touchdown and unchanged R2-C02 explosive. Separate delivery-only
+`codex/seam-delivery-contract` preserves an acquired vertical beyond12 until
+the existing observed cap permits release;19 contracts pass, three native
+cases preserve their outcomes because prior arrival geometry is already lost.
+Now composing only that rule/test/collector delta after isolated evidence.
+No new helper estimator or postcatch pursuit policy. Retain failed metadata/
+typecheck receipts and the actual first-variant versus continuous-read outputs.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
