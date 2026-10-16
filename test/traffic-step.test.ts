@@ -25,7 +25,7 @@ function run(kind='ordinary',objective=true) {
       if(kind==='unknown-age')delete seen.age;
       // Make an actual obstruction on the proposed passing side, without
       // moving or granting knowledge of any private body.
-      if(kind==='obstruction'&&p.idx===19){seen.pos={...a.pos};seen.vel={...a.vel};}
+      if(kind==='obstruction'&&p.idx===19){const speed=Math.hypot(a.vel.x,a.vel.y);seen.pos={x:a.pos.x+a.vel.x/speed,y:a.pos.y+a.vel.y/speed};seen.vel={x:0,y:0};}
       pictures.set(p.idx,seen);
       return {idx:p.idx,team:'D',profile:p.profile,
         get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as unknown as Agent;
@@ -77,7 +77,16 @@ describe('compound traffic movement preserves the football objective',()=>{
     // genuinely blocked route is allowed to remain blocked.
     if(kind!=='obstruction')expect(rows.map(r=>r.command.vel)).toEqual(native.map(r=>r.command.vel));
     const last=rows.at(-1)!;
-    if(kind==='obstruction')expect(clearance(last.source,last.command,last.row.t,last.pictures,last.row.peers)).toBeLessThan(0);
+    if(kind==='obstruction'){
+      expect(clearance(last.source,last.command,last.row.t,last.pictures,last.row.peers)).toBeLessThan(0);
+      const blocker=last.row.peers.find((p:any)=>p.idx===19),seen=last.pictures.get(19);
+      const body:Body={...structuredClone(last.source),profile:blocker.profile,pos:{...seen.pos},vel:{...seen.vel}};
+      const own=structuredClone(last.source),world=new World([own,body]);world.time=last.row.t;
+      expect(Math.hypot(own.pos.x-body.pos.x,own.pos.y-body.pos.y)).toBeGreaterThan(.9*(own.profile.radius+body.profile.radius));
+      let contact=false;
+      for(let k=0;k<12;k++)contact ||= world.step([last.command,{vel:{x:0,y:0}}],.05).contacts.some(c=>c.impulse>0);
+      expect(contact).toBe(true);
+    }
   });
   it('preserves a genuinely clear route with no forecasts even when its own goal is supplied',()=>{
     const spy=vi.spyOn(Preview,'previewFreeMovement');
