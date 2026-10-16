@@ -1,0 +1,10 @@
+{
+  "question": "Does standalone planned near-fit preserve accepted ordinary Duo collection/keeper and the Under clear-climb/legitimate defensive recovery?",
+  "candidate": "353d8caaedb141a58bb29d1f52b14db4a670eceb/source6d16f77e, only near-fit branch. All release/keeper/edge/sprint experiments remain isolated and are rejected for promotion.",
+  "evidenceSoFar": "A002 native useful Mike block2.35->2.30, same first edge contact2.75; A015 no new Mike protection and original-.49 ending retained. Combined edge-check/near-fit and full-sprint diagnostics still fail useful Mike protection, so they are not adoption evidence.",
+  "cases": [
+    "A030 current accepted ordinary Duo, preserve timely RG/Mike plus RT/DT at runner arrival; old TD not required",
+    "DuoUnder current source668acb1 exact prefix/full-ending reference frombf9f610; preserve clear RT climb, Y keeper and Mike recovery"
+  ],
+  "budget": "Two candidate continuations max5simseconds/5wallseconds each; no baseline recollection (source-exact tapes available), no games/panel. Material loss of the supported collection stops promotion."
+}
