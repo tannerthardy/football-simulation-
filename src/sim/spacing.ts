@@ -43,46 +43,6 @@ interface PeerPicture {
   touch: number;
 }
 
-interface ClosingLimit { nx:number; ny:number; speed:number }
-
-/** Later radial corrections must not undo earlier teammate headway. Choose
- * the closest requested velocity satisfying the already admitted limits and
- * existing speed cap. This is a command projection, not achievable clearance:
- * momentum, contacts and the next acquired picture still govern movement.
- * A squeezed/inconsistent picture can have no feasible request; retain the
- * ordinary response there rather than inventing room or moving a teammate.
- */
-function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:number},
-  limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
-  const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
-    &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
-  if(feasible(ordinary))return ordinary;
-  let best:{x:number;y:number}|undefined,bestError=Infinity;
-  function consider(x:number,y:number):void {
-    const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
-    if(error<bestError&&feasible(v)){best=v;bestError=error;}
-  }
-  const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
-  consider(raw.x*scale,raw.y*scale);
-  for(let i=0;i<limits.length;i++){
-    const c=limits[i],excess=raw.x*c.nx+raw.y*c.ny-c.speed;
-    consider(raw.x-c.nx*excess,raw.y-c.ny*excess);
-    // An optimum lies on one limit, two intersecting limits, or the cap.
-    const tangent2=cap*cap-c.speed*c.speed;
-    if(tangent2>=0){
-      const tangent=Math.sqrt(tangent2);
-      consider(c.nx*c.speed-c.ny*tangent,c.ny*c.speed+c.nx*tangent);
-      consider(c.nx*c.speed+c.ny*tangent,c.ny*c.speed-c.nx*tangent);
-    }
-    for(let j=0;j<i;j++){
-      const d=limits[j],cross=c.nx*d.ny-c.ny*d.nx;
-      if(Math.abs(cross)>1e-12)consider((c.speed*d.ny-c.ny*d.speed)/cross,
-        (c.nx*d.speed-c.speed*d.nx)/cross);
-    }
-  }
-  return best??ordinary;
-}
-
 function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture):number {
   let px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
   let minimum=Math.hypot(px,py)-peer.touch;
@@ -169,27 +129,6 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
 }
 
 interface PassingFrame { peer: number; forward: {x:number;y:number}; normal: {x:number;y:number} }
-
-/** Compare the same short achieved-motion model before keeping a runner's
- * radial brake. Restore only the original action, without changing his gap,
- * when it improves both peer clearance and progress under the same pictures.
- * This conditional forecast cannot certify the next reacting movement. */
-function keepUsefulRunnerMotion(a:Agent,raw:Intent,chosen:Intent,peers:readonly PeerPicture[],context?:SpacingContext):Intent {
-  if(a.behavior.kind!=='carrier'||(raw.vel.x===chosen.vel.x&&raw.vel.y===chosen.vel.y)
-    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
-    ||!forecastPeers(a,raw,peers,context).length)return chosen;
-  const original=previewFreeMovement(a.body,raw,context!.now,TURN_STEPS);
-  if(original.some(p=>p.support!=='up'))return chosen;
-  const clear=Math.min(...peers.map(p=>sweptClearance(a,original,p)));
-  if(clear<0)return chosen;
-  const modified=previewFreeMovement(a.body,chosen,context!.now,TURN_STEPS);
-  const other=Math.min(...peers.map(p=>sweptClearance(a,modified,p)));
-  const speed=Math.hypot(raw.vel.x,raw.vel.y);
-  const progress=(path:MovementSample[])=>{
-    const end=path[path.length-1];return ((end.pos.x-a.pos.x)*raw.vel.x+(end.pos.y-a.pos.y)*raw.vel.y)/speed;
-  };
-  return clear>other+TURN_MARGIN&&progress(original)>progress(modified)+TURN_MARGIN?raw:chosen;
-}
 // Own maneuver state, not remembered peer motion. Every evaluation uses this
 // tick's acquired picture; a missing picture ends the maneuver.
 const passingFrames=new WeakMap<Agent,PassingFrame>();
@@ -277,7 +216,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
-    const limits:ClosingLimit[]=[];
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
       const b = agents[j];
@@ -308,7 +246,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
-      limits.push({nx,ny,speed:allowed+seen.vel.x*nx+seen.vel.y*ny});
       if (closing > allowed) {
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
@@ -317,17 +254,9 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
-      const ordinary={x:vx*scale,y:vy*scale},s=a.body.support;
-      // This is free footwork. A loaded blocker or committed strike cannot
-      // be allocated a new joint velocity from radial headway alone: the
-      // contact controller owns that work, and the World resolves its load.
-      const free=context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
-        &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
-        &&!s.foot&&!s.strike&&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
-      spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
+      spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
     const gathered=gatherForMotion(a,spaced,peers,context);
-    const useful=keepUsefulRunnerMotion(a,ia,gathered,peers,context);
-    intents[i]=stepAroundTraffic(a,ia,useful,peers,context);
+    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
   }
 }

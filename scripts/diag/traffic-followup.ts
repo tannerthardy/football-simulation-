@@ -21,7 +21,7 @@ for(const tick of saved.ticks){
  }
  const forecast=(command:Intent)=>{
   const path=previewFreeMovement(body,command,tick.t,12),gaps=peers.map((p:any)=>({peer:p.b,age:p.seen.age,gap:clearance(path,p)}));
-  return {min:Math.min(...gaps.map((p:any)=>p.gap)),gaps,end:path.at(-1),upright:path.every(s=>s.support==='up')};
+  return {min:Math.min(...gaps.map((p:any)=>p.gap)),gaps,first:path[0],end:path.at(-1),upright:path.every(s=>s.support==='up')};
  };
  rows.push({t:tick.t,own:body.pos,velocity:body.vel,raw,chosen,peers:peers.map((p:any)=>({peer:p.b,seen:p.seen})),
   paths:{raw:forecast(raw),chosen:forecast(chosen),half:forecast({...raw,vel:{x:raw.vel.x*.5,y:raw.vel.y*.5}}),gather:forecast({...raw,vel:{x:0,y:0}})}});
