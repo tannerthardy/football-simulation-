@@ -22,6 +22,16 @@ Now composing only that rule/test/collector delta after isolated evidence.
 No new helper estimator or postcatch pursuit policy. Retain failed metadata/
 typecheck receipts and the actual first-variant versus continuous-read outputs.
 
+Completed candidate runtime `19d520f`, source `cb16a2fe...`:
+[report](reviews/release-cushion-and-seam-delivery.md).159 focused contracts /
+typecheck pass,21 completed pairs including4 untouched transfers. R2-C02's
+same H catch:43.93->8.19 YAC, assigned NB form contact4.30 instead of CB8.00;
+first solved load263.53, hold survives. R1-C02's short Y catch becomes a
+25.31-YAC H seam gain; unchanged Cover2 explosives and delayed Smash contact
+remain. Source-qualified separate #97 interaction passes64 checks/3 cases.
+85.13 launcher seconds/40 native executions include failed recording recovery.
+Ready for independent review; Integration owns final composition/full suite.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
