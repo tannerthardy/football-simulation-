@@ -1,0 +1,7 @@
+{
+  "mirroredOccupiedEntryRemainsHazardous": false,
+  "installedDepartureReadBoundaryRetained": false,
+  "authoredFiveChecksAndTypecheck": "pass",
+  "disposition": "hold-runtime-promotion",
+  "supersededProbe": "decision-probes.json used a larger target displacement; production-decision-probes.json is final and uses .20yd/50ms"
+}

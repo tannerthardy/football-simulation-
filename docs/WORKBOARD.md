@@ -1,5 +1,24 @@
 # Current work ownership
 
+## Run: completed independent Claude zone review — 2026-10-16
+
+User requested validation/integration disposition. Reviewed Claude
+50f6a080eacb8bf5d12fec8c9af53550ee8b4a96, directly on accepted
+c3264b0bad72bd2c208602e0ecf0461c00d9669f; canonical queue
+625f3b4f545cf0c7f414b672e3776f916928f158 agrees. Pinned execution host
+`codex/claude-zone-independent-review` retains the author's exact source;
+`codex/claude-zone-review-report` contains only this report/repro evidence.
+
+HOLD RUN_LANE and CLIMB_EXIT at that revision. Five authored checks/typecheck
+pass;12 bounded native continuations separate both candidates and interaction.
+Mirrored real-carrier witness gives zero risk to an occupied entry when a
+receiver passes beyond D; departure selects a new tangent before its next-read
+boundary. Useful RT–Mike load starts earlier but ends before runner arrival.
+Later native loss remains unclassified between route and execution effects.
+No production/default changes or experimental promotion.17.938 command seconds,
+8 endings/4 explicit3.5s prefixes,0 games/census. Parked3 flags and #101's separate
+collector hold stay separate. [Review and exact next checks](reviews/claude-zone-independent-review.md).
+
 ## Active coverage/run integration boundary — 2026-10-16
 
 Integration owns only minimal extraction/reconciliation in defense.ts, coverage/{rules,defender,techniques}.ts, engagement.ts, blocking.ts and eight reviewed tests/fixtures on accepted3723204 plus queue db0d512. #97/#100 and95 independently accepted;102 independently accepted as existing-law validity;104 explicitly user-approved overriding author-independent hold. Shared acquired entry once,95 cut separate,104 preserves96.20 existing overlap checks pass; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build in226.175s, total228.048s including overlap. #107 awaits guarded adoption; no unchanged rerun. Contributors reuse their focused receipts and continue independent work; no shared-suite duplication or forced rebase. #101 Run repairs wall-censor index/partial traces; Measurement reviews stubs, no census recollection. Experimental Physics/perimeter/mesh diagnosis remain separate. [Current queue and evidence](INTEGRATION.md#ready-blocked-experimental).

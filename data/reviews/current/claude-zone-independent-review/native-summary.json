@@ -1,0 +1,380 @@
+[
+  {
+    "arm": "base",
+    "id": "wz-strong-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": -0.67,
+    "firstContact": {
+      "t": 2.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 38.81,
+        "y": 20.82
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -1.1899999999999977,
+    "firstBodyDifference": null,
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 3.979039320256561e-12,
+      "armExcess": 2.1316282072803006e-14
+    }
+  },
+  {
+    "arm": "base",
+    "id": "wz-weak-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": -0.03,
+    "firstContact": {
+      "t": 2.7,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 11,
+      "pos": {
+        "x": 39.52,
+        "y": 33.01
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -0.4799999999999969,
+    "firstBodyDifference": null,
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 7.785772027091298e-12,
+      "armExcess": 7.105427357601002e-15
+    }
+  },
+  {
+    "arm": "base",
+    "id": "useful-climb-opponent",
+    "los": 35,
+    "terminal": false,
+    "ending": "explicit-prefix-censor",
+    "gain": null,
+    "firstContact": {
+      "t": 3.45,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+        "x": 40.06,
+        "y": 23.1
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": 5.060000000000002,
+    "firstBodyDifference": null,
+    "rtMike": {
+      "blocker": "RT",
+      "defender": "LB_M",
+      "first": 1.85,
+      "last": 3.5,
+      "impulse": 1187.7766675286557
+    },
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 3.4710012641880894e-12,
+      "armExcess": 2.842170943040401e-14
+    }
+  },
+  {
+    "arm": "lane",
+    "id": "wz-strong-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": 0.18,
+    "firstContact": {
+      "t": 2.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 38.99,
+        "y": 21.11
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -1.009999999999998,
+    "firstBodyDifference": {
+      "t": 1.65,
+      "actors": [
+        "RB"
+      ]
+    },
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 6.370015626089298e-12,
+      "armExcess": 2.1316282072803006e-14
+    }
+  },
+  {
+    "arm": "lane",
+    "id": "wz-weak-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": 5.9,
+    "firstContact": {
+      "t": 2.6,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 11,
+      "pos": {
+        "x": 40.3,
+        "y": 33.51
+      },
+      "note": "body collision"
+    },
+    "firstContactEventGain": 0.29999999999999716,
+    "firstBodyDifference": {
+      "t": 1.6,
+      "actors": [
+        "RB"
+      ]
+    },
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 1.0200063016441163e-11,
+      "armExcess": 7.105427357601002e-15
+    }
+  },
+  {
+    "arm": "lane",
+    "id": "useful-climb-opponent",
+    "los": 35,
+    "terminal": false,
+    "ending": "explicit-prefix-censor",
+    "gain": null,
+    "firstContact": null,
+    "firstContactEventGain": null,
+    "firstBodyDifference": {
+      "t": 1.5,
+      "actors": [
+        "RB"
+      ]
+    },
+    "rtMike": {
+      "blocker": "RT",
+      "defender": "LB_M",
+      "first": 1.85,
+      "last": 3.5,
+      "impulse": 1187.0891526375638
+    },
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 6.165734589558269e-12,
+      "armExcess": 1.4210854715202004e-14
+    }
+  },
+  {
+    "arm": "exit",
+    "id": "wz-strong-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": -0.67,
+    "firstContact": {
+      "t": 2.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 38.81,
+        "y": 20.82
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -1.1899999999999977,
+    "firstBodyDifference": null,
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 3.979039320256561e-12,
+      "armExcess": 2.1316282072803006e-14
+    }
+  },
+  {
+    "arm": "exit",
+    "id": "wz-weak-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": -0.02,
+    "firstContact": {
+      "t": 2.7,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 11,
+      "pos": {
+        "x": 39.52,
+        "y": 33.01
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -0.4799999999999969,
+    "firstBodyDifference": {
+      "t": 1.15,
+      "actors": [
+        "LG"
+      ]
+    },
+    "rtMike": null,
+    "positivePeerImpacts": 1,
+    "numericalMaxima": {
+      "workResidual": 6.849631972727366e-12,
+      "armExcess": 2.842170943040401e-14
+    }
+  },
+  {
+    "arm": "exit",
+    "id": "useful-climb-opponent",
+    "los": 35,
+    "terminal": false,
+    "ending": "explicit-prefix-censor",
+    "gain": null,
+    "firstContact": {
+      "t": 2.8,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 15,
+      "pos": {
+        "x": 35.78,
+        "y": 23
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": 0.7800000000000011,
+    "firstBodyDifference": {
+      "t": 0.9,
+      "actors": [
+        "RT"
+      ]
+    },
+    "rtMike": {
+      "blocker": "RT",
+      "defender": "LB_M",
+      "first": 1.55,
+      "last": 2.25,
+      "impulse": 543.3041593316171
+    },
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 5.4214410738495644e-12,
+      "armExcess": 1.4210854715202004e-14
+    }
+  },
+  {
+    "arm": "both",
+    "id": "wz-strong-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": 0.18,
+    "firstContact": {
+      "t": 2.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 38.99,
+        "y": 21.11
+      },
+      "note": "grasp"
+    },
+    "firstContactEventGain": -1.009999999999998,
+    "firstBodyDifference": {
+      "t": 1.65,
+      "actors": [
+        "RB"
+      ]
+    },
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 6.370015626089298e-12,
+      "armExcess": 2.1316282072803006e-14
+    }
+  },
+  {
+    "arm": "both",
+    "id": "wz-weak-over3",
+    "los": 40,
+    "terminal": true,
+    "ending": "tackle",
+    "gain": 4.5,
+    "firstContact": {
+      "t": 2.6,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 11,
+      "pos": {
+        "x": 40.3,
+        "y": 33.51
+      },
+      "note": "body collision"
+    },
+    "firstContactEventGain": 0.29999999999999716,
+    "firstBodyDifference": {
+      "t": 1.15,
+      "actors": [
+        "LG"
+      ]
+    },
+    "rtMike": null,
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 1.1981304837149764e-11,
+      "armExcess": 1.4210854715202004e-14
+    }
+  },
+  {
+    "arm": "both",
+    "id": "useful-climb-opponent",
+    "los": 35,
+    "terminal": false,
+    "ending": "explicit-prefix-censor",
+    "gain": null,
+    "firstContact": {
+      "t": 2.9,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 34.9,
+        "y": 21.99
+      },
+      "note": "body collision"
+    },
+    "firstContactEventGain": -0.10000000000000142,
+    "firstBodyDifference": {
+      "t": 0.9,
+      "actors": [
+        "RT"
+      ]
+    },
+    "rtMike": {
+      "blocker": "RT",
+      "defender": "LB_M",
+      "first": 1.55,
+      "last": 2.25,
+      "impulse": 543.3041593316171
+    },
+    "positivePeerImpacts": 0,
+    "numericalMaxima": {
+      "workResidual": 4.771294470629073e-12,
+      "armExcess": 1.0658141036401503e-14
+    }
+  }
+]

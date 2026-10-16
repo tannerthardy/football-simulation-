@@ -1,0 +1,248 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate --flag CF_FLOW=none --receipt out/claude-zone-review/native-base-receipt.json -- node --import tsx scripts/diag/claude-zone-review.ts out/claude-zone-review/native-base.json.gz
+
+Profile candidate: run-game-2026-10-13, commit 50f6a080eacb8bf5d12fec8c9af53550ee8b4a96, source 6753fa98966622ab758e4c4c56104dedf00b111c1429d7be66c5fad62531cd21
+Running node --import tsx scripts/diag/claude-zone-review.ts out/claude-zone-review/native-base.json.gz
+[
+  {
+    "id": "wz-strong-over3",
+    "terminal": true,
+    "error": null,
+    "ending": "tackle",
+    "gain": -0.67,
+    "t": 3.1,
+    "elapsedSeconds": 0.40372403700000004,
+    "maxima": {
+      "workResidual": 3.979039320256561e-12,
+      "armExcess": 2.1316282072803006e-14
+    },
+    "firstContact": {
+      "t": 2.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+        "x": 38.81,
+        "y": 20.82
+      },
+      "note": "grasp"
+    },
+    "loads": [
+      {
+        "blocker": "Y",
+        "defender": "DE_S",
+        "first": 0.5,
+        "last": 2.3,
+        "impulse": 879.0749323923119
+      },
+      {
+        "blocker": "LG",
+        "defender": "DT_W",
+        "first": 0.55,
+        "last": 3.1,
+        "impulse": 1821.9885694874617
+      },
+      {
+        "blocker": "H",
+        "defender": "DE_W",
+        "first": 0.55,
+        "last": 3.1,
+        "impulse": 2512.800121272096
+      },
+      {
+        "blocker": "RG",
+        "defender": "DT_S",
+        "first": 0.6,
+        "last": 3.1,
+        "impulse": 2212.2200880294426
+      },
+      {
+        "blocker": "LT",
+        "defender": "DE_W",
+        "first": 1.3,
+        "last": 2,
+        "impulse": 258.05044198708174
+      },
+      {
+        "blocker": "C",
+        "defender": "LB_M",
+        "first": 1.4,
+        "last": 3.1,
+        "impulse": 1984.0663040875056
+      },
+      {
+        "blocker": "RT",
+        "defender": "LB_S",
+        "first": 1.75,
+        "last": 3.1,
+        "impulse": 1636.041951296667
+      }
+    ]
+  },
+  {
+    "id": "wz-weak-over3",
+    "terminal": true,
+    "error": null,
+    "ending": "tackle",
+    "gain": -0.03,
+    "t": 3.45,
+    "elapsedSeconds": 0.34260927100000005,
+    "maxima": {
+      "workResidual": 7.785772027091298e-12,
+      "armExcess": 7.105427357601002e-15
+    },
+    "firstContact": {
+      "t": 2.7,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 11,
+      "pos": {
+        "x": 39.52,
+        "y": 33.01
+      },
+      "note": "grasp"
+    },
+    "loads": [
+      {
+        "blocker": "Y",
+        "defender": "DE_S",
+        "first": 0.45,
+        "last": 3.35,
+        "impulse": 811.7220449608942
+      },
+      {
+        "blocker": "RT",
+        "defender": "DT_S",
+        "first": 0.55,
+        "last": 3.45,
+        "impulse": 2834.4982017292486
+      },
+      {
+        "blocker": "C",
+        "defender": "DT_W",
+        "first": 0.55,
+        "last": 3.45,
+        "impulse": 1457.2538496419713
+      },
+      {
+        "blocker": "LT",
+        "defender": "DE_W",
+        "first": 0.6,
+        "last": 2.7,
+        "impulse": 1001.1144789178967
+      },
+      {
+        "blocker": "LG",
+        "defender": "DT_W",
+        "first": 0.8,
+        "last": 1.1,
+        "impulse": 198.6133032993272
+      },
+      {
+        "blocker": "H",
+        "defender": "LB_W",
+        "first": 1.65,
+        "last": 3.45,
+        "impulse": 224.70164405938095
+      },
+      {
+        "blocker": "RG",
+        "defender": "LB_S",
+        "first": 1.75,
+        "last": 3.45,
+        "impulse": 1819.7299954025948
+      }
+    ]
+  },
+  {
+    "id": "useful-climb-opponent",
+    "terminal": false,
+    "error": null,
+    "ending": "explicit-prefix-censor",
+    "gain": null,
+    "t": 3.5,
+    "elapsedSeconds": 0.2200921269999999,
+    "maxima": {
+      "workResidual": 3.4710012641880894e-12,
+      "armExcess": 2.842170943040401e-14
+    },
+    "firstContact": {
+      "t": 3.45,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+        "x": 40.06,
+        "y": 23.1
+      },
+      "note": "grasp"
+    },
+    "loads": [
+      {
+        "blocker": "C",
+        "defender": "DT_S",
+        "first": 0.5,
+        "last": 1,
+        "impulse": 314.87946340932365
+      },
+      {
+        "blocker": "Y",
+        "defender": "DE_S",
+        "first": 0.5,
+        "last": 3.5,
+        "impulse": 1723.2482079747574
+      },
+      {
+        "blocker": "LG",
+        "defender": "DT_W",
+        "first": 0.55,
+        "last": 3.15,
+        "impulse": 2603.8501925504224
+      },
+      {
+        "blocker": "RG",
+        "defender": "DT_S",
+        "first": 0.7,
+        "last": 2.1,
+        "impulse": 1184.5286328742359
+      },
+      {
+        "blocker": "RT",
+        "defender": "DE_S",
+        "first": 0.75,
+        "last": 0.85,
+        "impulse": 32.9341957188291
+      },
+      {
+        "blocker": "LT",
+        "defender": "DE_W",
+        "first": 0.85,
+        "last": 3.5,
+        "impulse": 238.1431119887889
+      },
+      {
+        "blocker": "RT",
+        "defender": "LB_M",
+        "first": 1.85,
+        "last": 3.5,
+        "impulse": 1187.7766675286557
+      },
+      {
+        "blocker": "H",
+        "defender": "NB",
+        "first": 1.85,
+        "last": 2.5,
+        "impulse": 183.47107149006945
+      },
+      {
+        "blocker": "C",
+        "defender": "LB_W",
+        "first": 2.25,
+        "last": 3.5,
+        "impulse": 1153.1571208446717
+      }
+    ]
+  }
+]
+Validation receipt: out/claude-zone-review/native-base-receipt.json; exit 0
