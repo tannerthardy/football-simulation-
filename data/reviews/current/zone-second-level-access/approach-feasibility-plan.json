@@ -1,0 +1,6 @@
+{
+  "question": "From the cue-supported A039 edge-check release, can an ordinary full-capacity approach to the already-held interception landmark, followed by the existing near fit, actually protect Mike before runner arrival?",
+  "why": "Earlier check+near-fit still fails; it requests only about(4.07,1.41) at1.25 against incoming lateral momentum-3.6, despite own vmax and existing sprint request. The current planner considers only moving-arrival velocities for its six held goals. Need demonstrate a feasible missed movement option before editing the planner.",
+  "diagnostic": "On the same edge-fit source, keep every existing plannedClimb goal/read/score and acquired cue; request existing runThrough at own vmax toward that held meet before the near-fit phase. Actual World, spacing, all22 reactions and near-fit control remain authoritative. No body/capacity/force or goal tuning.",
+  "budget": "One A039 native continuation max5simseconds/5wallseconds. If useful, add a physically previewed sprint option to existing planner, rather than forcing this diagnostic. Otherwise reject it; no automatic goal/angle sweep."
+}
