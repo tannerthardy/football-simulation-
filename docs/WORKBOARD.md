@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Active outer D-gap boundary correction — 2026-10-15
+
+Do-It-All owns only `gapIn`'s D landmark in `src/sim/live-gaps.ts`, its focused
+saved-picture test/fixture and evidence on `codex/outer-d-gap`, independently
+based on accepted `bb6d4c73948d53ba841dd9338dd240146c739f8c`. Fetched develop
+and the shared queue agree. Preserve #63's B-gap correction, departure
+classification, perception, interior gaps and all blocking/near-fit work.
+The question is whether D's position uses the same outer body as its width
+and velocity after a departed center leaves more than three outward bodies.
+No native simulations by this contributor; Run/Do-It-All root owns the
+separate reacting continuation and Integration owns combined verification.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
