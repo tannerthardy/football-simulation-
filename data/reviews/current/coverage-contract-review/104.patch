@@ -1,0 +1,147 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 0605f96c9890d84a04cd88938fca0cfb5112c8a6..b312fcfc4d823db7558332b8af613804add4cd20 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1197,7 +1197,7 @@ export class RunBlocker implements Behavior {
+ 
+   private zoneEligible(a: Agent, sim: PlaySim): boolean {
+     const e = a.engagement;
+-    return isOL(a) && this.plan.kind === 'reach'
++    return (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline) && this.plan.kind === 'reach'
+       && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
+       && (!this.plan.combination || this.plan.combination.released)
+       && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))
+diff --git a/test/inline-zone-keeper.test.ts b/test/inline-zone-keeper.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..7c63a288da4492ed59a72381b74d7ae91e0c065f
+--- /dev/null
++++ b/test/inline-zone-keeper.test.ts
+@@ -0,0 +1,128 @@
++// Production-hook decision controls only: no World.step or native full play.
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { norm } from '../src/core/vec.js';
++import { alignOffense } from '../src/playbook/alignment.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
++import { axisOf } from '../src/sim/engagement.js';
++import { contactFixture } from '../scripts/diag/run-contact-technique.js';
++
++afterEach(() => vi.restoreAllMocks());
++
++function fixture(slot: 'Y' | 'C' = 'Y') {
++  const original = contactFixture({ type: 'run', runBlock: 60, passBlock: 60 });
++  const { sim, defender } = original;
++  sim.disengage(original.engagement);
++  const blocker = sim.slot(slot)!;
++  // Keep the inline player's native profile and measurables; move only this
++  // reduced contact island. In particular, never copy the C's physical profile.
++  const nativeProfile = structuredClone(blocker.profile);
++  original.blocker.body.pos = { x: 80, y: 10 };
++  blocker.body.pos = { x: 40, y: CENTER_Y };
++  blocker.body.vel = { x: -.05, y: -1.2 };
++  blocker.body.facing = 0;
++  defender.body.pos = { x: 40.5, y: CENTER_Y + .7 };
++  defender.body.vel = { x: -.4, y: -.8 };
++  sim.offCall.run = RUN_BY_ID.wz_strong;
++  const observe = () => { for (let k = 0; k < 24; k++) sim.perception.record(sim.agents); };
++  observe();
++  const drive = norm({ x: 1, y: -1.8 });
++  const engagement = sim.engage(blocker, defender, 'run', drive);
++  if (!engagement || engagement.blocker !== blocker) throw Error('Genuine primary hands required');
++  const behavior = new RunBlocker({ kind: 'reach', target: defender, drive: { ...drive } });
++  blocker.behavior = behavior;
++  const see = vi.spyOn(sim, 'see'); // Observe existing reads; keep native latency.
++  return { sim, blocker, defender, engagement, behavior, nativeProfile, observe, see, drive };
++}
++
++const handSettings = (f: ReturnType<typeof fixture>) => {
++  const j = f.engagement.hands!;
++  return { extension: j.extension, push: j.push, hold: j.hold, steer: j.steer };
++};
++
++describe('solo inline zone keepers can use the existing acquired technique', () => {
++  it.each(['Y', 'C'] as const)('admits %s through update and preserves its actual contact surface/capacities', slot => {
++    const f = fixture(slot), axis = { ...axisOf(f.sim, f.engagement) };
++    const bodies = f.sim.agents.map(a => structuredClone(a.body));
++    const hands = f.engagement.hands, settings = handSettings(f), control = f.engagement.control;
++    const joints = [...f.sim.world.joints], rng = JSON.stringify(f.sim.rng);
++    // Hidden current motion changes after the recorded picture. Production
++    // must still consume the ordinary complete delayed opponent velocity.
++    f.defender.body.vel = { x: 3, y: 2 };
++    bodies[f.defender.idx].vel = { ...f.defender.vel };
++    f.behavior.update(f.blocker, f.sim);
++    const read = f.behavior.zoneRead;
++    expect(read).not.toBeNull();
++    expect(read!.phase).toBe('seal');
++    expect(read!.seen).toEqual(f.see.mock.results[0].value);
++    expect(read!.seen.age).toBeGreaterThan(0);
++    expect(read!.seen.vel).toEqual({ x: -.4, y: -.8 });
++    expect(f.see).toHaveBeenCalledExactlyOnceWith(f.blocker, f.defender);
++    expect(f.engagement.surfaceAxis).toEqual(axis);
++    expect(f.engagement.surfaceAxis).not.toEqual({ x: -1, y: 0 });
++    expect(f.engagement.drive).toEqual({ x: 1, y: 0 });
++    expect(f.engagement.hands).toBe(hands);
++    expect(handSettings(f)).toEqual(settings);
++    expect(f.engagement.control).toBe(control);
++    expect(f.sim.world.joints).toEqual(joints);
++    expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
++    expect(f.blocker.profile).toEqual(f.nativeProfile);
++    expect(JSON.stringify(f.sim.rng)).toBe(rng);
++  });
++
++  it('keeps the inline keeper read until the ordinary cadence then consumes changed acquired motion', () => {
++    const f = fixture();
++    f.behavior.update(f.blocker, f.sim);
++    const first = f.behavior.zoneRead!;
++    expect(first).not.toBeNull();
++    const axis = f.engagement.surfaceAxis;
++    f.defender.body.vel = { x: -.6, y: -3 };
++    f.observe();
++    f.sim.t += .05;
++    f.behavior.update(f.blocker, f.sim);
++    expect(f.behavior.zoneRead).toBe(first);
++    expect(f.see).toHaveBeenCalledTimes(1);
++    f.sim.t = first.nextRead;
++    f.behavior.update(f.blocker, f.sim);
++    expect(f.behavior.zoneRead).not.toBe(first);
++    expect(f.behavior.zoneRead!.seen.vel).toEqual({ x: -.6, y: -3 });
++    expect(f.see).toHaveBeenCalledTimes(2);
++    expect(f.engagement.surfaceAxis).toBe(axis);
++  });
++});
++
++describe('the inline role does not bypass existing job/contact boundaries', () => {
++  it.each(['detached', 'climb', 'inside-zone', 'unreleased-combo', 'primary-with-helper', 'helper'] as const)
++  ('rejects solo technique for %s', control => {
++    const f = fixture();
++    if (control === 'detached') {
++      const formation = FORMATION_BY_ID.gun_trips_11;
++      f.sim.offCall.formation = formation;
++      Object.assign(f.sim.offAlign, alignOffense(formation, false, f.sim.los, f.sim.ballY));
++      expect(f.sim.offAlign.spots.Y.inline).toBe(false);
++    } else if (control === 'climb') f.behavior.plan.kind = 'climb';
++    else if (control === 'inside-zone') f.sim.offCall.run = RUN_BY_ID.iz_strong;
++    else if (control === 'unreleased-combo') {
++      const combo: Combination = { members: [f.blocker, f.sim.slot('RT')!], defender: f.defender,
++        backer: null, released: false, secureSince: -1, nextRead: 0, soloKind: 'reach' };
++      f.behavior.plan.combination = combo;
++    } else {
++      const other = f.sim.slot('RT')!;
++      if (control === 'helper') f.sim.disengage(f.engagement);
++      other.body.pos = { x: 40.1, y: CENTER_Y + .5 };
++      const rep = f.sim.engage(other, f.defender, 'run', f.drive)!;
++      if (control === 'helper') {
++        expect(f.sim.engage(f.blocker, f.defender, 'run', f.drive)).toBe(rep);
++        expect(rep.helpers).toContain(f.blocker);
++      } else expect(rep.helpers).toContain(other);
++    }
++    const e = f.blocker.engagement!, hands = e.hands, surface = e.surfaceAxis;
++    f.behavior.update(f.blocker, f.sim);
++    expect(f.behavior.zoneRead).toBeNull();
++    expect(e.surfaceAxis).toBe(surface);
++    expect(e.hands).toBe(hands);
++    if (control === 'unreleased-combo') expect(f.behavior.plan.combination!.released).toBe(false);
++  });
++});

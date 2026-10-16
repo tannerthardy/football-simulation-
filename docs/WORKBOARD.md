@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Active coverage/run integration boundary — 2026-10-16
+
+Integration owns only minimal extraction/reconciliation in defense.ts, coverage/{rules,defender,techniques}.ts, engagement.ts, blocking.ts and eight reviewed tests/fixtures on accepted3723204 plus queue db0d512. #97/#100 and95 independently accepted;102 independently accepted as existing-law validity;104 explicitly user-approved overriding author-independent hold. Shared acquired entry once,95 cut separate,104 preserves96.20 existing overlap checks pass; one exact combined verification follows freeze. Contributors reuse their focused receipts and continue independent work; no shared-suite duplication or forced rebase. #101 Run repairs wall-censor index/partial traces; Measurement reviews stubs, no census recollection. Experimental Physics/perimeter/mesh diagnosis remain separate. [Current queue and evidence](INTEGRATION.md#ready-blocked-experimental).
+
 ## Completed #105 recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus

@@ -47,6 +47,39 @@ does not establish overall coverage, protection or statistical realism.
   verification, held items, football limits and next decision in one handoff.
 
 <a id="accepted-development"></a>
+## Current approved batch — exact verification pending
+
+Accepted develop remains **3723204bd0743713bca3e87f10ca01bfebf00a15** until adoption.
+Integration owns isolated `codex/coverage-run-integration` from that pin plus
+queue metadata db0d512. Include only independently accepted **#97+#100** eight-file
+composition, separately accepted **#95** installed acquired rat duty, Physics-
+accepted **#102** existing-span lifecycle, and **user-approved #104** inline-role
+eligibility. The user explicitly overrides #104's author-independent approval
+hold; this is user approval, not an independent author review.
+
+Fourteen protected files/six runtime files. Shared acquired entry occurs once;
+#95's cut is reconciled separately. #104 retains accepted #96 near-fit work.
+Existing 20 rat/provisional-block overlap checks pass; all other focused/native
+receipts are reused within their original source limits. Integration will freeze
+and verify this exact compatible tree once with all44 flags/components1.
+[Intake, approval, reviews, overlay and extraction audit](../data/reviews/current/coverage-run-integration/intake.json).
+[Pinned independent coverage/rat adjudication](reviews/coverage-contract-review.md).
+
+Preserve Drive's lost shallow help, exposed seam/changed targets/execution,
+rat collision/fall and lost availability, earlier defensive access, and changed
+fumble/RNG. Inline native evidence remains contextual, not a current-source gain
+claim. Helpers/active pass stay on their legacy span; pass-to-run solo conversions
+use the cutoff. The boundary is20Hz, not continuous substep validity. No new
+native/panel/game campaign, force/capacity/default or experimental activation.
+
+**#101 stays tooling-HOLD**, now head ed2fed9e204c0e916ea8f788afadb4805016ff05:
+wall-censored attempts are omitted from index/censor counts and become skipped
+tail; numerical exceptions lose partial traces. Run owns the minimal repair,
+Measurement its stubbed execution review. Saved1848-study findings remain
+source-qualified; **do not recollect the study**. Additional workflow/report
+publication does not clear the defect. #99/perimeter, stranded-mesh diagnosis,
+consent proposals and experimental Physics remain separate.
+
 ## Accepted development reference
 
 **`develop@3723204bd0743713bca3e87f10ca01bfebf00a15`** is accepted after routine
@@ -376,11 +409,11 @@ No extra native panel, roster screen or evaluation games.
 | #96 | Existing near fit for planned climbs | Do-It-All ACCEPT6210210423; Under/A030 composition receipt reused, adverse lost TD retained. |
 | #98 | Initial pressed DB stance legalization | Integration accepts setup correctness; A002 earlier defensive win retained. |
 | #103 | D position matches outer width/velocity identity | Integration accepts acquired-objective correction; slower LOS entry remains. |
-| #97 +100 | Overlapping coverage controllers | HOLD: Run independent review and explicit three provisional-block conditions/composed extraction needed; adverse Drive/seam cases retained. |
-| #104 | Inline zone-technique role gate | HOLD: Run independent review; native evidence uses D/span and legal-start context, not all accepted source. |
-| #102 | Isolated contact-span lifecycle | HOLD: Physics independent review/contract classification; do not import it via104 evidence. |
-| #101 | Opt-in run/PA tooling and1848-case evidence | Tooling/Measurement review pending; no engine correction. Reuse completed study, no second campaign. |
-| #95 | Rat shallow-cut policy | HOLD: independent acquired-cut and Drive collision/recovery adjudication. |
+| #97 +100 | Overlapping coverage controllers | Independent Do-It-All ACCEPT at ba399712; exact composition prepared above; adverse cases retained. |
+| #104 | Inline zone-technique role gate | User explicitly approves reviewed bcd0dc8, overriding independent-approval hold; minimal extraction prepared, contextual evidence retained. |
+| #102 | Isolated contact-span lifecycle | Physics ACCEPT6220760634: existing-law validity/lifecycle correction; exact isolated extraction prepared above. |
+| #101 | Opt-in run/PA tooling and1848-case evidence | Measurement tooling-HOLD6220802845: wall-censor bookkeeping/partial exception traces; Run repairs, no study rerun. |
+| #95 | Rat shallow-cut policy | Independent Do-It-All ACCEPT ba399712 with Drive collision/fall cost; separately reconciled with97/100 above. |
 | #93 | Coverage approach diagnosis | Evidence only; unchanged runtime. Link findings, no mandatory merge/suite. |
 | #99 | Perimeter development concepts | Explicitly held prototype; no automatic calling/production promotion. |
 
