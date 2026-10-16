@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Run: installed backside wall versus generic zone track — 2026-10-15 Phoenix
+## Run: backside wall priority PARKED — 2026-10-15 Phoenix
 
 Branch `codex/zone-backside-wall` on re-fetched acceptedbb6d4c7/source668acb1.
 #96 stays frozen/separate; this owns only `RunBlocker.zoneFlow`'s admission
@@ -13,6 +13,14 @@ candidate prefixes (A027 WZ/A002 OZ opposing useful-block/defensive-win control)
 to3.05; no baseline recollection, panel, games or release variants. Integration
 owns independent adoption and final exact verification. Stop if the existing
 wall cannot develop useful lawful protection or compromises the controls.
+
+Disposition: trial9147cca/sourcebc7428b3 is not proposed for production.
+Two3.05 prefixes create real LT hands but do not establish better useful
+protection: distant end containment trades LT's inside position; A027 still
+has Mike access2.80, A002 DE_S access is.10s earlier. The end's own request
+changes before LT contact. No further variants, Ace12 expansion or code checks
+for this parked proposal. Evidence04227a0 and `reviews/zone-backside-wall.md`
+preserve exact inputs/settings/reproduction. Production/defaults stay unchanged.
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 
