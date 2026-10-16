@@ -1,0 +1,1228 @@
+{
+  "schema": "mesh-short-adjustment-review-v1",
+  "recommendation": "Mechanism-level local avoidance demonstrated; hold production policy for independent review/portable objective contract.",
+  "executedCandidate": "2219e8799254d1beec44d2118eaaee793c3ef3f8",
+  "firstTrial": "49352adffdb2948e2af917726e5641de04819d09",
+  "observationHost": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+  "currentAccepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "engineSource": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+  "costCandidateSeparate": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+  "baselineReused": true,
+  "newProductionEdits": 0,
+  "impacts": {
+    "reference": [
+      {
+        "t": 2.75,
+        "i": 15,
+        "j": 21,
+        "impulse": 139.00326883260303,
+        "closing": 2.71611805936524
+      }
+    ],
+    "firstTrial": [
+      {
+        "t": 2.75,
+        "i": 15,
+        "j": 21,
+        "impulse": 131.5599723045871,
+        "closing": 2.6849941725724924
+      }
+    ],
+    "combined": []
+  },
+  "firstSteps": {
+    "maxPositionError": 1.4210854715202004e-14,
+    "maxVelocityError": 4.965068306494546e-15,
+    "rows": [
+      {
+        "caseId": "A044",
+        "t": 2.05,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.986900895419005,
+          "y": 31.240654290659794
+        },
+        "actualPosition": {
+          "x": 41.986900895419005,
+          "y": 31.240654290659794
+        },
+        "attainablePositionChange": 0,
+        "attainableVelocityChange": 1.1102230246251565e-16
+      },
+      {
+        "caseId": "A044",
+        "t": 2.1,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.014383356214395,
+          "y": 30.984534036011286
+        },
+        "actualPosition": {
+          "x": 42.014383356214395,
+          "y": 30.984534036011286
+        },
+        "attainablePositionChange": 0,
+        "attainableVelocityChange": 0
+      },
+      {
+        "caseId": "A044",
+        "t": 2.15,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.03560585916358,
+          "y": 30.719898580866488
+        },
+        "actualPosition": {
+          "x": 42.03560585916358,
+          "y": 30.719898580866488
+        },
+        "attainablePositionChange": 0.0002000709409437929,
+        "attainableVelocityChange": 0.008002837637909347
+      },
+      {
+        "caseId": "A044",
+        "t": 2.2,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.046482593244754,
+          "y": 30.454326250044314
+        },
+        "actualPosition": {
+          "x": 42.046482593244754,
+          "y": 30.454326250044314
+        },
+        "attainablePositionChange": 0.0007179276036079243,
+        "attainableVelocityChange": 0.028717104144415147
+      },
+      {
+        "caseId": "A044",
+        "t": 2.25,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.042250031813104,
+          "y": 30.19513816197651
+        },
+        "actualPosition": {
+          "x": 42.042250031813104,
+          "y": 30.19513816197651
+        },
+        "attainablePositionChange": 0.000954252877568272,
+        "attainableVelocityChange": 0.03817011510270209
+      },
+      {
+        "caseId": "A044",
+        "t": 2.3,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.022721939514625,
+          "y": 29.942109687092348
+        },
+        "actualPosition": {
+          "x": 42.022721939514625,
+          "y": 29.942109687092348
+        },
+        "attainablePositionChange": 0.0012783281287307062,
+        "attainableVelocityChange": 0.05113312514936391
+      },
+      {
+        "caseId": "A044",
+        "t": 2.35,
+        "mode": "half-plus-transverse",
+        "predictedPosition": {
+          "x": 41.98769938709531,
+          "y": 29.694950918798146
+        },
+        "actualPosition": {
+          "x": 41.98769938709531,
+          "y": 29.694950918798146
+        },
+        "attainablePositionChange": 0.009512976316104857,
+        "attainableVelocityChange": 0.3805190526443224
+      },
+      {
+        "caseId": "A044",
+        "t": 2.4,
+        "mode": "half-plus-transverse",
+        "predictedPosition": {
+          "x": 41.93700142197572,
+          "y": 29.453365051008554
+        },
+        "actualPosition": {
+          "x": 41.93700142197572,
+          "y": 29.453365051008554
+        },
+        "attainablePositionChange": 0.009720110925035991,
+        "attainableVelocityChange": 0.3888044370013369
+      },
+      {
+        "caseId": "A044",
+        "t": 2.45,
+        "mode": "half-plus-transverse",
+        "predictedPosition": {
+          "x": 41.871374250319356,
+          "y": 29.216903917716735
+        },
+        "actualPosition": {
+          "x": 41.871374250319356,
+          "y": 29.216903917716735
+        },
+        "attainablePositionChange": 0.009011367746272416,
+        "attainableVelocityChange": 0.3604547098507383
+      },
+      {
+        "caseId": "A044",
+        "t": 2.5,
+        "mode": "half-plus-transverse",
+        "predictedPosition": {
+          "x": 41.791576128427074,
+          "y": 28.985053979208732
+        },
+        "actualPosition": {
+          "x": 41.791576128427074,
+          "y": 28.985053979208732
+        },
+        "attainablePositionChange": 0.009324448553349218,
+        "attainableVelocityChange": 0.37297794213402247
+      },
+      {
+        "caseId": "A044",
+        "t": 2.55,
+        "mode": "half-plus-transverse",
+        "predictedPosition": {
+          "x": 41.69765474849837,
+          "y": 28.757941391941067
+        },
+        "actualPosition": {
+          "x": 41.69765474849837,
+          "y": 28.757941391941067
+        },
+        "attainablePositionChange": 0.009967417691266743,
+        "attainableVelocityChange": 0.398696707650761
+      },
+      {
+        "caseId": "A044",
+        "t": 2.6,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.593302516944135,
+          "y": 28.540155022835375
+        },
+        "actualPosition": {
+          "x": 41.593302516944135,
+          "y": 28.540155022835375
+        },
+        "attainablePositionChange": 0.004552816219440221,
+        "attainableVelocityChange": 0.18211264877767558
+      },
+      {
+        "caseId": "A044",
+        "t": 2.7,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.376323927563455,
+          "y": 28.104266302551967
+        },
+        "actualPosition": {
+          "x": 41.376323927563455,
+          "y": 28.104266302551967
+        },
+        "attainablePositionChange": 0.0031883337907911654,
+        "attainableVelocityChange": 0.12753335163151067
+      },
+      {
+        "caseId": "A044",
+        "t": 2.75,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.26178787023242,
+          "y": 27.881758774445583
+        },
+        "actualPosition": {
+          "x": 41.26178787023242,
+          "y": 27.881758774445583
+        },
+        "attainablePositionChange": 0.0013313714859348252,
+        "attainableVelocityChange": 0.05325485943749321
+      },
+      {
+        "caseId": "A044",
+        "t": 2.8,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.14587989610397,
+          "y": 27.650119051164772
+        },
+        "actualPosition": {
+          "x": 41.145879896103985,
+          "y": 27.650119051164772
+        },
+        "attainablePositionChange": 0.0012398459230008704,
+        "attainableVelocityChange": 0.049593836920043634
+      },
+      {
+        "caseId": "A044",
+        "t": 2.85,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 41.02871670871669,
+          "y": 27.40969533211154
+        },
+        "actualPosition": {
+          "x": 41.02871670871669,
+          "y": 27.40969533211154
+        },
+        "attainablePositionChange": 0.001069330145688734,
+        "attainableVelocityChange": 0.042773205827449236
+      },
+      {
+        "caseId": "A044",
+        "t": 2.9,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 40.910416724094546,
+          "y": 27.16081992259769
+        },
+        "actualPosition": {
+          "x": 40.91041672409455,
+          "y": 27.16081992259768
+        },
+        "attainablePositionChange": 0.0010584771246442424,
+        "attainableVelocityChange": 0.04233908498561381
+      },
+      {
+        "caseId": "A008",
+        "t": 2.15,
+        "mode": "current-modifier",
+        "predictedPosition": {
+          "x": 42.21642765280879,
+          "y": 31.139316736127093
+        },
+        "actualPosition": {
+          "x": 42.21642765280879,
+          "y": 31.139316736127093
+        },
+        "attainablePositionChange": 0.0013592197727525647,
+        "attainableVelocityChange": 0.05436879091016325
+      }
+    ]
+  },
+  "sameState": {
+    "t": 2.35,
+    "bodySha256": "dc0249a5776f1e1fdbd45b5468640be77e3acb006b442bba5ecec092a0461480",
+    "peersSha256": "0cc501c85a673c576c52f63b2b35f5309f50a1d4c58282b562a8876d97c21343",
+    "options": [
+      {
+        "name": "full",
+        "command": {
+          "vel": {
+            "x": -2.0190082512677034,
+            "y": -9.2335909216598
+          },
+          "cutSkill": 1.1214285714285714
+        },
+        "allUp": true,
+        "minimum": -0.06153588699032597,
+        "last": {
+          "t": 0.6000000000000001,
+          "pos": {
+            "x": 41.509594787923575,
+            "y": 26.40700408255371
+          },
+          "vel": {
+            "x": -1.1188691368383639,
+            "y": -6.648225673085289
+          },
+          "support": "up"
+        }
+      },
+      {
+        "name": "half",
+        "command": {
+          "vel": {
+            "x": -1.0095041256338517,
+            "y": -4.6167954608299
+          },
+          "cutSkill": 1.1214285714285714
+        },
+        "allUp": true,
+        "minimum": -0.0002663598828047675,
+        "last": {
+          "t": 0.6000000000000001,
+          "pos": {
+            "x": 41.43925698812796,
+            "y": 27.15370776070109
+          },
+          "vel": {
+            "x": -1.0095041256338517,
+            "y": -4.6167954608299
+          },
+          "support": "up"
+        }
+      },
+      {
+        "name": "gather",
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.1214285714285714
+        },
+        "allUp": true,
+        "minimum": -0.3745088867558989,
+        "last": {
+          "t": 0.6000000000000001,
+          "pos": {
+            "x": 41.819138165750275,
+            "y": 28.07230219600065
+          },
+          "vel": {
+            "x": -0.1342101819458691,
+            "y": -1.2326483537614157
+          },
+          "support": "up"
+        }
+      },
+      {
+        "name": "half-plus-transverse",
+        "command": {
+          "vel": {
+            "x": -2.036336623411597,
+            "y": -4.45621999219746
+          },
+          "cutSkill": 1.1214285714285714
+        },
+        "allUp": true,
+        "minimum": 0.2956840406100022,
+        "last": {
+          "t": 0.6000000000000001,
+          "pos": {
+            "x": 40.98100360203313,
+            "y": 27.20495599958895
+          },
+          "vel": {
+            "x": -2.0343543244517863,
+            "y": -4.4518820255991765
+          },
+          "support": "up"
+        }
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "commandTick": 2.2,
+      "movementEndsAt": 2.25,
+      "reference": {
+        "SSSpeed": 5.2233240259145886,
+        "SSReceiverDistance": 2.2619880718372825,
+        "robberReceiverDistance": 3.1567914159528114,
+        "pairDistance": 3.1056369996772553,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 42.04741121723261,
+            "y": 30.4548781855308
+          },
+          "vel": {
+            "x": 0.08865732382678393,
+            "y": -5.22257156567801
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.76599503364469,
+            "y": 27.43351781765758
+          },
+          "vel": {
+            "x": -1.046086372827173,
+            "y": 1.0212272561099645
+          },
+          "state": "up"
+        }
+      },
+      "candidate": {
+        "SSSpeed": 5.246875135041263,
+        "SSReceiverDistance": 2.2609089296597618,
+        "robberReceiverDistance": 3.1567914159528114,
+        "pairDistance": 3.105315078549851,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 42.046482593244754,
+            "y": 30.454326250044314
+          },
+          "vel": {
+            "x": 0.06741729317099993,
+            "y": -5.246441993512915
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.76599503364469,
+            "y": 27.43351781765758
+          },
+          "vel": {
+            "x": -1.046086372827173,
+            "y": 1.0212272561099645
+          },
+          "state": "up"
+        }
+      }
+    },
+    {
+      "commandTick": 2.35,
+      "movementEndsAt": 2.4,
+      "reference": {
+        "SSSpeed": 5.124593317026757,
+        "SSReceiverDistance": 2.3100195244521973,
+        "robberReceiverDistance": 2.429330855865648,
+        "pairDistance": 2.241767886924027,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 42.00087258299196,
+            "y": 29.697453171418328
+          },
+          "vel": {
+            "x": -0.5568181038922672,
+            "y": -5.094252669832261
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.57135886230965,
+            "y": 27.529488996448162
+          },
+          "vel": {
+            "x": -1.536511958485764,
+            "y": 0.2510871310915868
+          },
+          "state": "up"
+        }
+      },
+      "candidate": {
+        "SSSpeed": 4.960791365038272,
+        "SSReceiverDistance": 2.2983580750540553,
+        "robberReceiverDistance": 2.429330855865648,
+        "pairDistance": 2.2427402257406372,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.98769938709531,
+            "y": 29.694950918798146
+          },
+          "vel": {
+            "x": -0.8564981552702005,
+            "y": -4.886293265600933
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.57135886230965,
+            "y": 27.529488996448162
+          },
+          "vel": {
+            "x": -1.536511958485764,
+            "y": 0.2510871310915868
+          },
+          "state": "up"
+        }
+      }
+    },
+    {
+      "commandTick": 2.55,
+      "movementEndsAt": 2.6,
+      "reference": {
+        "SSSpeed": 5.471821911921836,
+        "SSReceiverDistance": 2.379669762843067,
+        "robberReceiverDistance": 2.024318103936386,
+        "pairDistance": 1.1960706182810288,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.85928437583755,
+            "y": 28.623123964384007
+          },
+          "vel": {
+            "x": -0.9854764402753148,
+            "y": -5.382348114108771
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.220050594446086,
+            "y": 27.48275882135917
+          },
+          "vel": {
+            "x": -1.643503528279957,
+            "y": -0.45805502009533466
+          },
+          "state": "up"
+        }
+      },
+      "candidate": {
+        "SSSpeed": 4.9245394094208494,
+        "SSReceiverDistance": 2.3858038052499766,
+        "robberReceiverDistance": 2.024318103936386,
+        "pairDistance": 1.3780377383001101,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.69765474849837,
+            "y": 28.757941391941067
+          },
+          "vel": {
+            "x": -2.018596738198233,
+            "y": -4.491809836076601
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 42.220050594446086,
+            "y": 27.48275882135917
+          },
+          "vel": {
+            "x": -1.643503528279957,
+            "y": -0.45805502009533466
+          },
+          "state": "up"
+        }
+      }
+    },
+    {
+      "commandTick": 2.75,
+      "movementEndsAt": 2.8,
+      "reference": {
+        "SSSpeed": 4.0695497207861,
+        "SSReceiverDistance": 2.6217773080767612,
+        "robberReceiverDistance": 2.527698412914805,
+        "pairDistance": 0.506910994592361,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.55786196105337,
+            "y": 27.65394586995068
+          },
+          "vel": {
+            "x": -2.4651378080085737,
+            "y": -3.2379515928248384
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 41.902007625943284,
+            "y": 27.281759736710743
+          },
+          "vel": {
+            "x": -1.0866098770518469,
+            "y": -2.409555109456238
+          },
+          "state": "up"
+        }
+      },
+      "candidate": {
+        "SSSpeed": 5.094524781476645,
+        "SSReceiverDistance": 2.689998042036887,
+        "robberReceiverDistance": 2.503483697973492,
+        "pairDistance": 0.8589783124491903,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.26178787023242,
+            "y": 27.881758774445583
+          },
+          "vel": {
+            "x": -2.304948612915432,
+            "y": -4.543280163152927
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 41.871453668668536,
+            "y": 27.2766543574436
+          },
+          "vel": {
+            "x": -1.7823268325326802,
+            "y": -1.5990501028492432
+          },
+          "state": "up"
+        }
+      }
+    },
+    {
+      "commandTick": 2.85,
+      "movementEndsAt": 2.9,
+      "reference": {
+        "SSSpeed": 4.350072590949629,
+        "SSReceiverDistance": 2.8649893454326363,
+        "robberReceiverDistance": 2.841935172622467,
+        "pairDistance": 0.5837189228772642,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.293639811589976,
+            "y": 27.32566324589434
+          },
+          "vel": {
+            "x": -2.6943751499896478,
+            "y": -3.415182879092931
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 41.79012664290625,
+            "y": 27.018696460631638
+          },
+          "vel": {
+            "x": -1.1460741969388288,
+            "y": -2.8327783719426725
+          },
+          "state": "up"
+        }
+      },
+      "candidate": {
+        "SSSpeed": 5.431782933884968,
+        "SSReceiverDistance": 2.8493220784239925,
+        "robberReceiverDistance": 2.8459008233246315,
+        "pairDistance": 0.7364434090118324,
+        "SS": {
+          "idx": 21,
+          "pos": {
+            "x": 41.02871670871669,
+            "y": 27.40969533211154
+          },
+          "vel": {
+            "x": -2.355157143269102,
+            "y": -4.89463999404987
+          },
+          "state": "up"
+        },
+        "robber": {
+          "idx": 15,
+          "pos": {
+            "x": 41.69210499572816,
+            "y": 27.089906534101097
+          },
+          "vel": {
+            "x": -1.8034552214202753,
+            "y": -2.1315706964826235
+          },
+          "state": "up"
+        }
+      }
+    }
+  ],
+  "acquiredPeerForecastUncertainty": [
+    {
+      "t": 2.05,
+      "age": 0.05,
+      "predicted": {
+        "x": 42.88484098054199,
+        "y": 28.429246508454845
+      },
+      "actual": {
+        "x": 42.13605672969056,
+        "y": 27.452703864302407
+      },
+      "error": 1.2305744147232103
+    },
+    {
+      "t": 2.2,
+      "age": 0.05,
+      "predicted": {
+        "x": 42.41722497020248,
+        "y": 28.281510237201164
+      },
+      "actual": {
+        "x": 41.871453668668536,
+        "y": 27.2766543574436
+      },
+      "error": 1.1435041113443385
+    },
+    {
+      "t": 2.35,
+      "age": 0.05,
+      "predicted": {
+        "x": 41.91700612005454,
+        "y": 27.97899691520153
+      },
+      "actual": {
+        "x": 41.60164666190637,
+        "y": 26.977026083957842
+      },
+      "error": 1.050427120035785
+    }
+  ],
+  "firstMainRngDifference": {
+    "available": false,
+    "reason": "These captures store terminal main RNG, not per-tick RNG; its first divergence cannot be located from them."
+  },
+  "targetExactBeforeCatch": true,
+  "events": {
+    "reference": [
+      {
+        "t": 0,
+        "type": "snap",
+        "a": 3,
+        "pos": {
+          "x": 34.45,
+          "y": 26.67
+        }
+      },
+      {
+        "t": 0.35,
+        "type": "block_contact",
+        "a": 2,
+        "b": 12,
+        "pos": {
+          "x": 34.62313956996969,
+          "y": 23.989451252799554
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.35,
+        "type": "read",
+        "a": 12,
+        "pos": {
+          "x": 35.8,
+          "y": 23.35
+        },
+        "note": "pass; pPass=0.89 focus=0.93 urgency=0.67"
+      },
+      {
+        "t": 0.35,
+        "type": "read",
+        "a": 21,
+        "pos": {
+          "x": 39,
+          "y": 34.63
+        },
+        "note": "pass; pPass=0.79 focus=1.00 urgency=0.81"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 14,
+        "pos": {
+          "x": 35.77,
+          "y": 28.58
+        },
+        "note": "pass; pPass=0.73 focus=0.87 urgency=0.78"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 15,
+        "pos": {
+          "x": 39.97,
+          "y": 24.85
+        },
+        "note": "pass; pPass=0.75 focus=0.86 urgency=0.72"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 16,
+        "pos": {
+          "x": 39.97,
+          "y": 27.57
+        },
+        "note": "pass; pPass=0.72 focus=0.80 urgency=0.81"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 20,
+        "pos": {
+          "x": 48.08,
+          "y": 26.64
+        },
+        "note": "pass; pPass=0.71 focus=1.00 urgency=0.84"
+      },
+      {
+        "t": 0.5,
+        "type": "read",
+        "a": 13,
+        "pos": {
+          "x": 35.66,
+          "y": 26.2
+        },
+        "note": "pass; pPass=0.78 focus=0.88 urgency=0.78"
+      },
+      {
+        "t": 0.65,
+        "type": "block_contact",
+        "a": 3,
+        "b": 13,
+        "pos": {
+          "x": 34.09900723824608,
+          "y": 26.47523263911931
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.65,
+        "type": "block_contact",
+        "a": 4,
+        "b": 14,
+        "pos": {
+          "x": 34.08836296615697,
+          "y": 27.913139252071502
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.75,
+        "type": "jam",
+        "a": 18,
+        "b": 8,
+        "pos": {
+          "x": 36.54,
+          "y": 43.94
+        }
+      },
+      {
+        "t": 0.8,
+        "type": "block_contact",
+        "a": 1,
+        "b": 11,
+        "pos": {
+          "x": 34.48346237832633,
+          "y": 30.2664210799557
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.8,
+        "type": "read",
+        "a": 11,
+        "pos": {
+          "x": 35.08,
+          "y": 31.03
+        },
+        "note": "pass; pPass=0.72 focus=0.53 urgency=0.63"
+      },
+      {
+        "t": 0.85,
+        "type": "read",
+        "a": 18,
+        "pos": {
+          "x": 36.73,
+          "y": 43.99
+        },
+        "note": "pass; pPass=0.72 focus=0.91 urgency=0.84"
+      },
+      {
+        "t": 0.95,
+        "type": "read",
+        "a": 17,
+        "pos": {
+          "x": 36.78,
+          "y": 9.36
+        },
+        "note": "pass; pPass=0.73 focus=0.95 urgency=0.83"
+      },
+      {
+        "t": 1.2,
+        "type": "read",
+        "a": 19,
+        "pos": {
+          "x": 36.84,
+          "y": 23.87
+        },
+        "note": "pass; pPass=0.74 focus=0.84 urgency=0.86"
+      },
+      {
+        "t": 2.25,
+        "type": "throw",
+        "a": 0,
+        "b": 10,
+        "pos": {
+          "x": 27.11,
+          "y": 26.67
+        }
+      },
+      {
+        "t": 2.9,
+        "type": "drop",
+        "a": 10,
+        "pos": {
+          "x": 40.12,
+          "y": 24.35
+        }
+      },
+      {
+        "t": 3.5,
+        "type": "incomplete"
+      }
+    ],
+    "candidate": [
+      {
+        "t": 0,
+        "type": "snap",
+        "a": 3,
+        "pos": {
+          "x": 34.45,
+          "y": 26.67
+        }
+      },
+      {
+        "t": 0.35,
+        "type": "block_contact",
+        "a": 2,
+        "b": 12,
+        "pos": {
+          "x": 34.62313956996969,
+          "y": 23.989451252799554
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.35,
+        "type": "read",
+        "a": 12,
+        "pos": {
+          "x": 35.8,
+          "y": 23.35
+        },
+        "note": "pass; pPass=0.89 focus=0.93 urgency=0.67"
+      },
+      {
+        "t": 0.35,
+        "type": "read",
+        "a": 21,
+        "pos": {
+          "x": 39,
+          "y": 34.63
+        },
+        "note": "pass; pPass=0.79 focus=1.00 urgency=0.81"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 14,
+        "pos": {
+          "x": 35.77,
+          "y": 28.58
+        },
+        "note": "pass; pPass=0.73 focus=0.87 urgency=0.78"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 15,
+        "pos": {
+          "x": 39.97,
+          "y": 24.85
+        },
+        "note": "pass; pPass=0.75 focus=0.86 urgency=0.72"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 16,
+        "pos": {
+          "x": 39.97,
+          "y": 27.57
+        },
+        "note": "pass; pPass=0.72 focus=0.80 urgency=0.81"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 20,
+        "pos": {
+          "x": 48.08,
+          "y": 26.64
+        },
+        "note": "pass; pPass=0.71 focus=1.00 urgency=0.84"
+      },
+      {
+        "t": 0.5,
+        "type": "read",
+        "a": 13,
+        "pos": {
+          "x": 35.66,
+          "y": 26.2
+        },
+        "note": "pass; pPass=0.78 focus=0.88 urgency=0.78"
+      },
+      {
+        "t": 0.65,
+        "type": "block_contact",
+        "a": 3,
+        "b": 13,
+        "pos": {
+          "x": 34.09900723824608,
+          "y": 26.47523263911931
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.65,
+        "type": "block_contact",
+        "a": 4,
+        "b": 14,
+        "pos": {
+          "x": 34.08836296615697,
+          "y": 27.913139252071502
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.75,
+        "type": "jam",
+        "a": 18,
+        "b": 8,
+        "pos": {
+          "x": 36.54,
+          "y": 43.94
+        }
+      },
+      {
+        "t": 0.8,
+        "type": "block_contact",
+        "a": 1,
+        "b": 11,
+        "pos": {
+          "x": 34.48346237832633,
+          "y": 30.2664210799557
+        },
+        "note": "pass"
+      },
+      {
+        "t": 0.8,
+        "type": "read",
+        "a": 11,
+        "pos": {
+          "x": 35.08,
+          "y": 31.03
+        },
+        "note": "pass; pPass=0.72 focus=0.53 urgency=0.63"
+      },
+      {
+        "t": 0.85,
+        "type": "read",
+        "a": 18,
+        "pos": {
+          "x": 36.73,
+          "y": 43.99
+        },
+        "note": "pass; pPass=0.72 focus=0.91 urgency=0.84"
+      },
+      {
+        "t": 0.95,
+        "type": "read",
+        "a": 17,
+        "pos": {
+          "x": 36.78,
+          "y": 9.36
+        },
+        "note": "pass; pPass=0.73 focus=0.95 urgency=0.83"
+      },
+      {
+        "t": 1.2,
+        "type": "read",
+        "a": 19,
+        "pos": {
+          "x": 36.84,
+          "y": 23.87
+        },
+        "note": "pass; pPass=0.74 focus=0.84 urgency=0.86"
+      },
+      {
+        "t": 2.25,
+        "type": "throw",
+        "a": 0,
+        "b": 10,
+        "pos": {
+          "x": 27.11,
+          "y": 26.67
+        }
+      },
+      {
+        "t": 2.9,
+        "type": "catch",
+        "a": 10,
+        "pos": {
+          "x": 40.12,
+          "y": 24.35
+        }
+      },
+      {
+        "t": 3,
+        "type": "block_contact",
+        "a": 2,
+        "b": 12,
+        "pos": {
+          "x": 28.933572521103017,
+          "y": 21.463511903782305
+        },
+        "note": "run"
+      },
+      {
+        "t": 3.05,
+        "type": "shed",
+        "a": 12,
+        "b": 2,
+        "pos": {
+          "x": 29.64,
+          "y": 21.63
+        },
+        "note": "run: leverage"
+      },
+      {
+        "t": 3.45,
+        "type": "block_contact",
+        "a": 4,
+        "b": 11,
+        "pos": {
+          "x": 29.837351674271112,
+          "y": 31.170328260957216
+        },
+        "note": "run"
+      }
+    ]
+  },
+  "usefulDefense": {
+    "primaryReceiver7AndNB19BodiesAndCommandsExact": true,
+    "eventsAndRngExact": true,
+    "qualification": "All22 are not exact: SS support and some other actors react differently, but actual Y/NB defense remains exact through3.40."
+  },
+  "runtime": {
+    "newNativePrefixes": 4,
+    "nativeLauncherSeconds": 3.293411408,
+    "allLauncherSecondsBeforeReduction": 23.009798420000003,
+    "newFullGames": 0,
+    "newFullSuites": 0,
+    "reductionMilliseconds": 237.22576899999999,
+    "reductionLauncherSeconds": 0.43280577600000003,
+    "allLauncherSecondsIncludingReduction": 23.442604196
+  },
+  "limits": [
+    "A044 reference drops2.90, candidate naturally catches2.90; RNG/endings diverge. No postcatch or final-yardage causal claim.",
+    "Historical later offensive Z/CB block remains separate; no force/catch/offensive route/body modification.",
+    "Research consumes already computed observer-stage objectives. A production consumer must carry a legitimate objective explicitly; do not depend on an observer or substitute live receiver state.",
+    "Single paired mesh witness/control, not broad traffic/coverage certification. Peer forecasts remain conditional and can miss real turns."
+  ]
+}

@@ -12,6 +12,17 @@ physics/body or perception change; all22 react. Catching notified on #75,
 Run/Integration on #81. Earlier point-target failure stays preserved; no angle
 sweep, whole-route certificate, forced catch or full-game campaign.
 
+Result: research2219e87 combines half-speed braking and transverse peer match;
+same-state2.35 full/half/gather overlap while combined clearance+.296yd.
+Reacting A044 avoids the prior2.75 impact, keeps movement; A008 actual Y/NB
+defense/events/RNG exact, though support actors change. A044 now naturally
+catches versus reference drop; no postcatch/RNG-causality claim. Four short
+native prefixes3.293s, all launchers23.443s. Hold production: an explicit own
+objective producer/consumer contract is still required; no observer/private
+live fallback. Do-It-All retains consumer ownership and coordinates with
+Catching's active common/approach work before producer edits. Cost candidate
+stays frozen/separate. [Report](reviews/mesh-short-adjustment.md).
+
 ## Bounded mesh lateral approach research — 2026-10-15
 
 Do-It-All owns `scripts/diag/mesh-lateral-approach.ts` and its new evidence/report

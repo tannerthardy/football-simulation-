@@ -1,0 +1,94 @@
+{
+  "data/reviews/current/mesh-short-adjustment/braking-offline/plan.json": {
+    "sha256": "6c0ede2e5d9d54fedc9a69b164654d1e15723f975e553e8d604215a702caac66",
+    "bytes": 2371
+  },
+  "data/reviews/current/mesh-short-adjustment/braking-offline/summary.json": {
+    "sha256": "9e2ac4b1af85121f209f6f9c7c8b2b7f8f960b0c7842405a55d0b271b5dfcfde",
+    "bytes": 27185
+  },
+  "data/reviews/current/mesh-short-adjustment/braking-offline-launcher.json": {
+    "sha256": "7dad5898715a6ba066bdca51c9fba6f8022b66cae23f62f99236d09dcb70f0bb",
+    "bytes": 2329
+  },
+  "data/reviews/current/mesh-short-adjustment/native/A008.json.gz": {
+    "sha256": "7c516e4cde46af6927fba443661141a28bf21492a924163671302519efe63a51",
+    "bytes": 739909
+  },
+  "data/reviews/current/mesh-short-adjustment/native/A044.json.gz": {
+    "sha256": "894da439f98f0cbde3a18b606c31e605471c08b7b5d3187c6c6ae202ecfda98e",
+    "bytes": 733088
+  },
+  "data/reviews/current/mesh-short-adjustment/native/plan.json": {
+    "sha256": "6c0ede2e5d9d54fedc9a69b164654d1e15723f975e553e8d604215a702caac66",
+    "bytes": 2371
+  },
+  "data/reviews/current/mesh-short-adjustment/native/summary.json": {
+    "sha256": "0c2500c860aa62c6456d9c095a6ecd3f23b3c49a107f1a500f9befaa0426e354",
+    "bytes": 24041
+  },
+  "data/reviews/current/mesh-short-adjustment/native-launcher.json": {
+    "sha256": "167ba26af442bce89771cc0e68218df83906616082437f59606b681d0bd4c06b",
+    "bytes": 2281
+  },
+  "data/reviews/current/mesh-short-adjustment/native-v2/A008.json.gz": {
+    "sha256": "ed6eedf6d260a97c9f8b397973f7e8cd39ade355af96d0ecc880adb5ba1d60a5",
+    "bytes": 740081
+  },
+  "data/reviews/current/mesh-short-adjustment/native-v2/A044.json.gz": {
+    "sha256": "1cec6ec3f1f628bb3055e817dbf1f49a5f2bae62d3ef101118b8a64447e041bc",
+    "bytes": 735470
+  },
+  "data/reviews/current/mesh-short-adjustment/native-v2/plan.json": {
+    "sha256": "c9dd795010fbe5e48829b2ecd5e6d6d19331f3199131714999317055ecd03594",
+    "bytes": 2371
+  },
+  "data/reviews/current/mesh-short-adjustment/native-v2/summary.json": {
+    "sha256": "1955fe6a414bdf118e72db6aa53d4e633b9561423fe7988fe4fb4fbd328b0fb6",
+    "bytes": 44837
+  },
+  "data/reviews/current/mesh-short-adjustment/native-v2-launcher.json": {
+    "sha256": "bc30be9e16137831f07d0957137ddb1e54b6f66d9c3fcdbfd276b52c14c5cbd1",
+    "bytes": 2284
+  },
+  "data/reviews/current/mesh-short-adjustment/offline/plan.json": {
+    "sha256": "36c6a7648c7b163eadf5f9eb0311fc270114d7944f6b4e9ef11d12fd8facc310",
+    "bytes": 2371
+  },
+  "data/reviews/current/mesh-short-adjustment/offline/summary.json": {
+    "sha256": "400f5d8c7ffa587c1bfb9bc21d40c5a6750a7dbaff242754106b24f26db1960b",
+    "bytes": 26841
+  },
+  "data/reviews/current/mesh-short-adjustment/offline-launcher.json": {
+    "sha256": "25f44d37f2776f170ec85d9d02343f1c8e06a100a62c87faabe0f287176b1f24",
+    "bytes": 2321
+  },
+  "data/reviews/current/mesh-short-adjustment/precatch-motion.png": {
+    "sha256": "64b97a0d231000a0157bc54de3534e96fcb98189c2402b91f4663a3903723829",
+    "bytes": 122002
+  },
+  "data/reviews/current/mesh-short-adjustment/reduce.mjs": {
+    "sha256": "83a36e2c99fb1ee742a8e1be85235b9076bd014454fc11bb382355c3c85ba023",
+    "bytes": 7896
+  },
+  "data/reviews/current/mesh-short-adjustment/reduction-launcher.json": {
+    "sha256": "acc423f934d8e6dd4435e9c924726a866892024508375146e7d822d0320d37cc",
+    "bytes": 2238
+  },
+  "data/reviews/current/mesh-short-adjustment/rejected-raw-overwrite.ts.txt": {
+    "sha256": "b844ec7a6ef07d40f9a9f2b4863629e1a2312945ff83a64d9d834a0e0b9be6a3",
+    "bytes": 13348
+  },
+  "data/reviews/current/mesh-short-adjustment/review.json": {
+    "sha256": "d63bccafe2797fa74d1defe82df9239dcdb3f5e23c3f8522b0d3a7c26ea190be",
+    "bytes": 30163
+  },
+  "data/reviews/current/mesh-short-adjustment/typecheck-launcher.json": {
+    "sha256": "f7b8847664050cde2c91db904b03c71a5e9373bf3222f64813b50e3f4b29d665",
+    "bytes": 2165
+  },
+  "data/reviews/current/mesh-short-adjustment/typecheck-v2-launcher.json": {
+    "sha256": "98034d2b86fbb57f1d1ac983a7f761fc4c26401dff98ec8eb1f7d3e51aad4220",
+    "bytes": 2171
+  }
+}
