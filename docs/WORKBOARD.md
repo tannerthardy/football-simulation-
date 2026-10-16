@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run: planned-climb near-strike candidate — 2026-10-16
+
+Isolated `codex/planned-climb-fit` on acceptedbb6d4c7. Run owns only
+`RunBlocker.attack`'s CLIMB_PLAN return and its new native test/fixture; code
+7c33a40/test525eb8c exactly match tested research353d8ca/c39e598, source6d16f77e.
+This carries the already existing near-contact fit into planned climbs.
+Do-It-All retains #94 shared spacing/#92 cost; Physics retains laws/capacities.
+No keeper/release/grip/force/assignment/traffic edit. Research1ad0e7b retains
+rejected zone-access variants, exact inputs/receipts and adverse A030 ending.
+Independent review requested; Integration owns exact combined verification.
+See [handoff](reviews/planned-climb-fit-handoff.md). This evidence predates #94
+and is not a combined-composition claim or a new baseline designation.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
