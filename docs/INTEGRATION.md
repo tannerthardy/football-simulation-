@@ -262,8 +262,15 @@ Integration owns one exact combined verification in `codex/mesh-policy-integrati
 pull-fit whole-command comparison failures:1,774 TS pass/6 fail,145 Python,
 typecheck/build pass;200.811s, no skipped phase/input drift.
 [Preserved failed receipt](../data/reviews/current/mesh-policy-integration/failed-receipt.json).
-First question: distinguish module-reload symbol identity from physical/own-goal
-semantic changes. No source change or test waiver; no merge.
+First diagnostic confirms the six differences are module-local Symbol identity
+across test reloads. The independently accepted test-only helper compares every
+physical field and the complete own-objective value, asserting exactly the
+expected private key. All12 pull-fit checks pass in1.533s; no runtime change.
+[Contract review](../data/reviews/current/mesh-policy-integration/pull-fit-contract-review.json)
+and [candidate reconciliation](../data/reviews/current/mesh-policy-integration/candidate-reconciliation.json).
+The original failed receipt remains failed. Final candidate adds only this eighth
+protected file; Integration runs required phases once for its changed validation
+tree before adoption. No additional native cases or football-contract waiver.
 [Intake, approvals and thirty evidence hash checks](../data/reviews/current/mesh-policy-integration/intake.json).
 [Fetchable exact patch](../data/reviews/current/mesh-policy-integration/traffic-controller.patch).
 

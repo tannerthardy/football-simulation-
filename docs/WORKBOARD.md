@@ -18,14 +18,17 @@ Integration boundary released; no unchanged suite/native/panel/game repeat.
 ## Active #87 exact integration boundary
 
 Integration owns `codex/mesh-policy-integration` on accepted9adb7b3 plus metadata
-12956c6. Extract only the independently accepted seven-file patch: spacing.ts,
+12956c6. Extract only the independently accepted seven-file patch plus independently reviewed pull-fit test-only reload adapter: spacing.ts,
 movement-objective.ts, behaviors/common.ts, behaviors/defense.ts,
 catch-approach.ts, traffic-step.test.ts and its fixture. All seven blobs equal
 reviewed9760de0; composed source668acb1. Run accepts whole movement policy/#89
 interaction at b1c75b8; Catching producer approval retained. Accepted #88/#89 and
 settled-line cost proof/tests remain. Integration owns one frozen combined run;
 contributors supply compatible39 focused/typecheck and source-pinned native
-receipts. No old dependency ancestry, observer, variants, experimental Physics
+receipts. First exact run failed6 cross-module Symbol identity comparisons;
+independent semantic comparison review accepts the test-only repair,12 focused
+checks pass. Source668acb1 unchanged; final validation tree is a distinct candidate.
+No old dependency ancestry, observer, variants, experimental Physics
 or extra campaign. Preserve off-ball costs, censored outcomes and RNG limits.
 
 ## Historical completed #85 Duo-only adoption — then #81 held separately

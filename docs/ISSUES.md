@@ -161,7 +161,10 @@ with independently accepted #88/#89 through #90 as9adb7b3. One exact combined
 verification passes1,772 TS/145 Python/typecheck/build in195.589s; no rerun.
 [Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 now has Run's independent whole-policy/interaction ACCEPT6208072709 on
 accepted9adb7b3, plus Catching producer approval. Its exact seven-file successor
-is assembled for Integration's one required verification; not yet adopted.
+is assembled for Integration verification; not yet adopted. First exact run
+fails6 module-reload Symbol identity comparisons; independent test-only repair
+retains full physical/goal equality and passes12 focused checks. Source668acb1
+unchanged; final validation tree requires a distinct exact receipt.
 Current A042 primary bodies/requests and RNG match through3.80; off-ball changes
 and censoring remain. The old A044 catch/drop is a draw-scheduling change, not
 a catchability or postcatch benefit. [Intake](../data/reviews/current/mesh-policy-integration/intake.json).
