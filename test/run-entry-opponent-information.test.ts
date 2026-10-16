@@ -29,7 +29,26 @@ describe('acquired opponent entry risk without teammate transport',()=>{
     }
     expect(s.read()).toEqual(entry);
   });
-  it('preserves the saved contrasting entry without approach policy',()=>{
-    const s=scene('waiting-control');expect(s.read()).toEqual(s.parentEntry);
+  it('retains a clear approach in the saved contrasting corridor',()=>{
+    const s=scene('waiting-control'),entry=s.read()!,rb=s.actors[6];
+    // The old assertion pinned the former scorer's exact y. With an explicit
+    // approach read the choice shifts .125 yd in this same corridor. Both the
+    // old and new routes must still clear the acquired bodies, not keep one
+    // historical coordinate by decree.
+    expect(entry.x).toBe(s.parentEntry.x);
+    const lower=s.sim.see(rb,s.actors.find((a:Agent)=>a.slot==='LT')!);
+    const upper=s.sim.see(rb,s.actors.find((a:Agent)=>a.slot==='DE_S')!);
+    expect(entry.y).toBeGreaterThan(lower.pos.y+rb.profile.radius);
+    expect(entry.y).toBeLessThan(upper.pos.y-rb.profile.radius);
+    for(const p of [entry,s.parentEntry]) {
+      const dx=p.x-rb.pos.x,dy=p.y-rb.pos.y,l2=dx*dx+dy*dy;
+      for(const a of s.actors.filter((a:Agent)=>a!==rb&&a.slot!=='QB')) {
+        const seen=s.sim.see(rb,a);
+        if(seen.pose==='down')continue;
+        const u=Math.max(0,Math.min(1,((seen.pos.x-rb.pos.x)*dx+(seen.pos.y-rb.pos.y)*dy)/l2));
+        const clearance=Math.hypot(rb.pos.x+u*dx-seen.pos.x,rb.pos.y+u*dy-seen.pos.y)-a.profile.radius-rb.profile.radius;
+        expect(clearance).toBeGreaterThan(0);
+      }
+    }
   });
 });
