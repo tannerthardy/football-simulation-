@@ -79,6 +79,23 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
     return Math.hypot(dx-rx*closest,dy-ry*closest)<=peer.touch+tube+1e-9;
   });
   if(!near.length)return original;
+  // An exactly matched request and settled support preserve the current
+  // travel line in free movement. Speed/facing caps can brake along it, but
+  // supply no transverse force. Reject only peers whose entire acquired
+  // constant-velocity sweep stays outside that line's touch corridor.
+  // This is a clearance proof, not a small-requested-turn eligibility test.
+  const settled=original.vel.x===a.vel.x&&original.vel.y===a.vel.y
+    &&s.feetLock===0&&(original.push??0)===0
+    &&(original.squeeze??0)===0&&(a.body.squeeze??0)===0
+    &&[s.xi,s.lean,s.load,s.felt,s.feetVel,s.fall,s.accel,s.tipAccel,s.feltTip]
+      .every(v=>!v||(v.x===0&&v.y===0));
+  if(settled&&near.every(peer=>{
+    const nx=-a.vel.y/speed,ny=a.vel.x/speed;
+    const first=(peer.pos.x-a.pos.x)*nx+(peer.pos.y-a.pos.y)*ny;
+    const last=first+(peer.vel.x*nx+peer.vel.y*ny)*TURN_HORIZON;
+    return Number.isFinite(first)&&Number.isFinite(last)&&first*last>0
+      &&Math.min(Math.abs(first),Math.abs(last))>peer.touch+1e-9;
+  }))return original;
   const samples=previewFreeMovement(a.body,original,context.now,TURN_STEPS);
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
