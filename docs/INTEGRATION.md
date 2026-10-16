@@ -209,6 +209,13 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 Accepted develop remains86250bb. Independently accepted scope is assembled as
 nine exact file blobs in `codex/collection-cap-integration`; Integration owns one
 all-phase verification, reusing focused/native receipts. #88 does not wait for #87.
+
+**Passing frozen candidate:** `5e32b7afd69bdf72d01df03c19bd221e67d54c45`,
+1,772 TS/150 files,145 Python,typecheck/build pass;195.589s,44flags/components1,
+Node22.23.3, no skipped phases/input drift. Source6532e6d, validationc8fd0f8.
+[Final combined receipt](../data/reviews/current/collection-cap-integration/final-receipt.json).
+Publication changes only documentation/evidence; adoption awaits final ref/tree checks.
+No additional standalone native execution, panel or evaluation games.
 [Exact intake, dependencies, byte checks and portable patches](../data/reviews/current/collection-cap-integration/intake.json).
 
 | Item | Included scope / exact pin | Independent acceptance and remaining football limits |

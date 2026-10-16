@@ -1,0 +1,302 @@
+{
+  "schema": "collection-cap-integration-final-v1",
+  "pr": 90,
+  "previousAcceptedDevelop": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "testedCommit": "5e32b7afd69bdf72d01df03c19bd221e67d54c45",
+  "sourceSha256": "6532e6d26190d7a42b970307c5699e7920dfd5302cd3712a03c707761e2e1259",
+  "validationSha256": "c8fd0f8b1db0efbbb6d3610eaf285644f1523eb510a146ddf40b51593a75e099",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1772,
+    "typescriptFiles": 150,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "item": "#81 minimal admission + cost successor",
+      "ref": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+      "files": [
+        "src/sim/spacing.ts",
+        "test/traffic-turning.test.ts",
+        "test/spacing-residual-motion.test.ts",
+        "test/fixtures/spacing-residual-motion.json.gz"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6206768415",
+      "focusedChecksReused": 23
+    },
+    {
+      "item": "#88 collection",
+      "ref": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/combo-strike-access.test.ts",
+        "test/fixtures/combo-strike-access.json.gz"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/88#issuecomment-6206668974",
+      "focusedChecksReused": 71
+    },
+    {
+      "item": "#89 alley cap",
+      "ref": "78a00645e4f821d45604a1ed68c35592de1f5926",
+      "files": [
+        "src/sim/run-fits.ts",
+        "test/coverage-run-support.test.ts"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/89#issuecomment-6206768642",
+      "focusedChecksReused": 101
+    }
+  ],
+  "protectedPayloads": [
+    {
+      "path": "src/sim/spacing.ts",
+      "sha256": "c99452dbf815dbcf50b52969d56b7ff72910a62fd0abb71b8e987282eade420e",
+      "reviewedRef": "d80dcd3015358e604f91cb026f562f6f4f4781e5"
+    },
+    {
+      "path": "test/traffic-turning.test.ts",
+      "sha256": "31edeb5f454e9b92d7adc1baf73afb9cbf4ff84e8fdda4d92dc59adcb94016a5",
+      "reviewedRef": "d80dcd3015358e604f91cb026f562f6f4f4781e5"
+    },
+    {
+      "path": "test/spacing-residual-motion.test.ts",
+      "sha256": "eb9e9f20416816b1a0e1b5c0a7e71589fcf37c8a62449372536bd43121257732",
+      "reviewedRef": "d80dcd3015358e604f91cb026f562f6f4f4781e5"
+    },
+    {
+      "path": "test/fixtures/spacing-residual-motion.json.gz",
+      "sha256": "66fde105f653d8463496c65915fc07871b6eb6ba3e5f22b64e1157a4cfbe314c",
+      "reviewedRef": "d80dcd3015358e604f91cb026f562f6f4f4781e5"
+    },
+    {
+      "path": "src/sim/behaviors/blocking.ts",
+      "sha256": "4b80ac347b4f53716bef86a305f3736d1187ab52be743872b9869c5d07e755d5",
+      "reviewedRef": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6"
+    },
+    {
+      "path": "test/combo-strike-access.test.ts",
+      "sha256": "43dbebe29757ab0678d6b87e899c28ad107901e1b117c5d8a2e8cb43da82bc26",
+      "reviewedRef": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6"
+    },
+    {
+      "path": "test/fixtures/combo-strike-access.json.gz",
+      "sha256": "54d29ddea501d3c65e32f0b4ce389ec20ba078fdce1154c7d5411072ccc66fee",
+      "reviewedRef": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6"
+    },
+    {
+      "path": "src/sim/run-fits.ts",
+      "sha256": "2b543342f65a3060785a1fe2421696dce0889c392be69632988f42dce9593877",
+      "reviewedRef": "78a00645e4f821d45604a1ed68c35592de1f5926"
+    },
+    {
+      "path": "test/coverage-run-support.test.ts",
+      "sha256": "f8b77956dfcdca92bb10923795194ba281c69c1a41e6406cf57a397ec2b4b000",
+      "reviewedRef": "78a00645e4f821d45604a1ed68c35592de1f5926"
+    }
+  ],
+  "checks": {
+    "allNineBlobsMatchIndependentReview": true,
+    "onlyNineProtectedFilesDifferFromAcceptedBase": true,
+    "originalClearLaneZeroPreviewAssertionUnchanged": true,
+    "originalLanePreviewCounts": [
+      0,
+      0,
+      0
+    ],
+    "evidencePayloadHashesIndependentlyVerified": 33,
+    "noSourceTestSettingsOrToolingDriftDuringVerification": true,
+    "priorReceiptsUnchanged": true,
+    "physicsCapabilitiesDefaultsDependenciesFlagsUnchanged": true
+  },
+  "overlapReview": {
+    "immediateBatch": "Three disjoint production files. Existing post-release reach/keeper, free forecast/info/cost and fixed-longitudinal moving-alley contracts compose without new objective/steering behavior.",
+    "87": "Rewrites same spacing forecast gate and common track/catch producers;89 changes motion passed into its new objective metadata. Producer review alone is insufficient; full controller/interaction review requested6206932842. No87policy in immediate batch.",
+    "dependencyOrder": "Minimal admission+cost first.88/89 independent on86250bb. Later87 must retain accepted clear-line proof and89 acquired lateral flow."
+  },
+  "evidenceFor": [
+    "#88: saved native A018 retains release1.05 and keeper DT load; helper earns actual Mike load before runner arrival, using existing reach. Independent obstruction/keeper/defensive-win controls support narrow correction.",
+    "#81/cost: retain achievable residual motion; unchanged clear-lane assertion now0/0/0 previews; recovering and acquired-crossing cases still forecast. No preview-cost waiver.",
+    "#89: acquired lateral flow follows installed fixed-depth alley; saved A042/A006 entry improves within observed prefixes. Recognition, carrying/PA and fixed x-cap contracts remain."
+  ],
+  "adverseEvidenceAndLimits": [
+    "#88 A018 later C/LG impact at3.75/49.9689 impulse remains. A030 ending12.66\u219211.61, D05 same attempt miss\u2192wrap without retained draw decomposition, D07 unfinished5.00. No universal collection or anatomic-capability certification.",
+    "#89 A006 first hold still breaks, later FS acquisition3.75\u21923.90 despite earlier final finish. A042 offense responds before contact; gain/draws not isolated. A003 late body/event differences; A020 and A042 reference prefixes remain censored.",
+    "Prior combined #84/#81 failed receipt remains failed. One previous targeted diagnostic preserved lane movement/contact/budgets despite15/0/14 previews; this successor fixes the cost mechanism without changing that test.",
+    "Focused/native evidence is source-specific and reused within reviewed scope. No new combined football panel, universal YAC/gain improvement, whole-engine cost guarantee or league-realism claim."
+  ],
+  "evidenceLinks": [
+    "https://github.com/tannerthardy/football-simulation-/tree/8fb028eafc19b803cf082a8d31d5594319bd5165/data/reviews/current/combo-strike-access",
+    "https://github.com/tannerthardy/football-simulation-/tree/c6c8b4823acb27c13769f32305a79d5628cf19b2/data/reviews/current/spacing-cost-adjudication",
+    "https://github.com/tannerthardy/football-simulation-/tree/78a00645e4f821d45604a1ed68c35592de1f5926/data/reviews/current/alley-cap-motion"
+  ],
+  "held": [
+    {
+      "pr": 87,
+      "head": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+      "state": "Producer approved; full policy/interaction review pending"
+    },
+    {
+      "pr": 86,
+      "state": "Completed diagnostic, no feature dependency"
+    },
+    "old81head/observer/research ancestry",
+    "76 override",
+    "rejected common/gather/shoulder/lateral trials",
+    "experimental Physics"
+  ],
+  "cost": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.558078863
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.101811845
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 172.17283234700002
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.756666418000008
+      }
+    ],
+    "combinedCommandSeconds": 195.58938947300004,
+    "focusedChecksReused": [
+      23,
+      71,
+      101
+    ],
+    "newStandaloneNativeExecutions": 0,
+    "newPanels": 0,
+    "newEvaluationGames": 0,
+    "suiteGames": "Existing preserved game/ensemble assertions only.",
+    "exactCombinedVerifications": 1,
+    "noUnchangedRepeatForPublicationOrMerge": true
+  },
+  "artifacts": {
+    "intake.json": {
+      "sha256": "8258681f6405ed8d8264ce314d9c44f3e185f5e92b10d21ea3c76d620b0f5e64",
+      "bytes": 11737
+    },
+    "final-combined.json": {
+      "sha256": "03aac3fa6d192be88234116933e3ca5706e1432aee30cd89a94147f1db14ce3f",
+      "bytes": 2624
+    },
+    "final-combined.log": {
+      "sha256": "eb7cfdce5c1db2dd6355a47c8eefa700ea574b4cfd507c0c352ae85e125eab0e",
+      "bytes": 15139
+    },
+    "pr88-independent-review.json": {
+      "sha256": "6addfb7d793879a29be98ec36ea711e936e526cdef108a002eeeb11752a7ec3b",
+      "bytes": 4402
+    },
+    "cost-alley-independent-review.json": {
+      "sha256": "d1c9d2d94f5897fae2ff38ed109df06aac34392aa4c71cdbf4a174c2736ec47f",
+      "bytes": 2332
+    },
+    "extraction-1.patch": {
+      "sha256": "b8d28cc1a1b23973b03d10bdbd6509735f4b8407160a2cca3aae578e8692b849",
+      "bytes": 13411
+    },
+    "extraction-2.patch": {
+      "sha256": "5357ed16f6ef826ad0380c82dbd9763985376643a940bcdc5c40eea774cbb3f6",
+      "bytes": 14904
+    },
+    "extraction-3.patch": {
+      "sha256": "637eb5850f8588335e6e04f78105d85ea883afd3636d1d023b5c4f24e4992ca6",
+      "bytes": 3747
+    }
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "decision": "Recommend routine adoption of this exact isolated candidate after final mutable-ref/review/merge-tree checks under standing authority. No new baseline/default, branch cleanup or experimental promotion.",
+  "nextOwners": "Run reconciles collection/A018 and cost successor; Catching reconciles moving alley and preserved support risks; Run reviews #87 whole policy and interaction with now-approved #89. #87 is not spliced into this passing freeze. Measurement panel remains source-pinned; no automatic rerun."
+}
