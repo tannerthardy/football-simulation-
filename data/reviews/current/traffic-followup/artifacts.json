@@ -1,0 +1,17 @@
+{
+  "accepted-state-forecasts.json": "6fa37be3bf13830bb92957061fe02a483bf2bb4ac3b0f674e6275b7cf1ca947d",
+  "comparison.json": "b500bae1f64fb14435cc90be5d627c9f0192449835459e8fe8ad59d24fa62ed3",
+  "held-trial.patch": "1aa73221530c246e803256eaffa7cc05c505190724bca16fd2352c23e13140f8",
+  "pr96-audit.json": "3e31409f51b838d26b7265f2eb6bdfcef384e65db32e450e4af0062651bad121",
+  "receipts/accepted-forecast.json": "43dbbe0d3b2cccb650b42d462318130218e2584b7d15a8abad4aad030cdcb0a7",
+  "receipts/final-diagnostic-typecheck.json": "8b8cae322604787b023cfb1d4db0e61b78a99f8359f57166e42fb76ad35903be",
+  "receipts/first-step-analysis.json": "b47a480e2bee6b30258408f1e3f163e8da1ff1194ff3fa3257e5cdba6a20b39d",
+  "receipts/focused-trial.json": "c822dabef6bef6d39ba368d7241574bf022d8ceaaac1fed25e1a93508961fdc9",
+  "receipts/native-trial.json": "5e4e77d7f0599398d6a371e1a7017d1d598751a3487bcff7f865610175379218",
+  "receipts/saved-forecast.json": "6483b2e6f924bbcd68aab02f219669121c9d5912903324a7d9c1e080a4d58e89",
+  "same-state-forecasts.json": "821585deee769a970a66dcd16b085000b3e6429ecc0157e2f0978aed9ce1e219",
+  "trial/A006.json.gz": "e1cba845525f3bc322939e7983021a9432d0533a0dafece532c74be40bffb0f4",
+  "trial/A018.json.gz": "901187e0709f90815f3a33c1e9037b00f9d131d6b5534faa399e08f1e0a40f14",
+  "trial/A028.json.gz": "08f1e3fae04291d422c07b0a88d4c3b273d714aef3a9e426819fe92be5e9bc93",
+  "trial/summary.json": "502843aca39804f0fe82aa9c8550fbd5fedaa4a5038e55a074bc0a0e6baf40f1"
+}

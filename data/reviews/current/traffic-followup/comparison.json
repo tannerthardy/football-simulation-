@@ -1,0 +1,131 @@
+{
+  "trial": "bd765f061ee8a5e5e96405ae1607814cba3fbef6",
+  "source": "551195eb7171a27734f0f209d2a394d4a990552b4e74cda7f5587e592d98972f",
+  "dependency": "#94 runtime only, staged explicitly at1cee51b; not accepted development",
+  "baselineEvidence": "4564a66c7b349975ad336ceb122a2aebba9863d1",
+  "decision": "hold: sustained useful passage not established; collision alone is not rejection",
+  "cases": [
+    {
+      "case": "A028",
+      "firstRequestDifference": 1.85,
+      "incomingBodiesEqual": true,
+      "consumedPicturesEqual": true,
+      "stagesEqual": false,
+      "eventsEqual": false,
+      "beforePosition": {
+        "x": 33.60530141030205,
+        "y": 24.911790494482812
+      },
+      "trialPosition": {
+        "x": 33.65538832145354,
+        "y": 24.976862409345852
+      },
+      "sampledImpacts": [
+        {
+          "t": 2.7,
+          "i": 4,
+          "j": 6,
+          "impulse": 17.776224783556565,
+          "closing": 0.19497403716657413
+        }
+      ]
+    },
+    {
+      "case": "A018",
+      "firstRequestDifference": null,
+      "incomingBodiesEqual": true,
+      "consumedPicturesEqual": true,
+      "stagesEqual": true,
+      "eventsEqual": true,
+      "beforePosition": {
+        "x": 42.39250745169884,
+        "y": 19.278955838440215
+      },
+      "trialPosition": {
+        "x": 42.39250745169884,
+        "y": 19.278955838440215
+      },
+      "sampledImpacts": [
+        {
+          "t": 3.8,
+          "i": 3,
+          "j": 4,
+          "impulse": 41.953048271932815,
+          "closing": 0.5320005605162567
+        },
+        {
+          "t": 3.85,
+          "i": 3,
+          "j": 4,
+          "impulse": 4.598792680387687,
+          "closing": 0.017721467795795705
+        }
+      ]
+    },
+    {
+      "case": "A006",
+      "firstRequestDifference": null,
+      "incomingBodiesEqual": true,
+      "consumedPicturesEqual": true,
+      "stagesEqual": true,
+      "eventsEqual": true,
+      "beforePosition": {
+        "x": 42.69908385597724,
+        "y": 18.687300909373405
+      },
+      "trialPosition": {
+        "x": 42.69908385597724,
+        "y": 18.687300909373405
+      },
+      "sampledImpacts": []
+    }
+  ],
+  "receipts": [
+    {
+      "file": "accepted-forecast.json",
+      "commit": "709a29115af486d7d12b17d14b8f6c8f32b992c1",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 0.35161580800000003
+    },
+    {
+      "file": "final-diagnostic-typecheck.json",
+      "commit": "a7a292d35d3ff33222b0618e578356e282caed44",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 10.738240484
+    },
+    {
+      "file": "first-step-analysis.json",
+      "commit": "bd765f061ee8a5e5e96405ae1607814cba3fbef6",
+      "source": "551195eb7171a27734f0f209d2a394d4a990552b4e74cda7f5587e592d98972f",
+      "exitCode": 0,
+      "seconds": 0.386336147
+    },
+    {
+      "file": "focused-trial.json",
+      "commit": "bd765f061ee8a5e5e96405ae1607814cba3fbef6",
+      "source": "551195eb7171a27734f0f209d2a394d4a990552b4e74cda7f5587e592d98972f",
+      "exitCode": 0,
+      "seconds": 1.380567051
+    },
+    {
+      "file": "native-trial.json",
+      "commit": "bd765f061ee8a5e5e96405ae1607814cba3fbef6",
+      "source": "551195eb7171a27734f0f209d2a394d4a990552b4e74cda7f5587e592d98972f",
+      "exitCode": 0,
+      "seconds": 5.527888472
+    },
+    {
+      "file": "saved-forecast.json",
+      "commit": "709a29115af486d7d12b17d14b8f6c8f32b992c1",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 0.41161106999999997
+    }
+  ],
+  "totalLauncherSeconds": 18.796259032000002,
+  "newNativeContinuations": 3,
+  "newSimulatedSeconds": 10.7,
+  "newReferenceContinuations": 0
+}

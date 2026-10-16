@@ -11,6 +11,16 @@ Run's #96 attack/near-fit and Catching's objective/coverage functions stay with
 their owners; agree any common helper edit before proceeding. Independent #96
 review may reuse its evidence, without replacing this movement objective.
 
+Completed: one conditional-original-request trialbd765f0 was tested with #94
+explicitly staged as a research dependency, then normally reverted ata7a292d.
+Fresh cue/held-command dominance did not establish useful sustained passage;
+necessary LG braking stays. Active runtime/tests again equal acceptedbb6d4c7.
+#94 and #92 are unchanged. Eight hashed existing payloads plus exact production/
+test blobs independently support accepting standalone #96 near-strike fit;
+combined interaction remains Integration's responsibility. Reports in
+reviews/traffic-followup.md and reviews/pr96-independent-review.md preserve
+trial, controls, costs, uncertainty and exact pins. No additional policy variant.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
