@@ -1,0 +1,16 @@
+{
+  "failures": [
+    {
+      "stage": "saved reducer input preparation",
+      "error": "Manifest itself was not copied with its 22 listed artifacts; FileNotFoundError before reading any native packet.",
+      "correction": "Restore original artifacts.json from the exact author commit; preserve hash inventory unchanged.",
+      "newSimulations": 0
+    },
+    {
+      "stage": "saved reducer schema",
+      "error": "KeyError normal: some newly established engagements have no populated force field.",
+      "correction": "Keep unknown force unavailable, count missing fields explicitly, and select observed positive normal loads only when recorded. Never fill missing force as zero.",
+      "newSimulations": 0
+    }
+  ]
+}

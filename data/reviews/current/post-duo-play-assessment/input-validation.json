@@ -116,5 +116,57 @@
       "bytes": 1446050
     }
   ],
-  "newSimulations": 0
+  "newSimulations": 0,
+  "protectedAcceptedEqualsReviewed": true,
+  "protectedPaths": [
+    "src",
+    "test",
+    "config",
+    "package.json",
+    "package-lock.json",
+    ".nvmrc",
+    "scripts/baseline.mjs"
+  ],
+  "collectorFamilies": [
+    {
+      "commit": "bd0c62390d9e0e58bcda4a641c8e1871476d0a9b",
+      "sha256": "a3fd5358f359db25e658c98ef1f50363dbe5d837dbd85e2189211621aa5d37ed",
+      "cases": [
+        "A018",
+        "A030",
+        "A027"
+      ]
+    },
+    {
+      "commit": "a0022e9ffeda4ccfd45079ad179655b4828d275b",
+      "sha256": "741894cba9c39e0c7421b1162d611f2a713a7d783d9438bc3d15c6bb7844a5fd",
+      "cases": [
+        "DuoUnder"
+      ],
+      "difference": "Only optional manifest-path CLI parameter added; native collection/measurement body unchanged. Identical operator hash within each pair."
+    }
+  ],
+  "sampleValidity": {
+    "pairs": 4,
+    "nativeEndings": 8,
+    "all22IdentitiesStable": true,
+    "initialBodiesIdenticalWithinPair": true,
+    "uniformWorldCadenceSeconds": 0.05,
+    "unchangedPhysicalRequestRngResults": [
+      "A027",
+      "DuoUnder"
+    ]
+  },
+  "stages": "Guard producer update captured; cmds after coverage containment, before-spacing after contact/bond, final before World retained separately. Defensive original command before containment not captured.",
+  "missingness": "Three A030 candidate RG/LB engagement samples have no normal force yet. Unknowns remain unavailable; no zero-fill. Actual positive impulse and any recorded hand load separate from positive normal push.",
+  "historicalObserverCompatibility": "A018/A030/A027 baseline PlayResult matches original #82 after accounting only for run()-injected snap label absent from direct tick collector. This does not reuse historical source as post-Duo evidence.",
+  "lastSuccessfulReduction": {
+    "wallSeconds": 1.9744505800008483,
+    "cpuSeconds": 1.7945864569999999
+  },
+  "newNativeExecutions": 0,
+  "newGames": 0,
+  "newTests": 0,
+  "rawNFLScans": 0,
+  "bulkAcquisition": false
 }

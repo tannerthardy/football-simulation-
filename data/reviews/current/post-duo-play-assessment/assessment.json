@@ -1,0 +1,50 @@
+{
+  "scope": "Four selected question-specific pairs, not a defect-rate sample or post-Duo full48 panel.",
+  "base": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+  "countsDescriptiveOnly": {
+    "selectedPairs": 4,
+    "duoPairs": 3,
+    "wideZonePairs": 1,
+    "changedPairs": 2,
+    "exactControlPairs": 2
+  },
+  "cases": [
+    {
+      "id": "A030",
+      "offense": "Retained loaded DT surface, RG body access2.40 and loaded block2.60 precede runner LOS2.65 at6.33yd/s.",
+      "defense": "Backer now meets a useful block; SS still reaches runner3.30. Later broken tackle/FS+corner finish separate from blocker access.",
+      "phase": "Achieved pre-carrier-contact protection; postcontact finish remains a distinct question.",
+      "uncertainty": "C also changes, execution draws diverge from first changed tick. No isolated final-yardage/optimal-choice/force-law claim."
+    },
+    {
+      "id": "A018",
+      "offense": "Near-level protection/faster runner preserved; RG never records LB impact or hand load. Same46 producer/pre-spacing/final commands1.05\u20133.30.",
+      "defense": "LB legitimately avoids collection and recovers to tackle with SS help.",
+      "phase": "Failure to reach useful RG/LB contact; no evidence of block grip failing after contact.",
+      "uncertainty": "Prior arm had incidental RG/LB collision without a loaded block. Whether an earlier interception is attainable/informed is unproved; Run retains departure/collection investigation."
+    },
+    {
+      "id": "A027",
+      "offense": "Exact useful Y/LB contact and hand load retained.",
+      "defense": "Exact LB recovery/wrap/finish retained despite actual block.",
+      "phase": "Both sides do useful work; exact opposing control.",
+      "uncertainty": "One WZ input is not WZ certification."
+    },
+    {
+      "id": "DuoUnder",
+      "offense": "Exact real RT detour and loaded LB work retained.",
+      "defense": "Exact later LB wrap/finish and SS assistance retained.",
+      "phase": "Legitimate release and defender recovery both survive.",
+      "uncertainty": "Preselected unused at author collection; now observed, not a new blind holdout or broad front/formation proof."
+    }
+  ],
+  "nflDecision": "Fixed helper geometry and original catch/contact event timing must be measured together; nearest endpoints cannot stand for the same defender. Four completed contained witnesses reused, no new query or threshold target.",
+  "owners": {
+    "integration": "Reuse exact accepted verification; no duplicate panel/full games.",
+    "run": "A018 acquired departure exit-clearance to existing interception ownership, preserving first-level security and valid A030/Under approaches.",
+    "catching": "Fixed lead-helper geometry through catch and time to original annotated contact; no contact-actor/installed-role/grip inference.",
+    "flex": "#81 cost admission remains separate; A018 stage agreement is not a general spacing verdict."
+  }
+}
