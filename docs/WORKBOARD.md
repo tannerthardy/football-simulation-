@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Run: acquired crease successor to Claude zone review — 2026-10-16
+
+Run owns an isolated `codex/acquired-run-crease` candidate from accepted
+`c3264b0bad72bd2c208602e0ecf0461c00d9669f` (queue `625f3b4`). Boundary:
+`carrier.ts` run-entry geometry/ordinary press read, focused carrier tests and
+portable evidence. Extract useful occupied-space/route reading from Claude
+`50f6a08`; remove proximity-only protection credit and test occupied endpoints
+through the real carrier hook. No `blocking.ts`, departure, spacing, physics,
+capacity or flag-profile changes. #109 preserves the independent review and
+its adverse controls; CLIMB_EXIT remains separate. Integration owns final
+combined verification. Reuse #109's exact native baselines; no broad panel/games.
+
 ## Active coverage/run integration boundary — 2026-10-16
 
 Integration owns only minimal extraction/reconciliation in defense.ts, coverage/{rules,defender,techniques}.ts, engagement.ts, blocking.ts and eight reviewed tests/fixtures on accepted3723204 plus queue db0d512. #97/#100 and95 independently accepted;102 independently accepted as existing-law validity;104 explicitly user-approved overriding author-independent hold. Shared acquired entry once,95 cut separate,104 preserves96.20 existing overlap checks pass; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build in226.175s, total228.048s including overlap. #107 awaits guarded adoption; no unchanged rerun. Contributors reuse their focused receipts and continue independent work; no shared-suite duplication or forced rebase. #101 Run repairs wall-censor index/partial traces; Measurement reviews stubs, no census recollection. Experimental Physics/perimeter/mesh diagnosis remain separate. [Current queue and evidence](INTEGRATION.md#ready-blocked-experimental).
