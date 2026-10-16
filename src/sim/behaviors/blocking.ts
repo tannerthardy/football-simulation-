@@ -922,18 +922,23 @@ export class RunBlocker implements Behavior {
         // distance of the puller to become relevant work.
         const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force')
           ? this.readPull(a, sim, target) : null;
+        const edge = plan.pullPath.at(-1)!;
+        const perimeterSide = playSideSign(sim, sim.offCall.run!);
+        const atCorner = (a.pos.y-edge.y)*perimeterSide >= 0;
         if (read) {
           this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
-          if (this.pullCleared && (plan.pullRole==='force' ? this.pullIdx>=2 : approachingDepth < sim.los || distance < 1.2))
+          if (this.pullCleared && (plan.pullRole==='force' ? this.pullIdx>=2&&atCorner : approachingDepth < sim.los || distance < 1.2))
             return this.attack(a, sim, read.target, read.seen);
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         let path = read && this.pullCleared && plan.pullRole!=='force' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        if(plan.pullRole==='force'&&this.pullIdx>=2&&!atCorner)
+          path={x:plan.pullPath[1].x,y:edge.y};
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole!=='force') plan.pullPath[this.pullIdx] = path;
