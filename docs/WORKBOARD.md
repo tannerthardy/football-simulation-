@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active collection/cap integration — 2026-10-15
+## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
 `codex/collection-cap-integration`. Independently approved immediate scope:
@@ -9,15 +9,24 @@ minimal #81 admission + d80dcd3 cost successor (`spacing.ts`, residual-motion
 test/fixture and traffic-turning test); #89 one alley input in `run-fits.ts` plus
 coverage-run-support contracts. Preserve each authored/reviewed file blob.
 Do-It-All accepts #88; Run accepts cost successor and #89. Reuse their focused
-receipts/controls, then one exact combined verification under Integration.
+receipts/controls; exact freeze5e32b7a passes1,772 TS/150 files,145 Python,
+typecheck/build,195.589s,44flags/components1. Adopted as9adb7b3 through #90;
+entire merged tree equals publication and protected files equal passing freeze.
+Integration boundary released; no unchanged suite/native/panel/game repeat.
+[Actual pin, receipts and owner handoff](INTEGRATION.md#accepted-development).
+
+## Active #87 review boundary
 
 #87 producer metadata is approved by Catching; its whole movement-policy review
 is requested from Run. Check its overlapping spacing/common movement and #89
-moving-goal input before any later composition; #88 does not wait for it.
+moving-goal input before any later composition. Run consults Catching; Do-It-All
+retains the frozen policy and extracts only its reviewed post-dependency scope
+when ready. Accepted cost/collection/alley changes are now9adb7b3; preserve all
+three at clean checkpoints. Do not add #87 to the completed #90 verification.
 No #86 diagnostic, observer/research ancestry, #76 override, rejected variants,
 experimental Physics, capabilities/defaults or historical reference changes.
 
-## Completed #85 Duo-only adoption — #81 held separately
+## Historical completed #85 Duo-only adoption — then #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
 Do-It-All accepts exact #84 head4af71ac; only `readJoinedCombination` in

@@ -125,7 +125,13 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
 
-Current: #80 head25a73a3/code5e18fac has independent acceptance for only the
+Current: #89 acquired lateral alley-cap flow is adopted through #90 as9adb7b3;
+fixed x/depth/side and all acquisition/PA/carrying priorities remain. Preserve
+A006 broken first hold/later FS acquisition, A003 late changes and censored
+A020/A042 reference. No overall coverage/YAC certification. #80 continuity
+and #75 technique remain accepted. [Receipt](../data/reviews/current/pr90-merge.json).
+
+Earlier adopted #80: head25a73a3/code5e18fac has independent acceptance for only the
 wrapper and nine existing controls. Requires current run belief, installed
 insert/alley and positive personally acquired backfield RB/FB carrying on each
 decision; recognized flight wins. Compatible with reconciled #75; exact #82 combined
@@ -150,8 +156,10 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 
 Current: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
 cost successor; original zero-preview test is unchanged and counts0/0/0. The
-old failed combined receipt remains failed. Integration verifies this reviewed
-successor with independently accepted #88/#89. #87 new movement policy remains
+old failed combined receipt remains failed. This reviewed successor is adopted
+with independently accepted #88/#89 through #90 as9adb7b3. One exact combined
+verification passes1,772 TS/145 Python/typecheck/build in195.589s; no rerun.
+[Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 new movement policy remains
 separate pending Run's full consumer/interaction review; Catching approved only
 producer metadata. Its common-track objective would consume #89's acquired
 lateral flow, so do not infer compatibility from a clean textual patch.
@@ -160,7 +168,7 @@ acquired lateral picture, existing PA/recognized-ball/carrying gates. Preserve
 A006 later support delay/first broken hold, A003 late changes and censored
 A020/A042 reference. No general YAC or law/default claim.
 
-Current: Run independently accepts #81's exact admission-only scope, but exact
+Historical #85 failure: Run independently accepts #81's exact admission-only scope, but exact
 #85 combined verification exposes the preserved fast-straight zero-preview
 assertion at traffic-turning.test.ts:212.1,761 TS pass/one fail;145 Python and
 typecheck/build pass. Run consults Do-It-All on cost versus movement behavior;
@@ -212,10 +220,12 @@ Current: Do-It-All independently accepts #88 head6573521 minimal post-release
 strike-clearance correction; actual A018 RG/Mike load while RT retains DT, no
 release/range/force change. Existing obstruction/keeper controls pass. Later
 A018 C/LG impact, A030 shorter ending and D07 unfinished remain. Integration
-combines compatible cost/#89 scope once; #86 research is not a dependency and
-#87 does not hold collection. Earlier #84 findings below remain source-pinned.
+adopts the exact three-file #88 scope with compatible cost/#89 through #90 as
+9adb7b3 after one passing exact verification. #86 research is not a dependency;
+#87 remains separately held. Run reconciles ongoing access investigations at
+clean checkpoints. Earlier #84 findings below remain source-pinned.
 
-Current: #84 head4af71ac/codeaebb0ab/evidence70ed238 is a ready Duo-only
+Earlier adopted #84: head4af71ac/codeaebb0ab/evidence70ed238 was a ready Duo-only
 surface-admission candidate on accepted7eb2554. Do-It-All independent review accepts the exact correction: preserved near-half/
 crossing/Under detours settle the necessary-climb question within this scope.
 A030 guard loads LB before runner arrival while RT keeps real DT load; A018

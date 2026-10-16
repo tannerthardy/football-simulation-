@@ -49,6 +49,49 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@9adb7b3f730c5637e5a6547f9bc151a17ce301b2`** is accepted after routine
+[#90](https://github.com/tannerthardy/football-simulation-/pull/90) adoption.
+Its entire tree equals publication `b19f87bad2a1b931f3749278eb4c27c70b9e56f0`;
+source/tests/settings/tooling equal tested freeze
+`5e32b7afd69bdf72d01df03c19bd221e67d54c45`.
+[Actual merge and preservation receipt](../data/reviews/current/pr90-merge.json).
+
+Included independently approved minimal scope: **#88** post-release collection
+to existing strike access; **#81 admission + d80dcd3 cost successor** with the
+original zero-preview assertion unchanged; **#89** acquired lateral flow for
+the installed fixed-depth alley. Three production files, six tests/fixtures;
+all nine blobs match the independent reviews. Earlier #84/#82/#78 and accepted
+controllers remain. No research/observer ancestry or #87 policy is imported.
+
+**1,772 TS/150 files,145 Python,typecheck/build pass**,195.589 command seconds,
+Node22.23.3,44 flags/components1, no skips/input drift. One exact combined run;
+focused/native evidence reused. No extra standalone native execution, panel or
+evaluation games; no unchanged rerun to publish/merge.
+Source `6532e6d26190d7a42b970307c5699e7920dfd5302cd3712a03c707761e2e1259`;
+validation `c8fd0f8b1db0efbbb6d3610eaf285644f1523eb510a146ddf40b51593a75e099`.
+[Complete verification](../data/reviews/current/collection-cap-integration/final-receipt.json).
+
+Preserve adverse evidence: A018's later C/LG collision, A030's shorter ending,
+D05's unisolated execution draws, A006's broken first hold/later FS acquisition,
+and unfinished prefixes. Original #81 failed receipt remains failed; the cost
+successor repairs its mechanism, without weakening the assertion. Local
+controller support does not establish overall coverage, YAC or statistical realism.
+
+**Held: #87 whole movement-policy/interaction review with Run, consulting
+Catching.** Producer metadata alone is approved. Its spacing rewrite overlaps
+the accepted cost proof and its objective consumes #89's acquired lateral flow.
+Reconcile the minimal post-dependency scope at a clean checkpoint before another
+candidate; do not repeat this completed verification while waiting.
+[#90 accepted-pin and affected-owner handoff](https://github.com/tannerthardy/football-simulation-/pull/90#issuecomment-6207095520).
+#88/#89 delivered PRs and superseded #81 host are closed with exact successor
+records; every branch, original finding and receipt remains available.
+#76, unused transport/navigation, rejected variants and experimental Physics stay
+separate. Historical4ded6b6, GitHub default and physical capabilities/defaults
+unchanged. Existing audit/panel remains source-pinned; no automatic recollection.
+
+<details>
+<summary>Previous accepted #85 /86250bb record — historical</summary>
+
 **`develop@86250bb4f0c6f421878c204161864d523c3e30b6`** is accepted after
 routine [#85](https://github.com/tannerthardy/football-simulation-/pull/85) adoption.
 Its entire tree equals publication `b313013b6296707ae6780ff8f14485de3b07cd90`.
@@ -81,6 +124,8 @@ question after reconciling this accepted pin; no new full-game evaluation.
 #76 parked; lateral/low-speed/observer/transport/navigation/Physics remain separate.
 Historical4ded6b6, GitHub default, branches and scientific evidence unchanged.
 Measurement's prior7eb2554 panel is complete; it is not a measurement of this pin.
+
+</details>
 
 <details>
 <summary>Previous accepted #82 /7eb2554 record — historical</summary>
@@ -161,16 +206,16 @@ silently become approval; investigate a disagreement with this ledger.
 <a id="audit-priorities-and-access"></a>
 ## Current investigations and saved audit access
 
-Accepted development is7eb2554 after #82; #69 is complete through #78. Do not repeat
-that review or its unchanged combined verification. The saved audit is a separate
-**8ca8dee** observation, not newly measured90edc525 behavior.
+Accepted development is9adb7b3 after #90; #69 is complete through #78. Do not repeat
+completed reviews or unchanged verification. The saved audit is a separate
+**8ca8dee** observation, not a measurement of current9adb7b3 behavior.
 [Published diagnosis and caveats](https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md).
 
 | Investigation | Accountable owner / smallest next question | Saved evidence and controls |
 | --- | --- | --- |
-| Second-level blocking access | Run Game: trace installed next job, takeover security, release cue, original interception request, later modifiers and achieved access when the runner arrives. Check whether accepted #69/#82 changes the selected older sequence before current-build claims. | Start A018/A030 and a useful successful contrast such as A027 or A006/A042. Nine unachieved jobs in24 runs are not nine proven defects; distinguish unsafe release, unavailable approach, wrong path, upstream loss and a legitimate defender win. |
+| Second-level blocking access | Run Game: #84 Duo admission and #88 strike-access collection are now accepted through #90. Reconcile ongoing access work against9adb7b3 at a clean checkpoint; trace remaining unachieved jobs and late contacts, without discarding useful keeper load. | A018 now earns Mike load in the saved #88 candidate but retains a later C/LG collision; A030 has a shorter ending. Original A018/A030/A027 and A006/A042 remain source-pinned. Nine unachieved jobs in24 old runs are not nine current defects; distinguish access, upstream loss and legitimate defensive wins. |
 | Run-support continuity | Catching owns continuity through zone-to-man replacement; consult Run on installed insertion/alley responsibility. Preserve useful acquired support or identify a legitimate cancellation/handoff inside existing architecture. | Eight of eight selected Quarters runs reverse support requests after reassignment; outcome cost is not isolated. Preserve alley leverage, vertical responsibility and legitimate PA uncertainty; no permanent run-belief latch or hidden possession. #75 contracts are reconciled and #75/#80 adopted; remaining support leverage/outcomes need source-pinned evidence, not a latch. |
-| Mesh approach coordination | Flex/Do-It-All: attribute A020's prethrow stop and A044's converging man/robber approach before choosing a correction. Coordinate coverage edits with Catching. | **Immediate archive consumer: A020/A044, controls A008/A032.** Trace consumed receiver/peer pictures and original→modified request→achieved motion. Final intents cannot recover discarded stages. If necessary, one small opt-in observation-only diagnostic, without extra perception, RNG or behavior, can serve Flex and Run. Preserve earned separation and A044's later offensive block. |
+| Mesh approach coordination | Flex/Do-It-All retains frozen #87. Run reviews its whole movement policy and interaction with accepted #89, consulting Catching's producer approval. Minimal #81/cost dependency is already adopted; do not import observer or old trials. | Saved A020/A044, controls A008/A032 and published #87 prefixes are accessible. Reuse them; no recollection or suite while awaiting review. Preserve A044's unchanged catch probability/changed RNG explanation and unvalidated later offensive block. Final intents cannot recover discarded stages. |
 
 Measurement supports saved-data distribution/validation and a named remaining
 geometry/timing question. Use stored body velocities, stable identities, actual
@@ -204,17 +249,19 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
 
-### Current collection/cap batch — 2026-10-15
+### Completed #90 collection/cap batch — 2026-10-15
 
-Accepted develop remains86250bb. Independently accepted scope is assembled as
-nine exact file blobs in `codex/collection-cap-integration`; Integration owns one
-all-phase verification, reusing focused/native receipts. #88 does not wait for #87.
+Accepted develop is **9adb7b3f730c5637e5a6547f9bc151a17ce301b2** through #90. Nine reviewed
+file blobs from three independently approved corrections are incorporated by
+minimal extraction. #88 progressed independently; #87 still holds only itself.
 
 **Passing frozen candidate:** `5e32b7afd69bdf72d01df03c19bd221e67d54c45`,
 1,772 TS/150 files,145 Python,typecheck/build pass;195.589s,44flags/components1,
 Node22.23.3, no skipped phases/input drift. Source6532e6d, validationc8fd0f8.
 [Final combined receipt](../data/reviews/current/collection-cap-integration/final-receipt.json).
-Publication changes only documentation/evidence; adoption awaits final ref/tree checks.
+Publication changed only documentation/evidence. Fresh preview and actual merge
+checks confirm the entire tree equals publication and protected files equal
+the passing freeze. [Actual merge](../data/reviews/current/pr90-merge.json).
 No additional standalone native execution, panel or evaluation games.
 [Exact intake, dependencies, byte checks and portable patches](../data/reviews/current/collection-cap-integration/intake.json).
 
@@ -228,7 +275,8 @@ No additional standalone native execution, panel or evaluation games.
 Three disjoint production hunks preserve shared physics/capacities/defaults,
 keeper security, acquired-picture ownership and installed responsibilities.
 Thirty-three published evidence payload hashes and four source digests verified;
-23/71/101 focused checks and typecheck receipts reused. No new native cases,
+23/71/101 focused checks and typecheck receipts reused. #88/#89 and the superseded
+#81 host are closed with successor records; original branches/evidence remain. No new native cases,
 roster/panel/game collection or contributor suite. [Independent reviews](../data/reviews/current/collection-cap-integration/cost-alley-independent-review.json),
 [#88 audit](../data/reviews/current/collection-cap-integration/pr88-independent-review.json).
 Rejected common/gather/shoulder/lateral variants, old research ancestry, #76 and
