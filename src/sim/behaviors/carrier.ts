@@ -183,34 +183,49 @@ function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   };
   let best: Vec2 | null = null, cost = Infinity;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
-  for (const p of candidates) {
-    const arrive = timeToReach(me, p, 0);
-    let risk = 0;
-    // Path to the entry: any body standing on it blocks the straight run.
-    const sx = p.x - a.pos.x, sy = p.y - a.pos.y, l2 = sx * sx + sy * sy || 1;
+  // Bodies on a segment block the run along it.
+  const blockedBy = (from: Vec2, to: Vec2): number => {
+    const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
+    let r = 0;
     for (const b of bodies) {
-      const u = clamp(((b.pos.x - a.pos.x) * sx + (b.pos.y - a.pos.y) * sy) / l2, 0, 1);
+      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
       if (u <= 0 || u >= 1) continue;
-      const miss = Math.hypot(a.pos.x + u * sx - b.pos.x, a.pos.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
-      if (miss < 0) risk += 1.5 + 4 * Math.min(1, -miss);
+      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
     }
-    // Who is there first, at the entry and two yards beyond it: the earliest
-    // defender decides, as in the open-field read.
+    return r;
+  };
+  const cruise = Math.max(4, a.profile.vmax * .8);
+  for (const p of candidates) {
+    // Two ways to the entry: straight, or flatten behind the line first and
+    // then turn up (the cutback's dog-leg). Each has its own arrival time.
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    if (depth(a.pos) < -1.6) {
+      const w = { x: sim.los - 1.2 * dir, y: p.y };
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+    }
+    let risk = Infinity, via = p;
     const beyond = { x: p.x + 2 * dir, y: p.y };
-    const arrive2 = arrive + 2 / Math.max(4, a.profile.vmax * .8);
-    let m1 = Infinity, m2 = Infinity;
-    for (const d of sim.opponents(a)) {
-      if (d.isDown(sim.t)) continue;
-      const s = sim.see(a, d);
-      if (Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
-      m1 = Math.min(m1, threatTime(d, s, p) - arrive);
-      m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+    for (const route of routes) {
+      const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
+      // Who is there first, at the entry and two yards beyond it: the
+      // earliest defender decides, as in the open-field read.
+      let m1 = Infinity, m2 = Infinity;
+      for (const d of sim.opponents(a)) {
+        if (d.isDown(sim.t)) continue;
+        const s = sim.see(a, d);
+        if (Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
+        m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+      }
+      const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
+        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
+      if (r < risk) { risk = r; via = route.via; }
     }
-    risk += m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0;
-    risk += m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0;
     const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
     if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
-    if (score < cost) { cost = score; best = p; }
+    // Run the chosen route: its first leg is where he heads now.
+    if (score < cost) { cost = score; best = via; }
   }
   if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
   return best;

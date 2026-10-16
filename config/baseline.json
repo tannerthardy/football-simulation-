@@ -50,6 +50,7 @@
     "TACKLE_TOUCH": "0",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
+    "ZONE_COMBO": "0",
     "ZONE_FLOW": "1"
   },
   "worldDefaults": {

@@ -721,6 +721,12 @@ const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
 
+/** Experimental zone double-team reads (ZONE_COMBO=1, off): the backer's flow
+ * times the release, the keeper qualifies by real hands and base rather than
+ * momentary hand-fight control, and the climber is whoever is nearer where the
+ * backer is going and is not the one the down man is moving into. */
+const ZONE_COMBO = process.env.ZONE_COMBO === '1';
+
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
   private pullIdx = 0;
@@ -1335,6 +1341,10 @@ export class RunBlocker implements Behavior {
  * A former helper resumes the covered owner's first-level technique. Capture
  * it before mutation and clear only this exact job: a member may already have
  * another plan. Earned releases have their own contact/ownership transition. */
+/** Diagnostic tally of why joined doubles hold (off unless a probe turns it on). */
+export const comboDiagnostics = { on: false, counts: {} as Record<string, number> };
+const tally = (k: string) => { if (comboDiagnostics.on) comboDiagnostics.counts[k] = (comboDiagnostics.counts[k] ?? 0) + 1; };
+
 function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, reason: string): void {
   if (combo.released) return;
   const solo = combinationSoloKind(combo);
@@ -1488,8 +1498,19 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
   const control = contactControl(e, keeper);
-  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
-    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
+  // ZONE_COMBO: the keeper must have his own hands on the man and a usable
+  // base; whether he wins this instant's hand fight is not the question.
+  // He must also own the man's path to the track: on the man's play side, or
+  // the man is not working across him toward it.
+  const ps = sim.offCall.run ? playSideSign(sim, sim.offCall.run) : 1;
+  const leverage = (keeper.pos.y - combo.defender.pos.y) * ps > -.25 || combo.defender.vel.y * ps < .5;
+  if (ZONE_COMBO ? (!contact || base <= .5 || !useful || !leverage)
+    : (KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
+    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) {
+    if (comboDiagnostics.on) tally('keeper:' + ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 ? 'chest' : base <= .6 ? 'base' : !contact ? 'contact'
+      : !touching ? 'touching' : !useful ? 'useful' : 'control'));
+    return null;
+  }
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
@@ -1536,20 +1557,23 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   const candidate = keeperCandidate(observer, sim, combo, e);
   const surface = candidate && readJoinedSurface(observer, sim, candidate.keeper, e);
   if (!candidate || !surface) {
+    if (candidate) tally('surface');
     read.secureSince = -1;
     observer.tags.add('combo-held');
     return;
   }
   if (read.secureSince < 0) read.secureSince = sim.t;
-  if (sim.t - read.secureSince < .15) return;
   const backer = sim.see(observer, combo.backer!);
+  // A flowing backer is the cue itself; waiting another beat loses the race.
+  if (sim.t - read.secureSince < .15 && !(ZONE_COMBO && backerShows(observer, sim, backer))) { tally('settling'); return; }
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (!filling && !arriving) return;
+  if (!filling && !arriving) { tally('backer not showing'); return; }
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
-  if (!route) { observer.tags.add('combo-held'); return; }
+  if (!route) { tally('no route'); observer.tags.add('combo-held'); return; }
+  tally('proposal');
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
     // A vertical double's acquired backer can still belong to the other
     // half of the surface. Permission for the keeper to stay does not give
@@ -1567,9 +1591,16 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
       return;
     }
   }
-  const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
-    + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
-    : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);
+  // ZONE_COMBO: measure the climb to where the backer is going, and keep the
+  // member the down man is moving into on him.
+  const goal = ZONE_COMBO ? { x: backer.pos.x + backer.vel.x * .6, y: backer.pos.y + backer.vel.y * .6 } : backer.pos;
+  let cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
+    + Math.hypot(goal.x-route.exit.x,goal.y-route.exit.y)
+    : Math.hypot(goal.x-observer.pos.x,goal.y-observer.pos.y);
+  if (ZONE_COMBO) {
+    const toward = (surface.down.vel.y - surface.covered.vel.y) * Math.sign(observer.pos.y - surface.down.pos.y);
+    cost += 1.2 * clamp(toward, 0, 2);
+  }
   read.proposal = { ...candidate, t: sim.t, departure: { ...route, backer },
     cost: cost + (observer === e.blocker ? .30 : 0) };
   if (!defer) {
