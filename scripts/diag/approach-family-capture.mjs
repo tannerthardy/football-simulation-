@@ -57,6 +57,8 @@ function run(observe){
   firstSavedDifference=result.telemetry.frames.find((s,i)=>JSON.stringify(s.agents)!==JSON.stringify(oldStates[i]?.agents)
    ||JSON.stringify(result.frames[i]?.agents)!==JSON.stringify(oldFrames[i]?.agents))?.t??null;
  return{rows,signature,seeCalls,end:sim.t,censored:sim.phase==='live',events:snap(sim.events),
+  native:{frames:snap(result.frames),states:result.telemetry.frames.map(s=>({t:s.t,agents:snap(s.agents)})),
+   decisions:snap(result.telemetry.decisions)},
   firstSavedDifference,frameCount:result.frames.length,stats:sim.stats};
 }
 const observed=run(true),plain=run(false);
