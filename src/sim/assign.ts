@@ -188,7 +188,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   } else if (concept.scheme === 'draw') {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
-  } else if (qbType === 'under' && STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' || concept.scheme === 'pinPull')) {
+  } else if (qbType === 'under' && STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' || concept.scheme === 'pinPull' || concept.scheme === 'buckSweep')) {
     // Stretch from under center: the QB opens and gets depth to put the ball
     // on the back's track outside the tackle's stance, so the back takes it
     // already running wide (STRETCH_MESH=0 restores the inside mesh).
