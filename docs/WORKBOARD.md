@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Run: quick zone diagnosis — 2026-10-16
+
+User requests analysis only, no additional fixes. Continuing #101 evidence on
+publicationd87387d3872822613111d53253b1b9bef24734d8; fetched accepted develop
+bb6d4c73948d53ba841dd9338dd240146c739f8c still matches queuebb1c44dcdfdd6f767b9750d1d1724f7914df1175.
+Reuse compatible zone census rows and full-context failure/success traces via
+the focused suite. Scope: offline zone report/measurements/one inline chart;
+no production, shared controller, law, capacities, reserve or candidate edits.
+Keep unaccepted #104 inline technique and #102 span findings separately labelled.
+
+Completed analysis:320 primary zone +80 transfer +80 Duo saved cases;480 detailed
+caches pass integrity/provenance checks,8/8 focused reacting traces reused.
+No new native plays, fixes, reserves opened or tests/games. Main finding:
+lateral displacement exists but does not reliably become protected access;
+inline technique exclusion is demonstrated/current, collection/read/traffic
+attribution remains bounded. [Report](reviews/run-playaction-stress/ZONE_ANALYSIS.md)
+and portable cache/receipt packet record adverse cases and candidate exclusions.
+
 ## Run: diagnostic-suite maintenance workflow — 2026-10-16
 
 Continuing #101 on `codex/run-playaction-stress`, HEAD4d224096739953406bcd25da9e3e8e5ddb0929d9.

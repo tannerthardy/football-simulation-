@@ -1,0 +1,2816 @@
+{
+  "schema": "zone-suite-analysis-v1",
+  "basis": {
+    "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "lock": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "manifest": "9a8d0adf97319b55b629653b0c9dea553549b9a5a071589b3e87febf65f8663e",
+    "collector": "373519763bb486614009cc723160578fe8ad32f9a25de0b128a1d798e9b03476",
+    "sourceHelper": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "operator": "run-action-v1"
+  },
+  "censusCollectorCommit": "579a20e2062d0a159c3a4e88b10e21819f88b7c1",
+  "analysisHost": "d87387d3872822613111d53253b1b9bef24734d8",
+  "compactRowsFileSha256": "cb862d86d7940a9c287e2b3abe28dc3c75bfe5fc82181aa8d85a28bbc6c84f77",
+  "zonePrimaryCases": 320,
+  "zoneTransferCases": 80,
+  "duoContrasts": 80,
+  "newNativeCases": 0,
+  "reserveOpened": false,
+  "primary": {
+    "insideZone": {
+      "n": 80,
+      "terminal": 80,
+      "censored": 0,
+      "median": 2.625,
+      "mean": 3.42375,
+      "fourPlusNoTurnover": 0.3875,
+      "stuff": 0.1625,
+      "firstContactYardsMedian": 0.9223553211961395,
+      "loadedFirstContactDefender": 23,
+      "firstDefenderCounts": {
+        "LB_M": 18,
+        "FS": 15,
+        "DT_W": 10,
+        "LB_S": 7,
+        "LB_W": 13,
+        "CB_W": 3,
+        "DE_S": 2,
+        "SS": 5,
+        "NT": 5,
+        "DE_W": 1,
+        "DT_S": 1
+      },
+      "secondLevelJobs": 198,
+      "jobsLoadedByFirstContact": 103,
+      "opening": {
+        "1": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 0,
+          "olLateral": 0.2922185923395457,
+          "olForward": 0.9046846612091151,
+          "loadedFirstLevelForward": 0.7287581845158815
+        },
+        "2": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 2,
+          "olLateral": 0.8863565912406969,
+          "olForward": 2.165214568417036,
+          "loadedFirstLevelForward": 1.9810821452470253
+        }
+      },
+      "firstOLLoadMedian": 0.55,
+      "inlineSoloReachAtInstallCases": 0,
+      "positivePeerImpactBeforeOneSecondCases": 3,
+      "positivePeerImpactBeforeFirstContactCases": 23
+    },
+    "outsideZone": {
+      "n": 80,
+      "terminal": 80,
+      "censored": 0,
+      "median": 2.145,
+      "mean": 3.718125,
+      "fourPlusNoTurnover": 0.3,
+      "stuff": 0.1,
+      "firstContactYardsMedian": 0.7868569981976172,
+      "loadedFirstContactDefender": 25,
+      "firstDefenderCounts": {
+        "LB_W": 10,
+        "DE_W": 13,
+        "DE_S": 17,
+        "LB_S": 11,
+        "LB_M": 15,
+        "SS": 5,
+        "FS": 2,
+        "CB_S": 2,
+        "CB_W": 5
+      },
+      "secondLevelJobs": 196,
+      "jobsLoadedByFirstContact": 68,
+      "opening": {
+        "1": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 0,
+          "olLateral": 0.547603064360397,
+          "olForward": 0.6600202053814094,
+          "loadedFirstLevelForward": 0.4700506446439867
+        },
+        "2": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 25,
+          "olLateral": 1.2953638555909563,
+          "olForward": 1.3288451964112427,
+          "loadedFirstLevelForward": 0.7345830930954413
+        }
+      },
+      "firstOLLoadMedian": 0.55,
+      "inlineSoloReachAtInstallCases": 37,
+      "positivePeerImpactBeforeOneSecondCases": 3,
+      "positivePeerImpactBeforeFirstContactCases": 19
+    },
+    "wideZone": {
+      "n": 80,
+      "terminal": 80,
+      "censored": 0,
+      "median": 1.895,
+      "mean": 4.246125,
+      "fourPlusNoTurnover": 0.2125,
+      "stuff": 0.15,
+      "firstContactYardsMedian": 0.5273779992159184,
+      "loadedFirstContactDefender": 21,
+      "firstDefenderCounts": {
+        "CB_S": 4,
+        "DE_W": 11,
+        "LB_S": 10,
+        "DE_S": 16,
+        "LB_M": 13,
+        "FS": 4,
+        "SS": 5,
+        "LB_W": 8,
+        "CB_W": 5,
+        "NT": 1,
+        "DT_W": 1,
+        "DT_S": 2
+      },
+      "secondLevelJobs": 196,
+      "jobsLoadedByFirstContact": 70,
+      "opening": {
+        "1": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 0,
+          "olLateral": 0.5920560768401749,
+          "olForward": 0.6641895671524936,
+          "loadedFirstLevelForward": 0.47514415520624986
+        },
+        "2": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 16,
+          "olLateral": 1.2902910004463135,
+          "olForward": 1.528827700805914,
+          "loadedFirstLevelForward": 0.9860708609899476
+        }
+      },
+      "firstOLLoadMedian": 0.55,
+      "inlineSoloReachAtInstallCases": 37,
+      "positivePeerImpactBeforeOneSecondCases": 1,
+      "positivePeerImpactBeforeFirstContactCases": 16
+    },
+    "splitZone": {
+      "n": 80,
+      "terminal": 80,
+      "censored": 0,
+      "median": 3.2750000000000004,
+      "mean": 5.972375,
+      "fourPlusNoTurnover": 0.4,
+      "stuff": 0.175,
+      "firstContactYardsMedian": 1.2954057247326993,
+      "loadedFirstContactDefender": 25,
+      "firstDefenderCounts": {
+        "FS": 6,
+        "LB_W": 18,
+        "LB_M": 13,
+        "DT_W": 16,
+        "CB_S": 3,
+        "CB_W": 2,
+        "DE_S": 1,
+        "DT_S": 2,
+        "SS": 3,
+        "DE_W": 6,
+        "LB_S": 9,
+        "NT": 1
+      },
+      "secondLevelJobs": 188,
+      "jobsLoadedByFirstContact": 77,
+      "opening": {
+        "1": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 0,
+          "olLateral": 0.4873180231135514,
+          "olForward": 0.7758373011703312,
+          "loadedFirstLevelForward": 0.6386085150258214
+        },
+        "2": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 6,
+          "olLateral": 1.3937064314984517,
+          "olForward": 1.9215046508379543,
+          "loadedFirstLevelForward": 1.6211147302677382
+        }
+      },
+      "firstOLLoadMedian": 0.55,
+      "inlineSoloReachAtInstallCases": 0,
+      "positivePeerImpactBeforeOneSecondCases": 0,
+      "positivePeerImpactBeforeFirstContactCases": 16
+    },
+    "duo": {
+      "n": 80,
+      "terminal": 80,
+      "censored": 0,
+      "median": 3.8449999999999998,
+      "mean": 5.118625,
+      "fourPlusNoTurnover": 0.475,
+      "stuff": 0.025,
+      "firstContactYardsMedian": 1.3722353071538294,
+      "loadedFirstContactDefender": 16,
+      "firstDefenderCounts": {
+        "LB_S": 20,
+        "LB_W": 17,
+        "LB_M": 9,
+        "FS": 14,
+        "DT_W": 4,
+        "DE_W": 2,
+        "DE_S": 2,
+        "NT": 3,
+        "SS": 4,
+        "CB_S": 2,
+        "DT_S": 2,
+        "CB_W": 1
+      },
+      "secondLevelJobs": 200,
+      "jobsLoadedByFirstContact": 84,
+      "opening": {
+        "1": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 0,
+          "olLateral": -0.050016663793455506,
+          "olForward": 0.8970409497780573,
+          "loadedFirstLevelForward": 0.874520566695753
+        },
+        "2": {
+          "snapshots": 80,
+          "olBodies": 400,
+          "backwardMoreThanPointOneYard": 1,
+          "olLateral": -0.43718570964008696,
+          "olForward": 2.1404232852360616,
+          "loadedFirstLevelForward": 2.13424026756239
+        }
+      },
+      "firstOLLoadMedian": 0.5,
+      "inlineSoloReachAtInstallCases": 0,
+      "positivePeerImpactBeforeOneSecondCases": 0,
+      "positivePeerImpactBeforeFirstContactCases": 19
+    }
+  },
+  "transfer": [
+    {
+      "family": "insideZone",
+      "formation": "gun_doubles_11",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 0.41500000000000004,
+      "mean": 1.79625,
+      "fourPlusNoTurnover": 0.125,
+      "stuff": 0.25,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.82,
+        "mean": 3.4575,
+        "fourPlusNoTurnover": 0.5,
+        "stuff": 0.375
+      }
+    },
+    {
+      "family": "insideZone",
+      "formation": "i_pro_21",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 3.32,
+      "mean": 5.08,
+      "fourPlusNoTurnover": 0.5,
+      "stuff": 0.125,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.82,
+        "mean": 3.4575,
+        "fourPlusNoTurnover": 0.5,
+        "stuff": 0.375
+      }
+    },
+    {
+      "family": "insideZone",
+      "formation": "pistol_12",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 5.865,
+      "mean": 8.46625,
+      "fourPlusNoTurnover": 0.625,
+      "stuff": 0.125,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.82,
+        "mean": 3.4575,
+        "fourPlusNoTurnover": 0.5,
+        "stuff": 0.375
+      }
+    },
+    {
+      "family": "outsideZone",
+      "formation": "gun_doubles_11",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 0.38,
+      "mean": 1.53375,
+      "fourPlusNoTurnover": 0.25,
+      "stuff": 0.5,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 1.855,
+        "mean": 2.79,
+        "fourPlusNoTurnover": 0.25,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "outsideZone",
+      "formation": "i_pro_21",
+      "n": 8,
+      "terminal": 7,
+      "censored": 1,
+      "median": 2.18,
+      "mean": 2.847142857142857,
+      "fourPlusNoTurnover": 0.2857142857142857,
+      "stuff": 0.0,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 1.855,
+        "mean": 2.79,
+        "fourPlusNoTurnover": 0.25,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "outsideZone",
+      "formation": "pistol_12",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 2.9299999999999997,
+      "mean": 4.13375,
+      "fourPlusNoTurnover": 0.25,
+      "stuff": 0.0,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 1.855,
+        "mean": 2.79,
+        "fourPlusNoTurnover": 0.25,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "wideZone",
+      "formation": "gun_doubles_11",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": -0.6699999999999999,
+      "mean": 0.44625,
+      "fourPlusNoTurnover": 0.125,
+      "stuff": 0.75,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.42,
+        "mean": 4.48,
+        "fourPlusNoTurnover": 0.375,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "wideZone",
+      "formation": "i_pro_21",
+      "n": 8,
+      "terminal": 7,
+      "censored": 1,
+      "median": 3.14,
+      "mean": 3.8657142857142857,
+      "fourPlusNoTurnover": 0.42857142857142855,
+      "stuff": 0.0,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.42,
+        "mean": 4.48,
+        "fourPlusNoTurnover": 0.375,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "wideZone",
+      "formation": "pistol_12",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 3.755,
+      "mean": 3.7112499999999997,
+      "fourPlusNoTurnover": 0.5,
+      "stuff": 0.0,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.42,
+        "mean": 4.48,
+        "fourPlusNoTurnover": 0.375,
+        "stuff": 0.0
+      }
+    },
+    {
+      "family": "splitZone",
+      "formation": "heavy_13",
+      "n": 8,
+      "terminal": 8,
+      "censored": 0,
+      "median": 5.415,
+      "mean": 12.76625,
+      "fourPlusNoTurnover": 0.625,
+      "stuff": 0.125,
+      "matchedPrimary": {
+        "n": 8,
+        "terminal": 8,
+        "censored": 0,
+        "median": 3.135,
+        "mean": 3.57625,
+        "fourPlusNoTurnover": 0.5,
+        "stuff": 0.25
+      }
+    }
+  ],
+  "focusedTraces": [
+    {
+      "id": "primary/insideZone/ace_12/over3/pair11/77/strong/neutral/run/",
+      "inputSha256": "06fc10c44338e40be1df0b25e551e536ef5090b550912f22faf669acf390cea6",
+      "key": "1a35784b5e81f302fd609889cf60d6af5c09b929900a16d227be7178f2a9ea5e",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": -0.68,
+        "fieldGain": -0.68,
+        "duration": 4.1,
+        "success": false,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.5,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 3.1,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 38.94,
+            "y": 25.11
+          },
+          "note": "grasp"
+        },
+        "contactYards": -1.0577133088500759,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 3.1,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 38.94,
+            "y": 25.11
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.35
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.29651400451080506,
+            "olForward": 1.0652339069457213,
+            "loadedFirstLevelForward": 0.7443294555991358,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.6
+          },
+          "2": {
+            "olLateral": 1.3076025858012585,
+            "olForward": 2.552664258068998,
+            "loadedFirstLevelForward": 2.086466118985715,
+            "loadedFirstLevelN": 4,
+            "requestModified": 1
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.6747814147175291,
+        "lbForward2": -2.203657715446544,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "drive",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        },
+        {
+          "slot": "RT",
+          "kind": "drive",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "C",
+          "kind": "climb",
+          "target": "LB_M",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "LG",
+          "kind": "drive",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RG",
+          "kind": "combo",
+          "target": "DT_S",
+          "climb": "LB_S",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "Y",
+          "kind": "drive",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "combo",
+          "target": "DE_W",
+          "climb": "LB_W",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 3.35,
+          "duration": 2.9499999999999975,
+          "forceImpulse": 1161.8464757993622
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.5,
+          "last": 4.1,
+          "duration": 3.649999999999995,
+          "forceImpulse": 2599.466033911911
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_W",
+          "first": 0.55,
+          "last": 4.1,
+          "duration": 2.499999999999999,
+          "forceImpulse": 740.3167468430707
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.6,
+          "last": 1,
+          "duration": 0.44999999999999996,
+          "forceImpulse": 393.27363892783137
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.7,
+          "last": 4.1,
+          "duration": 3.4499999999999957,
+          "forceImpulse": 1894.3109844317341
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.8,
+          "last": 0.85,
+          "duration": 0.1,
+          "forceImpulse": 78.88379230569392
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 1.35,
+          "last": 2.15,
+          "duration": 0.8500000000000002,
+          "forceImpulse": 201.8736102653252
+        },
+        {
+          "blocker": "LT",
+          "defender": "LB_W",
+          "first": 1.6,
+          "last": 2.85,
+          "duration": 1.3000000000000005,
+          "forceImpulse": 1109.1637778095042
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_S",
+          "first": 1.85,
+          "last": 4.1,
+          "duration": 2.3,
+          "forceImpulse": 2499.2465361540962
+        }
+      ],
+      "climbs": [
+        {
+          "t": 0.85,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "pos": {
+            "x": 40.2,
+            "y": 29.37
+          },
+          "note": "secured DE_W; H stays"
+        },
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 2,
+          "b": 17,
+          "pos": {
+            "x": 40.28,
+            "y": 24.1
+          },
+          "note": "secured DT_S; RG stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/insideZone/ace_12/over3/pair11/77/weak/neutral/run/",
+      "inputSha256": "9fd2681cf679b97f8c56d8f2234d57aa399a829d3abef07d50838a0e847aa8a9",
+      "key": "850afc772e2cacc4a03971d289867fe5a9ae4889ece0b5b377453e59d4cf64cf",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 6.9,
+        "fieldGain": 6.9,
+        "duration": 3.85,
+        "success": true,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.5,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 3.2,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 44.52,
+            "y": 30.06
+          },
+          "note": "grasp"
+        },
+        "contactYards": 4.518945492749026,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 3.2,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 44.52,
+            "y": 30.06
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "FS",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "combo",
+            "loadedByContact": true,
+            "firstLoad": 2.1
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.65
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 2.5
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.14689783086144031,
+            "olForward": 0.876706269908496,
+            "loadedFirstLevelForward": 0.7650601104991743,
+            "loadedFirstLevelN": 4,
+            "requestModified": 0.8
+          },
+          "2": {
+            "olLateral": 0.1964854006757541,
+            "olForward": 2.1010202870945447,
+            "loadedFirstLevelForward": 2.0453804222029603,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.6
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.6459442941973587,
+        "lbForward2": -2.60792429074939,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "drive",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RT",
+          "kind": "drive",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "C",
+          "kind": "combo",
+          "target": "DT_W",
+          "climb": "LB_M",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "LG",
+          "kind": "drive",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "RG",
+          "kind": "climb",
+          "target": "LB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Y",
+          "kind": "cutoff",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "climb",
+          "target": "LB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 2.05,
+          "duration": 1.6500000000000008,
+          "forceImpulse": 730.1096008836903
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.55,
+          "last": 3.85,
+          "duration": 3.349999999999996,
+          "forceImpulse": 2687.7234108547636
+        },
+        {
+          "blocker": "C",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 1,
+          "duration": 0.49999999999999994,
+          "forceImpulse": 251.3149706618297
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.6,
+          "last": 3.8,
+          "duration": 3.1999999999999966,
+          "forceImpulse": 1507.9663563426554
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.7,
+          "last": 3.2,
+          "duration": 2.549999999999999,
+          "forceImpulse": 1324.965059708652
+        },
+        {
+          "blocker": "RG",
+          "defender": "LB_S",
+          "first": 1.65,
+          "last": 1.7,
+          "duration": 0.1,
+          "forceImpulse": 17.334026919557054
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 2.1,
+          "last": 3.85,
+          "duration": 1.7500000000000009,
+          "forceImpulse": 1797.6433845316249
+        },
+        {
+          "blocker": "H",
+          "defender": "LB_W",
+          "first": 2.5,
+          "last": 3.85,
+          "duration": 0.9000000000000002,
+          "forceImpulse": 223.73832364587497
+        }
+      ],
+      "climbs": [
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 40.25,
+            "y": 26.98
+          },
+          "note": "secured DT_W; LG stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/outsideZone/ace_12/over3/pair11/77/strong/neutral/run/",
+      "inputSha256": "869acb1191b7851e23286f9ad8ebd6eb8fd11be683807c53ded1fe99a66d5942",
+      "key": "eec30c471a3953b40da7e6cd1fd705d7ee8007ca4cd4eb7153f5a0364ef6c18b",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 2.7,
+        "fieldGain": 2.7,
+        "duration": 3.55,
+        "success": false,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.55,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.15,
+            "y": 23.75
+          },
+          "note": "grasp"
+        },
+        "contactYards": 1.1525472241339827,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.15,
+            "y": 23.75
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_W",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.4
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.4940593288827202,
+            "olForward": 0.8086354701746515,
+            "loadedFirstLevelForward": 0.3250016895062835,
+            "loadedFirstLevelN": 2,
+            "requestModified": 0.6
+          },
+          "2": {
+            "olLateral": 1.2615939017871525,
+            "olForward": 1.4113868343344294,
+            "loadedFirstLevelForward": 0.5104389184276007,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.8
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.6267831812127204,
+        "lbForward2": -1.9284589946455502,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "reach",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        },
+        {
+          "slot": "RT",
+          "kind": "reach",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "C",
+          "kind": "climb",
+          "target": "LB_M",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "LG",
+          "kind": "reach",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RG",
+          "kind": "combo",
+          "target": "DT_S",
+          "climb": "LB_S",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "Y",
+          "kind": "reach",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "combo",
+          "target": "DE_W",
+          "climb": "LB_W",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 2.35,
+          "duration": 1.950000000000001,
+          "forceImpulse": 837.4484561804304
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 3.55,
+          "duration": 2.9999999999999973,
+          "forceImpulse": 2723.6607725398144
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_W",
+          "first": 0.55,
+          "last": 3.55,
+          "duration": 1.950000000000001,
+          "forceImpulse": 819.7988534533931
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.6,
+          "last": 3.55,
+          "duration": 2.3,
+          "forceImpulse": 784.6044567559348
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 1.25,
+          "last": 1.25,
+          "duration": 0.05,
+          "forceImpulse": 11.178144833933514
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 1.4,
+          "last": 3.55,
+          "duration": 2.2,
+          "forceImpulse": 1953.0731320802677
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_S",
+          "first": 1.8,
+          "last": 3.55,
+          "duration": 1.800000000000001,
+          "forceImpulse": 2029.9130876126637
+        }
+      ],
+      "climbs": [
+        {
+          "t": 0.95,
+          "type": "block_climb",
+          "a": 2,
+          "b": 17,
+          "pos": {
+            "x": 39.96,
+            "y": 23.61
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "pos": {
+            "x": 40.5,
+            "y": 29.3
+          },
+          "note": "secured DE_W; H stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/outsideZone/ace_12/over3/pair11/77/weak/neutral/run/",
+      "inputSha256": "1783c0e9dd2756fde3c86acc8caeed0e5aa5e1681f9e1c4b99abe200617fa16e",
+      "key": "df3dade23fab95f749291262d7ebaaf73b7a38e227f2a6ae29df93fa63fca84b",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 0.7,
+        "fieldGain": 0.7,
+        "duration": 3.1,
+        "success": false,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.55,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.83,
+            "y": 32.73
+          },
+          "note": "grasp"
+        },
+        "contactYards": -0.1660595563068128,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.83,
+            "y": 32.73
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_W",
+        "loadedFirstDefenderAtContact": true,
+        "contactBlockers": [
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "normal": 512.157779485776,
+            "tangent": -248.27015880274107
+          }
+        ],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.75
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.65
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.34838786904681596,
+            "olForward": 0.6089742185459996,
+            "loadedFirstLevelForward": 0.475139938668514,
+            "loadedFirstLevelN": 4,
+            "requestModified": 0.8
+          },
+          "2": {
+            "olLateral": 1.1827603899290302,
+            "olForward": 1.1372944277950965,
+            "loadedFirstLevelForward": 0.7012742140326628,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.8
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.5965813452417995,
+        "lbForward2": -2.2417970891303582,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "reach",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RT",
+          "kind": "reach",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "C",
+          "kind": "combo",
+          "target": "DT_W",
+          "climb": "LB_M",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "LG",
+          "kind": "reach",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "RG",
+          "kind": "climb",
+          "target": "LB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Y",
+          "kind": "cutoff",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "climb",
+          "target": "LB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 3.1,
+          "duration": 1.5000000000000007,
+          "forceImpulse": 686.0039080901188
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.55,
+          "last": 3.1,
+          "duration": 2.5999999999999988,
+          "forceImpulse": 2582.606575266176
+        },
+        {
+          "blocker": "C",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 3.1,
+          "duration": 2.5999999999999988,
+          "forceImpulse": 1349.7250683426366
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.6,
+          "last": 2.55,
+          "duration": 2.000000000000001,
+          "forceImpulse": 947.5300476319297
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.8,
+          "last": 1.1,
+          "duration": 0.35,
+          "forceImpulse": 195.48688000160442
+        },
+        {
+          "blocker": "H",
+          "defender": "LB_W",
+          "first": 1.65,
+          "last": 2.25,
+          "duration": 0.65,
+          "forceImpulse": 177.85229357186967
+        },
+        {
+          "blocker": "RG",
+          "defender": "LB_S",
+          "first": 1.75,
+          "last": 3.1,
+          "duration": 1.4000000000000006,
+          "forceImpulse": 1219.760835787856
+        }
+      ],
+      "climbs": [
+        {
+          "t": 1.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 39.94,
+            "y": 28.25
+          },
+          "note": "secured DT_W; C stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/wideZone/ace_12/over3/pair11/77/strong/neutral/run/",
+      "inputSha256": "6a872523cadae833e69a298c1196628f476506359278f0d4cd98410dbe354e2e",
+      "key": "4c4b587013b005d1e6c45f2fde15e14d5d5558dbe8585a6535547744e84d7d92",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 9.22,
+        "fieldGain": 9.22,
+        "duration": 4.15,
+        "success": true,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.55,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 3.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 44.97,
+            "y": 17.71
+          },
+          "note": "grasp"
+        },
+        "contactYards": 4.97218325031065,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 3.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 44.97,
+            "y": 17.71
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "CB_S",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.4
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.4993011545791113,
+            "olForward": 0.8397794231595099,
+            "loadedFirstLevelForward": 0.4085581588847411,
+            "loadedFirstLevelN": 2,
+            "requestModified": 0.6
+          },
+          "2": {
+            "olLateral": 0.9448039525428932,
+            "olForward": 1.725949179148833,
+            "loadedFirstLevelForward": 1.2084778462441914,
+            "loadedFirstLevelN": 4,
+            "requestModified": 1
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.6241774828460483,
+        "lbForward2": -1.8902767707303194,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "reach",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        },
+        {
+          "slot": "RT",
+          "kind": "reach",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "C",
+          "kind": "climb",
+          "target": "LB_M",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "LG",
+          "kind": "reach",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RG",
+          "kind": "combo",
+          "target": "DT_S",
+          "climb": "LB_S",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "Y",
+          "kind": "reach",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "combo",
+          "target": "DE_W",
+          "climb": "LB_W",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LT",
+              "H"
+            ],
+            "target": "DE_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.5,
+          "last": 3.7,
+          "duration": 3.149999999999997,
+          "forceImpulse": 989.6897606256472
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 4.1,
+          "duration": 3.4999999999999956,
+          "forceImpulse": 2311.56746401315
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_W",
+          "first": 0.55,
+          "last": 3.95,
+          "duration": 3.399999999999996,
+          "forceImpulse": 2973.2185186854895
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.6,
+          "last": 4.15,
+          "duration": 3.5499999999999954,
+          "forceImpulse": 2873.71879491133
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 1.3,
+          "last": 2,
+          "duration": 0.7500000000000001,
+          "forceImpulse": 258.05044198708174
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 1.4,
+          "last": 4.15,
+          "duration": 2.7499999999999982,
+          "forceImpulse": 2586.32474185782
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_S",
+          "first": 1.75,
+          "last": 4.15,
+          "duration": 2.3999999999999995,
+          "forceImpulse": 2270.874467533946
+        }
+      ],
+      "climbs": [
+        {
+          "t": 0.95,
+          "type": "block_climb",
+          "a": 2,
+          "b": 17,
+          "pos": {
+            "x": 39.91,
+            "y": 23.62
+          },
+          "note": "secured DT_S; RG stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/wideZone/ace_12/over3/pair11/77/weak/neutral/run/",
+      "inputSha256": "f0be6c2e136df3a92f4466a02236ea8a0dc4430c1195339a4ccaff3d711d1b3f",
+      "key": "9a94391f6b449b1f414195a0d4008409bb837a7c3885009a9394da873da05bf3",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 0.63,
+        "fieldGain": 0.63,
+        "duration": 4.25,
+        "success": false,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.55,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.94,
+            "y": 33.51
+          },
+          "note": "body collision"
+        },
+        "contactYards": -0.05843063817061278,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.94,
+            "y": 33.51
+          },
+          "note": "body collision"
+        },
+        "firstDefender": "DE_W",
+        "loadedFirstDefenderAtContact": true,
+        "contactBlockers": [
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "normal": 585.3051099473558,
+            "tangent": -293.28390062525153
+          }
+        ],
+        "offensivePeerImpacts": 5,
+        "peakPeerImpulse": 128.6014532738354,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_M",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_S",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.75
+          },
+          {
+            "blocker": "H",
+            "target": "LB_W",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.65
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.3145613701657844,
+            "olForward": 0.624252470821564,
+            "loadedFirstLevelForward": 0.4915151689142103,
+            "loadedFirstLevelN": 4,
+            "requestModified": 0.8
+          },
+          "2": {
+            "olLateral": 1.0174795828130876,
+            "olForward": 0.9701475438689527,
+            "loadedFirstLevelForward": 0.5879577262260535,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.8
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.5966038049726473,
+        "lbForward2": -2.256508847107147,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "reach",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RT",
+          "kind": "reach",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "C",
+          "kind": "combo",
+          "target": "DT_W",
+          "climb": "LB_M",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "LG",
+          "kind": "reach",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "RG",
+          "kind": "climb",
+          "target": "LB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Y",
+          "kind": "cutoff",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "climb",
+          "target": "LB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 3.95,
+          "duration": 2.6999999999999984,
+          "forceImpulse": 1194.1507073799467
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.55,
+          "last": 4.25,
+          "duration": 3.7499999999999947,
+          "forceImpulse": 3595.302658692117
+        },
+        {
+          "blocker": "C",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 4.25,
+          "duration": 3.7499999999999947,
+          "forceImpulse": 1631.0934460982232
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.6,
+          "last": 3.3,
+          "duration": 2.7499999999999982,
+          "forceImpulse": 1462.9963522445714
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.8,
+          "last": 1.1,
+          "duration": 0.35,
+          "forceImpulse": 198.6133032993272
+        },
+        {
+          "blocker": "H",
+          "defender": "LB_W",
+          "first": 1.65,
+          "last": 4.25,
+          "duration": 1.3500000000000005,
+          "forceImpulse": 372.6532848843125
+        },
+        {
+          "blocker": "RG",
+          "defender": "LB_S",
+          "first": 1.75,
+          "last": 4.25,
+          "duration": 2.549999999999999,
+          "forceImpulse": 2499.549913164828
+        }
+      ],
+      "climbs": [
+        {
+          "t": 1.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 39.91,
+            "y": 28.09
+          },
+          "note": "secured DT_W; C stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/splitZone/gun_wing_12/over3/pair11/77/strong/neutral/run/",
+      "inputSha256": "06d524b423bc2451a69ddd7fa807f614bca8200dc683ab0a9b3a530b8e3c3725",
+      "key": "3897d39f5cbc09095e4ebaf9fd2ab4c29bba1643736e55cbd196912f8ccc7b0b",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 9.17,
+        "fieldGain": 9.17,
+        "duration": 4.25,
+        "success": true,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.05,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 45.5,
+            "y": 26.33
+          },
+          "note": "grasp"
+        },
+        "contactYards": 5.501461314839432,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 45.5,
+            "y": 26.33
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "FS",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "LT",
+            "target": "LB_S",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "C",
+            "target": "LB_W",
+            "kind": "climb",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_M",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.37936387516056413,
+            "olForward": 0.8942439313999145,
+            "loadedFirstLevelForward": 0.836869474424662,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.8
+          },
+          "2": {
+            "olLateral": 1.4785248663161794,
+            "olForward": 2.20536117543692,
+            "loadedFirstLevelForward": 2.10293068941521,
+            "loadedFirstLevelN": 2,
+            "requestModified": 0.6
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.32805684066440693,
+        "lbForward2": -1.9561981352935618,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "combo",
+          "target": "DT_W",
+          "climb": "LB_S",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "LT"
+            ],
+            "target": "DT_W",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "RT",
+          "kind": "drive",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "C",
+          "kind": "climb",
+          "target": "LB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "LG",
+          "kind": "drive",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "LT"
+            ],
+            "target": "DT_W",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "RG",
+          "kind": "combo",
+          "target": "DT_S",
+          "climb": "LB_M",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "target": "DT_S",
+            "backer": "LB_M",
+            "released": false
+          }
+        },
+        {
+          "slot": "Y",
+          "kind": "drive",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "pull",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": "kick",
+          "combination": null
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 4.25,
+          "duration": 3.7499999999999947,
+          "forceImpulse": 1822.1931532089336
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 4.15,
+          "duration": 3.5499999999999954,
+          "forceImpulse": 3350.852386173525
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.6,
+          "last": 1,
+          "duration": 0.44999999999999996,
+          "forceImpulse": 135.651839787967
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.7,
+          "last": 4.25,
+          "duration": 3.4999999999999956,
+          "forceImpulse": 3404.179036966408
+        },
+        {
+          "blocker": "LT",
+          "defender": "DT_W",
+          "first": 1.5,
+          "last": 1.55,
+          "duration": 0.1,
+          "forceImpulse": 43.287100772024466
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 1.85,
+          "last": 3,
+          "duration": 1.2000000000000004,
+          "forceImpulse": 1219.0851582906118
+        },
+        {
+          "blocker": "LT",
+          "defender": "LB_W",
+          "first": 2.2,
+          "last": 3.05,
+          "duration": 0.9000000000000002,
+          "forceImpulse": 608.7018143664449
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_S",
+          "first": 2.2,
+          "last": 4.2,
+          "duration": 1.950000000000001,
+          "forceImpulse": 1624.3680990358678
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_W",
+          "first": 2.25,
+          "last": 4.25,
+          "duration": 1.850000000000001,
+          "forceImpulse": 1169.9662479421568
+        }
+      ],
+      "climbs": [
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 2,
+          "b": 15,
+          "pos": {
+            "x": 40.31,
+            "y": 24.11
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 1.55,
+          "type": "block_climb",
+          "a": 1,
+          "b": 17,
+          "pos": {
+            "x": 41.1,
+            "y": 27.46
+          },
+          "note": "secured DT_W; LG stays"
+        }
+      ]
+    },
+    {
+      "id": "primary/splitZone/gun_wing_12/over3/pair11/77/weak/neutral/run/",
+      "inputSha256": "db4e32ac1da14c05e3940016540a8f2f560f967163e0e67e9b833508937b06fb",
+      "key": "62ed5392565b8d5342ce4f2c9410757e254aa659ab27020905cb1725cf26319d",
+      "metrics": {
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 1.93,
+        "fieldGain": 1.93,
+        "duration": 3.1,
+        "success": false,
+        "turnover": false,
+        "penalty": null,
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": false,
+        "retainedSnap": false,
+        "pressured": false,
+        "handoff": 1.05,
+        "throw": null,
+        "catch": null,
+        "firstContact": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 40.49,
+            "y": 29.58
+          },
+          "note": "grasp"
+        },
+        "contactYards": 0.48737700569,
+        "rusher": "pair11O-RB1",
+        "receiver": null,
+        "airYards": null,
+        "separation": null
+      },
+      "indicators": {
+        "firstOffensiveCarrierContact": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 40.49,
+            "y": 29.58
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_W",
+        "loadedFirstDefenderAtContact": false,
+        "contactBlockers": [],
+        "offensivePeerImpacts": 0,
+        "peakPeerImpulse": 0,
+        "secondLevelJobs": [
+          {
+            "blocker": "C",
+            "target": "LB_W",
+            "kind": "combo",
+            "loadedByContact": false,
+            "firstLoad": null
+          },
+          {
+            "blocker": "RG",
+            "target": "LB_M",
+            "kind": "climb",
+            "loadedByContact": true,
+            "firstLoad": 1.35
+          },
+          {
+            "blocker": "Y",
+            "target": "LB_S",
+            "kind": "combo",
+            "loadedByContact": true,
+            "firstLoad": 1.9
+          }
+        ],
+        "opening": {
+          "1": {
+            "olLateral": 0.48732225411348223,
+            "olForward": 0.8848754046215234,
+            "loadedFirstLevelForward": 0.6281540815773337,
+            "loadedFirstLevelN": 4,
+            "requestModified": 0.8
+          },
+          "2": {
+            "olLateral": 1.1054456520529385,
+            "olForward": 1.970125619979561,
+            "loadedFirstLevelForward": 1.664837265136588,
+            "loadedFirstLevelN": 3,
+            "requestModified": 0.8
+          }
+        },
+        "lbFirstRunShare": 1,
+        "lbForward1": -0.23738586378286186,
+        "lbForward2": -1.618269857324698,
+        "safetyFirstRunShare": 1
+      },
+      "installed": [
+        {
+          "slot": "LT",
+          "kind": "drive",
+          "target": "DE_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "RT",
+          "kind": "drive",
+          "target": "DT_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "Y"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "C",
+          "kind": "combo",
+          "target": "DT_W",
+          "climb": "LB_W",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        },
+        {
+          "slot": "LG",
+          "kind": "drive",
+          "target": "DT_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "target": "DT_W",
+            "backer": "LB_W",
+            "released": false
+          }
+        },
+        {
+          "slot": "RG",
+          "kind": "climb",
+          "target": "LB_M",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Y",
+          "kind": "combo",
+          "target": "DT_S",
+          "climb": "LB_S",
+          "pullRole": null,
+          "combination": {
+            "members": [
+              "RT",
+              "Y"
+            ],
+            "target": "DT_S",
+            "backer": "LB_S",
+            "released": false
+          }
+        },
+        {
+          "slot": "X",
+          "kind": "stalk",
+          "target": "CB_W",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "Z",
+          "kind": "stalk",
+          "target": "CB_S",
+          "climb": null,
+          "pullRole": null,
+          "combination": null
+        },
+        {
+          "slot": "H",
+          "kind": "pull",
+          "target": "DE_S",
+          "climb": null,
+          "pullRole": "kick",
+          "combination": null
+        }
+      ],
+      "loads": [
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.55,
+          "last": 3.1,
+          "duration": 2.5999999999999988,
+          "forceImpulse": 1652.7087620901857
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.55,
+          "last": 3.1,
+          "duration": 2.5999999999999988,
+          "forceImpulse": 1561.091499742567
+        },
+        {
+          "blocker": "C",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 1,
+          "duration": 0.49999999999999994,
+          "forceImpulse": 352.8428089687852
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.7,
+          "last": 3.1,
+          "duration": 2.4499999999999993,
+          "forceImpulse": 2135.578866239103
+        },
+        {
+          "blocker": "Y",
+          "defender": "DT_S",
+          "first": 0.95,
+          "last": 1.25,
+          "duration": 0.35,
+          "forceImpulse": 115.5575441462483
+        },
+        {
+          "blocker": "RG",
+          "defender": "LB_M",
+          "first": 1.35,
+          "last": 1.55,
+          "duration": 0.25,
+          "forceImpulse": 257.405044344805
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_S",
+          "first": 1.6,
+          "last": 3.1,
+          "duration": 1.5500000000000007,
+          "forceImpulse": 828.5010350069194
+        },
+        {
+          "blocker": "Y",
+          "defender": "LB_S",
+          "first": 1.9,
+          "last": 3.05,
+          "duration": 1.2000000000000004,
+          "forceImpulse": 505.74970643174714
+        }
+      ],
+      "climbs": [
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "pos": {
+            "x": 40.18,
+            "y": 27.06
+          },
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 7,
+          "b": 17,
+          "pos": {
+            "x": 40.93,
+            "y": 24.45
+          },
+          "note": "secured DT_S; RT stays"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Designed stress matrix, not NFL call-weighted or calibrated technique data.",
+    "A body averaged across all five OL includes climbs/cutoffs and is not a five-man front-side track.",
+    "Load before contact does not establish useful protection or a safe/attainable missed job.",
+    "Positive peer impulses are exposure flags, not proof of wrong avoidance or causal lost yards.",
+    "Raw/final movement differences include engagement control as well as spacing.",
+    "Native caches omit full RB candidate scores and every intermediate modifier.",
+    "PR104 inline eligibility and PR102 separated-hand-span changes are unaccepted and excluded."
+  ]
+}

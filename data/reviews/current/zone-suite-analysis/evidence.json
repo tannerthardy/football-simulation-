@@ -1,0 +1,35 @@
+{
+  "schema": "zone-suite-analysis-evidence-v1",
+  "newNativeCases": 0,
+  "reserveOpened": false,
+  "analysisHost": "d87387d3872822613111d53253b1b9bef24734d8",
+  "engineSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "cacheValidation": {
+    "validatedRows": 480,
+    "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+    "newNativeCases": 0,
+    "elapsedSeconds": 2.948552231
+  },
+  "offlineCost": {
+    "seconds": 4.312961838004412,
+    "newNativeCases": 0,
+    "scriptSha256": "c5e298e2b6bcc7d8f0ee55677f1849d1e2e15f5de4275e9090b30e565e5d7c41"
+  },
+  "cacheOnlyCommandSeconds": 0.9091687749999999,
+  "files": {
+    "data/reviews/current/zone-suite-analysis/cache/1a35784b5e81f302fd609889cf60d6af5c09b929900a16d227be7178f2a9ea5e.json.gz": "2bb0b328874bc03741de222a5e08c003843d9617672784d12966f2c0dbd3c13f",
+    "data/reviews/current/zone-suite-analysis/cache/3897d39f5cbc09095e4ebaf9fd2ab4c29bba1643736e55cbd196912f8ccc7b0b.json.gz": "6bf497bfdfba120e22cfdf4f9cd299f060e8de2b334af4a5a9de2a700676db5b",
+    "data/reviews/current/zone-suite-analysis/cache/4c4b587013b005d1e6c45f2fde15e14d5d5558dbe8585a6535547744e84d7d92.json.gz": "29e2a3011c3f8bc924c8c6b3cdde1f007d186eb8e22d412b18be502f73353252",
+    "data/reviews/current/zone-suite-analysis/cache/62ed5392565b8d5342ce4f2c9410757e254aa659ab27020905cb1725cf26319d.json.gz": "fa0d559121656157c01a40bbe4a64580e330efe6a0c1b2d48b2d8ef7518d0fa4",
+    "data/reviews/current/zone-suite-analysis/cache/850afc772e2cacc4a03971d289867fe5a9ae4889ece0b5b377453e59d4cf64cf.json.gz": "b20ccf15db1536d692adea455ea1c7a908c5636704f835cb2e3afefb8a09a609",
+    "data/reviews/current/zone-suite-analysis/cache/9a94391f6b449b1f414195a0d4008409bb837a7c3885009a9394da873da05bf3.json.gz": "31fb0223d5c50ef80d2831fac66fb03e723cc962fbc76003983f44ac26bb90e3",
+    "data/reviews/current/zone-suite-analysis/cache/df3dade23fab95f749291262d7ebaaf73b7a38e227f2a6ae29df93fa63fca84b.json.gz": "38cbe9a1ea66987bb15858bba589b887aaf9161f685a8f8cdeec821dd1c34f22",
+    "data/reviews/current/zone-suite-analysis/cache/eec30c471a3953b40da7e6cd1fd705d7ee8007ca4cd4eb7153f5a0364ef6c18b.json.gz": "11874b02fcdf33c2ac02a828fd3c16479f502a3cee8d0070ffca0bf994d50644",
+    "data/reviews/current/zone-suite-analysis/focused-index.json": "ceb9377428ae1a4946496d168b7cb9cc0d8ba8ef2ba3c6a7d28518bf6fcd2191",
+    "data/reviews/current/zone-suite-analysis/offline-cost.json": "6db1ebb6876b399156ab3a5dface9f3cdf5693f0e4bdb957f4ef4ca5ddd7ec0d",
+    "data/reviews/current/zone-suite-analysis/receipts/zone-analysis-cache-only.json": "8e1d760412822e2fc4b4286b2c9a3ceb4bf4d591e3f352a8c2e89b95b65616e9",
+    "data/reviews/current/zone-suite-analysis/receipts/zone-analysis-cache-validation-result.json": "112bcd9c22f450b8a4ee1a6b13d5fe4de07d53d2547e9defaa42e773e460ff93",
+    "data/reviews/current/zone-suite-analysis/receipts/zone-analysis-cache-validation.json": "301fecf969213bcde66a5cbfe2775dd445af31f67f8b372fb1de301d735ac390",
+    "data/reviews/current/zone-suite-analysis/summary.json": "a54a59880cdce725b53c2b01b5a08d60def19a8a18f06cbac19ec7baf7beeb44"
+  }
+}
