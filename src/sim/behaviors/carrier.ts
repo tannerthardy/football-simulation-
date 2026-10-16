@@ -61,52 +61,113 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
-/** Read the current surface, rather than a two-second forecast through it.
- * Entry points are between moving blockers, or outside a kick/log. */
+/** Read entries and routes from acquired bodies on both teams. A nominal
+ * block is neither an empty lane nor guaranteed future protection. */
+interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
-  const side=opts.run.side;
-  const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
-    .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
-  if (surface.length<5) return null;
-  let preferred=liveAim(a,sim,opts)!.y;
-  if (opts.run.scheme === 'duo' && opts.run.readKey) {
-    const key=sim.see(a,opts.run.readKey);
-    // Press the inside double. A declaring MIKE closes his insertion side;
-    // the back bends to the other adjacent interior crease.
-    if (key.pos.x<sim.los+2.5 && Math.abs(key.vel.y)>.7) preferred=sim.ballY-Math.sign(key.vel.y)*.8;
+  const dir = sim.attackDir(a.team), run = opts.run;
+  const depth = (p: Vec2) => (p.x - sim.los) * dir;
+  let preferred = liveAim(a, sim, opts)!.y;
+  if (run.scheme === 'duo' && run.readKey) {
+    const key = sim.see(a, run.readKey);
+    if (key.pos.x < sim.los + 2.5 && Math.abs(key.vel.y) > .7) preferred = sim.ballY - Math.sign(key.vel.y) * .8;
   }
-  const kick=opts.run.kick;
+  const kick = run.kick;
   if (kick) {
-    const s=sim.see(a,kick);
-    if (s.pos.x>sim.los-1.5) preferred=s.pos.y+(kick.tags.has('block-log') ? side*.85 : -side*.85);
+    const s = sim.see(a, kick);
+    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
   }
-  const candidates:Vec2[]=[];
-  for(let i=1;i<surface.length;i++) {
-    const l=surface[i-1],r=surface[i];
-    const width=r.pos.y-r.radius-l.pos.y-l.radius;
-    if(width>a.profile.radius*1.4) candidates.push({x:Math.max(sim.los+.5,(l.pos.x+r.pos.x)/2+.6),y:(l.pos.y+r.pos.y)/2});
+  // Everything below is the runner's own picture: perceived positions, motion
+  // and pose, and public body size and reach. Neither the engagement record
+  // nor a nearby teammate promises protection. Keep off-feet defenders in
+  // the threat picture with their acquired recovery allowance.
+  const pictures: Array<{ agent: Agent; seen: Perceived; team: 'O' | 'D' }> = [];
+  for (const o of [...sim.offense, ...sim.defense]) {
+    if (o === a || o === sim.qb) continue;
+    const seen = sim.see(a, o);
+    pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
   }
-  for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
-  let best:Vec2|null=null,cost=Infinity;
+  const bodies: LineBody[] = [];
+  for (const { agent: o, seen: s, team } of pictures) {
+    if (s.pose === 'down') continue;
+    if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
+    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+  }
+  if (bodies.filter((b) => b.team === 'O').length < 3) return null;
+  bodies.sort((p, q) => p.pos.y - q.pos.y);
+  const candidates: Vec2[] = [];
+  const squeeze = a.profile.radius * 1.4;
+  for (let i = 1; i < bodies.length; i++) {
+    const l = bodies[i - 1], r = bodies[i];
+    if (r.pos.y - r.radius - (l.pos.y + l.radius) < squeeze) continue;
+    const y = (l.pos.y + l.radius + r.pos.y - r.radius) / 2;
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, Math.max(l.pos.x, r.pos.x) + .6) : Math.min(sim.los - .5, Math.min(l.pos.x, r.pos.x) - .6), y });
+  }
+  for (const [end, s] of [[bodies[0], -1], [bodies.at(-1)!, 1]] as const) {
+    const y = end.pos.y + s * (end.radius + a.profile.radius + .4);
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, end.pos.x + .5) : Math.min(sim.los - .5, end.pos.x - .5), y });
+  }
+  // Openings are read from a lateral projection, so a body a yard behind the
+  // line can hide a real seam in front of him. Sample the line every yard as
+  // well; the path, body and timing checks below judge them in two dimensions.
+  for (let k = -8; k <= 8; k++) candidates.push({ x: sim.los + .5 * dir, y: clamp(sim.ballY + k, .5, FIELD_WIDTH - .5) });
+  const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+  // Acquired motion already contains a block's observed slowdown. Nearby
+  // bodies do not promise retention or a future pursuit delay. In particular,
+  // a defender occupying the entry remains a threat, on either side of a block.
+  const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
+    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
+      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+  let best: Vec2 | null = null, cost = Infinity;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
-  for(const p of candidates) {
-    let risk=0;
-    for(const d of sim.opponents(a)) {
-      const s=sim.see(a,d);
-      if(Math.hypot(s.pos.x-p.x,s.pos.y-p.y)>6) continue;
-      // Acquired motion already carries a block's observed slowdown. An
-      // engagement flag cannot promise another quarter second of protection.
-      const recovery=observedRecoveryAllowance(s,d.profile.getUp,sim.dt);
-      const reach=timeToReach({...s,profile:d.profile},p,d.profile.radius+a.profile.radius)+recovery;
-      const arrive=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
-      risk+=Math.max(0,arrive-reach)*3;
+  // Bodies on a segment block the run along it.
+  const blockedBy = (from: Vec2, to: Vec2): number => {
+    const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
+    let r = 0;
+    for (const b of bodies) {
+      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
+      // Include the endpoint: a route ending in a defender is still occupied.
+      // At the start, only charge a body when the route approaches it; an
+      // already touching runner must remain free to move away from that body.
+      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
+      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
     }
-    const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
+    return r;
+  };
+  const cruise = Math.max(4, a.profile.vmax * .8);
+  for (const p of candidates) {
+    // Two ways to the entry: straight, or flatten behind the line first and
+    // then turn up (the cutback's dog-leg). Each has its own arrival time.
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    if (depth(a.pos) < -1.6) {
+      const w = { x: sim.los - 1.2 * dir, y: p.y };
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+    }
+    let risk = Infinity, via = p;
+    const beyond = { x: p.x + 2 * dir, y: p.y };
+    for (const route of routes) {
+      const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
+      // Who is there first, at the entry and two yards beyond it: the
+      // earliest defender decides, as in the open-field read.
+      let m1 = Infinity, m2 = Infinity;
+      for (const { agent: d, seen: s, team } of pictures) {
+        if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
+        m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+      }
+      const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
+        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
+      if (r < risk) { risk = r; via = route.via; }
+    }
+    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
     if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
-    if(score<cost) {cost=score;best=p;}
+    // Run the chosen route: its first leg is where he heads now.
+    if (score < cost) { cost = score; best = via; }
   }
-  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface });
+  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
   return best;
 }
 
@@ -121,6 +182,8 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
+  private pressEntry: Vec2 | null = null;
+  private pressReadAt = 0;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -153,7 +216,16 @@ export class BallCarrier implements Behavior {
 
     // Designed phase: press the aiming point.
     if (designed) {
-      const aim = liveAim(a, sim, this.opts)!;
+      let aim = liveAim(a, sim, this.opts)!;
+      // Press the installed track, reading its occupied approach on the same
+      // finite beat as other carrier decisions. Speed and movement stay ordinary.
+      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
+        if (sim.t >= this.pressReadAt) {
+          this.pressReadAt = sim.t + a.mind.decisionInterval;
+          this.pressEntry = runReadAim(a, sim, this.opts);
+        }
+        if (this.pressEntry) aim = this.pressEntry;
+      }
       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
       this.heading = h;
       // Only abandon the design early if the aiming point is clearly closed.
