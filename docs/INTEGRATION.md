@@ -46,7 +46,31 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
-<a id="accepted-development"></a>
+## Current candidate — #110/#111 exact verification
+
+Accepted develop remains `c3264b0bad72bd2c208602e0ecf0461c00d9669f` pending adoption.
+Integration owns `codex/run-entry-connection-integration`, based on that accepted
+pin plus queue625f3b4. The independently accepted six-file composition contains
+#110's acquired entry reader and #111's final emitted-direction connection travel:
+three production files and their three proper tests. All six blobs match the
+review; source `bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616`
+equals the reviewed interaction, without its diagnostic ancestry.
+
+Reuse the published65/66 focused checks and matching typechecks, not131 unique
+checks or a composed-suite pass. Integration owns one frozen combined verification
+with Node22.23.3, unchanged44 flags, components1 and CF_FLOW unset. No remaining
+local contract calls for another focused test, native continuation, panel or game.
+[Pinned independent review and portable patches](reviews/pr110-111-independent-review.md).
+[Intake, exact approval and risks](../data/reviews/current/run-entry-connection-integration/intake.json).
+[Blob/source/evidence compatibility audit](../data/reviews/current/run-entry-connection-integration/extraction-audit.json).
+
+Preserve the small strong-choice margins, earlier weak-side contact, shorter fresh
+IZ ending and Duo's earlier SS contact from110. Duo identity applies to adding111,
+with both arms censored at3.50s. Strong achieved access needs both corrections;
+it does not establish robust rushing gains. Old all-off source6753fa98 remains
+historical, not relabeled accepted4658. CLIMB_EXIT, rejected gradient, departure/
+release trials, tooling101 and Physics retention/force-law questions stay separate.
+
 ## Completed #107 integration boundary — 2026-10-16
 
 Adopted as **c3264b0bad72bd2c208602e0ecf0461c00d9669f** through #107. Integration boundary released; all contributor branches/evidence retained.
@@ -83,6 +107,7 @@ source-qualified; **do not recollect the study**. Additional workflow/report
 publication does not clear the defect. #99/perimeter, stranded-mesh diagnosis,
 consent proposals and experimental Physics remain separate.
 
+<a id="accepted-development"></a>
 ## Accepted development reference
 
 **`develop@c3264b0bad72bd2c208602e0ecf0461c00d9669f`** is accepted through
@@ -432,6 +457,9 @@ needed for distribution. These remain8ca8dee observations, not current-build
 results; final intents cannot reconstruct discarded producer stages/every-tick RNG.
 
 <a id="ready-blocked-experimental"></a>
+
+**Next approved batch:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file extraction prepared for one exact verification on acceptedc3264b0. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
+
 
 ### Current disposition after merged #107
 
