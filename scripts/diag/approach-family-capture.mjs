@@ -29,7 +29,8 @@ function run(observe){
  const d=sim.agents[actor],rows=[];let active=false,cues=[],pending=null,seeCalls=0;
  const see=sim.see.bind(sim);
  sim.see=(a,b,...rest)=>{seeCalls++;const picture=see(a,b,...rest);
-  if(observe&&active&&a===d&&b.idx===target)cues.push({scale:rest[0]??1,
+  if(observe&&(active||pending)&&a===d&&(b.idx===target||b.team===d.team))cues.push({observedTarget:b.idx,
+   phase:active?'behavior':'modifier',scale:rest[0]??1,
    caller:new Error().stack.split('\n')[2].trim(),picture:snap(picture)});
   return picture;};
  if(observe){
