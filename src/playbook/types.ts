@@ -101,7 +101,8 @@ export interface PassConcept {
   fake?: string;
 }
 
-export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';
+export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw'
+  | 'buckSweep' | 'pinPull' | 'crackToss';
 
 export interface RunConcept {
   id: string;
@@ -113,8 +114,8 @@ export interface RunConcept {
   aim: 'A' | 'B' | 'C' | 'D' | 'edge';
   /** Handoff mesh time after snap (s). */
   meshTime: number;
-  /** Backside guard / tackle pulls (gap schemes): BSG kicks out or leads, BST leads. */
-  pullers: Array<'BSG' | 'BST'>;
+  /** Installed pullers. Pin-pull instead frees uncovered bodies from its front. */
+  pullers: Array<'BSG' | 'BST' | 'PSG'>;
   beats: string[];
 }
 

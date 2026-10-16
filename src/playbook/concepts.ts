@@ -116,4 +116,12 @@ export const RUN_CONCEPTS: RunConcept[] = [
 ];
 
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
-export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
+
+/** Explicitly callable development installations, outside the automatic caller
+ * until their assignment, exchange and native protection review is complete. */
+export const PERIMETER_RUN_CONCEPTS: RunConcept[] = [
+  { id: 'buck_sweep', name: 'Buck Sweep', scheme: 'buckSweep', direction: 'strong', aim: 'edge', meshTime: 1.3, pullers: ['PSG', 'BSG'], beats: ['even'] },
+  { id: 'pin_pull', name: 'Pin and Pull', scheme: 'pinPull', direction: 'strong', aim: 'edge', meshTime: 1.2, pullers: [], beats: ['odd', 'light-box'] },
+  { id: 'crack_toss', name: 'Crack Toss', scheme: 'crackToss', direction: 'strong', aim: 'edge', meshTime: .5, pullers: [], beats: ['wide-edge'] },
+];
+export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries([...RUN_CONCEPTS, ...PERIMETER_RUN_CONCEPTS].map((c) => [c.id, c]));

@@ -198,4 +198,16 @@ export const FORMATIONS: Formation[] = [
   },
 ];
 
-export const FORMATION_BY_ID: Record<string, Formation> = Object.fromEntries(FORMATIONS.map((f) => [f.id, f]));
+/** Reduced splits permit an actual receiver crack arrival. Explicit-call only,
+ * preserving the automatic formation distribution pending perimeter review. */
+export const PERIMETER_FORMATIONS: Formation[] = [{
+  id: 'ace_nasty_12', name: 'Singleback Twin TE Nasty', personnel: '12', qb: 'under', tags: ['pro', 'heavy', 'condensed'],
+  slots: {
+    X: { side: 'L', split: 7.5, depth: OFF },
+    H: { side: 'L', split: 'inline', depth: ON },
+    Y: { side: 'R', split: 'inline', depth: ON },
+    Z: { side: 'R', split: 7.5, depth: OFF },
+    RB: { side: 'C', split: 0, depth: 6.8 },
+  },
+}];
+export const FORMATION_BY_ID: Record<string, Formation> = Object.fromEntries([...FORMATIONS, ...PERIMETER_FORMATIONS].map((f) => [f.id, f]));
