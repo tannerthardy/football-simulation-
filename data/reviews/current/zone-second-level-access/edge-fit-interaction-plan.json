@@ -1,0 +1,7 @@
+{
+  "question": "Does the independently tested near-fit boundary turn the edge-check witness actual Mike entry into useful protection through runner arrival?",
+  "separateEvidence": "Edge check alone: A039 loaded Mike2.35 but runner contact2.50, poor passed normal surface. Standalone near-fit: A015 failed release/access stays unchanged, A002 useful Mike load2.35->2.30 and same edge first contact2.75; ending5.04->5.24 descriptive. Both components tested before interaction.",
+  "combinedTest": "One A039 continuation on edge-torso source plus exact standalone nine-line near-fit patch; all unsupported hand-control/helper/arrival interventions remain excluded.",
+  "budget": "One native continuation max5simseconds/5wallseconds, no parameter variation. Require achieved near-side support, actual transmitted load and denied Mike access before native runner arrival; preserve Y/end protection and inspect runner traffic.",
+  "adoptionScope": "Do not claim all N1 failures fixed or auto-promote a compound candidate. If useful, verify narrowly selected opposing/formation controls and retain independent extraction/review boundaries."
+}
