@@ -1,5 +1,10 @@
 # Extensive run / play-action stress checkpoint
 
+Ongoing development uses the [focused/checkpoint workflow](../../RUN_SUITE.md)
+and [ranked mechanism triage](TRIAGE.md). This report, frozen plan, catalog and
+saved results remain the original completed checkpoint. No repeat census is
+required for small edits; PA pairs are shared with the pass suite.
+
 2026-10-16. **All 1,848 planned native cases executed: 1,608 on accepted develop
 and 240 on the separate #99 perimeter host. 1,846 native endings; 2 explicit20s
 censors; 0 skipped or numerical/budget failures. 0 games.**

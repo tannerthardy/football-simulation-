@@ -1,0 +1,49 @@
+{
+  "schema": "run-suite-reserve-v1",
+  "catalogSha256": "9a8d0adf97319b55b629653b0c9dea553549b9a5a071589b3e87febf65f8663e",
+  "status": "unrun",
+  "seed": 902117,
+  "scope": "Eight unrun execution-seed inputs. Same selected athletes/looks; no claim of new roster or front coverage. Select only relevant inputs before viewing results; publish consumption and adverse results.",
+  "cases": [
+    {
+      "baseId": "primary/insideZone/ace_12/under3/pair11/77/weak/neutral/run/",
+      "reason": "Execution-seed transfer for insideZone; fixed pair11 players and existing under3 look.",
+      "inputSha256": "e07d19380520b7ad9eaf5d8dc060a938531e670f73d108f3e875d6bfd335ad35"
+    },
+    {
+      "baseId": "primary/outsideZone/ace_12/wide9/pair11/77/strong/neutral/run/",
+      "reason": "Execution-seed transfer for outsideZone; fixed pair11 players and existing wide9 look.",
+      "inputSha256": "df53b4f79032c6294bef5f9bbd0176468c4d1650dd83115161f7592ef21fba1f"
+    },
+    {
+      "baseId": "primary/wideZone/ace_12/tite4/pair11/77/weak/neutral/run/",
+      "reason": "Execution-seed transfer for wideZone; fixed pair11 players and existing tite4 look.",
+      "inputSha256": "0ce9e2e1eb6c8dca92bb08529fce15f2496575caf85d4de34650d935e50932e0"
+    },
+    {
+      "baseId": "primary/duo/ace_12/over3/pair11/77/strong/neutral/run/",
+      "reason": "Execution-seed transfer for duo; fixed pair11 players and existing over3 look.",
+      "inputSha256": "c631ecbd1e15313c9be43374c24b5b1040497d75f8e99d5879ef6cd02f3ca1bb"
+    },
+    {
+      "baseId": "primary/power/i_pro_21/under3/pair11/77/weak/neutral/run/",
+      "reason": "Execution-seed transfer for power; fixed pair11 players and existing under3 look.",
+      "inputSha256": "7c480c9b10b0bf626948076406589e06ca6c9570916406bdf41eeb64a8d99ffd"
+    },
+    {
+      "baseId": "primary/counter/i_pro_21/tite4/pair11/77/strong/neutral/run/",
+      "reason": "Execution-seed transfer for counter; fixed pair11 players and existing tite4 look.",
+      "inputSha256": "b16d49d83412938fd3451e966c2f55545fb19a566ab7c6839f6718d35e3b1ced"
+    },
+    {
+      "baseId": "primary/draw/gun_doubles_11/over3/pair11/77/strong/neutral/run/",
+      "reason": "Execution-seed transfer for draw; fixed pair11 players and existing over3 look.",
+      "inputSha256": "556d2d2e722b6719eda11a5875cfd0bf9f28f64b154d58e640b0505ba3bb437e"
+    },
+    {
+      "baseId": "primary/toss/ace_12/wide9/pair11/77/weak/neutral/run/",
+      "reason": "Execution-seed transfer for toss; fixed pair11 players and existing wide9 look.",
+      "inputSha256": "157a87951ca6924ad85bc2de135765abec827cbad786d407161f443030053166"
+    }
+  ]
+}

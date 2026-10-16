@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run: diagnostic-suite maintenance workflow — 2026-10-16
+
+Continuing #101 on `codex/run-playaction-stress`, HEAD4d224096739953406bcd25da9e3e8e5ddb0929d9.
+Fetched developbb6d4c73948d53ba841dd9338dd240146c739f8c matches canonical
+queuebb1c44dcdfdd6f767b9750d1d1724f7914df1175. Bounded ownership: new outer
+selection/reporting script, its tests/config and suite documentation. Preserve
+the frozen1,848-case catalog, collector and evidence byte-for-byte. No engine,
+shared controller, physical law, pass-suite implementation or integration edit.
+Default zero-simulation planning; focused subsets during development; explicit
+broad checkpoints on Integration's exact pin. Share canonical PA pair IDs,
+predeclare unrun transfer inputs and report recurring mechanisms without
+outcome locks. No census, games or full code suite needed for this workflow edit.
+
 ## Run: extensive run / play-action stress suite — 2026-10-16
 
 Explicit user checkpoint: design and execute a broad, complete installed-run

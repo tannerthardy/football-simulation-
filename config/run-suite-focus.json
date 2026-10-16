@@ -1,0 +1,41 @@
+{
+  "schema": "run-suite-focus-v1",
+  "catalogSha256": "9a8d0adf97319b55b629653b0c9dea553549b9a5a071589b3e87febf65f8663e",
+  "selection": "Retrospective witnesses; optional and replaceable only with a stated mechanism question. Not untouched transfer evidence.",
+  "sets": {
+    "mesh": {
+      "question": "Can a cue-supported exchange recovery restore physical ball transfer without bypassing traffic?",
+      "opposingControl": "Ordinary Ace outside-zone exchange against the same Wide9 look. Neither a forced handoff nor the old gain is required.",
+      "ids": [
+        "transfer/outsideZone/i_pro_21/wide9/pair11/77/strong/neutral/run/",
+        "transfer/wideZone/i_pro_21/wide9/pair11/77/strong/neutral/run/",
+        "primary/outsideZone/ace_12/wide9/pair11/77/strong/neutral/run/"
+      ]
+    },
+    "draw": {
+      "question": "Does the pass-presentation phase omit feasible protection before the delayed run?",
+      "opposingControl": "Inside-zone weak Over3 establishes prompt ordinary interior contact; it is a technique contrast, not an exact counterfactual.",
+      "ids": [
+        "primary/draw/gun_doubles_11/over3/pair11/77/strong/neutral/run/",
+        "primary/qbDraw/gun_doubles_11/over3/pair11/77/strong/neutral/run/",
+        "primary/insideZone/ace_12/over3/pair11/77/weak/neutral/run/"
+      ]
+    },
+    "loaded-edge": {
+      "question": "Does an attainable action control the end’s access through runner arrival while preserving useful loaded work?",
+      "opposingControl": "Same Ace wide-zone Over3 install, opposite actual direction; not an exact geometric mirror or a required ending.",
+      "ids": [
+        "primary/wideZone/ace_12/over3/pair11/77/weak/neutral/run/",
+        "primary/wideZone/ace_12/over3/pair11/77/strong/neutral/run/"
+      ]
+    },
+    "shared-pa": {
+      "question": "Do generic run cues change early recognition, recovery and the full pass chain appropriately in neutral versus pass-alert context?",
+      "opposingControl": "Matched no-fake arm retains routes/protection jobs/drop depth; pass-alert tests context. Scheme-specific OL action is not installed.",
+      "ids": [
+        "pa/wideZone/ace_12/over3/pair11/77/strong/neutral/pa/flood",
+        "pa/wideZone/ace_12/over3/pair11/77/strong/passalert/pa/flood"
+      ]
+    }
+  }
+}
