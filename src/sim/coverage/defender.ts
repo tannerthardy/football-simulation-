@@ -12,7 +12,7 @@ import { believesRun, ManCoverage, runFit, sawThrow, ZoneCoverage } from '../beh
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
-import { Rob, Trap, Wall } from './techniques.js';
+import { ReadRelease, Rob, Trap, Wall } from './techniques.js';
 import { isDeepZone } from '../../playbook/alignment.js';
 import { CoverageJudgment } from './judgment.js';
 
@@ -65,7 +65,7 @@ export class CoverageDefender implements Behavior {
   }
   recordedZone(): string | undefined { return this.sub instanceof ZoneCoverage ? this.sub.zone : undefined; }
   recordedMan(): import('../types.js').ReplayAgentState['man'] {
-    return this.sub instanceof ManCoverage ? this.sub.recordedTechnique() : undefined;
+    return this.sub instanceof ManCoverage || this.sub instanceof ReadRelease ? this.sub.recordedTechnique() : undefined;
   }
 
   /** Current rule branch plus keys actually consumed at `readTick`.
@@ -124,7 +124,11 @@ export class CoverageDefender implements Behavior {
   private make(a: Agent, d: Directive): Behavior {
     switch (d.t) {
       case 'zone': return new ZoneCoverage(a, this.sim, d.zone, this.gap, this.gapSign, d.style);
-      case 'man': return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
+      case 'man':
+        if (this.sub instanceof ReadRelease && this.sub.target === d.r
+          && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();
+        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
+      case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);
       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);

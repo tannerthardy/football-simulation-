@@ -177,6 +177,8 @@ export interface ManOptions {
   lev?: 'inside' | 'outside' | 'head';
   trail?: boolean;
   overTop?: boolean;
+  /** Acquired entry picture; used only to initialize cushion. */
+  initialPosition?: Vec2;
 }
 
 /** Man coverage with press/off technique, leverage and hip turn. */
@@ -208,7 +210,7 @@ export class ManCoverage implements Behavior {
     readonly opts: ManOptions = {},
   ) {
     this.press = press;
-    this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
+    this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
     void sim;
   }
 
@@ -248,6 +250,14 @@ export class ManCoverage implements Behavior {
     }
     const blockingLook = showsBlock(a, sim, R, receiverCue);
     if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
+
+    return this.trackReceiver(a, sim);
+  }
+
+  /** Release movement only; provisional zone readers retain their own
+   * support and recognized-flight priorities before using this technique. */
+  trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
+    const R = this.target;
 
     // Anticipate a stable observed stem, then lose that confidence on a break.
     // No route identity or once-per-play "knows the route" coin flip.
