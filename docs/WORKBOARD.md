@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Run: next current-build protection-access question — 2026-10-16
+
+`codex/current-protection-access` starts from accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c` / source668acb1. Select one
+repeated blocking-access or useful-protection failure from Measurement's
+already-authorized current assessment when published; no duplicate panel.
+Old A018 departure repair (#88) is delivered and is not the next defect.
+Run owns a bounded assignment/security/release/strike/load/runner-arrival
+trace, then at most one demonstrated RunBlocker correction or an explicit
+limitation. No production edit claimed yet. Coordinate actual blocking
+functions with Do-It-All before editing; generic movement/spacing remains
+with Do-It-All, physical laws/capacities remain with Physics. Preserve useful
+keeper work, clear collection, and a defender recovering through a real block.
+Focused evidence goes directly to Integration; Integration owns final checks.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
