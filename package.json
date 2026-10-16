@@ -18,6 +18,7 @@
     "baseline:run": "node scripts/baseline.mjs",
     "baseline:verify": "node scripts/baseline.mjs --verify",
     "screen:roster": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/roster-screen.ts",
+    "pass:suite": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/pass-game-suite.ts",
     "sim:play": "tsx scripts/sim-play.ts",
     "sim:game": "tsx scripts/sim-game.ts",
     "calibrate": "tsx scripts/calibrate.ts",

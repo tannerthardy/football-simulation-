@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Catching: opt-in full pass-game suite — 2026-10-16
+
+User requests a broad checkpoint suite analogous to #101's run/PA suite.
+`codex/pass-game-suite` starts from actual accepted develop
+`3723204bd0743713bca3e87f10ca01bfebf00a15` (#105); fetched merge equals
+reviewed `aaa7842a` tree and source `cda44ed8...`/passing #105 receipt.
+Queue's older bb6d4c7 heading lags that confirmed accepted merge; do not import
+pending #97/#100 or #101's research parent. Claim new pass-suite manifest,
+runner/report/tests/docs plus opt-in package commands. No engine/controller,
+physics, capacity, playbook or automatic test campaign changes. Broad runs
+require an explicit major-change checkpoint; default invocation plans zero
+snaps. Build frozen source/input/settings evidence, resume/comparison and
+failure/censor reporting. Reuse run-suite protocol, not its run measurements.
+
 ## Active recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus
