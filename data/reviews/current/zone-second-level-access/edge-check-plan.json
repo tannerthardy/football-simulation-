@@ -1,0 +1,13 @@
+{
+  "question": "Can an uncovered OL on a stretch TE/end combination take its existing optional check-to-Mike responsibility while the TE already controls the end, instead of being required to chase outward and join first?",
+  "nativeEvidence": "A039 Y owns actual positive-control end contact from.65 while RT remains unjoined untilabout1.5. Stretch setup omits helpPolicy, so the existing unjoined check path returns without evaluating the helper; it releases only after an outward join1.75 with velocity-.2.5away from Mike.",
+  "singleCorrectionCandidate": "Install the existing optional check policy for a wide/outside-zone combination whose covered owner is an attached non-OL blocker and helper is OL. Keep OL/OL sustained doubles and Duo/gap/Draw/Toss unchanged. No changes to readCheckSurface, keeperCandidate, helperFit, approach, release cadence/security or force.",
+  "firstCase": "A039 saved accepted full22 input; same acquired normal information and all reactions.",
+  "budget": "One candidate continuation max5simseconds/5wallseconds. Expand only for actual protection at arrival, not an earlier block_climb label or yardage.",
+  "opposingControlsIfUseful": [
+    "A027 ordinary weak hand-control owner must not get an unearned release",
+    "A002 useful OZ collection/edge defensive win",
+    "accepted Duo clear collection/keeper control",
+    "existing Ace12 strongY,strongH,weakH if formation transfer matters"
+  ]
+}
