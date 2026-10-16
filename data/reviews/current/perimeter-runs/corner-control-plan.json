@@ -1,0 +1,6 @@
+{
+  "question": "Did the new force entry accept the path's .65 waypoint tolerance as actual clearance of the perimeter corner, then cut back into the loaded crack?",
+  "evidence": "Force-entry C01 develops a new RT/Z impact3.00. Existing captured requests show the new upfield interception can start while RT remains inside its installed outer entry. A waypoint tolerance is not a certificate of achieved lateral clearance.",
+  "change": "New force role only: retain its ordinary flat corner command until own achieved center crosses the installed outside entry; then admit the acquired interception. Existing wall clearance, physics, contacts, teammates and all other pull roles remain intact. No swept-route planner or clearance guarantee added.",
+  "budget": "One final three-case exact-input replay B01/P01/C01, max5simseconds/5wallseconds. If the extra collision/protection defect persists, hold force entry rather than another sequence of route variants. Inspect traffic and attained force load through arrival, not only distance or yards."
+}
