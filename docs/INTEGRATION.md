@@ -47,9 +47,9 @@ does not establish overall coverage, protection or statistical realism.
   verification, held items, football limits and next decision in one handoff.
 
 <a id="accepted-development"></a>
-## Current approved batch — #107 verified; guarded adoption pending
+## Completed #107 integration boundary — 2026-10-16
 
-Accepted develop remains **3723204bd0743713bca3e87f10ca01bfebf00a15** until adoption.
+Adopted as **c3264b0bad72bd2c208602e0ecf0461c00d9669f** through #107. Integration boundary released; all contributor branches/evidence retained.
 Integration owns isolated `codex/coverage-run-integration` from that pin plus
 queue metadata db0d512. Include only independently accepted **#97+#100** eight-file
 composition, separately accepted **#95** installed acquired rat duty, Physics-
@@ -64,7 +64,7 @@ Exact freeze90240f5 passes **1,890 TS/162files,145 Python,typecheck/build**,
 226.175s,Node22.23.3,44flags/components1; no drift/skips. Targeted overlap1.873s,
 total228.048s. One combined run, no unchanged repeat to publish/merge.
 [Final receipt and complete raw log](../data/reviews/current/coverage-run-integration/final-receipt.json).
-[Guarded adoption PR #107](https://github.com/tannerthardy/football-simulation-/pull/107).
+[Merged PR #107](https://github.com/tannerthardy/football-simulation-/pull/107).
 [Intake, approval, reviews, overlay and extraction audit](../data/reviews/current/coverage-run-integration/intake.json).
 [Pinned independent coverage/rat adjudication](reviews/coverage-contract-review.md).
 
@@ -84,6 +84,48 @@ publication does not clear the defect. #99/perimeter, stranded-mesh diagnosis,
 consent proposals and experimental Physics remain separate.
 
 ## Accepted development reference
+
+**`develop@c3264b0bad72bd2c208602e0ecf0461c00d9669f`** is accepted through
+[#107](https://github.com/tannerthardy/football-simulation-/pull/107).
+Entire actual merged tree equals publication `1b39436f3635aa53e9e12ccad9863f9268245476`;
+protected source/tests/settings/tooling equal passing freeze
+`90240f5cf1fd55b48ecc10dfa9b65236af42cc66`.
+[Actual merged-pin preservation receipt](../data/reviews/current/pr107-merge.json).
+
+Included **#97/#100** acquired entry/provisional block/release cushion/observed-cap
+delivery, **#95** acquired installed-rat cut, **#102** existing-span isolated run
+lifetime validity, and **user-approved #104** installed-inline role eligibility.
+Independent95/97/100/102 reviews accept bounded scope; the user's104 override is
+explicitly user approval. Shared entry once; all accepted #105 controllers remain.
+Fourteen protected files/six runtime files; no diagnostic/experimental ancestry.
+
+**1,890 TS/162 files,145 Python,typecheck/build pass**;226.175 command seconds,
+Node22.23.3,44flags/components1, no skipped phase/input drift. Twenty existing
+rat/provisional-block composition checks1.873s,total228.048s. One exact combined
+verification; no unchanged repeat to publish/merge and no additional standalone
+native/panel/evaluation games. [Final receipt and raw log](../data/reviews/current/coverage-run-integration/final-receipt.json).
+Source `4658b9ce14e2ce73ae7784635dcface1e115ebdf9eba2ca1c70c2bec1ca89d8b`;
+validation `8545b068b87e4f5e16c37cddeb9497af2bb8c716ea4c25db16519f5f8425ad3f`.
+
+Preserve Drive's shallow-help costs/exposed seam, rat collision/fall/lost availability,
+earlier defensive access and changed RNG/fumble. These are coherent contract
+corrections, not proof of general football/YAC improvement. Contextual native
+sources remain historical; raw archive limits and rejected variants stay visible.
+#102 is20Hz validity, helpers/active pass legacy; converted solo pass-to-run gets
+the cutoff. No capacity/default/force-law experiment is activated.
+
+[Consolidated owner handoff](https://github.com/tannerthardy/football-simulation-/pull/107#issuecomment-6221613220).
+Catching reconciles coverage/support/rat; Run and Do-It-All reconcile keeper security,
+attainable collection and runner entry; Physics records isolated validity without
+solver promotion. Adopt at clean checkpoints; no forced rebases or historical-tape
+relabeling. Integration has released its extraction boundary. Delivered scopes can
+close by extraction with branches/evidence retained. #101 tooling repair stays held;
+Measurement/Run review stub controls, not another1848-study campaign. The existing
+frozen-panel comparison is the next shared measurement checkpoint; games need a
+separate CEO call. Historical4ded6b6/default/remaining research remain unchanged.
+
+<details>
+<summary>Previous accepted #105 /3723204 record — historical</summary>
 
 **`develop@3723204bd0743713bca3e87f10ca01bfebf00a15`** is accepted after routine
 [#105](https://github.com/tannerthardy/football-simulation-/pull/105) adoption.
@@ -126,6 +168,9 @@ accepted scopes.** Any102 physical-law/capability choice must still escalate;
 prototype99 and experimental Physics/default/historical changes are not authorized.
 Historical4ded6b6, GitHub default, physical laws/capacities/settings and old
 scientific receipts remain unchanged. No branch deletion or new baseline.
+
+
+</details>
 
 <details>
 <summary>Previous accepted #91 /bb6d4c7 record — historical</summary>
@@ -387,6 +432,21 @@ needed for distribution. These remain8ca8dee observations, not current-build
 results; final intents cannot reconstruct discarded producer stages/every-tick RNG.
 
 <a id="ready-blocked-experimental"></a>
+
+### Current disposition after merged #107
+
+- **Delivered:**95/97/100/102/104 are adopted atc3264b0; exact reviewed pins,
+  approval, dependencies and preservation are in [intake](../data/reviews/current/coverage-run-integration/intake.json).
+- **Blocked tooling:**101@ed2fed9 wall-censor/index and exception partial-trace loss;
+  Run supplies minimal repair, Measurement reviews stubbed controls. Original
+  study and later diagnosis retained; no new study or contributor suite.
+- **Separate/held:**99 perimeter prototype; stranded I21/Wide9 mesh diagnosis;
+  consent/transport/navigation/lateral trials; experimental Physics. A blocked
+  item holds only itself. No next runtime candidate invented to fill a batch.
+- **Next shared checkpoint:** Measurement/CEO coordinate the existing frozen48
+  comparison within its existing budget/operator contract; no baseline recollection.
+  Four-game context remains a separate CEO decision.
+
 ## Ready, blocked and experimental
 
 ### Completed #105 recent-controller adoption — 2026-10-16
@@ -412,11 +472,11 @@ No extra native panel, roster screen or evaluation games.
 | #96 | Existing near fit for planned climbs | Do-It-All ACCEPT6210210423; Under/A030 composition receipt reused, adverse lost TD retained. |
 | #98 | Initial pressed DB stance legalization | Integration accepts setup correctness; A002 earlier defensive win retained. |
 | #103 | D position matches outer width/velocity identity | Integration accepts acquired-objective correction; slower LOS entry remains. |
-| #97 +100 | Overlapping coverage controllers | Independent Do-It-All ACCEPT at ba399712; exact composition prepared above; adverse cases retained. |
-| #104 | Inline zone-technique role gate | User explicitly approves reviewed bcd0dc8, overriding independent-approval hold; minimal extraction prepared, contextual evidence retained. |
-| #102 | Isolated contact-span lifecycle | Physics ACCEPT6220760634: existing-law validity/lifecycle correction; exact isolated extraction prepared above. |
+| #97 +100 | Overlapping coverage controllers | Adopted via107 atc3264b0; independent ba399712 ACCEPT; adverse cases retained. |
+| #104 | Inline zone-technique role gate | Adopted via107 atc3264b0 under explicit user override/approval; contextual evidence retained. |
+| #102 | Isolated contact-span lifecycle | Adopted via107 atc3264b0; Physics ACCEPT6220760634 existing-law validity,20Hz limits retained. |
 | #101 | Opt-in run/PA tooling and1848-case evidence | Measurement tooling-HOLD6220802845: wall-censor bookkeeping/partial exception traces; Run repairs, no study rerun. |
-| #95 | Rat shallow-cut policy | Independent Do-It-All ACCEPT ba399712 with Drive collision/fall cost; separately reconciled with97/100 above. |
+| #95 | Rat shallow-cut policy | Adopted via107 atc3264b0; independent ba399712 ACCEPT, separate95 reconciliation and Drive fall cost retained. |
 | #93 | Coverage approach diagnosis | Evidence only; unchanged runtime. Link findings, no mandatory merge/suite. |
 | #99 | Perimeter development concepts | Explicitly held prototype; no automatic calling/production promotion. |
 
@@ -691,6 +751,8 @@ merge authority does not clear these unresolved contract failures.
 
 <a id="frozen-panel-comparison"></a>
 ### One frozen-panel comparison after a meaningful accepted controller batch
+
+The next meaningful accepted checkpoint is #107/c3264b0. Measurement/CEO coordinate one comparison using the existing frozen48 panel and compatible established operator (not held101). Preserve the existing budget below; no baseline recollection or automatic games. #82 results remain historical evidence.
 
 Use the existing48-case panel once at a meaningful accepted controller checkpoint,
 after a meaningful independently reviewed controller batch. #82 is now that
