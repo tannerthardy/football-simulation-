@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Do-It-All zone access breakthrough — 2026-10-15
+
+New accepted-base branch codex/zone-access-breakthrough at fetched/queued
+bb6d4c73948d53ba841dd9338dd240146c739f8c. User authorizes sustained run-game
+implementation and necessary testing; retain smallest discriminating tests
+and re-diagnose failed mechanisms. Read-only parallel probes cover current
+covered/uncovered installation, opening/loaded movement and the saved8 IZ/WZ
+witnesses. Own scripts/diag/zone-access-breakthrough.* and evidence initially.
+Coordinate specific installation/opening behavior edits with Run before editing;
+Run #96 attack/near-fit and keeper/release laws stay frozen initially. #92/#94
+stay independent pending review/adoption. No forced lateral motion, hidden
+intentions, capacity/physics/body/collision change or ending target. Integration
+retains independent acceptance and final exact combined verification.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
