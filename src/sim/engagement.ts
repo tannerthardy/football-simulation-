@@ -35,7 +35,7 @@ import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinema
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
-import { contactMotion } from './contact-motion.js';
+import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { runContactObservers } from './run-contact-observer.js';
@@ -1064,8 +1064,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const run = sim.offCall.run;
   const stretch = STRETCH_REACH && !!e.surfaceAxis && (run?.scheme === 'outsideZone' || run?.scheme === 'wideZone');
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
-  const dist = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y);
-  const forward = stretch ? clamp(along(d.vel) + (dist - sep) * 3, -1, 2.4) : 2.4;
+  const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
+  const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
+  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
