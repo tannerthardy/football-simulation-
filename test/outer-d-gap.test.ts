@@ -13,17 +13,18 @@ interface Snapshot {
   rows: { t: number; pictures: Record<string, Perceived> }[];
 }
 const saved: Snapshot = JSON.parse(readFileSync(new URL('./fixtures/outer-d-gap.json', import.meta.url), 'utf8'));
+const accepted: Snapshot = JSON.parse(readFileSync(new URL('./fixtures/outer-d-gap-accepted.json', import.meta.url), 'utf8'));
 
 /** Replay only the pictures RB already consumed. No bodies or observers run. */
-function scene(at: number, mirror = false) {
-  const row = saved.rows.find(r => r.t === at)!;
-  const reflect = (y: number) => mirror ? 2*saved.ballY-y : y;
-  const offense = saved.actors.map(a => ({ ...structuredClone(a), engagement: null })) as unknown as Agent[];
+function scene(at: number, mirror = false, fixture: Snapshot = saved) {
+  const row = fixture.rows.find(r => r.t === at)!;
+  const reflect = (y: number) => mirror ? 2*fixture.ballY-y : y;
+  const offense = fixture.actors.map(a => ({ ...structuredClone(a), engagement: null })) as unknown as Agent[];
   for (const a of offense) Object.defineProperties(a, {
     pos: { get() { throw new Error('private live position'); } },
     vel: { get() { throw new Error('private live velocity'); } },
   });
-  const offAlign = alignOffense(FORMATION_BY_ID.ace_11, false, saved.los, saved.ballY);
+  const offAlign = alignOffense(FORMATION_BY_ID.ace_11, false, fixture.los, fixture.ballY);
   if (mirror) for (const spot of Object.values(offAlign.spots)) spot.pos.y = reflect(spot.pos.y);
   const picture = (idx: number) => {
     const p = structuredClone(row.pictures[idx]);
@@ -31,7 +32,7 @@ function scene(at: number, mirror = false) {
     if (mirror) { p.vel.y *= -1; p.facing *= -1; }
     return p;
   };
-  const sim = { t: at, offense, offAlign, ballY: saved.ballY, attackDir: () => 1,
+  const sim = { t: at, offense, offAlign, ballY: fixture.ballY, attackDir: () => 1,
     see: (_observer: Agent, target: Agent) => picture(target.idx),
   } as unknown as PlaySim;
   const rb = offense.find(a => a.slot === 'RB')!;
@@ -63,6 +64,22 @@ describe('an outside gap uses the outer body after the center leaves the surface
     const after = gapIn(linePicture(b.sim, b.rb), 'D', b.side);
     expect(after-before).toBeCloseTo(b.outer.pos.y-a.outer.pos.y, 12);
     expect(Math.abs(after-before)).toBeLessThan(.1);
+  });
+
+  it.each([false, true])('retains the accepted-source outer tackle instead of an interior vacancy, mirror %s', mirror => {
+    const a = scene(1.7, mirror, accepted), b = scene(1.75, mirror, accepted);
+    const before = linePicture(a.sim, a.rb), after = linePicture(b.sim, b.rb);
+    const last = after.outward[b.side > 0 ? '1' : '-1'].at(-1)!;
+    expect(after.departed.map(body => body.agent.slot)).toEqual(['C', 'RG', 'Y']);
+    expect(after.outward[b.side > 0 ? '1' : '-1']).toHaveLength(4);
+    expect(last.vacancy).toBe(false);
+    const tackle = after.surface.find(body => body.agent.slot === 'RT')!.seen;
+    const formerTackle = before.surface.find(body => body.agent.slot === 'RT')!.seen;
+    const d = gapSurfaceIn(after, 'D', b.side);
+    expect(d.y).toBeCloseTo(tackle.pos.y+b.side*.7, 12);
+    expect(d.vel).toBe(tackle.vel.y);
+    expect(d.width).toBe(Infinity);
+    expect(d.y-gapIn(before, 'D', a.side)).toBeCloseTo(tackle.pos.y-formerTackle.pos.y, 12);
   });
 });
 
