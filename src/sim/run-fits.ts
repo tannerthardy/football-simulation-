@@ -195,7 +195,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
     const depth=clamp((home.x-sim.los)*.65,5,8);
     const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
-    return track(a,aim,{x:0,y:0},{speed:.65,gain:2,facing:Math.PI});
+    return track(a,aim,{x:0,y:seen.vel.y},{speed:.65,gain:2,facing:Math.PI});
   }
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));

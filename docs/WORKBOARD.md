@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Acquired moving alley cap — 2026-10-16
+
+Catching's independently reviewable extraction on `codex/alley-cap-motion` starts
+accepted86250bb4f0c6f421878c204161864d523c3e30b6. Only runtime change:
+`run-fits.ts:executeRunFit` supplies the already acquired lateral cap velocity
+to track, retaining zero longitudinal cap motion. Four new contracts in
+coverage-run-support.test.ts;101 focused checks/typecheck pass on identical
+source/test code. [Evidence and adverse controls](reviews/alley-cap-moving-picture.md).
+A042 entry1.690→.863yd; fresh A0061.774→1.059yd, first hold still breaks.
+A003 different-concept tackle timing holds with small late changes; A008 complete
+and A020 unfinished recorded pass-control histories/events match. Run consulted
+on owned alley return; independent owner review pending. Integration owns exact
+combined verification/adoption. No common/approach/gate/shoulder research ancestry,
+observer, spacing/helper, force/insertion/release, physics or capacity change.
+Rejected research preserved at0593fa2; no new suite/game for extraction.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
