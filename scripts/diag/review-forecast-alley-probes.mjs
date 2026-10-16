@@ -83,7 +83,7 @@ hiddenB.rb.body.pos={x:85,y:5};hiddenB.rb.body.vel={x:-8,y:9};
 for(const f of [hiddenA,hiddenB])f.sim.perception.record(f.sim.agents,f.sim.qb.idx);
 assert.deepEqual(hiddenA.sim.see(hiddenA.a,hiddenA.rb),hiddenB.sim.see(hiddenB.a,hiddenB.rb));
 const perceptionBefore=structuredClone(hiddenB.sim.perception),ha=hiddenA.update(),hb=hiddenB.update();
-assert.deepEqual(ha,hb);assert.deepEqual(hiddenB.sim.perception,perceptionBefore);
+assert.deepEqual(ha,hb);assert.deepEqual(structuredClone(hiddenB.sim.perception),perceptionBefore);
 assert.deepEqual(hiddenA.sim.rng,hiddenB.sim.rng);
 
 const pa=[];
