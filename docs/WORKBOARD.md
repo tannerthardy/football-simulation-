@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Useful defensive approach family — 2026-10-15
+
+Catching owns the bounded approach question on `codex/defensive-approach-family`
+from accepted `86250bb4f0c6f421878c204161864d523c3e30b6` (#85, #84-only).
+Use saved A020/A042 plus successful A008 and preselected A032 transfer. First
+test whether the full-gather decision bypasses an achievable better approach
+under the same acquired picture. Potential correction boundary: common.ts
+`gatheringApproach`/`chase`, approach-control.ts only if evidence justifies it;
+no coverage responsibility/recognition, spacing, physics, grip or capacity edit.
+Do-It-All owns mesh spacing; Run owns Duo/access. Any passive capture must settle
+this decision, preserve source-specific prefixes and prove recording neutrality.
+One supported correction or clear limitation; no general panel/game campaign.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
