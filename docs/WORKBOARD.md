@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Catching: coverage principles audit — 2026-10-16
+
+`codex/coverage-principles-audit` starts from fetched/canonical accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c`. Scope: this workboard row,
+`docs/reviews/coverage-principles-audit.md` and one compact saved-evidence
+receipt. Audit installed coverage/exchange/information principles and reuse
+the source-qualified #97 panel; no runtime, physics, modifier or test changes.
+#97 and #95 remain separate candidates. Distinguish measured witnesses from
+source limitations and future hypotheses; no new simulation or NFL pipeline.
+
+Completed [ranked audit](reviews/coverage-principles-audit.md). New recurring
+lead: generic underneath movement requests downhill against an acquired
+vertical before the direct match activates, consuming cushion and momentum.
+R2-C02 is already trailing before its twelve-yard carry exit; do not treat
+longer carries as a demonstrated repair. Drive exchanges, help-relative
+leverage, complementary pursuit, information limits and later formation/
+situational work remain separate. Twelve saved packets reverified; zero new
+World ticks/tests. Next bounded question: release-cushion continuity with an
+acquired shallow/fake opposing control, after pending candidates' decisions.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
