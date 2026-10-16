@@ -1,0 +1,44 @@
+{
+  "acceptedBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "candidate": "4f7bdfc77cfd712adcc1c9e6eedc0184c95ba8d1",
+  "sourceSha256": "1a88ed165b4289b721ab65c1ea5f78f1c1bd2f4c10f4e0dbd17a28d1bc9c30a1",
+  "physicalCommandsAndFullGoalsEqual": true,
+  "beforeForecasts": 37,
+  "afterForecasts": 27,
+  "savedWorldSteps": 120,
+  "newNativeExecutions": 0,
+  "newWholeGames": 0,
+  "costs": [
+    {
+      "file": "forecast-expected-red.json",
+      "seconds": 1.1508683759999998,
+      "exitCode": 1,
+      "inputsUnchanged": true
+    },
+    {
+      "file": "forecast-focused.json",
+      "seconds": 1.9802418269999997,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "file": "forecast-typecheck.json",
+      "seconds": 9.635037327,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "file": "probe-receipt.json",
+      "seconds": 0.29932243100000006,
+      "exitCode": 1,
+      "inputsUnchanged": true
+    },
+    {
+      "file": "probe-v2-receipt.json",
+      "seconds": 0.555593575,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    }
+  ],
+  "allLauncherSecondsIncludingFailures": 13.621063536
+}

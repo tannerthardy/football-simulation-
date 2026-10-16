@@ -1,0 +1,55 @@
+{
+  "candidate": "4f7bdfc77cfd712adcc1c9e6eedc0184c95ba8d1",
+  "payloads": [
+    {
+      "path": "accepted-forecast-reference.json",
+      "bytes": 3595,
+      "sha256": "00d23da84c536bc5bfff2bf0a4a30d66c3150275fb470260309828299a7fbc70"
+    },
+    {
+      "path": "candidate-forecast-reference.json",
+      "bytes": 3595,
+      "sha256": "dc76cd5433ec608e9a6d75c2858276e14d868e38c595b11c25df2610226d1d32"
+    },
+    {
+      "path": "comparison.json",
+      "bytes": 1143,
+      "sha256": "fc949a076dd64fbaaa5cda1209a2bed995aa22d7731a62079a62fd2d0a12284a"
+    },
+    {
+      "path": "gather-goal-probe.json",
+      "bytes": 26048,
+      "sha256": "c029fdcaec15cfdce407c274b093fdebdf3ecdaf222ec5261761f0e9335bfb1e"
+    },
+    {
+      "path": "receipts/forecast-expected-red.json",
+      "bytes": 2254,
+      "sha256": "d964a62e5d2d8343536e6b6cda76e7e0b57523114ba2ed0f7ba6af05c7150a76"
+    },
+    {
+      "path": "receipts/forecast-focused.json",
+      "bytes": 2379,
+      "sha256": "898d9f5756c08a0f40a55e378b633f1a8e3e56e754da17392dfec82d76fff0b2"
+    },
+    {
+      "path": "receipts/forecast-typecheck.json",
+      "bytes": 2166,
+      "sha256": "1b8ed2d5acc42eb00b6a95b48bc954289ec5cbd3db5721f603abcd3ea0971ebe"
+    },
+    {
+      "path": "receipts/probe-receipt.json",
+      "bytes": 2224,
+      "sha256": "fc5a51f5bdcfed26ffad8883cf4f92472df770229816e117c12482c679594aa2"
+    },
+    {
+      "path": "receipts/probe-v2-receipt.json",
+      "bytes": 2216,
+      "sha256": "f567f8c5180c21a6500714712baefc8d4437ef9450fd78ad73e9ba2f4f46cfa4"
+    },
+    {
+      "path": "runtime-and-tests.patch",
+      "bytes": 14155,
+      "sha256": "efd2eb26aa917c2bc5a00e818e6ea0af9cab4b89430cead3e11b156da24281ce"
+    }
+  ]
+}
