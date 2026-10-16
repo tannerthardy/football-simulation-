@@ -1,0 +1,616 @@
+{
+  "schema": "approach-family-controller-witness-v1",
+  "rows": [
+    {
+      "case": "A020",
+      "actor": {
+        "id": "S74D-CB3",
+        "firstName": "Ty",
+        "lastName": "Graham",
+        "jersey": 26,
+        "position": "CB",
+        "age": 25,
+        "experience": 2,
+        "measurables": {
+          "heightIn": 72.7,
+          "weightLb": 181,
+          "armIn": 32.2,
+          "handIn": 9.3,
+          "forty": 4.45,
+          "tenSplit": 1.52,
+          "shuttle": 4.17,
+          "threeCone": 7,
+          "vertical": 36.8,
+          "broad": 125,
+          "bench": 9
+        },
+        "ratings": {
+          "strength": 27,
+          "stamina": 63,
+          "balance": 22,
+          "toughness": 65,
+          "throwPower": 33,
+          "accShort": 31,
+          "accMid": 35,
+          "accDeep": 29,
+          "release": 27,
+          "throwOnRun": 19,
+          "touch": 22,
+          "pocketPresence": 30,
+          "vision": 31,
+          "elusiveness": 26,
+          "breakTackle": 41,
+          "ballSecurity": 38,
+          "patience": 38,
+          "routeRunning": 25,
+          "releaseVsPress": 27,
+          "hands": 54,
+          "contestedCatch": 21,
+          "ballTracking": 42,
+          "passBlock": 33,
+          "runBlock": 30,
+          "handTechnique": 34,
+          "leadBlock": 23,
+          "passRushPower": 36,
+          "passRushFinesse": 40,
+          "blockShedding": 29,
+          "tackling": 61,
+          "hitPower": 20,
+          "pursuit": 66,
+          "manCoverage": 82,
+          "zoneCoverage": 91,
+          "press": 79,
+          "ballSkills": 77,
+          "kickPower": 28,
+          "kickAccuracy": 35,
+          "puntPower": 33,
+          "puntAccuracy": 45,
+          "awareness": 67,
+          "playRecognition": 66,
+          "decisionMaking": 54,
+          "composure": 84,
+          "discipline": 77,
+          "anticipation": 79,
+          "consistency": 40,
+          "workRate": 56
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Zone Corner"
+      },
+      "team": "D",
+      "slot": "CB_S",
+      "body": {
+        "pos": {
+          "x": 48.53689372045964,
+          "y": 11.133509082027093
+        },
+        "vel": {
+          "x": -0.5199354079682638,
+          "y": 1.8923050523461384
+        },
+        "facing": 8.774158279842295,
+        "energy": 0.9662748463925155,
+        "profile": {
+          "vmax": 9.896875941321953,
+          "tau": 1.2766206965375237,
+          "brake": 6.6192063492063475,
+          "lateral": 6.462500000000001,
+          "turnRate": 9.111111111111112,
+          "backpedal": 0.7618367346938775,
+          "shuffle": 0.632,
+          "massKg": 82.10021897,
+          "heightYd": 2.0194444444444444,
+          "radius": 0.2409090909090909,
+          "reach": 1.0102777777777778,
+          "maxCatchHeight": 3.5036388888888887,
+          "reactReach": 2.9925277777777777,
+          "reactionTime": 0.23995918367346944,
+          "power": 60.473513330096424,
+          "balance": 0.21428571428571427,
+          "bend": 0.6455238095238095,
+          "stepSpeed": 3.8234603174603174,
+          "getUp": 0.8167777777777778
+        },
+        "support": {
+          "xi": {
+            "x": 1.3766173441686872e-05,
+            "y": 4.888358479801325e-07
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.5463659119598393,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": -6.2249688836881624e-24,
+            "y": 3.3977323992782116e-24
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.0380804385298024,
+          "out": 0,
+          "feltTip": {
+            "x": -3.9325788565439e-26,
+            "y": 2.1465320163228378e-26
+          },
+          "causes": {
+            "contact": 2.7217986064545297e-05,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -4.899872885869179,
+            "y": -4.02392778904564
+          },
+          "tipAccel": {
+            "x": 1.0099635506658497e-24,
+            "y": -5.425040147545035e-25
+          }
+        },
+        "spin": 8.895344687410503,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 3.2913383408714805
+      },
+      "seen": {
+        "pos": {
+          "x": 44.049447786682684,
+          "y": 15.583415557943578
+        },
+        "vel": {
+          "x": 3.383189392894144,
+          "y": -7.600079049842258
+        },
+        "stance": null,
+        "facing": -1.3437740231029587,
+        "age": 0.15000000000000002,
+        "pose": "up",
+        "carrying": true
+      },
+      "now": 4.05,
+      "runFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "alley",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack"
+      },
+      "targetRadius": 0.2536363636363636,
+      "original": {
+        "vel": {
+          "x": -2.8121964642417643,
+          "y": -0.9519892319904556
+        },
+        "facing": 2.3603947539147154,
+        "cutSkill": 1.0642857142857143,
+        "posture": 0.5530612244897959
+      },
+      "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+      "captureSha256": "26a2b744042701e183d643743197e6776949ad90d814514c538524d711ea2db0"
+    },
+    {
+      "case": "A042",
+      "actor": {
+        "id": "S69D-S1",
+        "firstName": "Josh",
+        "lastName": "Webb",
+        "jersey": 40,
+        "position": "S",
+        "age": 30,
+        "experience": 8,
+        "measurables": {
+          "heightIn": 72.6,
+          "weightLb": 207,
+          "armIn": 32.6,
+          "handIn": 9.8,
+          "forty": 4.58,
+          "tenSplit": 1.55,
+          "shuttle": 4.28,
+          "threeCone": 6.92,
+          "vertical": 35.8,
+          "broad": 121,
+          "bench": 19
+        },
+        "ratings": {
+          "strength": 63,
+          "stamina": 71,
+          "balance": 27,
+          "toughness": 43,
+          "throwPower": 40,
+          "accShort": 31,
+          "accMid": 37,
+          "accDeep": 40,
+          "release": 23,
+          "throwOnRun": 31,
+          "touch": 21,
+          "pocketPresence": 29,
+          "vision": 43,
+          "elusiveness": 20,
+          "breakTackle": 29,
+          "ballSecurity": 30,
+          "patience": 22,
+          "routeRunning": 21,
+          "releaseVsPress": 17,
+          "hands": 72,
+          "contestedCatch": 36,
+          "ballTracking": 23,
+          "passBlock": 24,
+          "runBlock": 36,
+          "handTechnique": 41,
+          "leadBlock": 33,
+          "passRushPower": 35,
+          "passRushFinesse": 41,
+          "blockShedding": 54,
+          "tackling": 77,
+          "hitPower": 53,
+          "pursuit": 70,
+          "manCoverage": 77,
+          "zoneCoverage": 73,
+          "press": 46,
+          "ballSkills": 78,
+          "kickPower": 23,
+          "kickAccuracy": 31,
+          "puntPower": 29,
+          "puntAccuracy": 19,
+          "awareness": 84,
+          "playRecognition": 87,
+          "decisionMaking": 70,
+          "composure": 64,
+          "discipline": 52,
+          "anticipation": 75,
+          "consistency": 68,
+          "workRate": 69
+        },
+        "familiarity": {
+          "CB": 0.6,
+          "LB": 0.45
+        },
+        "archetype": "Hybrid"
+      },
+      "team": "D",
+      "slot": "SS",
+      "body": {
+        "pos": {
+          "x": 42.28267705462662,
+          "y": 23.121959944472906
+        },
+        "vel": {
+          "x": -3.6280233628921748,
+          "y": -0.14426171849378483
+        },
+        "facing": 3.92033759894387,
+        "energy": 0.9794428734641163,
+        "profile": {
+          "vmax": 9.45175092917949,
+          "tau": 1.2423641257855118,
+          "brake": 6.316768707482992,
+          "lateral": 6.651894557823131,
+          "turnRate": 9.026666666666667,
+          "backpedal": 0.7075510204081633,
+          "shuffle": 0.6152,
+          "massKg": 93.89362059,
+          "heightYd": 2.0166666666666666,
+          "radius": 0.26454545454545453,
+          "reach": 1.0197222222222222,
+          "maxCatchHeight": 3.477722222222222,
+          "reactReach": 2.9804999999999997,
+          "reactionTime": 0.19195918367346942,
+          "power": 92.44210186353213,
+          "balance": 0.2653061224489796,
+          "bend": 0.6477278911564627,
+          "stepSpeed": 3.7018503401360543,
+          "getUp": 0.8678333333333333
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.32105981764610286,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -1.6189113613784205,
+            "y": -6.363722267709773
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": -1.6458839443190953,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 4.043393355925689
+      },
+      "seen": {
+        "pos": {
+          "x": 35.91805082105932,
+          "y": 22.535134439864073
+        },
+        "vel": {
+          "x": 5.870652490091461,
+          "y": -3.1870893948040258
+        },
+        "stance": null,
+        "facing": -0.37801516505614496,
+        "age": 0.15000000000000002,
+        "pose": "up",
+        "carrying": true
+      },
+      "now": 2.65,
+      "runFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "alley",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack"
+      },
+      "targetRadius": 0.2609090909090909,
+      "original": {
+        "vel": {
+          "x": -2.7345308285682854,
+          "y": -3.4723066697057026
+        },
+        "facing": -3.049651502982452,
+        "cutSkill": 1.1214285714285714,
+        "posture": 0.5938775510204082
+      },
+      "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+      "captureSha256": "cac4404d809704d1de43c43a1f082764c39c4ce180c173039fdf4193c238225f"
+    },
+    {
+      "case": "A008",
+      "actor": {
+        "id": "S30D-CB3",
+        "firstName": "Carlos",
+        "lastName": "Sanders",
+        "jersey": 20,
+        "position": "CB",
+        "age": 30,
+        "experience": 7,
+        "measurables": {
+          "heightIn": 70.8,
+          "weightLb": 189,
+          "armIn": 31.7,
+          "handIn": 9.1,
+          "forty": 4.47,
+          "tenSplit": 1.53,
+          "shuttle": 4.11,
+          "threeCone": 6.91,
+          "vertical": 42.2,
+          "broad": 130,
+          "bench": 12
+        },
+        "ratings": {
+          "strength": 33,
+          "stamina": 67,
+          "balance": 30,
+          "toughness": 59,
+          "throwPower": 30,
+          "accShort": 33,
+          "accMid": 38,
+          "accDeep": 33,
+          "release": 21,
+          "throwOnRun": 18,
+          "touch": 32,
+          "pocketPresence": 19,
+          "vision": 28,
+          "elusiveness": 33,
+          "breakTackle": 33,
+          "ballSecurity": 14,
+          "patience": 20,
+          "routeRunning": 24,
+          "releaseVsPress": 43,
+          "hands": 42,
+          "contestedCatch": 21,
+          "ballTracking": 24,
+          "passBlock": 27,
+          "runBlock": 34,
+          "handTechnique": 21,
+          "leadBlock": 19,
+          "passRushPower": 33,
+          "passRushFinesse": 22,
+          "blockShedding": 32,
+          "tackling": 39,
+          "hitPower": 26,
+          "pursuit": 50,
+          "manCoverage": 76,
+          "zoneCoverage": 67,
+          "press": 56,
+          "ballSkills": 55,
+          "kickPower": 37,
+          "kickAccuracy": 18,
+          "puntPower": 34,
+          "puntAccuracy": 28,
+          "awareness": 63,
+          "playRecognition": 87,
+          "decisionMaking": 75,
+          "composure": 68,
+          "discipline": 46,
+          "anticipation": 61,
+          "consistency": 44,
+          "workRate": 79
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Slot Corner"
+      },
+      "team": "D",
+      "slot": "NB",
+      "body": {
+        "pos": {
+          "x": 39.447553953752276,
+          "y": 27.439757150741737
+        },
+        "vel": {
+          "x": 0.7374180256708605,
+          "y": 4.216074763505546
+        },
+        "facing": 1.676653327073026,
+        "energy": 0.981637810843558,
+        "profile": {
+          "vmax": 9.868657244392221,
+          "tau": 1.2955559091906423,
+          "brake": 6.856417233560089,
+          "lateral": 6.713591836734695,
+          "turnRate": 9.424444444444443,
+          "backpedal": 0.7465306122448979,
+          "shuffle": 0.6356,
+          "massKg": 85.72895793,
+          "heightYd": 1.9666666666666666,
+          "radius": 0.24818181818181817,
+          "reach": 0.9984722222222222,
+          "maxCatchHeight": 3.5534444444444446,
+          "reactReach": 2.9673333333333334,
+          "reactionTime": 0.20995918367346944,
+          "power": 67.319101607175,
+          "balance": 0.29591836734693877,
+          "bend": 0.7498503401360544,
+          "stepSpeed": 3.929106575963719,
+          "getUp": 0.8066111111111112
+        },
+        "support": {
+          "xi": {
+            "x": 0.0039979407057235865,
+            "y": 0.002507927412499836
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.1964210299435904,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 1.1577324069010622e-06,
+            "y": 2.2536537684489892e-07
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.06952061851512088,
+          "out": 0,
+          "feltTip": {
+            "x": 7.75095525446455e-09,
+            "y": 1.5088088935042052e-09
+          },
+          "causes": {
+            "contact": 0.009860551381782982,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -5.3398548471547205,
+            "y": 2.385175145909136
+          },
+          "tipAccel": {
+            "x": -1.7687696374395367e-07,
+            "y": -3.442343950817312e-08
+          }
+        },
+        "spin": 7.630417920627188,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 1.7284822633229007
+      },
+      "seen": {
+        "pos": {
+          "x": 38.49680226558604,
+          "y": 27.936530499360593
+        },
+        "vel": {
+          "x": 0.3648097753849755,
+          "y": 4.716060876488427
+        },
+        "stance": null,
+        "facing": 1.3066636767003266,
+        "age": 0.2,
+        "pose": "up",
+        "carrying": false
+      },
+      "now": 2.5,
+      "runFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "force",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack"
+      },
+      "targetRadius": 0.29454545454545455,
+      "original": {
+        "vel": {
+          "x": -2.936227834808035,
+          "y": 6.440872441846008
+        },
+        "facing": 2.660102871763732,
+        "cutSkill": 0.9857142857142857,
+        "push": 1,
+        "posture": 0.4969387755102041
+      },
+      "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+      "captureSha256": "6b365cc039901413adc82be844f73413f14fd78431a9bd9adeb96cde1e719f6e"
+    }
+  ]
+}
