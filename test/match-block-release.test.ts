@@ -51,6 +51,11 @@ describe('acquired entry into a rule-based man technique', () => {
     }
     expect(one.b.job).toBe(`man:${one.r.slot}`);
     expect(one.b.recordedMan()?.initialCushion).toBe(1);
+    const before=one.update(1.3);
+    one.setPicture({ ...one.picture(),pos:{x:46,y:one.picture().pos.y} });
+    const fresh=one.update(1.4);
+    expect(fresh.vel.x).toBeGreaterThan(before.vel.x);
+    expect(one.b.recordedMan()?.initialCushion).toBe(1); // Entry only; do not restart a continuing technique.
   });
 });
 

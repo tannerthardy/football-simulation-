@@ -37,14 +37,20 @@ const pairs = [
 const fixtures = [1,2].flatMap(cohort=>pairs.map(([concept,coverage],i)=>({id:`R${cohort}-C${String(i+1).padStart(2,'0')}`,
  cohort,concept,coverage,offenseSeed:cohort===1?101:303,defenseSeed:cohort===1?102:304,
  playSeed:8100+i*37+cohort,flip:cohort===2,ballY:cohort===1?26:20})));
-const selected = selection && selection!=='all' ? fixtures.filter(f=>selection.split(',').includes(f.id)) : fixtures;
+const fresh = [
+ {id:'F1',cohort:3,concept:'four_verts',coverage:'cover4',offenseSeed:701,defenseSeed:702,playSeed:9201,flip:false,ballY:26},
+ {id:'F2',cohort:3,concept:'drive',coverage:'cover4',offenseSeed:701,defenseSeed:702,playSeed:9202,flip:false,ballY:26},
+ {id:'F3',cohort:4,concept:'four_verts',coverage:'cover3_match',offenseSeed:907,defenseSeed:908,playSeed:9203,flip:true,ballY:20},
+ {id:'F4',cohort:4,concept:'pa_post_dig',coverage:'cover4',offenseSeed:907,defenseSeed:908,playSeed:9204,flip:true,ballY:20},
+];
+const selected = selection && selection!=='all' ? [...fixtures,...fresh].filter(f=>selection.split(',').includes(f.id)) : fixtures;
 assert.ok(selected.length && selected.length<=32);
 const profile=JSON.parse(readFileSync('config/baseline.json'));
 assert.deepEqual(Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),profile.flags);
 const source=sourceVersion(),began=performance.now(),checkout=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const provenance={sourceSha256:source,checkout,node:process.version,platform:process.platform,arch:process.arch,
  operatorSha256:hash(readFileSync(import.meta.filename).toString()),lockSha256:hash(readFileSync('package-lock.json').toString()),
- flags:profile.flags,worldDefaults:profile.worldDefaults,fixturesSha256:hash(fixtures)};
+ flags:profile.flags,worldDefaults:profile.worldDefaults,fixturesSha256:hash([...fixtures,...fresh])};
 mkdirSync(out,{recursive:true});
 const body=a=>({pos:{...a.pos},vel:{...a.vel},facing:a.facing,energy:a.body.energy,
  support:a.body.support?.state??null,deviation:copy(a.body.support?.deviation??null),
@@ -94,11 +100,12 @@ function trial(f,observe) {
   firstPhysical=ri===undefined?null:sim.events.find(e=>e.t>=catchEvent.t&&e.type==='carrier_contact'),
   firstWrap=ri===undefined?null:sim.events.find(e=>e.t>=catchEvent.t&&e.type==='tackle_wrap'&&e.b===ri),
   atCatch=catchEvent?rows.find(r=>Math.abs(r.t-catchEvent.t)<.001):null;
- const summary={fixture:f,inputSha256:hash(setup),initialSha256:hash(initial),endpointSha256,queryCount,
+ const scoringExclusion=catchEvent&&sim.events.some(e=>e.type==='fumble'&&e.t>=catchEvent.t)?'fumble after catch':null;
+ const summary={fixture:f,inputSha256:hash(setup),initialSha256:hash(initial),endpointSha256,queryCount,scoringExclusion,
   end:sim.t,censored:sim.phase==='live',budgetCensored,outcome:sim.outcome,
   catchAt:catchEvent?.t??null,actualCatcher:ri??null,catcherId:ri===undefined?null:sim.agents[ri].player.id,
   throwAt:sim.throwAt,completed:!!catchEvent,interception:sim.events.some(e=>e.type==='interception'),
-  finalYac:catchEvent&&sim.phase==='dead'?(sim.endSpot.x-catchEvent.pos.x):null,
+  finalYac:catchEvent&&sim.phase==='dead'&&!scoringExclusion?(sim.endSpot.x-catchEvent.pos.x):null,
   observedYac:catchEvent?sim.agents[ri].pos.x-catchEvent.pos.x:null,
   firstPhysical,firstWrap,broken:sim.events.filter(e=>e.type==='broken_tackle'&&e.a===ri).length,
   nearestAtCatch:atCatch?Math.min(...sim.defense.map(d=>Math.hypot(atCatch.bodies[d.idx].pos.x-atCatch.bodies[ri].pos.x,

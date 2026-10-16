@@ -4,8 +4,8 @@
 
 User explicitly requested an independent suite of passing situations. Start
 `codex/pass-defense-panel` from accepted/fetched `bb6d4c73948d53ba841dd9338dd240146c739f8c`.
-Initial scope: one diagnostic collector/report, 32 predeclared native snaps
-(16 concept/coverage pairs, two generated cohorts), max30 wall seconds per batch,
+Initial scope: one diagnostic collector/report, 28 predeclared native snaps
+(14 concept/coverage pairs, two generated cohorts), max30 wall seconds per batch,
 5 seconds per snap and16 simulated seconds per play; preserve censored prefixes.
 Question: which initiating coverage/approach decision repeatedly leaves useful
 contact unavailable, versus failure after acquired contact? Capture consumed
@@ -14,6 +14,18 @@ cues, raw/applied requests, achieved movement and actual catcher/defender IDs.
 controller correction only after the panel supports a repeated mechanism;
 coordinate any shared movement-modifier edit with Flex. Physics/capabilities,
 helper policy and Integration's combined verification remain separate.
+
+Completed28 main pairs plus4 fresh pairs; accepted has21 catches/six20+ YAC
+cases, with mixed no-contact and broken-hold causes. Eleven snaps retain a
+terminal block-exit despite later acquired vertical motion. Runtime candidate
+`d4eaf85` fixes provisional blocking in `seamCurlFlat`/`qSafety`/`wallTwo`, after
+separately testing acquired entry initialization (`6189567`, the same optional
+interface as #95).82 focused contracts/typecheck pass; two contained QB scrambles
+replace Quarters seam catches. Drive shallow help costs and same-geometry
+different-grip execution remain visible; fresh51.85-YAC PA win is exact.
+[Report and review boundary](reviews/pass-defense-panel.md); Integration owns
+independent acceptance/combined checks. No rat, modifier, physics or capability
+change. Full traces local; compact source-qualified evidence published.
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 
