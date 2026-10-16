@@ -1,0 +1,57 @@
+{
+  "selection": "Primary two saved Ace12 WZ Over3 pair11 seed77 directions; saved successful Ace11 Duo fixture. One different-front WZ strong Under3/pair11/seed77 declared before either result; no replacement.",
+  "factory": {
+    "path": "scripts/diag/stretch-access/inputs.ts",
+    "sha256": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033",
+    "origin": "Claude50f6a08 factory, generated11/12 strength.55; no capacity changes."
+  },
+  "observerInitialization": "Ordinary PlaySim constructor history and native ticks. No perception replacement in native cases. Trace wraps existing read callbacks/disengage without new see/RNG; exact body-prefix parity checked.",
+  "cases": [
+    {
+      "concept": "wz",
+      "formation": "ace_12",
+      "look": "over3",
+      "roster": "pair11",
+      "seed": 77,
+      "direction": "strong",
+      "until": 20
+    },
+    {
+      "concept": "wz",
+      "formation": "ace_12",
+      "look": "over3",
+      "roster": "pair11",
+      "seed": 77,
+      "direction": "weak",
+      "until": 20
+    },
+    {
+      "fixture": "test/fixtures/planned-climb-fit.json.gz",
+      "sha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+      "until": 3.5,
+      "ending": "explicit prefix censor unless naturally terminal"
+    },
+    {
+      "concept": "wz",
+      "formation": "ace_12",
+      "look": "under3",
+      "roster": "pair11",
+      "seed": 77,
+      "direction": "strong",
+      "until": 20
+    }
+  ],
+  "cachedReferences": [
+    {
+      "commit": "aa60903",
+      "path": "data/reviews/current/claude-zone-independent-review/native-base.json.gz",
+      "source": "6753fa98966622ab758e4c4c56104dedf00b111c1429d7be66c5fad62531cd21"
+    },
+    {
+      "commit": "a32bdfb",
+      "path": "out/acquired-crease/native.json.gz (portable collector + extracted summary in #110)",
+      "source": "811cd00e20ea564a12d446f5d79bf280386c5c07774d32015c8ec7b43a95d4d7"
+    }
+  ],
+  "physicsWitness": "Explicit acquired control .6 versus -.3 initial conditions, same roster and layout, one actual World solve, condition on successful ordinary tackle by suppressing miss/fumble draws. No native success-rate claim or altered law. Details in portable script and summary."
+}

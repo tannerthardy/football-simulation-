@@ -1,0 +1,3194 @@
+{
+  "accepted": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "candidate": "bc02b22fa8ed4c985bbf7863eb58c914a4f53675",
+  "source": "626836315cccc12ad1e5ab438f7a4e5a25a0b2db3b24c23396f3af4ea02d7fcf",
+  "composition": {
+    "commit": "3015ed7",
+    "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "scope": "Diagnostic runtime composition only; #110 remains separate. Integration must include each candidate's proper tests, not merge this diagnostic host."
+  },
+  "demonstratedDirectionError": {
+    "t": 2.3,
+    "delta": {
+      "x": -0.018777044263423193,
+      "y": 0.9540780851321173
+    },
+    "observedMovement": {
+      "axis": {
+        "x": -1,
+        "y": 0
+      },
+      "lat": {
+        "x": 0,
+        "y": -1
+      },
+      "drive": {
+        "x": 1,
+        "y": 0
+      },
+      "stretch": true,
+      "forward": 1.0887540190437361,
+      "dLat": -0.9986395303010352,
+      "feltCue": 0.011627704162633168,
+      "feedback": 0.011502117656135654,
+      "correction": -4.426315439314931,
+      "mirror": 3.752354325816354,
+      "offset": 1.17021221204727,
+      "wantOffset": 0.27528333029661606,
+      "seal": -3.752354325816354,
+      "sealWithoutFeel": -3.752354325816354,
+      "contactTrack": null,
+      "lateral": -0.9986395303010352,
+      "preAnchor": {
+        "x": 1.0887540190437361,
+        "y": 0.9986395303010352
+      },
+      "anchored": false,
+      "command": {
+        "vel": {
+          "x": 1.0887540190437361,
+          "y": 0.9986395303010352
+        },
+        "facing": 1.590474611816285,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9945996860282575
+      },
+      "blockerPos": {
+        "x": 39.72839293739392,
+        "y": 19.541165247969722
+      },
+      "defenderPos": {
+        "x": 39.7096158931305,
+        "y": 20.49524333310184
+      },
+      "blockerVel": {
+        "x": 0.433071432328481,
+        "y": -0.8626609909187077
+      },
+      "defenderVel": {
+        "x": 0.04505640480887461,
+        "y": 0.9986395303010352
+      },
+      "facing": 1.5695633730108518,
+      "support": {
+        "xi": {
+          "x": 7.5246039593110716e-06,
+          "y": -1.766494969964009e-05
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.8429796498637265,
+        "lean": {
+          "x": 291.2472167880158,
+          "y": 283.0899242404069
+        },
+        "load": {
+          "x": -235.8369124946107,
+          "y": -4.276463314345457
+        },
+        "felt": {
+          "x": -235.88078431063295,
+          "y": -11.150572160800257
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0.08660956935410756,
+        "out": 0,
+        "feltTip": {
+          "x": 0.014708579949629283,
+          "y": 0.0006987767956402451
+        },
+        "causes": {
+          "contact": 0.001597890577210061,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 5.469740099873089,
+          "y": 1.3825825421632278
+        },
+        "tipAccel": {
+          "x": -3.685839339388542e-05,
+          "y": -0.00242870396689047
+        }
+      },
+      "defensiveAim": {
+        "x": 39.71456937517116,
+        "y": 18.935806751481074
+      },
+      "reading": true,
+      "declared": false,
+      "heldFlow": -1.9314260757987043,
+      "fit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "edge",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack",
+        "partner": "SS"
+      }
+    },
+    "rep": {
+      "blocker": "Y",
+      "defender": "DE_S",
+      "helpers": [],
+      "win": 1.0125275853309006,
+      "phi": -1.0125275853309006,
+      "baseB": 1,
+      "baseD": 1,
+      "control": -0.2731923557145815,
+      "surface": {
+        "x": -1,
+        "y": 0
+      },
+      "drive": {
+        "x": 1,
+        "y": 0
+      },
+      "sealTarget": -0.3,
+      "hands": [
+        {
+          "actor": "DE_S",
+          "a": "Y",
+          "b": "DE_S",
+          "extension": 0.7750616234958183,
+          "hold": 0,
+          "steer": 230.87642638044915,
+          "push": 469.78584667229103,
+          "normal": 0,
+          "tangent": -235.87568215793158
+        }
+      ]
+    }
+  },
+  "contactOwnership": {
+    "t": 2.3,
+    "rep": {
+      "blocker": "Y",
+      "defender": "DE_S",
+      "helpers": [],
+      "win": 1.0125275853309006,
+      "phi": -1.0125275853309006,
+      "baseB": 1,
+      "baseD": 1,
+      "control": -0.2731923557145815,
+      "surface": {
+        "x": -1,
+        "y": 0
+      },
+      "drive": {
+        "x": 1,
+        "y": 0
+      },
+      "sealTarget": -0.3,
+      "hands": [
+        {
+          "actor": "DE_S",
+          "a": "Y",
+          "b": "DE_S",
+          "extension": 0.7750616234958183,
+          "hold": 0,
+          "steer": 230.87642638044915,
+          "push": 469.78584667229103,
+          "normal": 0,
+          "tangent": -230.8764263804492
+        }
+      ]
+    },
+    "events": [
+      {
+        "t": 1.55,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 36.34,
+          "y": 24.43
+        }
+      },
+      {
+        "t": 1.75,
+        "type": "block_contact",
+        "a": 2,
+        "b": 17,
+        "pos": {
+          "x": 40.78056757188891,
+          "y": 22.786165567473653
+        },
+        "note": "run"
+      },
+      {
+        "t": 2.3,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 12,
+        "pos": {
+          "x": 38.81,
+          "y": 20.82
+        },
+        "note": "grasp"
+      }
+    ]
+  },
+  "retentionQuestion": {
+    "source": "d36d69299c34977d855855b4d613b7d706485c89ed090615deb2aab8a4fe2d87",
+    "rows": [
+      {
+        "initialControl": 0.6,
+        "before": {
+          "b": {
+            "pos": {
+              "x": 50,
+              "y": 25.891505209895392
+            },
+            "vel": {
+              "x": 0,
+              "y": -0.33979160418424265
+            }
+          },
+          "d": {
+            "pos": {
+              "x": 50,
+              "y": 26.68172206844131
+            },
+            "vel": {
+              "x": 0,
+              "y": 0.46888273765161886
+            }
+          },
+          "rb": {
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "liveHands": true,
+          "actor": "blocker",
+          "hold": 197.44902883450655,
+          "normal": 974.0818755835654,
+          "tangent": 0
+        },
+        "after": {
+          "b": {
+            "pos": {
+              "x": 50,
+              "y": 25.891505209895392
+            },
+            "vel": {
+              "x": 0,
+              "y": -0.33979160418424265
+            }
+          },
+          "d": {
+            "pos": {
+              "x": 50,
+              "y": 26.68172206844131
+            },
+            "vel": {
+              "x": 0,
+              "y": 0.46888273765161886
+            }
+          },
+          "rb": {
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "liveHands": false,
+          "actor": "blocker",
+          "hold": 197.44902883450655,
+          "normal": 974.0818755835654,
+          "tangent": 0
+        },
+        "wrapped": true,
+        "blockerEngaged": false,
+        "workResidual": 1.4366285938649526e-13,
+        "maxArmExcess": -17.11224916565724,
+        "events": [
+          {
+            "t": 2,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 50,
+              "y": 26.68
+            },
+            "note": "initial"
+          }
+        ],
+        "question": "Does a defender tackle choice authorize deleting a blocker-owned acquired tensile/steering connection?"
+      },
+      {
+        "initialControl": -0.3,
+        "before": {
+          "b": {
+            "pos": {
+              "x": 50,
+              "y": 25.895896491183308
+            },
+            "vel": {
+              "x": 0,
+              "y": -0.1641403526679711
+            }
+          },
+          "d": {
+            "pos": {
+              "x": 50,
+              "y": 26.675662483782
+            },
+            "vel": {
+              "x": 0,
+              "y": 0.22649935127982046
+            }
+          },
+          "rb": {
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "liveHands": true,
+          "actor": "defender",
+          "hold": 0,
+          "normal": 470.54176918118145,
+          "tangent": 0
+        },
+        "after": {
+          "b": {
+            "pos": {
+              "x": 50,
+              "y": 25.895896491183308
+            },
+            "vel": {
+              "x": 0,
+              "y": -0.1641403526679711
+            }
+          },
+          "d": {
+            "pos": {
+              "x": 50,
+              "y": 26.675662483782
+            },
+            "vel": {
+              "x": 0,
+              "y": 0.22649935127982046
+            }
+          },
+          "rb": {
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "liveHands": false,
+          "actor": "defender",
+          "hold": 0,
+          "normal": 470.54176918118145,
+          "tangent": 0
+        },
+        "wrapped": true,
+        "blockerEngaged": false,
+        "workResidual": 1.3211653993039363e-13,
+        "maxArmExcess": -19.64188119059061,
+        "events": [
+          {
+            "t": 2,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 50.75,
+              "y": 26.67
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 50,
+              "y": 26.68
+            },
+            "note": "initial"
+          }
+        ],
+        "question": "Opposing control: defender can cease his own steering when reaching for the runner."
+      }
+    ]
+  },
+  "nativeComparisons": [
+    {
+      "id": "wz-strong-over3",
+      "accepted": {
+        "id": "wz-strong-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.67,
+        "t": 3.1,
+        "maxima": {
+          "workResidual": 3.979039320256561e-12,
+          "armExcess": 2.1316282072803006e-14
+        },
+        "firstContact": {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 38.81,
+            "y": 20.82
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_S",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 2.3,
+            "impulse": 879.0749323923119
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.1,
+            "impulse": 1821.9885694874617
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 3.1,
+            "impulse": 2512.800121272096
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.1,
+            "impulse": 2212.2200880294426
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 2,
+            "impulse": 258.05044198708174
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 3.1,
+            "impulse": 1984.0663040875056
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.1,
+            "impulse": 1636.041951296667
+          }
+        ],
+        "peerImpacts": []
+      },
+      "readerOnly": {
+        "id": "wz-strong-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 0.39,
+        "t": 2.95,
+        "maxima": {
+          "workResidual": 5.822675674949096e-12,
+          "armExcess": 2.1316282072803006e-14
+        },
+        "firstContact": {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 39.03,
+            "y": 21.08
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_S",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 2.3,
+            "impulse": 873.1561547059861
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 1750.3939464382092
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 2359.611573624282
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 2.95,
+            "impulse": 2201.726317971113
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 2,
+            "impulse": 258.05044198708174
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 2.95,
+            "impulse": 1835.913528603544
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 2.95,
+            "impulse": 1436.527485564584
+          }
+        ],
+        "peerImpacts": []
+      },
+      "closureOnly": {
+        "id": "wz-strong-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.53,
+        "t": 3.05,
+        "maxima": {
+          "workResidual": 6.186162693211372e-12,
+          "armExcess": 2.1316282072803006e-14
+        },
+        "firstContact": {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 38.82,
+            "y": 20.8
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_S",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 2.3,
+            "impulse": 855.774482243027
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.05,
+            "impulse": 1850.0655504399588
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 3.05,
+            "impulse": 2461.017911706851
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.05,
+            "impulse": 2235.1813116619
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 2,
+            "impulse": 263.56838181474114
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 3.05,
+            "impulse": 1917.598263951231
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.8,
+            "last": 3.05,
+            "impulse": 1413.5961100832762
+          }
+        ],
+        "peerImpacts": []
+      },
+      "both": {
+        "id": "wz-strong-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 2.53,
+        "t": 4.15,
+        "maxima": {
+          "workResidual": 1.007638417149792e-11,
+          "armExcess": 2.1316282072803006e-14
+        },
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.83,
+            "y": 14.87
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "CB_S",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 4.15,
+            "impulse": 1336.749674775841
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 4.15,
+            "impulse": 2275.3506963504324
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 4.15,
+            "impulse": 3583.617661828196
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.25,
+            "impulse": 2527.776440009411
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 4.15,
+            "impulse": 271.0700219227774
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 4.15,
+            "impulse": 2729.8071654596943
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.8,
+            "last": 3.45,
+            "impulse": 1513.811579590742
+          }
+        ],
+        "peerImpacts": []
+      },
+      "rejectedGradient": {
+        "id": "wz-strong-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.49,
+        "t": 3.2,
+        "maxima": {
+          "workResidual": 5.274003456179344e-12,
+          "armExcess": 1.4210854715202004e-14
+        },
+        "firstContact": {
+          "t": 2.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 38.89,
+            "y": 20.79
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_S",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 2.35,
+            "impulse": 892.9850883842364
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.2,
+            "impulse": 1850.828485188017
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 3.2,
+            "impulse": 2614.9242592446853
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.2,
+            "impulse": 2310.1257571937463
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 2,
+            "impulse": 258.05044198708174
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 3.2,
+            "impulse": 2072.6018134047667
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.2,
+            "impulse": 1749.0628777039326
+          }
+        ],
+        "peerImpacts": []
+      },
+      "firstClosureDifference": {
+        "executedThrough": 0.5,
+        "actor": "Y",
+        "before": {
+          "slot": "Y",
+          "pos": {
+            "x": 39.92730273160218,
+            "y": 22.456541574888522
+          },
+          "vel": {
+            "x": 1.7256320809512837,
+            "y": -1.2338766114768824
+          },
+          "facing": -0.30786294180034063
+        },
+        "after": {
+          "slot": "Y",
+          "pos": {
+            "x": 39.92756079345167,
+            "y": 22.455995601901343
+          },
+          "vel": {
+            "x": 1.7392578539604522,
+            "y": -1.2617984789133203
+          },
+          "facing": -0.30785807633178675
+        }
+      },
+      "firstCompositionDifference": {
+        "executedThrough": 0.5,
+        "actor": "Y",
+        "before": {
+          "slot": "Y",
+          "pos": {
+            "x": 39.92730273160218,
+            "y": 22.456541574888522
+          },
+          "vel": {
+            "x": 1.7256320809512837,
+            "y": -1.2338766114768824
+          },
+          "facing": -0.30786294180034063
+        },
+        "after": {
+          "slot": "Y",
+          "pos": {
+            "x": 39.92756079345167,
+            "y": 22.455995601901343
+          },
+          "vel": {
+            "x": 1.7392578539604522,
+            "y": -1.2617984789133203
+          },
+          "facing": -0.30785807633178675
+        }
+      },
+      "duoExactFramesComparedToAccepted": null,
+      "duoExactFramesComparedToReader": null
+    },
+    {
+      "id": "wz-weak-over3",
+      "accepted": {
+        "id": "wz-weak-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.03,
+        "t": 3.45,
+        "maxima": {
+          "workResidual": 7.785772027091298e-12,
+          "armExcess": 7.105427357601002e-15
+        },
+        "firstContact": {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.52,
+            "y": 33.01
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "DE_W",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.35,
+            "impulse": 811.7220449608942
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 3.45,
+            "impulse": 2834.4982017292486
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.45,
+            "impulse": 1457.2538496419713
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 2.7,
+            "impulse": 1001.1144789178967
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 3.45,
+            "impulse": 224.70164405938095
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.45,
+            "impulse": 1819.7299954025948
+          }
+        ],
+        "peerImpacts": []
+      },
+      "readerOnly": {
+        "id": "wz-weak-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 4.96,
+        "t": 3.65,
+        "maxima": {
+          "workResidual": 9.14424092002264e-12,
+          "armExcess": 0
+        },
+        "firstContact": {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.57,
+            "y": 34.47
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.4,
+            "impulse": 905.8964963121687
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 3.65,
+            "impulse": 2973.6791226483574
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.65,
+            "impulse": 1549.2429330744317
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 3.2,
+            "impulse": 1283.1828556512555
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 3.65,
+            "impulse": 318.2230500283025
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.65,
+            "impulse": 2070.239266736778
+          }
+        ],
+        "peerImpacts": []
+      },
+      "closureOnly": {
+        "id": "wz-weak-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.14,
+        "t": 3.7,
+        "maxima": {
+          "workResidual": 7.430500659211248e-12,
+          "armExcess": 1.4210854715202004e-14
+        },
+        "firstContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 39.35,
+            "y": 33.02
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_W",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.4,
+            "impulse": 835.5265558141069
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 3.7,
+            "impulse": 3044.9937107143624
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.7,
+            "impulse": 1560.3886251116128
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 2.95,
+            "impulse": 1135.052567516799
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 2.1,
+            "impulse": 134.21832414905197
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.7,
+            "impulse": 2155.087302806588
+          }
+        ],
+        "peerImpacts": []
+      },
+      "both": {
+        "id": "wz-weak-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 5.34,
+        "t": 4,
+        "maxima": {
+          "workResidual": 7.211564678755167e-12,
+          "armExcess": 0
+        },
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.31,
+            "y": 34.31
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.45,
+            "impulse": 926.79885005709
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 4,
+            "impulse": 3318.6866614945857
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.85,
+            "impulse": 1614.7916940315563
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 4,
+            "impulse": 1350.2083774493994
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 3.65,
+            "impulse": 318.86191940837296
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 4,
+            "impulse": 2495.146500845828
+          }
+        ],
+        "peerImpacts": []
+      },
+      "rejectedGradient": {
+        "id": "wz-weak-over3",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": -0.43,
+        "t": 3.7,
+        "maxima": {
+          "workResidual": 6.792788553866558e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 39.3,
+            "y": 32.95
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_W",
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.35,
+            "impulse": 801.4948079102535
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 3.7,
+            "impulse": 3041.0941577958947
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.7,
+            "impulse": 1527.3564240723629
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 3.25,
+            "impulse": 1271.0172799717757
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 2.1,
+            "impulse": 132.3150042415669
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 3.7,
+            "impulse": 2092.084676213048
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_M",
+            "first": 3.4,
+            "last": 3.7,
+            "impulse": 149.7434211882829
+          }
+        ],
+        "peerImpacts": []
+      },
+      "firstClosureDifference": {
+        "executedThrough": 0.55,
+        "actor": "RT",
+        "before": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.6697423308535,
+            "y": 24.202434803149092
+          },
+          "vel": {
+            "x": 0.7278647322556271,
+            "y": 0.6458285603905284
+          },
+          "facing": 0.11901959624835302
+        },
+        "after": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.66674374971062,
+            "y": 24.20094749137856
+          },
+          "vel": {
+            "x": 0.6104793125070347,
+            "y": 0.5883936132440141
+          },
+          "facing": 0.1191758311534226
+        }
+      },
+      "firstCompositionDifference": {
+        "executedThrough": 0.55,
+        "actor": "RT",
+        "before": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.6697423308535,
+            "y": 24.202434803149092
+          },
+          "vel": {
+            "x": 0.7278647322556271,
+            "y": 0.6458285603905284
+          },
+          "facing": 0.11901959624835302
+        },
+        "after": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.66674374971062,
+            "y": 24.20094749137856
+          },
+          "vel": {
+            "x": 0.6104793125070347,
+            "y": 0.5883936132440141
+          },
+          "facing": 0.1191758311534226
+        }
+      },
+      "duoExactFramesComparedToAccepted": null,
+      "duoExactFramesComparedToReader": null
+    },
+    {
+      "id": "useful-climb-opponent",
+      "accepted": {
+        "id": "useful-climb-opponent",
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 3.4710012641880894e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 3.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 40.06,
+            "y": 23.1
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "SS",
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.5,
+            "impulse": 1723.2482079747574
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.15,
+            "impulse": 2603.8501925504224
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 2.1,
+            "impulse": 1184.5286328742359
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.5,
+            "impulse": 238.1431119887889
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1187.7766675286557
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 183.47107149006945
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1153.1571208446717
+          }
+        ],
+        "peerImpacts": []
+      },
+      "readerOnly": {
+        "id": "useful-climb-opponent",
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 7.250200440012122e-12,
+          "armExcess": 0
+        },
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "SS",
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.45,
+            "impulse": 1551.774840086061
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 2474.012020208735
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 3.5,
+            "impulse": 2123.0385231961914
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.4,
+            "impulse": 266.96584741534946
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1317.0494043946012
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 181.06033176675183
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1209.1374029726346
+          }
+        ],
+        "peerImpacts": []
+      },
+      "closureOnly": {
+        "id": "useful-climb-opponent",
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 3.4710012641880894e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 3.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 40.06,
+            "y": 23.1
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "SS",
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.5,
+            "impulse": 1723.2482079747574
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.15,
+            "impulse": 2603.8501925504224
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 2.1,
+            "impulse": 1184.5286328742359
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.5,
+            "impulse": 238.1431119887889
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1187.7766675286557
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 183.47107149006945
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1153.1571208446717
+          }
+        ],
+        "peerImpacts": []
+      },
+      "both": {
+        "id": "useful-climb-opponent",
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 7.250200440012122e-12,
+          "armExcess": 0
+        },
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "SS",
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.45,
+            "impulse": 1551.774840086061
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 2474.012020208735
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 3.5,
+            "impulse": 2123.0385231961914
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.4,
+            "impulse": 266.96584741534946
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1317.0494043946012
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 181.06033176675183
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1209.1374029726346
+          }
+        ],
+        "peerImpacts": []
+      },
+      "rejectedGradient": {
+        "id": "useful-climb-opponent",
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 3.4710012641880894e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 3.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 40.06,
+            "y": 23.1
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "SS",
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.5,
+            "impulse": 1723.2482079747574
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.15,
+            "impulse": 2603.8501925504224
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 2.1,
+            "impulse": 1184.5286328742359
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.5,
+            "impulse": 238.1431119887889
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1187.7766675286557
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 183.47107149006945
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1153.1571208446717
+          }
+        ],
+        "peerImpacts": []
+      },
+      "firstClosureDifference": null,
+      "firstCompositionDifference": null,
+      "duoExactFramesComparedToAccepted": true,
+      "duoExactFramesComparedToReader": true
+    },
+    {
+      "id": "wz-strong-under3-transfer",
+      "accepted": {
+        "id": "wz-strong-under3-transfer",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 2.62,
+        "t": 3.6,
+        "maxima": {
+          "workResidual": 6.339817559819494e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.82,
+            "y": 20.67
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loads": [
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.6,
+            "impulse": 3554.171963817696
+          },
+          {
+            "blocker": "LT",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.6,
+            "impulse": 2340.86057371564
+          },
+          {
+            "blocker": "Y",
+            "defender": "LB_S",
+            "first": 0.55,
+            "last": 3.2,
+            "impulse": 1533.4529111419556
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 1.8,
+            "impulse": 479.45573588977646
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.65,
+            "last": 2.8,
+            "impulse": 640.3068250418231
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.95,
+            "last": 3.6,
+            "impulse": 2081.0862533497516
+          },
+          {
+            "blocker": "LG",
+            "defender": "LB_W",
+            "first": 1.55,
+            "last": 3.3,
+            "impulse": 1926.2901298581437
+          }
+        ],
+        "peerImpacts": []
+      },
+      "closureOnly": {
+        "id": "wz-strong-under3-transfer",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 3.04,
+        "t": 3.45,
+        "maxima": {
+          "workResidual": 7.901235221652314e-12,
+          "armExcess": 2.842170943040401e-14
+        },
+        "firstContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.71,
+            "y": 20.86
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loads": [
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.05,
+            "impulse": 2956.593640938643
+          },
+          {
+            "blocker": "LT",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.45,
+            "impulse": 2226.8691796273406
+          },
+          {
+            "blocker": "Y",
+            "defender": "LB_S",
+            "first": 0.55,
+            "last": 3.45,
+            "impulse": 1519.9237606475936
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 1.8,
+            "impulse": 479.45573588977646
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.65,
+            "last": 2.8,
+            "impulse": 640.3150665462971
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.95,
+            "last": 3.45,
+            "impulse": 1992.8053233633289
+          },
+          {
+            "blocker": "LG",
+            "defender": "LB_W",
+            "first": 1.55,
+            "last": 3.45,
+            "impulse": 2090.308791994769
+          }
+        ],
+        "peerImpacts": []
+      },
+      "rejectedGradient": {
+        "id": "wz-strong-under3-transfer",
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 2.26,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 7.336353746723034e-12,
+          "armExcess": 1.4210854715202004e-14
+        },
+        "firstContact": {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.41,
+            "y": 20.48
+          },
+          "note": "grasp"
+        },
+        "firstDefender": "LB_M",
+        "loads": [
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3,
+            "impulse": 2932.527235858957
+          },
+          {
+            "blocker": "LT",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.5,
+            "impulse": 2202.937059744388
+          },
+          {
+            "blocker": "Y",
+            "defender": "LB_S",
+            "first": 0.55,
+            "last": 3.5,
+            "impulse": 1740.6806162078024
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 1.8,
+            "impulse": 479.45573588977646
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.65,
+            "last": 2.8,
+            "impulse": 640.4267808232252
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.95,
+            "last": 3.5,
+            "impulse": 2050.0032431401423
+          },
+          {
+            "blocker": "LG",
+            "defender": "LB_W",
+            "first": 1.55,
+            "last": 3.5,
+            "impulse": 2213.124851220335
+          }
+        ],
+        "peerImpacts": []
+      },
+      "firstClosureDifference": {
+        "executedThrough": 0.5,
+        "actor": "RT",
+        "before": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.613263933548055,
+            "y": 23.868184885868992
+          },
+          "vel": {
+            "x": 0.7253377244339682,
+            "y": -0.7995119685130571
+          },
+          "facing": -0.36352250045206325
+        },
+        "after": {
+          "slot": "RT",
+          "pos": {
+            "x": 39.61328013488199,
+            "y": 23.86817404581137
+          },
+          "vel": {
+            "x": 0.725985613489584,
+            "y": -0.7999454785047577
+          },
+          "facing": -0.36352250045206325
+        }
+      }
+    }
+  ],
+  "strongRouteInteraction": [
+    {
+      "arm": "readerOnly",
+      "cue": {
+        "t": 1.95,
+        "preferred": 19.276531989228825,
+        "selected": {
+          "x": 38.8,
+          "y": 21.67
+        },
+        "bestCandidates": [
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 21.67
+            },
+            "risk": 9.574016201950474,
+            "score": 10.708104913522863
+          },
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 18.67
+            },
+            "risk": 10.068933198276785,
+            "score": 10.758900700155115
+          },
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 18.97289562559246
+            },
+            "risk": 10.267281075806297,
+            "score": 10.784598071096926
+          },
+          {
+            "entry": {
+              "x": 41.817878570231215,
+              "y": 21.509511277046908
+            },
+            "risk": 10.415897588806093,
+            "score": 11.497025021803962
+          }
+        ],
+        "requestedAtRead": {
+          "phase": "command",
+          "t": 1.95,
+          "actor": 6,
+          "heading": -0.3156424177000064,
+          "speed": 6.083558089987718,
+          "vel": {
+            "x": 5.783012989172363,
+            "y": -1.8885019992890513
+          },
+          "cutSkill": 1.1535714285714285,
+          "squeeze": 0
+        }
+      },
+      "keyframes": [
+        {
+          "t": 1.5,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 35.736356621913075,
+                "y": 23.41207545892571
+              },
+              "vel": {
+                "x": 3.7922825437450083,
+                "y": -2.011529398227571
+              },
+              "facing": -0.2771736485652872
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.95932122134702,
+                "y": 20.884723991000136
+              },
+              "vel": {
+                "x": -0.3536393295014443,
+                "y": -1.9242984054818562
+              },
+              "facing": 1.086532273023455
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.19502190961998,
+                "y": 21.376448030969996
+              },
+              "vel": {
+                "x": -0.6986708587323338,
+                "y": -1.757660512190909
+              },
+              "facing": 4.228094643447833
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.858573840938895,
+                "y": 43.223732525080315
+              },
+              "vel": {
+                "x": -0.34208188834197645,
+                "y": -4.103212188374982
+              },
+              "facing": 3.1475569201680678
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 515.2076293884576
+            }
+          ]
+        },
+        {
+          "t": 1.95,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.34472715206365,
+                "y": 22.145234222711334
+              },
+              "vel": {
+                "x": 3.2826688577557244,
+                "y": -3.6206496667345536
+              },
+              "facing": -0.7938334634504123
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.85691002698285,
+                "y": 19.979080843874655
+              },
+              "vel": {
+                "x": -0.4284416903470418,
+                "y": -1.8457102235260323
+              },
+              "facing": 1.4458365180332489
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.89900707806849,
+                "y": 20.53193206260587
+              },
+              "vel": {
+                "x": -0.7930364799725435,
+                "y": -1.4969192020877626
+              },
+              "facing": 4.587429171623042
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.66443023991001,
+                "y": 41.20997014646861
+              },
+              "vel": {
+                "x": -0.45300363877751554,
+                "y": -4.810418429772387
+              },
+              "facing": 3.142653807449661
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 537.6289215756792
+            }
+          ]
+        },
+        {
+          "t": 2,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.51585744476031,
+                "y": 21.969048902980457
+              },
+              "vel": {
+                "x": 3.5625428501106375,
+                "y": -3.426763122500518
+              },
+              "facing": -0.7904900404127938
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.82816728737102,
+                "y": 19.889479696778352
+              },
+              "vel": {
+                "x": -0.7259487801117125,
+                "y": -1.7496566778746674
+              },
+              "facing": 1.4947976306495774
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.8603194291514,
+                "y": 20.466214667141863
+              },
+              "vel": {
+                "x": -0.750215338617836,
+                "y": -1.122367539865124
+              },
+              "facing": 4.63639028423937
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.64226005265595,
+                "y": 40.96778781667285
+              },
+              "vel": {
+                "x": -0.4338038513850875,
+                "y": -4.876874762058055
+              },
+              "facing": 3.1421113876791114
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 530.7091325611982
+            }
+          ]
+        },
+        {
+          "t": 2.3,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.787484429836674,
+                "y": 21.172523183329602
+              },
+              "vel": {
+                "x": 4.830404797043919,
+                "y": -1.8234084630167229
+              },
+              "facing": 0.3236299616685032
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.75661517728151,
+                "y": 19.52383966276842
+              },
+              "vel": {
+                "x": 0.2046816222773812,
+                "y": -0.4019513803405525
+              },
+              "facing": 1.6056761533849842
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.71226340937575,
+                "y": 20.48484665883478
+              },
+              "vel": {
+                "x": 0.03130414023000944,
+                "y": 0.9515360510732719
+              },
+              "facing": 4.747268806974777
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.73212932790369,
+                "y": 39.413657437059626
+              },
+              "vel": {
+                "x": 0.9539348974489507,
+                "y": -5.49212326768304
+              },
+              "facing": 5.205793878724184
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 235.87568215793158
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 39.538807159391766,
+                "y": 20.92439488171744
+              },
+              "vel": {
+                "x": 2.3312202104969373,
+                "y": -0.5339360154549869
+              },
+              "facing": -0.4066671638883935
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.786740353785106,
+                "y": 19.487156915355424
+              },
+              "vel": {
+                "x": -0.22309878062921268,
+                "y": -0.11327581338294501
+              },
+              "facing": 2.3883253301316287
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.91187348591624,
+                "y": 20.564733552460975
+              },
+              "vel": {
+                "x": 2.403053589626638,
+                "y": -0.45955896684580605
+              },
+              "facing": 4.60558980175226
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.95897789042444,
+                "y": 38.27448623810457
+              },
+              "vel": {
+                "x": 1.3729012739624258,
+                "y": -5.873062351293437
+              },
+              "facing": 4.858535190027278
+            }
+          ],
+          "loads": []
+        },
+        {
+          "t": 2.9,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 40.31659311293175,
+                "y": 20.77839148000184
+              },
+              "vel": {
+                "x": 1.48115978749902,
+                "y": -0.22252279051860976
+              },
+              "facing": -0.13089121671113496
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.847060179101476,
+                "y": 19.492009511396592
+              },
+              "vel": {
+                "x": 0.8238949045210118,
+                "y": -0.16203104049924613
+              },
+              "facing": 1.7082445780482027
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.695375200337075,
+                "y": 20.42142995186352
+              },
+              "vel": {
+                "x": 1.490416246304711,
+                "y": -0.2302682691264963
+              },
+              "facing": 4.353655412356767
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 48.48011037850744,
+                "y": 35.807323943613646
+              },
+              "vel": {
+                "x": 0.526209460341986,
+                "y": -6.511870345257921
+              },
+              "facing": 4.045814934748721
+            }
+          ],
+          "loads": []
+        }
+      ]
+    },
+    {
+      "arm": "both",
+      "cue": {
+        "t": 1.95,
+        "preferred": 19.27567900559816,
+        "selected": {
+          "x": 38.8,
+          "y": 18.67
+        },
+        "bestCandidates": [
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 18.67
+            },
+            "risk": 9.919532812960894,
+            "score": 10.609116472205425
+          },
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 18.972042641961796
+            },
+            "risk": 10.109760573828941,
+            "score": 10.62717992715525
+          },
+          {
+            "entry": {
+              "x": 40.5,
+              "y": 21.67
+            },
+            "risk": 9.576258556120816,
+            "score": 10.710731110327005
+          },
+          {
+            "entry": {
+              "x": 41.858289441601364,
+              "y": 21.47895555222701
+            },
+            "risk": 10.390135693278625,
+            "score": 11.461563579719726
+          }
+        ],
+        "requestedAtRead": {
+          "phase": "command",
+          "t": 1.95,
+          "actor": 6,
+          "heading": -1.1742268396560787,
+          "speed": 6.083558089987718,
+          "vel": {
+            "x": 2.3498129154968597,
+            "y": -5.611422127804961
+          },
+          "cutSkill": 1.1535714285714285,
+          "squeeze": 0
+        }
+      },
+      "keyframes": [
+        {
+          "t": 1.5,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 35.736356621913075,
+                "y": 23.41207545892571
+              },
+              "vel": {
+                "x": 3.7922825437450083,
+                "y": -2.011529398227571
+              },
+              "facing": -0.2771736485652872
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.0155899769371,
+                "y": 20.884828742560813
+              },
+              "vel": {
+                "x": -0.15778169900944455,
+                "y": -1.901668798565767
+              },
+              "facing": 1.1681542365258692
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.2117057627341,
+                "y": 21.393531863378666
+              },
+              "vel": {
+                "x": -0.5080160079980887,
+                "y": -1.7654843901974013
+              },
+              "facing": 4.30973196942365
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.858573840938895,
+                "y": 43.223732525080315
+              },
+              "vel": {
+                "x": -0.34208188834197645,
+                "y": -4.103212188374982
+              },
+              "facing": 3.1475569201680678
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 515.2076293884576
+            }
+          ]
+        },
+        {
+          "t": 1.95,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.34472715206365,
+                "y": 22.145234222711334
+              },
+              "vel": {
+                "x": 3.2826688577557244,
+                "y": -3.6206496667345536
+              },
+              "facing": -0.7938334634504123
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.867114681079464,
+                "y": 19.97478740721836
+              },
+              "vel": {
+                "x": -0.8219525781376489,
+                "y": -2.181666171156898
+              },
+              "facing": 1.4757710461303444
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.92107797474324,
+                "y": 20.540960634356296
+              },
+              "vel": {
+                "x": -0.7692192107835328,
+                "y": -1.6283971109184507
+              },
+              "facing": 4.617363699720113
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.66443023991001,
+                "y": 41.20997014646861
+              },
+              "vel": {
+                "x": -0.45300363877751554,
+                "y": -4.810418429772387
+              },
+              "facing": 3.142653807449661
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 455.7832958816123
+            }
+          ]
+        },
+        {
+          "t": 2,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.50345324049651,
+                "y": 21.957672940977172
+              },
+              "vel": {
+                "x": 3.0663746795587263,
+                "y": -3.8818016026319393
+              },
+              "facing": -0.9505477986030698
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.82345361427305,
+                "y": 19.87100503752252
+              },
+              "vel": {
+                "x": -0.9240141522005565,
+                "y": -1.9555289401076807
+              },
+              "facing": 1.4757710461302542
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.88040644813543,
+                "y": 20.468543985820006
+              },
+              "vel": {
+                "x": -0.8575983784055035,
+                "y": -1.2587065182462693
+              },
+              "facing": 4.6173636997200465
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.64226005265595,
+                "y": 40.96778781667285
+              },
+              "vel": {
+                "x": -0.4338038513850875,
+                "y": -4.876874762058055
+              },
+              "facing": 3.1421113876791114
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 458.4270754573458
+            }
+          ]
+        },
+        {
+          "t": 2.3,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.19039879927564,
+                "y": 20.676770971268656
+              },
+              "vel": {
+                "x": 1.7555198620875798,
+                "y": -4.527405408868405
+              },
+              "facing": -1.2008399545762314
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.66510478765538,
+                "y": 19.49087411507076
+              },
+              "vel": {
+                "x": -0.3452146326329732,
+                "y": -0.36908426841055975
+              },
+              "facing": 1.5490319129289967
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.67818661281046,
+                "y": 20.430617785413165
+              },
+              "vel": {
+                "x": -0.3419720670739779,
+                "y": 0.8105598761049208
+              },
+              "facing": 4.69062456651879
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.69021596649472,
+                "y": 39.409634149581535
+              },
+              "vel": {
+                "x": 0.11085494894132819,
+                "y": -5.573118430712502
+              },
+              "facing": 5.105917495589347
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 221.00448092485416
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.557833412229215,
+                "y": 19.701803785414768
+              },
+              "vel": {
+                "x": 1.900287055954731,
+                "y": -5.20957393501849
+              },
+              "facing": -1.2981984086311926
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.62490215447815,
+                "y": 19.51726759818736
+              },
+              "vel": {
+                "x": -0.04265596925632609,
+                "y": 0.5264969616754567
+              },
+              "facing": 1.5569055797164213
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.63991134228333,
+                "y": 20.66738050626893
+              },
+              "vel": {
+                "x": -0.07314057462563112,
+                "y": 1.4594019734088401
+              },
+              "facing": 4.698498233306214
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.63184906130162,
+                "y": 38.24974116011522
+              },
+              "vel": {
+                "x": -0.7331387800542788,
+                "y": -5.995023309764551
+              },
+              "facing": 4.52349280751806
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 227.74161887273303
+            }
+          ]
+        },
+        {
+          "t": 2.9,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 39.57500686757658,
+                "y": 17.588357662880377
+              },
+              "vel": {
+                "x": 2.9472239635378625,
+                "y": -5.437743854339938
+              },
+              "facing": -0.08716965282131109
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.49054474957372,
+                "y": 19.69876098736456
+              },
+              "vel": {
+                "x": -0.5653571548500329,
+                "y": -0.31483106011750733
+              },
+              "facing": 1.578629956880491
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.481202943609176,
+                "y": 20.89126239127182
+              },
+              "vel": {
+                "x": -0.5621604064862552,
+                "y": -0.7229027890969401
+              },
+              "facing": 4.720222610470284
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.53334187122068,
+                "y": 35.686263602043816
+              },
+              "vel": {
+                "x": 0.16990892998622897,
+                "y": -6.756835497566464
+              },
+              "facing": 4.691169508517309
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 58.023887578416975
+            }
+          ]
+        },
+        {
+          "t": 3.3,
+          "bodies": [
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 40.68502698920245,
+                "y": 15.188784753170546
+              },
+              "vel": {
+                "x": 2.904611854341329,
+                "y": -6.411472559875809
+              },
+              "facing": -1.071835747864564
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.393733181670655,
+                "y": 19.37468884248932
+              },
+              "vel": {
+                "x": -0.08915502916422237,
+                "y": -1.08278849954331
+              },
+              "facing": 1.5902995764468075
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.369102807106636,
+                "y": 20.2935375590843
+              },
+              "vel": {
+                "x": -0.41397160664054644,
+                "y": -1.9990529953154028
+              },
+              "facing": 4.7318922300366
+            },
+            {
+              "slot": "CB_W",
+              "pos": {
+                "x": 47.718898924091036,
+                "y": 32.87894984936321
+              },
+              "vel": {
+                "x": 0.3885624329356935,
+                "y": -7.268503087762017
+              },
+              "facing": 4.761133016192277
+            }
+          ],
+          "loads": [
+            {
+              "blocker": "Y",
+              "defender": "DE_S",
+              "force": 175.13811525713453
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rejectedInteraction": [
+    {
+      "id": "wz-strong-over3",
+      "terminal": true,
+      "ending": "tackle",
+      "gain": 0.51,
+      "t": 2.95,
+      "maxima": {
+        "workResidual": 5.168310224235029e-12,
+        "armExcess": 2.842170943040401e-14
+      },
+      "firstContact": {
+        "t": 2.3,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 12,
+        "pos": {
+          "x": 39.03,
+          "y": 21.08
+        },
+        "note": "grasp"
+      },
+      "firstDefender": "DE_S",
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.5,
+          "last": 2.3,
+          "impulse": 873.933887941547
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 2.95,
+          "impulse": 1727.7873867322967
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_W",
+          "first": 0.55,
+          "last": 2.95,
+          "impulse": 2359.611573624282
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.6,
+          "last": 2.95,
+          "impulse": 2223.5324353042906
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 1.3,
+          "last": 2,
+          "impulse": 258.05044198708174
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_M",
+          "first": 1.4,
+          "last": 2.95,
+          "impulse": 1829.2049726134665
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_S",
+          "first": 1.75,
+          "last": 2.95,
+          "impulse": 1440.4559511099894
+        }
+      ],
+      "peerImpacts": []
+    },
+    {
+      "id": "wz-weak-over3",
+      "terminal": true,
+      "ending": "tackle",
+      "gain": 3.8,
+      "t": 3.7,
+      "maxima": {
+        "workResidual": 8.715472787912404e-12,
+        "armExcess": 2.842170943040401e-14
+      },
+      "firstContact": {
+        "t": 2.55,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 11,
+        "pos": {
+          "x": 40.05,
+          "y": 33.33
+        },
+        "note": "body collision"
+      },
+      "firstDefender": "DE_W",
+      "loads": [
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.45,
+          "last": 3.4,
+          "impulse": 910.3804727820127
+        },
+        {
+          "blocker": "RT",
+          "defender": "DT_S",
+          "first": 0.55,
+          "last": 3.7,
+          "impulse": 3046.249699882966
+        },
+        {
+          "blocker": "C",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 3.45,
+          "impulse": 1446.3767109243147
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.6,
+          "last": 3.3,
+          "impulse": 1248.943670701814
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.8,
+          "last": 1.1,
+          "impulse": 198.6133032993272
+        },
+        {
+          "blocker": "H",
+          "defender": "LB_W",
+          "first": 1.65,
+          "last": 3.45,
+          "impulse": 413.760597985614
+        },
+        {
+          "blocker": "RG",
+          "defender": "LB_S",
+          "first": 1.75,
+          "last": 3.7,
+          "impulse": 2119.4060656415377
+        }
+      ],
+      "peerImpacts": []
+    },
+    {
+      "id": "useful-climb-opponent",
+      "terminal": false,
+      "ending": "explicit-prefix-censor",
+      "gain": null,
+      "t": 3.5,
+      "maxima": {
+        "workResidual": 7.250200440012122e-12,
+        "armExcess": 0
+      },
+      "firstContact": {
+        "t": 3.25,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 39.75,
+          "y": 21.91
+        },
+        "note": "grasp"
+      },
+      "firstDefender": "SS",
+      "loads": [
+        {
+          "blocker": "C",
+          "defender": "DT_S",
+          "first": 0.5,
+          "last": 1,
+          "impulse": 314.87946340932365
+        },
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "first": 0.5,
+          "last": 3.45,
+          "impulse": 1551.774840086061
+        },
+        {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "first": 0.55,
+          "last": 2.95,
+          "impulse": 2474.012020208735
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "first": 0.7,
+          "last": 3.5,
+          "impulse": 2123.0385231961914
+        },
+        {
+          "blocker": "RT",
+          "defender": "DE_S",
+          "first": 0.75,
+          "last": 0.85,
+          "impulse": 32.9341957188291
+        },
+        {
+          "blocker": "LT",
+          "defender": "DE_W",
+          "first": 0.85,
+          "last": 3.4,
+          "impulse": 266.96584741534946
+        },
+        {
+          "blocker": "RT",
+          "defender": "LB_M",
+          "first": 1.85,
+          "last": 3.5,
+          "impulse": 1317.0494043946012
+        },
+        {
+          "blocker": "H",
+          "defender": "NB",
+          "first": 1.85,
+          "last": 2.5,
+          "impulse": 181.06033176675183
+        },
+        {
+          "blocker": "C",
+          "defender": "LB_W",
+          "first": 2.25,
+          "last": 3.5,
+          "impulse": 1209.1374029726346
+        }
+      ],
+      "peerImpacts": []
+    }
+  ],
+  "attributionLimits": [
+    "The strong route switch at1.95s has small score margins (.051 before, .102 after between inside/outside candidates). Do not claim robust league-wide improvement from this one threshold crossing.",
+    "The runner and closure changes jointly permit the strong bounce. Neither isolated patch rescues the end witness; no universal TE failure is established.",
+    "Weak closure-alone gain is slightly worse; final strong hand control remains subject to normal execution. Later contact/draw sequences differ.",
+    "Retained-contact witness conditions on successful wrap; it measures deletion of an acquired connection, not the outcome of a proposed replacement law. Physics owns that contract.",
+    "No long-run-frequency or league-wide fit claim was measured in this pass."
+  ],
+  "rawOutputHashes": {
+    "out/stretch-access/final-native.json.gz": "1d9b7524937c6337e7825d3f94b40b1f705318e614b49d0b6105514988866814",
+    "out/stretch-access/native.json.gz": "994b908b610a995e9f2373fe89ed5ad4a2e7e423a77340a218a000965e4ac9ef",
+    "out/stretch-access/interaction.json.gz": "95e409c8685faa15f725451e44229fce33f8cc04f7d07e20bbe4e592d0746937",
+    "out/stretch-access/final-interaction.json.gz": "74e2e5558eb5f3d712524d0120f6fe8ac97b8d9819d7169506dc8885a77a826b",
+    "out/stretch-access/transfer-candidate.json.gz": "e18e5b1698710f7a1d748004c8c8da6e70a2171d62a47fa1adaa6b18b320fc76",
+    "out/stretch-access/final-transfer.json.gz": "fba641e50ae68340c83c7ce77c08fccd7875ec2b31ed2f73097e60ce2215c065"
+  }
+}

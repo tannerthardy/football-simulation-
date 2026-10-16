@@ -10,7 +10,16 @@ contact expose the runner, and what physically authorizes its tackle transition?
 Keep a legitimate exposed-side tackle and a protected-side control. Shared
 World/contact-retention changes remain with Physics; coordinate any actual
 engagement/blocking/spacing edit with its owner. No release/strength changes,
-full campaign or duplication of #110. Publish concrete witness/patch to Integration.
+full campaign or duplication of #110. Final patch bc02b22/source62683631
+corrects stretch connection travel in its emitted normal;66 focused checks
+and typecheck pass. Gradient df8a2a8 rejected after weak interaction loss.
+Final interaction3015ed7 permits a real strong bounce: first contact end2.30s/
+−.97yd→corner3.30s/+.83yd; weak finishes5.34 versus reader4.96 but contacts
+.05s earlier. Duo frames unchanged; no teammate impacts in seven final
+continuations. Close read margins and adverse endings retained;35.88 command-
+seconds, no games/full suite. Saved edge load is defender-owned with hold0;
+blocker-owned lifecycle witness goes to Physics, no retention-law change.
+[Exact candidate, evidence and next decision](reviews/stretch-protection-access.md).
 
 ## Active coverage/run integration boundary — 2026-10-16
 
