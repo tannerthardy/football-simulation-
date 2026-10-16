@@ -1,0 +1,9 @@
+{
+  "question": "Can the new force approach actually satisfy its corner gate with ordinary arrival steering, and can a waypoint tolerance bypass that gate?",
+  "sourceWitness": "817465c/source2975211: B01 RG, P01 C and C01 RT stop .106-.113yd inside the strict boundary and request zero velocity until the native tackle.",
+  "decision": "Fix only the demonstrated new-role goal/gate contradiction; test the real update hook in both directions. Extend the flat goal beyond its required boundary by the puller's own radius and prevent final waypoint tolerance from admitting interception inside it. No change to shared steering, spacing or capabilities.",
+  "informationCheck": "New force jobs, like named cracks, must not change from an unobserved live engagement flag. Test actual production availableTarget rather than a helper bypass.",
+  "budget": "Focused new-role and existing pull/mesh/stalk checks, one final primary exact-input replay if production changes; at most two fresh cases predeclared below. No more route variants in this pass.",
+  "freshInputs": ["P02: P01 same selected athletes/seed, 4-3 Under instead of Over, front-derived pull eligibility", "C02: C01 same selected athletes/seed, direction=weak, flip=false, distinct native geometry and side-sign transfer (flipping symmetric Ace alone does not reverse its field-side strength)"],
+  "qualification": "A gate repair does not prove successful force collection or NFL quality; retain all adverse native arms. Fresh cases are not selected for success and will not be replaced."
+}
