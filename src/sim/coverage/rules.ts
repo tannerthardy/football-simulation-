@@ -13,14 +13,17 @@
  */
 import type { ZoneId, ZoneStyle, MatchRule } from '../../playbook/types.js';
 import type { Agent } from '../agent.js';
+import type { Vec2 } from '../../core/vec.js';
 import type { ManOptions } from '../behaviors/defense.js';
 import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
+import { hasVisibleCap } from './judgment.js';
 
 export type Directive =
   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
   | { t: 'man'; r: Agent; opts: ManOptions }
+  | { t: 'read'; r: Agent; initialPosition: Vec2 }
   | { t: 'trap'; r: Agent }
   | { t: 'wall'; r: Agent }
   | { t: 'rob'; r: Agent };
@@ -48,7 +51,10 @@ export interface RuleCtx {
 // ------------------------------------------------------------ helpers
 
 const zoneOf = (c: RuleCtx, zone: ZoneId = c.zone): Directive => ({ t: 'zone', zone, style: c.style });
-const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive => ({ t: 'man', r: rd.r, opts });
+const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive =>
+  ({ t: 'man', r: rd.r, opts: { ...opts, initialPosition: { ...rd.pos } } });
+const readRelease = (rd: ReceiverRead): Directive =>
+  ({ t: 'read', r: rd.r, initialPosition: { ...rd.pos } });
 
 function ref(c: RuleCtx, n: 1 | 2 | 3, side: 'S' | 'W' = c.side): ReceiverRead | null {
   return c.reader.readRef(c.sim, `${side}${n}`);
@@ -91,17 +97,24 @@ function c3Corner(c: RuleCtx): Directive {
 }
 
 /** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone. */
-function seamCurlFlat(c: RuleCtx, carry: number): Directive {
+function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   const two = ref(c, 2);
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
+  // Reading #2 is already an installed duty. Do not spend the release
+  // cushion driving at a shallow lane before the route earns its match.
+  if (two.release === 'none' || (two.release === 'vertical' && two.depth < 3)) return readRelease(two);
   if (vertical(two, 3)) {
     if (two.depth > carry) {
+      // Installed depth permits delivery; it does not establish replacement.
+      // Keep the acquired vertical when the existing observed roof estimate
+      // cannot sustain help. No hidden flight or teammate assignment enters.
+      if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
       c.state.mode = 'zoned';
       return zoneOf(c);
     }
     return man(two, { lev: 'inside' });
   }
-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
+  if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
 }
 
@@ -181,7 +194,8 @@ function qSafety(c: RuleCtx): Directive {
     c.state.mode = 'two';
     return man(two, { overTop: true, lev: 'inside' });
   }
-  if (two.release !== 'none' && two.release !== 'vertical' && (two.release !== 'block' || knowsPass(c.sim, c.a))) {
+  if (two.release === 'block') return knowsPass(c.sim, c.a) ? helpOne(c, one) : zoneOf(c);
+  if (two.release !== 'none' && two.release !== 'vertical') {
     c.state.mode = 'one';
     return helpOne(c, one);
   }
@@ -189,15 +203,17 @@ function qSafety(c: RuleCtx): Directive {
 }
 
 /** Apex (nickel/Sam/curl-flat) next to a #2 read: wall #2's vertical to 10 yards for the safety, otherwise play curl-flat. */
-function wallTwo(c: RuleCtx, handoff: number): Directive {
+function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
   const two = ref(c, 2);
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
+  // Other wall callers have their own cut/deep-help contracts.
+  if (readStem && (two.release === 'none' || (two.release === 'vertical' && two.depth < 2))) return readRelease(two);
   if (vertical(two, 2)) {
     if (two.depth < handoff) return { t: 'wall', r: two.r };
     c.state.mode = 'zoned';
     return zoneOf(c);
   }
-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
+  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
 }
 
@@ -301,14 +317,14 @@ function invertSafety(c: RuleCtx): Directive {
 export function runRule(rule: MatchRule, c: RuleCtx): Directive {
   switch (rule) {
     case 'c3_corner': return c3Corner(c);
-    case 'c3_curl_flat': return seamCurlFlat(c, 12);
+    case 'c3_curl_flat': return seamCurlFlat(c, 12, true);
     case 'c3_seam': return seamCurlFlat(c, 99);
     case 'c3_hook': return c3Hook(c);
     case 'mike_3': return mike3(c);
     case 'q_corner_mod': return qCorner(c, false);
     case 'q_corner_meg': return qCorner(c, true);
     case 'q_safety': return qSafety(c);
-    case 'q_apex': return wallTwo(c, 10);
+    case 'q_apex': return wallTwo(c, 10, true);
     case 'palms_corner': return palmsCorner(c);
     case 'palms_safety': return palmsSafety(c);
     case 'cloud_corner': return cloudCorner(c, false);
