@@ -15,6 +15,16 @@ modifier, physics, capability or original-man handoff edits. Flex retains
 movement policy; Integration retains combined verification. #93's diagnosis
 and evidence remain independently preserved; this is a separate runtime boundary.
 
+Candidate runtime `8a935a8` delivers the acquired lateral-cross interpretation;
+82 focused checks/typecheck pass. Five matched native pairs retain ordinary
+Cover1 and vertical-interception bodies/requests exactly. Two Mesh carries
+improve without the rejected early diagonal collision. Fresh Drive finishes
+through a different defender after the rat collides/falls: retained review
+tradeoff, not proof from lower YAC. [Review and exact evidence](reviews/rat-crosser-duty.md).
+**Independent coverage/contact-tradeoff review pending; not integration-ready.**
+No further approach variant or combined-suite campaign while this disposition
+is pending; shared movement/physics remain their owners' work.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in

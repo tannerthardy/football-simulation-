@@ -1,0 +1,1933 @@
+{
+  "schema": "rat-crosser-summary-v1",
+  "baseline": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "candidate": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+  "interpretation": "Recorded rounded replay geometry, not gaze, exact impact-time geometry or grasp force. No-contact is not a broken hold. Censored YAC is never reported as a completed outcome.",
+  "comparisons": [
+    {
+      "fixture": {
+        "id": "rat-mesh",
+        "coverage": "cover1_off",
+        "concept": "mesh",
+        "offense": 21,
+        "defense": 22,
+        "seed": 15,
+        "flip": false
+      },
+      "initialSha256": "70e0870d1e9a32fa18c76d0623d7cc728eb4998d0fef2a36830a71eeb5454bd8",
+      "endpointEqual": false,
+      "firstCut": {
+        "t": 1.55,
+        "actor": 15,
+        "before": {
+          "pos": {
+            "x": 42.44774328258721,
+            "y": 25.3148108853271
+          },
+          "vel": {
+            "x": -0.9025818292768742,
+            "y": 0.9105977531569812
+          },
+          "facing": 3.0659526391114,
+          "energy": 0.9899560423241225,
+          "profile": {
+            "vmax": 9.255581105988506,
+            "tau": 1.2498939236107058,
+            "brake": 6.421904761904762,
+            "lateral": 6.927568027210887,
+            "turnRate": 9.333333333333334,
+            "backpedal": 0.6275510204081632,
+            "shuffle": 0.6,
+            "massKg": 107.50139169,
+            "heightYd": 2.0194444444444444,
+            "radius": 0.2918181818181818,
+            "reach": 0.9795833333333333,
+            "maxCatchHeight": 3.4703055555555555,
+            "reactReach": 2.980027777777778,
+            "reactionTime": 0.17114285714285715,
+            "power": 108.20892635979644,
+            "balance": 0.2857142857142857,
+            "bend": 0.6998095238095239,
+            "stepSpeed": 3.6734285714285715,
+            "getUp": 0.8929999999999999
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19803851114698634,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 5.486113146552967,
+              "y": 3.649597590964815
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0.07906503804818488,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -4.5556487782681465
+        },
+        "rule": {
+          "rule": "rat",
+          "mode": null,
+          "cut": 7,
+          "judgment": "rule",
+          "readTick": 1.55,
+          "reads": [
+            {
+              "target": 6,
+              "slot": "RB",
+              "position": {
+                "x": 37.750127988678756,
+                "y": 30.78897480571925
+              },
+              "velocity": {
+                "x": 3.204753398438612,
+                "y": 3.459248964174424
+              },
+              "depth": -2.2498720113212443,
+              "outward": 3.1889748057192477,
+              "release": "flat",
+              "first": "flat",
+              "since": 1,
+              "climbed": false
+            },
+            {
+              "target": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.13512877241288,
+                "y": 24.757853615897695
+              },
+              "velocity": {
+                "x": 3.106249141406395,
+                "y": 3.5247775285401737
+              },
+              "depth": 3.1351287724128767,
+              "outward": -2.657853615897693,
+              "release": "under",
+              "first": "under",
+              "since": 1,
+              "climbed": false
+            },
+            {
+              "target": 8,
+              "slot": "X",
+              "position": {
+                "x": 44.863820416173866,
+                "y": 44.66626742608821
+              },
+              "velocity": {
+                "x": 5.7522741229735495,
+                "y": 0.43392282404426796
+              },
+              "depth": 4.863820416173866,
+              "outward": 0.6662674260882113,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.85,
+              "climbed": false
+            },
+            {
+              "target": 9,
+              "slot": "Z",
+              "position": {
+                "x": 45.22154120445394,
+                "y": 8
+              },
+              "velocity": {
+                "x": 6.538020227315425,
+                "y": 0
+              },
+              "depth": 5.221541204453942,
+              "outward": 0,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.75,
+              "climbed": false
+            },
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 42.84418795398706,
+                "y": 32.67417359798521
+              },
+              "velocity": {
+                "x": 3.9888807567591256,
+                "y": -1.8998099652022982
+              },
+              "depth": 2.84418795398706,
+              "outward": -1.925826402014792,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 1,
+              "climbed": false
+            }
+          ]
+        },
+        "command": {
+          "vel": {
+            "x": 6.326372147205569,
+            "y": 2.003338038582825
+          },
+          "cutSkill": 1.1071428571428572
+        },
+        "goal": {
+          "kind": "moving",
+          "point": {
+            "x": 43.64274188409075,
+            "y": 24.75019951504807
+          },
+          "velocity": {
+            "x": 3.106249141406395,
+            "y": 3.5247775285401737
+          }
+        }
+      },
+      "approach": [
+        {
+          "t": 1.8,
+          "baseline": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.4866068747318493,
+            "defenderPosition": [
+              42.4,
+              25.8
+            ],
+            "receiverPosition": [
+              43.8,
+              26.3
+            ],
+            "defenderVelocity": [
+              0.14,
+              1.89
+            ],
+            "receiverVelocity": [
+              1.9,
+              5.58
+            ],
+            "alongRunner": -0.9245738261854641,
+            "transverse": 1.1641147881256242,
+            "velocityAngleDegrees": 14.567405877903386,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.4317821063276333,
+            "defenderPosition": [
+              42.5,
+              25.7
+            ],
+            "receiverPosition": [
+              43.8,
+              26.3
+            ],
+            "defenderVelocity": [
+              1.04,
+              1.67
+            ],
+            "receiverVelocity": [
+              1.9,
+              5.58
+            ],
+            "alongRunner": -0.9870037652746855,
+            "transverse": 1.0372191510638376,
+            "velocityAngleDegrees": 13.108970899201111,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2,
+          "baseline": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 2.1400934559032723,
+            "defenderPosition": [
+              42.4,
+              26.2
+            ],
+            "receiverPosition": [
+              44.1,
+              27.5
+            ],
+            "defenderVelocity": [
+              0.51,
+              2.32
+            ],
+            "receiverVelocity": [
+              0.97,
+              6.23
+            ],
+            "alongRunner": -1.5460594735840585,
+            "transverse": 1.4797635298050145,
+            "velocityAngleDegrees": 3.548199513264313,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.9104973174542819,
+            "defenderPosition": [
+              42.8,
+              26.1
+            ],
+            "receiverPosition": [
+              44.1,
+              27.5
+            ],
+            "defenderVelocity": [
+              1.86,
+              2.39
+            ],
+            "receiverVelocity": [
+              0.97,
+              6.23
+            ],
+            "alongRunner": -1.5833311166177306,
+            "transverse": 1.0691410454893489,
+            "velocityAngleDegrees": 29.04178055304092,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2.4,
+          "baseline": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 3.3999999999999972,
+            "defenderPosition": [
+              42.7,
+              27.2
+            ],
+            "receiverPosition": [
+              44.3,
+              30.2
+            ],
+            "defenderVelocity": [
+              1.18,
+              2.53
+            ],
+            "receiverVelocity": [
+              0.31,
+              6.88
+            ],
+            "alongRunner": -3.0689792269294913,
+            "transverse": 1.463340870978203,
+            "velocityAngleDegrees": 22.424598238572255,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 2.886173937932362,
+            "defenderPosition": [
+              43.6,
+              27.4
+            ],
+            "receiverPosition": [
+              44.3,
+              30.2
+            ],
+            "defenderVelocity": [
+              2.04,
+              4.23
+            ],
+            "receiverVelocity": [
+              0.31,
+              6.88
+            ],
+            "alongRunner": -2.8286707191433305,
+            "transverse": 0.5732555823200957,
+            "velocityAngleDegrees": 23.166699475779094,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 3,
+          "baseline": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 7.00357051795725,
+            "defenderPosition": [
+              43.3,
+              27.6
+            ],
+            "receiverPosition": [
+              44.5,
+              34.5
+            ],
+            "defenderVelocity": [
+              0.49,
+              -1.24
+            ],
+            "receiverVelocity": [
+              0.33,
+              7.41
+            ],
+            "alongRunner": -6.946556106956621,
+            "transverse": 0.8918286006311151,
+            "velocityAngleDegrees": 155.88803751500836,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 4.004996878900157,
+            "defenderPosition": [
+              44.3,
+              30.5
+            ],
+            "receiverPosition": [
+              44.5,
+              34.5
+            ],
+            "defenderVelocity": [
+              0.38,
+              5.61
+            ],
+            "receiverVelocity": [
+              0.33,
+              7.41
+            ],
+            "alongRunner": -4.004937325827335,
+            "transverse": 0.021840700423621906,
+            "velocityAngleDegrees": 1.3251292308610783,
+            "defenderState": "up"
+          }
+        }
+      ],
+      "baseline": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": 6,
+        "catcherId": "OFF-RB1",
+        "events": [
+          {
+            "t": 3.15,
+            "type": "throw",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 32.9,
+              "y": 26.05
+            }
+          },
+          {
+            "t": 4.2,
+            "type": "catch",
+            "a": 6,
+            "pos": {
+              "x": 44.46,
+              "y": 42.37
+            }
+          },
+          {
+            "t": 4.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 19,
+            "pos": {
+              "x": 45.12,
+              "y": 42.44
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.5,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 6,
+            "pos": {
+              "x": 44.27,
+              "y": 42.15
+            },
+            "note": "initial"
+          }
+        ],
+        "grips": [
+          {
+            "start": 4.5,
+            "defender": 19,
+            "geometry": {
+              "t": 4.5,
+              "defender": 19,
+              "receiver": 6,
+              "separation": 0.8246211251235352,
+              "defenderPosition": [
+                44.3,
+                42.2
+              ],
+              "receiverPosition": [
+                45.1,
+                42.4
+              ],
+              "defenderVelocity": [
+                1.9,
+                5.7
+              ],
+              "receiverVelocity": [
+                1.75,
+                0.39
+              ],
+              "alongRunner": -0.8243487123040769,
+              "transverse": -0.021194351195904765,
+              "velocityAngleDegrees": 59.00158177855962,
+              "defenderState": "up"
+            },
+            "survivedRecordedSeconds": 0.5,
+            "endEvent": "right-censored"
+          }
+        ],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": 1.4399999999999977
+      },
+      "candidate": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": 6,
+        "catcherId": "OFF-RB1",
+        "events": [
+          {
+            "t": 3.15,
+            "type": "throw",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 32.9,
+              "y": 26.05
+            }
+          },
+          {
+            "t": 4.2,
+            "type": "catch",
+            "a": 6,
+            "pos": {
+              "x": 44.46,
+              "y": 42.37
+            }
+          },
+          {
+            "t": 4.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 19,
+            "pos": {
+              "x": 45.12,
+              "y": 42.44
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.5,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 6,
+            "pos": {
+              "x": 44.27,
+              "y": 42.15
+            },
+            "note": "initial"
+          }
+        ],
+        "grips": [
+          {
+            "start": 4.5,
+            "defender": 19,
+            "geometry": {
+              "t": 4.5,
+              "defender": 19,
+              "receiver": 6,
+              "separation": 0.8246211251235352,
+              "defenderPosition": [
+                44.3,
+                42.2
+              ],
+              "receiverPosition": [
+                45.1,
+                42.4
+              ],
+              "defenderVelocity": [
+                1.9,
+                5.7
+              ],
+              "receiverVelocity": [
+                1.75,
+                0.39
+              ],
+              "alongRunner": -0.8243487123040769,
+              "transverse": -0.021194351195904765,
+              "velocityAngleDegrees": 59.00158177855962,
+              "defenderState": "up"
+            },
+            "survivedRecordedSeconds": 0.5,
+            "endEvent": "right-censored"
+          }
+        ],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": 1.4399999999999977
+      }
+    },
+    {
+      "fixture": {
+        "id": "rat-mesh-fresh-mirror",
+        "coverage": "cover1_off",
+        "concept": "mesh",
+        "offense": 47,
+        "defense": 48,
+        "seed": 9,
+        "flip": true
+      },
+      "initialSha256": "6264474b06c16d1583cbf8e992ff7d51a575ab86902b4d598b4b0cbb1372d022",
+      "endpointEqual": false,
+      "firstCut": {
+        "t": 1.65,
+        "actor": 15,
+        "before": {
+          "pos": {
+            "x": 42.29537090531628,
+            "y": 26.733560404849893
+          },
+          "vel": {
+            "x": -0.6909086711387643,
+            "y": -0.886078982029797
+          },
+          "facing": 3.2242472814297516,
+          "energy": 0.9892740799461849,
+          "profile": {
+            "vmax": 9.078833571179269,
+            "tau": 1.274633746967673,
+            "brake": 6.585034013605441,
+            "lateral": 6.377418367346943,
+            "turnRate": 8.946666666666667,
+            "backpedal": 0.6081632653061224,
+            "shuffle": 0.5896,
+            "massKg": 116.57323909,
+            "heightYd": 2.102777777777778,
+            "radius": 0.31,
+            "reach": 1.0456944444444445,
+            "maxCatchHeight": 3.5900277777777783,
+            "reactReach": 3.094194444444445,
+            "reactionTime": 0.19624489795918368,
+            "power": 118.60732315983573,
+            "balance": 0.25510204081632654,
+            "bend": 0.5670204081632653,
+            "stepSpeed": 3.5003945578231286,
+            "getUp": 0.9416666666666668
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19790165400546944,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 5.237320533975038,
+              "y": -3.38970238174398
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -0.08100999702659084,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 4.727474470847696
+        },
+        "rule": {
+          "rule": "rat",
+          "mode": null,
+          "cut": 7,
+          "judgment": "rule",
+          "readTick": 1.65,
+          "reads": [
+            {
+              "target": 6,
+              "slot": "RB",
+              "position": {
+                "x": 38.47822628427566,
+                "y": 20.42353915213421
+              },
+              "velocity": {
+                "x": 3.666103911434475,
+                "y": -3.9633555799290137
+              },
+              "depth": -1.5217737157243434,
+              "outward": 3.9764608478657877,
+              "release": "flat",
+              "first": "flat",
+              "since": 1.05,
+              "climbed": false
+            },
+            {
+              "target": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.176309121954226,
+                "y": 27.238141809231358
+              },
+              "velocity": {
+                "x": 3.001059469893975,
+                "y": -3.3152228611192665
+              },
+              "depth": 3.176309121954226,
+              "outward": -2.6618581907686405,
+              "release": "under",
+              "first": "under",
+              "since": 1.2,
+              "climbed": false
+            },
+            {
+              "target": 8,
+              "slot": "X",
+              "position": {
+                "x": 46.631838067190444,
+                "y": 7.316111945035828
+              },
+              "velocity": {
+                "x": 6.92415771324066,
+                "y": -0.24788527001860117
+              },
+              "depth": 6.6318380671904436,
+              "outward": 0.6838880549641724,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.75,
+              "climbed": false
+            },
+            {
+              "target": 9,
+              "slot": "Z",
+              "position": {
+                "x": 45.46992107592153,
+                "y": 44
+              },
+              "velocity": {
+                "x": 6.576720443228235,
+                "y": 0
+              },
+              "depth": 5.469921075921533,
+              "outward": 0,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.8,
+              "climbed": false
+            },
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 43.8221822233849,
+                "y": 20.047821911459867
+              },
+              "velocity": {
+                "x": 3.6136021401812837,
+                "y": 3.441307483608222
+              },
+              "depth": 3.8221822233848997,
+              "outward": -2.647821911459868,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.9,
+              "climbed": false
+            }
+          ]
+        },
+        "command": {
+          "vel": {
+            "x": 6.619784330164924,
+            "y": -1.9401176831537494
+          },
+          "cutSkill": 1.0535714285714286
+        },
+        "goal": {
+          "kind": "moving",
+          "point": {
+            "x": 43.68758348568454,
+            "y": 27.249440482257384
+          },
+          "velocity": {
+            "x": 3.0630137241424493,
+            "y": -3.2580680604375236
+          }
+        }
+      },
+      "approach": [
+        {
+          "t": 1.8,
+          "baseline": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.4142135623731005,
+            "defenderPosition": [
+              42.3,
+              26.5
+            ],
+            "receiverPosition": [
+              43.7,
+              26.3
+            ],
+            "defenderVelocity": [
+              0.22,
+              -1.44
+            ],
+            "receiverVelocity": [
+              2.25,
+              -4.89
+            ],
+            "alongRunner": -0.7668862728640017,
+            "transverse": -1.1882278588270752,
+            "velocityAngleDegrees": 16.02187775076931,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.4142135623731005,
+            "defenderPosition": [
+              42.3,
+              26.5
+            ],
+            "receiverPosition": [
+              43.7,
+              26.3
+            ],
+            "defenderVelocity": [
+              0.56,
+              -1.22
+            ],
+            "receiverVelocity": [
+              2.25,
+              -4.89
+            ],
+            "alongRunner": -0.7668862728640017,
+            "transverse": -1.1882278588270752,
+            "velocityAngleDegrees": 0.052333587924347676,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2,
+          "baseline": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.886796226411322,
+            "defenderPosition": [
+              42.4,
+              26.2
+            ],
+            "receiverPosition": [
+              44,
+              25.2
+            ],
+            "defenderVelocity": [
+              0.93,
+              -1.68
+            ],
+            "receiverVelocity": [
+              1.48,
+              -5.61
+            ],
+            "alongRunner": -1.3750574669826139,
+            "transverse": -1.291981796503094,
+            "velocityAngleDegrees": 14.188913108639145,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 1.8027756377319946,
+            "defenderPosition": [
+              42.5,
+              26.2
+            ],
+            "receiverPosition": [
+              44,
+              25.2
+            ],
+            "defenderVelocity": [
+              1.58,
+              -1.79
+            ],
+            "receiverVelocity": [
+              1.48,
+              -5.61
+            ],
+            "alongRunner": -1.3495487548851672,
+            "transverse": -1.1952899891607451,
+            "velocityAngleDegrees": 26.655502934956534,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2.4,
+          "baseline": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 3.001666203960725,
+            "defenderPosition": [
+              42.8,
+              25.4
+            ],
+            "receiverPosition": [
+              44.3,
+              22.8
+            ],
+            "defenderVelocity": [
+              1.61,
+              -1.59
+            ],
+            "receiverVelocity": [
+              0.27,
+              -6.43
+            ],
+            "alongRunner": -2.660641393084045,
+            "transverse": -1.3895997184109463,
+            "velocityAngleDegrees": 42.95361840117903,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 2.5079872407968913,
+            "defenderPosition": [
+              43.3,
+              25.1
+            ],
+            "receiverPosition": [
+              44.3,
+              22.8
+            ],
+            "defenderVelocity": [
+              2.05,
+              -3.61
+            ],
+            "receiverVelocity": [
+              0.27,
+              -6.43
+            ],
+            "alongRunner": -2.339928677127412,
+            "transverse": -0.9026260498992716,
+            "velocityAngleDegrees": 27.186339179856336,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 3,
+          "baseline": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 6.859300255857008,
+            "defenderPosition": [
+              43.6,
+              25.5
+            ],
+            "receiverPosition": [
+              44.5,
+              18.7
+            ],
+            "defenderVelocity": [
+              0.48,
+              1.88
+            ],
+            "receiverVelocity": [
+              0.29,
+              -7.03
+            ],
+            "alongRunner": -6.831316613809767,
+            "transverse": -0.6189614865940177,
+            "velocityAngleDegrees": 163.31506656555464,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 7,
+            "separation": 3.7215588131856783,
+            "defenderPosition": [
+              44.1,
+              22.4
+            ],
+            "receiverPosition": [
+              44.5,
+              18.7
+            ],
+            "defenderVelocity": [
+              0.86,
+              -5.58
+            ],
+            "receiverVelocity": [
+              0.29,
+              -7.03
+            ],
+            "alongRunner": -3.713342539665197,
+            "transverse": -0.24715821473868962,
+            "velocityAngleDegrees": 6.399379934276674,
+            "defenderState": "up"
+          }
+        }
+      ],
+      "baseline": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": null
+      },
+      "candidate": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": null
+      }
+    },
+    {
+      "fixture": {
+        "id": "rat-verticals",
+        "coverage": "cover1_off",
+        "concept": "four_verts",
+        "offense": 21,
+        "defense": 22,
+        "seed": 5,
+        "flip": false
+      },
+      "initialSha256": "b5e65864dae6de67b9a804dbc5d7fa8fd4bb81b55a7473bab93ed93a8f807839",
+      "endpointEqual": true,
+      "firstCut": null,
+      "approach": [],
+      "baseline": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.07,
+              "y": 25.98
+            }
+          },
+          {
+            "t": 4,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 61.6,
+              "y": 23.64
+            }
+          },
+          {
+            "t": 4.2,
+            "type": "carrier_contact",
+            "a": 20,
+            "b": 7,
+            "pos": {
+              "x": 62.85,
+              "y": 23.23
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.2,
+            "type": "tackle_wrap",
+            "a": 7,
+            "b": 20,
+            "pos": {
+              "x": 63.79,
+              "y": 23.29
+            },
+            "note": "initial"
+          }
+        ],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": null
+      },
+      "candidate": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [
+          {
+            "t": 2.25,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.07,
+              "y": 25.98
+            }
+          },
+          {
+            "t": 4,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 61.6,
+              "y": 23.64
+            }
+          },
+          {
+            "t": 4.2,
+            "type": "carrier_contact",
+            "a": 20,
+            "b": 7,
+            "pos": {
+              "x": 62.85,
+              "y": 23.23
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.2,
+            "type": "tackle_wrap",
+            "a": 7,
+            "b": 20,
+            "pos": {
+              "x": 63.79,
+              "y": 23.29
+            },
+            "note": "initial"
+          }
+        ],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": null
+      }
+    },
+    {
+      "fixture": {
+        "id": "ordinary-robber-mesh",
+        "coverage": "cover1",
+        "concept": "mesh",
+        "offense": 21,
+        "defense": 22,
+        "seed": 15,
+        "flip": false
+      },
+      "initialSha256": "081cc2075bc53687bf10213b18f13e5ff008b823a3f1527406b290ad3f468153",
+      "endpointEqual": true,
+      "firstCut": null,
+      "approach": [],
+      "baseline": {
+        "end": 4.05,
+        "censored": false,
+        "outcome": "incomplete",
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [
+          {
+            "t": 2.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26
+            }
+          }
+        ],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4,
+        "observedProgressSinceCatch": null
+      },
+      "candidate": {
+        "end": 4.05,
+        "censored": false,
+        "outcome": "incomplete",
+        "actualCatcher": null,
+        "catcherId": null,
+        "events": [
+          {
+            "t": 2.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26
+            }
+          }
+        ],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4,
+        "observedProgressSinceCatch": null
+      }
+    },
+    {
+      "fixture": {
+        "id": "rat-drive-transfer",
+        "coverage": "cover1_off",
+        "concept": "drive",
+        "offense": 61,
+        "defense": 62,
+        "seed": 13,
+        "flip": false
+      },
+      "initialSha256": "db2a2d6091905b399a3d699625da543501c8ce9b962e9bec49f91a4e9fb7901d",
+      "endpointEqual": false,
+      "firstCut": {
+        "t": 1.7,
+        "actor": 15,
+        "before": {
+          "pos": {
+            "x": 42.824703633679306,
+            "y": 25.229619406570777
+          },
+          "vel": {
+            "x": 0.17561437211479414,
+            "y": 2.508974359806247
+          },
+          "facing": 3.1227014963710453,
+          "energy": 0.9887951322642674,
+          "profile": {
+            "vmax": 9.359028686477235,
+            "tau": 1.1603801148988422,
+            "brake": 7.127800453514738,
+            "lateral": 7.190894557823131,
+            "turnRate": 10.062222222222223,
+            "backpedal": 0.6214285714285714,
+            "shuffle": 0.6048,
+            "massKg": 101.60469088,
+            "heightYd": 1.9805555555555554,
+            "radius": 0.27999999999999997,
+            "reach": 0.99375,
+            "maxCatchHeight": 3.503027777777778,
+            "reactReach": 2.9599722222222224,
+            "reactionTime": 0.21081632653061227,
+            "power": 96.1304789632,
+            "balance": 0.336734693877551,
+            "bend": 0.8513469387755104,
+            "stepSpeed": 3.9831519274376417,
+            "getUp": 0.8167222222222222
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19783797354681068,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 6.154133474123055,
+              "y": 2.5967907963492856
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 3.0616111977660565,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -4.988320109807338
+        },
+        "rule": {
+          "rule": "rat",
+          "mode": null,
+          "cut": 10,
+          "judgment": "rule",
+          "readTick": 1.7,
+          "reads": [
+            {
+              "target": 6,
+              "slot": "RB",
+              "position": {
+                "x": 36.70445798603275,
+                "y": 27.624077783385296
+              },
+              "velocity": {
+                "x": 2.1537976715238036,
+                "y": 0.08247808870817529
+              },
+              "depth": -3.2955420139672498,
+              "outward": 0.024077783385294538,
+              "release": "none",
+              "first": "none",
+              "since": 0,
+              "climbed": false
+            },
+            {
+              "target": 7,
+              "slot": "Y",
+              "position": {
+                "x": 41.888476856859135,
+                "y": 22.043146176595087
+              },
+              "velocity": {
+                "x": 3.1175580161412366,
+                "y": 0.025088150891154473
+              },
+              "depth": 1.8884768568591355,
+              "outward": 0.056853823404914294,
+              "release": "block",
+              "first": "block",
+              "since": 0.7,
+              "climbed": false
+            },
+            {
+              "target": 8,
+              "slot": "X",
+              "position": {
+                "x": 46.765290348648755,
+                "y": 44.665943989745514
+              },
+              "velocity": {
+                "x": 6.812391267194959,
+                "y": 0.24715186801300676
+              },
+              "depth": 6.765290348648755,
+              "outward": 0.6659439897455144,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.8,
+              "climbed": false
+            },
+            {
+              "target": 9,
+              "slot": "Z",
+              "position": {
+                "x": 45.73808551141904,
+                "y": 7.3318372566551995
+              },
+              "velocity": {
+                "x": 6.456545281739294,
+                "y": 0.02087333118145242
+              },
+              "depth": 5.738085511419037,
+              "outward": 0.6681627433448005,
+              "release": "vertical",
+              "first": "vertical",
+              "since": 0.85,
+              "climbed": false
+            },
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 43.65629633029878,
+                "y": 31.332174054697944
+              },
+              "velocity": {
+                "x": 2.927643224967486,
+                "y": -4.086657644017263
+              },
+              "depth": 3.6562963302987797,
+              "outward": -3.2678259453020573,
+              "release": "under",
+              "first": "vertical",
+              "since": 1.7,
+              "climbed": false
+            }
+          ]
+        },
+        "command": {
+          "vel": {
+            "x": 8.425260458596217,
+            "y": 1.4204961519978405
+          },
+          "cutSkill": 1.075
+        },
+        "goal": {
+          "kind": "moving",
+          "point": {
+            "x": 44.172838590534454,
+            "y": 31.345465362253808
+          },
+          "velocity": {
+            "x": 3.1388552874373294,
+            "y": -3.9267611382193173
+          }
+        }
+      },
+      "approach": [
+        {
+          "t": 1.8,
+          "baseline": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 4.903060268852502,
+            "defenderPosition": [
+              42.9,
+              25.6
+            ],
+            "receiverPosition": [
+              43.9,
+              30.4
+            ],
+            "defenderVelocity": [
+              0.43,
+              2.61
+            ],
+            "receiverVelocity": [
+              1.99,
+              -5.68
+            ],
+            "alongRunner": 4.199376084647642,
+            "transverse": -2.530857660890753,
+            "velocityAngleDegrees": 151.3364892068079,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 1.8,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 4.903060268852502,
+            "defenderPosition": [
+              42.9,
+              25.6
+            ],
+            "receiverPosition": [
+              43.9,
+              30.4
+            ],
+            "defenderVelocity": [
+              1.22,
+              2.17
+            ],
+            "receiverVelocity": [
+              1.99,
+              -5.68
+            ],
+            "alongRunner": 4.199376084647642,
+            "transverse": -2.530857660890753,
+            "velocityAngleDegrees": 131.34676669004313,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2,
+          "baseline": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 3.4539832078341095,
+            "defenderPosition": [
+              42.9,
+              26
+            ],
+            "receiverPosition": [
+              44.2,
+              29.2
+            ],
+            "defenderVelocity": [
+              -0.17,
+              1.42
+            ],
+            "receiverVelocity": [
+              0.94,
+              -6.36
+            ],
+            "alongRunner": 2.9755376872871584,
+            "transverse": -1.7539029253450127,
+            "velocityAngleDegrees": 178.4194838494572,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 3.420526275297416,
+            "defenderPosition": [
+              43.3,
+              25.9
+            ],
+            "receiverPosition": [
+              44.2,
+              29.2
+            ],
+            "defenderVelocity": [
+              2.4,
+              1.35
+            ],
+            "receiverVelocity": [
+              0.94,
+              -6.36
+            ],
+            "alongRunner": 3.1329472084337673,
+            "transverse": -1.3728225628853414,
+            "velocityAngleDegrees": 110.95037505377479,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 2.4,
+          "baseline": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 1.2165525060596396,
+            "defenderPosition": [
+              43.2,
+              26.3
+            ],
+            "receiverPosition": [
+              44.4,
+              26.5
+            ],
+            "defenderVelocity": [
+              2.03,
+              0.09
+            ],
+            "receiverVelocity": [
+              0.28,
+              -7.01
+            ],
+            "alongRunner": 0.15194731063369826,
+            "transverse": -1.2070261036080272,
+            "velocityAngleDegrees": 90.25119871456225,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 2.4,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 0.6082762530298236,
+            "defenderPosition": [
+              44.3,
+              25.9
+            ],
+            "receiverPosition": [
+              44.4,
+              26.5
+            ],
+            "defenderVelocity": [
+              2.17,
+              -1.34
+            ],
+            "receiverVelocity": [
+              0.28,
+              -7.01
+            ],
+            "alongRunner": 0.595530829106562,
+            "transverse": -0.12386699150158145,
+            "velocityAngleDegrees": 56.01684608905659,
+            "defenderState": "up"
+          }
+        },
+        {
+          "t": 3,
+          "baseline": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 3.7013511046643486,
+            "defenderPosition": [
+              44.8,
+              25.7
+            ],
+            "receiverPosition": [
+              44.7,
+              22
+            ],
+            "defenderVelocity": [
+              2.09,
+              -2.5
+            ],
+            "receiverVelocity": [
+              1.28,
+              -7.69
+            ],
+            "alongRunner": -3.6333666140794683,
+            "transverse": 0.7061494513859597,
+            "velocityAngleDegrees": 30.445383734672784,
+            "defenderState": "up"
+          },
+          "candidate": {
+            "t": 3,
+            "defender": 15,
+            "receiver": 10,
+            "separation": 0.5830951894845322,
+            "defenderPosition": [
+              45.1,
+              23.4
+            ],
+            "receiverPosition": [
+              44.8,
+              23.9
+            ],
+            "defenderVelocity": [
+              0.92,
+              -4.42
+            ],
+            "receiverVelocity": [
+              1.25,
+              -4.65
+            ],
+            "alongRunner": 0.5607382914774119,
+            "transverse": 0.15991425349541388,
+            "velocityAngleDegrees": 3.2884563116143366,
+            "defenderState": "falling"
+          }
+        }
+      ],
+      "baseline": {
+        "end": 5,
+        "censored": true,
+        "outcome": null,
+        "actualCatcher": 10,
+        "catcherId": "OFF-WR2",
+        "events": [
+          {
+            "t": 2.5,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26
+            }
+          },
+          {
+            "t": 3.1,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 44.85,
+              "y": 21.28
+            }
+          }
+        ],
+        "grips": [],
+        "finalYac": null,
+        "lastRecordedTime": 4.95,
+        "observedProgressSinceCatch": 8.049999999999997
+      },
+      "candidate": {
+        "end": 4.7,
+        "censored": false,
+        "outcome": "tackle",
+        "actualCatcher": 10,
+        "catcherId": "OFF-WR2",
+        "events": [
+          {
+            "t": 2.5,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26
+            }
+          },
+          {
+            "t": 3.15,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 45.01,
+              "y": 23.19
+            }
+          },
+          {
+            "t": 3.2,
+            "type": "carrier_contact",
+            "a": 10,
+            "b": 15,
+            "pos": {
+              "x": 45.07,
+              "y": 22.99
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 3.75,
+            "type": "tackle_wrap",
+            "a": 21,
+            "b": 10,
+            "pos": {
+              "x": 46.16,
+              "y": 21.86
+            },
+            "note": "initial"
+          },
+          {
+            "t": 4.65,
+            "type": "tackle",
+            "a": 21,
+            "b": 10,
+            "pos": {
+              "x": 46.01,
+              "y": 19.23
+            }
+          }
+        ],
+        "grips": [
+          {
+            "start": 3.75,
+            "defender": 21,
+            "geometry": {
+              "t": 3.75,
+              "defender": 21,
+              "receiver": 10,
+              "separation": 0.9219544457292891,
+              "defenderPosition": [
+                46.2,
+                21.9
+              ],
+              "receiverPosition": [
+                45.6,
+                21.2
+              ],
+              "defenderVelocity": [
+                -0.54,
+                -4.01
+              ],
+              "receiverVelocity": [
+                0.48,
+                -3.01
+              ],
+              "alongRunner": -0.596778481739375,
+              "transverse": 0.7027484925155281,
+              "velocityAngleDegrees": 16.73008152408202,
+              "defenderState": "up"
+            },
+            "survivedRecordedSeconds": 0.9000000000000004,
+            "endEvent": "tackle"
+          }
+        ],
+        "finalYac": 0.8904106713253768,
+        "lastRecordedTime": 4.65,
+        "observedProgressSinceCatch": 0.7899999999999991
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "path": "baseline-contract-corrected.json",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 1,
+      "seconds": 1.672725114
+    },
+    {
+      "path": "baseline-contract.json",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 1,
+      "seconds": 1.682595314
+    },
+    {
+      "path": "baseline-native-receipt.json",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 1,
+      "seconds": 0.7313029220000001
+    },
+    {
+      "path": "baseline-native-v2-receipt.json",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 2.3773373529999997
+    },
+    {
+      "path": "candidate-contract-v1.json",
+      "source": "bc0cc0206da99909605007cc9497280a188ed73e9341c9056153c19de3030bb5",
+      "exitCode": 1,
+      "seconds": 1.670264994
+    },
+    {
+      "path": "candidate-contract-v2.json",
+      "source": "bc0cc0206da99909605007cc9497280a188ed73e9341c9056153c19de3030bb5",
+      "exitCode": 0,
+      "seconds": 1.659514179
+    },
+    {
+      "path": "candidate-contract-v3.json",
+      "source": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+      "exitCode": 0,
+      "seconds": 1.8017595739999999
+    },
+    {
+      "path": "candidate-lateral-native-receipt.json",
+      "source": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+      "exitCode": 0,
+      "seconds": 2.1742183720000003
+    },
+    {
+      "path": "candidate-native-receipt.json",
+      "source": "bc0cc0206da99909605007cc9497280a188ed73e9341c9056153c19de3030bb5",
+      "exitCode": 0,
+      "seconds": 2.2407689179999997
+    },
+    {
+      "path": "drive-baseline-receipt.json",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "exitCode": 0,
+      "seconds": 0.959455098
+    },
+    {
+      "path": "drive-candidate-receipt.json",
+      "source": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+      "exitCode": 0,
+      "seconds": 0.8817833450000001
+    },
+    {
+      "path": "rat-focused-final.json",
+      "source": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+      "exitCode": 0,
+      "seconds": 3.177699627
+    },
+    {
+      "path": "typecheck.json",
+      "source": "9d0c9f803826e8e2dd8fe2515957c7aacbaa75afeb8f9712fe9887d091cb34dd",
+      "exitCode": 0,
+      "seconds": 9.416564767999999
+    }
+  ],
+  "totalLauncherSeconds": 30.445989578,
+  "inputs": {
+    "baseline.json.gz": "ff3e3c8497b321632172370486d9a5b5440c1c56461a5d7af3878ca0cce9bede",
+    "candidate-lateral.json.gz": "0c0e3e639671f0774a1386a6b4f91e21ac499ecdf9cff1bc51e6a476b720ee6d",
+    "candidate.json.gz": "e553920b291c59551d6c152d92e7e53ac23a27c530e819c298b8fd385401b1a9",
+    "drive-baseline.json.gz": "651d1f177218b5b0665a3c2ffe20568a09373f709950568b4adda1c93d2cd970",
+    "drive-candidate.json.gz": "ea1d5758814df6da9108a917bcd5cf7a2ec36c3f254fde9e9324de526dd8fdf2"
+  }
+}
