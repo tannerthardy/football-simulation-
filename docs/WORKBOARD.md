@@ -15,6 +15,15 @@ Measurement alone owns the authorized current48 arm. No duplicate panel,
 physics/capacity, perception/memory or production edit claimed. Integration
 owns any independent review/combined verification.
 
+The bounded gather-goal probe found one changed FS state and two unchanged
+contrasts; it does not establish a recurrent unnecessary movement failure or
+coupled benefit. Keep that producer/behavior idea out of production. Next
+demonstrated task: own spacing.ts forecast reuse within one actor's one call,
+and a focused cost/fresh-state control. Identical Intent object/body/time only;
+no reuse across decisions, no new options/scores/cues and no accepted #81/#87
+review repetition. No blocking or objective semantics edit. Coordination on #91
+records this follow-up; Measurement's current48 collection remains separate.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
