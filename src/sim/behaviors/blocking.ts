@@ -25,7 +25,7 @@ import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
-import { interceptPoint } from '../../physics/reach.js';
+import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
@@ -727,6 +727,15 @@ const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
  * backer is going and is not the one the down man is moving into. */
 const ZONE_COMBO = process.env.ZONE_COMBO === '1';
 
+/** Experimental second-level fit (CLIMB_SPACE=1, off): a climber takes the
+ * space between his backer and the hole the backer is going to fill, rather
+ * than chasing the backer's own extrapolated path. */
+const CLIMB_SPACE = process.env.CLIMB_SPACE === '1';
+
+/** Experimental double-team departure (CLIMB_EXIT=1, off): leave off the old
+ * man's near shoulder at running speed instead of orbiting him. */
+const CLIMB_EXIT = process.env.CLIMB_EXIT === '1';
+
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
   private pullIdx = 0;
@@ -933,6 +942,73 @@ export class RunBlocker implements Behavior {
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
   }
 
+  /** CLIMB_EXIT: rip off the old man's hip. If the straight line to the
+   * backer is clear of the old man and the keeper, the departure is over.
+   * Otherwise run for the tangent of the old man's clearance circle on the
+   * shorter side toward the backer, carrying speed through it: a climber
+   * gets past a shoulder, he does not walk around it. Contact physics still
+   * decides whether he gets by. */
+  private ripOff(a: Agent, sim: PlaySim, departure: NonNullable<RunBlockPlan['departure']>): MoveCommand | null {
+    const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper), backer = sim.see(a, departure.backer);
+    const clearance = a.profile.radius + departure.defender.profile.radius + .1;
+    const goal = backer.pos, rel = sub(down.pos, a.pos), ray = sub(goal, a.pos);
+    const L = Math.hypot(ray.x, ray.y) || 1e-9, dist = Math.hypot(rel.x, rel.y);
+    const along = (rel.x * ray.x + rel.y * ray.y) / L, across = (rel.x * ray.y - rel.y * ray.x) / L;
+    const keeperRel = sub(keeper.pos, a.pos);
+    const keeperAcross = (keeperRel.x * ray.y - keeperRel.y * ray.x) / L, keeperAlong = (keeperRel.x * ray.x + keeperRel.y * ray.y) / L;
+    const clearOf = (al: number, ac: number, r: number) => al <= 0 || al >= L || Math.abs(ac) >= r;
+    if (clearOf(along, across, clearance) && clearOf(keeperAlong, keeperAcross, a.profile.radius + departure.keeper.profile.radius)) {
+      delete this.plan.departure;
+      this.departureRead = null;
+      return null;
+    }
+    // Tangent point on the old man's clearance circle, on the side of the
+    // line to the backer he is not already blocking.
+    const side = across >= 0 ? -1 : 1;
+    const base = Math.atan2(-rel.y, -rel.x), half = Math.acos(clamp(clearance / Math.max(dist, clearance), -1, 1));
+    const th = base - side * half;
+    const tangent = { x: down.pos.x + Math.cos(th) * clearance, y: down.pos.y + Math.sin(th) * clearance };
+    const out = norm(sub(goal, tangent));
+    const target = { x: tangent.x + out.x * .4, y: tangent.y + out.y * .4 };
+    return goTo(a, target, { speed: 1, through: a.profile.vmax * .7,
+      facing: Math.atan2(backer.pos.y - a.pos.y, backer.pos.x - a.pos.x) });
+  }
+
+  /** CLIMB_SPACE: where the backer is going is the hole the runner is going
+   * to: the called aim at the line before the ball is handed off, the
+   * runner's own seen path to the line after. On the read cadence, from one
+   * picture of each, take the earliest point on the backer's line to that
+   * hole that this body reaches first, and fit there facing the backer.
+   * If none is reachable first, meet him at the hole. */
+  private spaceRead: { target: Agent; nextRead: number; point: Vec2; seenVel: Vec2 } | null = null;
+  private spaceClimb(a: Agent, sim: PlaySim, target: Agent, strike: number): Intent {
+    const run = sim.offCall.run!, dir = sim.attackDir(a.team);
+    if (!this.spaceRead || this.spaceRead.target !== target || sim.t >= this.spaceRead.nextRead) {
+      const seen = sim.see(a, target), ps = playSideSign(sim, run);
+      const rb = sim.slot('RB'), carrying = rb && sim.carrier === rb;
+      let holeY = sim.ballY + ps * (run.aim === 'A' ? .65 : run.aim === 'B' ? 1.95 : run.aim === 'C' ? 3.25 : 4.6);
+      if (carrying) {
+        const r = sim.see(a, rb!);
+        const toLine = Math.max(.3, Math.min(1, ((sim.los - r.pos.x) * dir) / Math.max(2, Math.abs(r.vel.x))));
+        holeY = r.pos.y + r.vel.y * toLine;
+      }
+      const hole = { x: sim.los + dir, y: clamp(holeY, .5, FIELD_WIDTH - .5) };
+      const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+      const backer = { pos: seen.pos, vel: seen.vel, profile: target.profile, speedScale: target.speedScale };
+      let point = hole;
+      for (const f of [.1, .2, .3, .45, .6, .8, 1]) {
+        const p = { x: seen.pos.x + (hole.x - seen.pos.x) * f, y: seen.pos.y + (hole.y - seen.pos.y) * f };
+        if (timeToReach(me, p, strike * .5) <= timeToReach(backer, p, 0)) { point = p; break; }
+      }
+      this.spaceRead = { target, nextRead: sim.t + a.mind.decisionInterval, point, seenVel: { ...seen.vel } };
+    }
+    const r = this.spaceRead, seen = sim.see(a, target);
+    const capacity = a.body.support
+      ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+    return { vel: movingArrivalVelocity(a.body, r.point, { x: 0, y: 0 }, a.profile.vmax, .1, 0, 1, capacity),
+      facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
+  }
+
   /** A zone lineman runs the track toward the play side from the snap and
    * meets his defender's playside shoulder while moving, instead of stepping
    * and then attacking a stationary picture. Outside/wide zone run the track;
@@ -1032,6 +1108,7 @@ export class RunBlocker implements Behavior {
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
     const departure = this.plan.departure!;
+    if (CLIMB_EXIT) return this.ripOff(a, sim, departure);
     if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
       const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
       const backer = sim.see(a, departure.backer);
@@ -1176,6 +1253,13 @@ export class RunBlocker implements Behavior {
       const side = Math.sign(plan.drive.y) || 1;
       const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+    }
+    if (CLIMB_SPACE && plan.kind === 'climb' && sim.offCall.run && !this.plan.departure) {
+      const fit = this.spaceClimb(a, sim, target, contact);
+      if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + a.profile.radius + target.profile.radius)
+        return secondLevelBlockApproach(a, seen, plan.drive, this.spaceRead!.point,
+          placementError, contact, a.profile.radius + target.profile.radius, fit, sim.t);
+      return fit;
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = this.plannedClimb(a, sim, target, contact);

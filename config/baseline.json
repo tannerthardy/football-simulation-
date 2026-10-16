@@ -8,8 +8,10 @@
   "flags": {
     "ANCHOR_SPLIT": "1",
     "CF_FLOW": null,
+    "CLIMB_EXIT": "0",
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
+    "CLIMB_SPACE": "0",
     "DL_FIGHT": "0",
     "DL_FLOW": "1",
     "DL_HANDS": "0",
