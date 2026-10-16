@@ -1,5 +1,28 @@
 # Current work ownership
 
+## Catching: minimal #97/#100 composition for independent Run review — 2026-10-16
+
+User requests a current-develop composition, all three provisional-block
+conditions and release-cushion/delivery behavior preserved; #95 stays separate.
+`codex/coverage-97-100-composition` starts at fetched/queue-confirmed accepted
+`3723204bd0743713bca3e87f10ca01bfebf00a15`, source `cda44ed8...`.
+Reuse Do-It-All's independently reviewed `ba399712` eight-file extraction and
+the source-qualified #97/#100/interaction receipts. Claim only its four coverage
+runtime files/four tests plus composition docs/patch/receipt artifacts. No new
+policy variant, spacing/movement modifier, physics, capability, #95 or diagnostic
+ancestry. Run reviews the fetchable exact composition; Integration owns combined
+verification/adoption. No new native panel, broad campaign or full-suite run.
+
+Clean eight-file candidate `65f1ec7a71feadb2f26b3a30212b1eaa74064e9d`, source
+`23c9496c...`, tree `81deae6a...` equals the independently reviewed extraction.
+64 current-source existing focused checks and typecheck pass, 15.071 command
+seconds; no new native play. All three block conditions, acquired entry once,
+release cushion/continuity, observed-cap delivery and adverse Drive/seam evidence
+are explicit in [the Run handoff](reviews/coverage-97-100-composition.md).
+[Manifest/receipts](../data/reviews/current/coverage-97-100-composition.json)
+include full/standalone/ordered-overlay patch hashes and source compatibility.
+#95 policy/test, accepted #105 work and all unrelated sources stay unchanged.
+
 ## Active recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus
