@@ -118,7 +118,7 @@ export function gapIn(p: LinePicture, gap: Gap, side: number): number {
     case 'A': off = n >= 1 ? o[0] / 2 : .65; break;
     case 'B': off = n >= 2 ? (o[0] + o[1]) / 2 : n === 1 ? o[0] + .65 : 1.95; break;
     case 'C': off = n >= 3 ? (o[1] + o[2]) / 2 : n === 2 ? o[1] + .65 : n === 1 ? o[0] + 1.95 : 3.25; break;
-    case 'D': off = n >= 3 ? o[2] + .7 : n === 2 ? o[1] + 1.6 : n === 1 ? o[0] + 2.9 : 4.2; break;
+    case 'D': off = n >= 3 ? o[n - 1] + .7 : n === 2 ? o[1] + 1.6 : n === 1 ? o[0] + 2.9 : 4.2; break;
   }
   return c + s * off;
 }

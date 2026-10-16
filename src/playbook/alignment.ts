@@ -253,6 +253,43 @@ export interface DefenseAlignment {
   boxCount: number;
 }
 
+/** Actual initial bodies, after the ordinary alignment error is applied. */
+export interface DefensiveStanceBody {
+  slot: DefSlot;
+  pos: Vec2;
+  radius: number;
+}
+
+/** A pressed marker retains his receiver and lateral shade when the called
+ * front occupies that stance. Choose the nearest unoccupied depth, rather
+ * than beginning with interpenetrating teammates. This installs an initial
+ * stance; it must never reposition players after pre-snap movement begins. */
+export function fitPressStances(alignment: DefenseAlignment, bodies: readonly DefensiveStanceBody[], los: number): void {
+  for (const body of bodies) {
+    const spot = alignment.spots[body.slot];
+    const corner = body.slot === 'CB_S' || body.slot === 'CB_W' || body.slot === 'NB' || body.slot === 'DB';
+    if (!corner || !spot?.press || spot.role.kind !== 'man' || !spot.manTarget) continue;
+    const occupied = bodies.flatMap(other => {
+      if (other === body) return [];
+      const radius = body.radius + other.radius, lateral = body.pos.y - other.pos.y;
+      if (Math.abs(lateral) >= radius) return [];
+      const half = Math.sqrt(radius * radius - lateral * lateral);
+      return [{ low: other.pos.x - half, high: other.pos.x + half }];
+    });
+    const original = body.pos.x;
+    const clear = (x: number) => occupied.every(({ low, high }) => x <= low || x >= high);
+    if (clear(original)) continue;
+    const minimum = los + body.radius;
+    // Every boundary of the occupied intervals is a possible nearest stance.
+    // Checking all teammates also prevents a front correction entering a
+    // second player's body. Equally near depths retain the tighter cushion.
+    const candidates = [minimum, ...occupied.flatMap(({ low, high }) => [low, high])]
+      .filter(x => x >= minimum && clear(x));
+    candidates.sort((a, b) => Math.abs(a - original) - Math.abs(b - original) || a - b);
+    if (candidates.length) body.pos.x = candidates[0];
+  }
+}
+
 /** Landmark for a zone (field coordinates). */
 export function zoneLandmark(zone: ZoneId, off: OffenseAlignment): Vec2 {
   const s = off.strongSign;

@@ -1,0 +1,32 @@
+{
+  "92": {
+    "reviewer": "Integration, independent of contributor",
+    "decision": "ACCEPT",
+    "reason": "Exact Intent-object cache is allocated lazily inside each actor iteration after observations/projection, while own body/time remain fixed. Both selectors only read detached samples. No cross-call/body/actor lifetime or option/score change. All original seven requests and full own goals remain exact in composed ten-check screen.",
+    "limits": "No whole-engine speedup or additional avoidance claim; historical grazing fixture not rerun."
+  },
+  "94": {
+    "reviewer": "Run",
+    "decision": "ACCEPT",
+    "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210001625",
+    "reviewRef": "refs/review/94-run-review"
+  },
+  "96": {
+    "reviewer": "Do-It-All",
+    "decision": "ACCEPT",
+    "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210210423",
+    "reviewPin": "22b3bac3ba35ae3945faec53d45d69f519cee080"
+  },
+  "98": {
+    "reviewer": "Integration, independent of contributor; contributor root review also preserved",
+    "decision": "ACCEPT",
+    "reason": "Actual initial teammate circles define forbidden depth intervals at fixed shade. Nearest feasible endpoint/LOS boundary enumerates nearest legal starting stance; moved bodies remain clear of all others. Only assigned pressed DB roles, before history/World or finite presentation movement. No runtime teleport, radius/front/receiver/press change. Idempotence, clear/excluded roles and first acquired picture/idle-front controls are retained.",
+    "limits": "A002 earlier release loses Mike load and gives earlier DE tackle/-0.86yd. This is initial-state correctness, not an offensive benefit; full raw tapes remain local with published hashes/reproducer."
+  },
+  "103": {
+    "reviewer": "Integration, independent of contributor",
+    "decision": "ACCEPT",
+    "reason": "D is the outside gap; its existing width/velocity already use the last sorted outward boundary. Position now names that same boundary. A/B/C, n<=3/sparse formulas, center-departure information and #63 B identity remain. Consumed-picture mirrors/private getters/accepted A039 and preserved controls support identity correctness.",
+    "limits": "Contact is later but LOS entry slower in A039; A003 unfinished behind LOS. No new Mike block, rushing or yardage claim. Original invalidated collector receipt remains failed."
+  }
+}

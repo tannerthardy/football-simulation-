@@ -113,6 +113,13 @@ in its parent history is separate, not a dependency. **Resolved gap-identity sco
 <a id="RUN-006"></a>
 ### RUN-006 — Riding departure starts before the mesh window
 
+New diagnosis #101 on acceptedbb6d4c7: I21/Wide9 F crosses the exchange, QB/RB
+lose physical reach and remain stranded through two20s live censors. Run owns
+bounded exchange recovery, with ordinary Ace reachable transfer as control.
+This differs from the accepted #63 cadence fix; no ready recovery patch exists.
+Reuse the published1848-case study; no second broad collector.
+[Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
+
 [#57](https://github.com/tannerthardy/football-simulation-/pull/57) now contains
 a concrete condition repair, not only the old diagnosis. Installed cadence
 already exists on accepted develop; proximity alone cannot permit departure
@@ -124,6 +131,12 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
+
+Current review queue: #97 provisional block key and #100 release cushion/seam
+delivery overlap in acquired-entry and three block conditions. Independent Run
+review must preserve both contracts and adverse Drive/seam results before
+composition; #95 rat remains separately held. No coverage source imported now.
+[Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
 
 Current: #89 acquired lateral alley-cap flow is adopted through #90 as9adb7b3;
 fixed x/depth/side and all acquisition/PA/carrying priorities remain. Preserve
@@ -154,17 +167,34 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
-Current: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
+Current intake2026-10-16: #92 forecast reuse and #94 free-footwork projection
+are independently accepted for exact combined verification, not yet adopted.
+Their shared implementation is explicitly reconciled; ten focused checks pass.
+Loaded extension/runner restoration remain rejected or held.
+[Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
+
+Current: #87's independently reviewed seven-file policy is adopted through
+#91 asbb6d4c7. Exact verification passes1,780 TS/145 Python/typecheck/build
+in200.787s. Compound achievable brake/transverse control retains own objective,
+acquired peer limits, contact/load exclusions and accepted cost proof. Accepted
+#88/#89 source lines remain. Original A044 collision relief does not establish
+postcatch benefit; catch/drop changes via RNG scheduling at identical probability.
+A008 cap3.40 and current-composition A042 cap3.80 remain censored; off-ball
+positions/forces differ. No universal path/coverage/YAC claim. Owners reconcile
+this accepted pin at clean checkpoints; no repeated suite or new campaign.
+[Actual merge](../data/reviews/current/pr91-merge.json).
+
+Earlier #90 adoption and subsequent #87 review: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
 cost successor; original zero-preview test is unchanged and counts0/0/0. The
 old failed combined receipt remains failed. This reviewed successor is adopted
 with independently accepted #88/#89 through #90 as9adb7b3. One exact combined
 verification passes1,772 TS/145 Python/typecheck/build in195.589s; no rerun.
 [Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 now has Run's independent whole-policy/interaction ACCEPT6208072709 on
 accepted9adb7b3, plus Catching producer approval. Its exact seven-file successor
-is assembled for Integration verification; not yet adopted. First exact run
+was assembled for Integration verification, now adopted above. First exact run
 fails6 module-reload Symbol identity comparisons; independent test-only repair
 retains full physical/goal equality and passes12 focused checks. Source668acb1
-unchanged; final validation tree requires a distinct exact receipt.
+unchanged; final validation tree has the distinct passing receipt above.
 Current A042 primary bodies/requests and RNG match through3.80; off-ball changes
 and censoring remain. The old A044 catch/drop is a draw-scheduling change, not
 a catchability or postcatch benefit. [Intake](../data/reviews/current/mesh-policy-integration/intake.json).
@@ -221,13 +251,20 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
 
+Current intake2026-10-16: reviewed #96 near-fit, #98 legal initial stance and
+#103 outside D objective join #92/#94 for exact verification. Correct setup/goal
+identity is distinct from better rushing; A002 lost Mike load, #96 lost A030 TD
+and #103 slower entry remain. #104 inline role and #102 span remain separately
+held for Run/Physics review.
+[Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
+
 Current: Do-It-All independently accepts #88 head6573521 minimal post-release
 strike-clearance correction; actual A018 RG/Mike load while RT retains DT, no
 release/range/force change. Existing obstruction/keeper controls pass. Later
 A018 C/LG impact, A030 shorter ending and D07 unfinished remain. Integration
 adopts the exact three-file #88 scope with compatible cost/#89 through #90 as
 9adb7b3 after one passing exact verification. #86 research is not a dependency;
-#87 remains separately held. Run reconciles ongoing access investigations at
+#87 is subsequently adopted through #91. Run reconciles ongoing access investigations at
 clean checkpoints. Earlier #84 findings below remain source-pinned.
 
 Earlier adopted #84: head4af71ac/codeaebb0ab/evidence70ed238 was a ready Duo-only
