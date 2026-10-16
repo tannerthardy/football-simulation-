@@ -35,6 +35,8 @@ export interface SpacingContext {
   constrained?: ReadonlySet<Body>;
 }
 
+type MotionForecast = (command: Intent) => MovementSample[];
+
 interface PeerPicture {
   key: number;
   age?: number;
@@ -103,10 +105,10 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
   return near;
 }
 
-function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
   const near=forecastPeers(a,original,peers,context);
   if(!near.length)return original;
-  const samples=previewFreeMovement(a.body,original,context!.now,TURN_STEPS);
+  const samples=forecast(original);
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
@@ -115,11 +117,11 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   // safely follows the same observed peers. Keep posture/facing/skill and let
   // ordinary movement decide whether this request is actually achievable.
   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
-  const slower=previewFreeMovement(a.body,slowed,context!.now,TURN_STEPS);
+  const slower=forecast(slowed);
   if(slower.every(sample=>sample.support==='up')
     &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
   const gather:Intent={...original,vel:{x:0,y:0}};
-  const gathered=previewFreeMovement(a.body,gather,context!.now,TURN_STEPS);
+  const gathered=forecast(gather);
   if(gathered.some(sample=>sample.support!=='up'))return original;
   const alternative=near.map(peer=>sweptClearance(a,gathered,peer));
   // Do not cure one overlap by creating another in a previously clear lane.
@@ -137,7 +139,7 @@ const passingFrames=new WeakMap<Agent,PassingFrame>();
  * obstructing teammate's acquired transverse motion. This is not a new route
  * or assignment. Full/half/gather alone can all intersect the same teammate.
  */
-function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
   const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
   const clear=()=>{passingFrames.delete(a);return chosen;};
   if((a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<1e-9
@@ -146,13 +148,13 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
     ||peers.some(p=>!Number.isFinite(p.age)||p.age! < 0
       ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
     ||!forecastPeers(a,raw,peers,context).length)return clear();
-  const now=context!.now,flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
+  const flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
   const forward={x:raw.vel.x/speed,y:raw.vel.y/speed};
   const dot=(x:number,y:number,v:{x:number;y:number})=>x*v.x+y*v.y;
   const gaps=(path:readonly MovementSample[])=>peers.map(p=>sweptClearance(a,path,p));
-  const originalPath=previewFreeMovement(a.body,raw,now,TURN_STEPS);
+  const originalPath=forecast(raw);
   const originalGaps=gaps(originalPath);
-  const residual=previewFreeMovement(a.body,{...raw,vel:{...a.vel}},now,TURN_STEPS);
+  const residual=forecast({...raw,vel:{...a.vel}});
   const residualGaps=gaps(residual);
   let passing=passingFrames.get(a);
   if(passing){
@@ -171,7 +173,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
   }
   passingFrames.set(a,passing);
   const peer=peers.find(p=>p.key===passing!.peer)!,normal=passing.normal;
-  const oldPath=chosen===raw?originalPath:previewFreeMovement(a.body,chosen,now,TURN_STEPS);
+  const oldPath=chosen===raw?originalPath:forecast(chosen);
   const oldGaps=gaps(oldPath),previous=Math.min(...oldGaps);
   const error=(path:readonly MovementSample[])=>{
     const end=path[path.length-1];
@@ -185,7 +187,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
     const scale=Math.min(1,speed/Math.max(1e-9,Math.hypot(vx,vy)));
     // Preserve field containment, facing, posture and all other modifiers.
     const command:Intent={...base,vel:containCoverage(a,{...base,vel:{x:vx*scale,y:vy*scale}}).vel};
-    const path=previewFreeMovement(a.body,command,now,TURN_STEPS),next=gaps(path),end=path[path.length-1];
+    const path=forecast(command),next=gaps(path),end=path[path.length-1];
     if(path.some(s=>s.support!=='up')||dot(end.pos.x-a.pos.x,end.pos.y-a.pos.y,forward)<=0
       ||next.some((g,i)=>oldGaps[i]>=0&&g<0))return;
     // An unsafe unloaded sprint's endpoint is not an achievable-contact
@@ -256,7 +258,18 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
-    const gathered=gatherForMotion(a,spaced,peers,context);
-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
+    // Both selectors may ask about the same request. The body/time are fixed
+    // throughout this call and previews return detached samples. Share only
+    // exact request objects here; the next actor/decision gets a fresh cache.
+    let forecasts:Map<Intent,MovementSample[]>|undefined;
+    const forecast:MotionForecast=command=>{
+      const cached=forecasts?.get(command);
+      if(cached)return cached;
+      const samples=previewFreeMovement(a.body,command,context!.now,TURN_STEPS);
+      (forecasts??=new Map()).set(command,samples);
+      return samples;
+    };
+    const gathered=gatherForMotion(a,spaced,peers,forecast,context);
+    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
   }
 }
