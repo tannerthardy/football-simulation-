@@ -13,3 +13,14 @@ export function contactMotion(drive: Vec2, tangent: Vec2, forward: number, later
     y: drive.y * forward + tangent.y * (lateral - driveLateral),
   };
 }
+
+/** Signed radial clearance along the movement component being controlled.
+ * A sideways gap cannot be closed by an upfield step. Once the blocker is
+ * above the defender, closing that same gap requires the opposite direction.
+ * Project onto the actual emitted basis; do not divide by its angle or grant
+ * extra movement/traction when that basis has little purchase on the gap. */
+export function connectionGap(delta: Vec2, separation: number, direction: Vec2): number {
+  const distance = Math.hypot(delta.x, delta.y);
+  if (distance < 1e-9) return 0;
+  return (distance - separation) * (delta.x * direction.x + delta.y * direction.y) / distance;
+}

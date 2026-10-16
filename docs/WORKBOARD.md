@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Run: stretch protection/access follow-up — 2026-10-16
+
+User assigned follow-up on remaining edge access and tackling concerns. Isolated
+`codex/stretch-protection-access` from accepted c3264b0 (queue625f3b4), separate
+from #110's pending runner reader. Run owns saved-state observation/reproduction
+and supported controller correction only. First question: why does loaded Y/DE_S
+contact expose the runner, and what physically authorizes its tackle transition?
+Keep a legitimate exposed-side tackle and a protected-side control. Shared
+World/contact-retention changes remain with Physics; coordinate any actual
+engagement/blocking/spacing edit with its owner. No release/strength changes,
+full campaign or duplication of #110. Publish concrete witness/patch to Integration.
+
 ## Active coverage/run integration boundary — 2026-10-16
 
 Integration owns only minimal extraction/reconciliation in defense.ts, coverage/{rules,defender,techniques}.ts, engagement.ts, blocking.ts and eight reviewed tests/fixtures on accepted3723204 plus queue db0d512. #97/#100 and95 independently accepted;102 independently accepted as existing-law validity;104 explicitly user-approved overriding author-independent hold. Shared acquired entry once,95 cut separate,104 preserves96.20 existing overlap checks pass; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build in226.175s, total228.048s including overlap. #107 awaits guarded adoption; no unchanged rerun. Contributors reuse their focused receipts and continue independent work; no shared-suite duplication or forced rebase. #101 Run repairs wall-censor index/partial traces; Measurement reviews stubs, no census recollection. Experimental Physics/perimeter/mesh diagnosis remain separate. [Current queue and evidence](INTEGRATION.md#ready-blocked-experimental).
