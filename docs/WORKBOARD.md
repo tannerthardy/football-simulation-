@@ -1,19 +1,23 @@
 # Current work ownership
 
-## Run: next current-build protection-access question — 2026-10-16
+## Run: current-build left-Duo access limitation — 2026-10-16
 
 `codex/current-protection-access` starts from accepted
-`bb6d4c73948d53ba841dd9338dd240146c739f8c` / source668acb1. Select one
-repeated blocking-access or useful-protection failure from Measurement's
-already-authorized current assessment when published; no duplicate panel.
+`bb6d4c73948d53ba841dd9338dd240146c739f8c` / source668acb1. Latest published
+transfer nominations revalidated with D06/D02 leftward cases and the Under
+clear-climb/keeper/defensive-recovery control, outside Measurement's pending
+current48. No duplicate panel or claim about that unpublished assessment.
 Old A018 departure repair (#88) is delivered and is not the next defect.
-Run owns a bounded assignment/security/release/strike/load/runner-arrival
-trace, then at most one demonstrated RunBlocker correction or an explicit
-limitation. No production edit claimed yet. Coordinate actual blocking
-functions with Do-It-All before editing; generic movement/spacing remains
-with Do-It-All, physical laws/capacities remain with Physics. Preserve useful
-keeper work, clear collection, and a defender recovering through a real block.
-Focused evidence goes directly to Integration; Integration owns final checks.
+One predeclared D06 admission diagnostic releases1.80 instead of2.55 with an
+identical full22 prefix; still no LT/Mike load before the same2.90 runner
+contact. Rejected; no production edit. Existing native escape follows the
+advancing outside surface; late spacing is retained and its exact LT cue is
+not captured. No all-route impossibility claim. Opening/member security and
+attainable departure remain unproved, not a strength/release-timer assignment.
+Boundary released; no shared movement/solver edits. Do-It-All retains generic
+movement/cost work. [Exact limitation, controls and portable reproduction](reviews/current-protection-access.md).
+Focused evidence goes directly to Integration with no production patch to merge
+or new combined-suite request. Historical4ded6b6 and accepted develop unchanged.
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 

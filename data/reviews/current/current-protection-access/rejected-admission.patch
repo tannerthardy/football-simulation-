@@ -1,0 +1,12 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1542,7 +1542,8 @@
+   if (!filling && !arriving) return;
+   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
+   if (!route) { observer.tags.add('combo-held'); return; }
+-  if (sim.offCall.run?.scheme === 'duo' && route.exit) {
++  if (sim.offCall.run?.scheme === 'duo' && route.exit
++    && !(observer.idx === 1 && combo.members.some(a => a.idx === 4) && sim.t >= 1.8)) {
+     // A vertical double's acquired backer can still belong to the other
+     // half of the surface. Permission for the keeper to stay does not give
+     // this member useful access across that surface. Retain the double;

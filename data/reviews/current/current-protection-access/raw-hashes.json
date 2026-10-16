@@ -1,0 +1,10 @@
+{
+  "out/current-protection-access/current/trace.json.gz": {
+    "sha256": "6b3030fa8bf39f6f465cdfbec8a29f48512d53a253da51f7d9062c3b0f496034",
+    "bytes": 4350886
+  },
+  "out/current-protection-access/detour/trace.json.gz": {
+    "sha256": "9b2cad6a37da0906842e999d3f4e1ad3b67f0404235ef880f8b2fe367d9cd1ae",
+    "bytes": 1440544
+  }
+}

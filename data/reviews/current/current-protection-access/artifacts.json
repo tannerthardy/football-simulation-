@@ -1,0 +1,74 @@
+{
+  "data/reviews/current/current-protection-access/d06-first-eligible-witness.json": {
+    "sha256": "e99599f9bc1a2918d525098ed3468b8b73c0364cdd4ca7b1995724d7ec93424b",
+    "bytes": 50308
+  },
+  "data/reviews/current/current-protection-access/handoff.json": {
+    "sha256": "bcac4b28bed0ae893b32528e55b378528b81bb84f57b39f3f4bf9576c1c7abc7",
+    "bytes": 2065
+  },
+  "data/reviews/current/current-protection-access/failed-launch.json": {
+    "sha256": "0f16ed564cb1c076f724ea80e485f56e6d659ef7a5f0e4ff5b9cb5315ecf57b1",
+    "bytes": 2399
+  },
+  "data/reviews/current/current-protection-access/diagnostic-receipt.json": {
+    "sha256": "bb5766711c30295448caa12b61d15cb9b84a7dd926f1ed2934f0655a623f5114",
+    "bytes": 2191
+  },
+  "data/reviews/current/current-protection-access/diagnostic-plan.json": {
+    "sha256": "c4bb1c5acf1389c20e407ca2a452891220b64f83b5c719347dd176b8da171038",
+    "bytes": 906
+  },
+  "data/reviews/current/current-protection-access/paired-tapes.json.gz": {
+    "sha256": "24b3955752987d66486f074998fe5ff34406653ba1636c5b546d9c81b415e921",
+    "bytes": 3476608
+  },
+  "data/reviews/current/current-protection-access/d06-access.png": {
+    "sha256": "1d4c57ef35d92ec9b71e144b634c414d053bb4fc7d8770fbbfee41229df238ca",
+    "bytes": 99209
+  },
+  "data/reviews/current/current-protection-access/reference-receipt.json": {
+    "sha256": "f233a4fed21797e00b515a0d82f67a945164fddf692716575fe14600a1be9fb6",
+    "bytes": 2435
+  },
+  "data/reviews/current/current-protection-access/inputs.json": {
+    "sha256": "ac6fcbdd08228a55792124f075c5643f8a4949f21a2e8cbd42a0f2b02168b2ac",
+    "bytes": 167167
+  },
+  "data/reviews/current/current-protection-access/diagnostic-launch.json": {
+    "sha256": "6d02468113a18faf13bfc8ff906a30523e5b7ae56ae9aa75f217c9e6dafc778e",
+    "bytes": 2400
+  },
+  "data/reviews/current/current-protection-access/reference-launch.json": {
+    "sha256": "d1bebc3b91f71659eff194c8a01237442c251cb0c5f733ea70121b98da69f90f",
+    "bytes": 2406
+  },
+  "data/reviews/current/current-protection-access/raw-hashes.json": {
+    "sha256": "7d87d21a8d1ec610949f323f88ddbd0b66907597e48921eac183011cb77f7efd",
+    "bytes": 336
+  },
+  "data/reviews/current/current-protection-access/measurements.json": {
+    "sha256": "0fd29620d8df39e3d0c9fbe53470eb647cc4e354d2d33ee427093b56e84fcdd6",
+    "bytes": 38834
+  },
+  "data/reviews/current/current-protection-access/rejected-admission.patch": {
+    "sha256": "859ce3d860e583b320fab247c1c9d0d4b6942fcb9bd0a71492c1064a86aac0e5",
+    "bytes": 731
+  },
+  "scripts/diag/current-protection-capture.mjs": {
+    "sha256": "f28052a5d0c6160965819982327225b569d2391bddb32b7a28e809c7f28b5e21",
+    "bytes": 8887
+  },
+  "scripts/diag/current-protection-results.py": {
+    "sha256": "eb9a9f9e8aba374a166ac7856869cfd5bb169ca86c0c4c1f6ebb830e9c6dfd33",
+    "bytes": 12429
+  },
+  "scripts/diag/current-protection-replay.py": {
+    "sha256": "3838a55d47f4a9fdf5cd00242e7f7ff27a060009d0f09698be2403c89c46d861",
+    "bytes": 2721
+  },
+  "docs/reviews/current-protection-access.md": {
+    "sha256": "b1d0ac1d89474a69e5561f8c30f65f8da99c768ad59e75cd78ed649ece540169",
+    "bytes": 12762
+  }
+}

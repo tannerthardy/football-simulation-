@@ -1,0 +1,1507 @@
+{
+  "schema": "current-protection-access-reduction-v1",
+  "rows": [
+    {
+      "id": "D06",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "inputSha256": "f8b37fd23fbaea8dc7e894cefa5892d9e0f8748ffb5fb0b788a48accffb48c70",
+      "climber": 1,
+      "keeper": 4,
+      "down": 13,
+      "installedPlan": {
+        "kind": "drive",
+        "target": 13,
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "combination": {
+          "members": [
+            1,
+            4
+          ],
+          "defender": 13,
+          "backer": 15,
+          "released": false,
+          "secureSince": -1,
+          "nextRead": 0,
+          "rep": null
+        },
+        "departure": null,
+        "departureRead": null,
+        "climbRead": null
+      },
+      "release": {
+        "t": 2.55,
+        "type": "block_climb",
+        "a": 1,
+        "b": 15,
+        "pos": {
+          "x": 38.05,
+          "y": 28.8
+        },
+        "note": "secured DT_S; LG stays"
+      },
+      "strikeRadius": 1.1529545454545453,
+      "firstBackerLoadBeforeContact": null,
+      "firstPlannedClimb": 3.05,
+      "firstRunnerContact": {
+        "t": 2.9,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 36.31,
+          "y": 29.95
+        },
+        "note": "grasp"
+      },
+      "lineArrivalBeforeWorldSample": 2.75,
+      "minBackerGapBeforeContact": 1.683180737859628,
+      "atRunnerContactTick": {
+        "t": 2.9,
+        "kind": "climb",
+        "departure": true,
+        "raw": {
+          "vel": {
+            "x": 1.1607753072712248,
+            "y": 0.8272637798014586
+          },
+          "facing": -3.0997631287129583
+        },
+        "preSpacing": {
+          "vel": {
+            "x": 1.1607753072712248,
+            "y": 0.8272637798014586
+          },
+          "facing": -3.0997631287129583
+        },
+        "final": {
+          "vel": {
+            "x": 2.1702833055038813,
+            "y": 0.4691443690445814
+          },
+          "facing": -3.0997631287129583
+        },
+        "before": {
+          "pos": {
+            "x": 38.88936795591372,
+            "y": 29.004695095434016
+          },
+          "vel": {
+            "x": 1.8702283514967137,
+            "y": 1.1285655431458574
+          },
+          "facing": -2.570651230395911,
+          "energy": 0.9167029829522348,
+          "support": {
+            "xi": {
+              "x": 0.005035357034337522,
+              "y": -0.012202618145045953
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.18342203916217525,
+            "lean": {
+              "x": 64.27806775312337,
+              "y": -104.59932454515511
+            },
+            "load": {
+              "x": -130.66885573737275,
+              "y": 490.55021782747326
+            },
+            "felt": {
+              "x": -171.25221026671846,
+              "y": 538.9154210047961
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.07669282810173082,
+            "out": 0,
+            "feltTip": {
+              "x": 0.19343817700005164,
+              "y": -0.6187508332811443
+            },
+            "causes": {
+              "contact": 0.018693398668773443,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -5.196039809949728,
+              "y": 2.498081784889088
+            },
+            "tipAccel": {
+              "x": -0.03730700874325771,
+              "y": 0.01607515372099008
+            }
+          },
+          "spin": -6.574946888082289,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.6741394276241365
+        },
+        "after": {
+          "pos": {
+            "x": 38.98415702310466,
+            "y": 29.061772534572597
+          },
+          "vel": {
+            "x": 1.9209649135252809,
+            "y": 1.1575953054068358
+          },
+          "facing": -2.8999160686219265,
+          "energy": 0.9163313767325617,
+          "support": {
+            "xi": {
+              "x": 0.004269886641500879,
+              "y": -0.011988176918192196
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.183340596590447,
+            "lean": {
+              "x": 46.05724812829628,
+              "y": -74.94869110147307
+            },
+            "load": {
+              "x": -197.38952909468412,
+              "y": 805.1335500051835
+            },
+            "felt": {
+              "x": -195.43986977572501,
+              "y": 732.7123847405468
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.07669282810173082,
+            "out": 0,
+            "feltTip": {
+              "x": 0.23092744935607368,
+              "y": -0.8706793296036349
+            },
+            "causes": {
+              "contact": 0.017382314983479513,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -0.7618456641481031,
+              "y": 1.1332076896461045
+            },
+            "tipAccel": {
+              "x": 0.0071562571789806,
+              "y": -0.12680221832508004
+            }
+          },
+          "spin": -6.542210730605623,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.34280609429080316
+        },
+        "actualBacker": {
+          "pos": {
+            "x": 36.689935860628125,
+            "y": 29.169707901573975
+          },
+          "vel": {
+            "x": 0.9009629005789294,
+            "y": 1.8403690056562283
+          },
+          "facing": 3.292902928514433,
+          "energy": 0.980424963034796,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.22031327538678458,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.2527359646126635,
+              "y": -6.624954865026389
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 6.728777280105872,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.2007750927137767
+        },
+        "actualRunner": {
+          "pos": {
+            "x": 36.05358495609317,
+            "y": 30.00242029489231
+          },
+          "vel": {
+            "x": 5.31781272777689,
+            "y": -0.9843852740630409
+          },
+          "facing": -0.9363738538539507,
+          "energy": 0.9738885008670846,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.1948620466137907,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -2.8946167212343843,
+              "y": -5.410648978318611
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 1.2346063608280815,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.8486899068846255
+        },
+        "backerGap": 2.205613467487575,
+        "afterWorldBackerGap": 2.2592638954575777,
+        "rep": null,
+        "keeperRep": {
+          "b": 4,
+          "d": 13,
+          "helpers": [],
+          "phi": -0.17421626952940955,
+          "baseB": 1,
+          "baseD": 0.9763282618504806,
+          "control": -0.02681735514211317,
+          "move": "shed",
+          "side": -1,
+          "hands": {
+            "normal": 544.9915665439524,
+            "tangent": 208.7940808965468,
+            "extension": 0.8737544297198958
+          }
+        },
+        "downRunnerGap": 3.550491964676844
+      },
+      "teammateContactSamplesThroughContactTick": 10,
+      "peakTeammateContactBeforeContact": [
+        2.35,
+        {
+          "i": 1,
+          "j": 4,
+          "impulse": 27.08519601754206,
+          "closing": 0.05572539200553336
+        }
+      ],
+      "phase": "dead",
+      "endTime": 3.5,
+      "ending": "tackle",
+      "yardsDescriptiveOnly": 3.13
+    },
+    {
+      "id": "D02",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "inputSha256": "fb84b370a5c668d89a1de56dea4819d7c2c8b9770e7cca404cda1722c15fb2a1",
+      "climber": 1,
+      "keeper": 4,
+      "down": 13,
+      "installedPlan": {
+        "kind": "drive",
+        "target": 13,
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "combination": {
+          "members": [
+            1,
+            4
+          ],
+          "defender": 13,
+          "backer": 15,
+          "released": false,
+          "secureSince": -1,
+          "nextRead": 0,
+          "rep": null
+        },
+        "departure": null,
+        "departureRead": null,
+        "climbRead": null
+      },
+      "release": {
+        "t": 2.5,
+        "type": "block_climb",
+        "a": 1,
+        "b": 15,
+        "pos": {
+          "x": 37.72,
+          "y": 28.83
+        },
+        "note": "secured DT_S; LG stays"
+      },
+      "strikeRadius": 1.1529545454545453,
+      "firstBackerLoadBeforeContact": null,
+      "firstPlannedClimb": 3,
+      "firstRunnerContact": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 35.83,
+          "y": 29.69
+        },
+        "note": "grasp"
+      },
+      "lineArrivalBeforeWorldSample": 2.65,
+      "minBackerGapBeforeContact": 1.4230146775779153,
+      "atRunnerContactTick": {
+        "t": 2.75,
+        "kind": "climb",
+        "departure": true,
+        "raw": {
+          "vel": {
+            "x": 1.1927243371364553,
+            "y": 1.0416492265333197
+          },
+          "facing": -3.1021870889048535
+        },
+        "preSpacing": {
+          "vel": {
+            "x": 1.1927243371364553,
+            "y": 1.0416492265333197
+          },
+          "facing": -3.1021870889048535
+        },
+        "final": {
+          "vel": {
+            "x": 1.1927243371364553,
+            "y": 1.0416492265333197
+          },
+          "facing": -3.1021870889048535
+        },
+        "before": {
+          "pos": {
+            "x": 38.3343026023984,
+            "y": 28.945255254291858
+          },
+          "vel": {
+            "x": 2.2917407203107363,
+            "y": 0.9547459238116032
+          },
+          "facing": -1.8964277036556787,
+          "energy": 0.9204185693183419,
+          "support": {
+            "xi": {
+              "x": 0.007967547783276184,
+              "y": -0.00845278685273426
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.21049413098010605,
+            "lean": {
+              "x": 161.1222209039295,
+              "y": -162.3930093407306
+            },
+            "load": {
+              "x": -331.6717511941643,
+              "y": 825.0066602221871
+            },
+            "felt": {
+              "x": -311.9872213947826,
+              "y": 657.8315506581052
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0830900732520066,
+            "out": 0,
+            "feltTip": {
+              "x": 0.25497843100456613,
+              "y": -0.5793472823771983
+            },
+            "causes": {
+              "contact": 0.017176713001364762,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.5567478838444375,
+              "y": 2.669608115349449
+            },
+            "tipAccel": {
+              "x": 0.1281165165327859,
+              "y": -0.3298542915079139
+            }
+          },
+          "spin": -6.536077191644504,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.3048827984179483
+        },
+        "after": {
+          "pos": {
+            "x": 38.44255515098319,
+            "y": 28.99550137713023
+          },
+          "vel": {
+            "x": 2.0374963751605937,
+            "y": 1.05522287831019
+          },
+          "facing": -2.226675529602096,
+          "energy": 0.9199613010344513,
+          "support": {
+            "xi": {
+              "x": 0.007516831976970591,
+              "y": -0.009382428919968891
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.1840837138636684,
+            "lean": {
+              "x": 115.44911610685209,
+              "y": -116.35967581093523
+            },
+            "load": {
+              "x": -126.11366707470812,
+              "y": 347.39004993043517
+            },
+            "felt": {
+              "x": -184.4049567287865,
+              "y": 441.20802510539903
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0830900732520066,
+            "out": 0,
+            "feltTip": {
+              "x": 0.18680812541561445,
+              "y": -0.4686114098226165
+            },
+            "causes": {
+              "contact": 0.016771728661961558,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -4.082863836625638,
+              "y": 2.2030355585957686
+            },
+            "tipAccel": {
+              "x": -0.0013107676403168265,
+              "y": -0.03385752920840378
+            }
+          },
+          "spin": -6.589014629509217,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.6362161317512816
+        },
+        "actualBacker": {
+          "pos": {
+            "x": 36.549830293175724,
+            "y": 28.91778797684245
+          },
+          "vel": {
+            "x": 1.2284477038227724,
+            "y": 2.367400929596797
+          },
+          "facing": 2.426953661604939,
+          "energy": 0.9817162184049213,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.5953945032459851,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 3.783881574335936,
+              "y": 0.08793243263908962
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -1.1459711198917688,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 1.1121973165204317
+        },
+        "actualRunner": {
+          "pos": {
+            "x": 35.57386441974996,
+            "y": 29.692091738368457
+          },
+          "vel": {
+            "x": 5.084859197557411,
+            "y": -0.11763870798694549
+          },
+          "facing": -0.8382114070963189,
+          "energy": 0.9755981063783083,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19526112811014185,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 1.9963252418759652,
+              "y": -1.9792815071757772
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 8.535564805933166,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.5578939884192391
+        },
+        "backerGap": 1.7846836901011345,
+        "afterWorldBackerGap": 1.833496287321151,
+        "rep": null,
+        "keeperRep": {
+          "b": 4,
+          "d": 13,
+          "helpers": [],
+          "phi": -0.21232775981419222,
+          "baseB": 1,
+          "baseD": 1,
+          "control": 0.4530136970953835,
+          "move": "shed",
+          "side": -1,
+          "hands": {
+            "normal": 843.9708480219451,
+            "tangent": 167.53845595713585,
+            "extension": 0.9267622714816665
+          }
+        },
+        "downRunnerGap": 3.419443532776047
+      },
+      "teammateContactSamplesThroughContactTick": 7,
+      "peakTeammateContactBeforeContact": [
+        2.3,
+        {
+          "i": 1,
+          "j": 4,
+          "impulse": 17.96983312962471,
+          "closing": 0.053221223953673104
+        }
+      ],
+      "phase": "dead",
+      "endTime": 3.45,
+      "ending": "tackle",
+      "yardsDescriptiveOnly": 2.65
+    },
+    {
+      "id": "DuoUnder",
+      "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "inputSha256": "8ee8f7d7179633eba26c5919a744026b5e5a6b887aa6d03d039d854057173596",
+      "climber": 2,
+      "keeper": 7,
+      "down": 12,
+      "installedPlan": {
+        "kind": "combo",
+        "target": 12,
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "combination": {
+          "members": [
+            7,
+            2
+          ],
+          "defender": 12,
+          "backer": 15,
+          "released": false,
+          "secureSince": -1,
+          "nextRead": 0,
+          "rep": null
+        },
+        "departure": null,
+        "departureRead": null,
+        "climbRead": null
+      },
+      "release": {
+        "t": 0.85,
+        "type": "block_climb",
+        "a": 2,
+        "b": 15,
+        "pos": {
+          "x": 35.24,
+          "y": 24.02
+        },
+        "note": "secured DE_S; Y stays"
+      },
+      "strikeRadius": 1.1754545454545453,
+      "firstBackerLoadBeforeContact": 1.8,
+      "firstPlannedClimb": 1.35,
+      "firstRunnerContact": {
+        "t": 2.95,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 36.56,
+          "y": 22.87
+        },
+        "note": "grasp"
+      },
+      "lineArrivalBeforeWorldSample": 2.75,
+      "minBackerGapBeforeContact": 0.5875195448706617,
+      "atRunnerContactTick": {
+        "t": 2.95,
+        "kind": "climb",
+        "departure": false,
+        "raw": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "preSpacing": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "final": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "before": {
+          "pos": {
+            "x": 38.211772808431164,
+            "y": 24.587997893660887
+          },
+          "vel": {
+            "x": 2.3278463485704726,
+            "y": -1.5863023253697852
+          },
+          "facing": 3.2268789484302274,
+          "energy": 0.9683900508178849,
+          "support": {
+            "xi": {
+              "x": 0.014426881118310862,
+              "y": -0.038347093678554024
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.8437565510413992,
+            "lean": {
+              "x": 3.568987993894769,
+              "y": 15.6248306739281
+            },
+            "load": {
+              "x": 25.503717362825338,
+              "y": -298.31113543583103
+            },
+            "felt": {
+              "x": 23.50087112690382,
+              "y": -276.62343371905854
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.3205692805942197,
+            "out": 0,
+            "feltTip": {
+              "x": -0.0608534238939794,
+              "y": 0.7162968466429506
+            },
+            "causes": {
+              "contact": 0.07919487033932701,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 1.7499718471188073,
+              "y": -0.6844372171395045
+            },
+            "tipAccel": {
+              "x": -0.005969612141457361,
+              "y": 0.04778216636717002
+            }
+          },
+          "spin": -0.0030903522157288378,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.549265459322766
+        },
+        "after": {
+          "pos": {
+            "x": 38.32324599908454,
+            "y": 24.512144269971564
+          },
+          "vel": {
+            "x": 2.1310812775645673,
+            "y": -1.44784262220308
+          },
+          "facing": 3.303129994574077,
+          "energy": 0.9680829202545301,
+          "support": {
+            "xi": {
+              "x": 0.012688961547513481,
+              "y": -0.037008293790657905
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.7187565510413992,
+            "lean": {
+              "x": 2.5572916446875373,
+              "y": 11.195680400283244
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 6.733112308251087,
+              "y": -79.25394068444714
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.3205692805942197,
+            "out": 0,
+            "feltTip": {
+              "x": -0.017434797850991612,
+              "y": 0.2052224825390333
+            },
+            "causes": {
+              "contact": 0.07155780206216297,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -2.3064433575937233,
+              "y": 1.7797121348920144
+            },
+            "tipAccel": {
+              "x": 0.04170830352906543,
+              "y": -0.4973845442353514
+            }
+          },
+          "spin": 3.0531321979697092,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.549265459322766
+        },
+        "actualBacker": {
+          "pos": {
+            "x": 36.24322407745421,
+            "y": 24.41969941436867
+          },
+          "vel": {
+            "x": -0.4099324244513088,
+            "y": -1.8203651132944747
+          },
+          "facing": 6.368471602020021,
+          "energy": 0.9727261119427334,
+          "support": {
+            "xi": {
+              "x": 0.014564536106772438,
+              "y": -0.06305913355739826
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.844635772972353,
+            "lean": {
+              "x": 25.630943476090245,
+              "y": -365.0139533935393
+            },
+            "load": {
+              "x": -25.503717362825338,
+              "y": 298.31113543583103
+            },
+            "felt": {
+              "x": -23.50087112690382,
+              "y": 276.62343371905854
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.29746988035141836,
+            "out": 0,
+            "feltTip": {
+              "x": -0.02692452191527423,
+              "y": 0.31691790300497624
+            },
+            "causes": {
+              "contact": 0.012102811516877539,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -3.5221479296029914,
+              "y": -0.7649519738829723
+            },
+            "tipAccel": {
+              "x": -0.0026582254780058126,
+              "y": 0.021377099896079835
+            }
+          },
+          "spin": -0.0030903190170050677,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -1.680438791660758
+        },
+        "actualRunner": {
+          "pos": {
+            "x": 36.30076825175075,
+            "y": 22.841488634066067
+          },
+          "vel": {
+            "x": 5.327455443094221,
+            "y": 0.39045601156589443
+          },
+          "facing": 0.6900185056674597,
+          "energy": 0.9729705437397635,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19467749479294125,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -3.3615093193622987,
+              "y": 5.613775992745662
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0.8976552523158423,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.7924454348064442
+        },
+        "backerGap": 1.9757298611811929,
+        "afterWorldBackerGap": 2.1059344347856954,
+        "rep": null,
+        "keeperRep": {
+          "b": 7,
+          "d": 12,
+          "helpers": [],
+          "phi": 0.23701215878147347,
+          "baseB": 1,
+          "baseD": 1,
+          "control": 0.1912034800452919,
+          "move": "shed",
+          "side": 1,
+          "hands": {
+            "normal": 459.0288052999047,
+            "tangent": -186.9262789492852,
+            "extension": 0.8496629172488406
+          }
+        },
+        "downRunnerGap": 1.9237981093623178
+      },
+      "teammateContactSamplesThroughContactTick": 0,
+      "peakTeammateContactBeforeContact": null,
+      "phase": "dead",
+      "endTime": 4.2,
+      "ending": "tackle",
+      "yardsDescriptiveOnly": 4.23
+    },
+    {
+      "id": "D06",
+      "source": "9b714c2a9cf8620959b04db9dcb58ae894b7e8ec74336aca7ff3c66bd69606e9",
+      "inputSha256": "f8b37fd23fbaea8dc7e894cefa5892d9e0f8748ffb5fb0b788a48accffb48c70",
+      "climber": 1,
+      "keeper": 4,
+      "down": 13,
+      "installedPlan": {
+        "kind": "drive",
+        "target": 13,
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "combination": {
+          "members": [
+            1,
+            4
+          ],
+          "defender": 13,
+          "backer": 15,
+          "released": false,
+          "secureSince": -1,
+          "nextRead": 0,
+          "rep": null
+        },
+        "departure": null,
+        "departureRead": null,
+        "climbRead": null
+      },
+      "release": {
+        "t": 1.8,
+        "type": "block_climb",
+        "a": 1,
+        "b": 15,
+        "pos": {
+          "x": 36.3,
+          "y": 28.96
+        },
+        "note": "secured DT_S; LG stays"
+      },
+      "strikeRadius": 1.1529545454545453,
+      "firstBackerLoadBeforeContact": null,
+      "firstPlannedClimb": 3.05,
+      "firstRunnerContact": {
+        "t": 2.9,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 36.1,
+          "y": 29.99
+        },
+        "note": "grasp"
+      },
+      "lineArrivalBeforeWorldSample": 2.75,
+      "minBackerGapBeforeContact": 1.420425249364922,
+      "atRunnerContactTick": {
+        "t": 2.9,
+        "kind": "climb",
+        "departure": true,
+        "raw": {
+          "vel": {
+            "x": 0.08281202760150586,
+            "y": 1.1007425227844878
+          },
+          "facing": -2.551413137314138
+        },
+        "preSpacing": {
+          "vel": {
+            "x": 0.08281202760150586,
+            "y": 1.1007425227844878
+          },
+          "facing": -2.551413137314138
+        },
+        "final": {
+          "vel": {
+            "x": 0.08281202760150586,
+            "y": 1.1007425227844878
+          },
+          "facing": -2.551413137314138
+        },
+        "before": {
+          "pos": {
+            "x": 37.954172510845424,
+            "y": 29.944146316166094
+          },
+          "vel": {
+            "x": 1.1801636947792367,
+            "y": 1.6206435112362527
+          },
+          "facing": -2.406841426783073,
+          "energy": 0.94199272783332,
+          "support": {
+            "xi": {
+              "x": 0.003360850118891246,
+              "y": -0.006327395425712239
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.18845245244166348,
+            "lean": {
+              "x": 0.7437833872934552,
+              "y": -0.2326242708068495
+            },
+            "load": {
+              "x": -522.706483457532,
+              "y": 810.920064483005
+            },
+            "felt": {
+              "x": -523.1465145292036,
+              "y": 794.7024345182184
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.07669282810173082,
+            "out": 0,
+            "feltTip": {
+              "x": 0.6170336161628063,
+              "y": -0.9371683427881927
+            },
+            "causes": {
+              "contact": 0.01598966969005209,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0.41293132439091457,
+              "y": 2.7312417581333794
+            },
+            "tipAccel": {
+              "x": -0.0497048674409917,
+              "y": -0.09667028568566391
+            }
+          },
+          "spin": -3.1544186484122485,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.4608918753457917
+        },
+        "after": {
+          "pos": {
+            "x": 38.00551867557978,
+            "y": 30.026558362008046
+          },
+          "vel": {
+            "x": 0.8759519226364736,
+            "y": 1.6729479056648815
+          },
+          "facing": -2.5512452846288336,
+          "energy": 0.941731604441818,
+          "support": {
+            "xi": {
+              "x": 0.0007240739388401428,
+              "y": -0.004373740116508778
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.18839854556666402,
+            "lean": {
+              "x": 0.5329440852803915,
+              "y": -0.16668257363250386
+            },
+            "load": {
+              "x": -196.36207789050823,
+              "y": 431.4634753250894
+            },
+            "felt": {
+              "x": -293.08990625358746,
+              "y": 544.478325655453
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.07669282810173082,
+            "out": 0,
+            "feltTip": {
+              "x": 0.345415291103645,
+              "y": -0.6415421105939293
+            },
+            "causes": {
+              "contact": 0.016086849674099613,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -4.21254749426641,
+              "y": 1.5176249892828266
+            },
+            "tipAccel": {
+              "x": -0.15943859671205776,
+              "y": 0.1307765687894861
+            }
+          },
+          "spin": -2.909372896129843,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.792225208679125
+        },
+        "actualBacker": {
+          "pos": {
+            "x": 36.73841951822587,
+            "y": 29.209603907608226
+          },
+          "vel": {
+            "x": 1.2763010702932513,
+            "y": 2.1457704363244425
+          },
+          "facing": 3.172847809866831,
+          "energy": 0.9802065582919672,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.3452187141482207,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.1263903080145996,
+              "y": -6.199609346725749
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 8.344539338523429,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.15735093931145516
+        },
+        "actualRunner": {
+          "pos": {
+            "x": 35.87873557238622,
+            "y": 30.036495183146023
+          },
+          "vel": {
+            "x": 4.616446131811738,
+            "y": -0.9311812623991373
+          },
+          "facing": -0.9415499347963183,
+          "energy": 0.9746349436035769,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19505495990396723,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0.18641726862377261,
+              "y": -5.782200657529277
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 1.2463255405284812,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.8529561014086805
+        },
+        "backerGap": 1.420425249364922,
+        "afterWorldBackerGap": 1.4033499072694895,
+        "rep": null,
+        "keeperRep": {
+          "b": 4,
+          "d": 13,
+          "helpers": [],
+          "phi": -0.4320468473079756,
+          "baseB": 1,
+          "baseD": 1,
+          "control": -0.033730789618351464,
+          "move": "shed",
+          "side": -1,
+          "hands": {
+            "normal": 557.5740789676909,
+            "tangent": -244.87942268589563,
+            "extension": 0.8747223105465691
+          }
+        },
+        "downRunnerGap": 2.582347985829073
+      },
+      "teammateContactSamplesThroughContactTick": 0,
+      "peakTeammateContactBeforeContact": null,
+      "phase": "dead",
+      "endTime": 3.7,
+      "ending": "tackle",
+      "yardsDescriptiveOnly": 2.35
+    }
+  ],
+  "matchedDiagnostic": {
+    "full22Initial": true,
+    "allSavedStagesIdenticalBefore": 1.8,
+    "enteringBodiesAndConsumedJoinedCuesIdenticalAt": 1.8,
+    "firstRawActors": [
+      1
+    ],
+    "interpretation": "Admission bypass rejects one existing detour; no proof that every continuous route is impossible."
+  }
+}

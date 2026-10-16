@@ -1,0 +1,36 @@
+{
+  "schema": "current-protection-access-handoff-v1",
+  "decision": "EXPLICIT_LIMITATION_NO_PRODUCTION_PATCH",
+  "acceptedCommit": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "acceptedSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "referenceFreeze": "2c349928aff50ad3c02ec3b7d35efef3172e90da",
+  "diagnosticPlanFreeze": "07f1a2ae5b08b4b48bc99f355fc379ac669d3665",
+  "diagnosticSource": "9b714c2a9cf8620959b04db9dcb58ae894b7e8ec74336aca7ff3c66bd69606e9",
+  "productionEdits": 0,
+  "cases": [
+    "D06",
+    "D02",
+    "DuoUnder"
+  ],
+  "selectedFrom": "Published ed30b821c3aa621b129ce861e5c5a66b5d5cf23c nominations, revalidated on accepted develop; current48 not published at selection, no claim about its results.",
+  "nativeContinuations": 4,
+  "nativeEndings": 4,
+  "newFullGames": 0,
+  "newFullSuites": 0,
+  "newUnitTests": 0,
+  "collectorSeconds": 2.065622303,
+  "launcherSecondsIncludingFailedZeroWorldLaunch": 3.6568303400000004,
+  "failedLaunches": 1,
+  "failedLaunchNote": "Missing copied script in isolated host. Zero World steps, .15586869s, retained failed receipt.",
+  "checks": [
+    "Frozen input/source/settings/operator checks",
+    "Identical full22 initial states and all saved prefix stages/cues through entering1.80",
+    "Native useful Under load/keeper/defensive recovery",
+    "All four native endings, no timeout yardage substitution",
+    "Unmodified production source/tests/config/dependencies versus accepted",
+    "Collector syntax and isolated-host source reconstruction",
+    "Saved-only geometric obstruction certificate; no feasible-route proof"
+  ],
+  "nextDecision": "Do not promote admission bypass or start another exit variant. Any later opening/member correction needs an acquired attainable departure and actual protection while retaining down-level work. D02 earlier window remains untested; no universal impossibility/physics/RB defect claim.",
+  "integrationAction": "Retain precise limitation and reusable source-pinned controls. No production PR or new combined-suite run requested."
+}
