@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Independent coverage/inline contract adjudication — 2026-10-16
+
+Do-It-All owns source/evidence review artifacts for #97/#100, their minimal
+composition, and separate #95/#104 decisions from accepted develop
+3723204bd0743713bca3e87f10ca01bfebf00a15. Scope: this ownership note,
+docs/reviews/coverage-contract-review.md and portable patch/manifest artifacts.
+No production controller, shared helper, physical law, settings or test edits;
+no new selected-play policy, native panel or repeated Integration suite.
+Catching remains coverage author; Run supplies author-independent inline review;
+Integration owns exact combined verification and adoption. The original #104
+contributor's source adjudication is not an independent approval of that PR.
+
 ## Active recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus
