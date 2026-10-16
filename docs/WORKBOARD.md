@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Run: development perimeter concepts — 2026-10-15 Phoenix
+## Run: development perimeter concepts — 2026-10-16 Phoenix
 
 User requests Buck sweep, pin-and-pull and crack toss: build distinct calls,
 test native execution and refine demonstrated errors. Isolated branch
@@ -16,6 +16,15 @@ changes. Use Ace12 under center for Buck/pin-pull; reduced-split Ace12 for crack
 Three native witnesses plus existing Power/Toss correctness; mirrors/adverse
 front only for named assignment/physical risks, no new game campaign. Exact
 inputs/flags/cost and adverse/inconclusive outcomes recorded before promotion.
+
+Checkpoint: code8ebc4c5/sourceca40378, final48 unique focused passes/typecheck;
+16native snaps total,44.840launch/check seconds, zero games. Actual loaded Under
+pin-pull kick and receiver cracks demonstrated; deep-force pullers still miss
+useful contact, fresh weak crack loses upstream, adverse traffic/gains retained.
+Explicit development only: hold automatic calling and production promotion.
+[Evidence, portable inputs and film](reviews/perimeter-runs/README.md). Run's
+next bounded question is attainable deep-force strike access from the achieved
+corner; no extra route variants, shared movement or Physics changes in this pass.
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 
