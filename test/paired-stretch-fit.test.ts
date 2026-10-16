@@ -12,8 +12,18 @@ import { contactFixture } from '../scripts/diag/run-contact-technique.js';
 
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); });
 
-function fixture(cueVelocity = { x: 0, y: 0 }) {
-  const f = contactFixture({ type: 'run', runBlock: 60, passBlock: 60 });
+function fixture(cueVelocity = { x: 0, y: 0 }, slot: 'C' | 'Y' = 'C') {
+  const original = contactFixture({ type: 'run', runBlock: 60, passBlock: 60 });
+  const blocker = slot === 'C' ? original.blocker : original.sim.slot('Y')!;
+  if (slot !== 'C') {
+    original.sim.disengage(original.engagement);
+    blocker.body.pos = { ...original.blocker.pos };
+    blocker.body.vel = { ...original.blocker.vel };
+    blocker.body.facing = original.blocker.facing;
+  }
+  const engagement = slot === 'C' ? original.engagement
+    : original.sim.engage(blocker, original.defender, 'run', original.engagement.drive)!;
+  const f = { ...original, blocker, engagement };
   f.sim.offCall.run = RUN_BY_ID.wz_strong;
   const helper = f.sim.slot('LG')!;
   const combo: Combination = { members: [f.blocker, helper], defender: f.defender,
@@ -137,16 +147,17 @@ describe('paired stretch fits use the acquired picture and their installed half'
     expect(f.update()).toBeNull();
   });
 
-  it('keeps the continuing keeper\'s fit when production release removes its combination', () => {
-    const f = fixture(), before = f.update();
+  it.each(['C', 'Y'] as const)('keeps %s on its continuing fit after release, respecting existing solo framing', slot => {
+    const f = fixture({ x: 0, y: 0 }, slot), before = f.update();
     f.combo.released = true;
     f.behavior.plan.combination = undefined;
     f.combo.soloKind = 'reach';
     f.sim.t += .05;
-    expect(f.update()).toEqual(before);
+    expect(f.update()).toEqual(slot === 'Y' ? before : null);
+    expect(!!f.engagement.surfaceAxis).toBe(slot === 'C');
     f.sim.t = 2;
-    expect(f.update()).not.toBeNull();
-    expect(f.see).toHaveBeenCalledTimes(2);
+    expect(f.update() === null).toBe(slot === 'C');
+    if (slot === 'Y') expect(f.see).toHaveBeenCalledTimes(2);
     f.behavior.plan.kind = 'climb';
     f.sim.t += .05;
     expect(f.update()).toBeNull();
