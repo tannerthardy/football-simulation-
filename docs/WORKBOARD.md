@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Duo transfer audit — Run Game — 2026-10-15 America/Phoenix
+
+User requested a bounded variety/transfer investigation after #84 adoption. Host `codex/duo-transfer-audit` starts at accepted `86250bb4f0c6f421878c204161864d523c3e30b6`, reconciled with published queue `ef214373f9dd101a044b5246879c7e5007c8fb55`; source dcebbee equals the #84 candidate. Historical 4ded6b6 remains separate. Claim diagnostics `scripts/diag/duo-transfer-*`, this ownership entry, report and evidence only; no production/test/settings edit or #81/Physics import. Reuse A018/A030/Under paired tapes and A027 WZ; predeclare nine additional Duo variations (three legal nickel fronts, both call orientations, same 11-player rosters; Ace/trips/gun) plus two installed-concept contrasts. Ceiling 20 new short native executions, max5 simulation seconds/case, 30s batch/5s per-case native wall; no full games, generated rosters or repeated suite. Evaluate first-level control, earned departure, actual next-job load, runner arrival/traffic and legitimate defensive access. Source-specific adverse cases stay visible. The unfinished A018 RG→LB_M collection remains next implementation; this audit does not tune an exit or broaden the Duo predicate to other schemes.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
