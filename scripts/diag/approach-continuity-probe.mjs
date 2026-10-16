@@ -11,7 +11,7 @@ import {clamp} from '../../src/core/vec.ts';
 import {gaitLag} from '../../src/physics/kinematics.ts';
 import {interceptPoint} from '../../src/physics/reach.ts';
 import {World} from '../../src/physics/world.ts';
-import {chase,leverage} from '../../src/sim/behaviors/common.ts';
+import {chase,leverage,track} from '../../src/sim/behaviors/common.ts';
 import {requestToCover} from '../../src/sim/motion-plan.ts';
 import {PerceptionBuffer} from '../../src/sim/perception.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
@@ -36,6 +36,15 @@ for(const [name,pos,vel,runnerPos,runnerVel]of [
 function planned(a,seen,contact,offset,ordinary){
  const dist=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y);
  if(dist<=contact+.5)return ordinary;
+ if(modeArg==='--track'){
+  const ux=(seen.pos.x-a.pos.x)/dist,uy=(seen.pos.y-a.pos.y)/dist,
+   vx=a.vel.x-seen.vel.x,vy=a.vel.y-seen.vel.y,
+   miss=dist*Math.abs(ux*vy-uy*vx)/Math.max(.1,Math.hypot(vx,vy));
+  if(miss<=contact+.5)return ordinary;
+  const steering=track(a,{x:seen.pos.x,y:seen.pos.y+offset},seen.vel,
+   {cutSkill:ordinary.cutSkill,speed:a.speedScale});
+  return{...ordinary,vel:steering.vel,facing:Math.atan2(steering.vel.y,steering.vel.x)};
+ }
  const path=t=>({x:seen.pos.x+seen.vel.x*t,y:clamp(seen.pos.y+seen.vel.y*t,0,FIELD_WIDTH)}),
   ip=interceptPoint(a,path,{horizon:3,step:.05,radius:contact}),time=Math.max(.1,ip.t),
   goal={x:ip.point.x,y:clamp(ip.point.y+offset,0,FIELD_WIDTH)},
