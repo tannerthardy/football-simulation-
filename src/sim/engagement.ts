@@ -1082,7 +1082,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A paired stretch half has its own acquired movement plan even when the
   // loaded hands use the original diagonal surface. Keep that surface and
   // all force limits; only the primary's foot request changes.
-  if (!stretch && contactTrack)
+  if (!e.surfaceAxis && contactTrack)
     blockVel = { x: contactTrack.x, y: clamp(contactTrack.y, -mirror, mirror) };
   const preAnchor = blockVel;
   let anchored = false;

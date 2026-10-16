@@ -1230,14 +1230,15 @@ export class RunBlocker implements Behavior {
     if (![seen.pos.x, seen.pos.y, seen.vel.x, seen.vel.y].every(Number.isFinite)) return;
     const elapsed = Math.max(0, sim.t - held.at);
     const pos = { x: seen.pos.x + seen.vel.x * elapsed, y: seen.pos.y + seen.vel.y * elapsed };
-    const dir = sim.attackDir(a.team), contact = a.profile.radius + target.profile.radius;
-    const closing = Math.max(1, (a.vel.x - seen.vel.x) * dir + 1.5);
-    const meet = clamp(Math.max(0, (pos.x - a.pos.x) * dir - contact) / closing, .15, .6);
-    const distance = (pos.y + seen.vel.y * meet + half - a.pos.y) * side;
-    if (distance <= 0 || (pos.x - sim.los) * dir > 1.5) return;
-    const needed = requestToCover(gaitLag(a.profile), distance, meet, a.vel.y * side);
-    this.stretchStep = { x: clamp((pos.x - dir * contact - a.pos.x) * 2.5, -1, 2.5),
-      y: side * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45, needed)) };
+    const dir = sim.attackDir(a.team);
+    if ((pos.x - sim.los) * dir > 1.5) return;
+    // Meet and then match the installed half. A track-speed floor would run
+    // past it with residual momentum and spend the hand reach through air.
+    const goal = { x: pos.x - dir * .35, y: pos.y + half };
+    const capacity = a.body.support ? availability(a.body.support,
+      supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+    this.stretchStep = movingArrivalVelocity(a.body, goal, seen.vel,
+      a.profile.vmax, 0, 0, .8 + .3 * a.r('runBlock'), capacity);
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
