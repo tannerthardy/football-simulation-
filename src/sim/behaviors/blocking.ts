@@ -721,6 +721,9 @@ const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
 
+/** Legacy solo-contact track experiment; paired half work is independent. */
+const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
+
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
   private pullIdx = 0;
@@ -744,12 +747,20 @@ export class RunBlocker implements Behavior {
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
+  /** Personally acquired first-level picture, held only to the ordinary read. */
+  private stretchTrackRead: { target: Agent; combo: Combination; at: number; nextRead: number;
+    side: number; half: number; seen: Perceived } | null = null;
+  private stretchStep: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
 
   calledMotion(): Vec2 | null { return this.track; }
 
   contactMotion(a: Agent): Vec2 | null {
-    const e = a.engagement, read = this.zoneRead;
+    const e = a.engagement, read = this.zoneRead, held = this.stretchTrackRead;
+    if (e?.blocker === a && held && this.stretchStep && e.defender === held.target
+      && this.plan.target === held.target && this.plan.combination === held.combo && !held.combo.released)
+      return this.stretchStep;
+    if (!RUN_CONTACT_TRACK) return null;
     if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
       || !read || read.target !== e.defender.idx || read.phase !== 'reach'
       || (this.plan.combination && !this.plan.combination.released)) return null;
@@ -766,6 +777,7 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const t = sim.t;
     this.track = null;
+    this.stretchStep = null;
     if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
       || (plan.combination && !plan.combination.released))) delete plan.contactFit;
     this.homeY ??= a.pos.y;
@@ -781,6 +793,7 @@ export class RunBlocker implements Behavior {
     }
     if (plan.combination) readCombination(a, sim, plan.combination);
     if (a.engagement) {
+      if (a.engagement.blocker === a) this.readStretchTrack(a, sim, a.engagement.defender);
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
     }
@@ -939,6 +952,7 @@ export class RunBlocker implements Behavior {
     const target = this.availableTarget(a, sim);
     if (!target) return null;
     const seen = sim.see(a, target);
+    this.readStretchTrack(a, sim, target, seen);
     const dir = sim.attackDir(a.team);
     if ((seen.pos.x - sim.los) * dir > 1.5) return null; // second level: ordinary climb
     const ps = playSideSign(sim, run);
@@ -1078,6 +1092,7 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
+    this.readStretchTrack(a, sim, target, seen);
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
@@ -1185,6 +1200,44 @@ export class RunBlocker implements Behavior {
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
       !!zone || !!contactFit, zone ? 2.4 : 0) : original;
+  }
+
+  /** Continue the called half while acquiring hands, using a personal held
+   * picture. This changes feet only, never the acquired contact surface. */
+  private readStretchTrack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): void {
+    const combo = this.plan.combination, run = sim.offCall.run;
+    if (!ZONE_FLOW || !combo || combo.released || combo.defender !== target
+      || !combo.members.includes(a) || this.plan.target !== target
+      || !run || (run.scheme !== 'wideZone' && run.scheme !== 'outsideZone')) {
+      this.stretchTrackRead = null;
+      return;
+    }
+    let held = this.stretchTrackRead;
+    if (!held || held.target !== target || held.combo !== combo || sim.t >= held.nextRead) {
+      const seen = picture ?? sim.see(a, target);
+      const partner = combo.members.find(b => b !== a)!;
+      const home = sim.offAlign.spots[a.slot]?.pos, other = sim.offAlign.spots[partner.slot]?.pos;
+      if (!home || !other) { this.stretchTrackRead = null; return; }
+      const side = playSideSign(sim, run);
+      held = this.stretchTrackRead = { target, combo, at: sim.t,
+        nextRead: sim.t + a.mind.decisionInterval, side,
+        half: (Math.sign(home.y - other.y) || side) * .55,
+        seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } } };
+    }
+    const { seen, side, half } = held;
+    // An unavailable motion estimate is not stationary motion. No private
+    // defender state or longer memory/perception lifetime supplies a fallback.
+    if (![seen.pos.x, seen.pos.y, seen.vel.x, seen.vel.y].every(Number.isFinite)) return;
+    const elapsed = Math.max(0, sim.t - held.at);
+    const pos = { x: seen.pos.x + seen.vel.x * elapsed, y: seen.pos.y + seen.vel.y * elapsed };
+    const dir = sim.attackDir(a.team), contact = a.profile.radius + target.profile.radius;
+    const closing = Math.max(1, (a.vel.x - seen.vel.x) * dir + 1.5);
+    const meet = clamp(Math.max(0, (pos.x - a.pos.x) * dir - contact) / closing, .15, .6);
+    const distance = (pos.y + seen.vel.y * meet + half - a.pos.y) * side;
+    if (distance <= 0 || (pos.x - sim.los) * dir > 1.5) return;
+    const needed = requestToCover(gaitLag(a.profile), distance, meet, a.vel.y * side);
+    this.stretchStep = { x: clamp((pos.x - dir * contact - a.pos.x) * 2.5, -1, 2.5),
+      y: side * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45, needed)) };
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {

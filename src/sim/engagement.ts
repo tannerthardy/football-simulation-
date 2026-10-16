@@ -631,7 +631,6 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 /** Stretch reaches stay connected rather than drive (STRETCH_REACH=0 off). */
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 /** Trial: retain the held solo reach's track intention through contact. */
-const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 /** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
 const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
@@ -1067,7 +1066,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
-  const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
+  const contactTrack = b.behavior.contactMotion?.(b) ?? null;
   if (stretch && run) {
     const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
     if (Math.abs(toPlay) > .5) {
@@ -1080,6 +1079,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
     : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  // A paired stretch half has its own acquired movement plan even when the
+  // loaded hands use the original diagonal surface. Keep that surface and
+  // all force limits; only the primary's foot request changes.
+  if (!stretch && contactTrack)
+    blockVel = { x: contactTrack.x, y: clamp(contactTrack.y, -mirror, mirror) };
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the
