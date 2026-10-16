@@ -14,13 +14,16 @@ export function contactMotion(drive: Vec2, tangent: Vec2, forward: number, later
   };
 }
 
-/** Signed radial clearance along the movement component being controlled.
- * A sideways gap cannot be closed by an upfield step. Once the blocker is
- * above the defender, closing that same gap requires the opposite direction.
- * Project onto the actual emitted basis; do not divide by its angle or grant
- * extra movement/traction when that basis has little purchase on the gap. */
+/** Distance to torso clearance along the emitted movement component, holding
+ * its perpendicular offset fixed. Radial distance is not normal travel, and
+ * a radial gradient needlessly attenuates a valid oblique approach. Keep the
+ * current side of the defender: a connection goal cannot run through him.
+ * Resolving a unit axis here does not amplify the emitted drive component. */
 export function connectionGap(delta: Vec2, separation: number, direction: Vec2): number {
-  const distance = Math.hypot(delta.x, delta.y);
-  if (distance < 1e-9) return 0;
-  return (distance - separation) * (delta.x * direction.x + delta.y * direction.y) / distance;
+  const length = Math.hypot(direction.x, direction.y);
+  if (length < 1e-9) return 0;
+  const normal = (delta.x * direction.x + delta.y * direction.y) / length;
+  const lateral = (delta.x * direction.y - delta.y * direction.x) / length;
+  const contactDepth = Math.sqrt(Math.max(0, separation * separation - lateral * lateral));
+  return normal - Math.sign(normal) * contactDepth;
 }
