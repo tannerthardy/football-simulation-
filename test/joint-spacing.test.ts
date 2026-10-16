@@ -21,7 +21,7 @@ function stage(f:Fixture){
  const peers=f.peers.map(p=>({idx:p.idx,team:'O',profile:p.profile,
   get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as unknown as Agent));
  const commands:Intent[]=[structuredClone(f.raw),...peers.map(()=>({free:true,vel:{x:0,y:0}}))];
- return {a,peers,commands,run:()=>spaceTeammates([a,...peers],commands,(_a,b)=>f.peers.find((p:any)=>p.idx===b.idx).seen,{now:f.t})};
+ return {a,peers,commands,run:()=>spaceTeammates([a,...peers],commands,(_a,b)=>f.peers.find(p=>p.idx===b.idx)!.seen,{now:f.t})};
 }
 
 describe('neighboring teammate closing limits',()=>{
@@ -38,7 +38,7 @@ describe('neighboring teammate closing limits',()=>{
  });
  it('respects tactile constraint ownership before a load registers',()=>{
   const f=fixtures[0],s=stage(f);
-  spaceTeammates([s.a,...s.peers],s.commands,(_a,b)=>f.peers.find((p:any)=>p.idx===b.idx).seen,
+  spaceTeammates([s.a,...s.peers],s.commands,(_a,b)=>f.peers.find(p=>p.idx===b.idx)!.seen,
     {now:f.t,constrained:new Set([s.a.body])});
   expect(s.commands[0]).toEqual(f.ordinary);
  });
