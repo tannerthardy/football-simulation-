@@ -302,7 +302,7 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   })() : undefined;
   to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
     run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
-      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
+      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'||b.behavior.plan.pullRole==='force'))} : undefined }, to);
 }
 
 export function onThrow(sim: PlaySim): void {

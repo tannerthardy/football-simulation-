@@ -407,8 +407,9 @@ export interface RunBlockPlan {
   climbTo?: Agent | null;
   drive: Vec2;
   pullPath?: Vec2[];
-  /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
-  pullRole?: 'kick' | 'lead' | 'trap';
+  /** A perimeter force job turns up off the pin surface before intercepting
+   * deep support; a short kick/trap instead fits a first-level target. */
+  pullRole?: 'kick' | 'lead' | 'trap' | 'force';
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
@@ -520,11 +521,12 @@ function perimeterInstallation(sim: PlaySim, concept: RunConcept, line: Agent[],
   if(force)claimed.add(force);
   const ordered=[...pullers].sort((a,b)=>rel(b)-rel(a));
   for(const [i,a] of ordered.entries()){
-    const kick=i===0&&!!force,target=kick?force:backer(edgeY);
+    const first=i===0&&!!force,target=first?force:backer(edgeY);
+    const role=first?(reserved?'kick':'force'):'lead';
     // The wrapper clears behind the first puller's body instead of asking
     // two guards to occupy one depth. These are routes, not collision waivers.
     const depth=1.25+i*(a.profile.radius+ordered[0].profile.radius+.15);
-    plans.set(a,{kind:'pull',pullRole:kick?'kick':'lead',target,drive:kick?norm({x:.3,y:ps}):up(0),
+    plans.set(a,{kind:'pull',pullRole:role,target,drive:first?norm({x:.3,y:ps}):up(0),
       pullPath:[{x:sim.los-depth,y:a.pos.y},{x:sim.los-depth,y:edgeY-ps*.5},{x:sim.los+.5,y:edgeY}]});
   }
   const free=line.filter(a=>!plans.has(a));
@@ -918,23 +920,23 @@ export class RunBlocker implements Behavior {
         // target. Reaching a waypoint's tolerance does not establish that
         // clearance, and a penetrator need not pass within an arbitrary
         // distance of the puller to become relevant work.
-        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force')
           ? this.readPull(a, sim, target) : null;
         if (read) {
           this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
-          if (this.pullCleared && (approachingDepth < sim.los || distance < 1.2))
+          if (this.pullCleared && (plan.pullRole==='force' ? this.pullIdx>=2 : approachingDepth < sim.los || distance < 1.2))
             return this.attack(a, sim, read.target, read.seen);
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
-        let path = read && this.pullCleared ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        let path = read && this.pullCleared && plan.pullRole!=='force' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
-        if (read && this.pullCleared) plan.pullPath[this.pullIdx] = path;
+        if (read && this.pullCleared && plan.pullRole!=='force') plan.pullPath[this.pullIdx] = path;
         if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
@@ -1159,7 +1161,7 @@ export class RunBlocker implements Behavior {
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
     if(plan.kind==='crack'&&(seen.pose==='down'||seen.pose==='rising'))return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
-    if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
+    if ((plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
       // him would expose the runner. Fit his outside shoulder and wash inward.
@@ -1238,7 +1240,7 @@ export class RunBlocker implements Behavior {
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
-    else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+    else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && (plan.pullRole === 'lead'||plan.pullRole==='force'))) {
       // Climbs and leads intercept: aim where the backer will be when this
       // body can get there (his seen motion carried forward, our own reach
       // law), not a quarter second ahead of a flowing backer. CLIMB_INTERCEPT=0
@@ -1264,7 +1266,7 @@ export class RunBlocker implements Behavior {
       const fit = this.plannedClimb(a, sim, target, contact);
       if (fit) return fit;
     }
-    if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+    if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && (plan.pullRole === 'lead'||plan.pullRole==='force'))) {
       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
         facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
       return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
