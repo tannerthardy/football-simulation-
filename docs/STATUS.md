@@ -4,10 +4,11 @@ Updated **2026-10-16 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Current intake:** reviewed #92/#94/#96/#98/#103 assembled for one exact
-  verification on acceptedbb6d4c7. Coverage97/100, contact102, inline104, rat95
-  and tooling101 retain their specific review gates;99 is a held prototype.
-  [Current queue](INTEGRATION.md#ready-blocked-experimental).
+- **#107 verified, guarded adoption pending:** #97/#100 release contracts, #95 acquired rat duty, #102 bounded contact-span validity and user-approved #104 inline role. Fourteen protected files; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build,226.175s plus1.873s overlap,total228.048s. Accepted develop stays3723204 until guarded adoption. #101 tooling-HOLD: Run repairs lost wall-censor accounting/exception traces; Measurement reviews without a study rerun. [Exact scope and owners](INTEGRATION.md#ready-blocked-experimental).
+- **Completed #105:** #92/#94/#96/#98/#103 adopted as3723204 after independent
+  reviews and one exact verification:1,816 TS/156 files,145 Python,typecheck/build
+  pass;222.569s plus1.050s overlap screen,total223.619s. Adverse evidence retained.
+  Coverage97/100/95, contact102 and inline104 have since cleared their review/approval gates; tooling101 remains held.99 stays a prototype and93 diagnosis. [Current queue/prompts](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #91:** independently reviewed #87 compound coverage-traffic policy
   is adopted asbb6d4c7; accepted #88/#89/cost retained. One exact run passes
   1,780 TS/151 files,145 Python,typecheck/build;200.787s,44flags/components1.
@@ -20,7 +21,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `bb6d4c73948d53ba841dd9338dd240146c739f8c`**, merged #91 with minimal #87 policy; prior #88/#89/cost and accepted controllers retained. No #87 gate remains. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr91-merge.json).
+- **Accepted develop: `3723204bd0743713bca3e87f10ca01bfebf00a15`**, merged #105 with the five reviewed ordinary controller/setup corrections. Prior #87/#88/#89/cost and accepted controllers retained. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr105-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -72,7 +73,7 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop isbb6d4c7; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop is3723204; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
 Measurement completed/published the one frozen48 comparison at40af332; no

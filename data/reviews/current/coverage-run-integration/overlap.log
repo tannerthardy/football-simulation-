@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit db0d512666823c49f7d5afed84138b32ffcf449f, source 4658b9ce14e2ce73ae7784635dcface1e115ebdf9eba2ca1c70c2bec1ca89d8b
+Running node node_modules/vitest/vitest.mjs run --project core test/rat-coverage.test.ts test/match-block-release.test.ts
+
+ RUN  v3.2.4 /workspace/football-coverage-run-integration
+
+ ✓ |core| test/match-block-release.test.ts (10 tests) 114ms
+ ✓ |core| test/rat-coverage.test.ts (10 tests) 147ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  17:52:22
+   Duration  1.40s (transform 804ms, setup 0ms, collect 1.95s, tests 261ms, environment 1ms, prepare 175ms)
+
+Validation receipt: out/coverage-run-integration/overlap.json; exit 0

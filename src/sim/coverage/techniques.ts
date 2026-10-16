@@ -9,10 +9,11 @@ import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, lerp } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap } from '../../playbook/types.js';
+import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 
 abstract class Technique implements Behavior {
@@ -35,6 +36,30 @@ abstract class Technique implements Behavior {
   }
 
   protected abstract move(a: Agent, sim: PlaySim): MoveCommand;
+}
+
+/** Preserve release cushion on the installed #2 while his route declares.
+ * This remains a zone read, with ordinary support/ball priority. It is not
+ * knowledge of a vertical or permission to carry a declared shallow forever. */
+export class ReadRelease extends Technique {
+  private readonly movement: ManCoverage;
+
+  constructor(a: Agent, sim: PlaySim, target: Agent, reader: ReleaseReader,
+    gap: Gap, gapSign: number, initialPosition: Vec2) {
+    super(target, reader, gap, gapSign);
+    this.movement = new ManCoverage(a, sim, target, false, gap, gapSign,
+      { lev: 'inside', initialPosition: { ...initialPosition } });
+  }
+
+  recordedTechnique() { return this.movement.recordedTechnique(); }
+
+  /** Completing the same inside match does not restart the release picture,
+   * cushion, hip turn or stem confidence at an arbitrary depth boundary. */
+  match(): ManCoverage { return this.movement; }
+
+  protected move(a: Agent, sim: PlaySim): MoveCommand {
+    return this.movement.trackReceiver(a, sim);
+  }
 }
 
 /**

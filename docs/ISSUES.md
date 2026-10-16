@@ -132,6 +132,8 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
 
+2026-10-16 update: Do-It-All accepts exact #97/#100 release-read/provisional-block composition and separate #95 acquired rat duty at ba399712 on3723204. Integration has reconciled the shared entry producer once;20 existing overlap checks and exact #107 freeze90240f5 pass:1,890 TS/145 Python/typecheck/build. Guarded adoption pending, no unchanged rerun. Drive high/low losses, exposed seam, changed targets/RNG and rat collision/fall/lost availability remain accepted local costs, not proof of overall coverage/tackling improvement. [Current scope](INTEGRATION.md#ready-blocked-experimental). The earlier review-request paragraph below describes the prior stage.
+
 Current review queue: #97 provisional block key and #100 release cushion/seam
 delivery overlap in acquired-entry and three block conditions. Independent Run
 review must preserve both contracts and adverse Drive/seam results before
@@ -168,8 +170,9 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 ### PASS-007 — Mesh approach coordination and request attribution
 
 Current intake2026-10-16: #92 forecast reuse and #94 free-footwork projection
-are independently accepted for exact combined verification, not yet adopted.
-Their shared implementation is explicitly reconciled; ten focused checks pass.
+are independently accepted and adopted through #105 as3723204.
+Their shared implementation is explicitly reconciled; ten focused checks and
+full1,816-TS/145-Python/typecheck/build verification pass. Exact receipts below.
 Loaded extension/runner restoration remain rejected or held.
 [Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
 
@@ -251,8 +254,11 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
 
+2026-10-16 update: user explicitly approves #104 at bcd0dc8, overriding author-independent approval hold; the technical review supports its one-line installed-inline role gate and preservation of #96. Integration prepares it with independently accepted #102 span correction and coverage scopes for one exact verification. Native330→843 normal-load evidence remains contextual (D/span/stance, before accepted92/94); press-side loss/insecure Mike/free Will remain. No general accepted-source rushing benefit claimed. #101 tooling is separately held for missing wall-censor accounting and exception traces: Run repairs/Measurement reviews stubs, no1848-study rerun. Earlier holds below are historical.
+
 Current intake2026-10-16: reviewed #96 near-fit, #98 legal initial stance and
-#103 outside D objective join #92/#94 for exact verification. Correct setup/goal
+#103 outside D objective join #92/#94 in adopted3723204 through #105. Exact
+verification passes all phases; see [actual merge](../data/reviews/current/pr105-merge.json). Correct setup/goal
 identity is distinct from better rushing; A002 lost Mike load, #96 lost A030 TD
 and #103 slower entry remain. #104 inline role and #102 span remain separately
 held for Run/Physics review.
@@ -646,6 +652,8 @@ of grip CPU work. [Exact evidence](https://github.com/tannerthardy/football-simu
 
 <a id="PHY-004"></a>
 ### PHY-004 — Contact validity stays an explicit caller responsibility
+
+2026-10-16: Physics independently ACCEPTS #102 head7b09c65 / implementation84a71af as enforcement of the existing solo-run full-span validity bound, not added reach/strength or a new force law. Exact extraction passes combined #107 freeze90240f5 (1,890 TS/145 Python/typecheck/build); guarded adoption pending. Ordinary disengage removes World joints and actor pointers. Helpers and active pass preserve legacy behavior; converted solo pass-to-run uses the new bound.20Hz validity misses possible within-tick excursions. Earlier F002/A002 defensive access and A027 changed fumble/draw stream remain adverse/source-qualified; all transfer prefixes are live at3.10s. No new mechanical law or experimental solver promotion. [Review](https://github.com/tannerthardy/football-simulation-/pull/102#issuecomment-6220760634).
 
 The saved synthetic unreachable hand joint still transmits shear. This is not
 a demonstrated native controller occurrence. Acquisition/reach/geometry/clearance
