@@ -112,13 +112,20 @@ failed setup checks and9.417 s typecheck. Fourteen completed native executions,
 Saved-only packaging/reduction adds filesystem work, zero simulations. No games,
 NFL collection, feature activation, roster correction or combined-suite repetition.
 
-The [packet receipt](../../data/reviews/current/rat-crosser-duty/receipt.json)
+The [packet receipt](../../data/reviews/current/rat-crosser-duty.json)
 hashes code, operators, inputs, reduced recordings and receipts. Full raw files
-remain in ignored `out/rat-crosser-duty`. Published reductions preserve every
+remain in ignored `out/rat-crosser-duty`. Local review reductions preserve every
 actor's body/request records, events, contacts and cached rat reads; other
 observers' or duplicate perception transcripts are omitted and counted. Replay
 geometry is rounded recorded geometry, not exact impact-time geometry, gaze or
 transmitted grasp load. No population YAC improvement is claimed.
+
+The compact summary, source patch, collector and receipt are published in git.
+The1.50 MB detailed archive upload failed with HTTP401 on `uploads.github.com`,
+although normal Git/API publication succeeds. The named draft research release
+has **no asset**. Do not advertise its download as available; hashes and exact
+bounded reproduction inputs remain published. No credential value was read or
+changed. This blocks sharing that archive, not controller development/review.
 
 On the named source and Node22.23.3:
 
@@ -131,5 +138,5 @@ node scripts/baseline.mjs --candidate --receipt out/rat-review/focused.json -- n
 For the accepted arm use its two unchanged runtime files and the same fixtures.
 `native-operator-v1.mjs` preserves the exact original four-case collector; current
 collector adds only explicit fixture selection and Drive. Regenerate the saved
-summary with `scripts/diag/rat-crosser-summary.py` against the published packet
+summary with `scripts/diag/rat-crosser-summary.py` against a restored/local packet
 without executing football again.
