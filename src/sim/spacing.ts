@@ -57,14 +57,16 @@ function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPic
  * This is a held-command forecast against observed constant-velocity peers,
  * not a contact solve or knowledge of their next decisions. Replan next tick.
  */
-function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
   const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
   if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
-    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6
-    ||Math.abs(original.vel.x*a.vel.y-original.vel.y*a.vel.x)/speed<1)return original;
+    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return original;
+  // A nearly aligned request does not remove momentum.
+  // Admit by the attainable tube below, then evaluate the actual held-command
+  // movement rather than assuming the body immediately adopts its request.
   // In an empty World, every COM acceleration is bounded by traction/mass
   // (including a fall). Midpoint integration keeps its path within .5*a*t²
   // of the initial-velocity line. This tube only rejects definitely clear
@@ -150,6 +152,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
-    intents[i]=gatherForTurn(a,spaced,peers,context);
+    intents[i]=gatherForMotion(a,spaced,peers,context);
   }
 }
