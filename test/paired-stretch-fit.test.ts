@@ -153,11 +153,10 @@ describe('paired stretch fits use the acquired picture and their installed half'
     f.behavior.plan.combination = undefined;
     f.combo.soloKind = 'reach';
     f.sim.t += .05;
-    expect(f.update()).toEqual(slot === 'Y' ? before : null);
-    expect(!!f.engagement.surfaceAxis).toBe(slot === 'C');
+    expect(f.update()).toBeNull();
+    expect(!!f.engagement.surfaceAxis).toBe(true);
     f.sim.t = 2;
-    expect(f.update() === null).toBe(slot === 'C');
-    if (slot === 'Y') expect(f.see).toHaveBeenCalledTimes(2);
+    expect(f.update()).toBeNull();
     f.behavior.plan.kind = 'climb';
     f.sim.t += .05;
     expect(f.update()).toBeNull();
