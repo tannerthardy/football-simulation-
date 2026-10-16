@@ -8,9 +8,15 @@ Run owns an isolated `codex/acquired-run-crease` candidate from accepted
 portable evidence. Extract useful occupied-space/route reading from Claude
 `50f6a08`; remove proximity-only protection credit and test occupied endpoints
 through the real carrier hook. No `blocking.ts`, departure, spacing, physics,
-capacity or flag-profile changes. #109 preserves the independent review and
-its adverse controls; CLIMB_EXIT remains separate. Integration owns final
-combined verification. Reuse #109's exact native baselines; no broad panel/games.
+capacity or flag-profile changes. Tested patch d157356/source811cd00:
+65 focused checks and typecheck pass; original three baselines reused, three
+candidate continuations and one fresh paired transfer. Exact occupied-entry
+witness fixed; useful RT/Mike load retained. Duo meets SS .20s earlier; fresh
+IZ finishes .68yd shorter despite later/farther first contact. All adverse and
+setup failures retained. Total42.03 command-seconds; no games/full suite.
+[Candidate and exact evidence](reviews/acquired-run-crease.md). #109 preserves
+the independent review; CLIMB_EXIT remains held/separate. Integration owns
+independent intake and final combined verification.
 
 ## Active coverage/run integration boundary — 2026-10-16
 

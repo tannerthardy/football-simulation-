@@ -1,0 +1,49 @@
+{
+  "question": "Do acquired occupied-space and route reads improve entry without phantom protection or departure changes?",
+  "selection": "Original three #109 controls reused. One fresh Ace12 IZ strong / Under3 / pair11 / seed71001 selected before execution to test concept/front transfer; not replaced.",
+  "rosters": "Exact Claude50f6a08 factory: generated11/12, strength .55. All22 ordinary controllers/World. No observer-state override: constructor history then native ticks.",
+  "factory": "scripts/diag/acquired-crease/inputs.ts",
+  "factorySha256": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033",
+  "cases": [
+    {
+      "id": "wz-strong-over3",
+      "concept": "wz",
+      "dir": "strong",
+      "look": "over3",
+      "roster": "pair11",
+      "seed": 77,
+      "formation": "ace_12",
+      "until": 20,
+      "initialFingerprint": "ae2d1947d88a70917446cb9dbc94fcbdb349381ac95abee8033a4f579875178f"
+    },
+    {
+      "id": "wz-weak-over3",
+      "concept": "wz",
+      "dir": "weak",
+      "look": "over3",
+      "roster": "pair11",
+      "seed": 77,
+      "formation": "ace_12",
+      "until": 20,
+      "initialFingerprint": "c2c7f56aa75a029e99845435c4bf1b97670aab317742b6e75d589e8968451f09"
+    },
+    {
+      "id": "useful-climb-opponent",
+      "fixture": "test/fixtures/planned-climb-fit.json.gz",
+      "fixtureSha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+      "until": 3.5,
+      "initialFingerprint": "e55aa8cd557af56462d1dfa36d5dcd50e317236f39fe66dfc28d7ba87c676397"
+    },
+    {
+      "id": "iz-strong-under3-transfer",
+      "concept": "iz",
+      "dir": "strong",
+      "look": "under3",
+      "roster": "pair11",
+      "seed": 71001,
+      "formation": "ace_12",
+      "until": 20,
+      "initialFingerprint": "c42f29fa1d4354d54f93835a94c4c313b8c8182ee761257d7782c8e34732b5c4"
+    }
+  ]
+}
