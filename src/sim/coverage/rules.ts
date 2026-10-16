@@ -114,7 +114,7 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
     }
     return man(two, { lev: 'inside' });
   }
-  if (two.release !== 'vertical') c.state.mode = 'zoned';
+  if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
 }
 
@@ -194,7 +194,8 @@ function qSafety(c: RuleCtx): Directive {
     c.state.mode = 'two';
     return man(two, { overTop: true, lev: 'inside' });
   }
-  if (two.release !== 'none' && two.release !== 'vertical' && (two.release !== 'block' || knowsPass(c.sim, c.a))) {
+  if (two.release === 'block') return knowsPass(c.sim, c.a) ? helpOne(c, one) : zoneOf(c);
+  if (two.release !== 'none' && two.release !== 'vertical') {
     c.state.mode = 'one';
     return helpOne(c, one);
   }
@@ -212,7 +213,7 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
     c.state.mode = 'zoned';
     return zoneOf(c);
   }
-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
+  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
   return zoneOf(c);
 }
 
