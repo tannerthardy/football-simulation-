@@ -1,16 +1,21 @@
 # Current work ownership
 
-## Active outer D-gap boundary correction — 2026-10-15
+## Ready outer D-gap boundary correction — 2026-10-16
 
-Do-It-All owns only `gapIn`'s D landmark in `src/sim/live-gaps.ts`, its focused
-saved-picture test/fixture and evidence on `codex/outer-d-gap`, independently
-based on accepted `bb6d4c73948d53ba841dd9338dd240146c739f8c`. Fetched develop
-and the shared queue agree. Preserve #63's B-gap correction, departure
-classification, perception, interior gaps and all blocking/near-fit work.
-The question is whether D's position uses the same outer body as its width
-and velocity after a departed center leaves more than three outward bodies.
-No native simulations by this contributor; Run/Do-It-All root owns the
-separate reacting continuation and Integration owns combined verification.
+Do-It-All owns the one-line `gapIn(D)` correction in `src/sim/live-gaps.ts`,
+focused saved-picture fixtures/tests and portable evidence on `codex/outer-d-gap`.
+Code `6cf700db7a475ed6e95833509229b30eececba52` is independently based on accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c`; no #96, primary-footwork or physics
+ancestry. D now uses the same outer boundary as its existing width/velocity.
+Preserve #63, departure classification, perception and interior gaps. Twenty
+focused checks pass across compatible receipts; root's frozen four-WZ and
+three transfer prefixes preserve adverse controls. A039/A003 correct the outside
+objective but enter later; no speed/yardage or new Mike-load benefit is claimed.
+One earlier native validation failure from test drift remains recorded as failed.
+The observation-only short reproducer and seven condensed inputs are portable;
+no packaging simulation or shared-suite repeat. Advance objective correctness
+for independent review; Integration owns exact combined verification. Blocking
+experiments remain separate. [Report and exact costs](reviews/outer-d-gap.md).
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 
