@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Do-It-All paired stretch footwork check — 2026-10-16
+
+Root owns only paired primary RunBlocker contactMotion and stepRunRep foot-command composition. Reuse original acquired target cadence, snap-installed half, existing movement/anchor/capacities. Coordinated Run#96 comment6210772910. This is a separate experimental interaction on accepted+D-gap+isolated-contact-span; no new away-release, near-fit dependency, communication or Physics changes. Compare saved D+span control before promotion.
+
 ## Active outer D-gap boundary correction — 2026-10-15
 
 Do-It-All owns only `gapIn`'s D landmark in `src/sim/live-gaps.ts`, its focused
