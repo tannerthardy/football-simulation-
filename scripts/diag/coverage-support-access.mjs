@@ -26,7 +26,7 @@ const selected=[
  {id:'A020',file:'A020-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain pair.'},
  {id:'A008',file:'A008-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain successful opposing control.'},
  {id:'A006',file:'A006-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain fresh-player helper trace. This supersedes the old failed-hold ending for current-source claims.'},
- {id:'A042',file:'moving-cap-A042.json.gz',qualification:'Published #89 source; Run independently verified runner6/SS21/FS20 body/requests equal current #87 composition through3.80 only. Other helper bounds below are historical, not current-composition claims.'},
+ {id:'A042',file:'moving-cap-A042.json.gz',qualification:'Historical published #89 runtime only. Run later compared accepted9adb7b3 with the #87 composition; that is separate evidence and does not establish equality of either arm with this older capture. Do not label this ending current.'},
  {id:'A006',file:'moving-cap-A006.json.gz',qualification:'Published fresh-player #89 transfer, older runtime. No current #91 equivalence established.'},
 ];
 const rows=[];
