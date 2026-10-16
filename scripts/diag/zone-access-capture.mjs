@@ -70,8 +70,9 @@ for(const input of selected){
  };
  const see=sim.see.bind(sim);let join=false,spacingBefore=null;
  sim.see=(a,b,...args)=>{const picture=see(a,b,...args);
-  const spacing=!stack.length&&!join&&['RT','Y'].includes(a.slot)&&new Error().stack.includes('spaceTeammates');
-  if(stack.length||join||spacing)reads.push({t:sim.t,a:a.idx,b:b.idx,context:spacing?'spacing':join?'joined-security':stack.join('/'),
+  const caller=!stack.length&&!join&&['RT','Y'].includes(a.slot)?new Error().stack:'';
+  const spacing=caller.includes('spaceTeammates'),helperFit=caller.includes('helperFit');
+  if(stack.length||join||spacing||helperFit)reads.push({t:sim.t,a:a.idx,b:b.idx,context:spacing?'spacing':helperFit?'helper-fit':join?'joined-security':stack.join('/'),
    picture:structuredClone(picture),...(spacing?{calledMotion:b.behavior.calledMotion?.()??null}:{})});
   return picture;};
  const prepare=sim.prepareJoinedRunBlocks.bind(sim);
