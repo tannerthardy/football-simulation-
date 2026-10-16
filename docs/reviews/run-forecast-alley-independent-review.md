@@ -6,6 +6,10 @@ deltas. This is independent source/contract acceptance, not a merged-source
 full-suite pass or a claim of aggregate football improvement. #88 remains frozen
 at `6573521bc28ea09c2aa6c05770f20b2089cc9fe6`; no new collection variant.
 
+[Review receipt and exact pins](../../data/reviews/current/run-forecast-alley-review/receipt.json)
+· [independent byte/saved-tape audit](../../data/reviews/current/run-forecast-alley-review/static.json)
+· [specific unit probes](../../data/reviews/current/run-forecast-alley-review/probes.json).
+
 ## Exact boundaries
 
 Fetched develop `86250bb4f0c6f421878c204161864d523c3e30b6` and published queue
@@ -144,7 +148,7 @@ was corrected symmetrically; no physics or behavioral assertion was relaxed.
 The initial loader failure was a missing local node_modules symlink, restored
 from the existing installation. Both failure receipts remain visible.
 
-Successful offline source/archive/tape audit took3.318s; earlier partial audits
+Final offline source/archive/tape audit took3.805s; earlier partial audits
 stopped on an unfetched research pin and the intentionally omitted diagnostic
 fixture. Their partial times are not presented as a total wall-time benchmark.
 Contributor costs are reused separately: cost candidate12.811s, #89 full

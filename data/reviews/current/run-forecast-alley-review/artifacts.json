@@ -1,0 +1,30 @@
+{
+  "initial-missing-loader.json": {
+    "bytes": 2235,
+    "sha256": "5f9d6b270fa63ca3cb473509c342ef27b14f3f4c1aeb9b245c642d40fef672b0"
+  },
+  "initial-prototype-comparison.json": {
+    "bytes": 2233,
+    "sha256": "f016a8931ed6acd1331f7575fe04dd21b51d46bfc09e9791d5ec8c3a62c648d4"
+  },
+  "plan.json": {
+    "bytes": 972,
+    "sha256": "9e4abf896f0e75e9219d824e8728347c016bdd1007d3c6cfcf1b8d606d6eaf23"
+  },
+  "probes-launcher.json": {
+    "bytes": 2233,
+    "sha256": "0669ab0a54795bc319d03137341b6bc7eaff95e54da63fbc7ebc08333d40d077"
+  },
+  "probes.json": {
+    "bytes": 6564,
+    "sha256": "d3196729667c25f932aad1641b357d7f5d141546b1e9d6dcb16166327348ae2a"
+  },
+  "receipt.json": {
+    "bytes": 2332,
+    "sha256": "d1c9d2d94f5897fae2ff38ed109df06aac34392aa4c71cdbf4a174c2736ec47f"
+  },
+  "static.json": {
+    "bytes": 80144,
+    "sha256": "46ad2745652f173253d4e215939520baeb1e60ae3526cc4a68a010c22c717c9e"
+  }
+}

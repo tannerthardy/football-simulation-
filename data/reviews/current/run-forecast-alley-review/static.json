@@ -1,0 +1,3066 @@
+{
+  "schema": "run-independent-forecast-alley-static-v1",
+  "pins": {
+    "base": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "cost": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+    "costEvidence": "c6c8b4823acb27c13769f32305a79d5628cf19b2",
+    "alley": "78a00645e4f821d45604a1ed68c35592de1f5926",
+    "alleyExecutedHost": "e10e0cb526004afdcd1290daa0bdf5a72eae3462"
+  },
+  "sources": {
+    "86250bb4f0c6f421878c204161864d523c3e30b6": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+    "d80dcd3015358e604f91cb026f562f6f4f4781e5": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "78a00645e4f821d45604a1ed68c35592de1f5926": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae"
+  },
+  "operatorSha256": "b5622568e9d100cb44f5d8f49488e651521ca9d4b8096408f8c878d5eb7a920a",
+  "reviewHostCommit": "296332168233ba4017081ffc03e8227e3e81d322",
+  "unchangedPhysicsLockSettings": true,
+  "alleyExecutedProductionTestTsExact": true,
+  "alleyExtractionDifference": [
+    "test/fixtures/approach-family.json"
+  ],
+  "costPayloadsVerified": 4,
+  "originalZeroPreviewAssertionByteIdentical": true,
+  "costExistingReceipts": {
+    "focused": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/spacing-cost-adjudication",
+      "commit": "f04235ed91ad41ca79cbd22cbfccab48477d06db",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+      "validationSha256": "777515cb6187c709dcec358520627b8dd1713f33360bb6cda361af8a5169bfbe",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts",
+        "test/traffic-turning.test.ts"
+      ],
+      "startedAt": "2026-10-16T00:06:00.859Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/traffic-turning.test.ts",
+            "test/spacing-residual-motion.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.917073016
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-16T00:06:02.778Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/spacing-cost-adjudication",
+      "commit": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+      "validationSha256": "777515cb6187c709dcec358520627b8dd1713f33360bb6cda361af8a5169bfbe",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-16T00:07:21.203Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.893664665000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-16T00:07:32.099Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "costBefore": [
+    {
+      "kind": "original straight",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 57.2000000000001,
+      "previewCalls": 15,
+      "previewMilliseconds": 11.60696500000006,
+      "totalMilliseconds": 22.413005999999996
+    },
+    {
+      "kind": "parallel",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 57.200000000000045,
+      "previewCalls": 0,
+      "previewMilliseconds": 0,
+      "totalMilliseconds": 4.022623999999951
+    },
+    {
+      "kind": "close passable",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 54.00000000000014,
+      "previewCalls": 14,
+      "previewMilliseconds": 6.672929999999951,
+      "totalMilliseconds": 15.563411000000087
+    }
+  ],
+  "costAfter": [
+    {
+      "kind": "original straight",
+      "previewCalls": 0,
+      "frames": 16,
+      "commandsPreserved": true,
+      "noContacts": true,
+      "physicalBudgetsPass": true
+    },
+    {
+      "kind": "parallel",
+      "previewCalls": 0,
+      "frames": 16,
+      "commandsPreserved": true,
+      "noContacts": true,
+      "physicalBudgetsPass": true
+    },
+    {
+      "kind": "close passable",
+      "previewCalls": 0,
+      "frames": 16,
+      "commandsPreserved": true,
+      "noContacts": true,
+      "physicalBudgetsPass": true
+    }
+  ],
+  "alleyPayloadsVerified": 9,
+  "alleyTestReceipts": [
+    {
+      "original": "out/baseline/run-1792114651852-190973.json",
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/defensive-interception-continuity",
+        "commit": "4749e124748aea35b83348e20cbbe8b5d9b035e4",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+        "validationSha256": "73c5224839632547eda3b0d370ccf2cc104617d0995791ab43fd5511c92f5fd0",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [
+          "docs/WORKBOARD.md",
+          "scripts/diag/approach-continuity-probe.mjs",
+          "src/sim/run-fits.ts"
+        ],
+        "startedAt": "2026-10-16T01:37:31.852Z",
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/back-man-run-fit.test.ts",
+              "test/coverage-run-support.test.ts",
+              "test/approach-control.test.ts",
+              "test/man-throw-recognition.test.ts",
+              "test/pursuit-contact.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.758239799
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-16T01:37:34.613Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      }
+    },
+    {
+      "original": "out/baseline/run-1792114755072-191272.json",
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/defensive-interception-continuity",
+        "commit": "4749e124748aea35b83348e20cbbe8b5d9b035e4",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+        "validationSha256": "bc79d43fc4de5a1c53219c3300b5f445f73bec51285fe5144e1d1eb7b0c099d8",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [
+          "docs/WORKBOARD.md",
+          "scripts/diag/approach-continuity-probe.mjs",
+          "src/sim/run-fits.ts",
+          "test/coverage-run-support.test.ts"
+        ],
+        "startedAt": "2026-10-16T01:39:15.072Z",
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/coverage-run-support.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.1478492740000004
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-16T01:39:17.223Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      }
+    },
+    {
+      "original": "out/baseline/run-1792114949612-191971.json",
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/defensive-interception-continuity",
+        "commit": "e10e0cb526004afdcd1290daa0bdf5a72eae3462",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+        "validationSha256": "bc79d43fc4de5a1c53219c3300b5f445f73bec51285fe5144e1d1eb7b0c099d8",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-16T01:42:29.612Z",
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 9.87105644
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-16T01:42:39.486Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "alleySavedVerdict": {
+    "schema": "alley-cap-review-v1",
+    "operator": "27f9ad4af0aeff883f3dba72536372fd0d1ce4b28108a03dec40a3674dc7db80",
+    "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "candidateSource": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+    "nativeExecutions": 0,
+    "rows": [
+      {
+        "case": "A042",
+        "inputSha256": "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0",
+        "actors": [
+          {
+            "idx": 0,
+            "id": "S69O-QB1",
+            "team": "O",
+            "slot": "QB",
+            "name": "J.Hill",
+            "jersey": 4,
+            "position": "QB"
+          },
+          {
+            "idx": 1,
+            "id": "S69O-OT2",
+            "team": "O",
+            "slot": "LT",
+            "name": "K.Crawford",
+            "jersey": 68,
+            "position": "OT"
+          },
+          {
+            "idx": 2,
+            "id": "S69O-OG2",
+            "team": "O",
+            "slot": "RT",
+            "name": "G.Washington",
+            "jersey": 76,
+            "position": "OG"
+          },
+          {
+            "idx": 3,
+            "id": "S69O-C1",
+            "team": "O",
+            "slot": "C",
+            "name": "Z.Evans",
+            "jersey": 60,
+            "position": "C"
+          },
+          {
+            "idx": 4,
+            "id": "S69O-OG1",
+            "team": "O",
+            "slot": "LG",
+            "name": "D.Powell",
+            "jersey": 66,
+            "position": "OG"
+          },
+          {
+            "idx": 5,
+            "id": "S69O-OG4",
+            "team": "O",
+            "slot": "RG",
+            "name": "R.Knight",
+            "jersey": 72,
+            "position": "OG"
+          },
+          {
+            "idx": 6,
+            "id": "S69O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Clark",
+            "jersey": 39,
+            "position": "RB"
+          },
+          {
+            "idx": 7,
+            "id": "S69O-TE2",
+            "team": "O",
+            "slot": "Y",
+            "name": "K.Hayes",
+            "jersey": 40,
+            "position": "TE"
+          },
+          {
+            "idx": 8,
+            "id": "S69O-WR1",
+            "team": "O",
+            "slot": "X",
+            "name": "R.Hollins",
+            "jersey": 87,
+            "position": "WR"
+          },
+          {
+            "idx": 9,
+            "id": "S69O-WR2",
+            "team": "O",
+            "slot": "Z",
+            "name": "K.Fisher",
+            "jersey": 85,
+            "position": "WR"
+          },
+          {
+            "idx": 10,
+            "id": "S69O-WR3",
+            "team": "O",
+            "slot": "H",
+            "name": "J.Lindqvist",
+            "jersey": 19,
+            "position": "WR"
+          },
+          {
+            "idx": 11,
+            "id": "S69D-EDGE1",
+            "team": "D",
+            "slot": "DE_W",
+            "name": "J.Jordan",
+            "jersey": 59,
+            "position": "EDGE"
+          },
+          {
+            "idx": 12,
+            "id": "S69D-LB3",
+            "team": "D",
+            "slot": "DE_S",
+            "name": "T.Fisher",
+            "jersey": 41,
+            "position": "LB"
+          },
+          {
+            "idx": 13,
+            "id": "S69D-EDGE3",
+            "team": "D",
+            "slot": "DT_S",
+            "name": "Z.Phillips",
+            "jersey": 57,
+            "position": "EDGE"
+          },
+          {
+            "idx": 14,
+            "id": "S69D-EDGE2",
+            "team": "D",
+            "slot": "DT_W",
+            "name": "D.Brooks",
+            "jersey": 99,
+            "position": "EDGE"
+          },
+          {
+            "idx": 15,
+            "id": "S69D-LB1",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "V.Knight",
+            "jersey": 47,
+            "position": "LB"
+          },
+          {
+            "idx": 16,
+            "id": "S69D-LB2",
+            "team": "D",
+            "slot": "LB_W",
+            "name": "T.Cook",
+            "jersey": 58,
+            "position": "LB"
+          },
+          {
+            "idx": 17,
+            "id": "S69D-CB1",
+            "team": "D",
+            "slot": "CB_S",
+            "name": "J.Mitchell",
+            "jersey": 21,
+            "position": "CB"
+          },
+          {
+            "idx": 18,
+            "id": "S69D-CB2",
+            "team": "D",
+            "slot": "CB_W",
+            "name": "J.Baker",
+            "jersey": 39,
+            "position": "CB"
+          },
+          {
+            "idx": 19,
+            "id": "S69D-S2",
+            "team": "D",
+            "slot": "NB",
+            "name": "D.McCoy",
+            "jersey": 26,
+            "position": "S"
+          },
+          {
+            "idx": 20,
+            "id": "S69D-CB3",
+            "team": "D",
+            "slot": "FS",
+            "name": "D.Smith",
+            "jersey": 33,
+            "position": "CB"
+          },
+          {
+            "idx": 21,
+            "id": "S69D-S1",
+            "team": "D",
+            "slot": "SS",
+            "name": "J.Webb",
+            "jersey": 40,
+            "position": "S"
+          }
+        ],
+        "referenceKind": "fresh accepted86250bb replay",
+        "candidateEnd": {
+          "t": 3.8,
+          "censored": false
+        },
+        "referenceEnd": {
+          "t": 4.1,
+          "censored": true
+        },
+        "arms": [
+          {
+            "arm": "reference",
+            "runner": 6,
+            "tackler": 21,
+            "firstGrasp": 3.3,
+            "eventSeparation": 1.6900295855398522,
+            "entryForeAft": -0.7989101066905812,
+            "entryCrossTrack": 1.4892758782131836,
+            "defenderVelocity": [
+              -0.46,
+              -3.57
+            ],
+            "runnerVelocity": [
+              7.28,
+              -3.85
+            ],
+            "firstGripBreak": 3.65,
+            "firstGripSurvival": 0.3500000000000001,
+            "completedTackle": null,
+            "events": [
+              {
+                "t": 3.3,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 40.69,
+                  "y": 19.97
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.3,
+                "type": "tackle_wrap",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 40.68,
+                  "y": 21.66
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.35,
+                "type": "fall",
+                "a": 21,
+                "pos": {
+                  "x": 40.66,
+                  "y": 21.47
+                },
+                "note": "dive"
+              },
+              {
+                "t": 3.55,
+                "type": "tackle_wrap",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 43.37,
+                  "y": 19.91
+                },
+                "note": "assist"
+              },
+              {
+                "t": 3.65,
+                "type": "broken_tackle",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 42.8,
+                  "y": 18.84
+                },
+                "note": "hold slipped"
+              },
+              {
+                "t": 3.65,
+                "type": "tackle_wrap",
+                "a": 17,
+                "b": 6,
+                "pos": {
+                  "x": 43.18,
+                  "y": 17.18
+                },
+                "note": "assist"
+              },
+              {
+                "t": 3.85,
+                "type": "fall",
+                "a": 20,
+                "pos": {
+                  "x": 44.59,
+                  "y": 18.25
+                },
+                "note": "contact"
+              },
+              {
+                "t": 3.9,
+                "type": "fall",
+                "a": 17,
+                "pos": {
+                  "x": 44.08,
+                  "y": 17.53
+                },
+                "note": "contact"
+              }
+            ]
+          },
+          {
+            "arm": "candidate",
+            "runner": 6,
+            "tackler": 21,
+            "firstGrasp": 3.25,
+            "eventSeparation": 0.8633075929238652,
+            "entryForeAft": -0.17317874230591884,
+            "entryCrossTrack": 0.8457594948999027,
+            "defenderVelocity": [
+              -0.67,
+              -2.93
+            ],
+            "runnerVelocity": [
+              7.09,
+              -4.06
+            ],
+            "firstGripBreak": null,
+            "firstGripSurvival": 0.5,
+            "completedTackle": 3.75,
+            "events": [
+              {
+                "t": 3.25,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 40.28,
+                  "y": 20.08
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.25,
+                "type": "tackle_wrap",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 40.55,
+                  "y": 20.9
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.35,
+                "type": "fall",
+                "a": 6,
+                "pos": {
+                  "x": 40.89,
+                  "y": 19.72
+                },
+                "note": "legs"
+              },
+              {
+                "t": 3.7,
+                "type": "tackle_wrap",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 43.83,
+                  "y": 19.03
+                },
+                "note": "assist"
+              },
+              {
+                "t": 3.75,
+                "type": "tackle",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 42.32,
+                  "y": 18.94
+                }
+              }
+            ]
+          }
+        ],
+        "firstChangedAgents": 0.45,
+        "firstRunnerChange": 2.6,
+        "firstSelectedDefenderChange": 0.5
+      },
+      {
+        "case": "A006",
+        "inputSha256": "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195",
+        "actors": [
+          {
+            "idx": 0,
+            "id": "S30O-QB2",
+            "team": "O",
+            "slot": "QB",
+            "name": "M.Anderson",
+            "jersey": 7,
+            "position": "QB"
+          },
+          {
+            "idx": 1,
+            "id": "S30O-OT2",
+            "team": "O",
+            "slot": "LT",
+            "name": "D.Green",
+            "jersey": 62,
+            "position": "OT"
+          },
+          {
+            "idx": 2,
+            "id": "S30O-OT3",
+            "team": "O",
+            "slot": "RT",
+            "name": "A.Washington",
+            "jersey": 61,
+            "position": "OT"
+          },
+          {
+            "idx": 3,
+            "id": "S30O-C1",
+            "team": "O",
+            "slot": "C",
+            "name": "T.Collins",
+            "jersey": 60,
+            "position": "C"
+          },
+          {
+            "idx": 4,
+            "id": "S30O-OG2",
+            "team": "O",
+            "slot": "LG",
+            "name": "C.Kelly",
+            "jersey": 72,
+            "position": "OG"
+          },
+          {
+            "idx": 5,
+            "id": "S30O-OG3",
+            "team": "O",
+            "slot": "RG",
+            "name": "O.Howard",
+            "jersey": 77,
+            "position": "OG"
+          },
+          {
+            "idx": 6,
+            "id": "S30O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Russell",
+            "jersey": 31,
+            "position": "RB"
+          },
+          {
+            "idx": 7,
+            "id": "S30O-TE2",
+            "team": "O",
+            "slot": "Y",
+            "name": "S.Owens",
+            "jersey": 41,
+            "position": "TE"
+          },
+          {
+            "idx": 8,
+            "id": "S30O-WR2",
+            "team": "O",
+            "slot": "X",
+            "name": "T.Payne",
+            "jersey": 80,
+            "position": "WR"
+          },
+          {
+            "idx": 9,
+            "id": "S30O-WR5",
+            "team": "O",
+            "slot": "Z",
+            "name": "Z.Baker",
+            "jersey": 17,
+            "position": "WR"
+          },
+          {
+            "idx": 10,
+            "id": "S30O-WR1",
+            "team": "O",
+            "slot": "H",
+            "name": "D.King",
+            "jersey": 11,
+            "position": "WR"
+          },
+          {
+            "idx": 11,
+            "id": "S30D-EDGE2",
+            "team": "D",
+            "slot": "DE_W",
+            "name": "C.Watson",
+            "jersey": 97,
+            "position": "EDGE"
+          },
+          {
+            "idx": 12,
+            "id": "S30D-EDGE1",
+            "team": "D",
+            "slot": "DE_S",
+            "name": "J.Reynolds",
+            "jersey": 59,
+            "position": "EDGE"
+          },
+          {
+            "idx": 13,
+            "id": "S30D-DT2",
+            "team": "D",
+            "slot": "DT_S",
+            "name": "O.Baker",
+            "jersey": 78,
+            "position": "DT"
+          },
+          {
+            "idx": 14,
+            "id": "S30D-EDGE3",
+            "team": "D",
+            "slot": "DT_W",
+            "name": "K.Harris",
+            "jersey": 92,
+            "position": "EDGE"
+          },
+          {
+            "idx": 15,
+            "id": "S30D-LB3",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "K.Warren",
+            "jersey": 53,
+            "position": "LB"
+          },
+          {
+            "idx": 16,
+            "id": "S30D-LB2",
+            "team": "D",
+            "slot": "LB_W",
+            "name": "O.Collins",
+            "jersey": 46,
+            "position": "LB"
+          },
+          {
+            "idx": 17,
+            "id": "S30D-CB2",
+            "team": "D",
+            "slot": "CB_S",
+            "name": "G.Holmes",
+            "jersey": 36,
+            "position": "CB"
+          },
+          {
+            "idx": 18,
+            "id": "S30D-CB1",
+            "team": "D",
+            "slot": "CB_W",
+            "name": "T.Baker",
+            "jersey": 38,
+            "position": "CB"
+          },
+          {
+            "idx": 19,
+            "id": "S30D-CB3",
+            "team": "D",
+            "slot": "NB",
+            "name": "C.Sanders",
+            "jersey": 20,
+            "position": "CB"
+          },
+          {
+            "idx": 20,
+            "id": "S30D-CB6",
+            "team": "D",
+            "slot": "FS",
+            "name": "B.Jordan",
+            "jersey": 28,
+            "position": "CB"
+          },
+          {
+            "idx": 21,
+            "id": "S30D-LB1",
+            "team": "D",
+            "slot": "SS",
+            "name": "W.Bailey",
+            "jersey": 52,
+            "position": "LB"
+          }
+        ],
+        "referenceKind": "fresh accepted86250bb replay",
+        "candidateEnd": {
+          "t": 4.55,
+          "censored": false
+        },
+        "referenceEnd": {
+          "t": 4.75,
+          "censored": false
+        },
+        "arms": [
+          {
+            "arm": "reference",
+            "runner": 6,
+            "tackler": 21,
+            "firstGrasp": 3.25,
+            "eventSeparation": 1.774063133036702,
+            "entryForeAft": -0.8662532915284924,
+            "entryCrossTrack": 1.5481941851447616,
+            "defenderVelocity": [
+              -1.43,
+              -2.84
+            ],
+            "runnerVelocity": [
+              7.24,
+              -3.43
+            ],
+            "firstGripBreak": 3.5,
+            "firstGripSurvival": 0.25,
+            "completedTackle": 4.7,
+            "events": [
+              {
+                "t": 3.25,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 40.03,
+                  "y": 20.59
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.25,
+                "type": "tackle_wrap",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 39.91,
+                  "y": 22.36
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.3,
+                "type": "fall",
+                "a": 21,
+                "pos": {
+                  "x": 39.84,
+                  "y": 22.2
+                },
+                "note": "dive"
+              },
+              {
+                "t": 3.5,
+                "type": "broken_tackle",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 41.49,
+                  "y": 20.01
+                },
+                "note": "hold slipped"
+              },
+              {
+                "t": 3.75,
+                "type": "tackle_wrap",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 43.38,
+                  "y": 20.04
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.85,
+                "type": "tackle_wrap",
+                "a": 17,
+                "b": 6,
+                "pos": {
+                  "x": 44.14,
+                  "y": 17.66
+                },
+                "note": "assist"
+              },
+              {
+                "t": 4.05,
+                "type": "broken_tackle",
+                "a": 6,
+                "b": 20,
+                "pos": {
+                  "x": 45.56,
+                  "y": 18.68
+                },
+                "note": "hold slipped"
+              },
+              {
+                "t": 4.3,
+                "type": "fall",
+                "a": 6,
+                "pos": {
+                  "x": 47.66,
+                  "y": 18.51
+                },
+                "note": "legs"
+              },
+              {
+                "t": 4.7,
+                "type": "tackle",
+                "a": 17,
+                "b": 6,
+                "pos": {
+                  "x": 49.89,
+                  "y": 18.5
+                }
+              }
+            ]
+          },
+          {
+            "arm": "candidate",
+            "runner": 6,
+            "tackler": 21,
+            "firstGrasp": 3.2,
+            "eventSeparation": 1.059481005020856,
+            "entryForeAft": -0.1948700362313634,
+            "entryCrossTrack": 1.0414056217340055,
+            "defenderVelocity": [
+              -1.49,
+              -2.29
+            ],
+            "runnerVelocity": [
+              7,
+              -3.75
+            ],
+            "firstGripBreak": 3.5,
+            "firstGripSurvival": 0.2999999999999998,
+            "completedTackle": 4.5,
+            "events": [
+              {
+                "t": 3.2,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 39.66,
+                  "y": 20.74
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.2,
+                "type": "tackle_wrap",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 39.98,
+                  "y": 21.75
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.5,
+                "type": "broken_tackle",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 41.27,
+                  "y": 19.95
+                },
+                "note": "hold slipped"
+              },
+              {
+                "t": 3.9,
+                "type": "tackle_wrap",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 44.75,
+                  "y": 18.97
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.95,
+                "type": "tackle_wrap",
+                "a": 17,
+                "b": 6,
+                "pos": {
+                  "x": 43.87,
+                  "y": 17.04
+                },
+                "note": "assist"
+              },
+              {
+                "t": 4.15,
+                "type": "fall",
+                "a": 6,
+                "pos": {
+                  "x": 45.41,
+                  "y": 17.53
+                },
+                "note": "legs"
+              },
+              {
+                "t": 4.15,
+                "type": "fall",
+                "a": 20,
+                "pos": {
+                  "x": 45.74,
+                  "y": 17.85
+                },
+                "note": "contact"
+              },
+              {
+                "t": 4.5,
+                "type": "tackle",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 47.09,
+                  "y": 16.66
+                }
+              }
+            ]
+          }
+        ],
+        "firstChangedAgents": 0.55,
+        "firstRunnerChange": 3.05,
+        "firstSelectedDefenderChange": 0.65
+      },
+      {
+        "case": "A003",
+        "inputSha256": "dca3f977354ed4c1f678d65003611bd17d12faac9953d812fafe3a7d5733a83e",
+        "actors": [
+          {
+            "idx": 0,
+            "id": "S30O-QB2",
+            "team": "O",
+            "slot": "QB",
+            "name": "M.Anderson",
+            "jersey": 7,
+            "position": "QB"
+          },
+          {
+            "idx": 1,
+            "id": "S30O-OT2",
+            "team": "O",
+            "slot": "LT",
+            "name": "D.Green",
+            "jersey": 62,
+            "position": "OT"
+          },
+          {
+            "idx": 2,
+            "id": "S30O-OT3",
+            "team": "O",
+            "slot": "RT",
+            "name": "A.Washington",
+            "jersey": 61,
+            "position": "OT"
+          },
+          {
+            "idx": 3,
+            "id": "S30O-C1",
+            "team": "O",
+            "slot": "C",
+            "name": "T.Collins",
+            "jersey": 60,
+            "position": "C"
+          },
+          {
+            "idx": 4,
+            "id": "S30O-OG2",
+            "team": "O",
+            "slot": "LG",
+            "name": "C.Kelly",
+            "jersey": 72,
+            "position": "OG"
+          },
+          {
+            "idx": 5,
+            "id": "S30O-OG3",
+            "team": "O",
+            "slot": "RG",
+            "name": "O.Howard",
+            "jersey": 77,
+            "position": "OG"
+          },
+          {
+            "idx": 6,
+            "id": "S30O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Russell",
+            "jersey": 31,
+            "position": "RB"
+          },
+          {
+            "idx": 7,
+            "id": "S30O-TE2",
+            "team": "O",
+            "slot": "Y",
+            "name": "S.Owens",
+            "jersey": 41,
+            "position": "TE"
+          },
+          {
+            "idx": 8,
+            "id": "S30O-WR2",
+            "team": "O",
+            "slot": "X",
+            "name": "T.Payne",
+            "jersey": 80,
+            "position": "WR"
+          },
+          {
+            "idx": 9,
+            "id": "S30O-WR5",
+            "team": "O",
+            "slot": "Z",
+            "name": "Z.Baker",
+            "jersey": 17,
+            "position": "WR"
+          },
+          {
+            "idx": 10,
+            "id": "S30O-WR1",
+            "team": "O",
+            "slot": "H",
+            "name": "D.King",
+            "jersey": 11,
+            "position": "WR"
+          },
+          {
+            "idx": 11,
+            "id": "S30D-EDGE2",
+            "team": "D",
+            "slot": "DE_W",
+            "name": "C.Watson",
+            "jersey": 97,
+            "position": "EDGE"
+          },
+          {
+            "idx": 12,
+            "id": "S30D-EDGE1",
+            "team": "D",
+            "slot": "DE_S",
+            "name": "J.Reynolds",
+            "jersey": 59,
+            "position": "EDGE"
+          },
+          {
+            "idx": 13,
+            "id": "S30D-DT2",
+            "team": "D",
+            "slot": "DT_S",
+            "name": "O.Baker",
+            "jersey": 78,
+            "position": "DT"
+          },
+          {
+            "idx": 14,
+            "id": "S30D-EDGE3",
+            "team": "D",
+            "slot": "DT_W",
+            "name": "K.Harris",
+            "jersey": 92,
+            "position": "EDGE"
+          },
+          {
+            "idx": 15,
+            "id": "S30D-LB3",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "K.Warren",
+            "jersey": 53,
+            "position": "LB"
+          },
+          {
+            "idx": 16,
+            "id": "S30D-LB2",
+            "team": "D",
+            "slot": "LB_W",
+            "name": "O.Collins",
+            "jersey": 46,
+            "position": "LB"
+          },
+          {
+            "idx": 17,
+            "id": "S30D-CB2",
+            "team": "D",
+            "slot": "CB_S",
+            "name": "G.Holmes",
+            "jersey": 36,
+            "position": "CB"
+          },
+          {
+            "idx": 18,
+            "id": "S30D-CB1",
+            "team": "D",
+            "slot": "CB_W",
+            "name": "T.Baker",
+            "jersey": 38,
+            "position": "CB"
+          },
+          {
+            "idx": 19,
+            "id": "S30D-CB3",
+            "team": "D",
+            "slot": "NB",
+            "name": "C.Sanders",
+            "jersey": 20,
+            "position": "CB"
+          },
+          {
+            "idx": 20,
+            "id": "S30D-CB6",
+            "team": "D",
+            "slot": "FS",
+            "name": "B.Jordan",
+            "jersey": 28,
+            "position": "CB"
+          },
+          {
+            "idx": 21,
+            "id": "S30D-LB1",
+            "team": "D",
+            "slot": "SS",
+            "name": "W.Bailey",
+            "jersey": 52,
+            "position": "LB"
+          }
+        ],
+        "referenceKind": "compatible accepted7eb2554 saved non-Duo case",
+        "candidateEnd": {
+          "t": 3.2,
+          "censored": false
+        },
+        "referenceEnd": {
+          "t": 3.15,
+          "censored": false
+        },
+        "arms": [
+          {
+            "arm": "reference",
+            "runner": 6,
+            "tackler": 15,
+            "firstGrasp": 2.55,
+            "eventSeparation": 1.0824047302187854,
+            "entryForeAft": 0.9791819180353635,
+            "entryCrossTrack": 0.4613055076547306,
+            "defenderVelocity": [
+              -0.88,
+              -1.21
+            ],
+            "runnerVelocity": [
+              5.26,
+              0.21
+            ],
+            "firstGripBreak": null,
+            "firstGripSurvival": 0.6000000000000001,
+            "completedTackle": 3.15,
+            "events": [
+              {
+                "t": 2.55,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 35.17,
+                  "y": 21.56
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 2.55,
+                "type": "tackle_wrap",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 36.13,
+                  "y": 22.06
+                },
+                "note": "initial"
+              },
+              {
+                "t": 2.75,
+                "type": "fall",
+                "a": 6,
+                "pos": {
+                  "x": 35.78,
+                  "y": 21.6
+                },
+                "note": "contact"
+              },
+              {
+                "t": 2.85,
+                "type": "tackle_wrap",
+                "a": 16,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 21.29
+                },
+                "note": "assist"
+              },
+              {
+                "t": 3.15,
+                "type": "fall",
+                "a": 15,
+                "pos": {
+                  "x": 36.26,
+                  "y": 21.81
+                },
+                "note": "contact"
+              },
+              {
+                "t": 3.15,
+                "type": "tackle",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 36.26,
+                  "y": 21.81
+                }
+              }
+            ]
+          },
+          {
+            "arm": "candidate",
+            "runner": 6,
+            "tackler": 15,
+            "firstGrasp": 2.55,
+            "eventSeparation": 1.0824047302187854,
+            "entryForeAft": 0.9791819180353635,
+            "entryCrossTrack": 0.4613055076547306,
+            "defenderVelocity": [
+              -0.88,
+              -1.21
+            ],
+            "runnerVelocity": [
+              5.26,
+              0.21
+            ],
+            "firstGripBreak": null,
+            "firstGripSurvival": 0.6000000000000001,
+            "completedTackle": 3.15,
+            "events": [
+              {
+                "t": 2.55,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 35.17,
+                  "y": 21.56
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 2.55,
+                "type": "tackle_wrap",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 36.13,
+                  "y": 22.06
+                },
+                "note": "initial"
+              },
+              {
+                "t": 2.75,
+                "type": "fall",
+                "a": 6,
+                "pos": {
+                  "x": 35.78,
+                  "y": 21.6
+                },
+                "note": "contact"
+              },
+              {
+                "t": 2.85,
+                "type": "tackle_wrap",
+                "a": 16,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 21.29
+                },
+                "note": "assist"
+              },
+              {
+                "t": 3.15,
+                "type": "tackle",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 36.28,
+                  "y": 21.8
+                }
+              }
+            ]
+          }
+        ],
+        "firstChangedAgents": 0.55,
+        "firstRunnerChange": 2.8,
+        "firstSelectedDefenderChange": 0.55
+      },
+      {
+        "case": "A008",
+        "inputSha256": "aa2b701aacad149f5a45299d076da2ff8ce47d93465d70407086c58ed43c5e1c",
+        "actors": [
+          {
+            "idx": 0,
+            "id": "S30O-QB2",
+            "team": "O",
+            "slot": "QB",
+            "name": "M.Anderson",
+            "jersey": 7,
+            "position": "QB"
+          },
+          {
+            "idx": 1,
+            "id": "S30O-OT2",
+            "team": "O",
+            "slot": "LT",
+            "name": "D.Green",
+            "jersey": 62,
+            "position": "OT"
+          },
+          {
+            "idx": 2,
+            "id": "S30O-OT3",
+            "team": "O",
+            "slot": "RT",
+            "name": "A.Washington",
+            "jersey": 61,
+            "position": "OT"
+          },
+          {
+            "idx": 3,
+            "id": "S30O-C1",
+            "team": "O",
+            "slot": "C",
+            "name": "T.Collins",
+            "jersey": 60,
+            "position": "C"
+          },
+          {
+            "idx": 4,
+            "id": "S30O-OG2",
+            "team": "O",
+            "slot": "LG",
+            "name": "C.Kelly",
+            "jersey": 72,
+            "position": "OG"
+          },
+          {
+            "idx": 5,
+            "id": "S30O-OG3",
+            "team": "O",
+            "slot": "RG",
+            "name": "O.Howard",
+            "jersey": 77,
+            "position": "OG"
+          },
+          {
+            "idx": 6,
+            "id": "S30O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Russell",
+            "jersey": 31,
+            "position": "RB"
+          },
+          {
+            "idx": 7,
+            "id": "S30O-TE2",
+            "team": "O",
+            "slot": "Y",
+            "name": "S.Owens",
+            "jersey": 41,
+            "position": "TE"
+          },
+          {
+            "idx": 8,
+            "id": "S30O-WR2",
+            "team": "O",
+            "slot": "X",
+            "name": "T.Payne",
+            "jersey": 80,
+            "position": "WR"
+          },
+          {
+            "idx": 9,
+            "id": "S30O-WR5",
+            "team": "O",
+            "slot": "Z",
+            "name": "Z.Baker",
+            "jersey": 17,
+            "position": "WR"
+          },
+          {
+            "idx": 10,
+            "id": "S30O-WR1",
+            "team": "O",
+            "slot": "H",
+            "name": "D.King",
+            "jersey": 11,
+            "position": "WR"
+          },
+          {
+            "idx": 11,
+            "id": "S30D-EDGE2",
+            "team": "D",
+            "slot": "DE_W",
+            "name": "C.Watson",
+            "jersey": 97,
+            "position": "EDGE"
+          },
+          {
+            "idx": 12,
+            "id": "S30D-EDGE1",
+            "team": "D",
+            "slot": "DE_S",
+            "name": "J.Reynolds",
+            "jersey": 59,
+            "position": "EDGE"
+          },
+          {
+            "idx": 13,
+            "id": "S30D-DT2",
+            "team": "D",
+            "slot": "DT_S",
+            "name": "O.Baker",
+            "jersey": 78,
+            "position": "DT"
+          },
+          {
+            "idx": 14,
+            "id": "S30D-EDGE3",
+            "team": "D",
+            "slot": "DT_W",
+            "name": "K.Harris",
+            "jersey": 92,
+            "position": "EDGE"
+          },
+          {
+            "idx": 15,
+            "id": "S30D-LB3",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "K.Warren",
+            "jersey": 53,
+            "position": "LB"
+          },
+          {
+            "idx": 16,
+            "id": "S30D-LB2",
+            "team": "D",
+            "slot": "LB_W",
+            "name": "O.Collins",
+            "jersey": 46,
+            "position": "LB"
+          },
+          {
+            "idx": 17,
+            "id": "S30D-CB2",
+            "team": "D",
+            "slot": "CB_S",
+            "name": "G.Holmes",
+            "jersey": 36,
+            "position": "CB"
+          },
+          {
+            "idx": 18,
+            "id": "S30D-CB1",
+            "team": "D",
+            "slot": "CB_W",
+            "name": "T.Baker",
+            "jersey": 38,
+            "position": "CB"
+          },
+          {
+            "idx": 19,
+            "id": "S30D-CB3",
+            "team": "D",
+            "slot": "NB",
+            "name": "C.Sanders",
+            "jersey": 20,
+            "position": "CB"
+          },
+          {
+            "idx": 20,
+            "id": "S30D-CB6",
+            "team": "D",
+            "slot": "FS",
+            "name": "B.Jordan",
+            "jersey": 28,
+            "position": "CB"
+          },
+          {
+            "idx": 21,
+            "id": "S30D-LB1",
+            "team": "D",
+            "slot": "SS",
+            "name": "W.Bailey",
+            "jersey": 52,
+            "position": "LB"
+          }
+        ],
+        "referenceKind": "compatible accepted7eb2554 saved non-Duo case",
+        "candidateEnd": {
+          "t": 3.85,
+          "censored": false
+        },
+        "referenceEnd": {
+          "t": 3.8,
+          "censored": false
+        },
+        "arms": [
+          {
+            "arm": "reference",
+            "runner": 7,
+            "tackler": 19,
+            "firstGrasp": 2.5,
+            "eventSeparation": 1.0965856099730604,
+            "entryForeAft": -0.4425613777729746,
+            "entryCrossTrack": -1.0033142214200275,
+            "defenderVelocity": [
+              0.49,
+              4.36
+            ],
+            "runnerVelocity": [
+              0.44,
+              4.93
+            ],
+            "firstGripBreak": null,
+            "firstGripSurvival": 1.2999999999999998,
+            "completedTackle": 3.8,
+            "events": [
+              {
+                "t": 2.45,
+                "type": "fall",
+                "a": 5,
+                "pos": {
+                  "x": 31.21,
+                  "y": 24.94
+                },
+                "note": "contact"
+              },
+              {
+                "t": 2.5,
+                "type": "carrier_contact",
+                "a": 7,
+                "b": 19,
+                "pos": {
+                  "x": 38.52,
+                  "y": 28.18
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 2.5,
+                "type": "tackle_wrap",
+                "a": 19,
+                "b": 7,
+                "pos": {
+                  "x": 39.48,
+                  "y": 27.65
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.4,
+                "type": "fall",
+                "a": 7,
+                "pos": {
+                  "x": 39.83,
+                  "y": 33.21
+                },
+                "note": "legs"
+              },
+              {
+                "t": 3.8,
+                "type": "tackle",
+                "a": 19,
+                "b": 7,
+                "pos": {
+                  "x": 40.73,
+                  "y": 34.75
+                }
+              }
+            ]
+          },
+          {
+            "arm": "candidate",
+            "runner": 7,
+            "tackler": 19,
+            "firstGrasp": 2.5,
+            "eventSeparation": 1.0965856099730604,
+            "entryForeAft": -0.4425613777729746,
+            "entryCrossTrack": -1.0033142214200275,
+            "defenderVelocity": [
+              0.49,
+              4.36
+            ],
+            "runnerVelocity": [
+              0.44,
+              4.93
+            ],
+            "firstGripBreak": null,
+            "firstGripSurvival": 1.2999999999999998,
+            "completedTackle": 3.8,
+            "events": [
+              {
+                "t": 2.45,
+                "type": "fall",
+                "a": 5,
+                "pos": {
+                  "x": 31.21,
+                  "y": 24.94
+                },
+                "note": "contact"
+              },
+              {
+                "t": 2.5,
+                "type": "carrier_contact",
+                "a": 7,
+                "b": 19,
+                "pos": {
+                  "x": 38.52,
+                  "y": 28.18
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 2.5,
+                "type": "tackle_wrap",
+                "a": 19,
+                "b": 7,
+                "pos": {
+                  "x": 39.48,
+                  "y": 27.65
+                },
+                "note": "initial"
+              },
+              {
+                "t": 3.4,
+                "type": "fall",
+                "a": 7,
+                "pos": {
+                  "x": 39.83,
+                  "y": 33.21
+                },
+                "note": "legs"
+              },
+              {
+                "t": 3.8,
+                "type": "tackle",
+                "a": 19,
+                "b": 7,
+                "pos": {
+                  "x": 40.73,
+                  "y": 34.75
+                }
+              }
+            ]
+          }
+        ],
+        "firstChangedAgents": null,
+        "firstRunnerChange": null,
+        "firstSelectedDefenderChange": null,
+        "exactRecordedFramesStatesEvents": true
+      },
+      {
+        "case": "A020",
+        "inputSha256": "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4",
+        "actors": [
+          {
+            "idx": 0,
+            "id": "S74O-QB1",
+            "team": "O",
+            "slot": "QB",
+            "name": "D.Smith",
+            "jersey": 7,
+            "position": "QB"
+          },
+          {
+            "idx": 1,
+            "id": "S74O-OT2",
+            "team": "O",
+            "slot": "LT",
+            "name": "O.Griffin",
+            "jersey": 69,
+            "position": "OT"
+          },
+          {
+            "idx": 2,
+            "id": "S74O-OT3",
+            "team": "O",
+            "slot": "RT",
+            "name": "T.Robinson",
+            "jersey": 74,
+            "position": "OT"
+          },
+          {
+            "idx": 3,
+            "id": "S74O-C1",
+            "team": "O",
+            "slot": "C",
+            "name": "N.Miller",
+            "jersey": 66,
+            "position": "C"
+          },
+          {
+            "idx": 4,
+            "id": "S74O-OG3",
+            "team": "O",
+            "slot": "LG",
+            "name": "I.Parker",
+            "jersey": 64,
+            "position": "OG"
+          },
+          {
+            "idx": 5,
+            "id": "S74O-OG2",
+            "team": "O",
+            "slot": "RG",
+            "name": "D.Jones",
+            "jersey": 61,
+            "position": "OG"
+          },
+          {
+            "idx": 6,
+            "id": "S74O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "E.Dawson",
+            "jersey": 37,
+            "position": "RB"
+          },
+          {
+            "idx": 7,
+            "id": "S74O-FB1",
+            "team": "O",
+            "slot": "Y",
+            "name": "C.Ward",
+            "jersey": 43,
+            "position": "FB"
+          },
+          {
+            "idx": 8,
+            "id": "S74O-WR3",
+            "team": "O",
+            "slot": "X",
+            "name": "T.Wright",
+            "jersey": 87,
+            "position": "WR"
+          },
+          {
+            "idx": 9,
+            "id": "S74O-WR5",
+            "team": "O",
+            "slot": "Z",
+            "name": "D.Okafor",
+            "jersey": 12,
+            "position": "WR"
+          },
+          {
+            "idx": 10,
+            "id": "S74O-WR2",
+            "team": "O",
+            "slot": "H",
+            "name": "E.King",
+            "jersey": 85,
+            "position": "WR"
+          },
+          {
+            "idx": 11,
+            "id": "S74D-EDGE1",
+            "team": "D",
+            "slot": "DE_W",
+            "name": "E.Turner",
+            "jersey": 93,
+            "position": "EDGE"
+          },
+          {
+            "idx": 12,
+            "id": "S74D-EDGE2",
+            "team": "D",
+            "slot": "DE_S",
+            "name": "D.Lambert",
+            "jersey": 56,
+            "position": "EDGE"
+          },
+          {
+            "idx": 13,
+            "id": "S74D-DT1",
+            "team": "D",
+            "slot": "DT_S",
+            "name": "E.Tuilagi",
+            "jersey": 94,
+            "position": "DT"
+          },
+          {
+            "idx": 14,
+            "id": "S74D-DT3",
+            "team": "D",
+            "slot": "DT_W",
+            "name": "J.Harris",
+            "jersey": 99,
+            "position": "DT"
+          },
+          {
+            "idx": 15,
+            "id": "S74D-LB1",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "H.Lindqvist",
+            "jersey": 52,
+            "position": "LB"
+          },
+          {
+            "idx": 16,
+            "id": "S74D-LB3",
+            "team": "D",
+            "slot": "LB_W",
+            "name": "D.Rogers",
+            "jersey": 58,
+            "position": "LB"
+          },
+          {
+            "idx": 17,
+            "id": "S74D-CB3",
+            "team": "D",
+            "slot": "CB_S",
+            "name": "T.Graham",
+            "jersey": 26,
+            "position": "CB"
+          },
+          {
+            "idx": 18,
+            "id": "S74D-CB1",
+            "team": "D",
+            "slot": "CB_W",
+            "name": "R.Dawson",
+            "jersey": 23,
+            "position": "CB"
+          },
+          {
+            "idx": 19,
+            "id": "S74D-S2",
+            "team": "D",
+            "slot": "NB",
+            "name": "C.Barnes",
+            "jersey": 43,
+            "position": "S"
+          },
+          {
+            "idx": 20,
+            "id": "S74D-S1",
+            "team": "D",
+            "slot": "FS",
+            "name": "K.Thompson",
+            "jersey": 36,
+            "position": "S"
+          },
+          {
+            "idx": 21,
+            "id": "S74D-CB4",
+            "team": "D",
+            "slot": "SS",
+            "name": "M.Jordan",
+            "jersey": 30,
+            "position": "CB"
+          }
+        ],
+        "referenceKind": "compatible accepted7eb2554 saved non-Duo case",
+        "candidateEnd": {
+          "t": 5.1,
+          "censored": true
+        },
+        "referenceEnd": {
+          "t": 12,
+          "censored": false
+        },
+        "arms": [
+          {
+            "arm": "reference",
+            "runner": 10,
+            "tackler": 17,
+            "firstGrasp": 4.65,
+            "eventSeparation": 1.3122880781291895,
+            "entryForeAft": 0.02541402461553266,
+            "entryCrossTrack": 1.3120419685943139,
+            "defenderVelocity": [
+              -1.32,
+              -2.13
+            ],
+            "runnerVelocity": [
+              4.62,
+              -7.75
+            ],
+            "firstGripBreak": 5,
+            "firstGripSurvival": 0.34999999999999964,
+            "completedTackle": null,
+            "events": [
+              {
+                "t": 2.95,
+                "type": "fall",
+                "a": 2,
+                "pos": {
+                  "x": 29.04,
+                  "y": 22.13
+                },
+                "note": "contact"
+              },
+              {
+                "t": 4.65,
+                "type": "carrier_contact",
+                "a": 10,
+                "b": 17,
+                "pos": {
+                  "x": 46.58,
+                  "y": 10.44
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 4.65,
+                "type": "tackle_wrap",
+                "a": 17,
+                "b": 10,
+                "pos": {
+                  "x": 47.72,
+                  "y": 11.09
+                },
+                "note": "initial"
+              },
+              {
+                "t": 5,
+                "type": "broken_tackle",
+                "a": 10,
+                "b": 17,
+                "pos": {
+                  "x": 48.17,
+                  "y": 8.37
+                },
+                "note": "hold slipped"
+              },
+              {
+                "t": 5.4,
+                "type": "fall",
+                "a": 9,
+                "pos": {
+                  "x": 47.98,
+                  "y": 10.87
+                },
+                "note": "contact"
+              },
+              {
+                "t": 5.4,
+                "type": "fall",
+                "a": 21,
+                "pos": {
+                  "x": 47.5,
+                  "y": 10.79
+                },
+                "note": "contact"
+              }
+            ]
+          },
+          {
+            "arm": "candidate",
+            "runner": 10,
+            "tackler": 17,
+            "firstGrasp": 4.65,
+            "eventSeparation": 1.3122880781291895,
+            "entryForeAft": 0.02541402461553266,
+            "entryCrossTrack": 1.3120419685943139,
+            "defenderVelocity": [
+              -1.32,
+              -2.13
+            ],
+            "runnerVelocity": [
+              4.62,
+              -7.75
+            ],
+            "firstGripBreak": 5,
+            "firstGripSurvival": 0.34999999999999964,
+            "completedTackle": null,
+            "events": [
+              {
+                "t": 2.95,
+                "type": "fall",
+                "a": 2,
+                "pos": {
+                  "x": 29.04,
+                  "y": 22.13
+                },
+                "note": "contact"
+              },
+              {
+                "t": 4.65,
+                "type": "carrier_contact",
+                "a": 10,
+                "b": 17,
+                "pos": {
+                  "x": 46.58,
+                  "y": 10.44
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 4.65,
+                "type": "tackle_wrap",
+                "a": 17,
+                "b": 10,
+                "pos": {
+                  "x": 47.72,
+                  "y": 11.09
+                },
+                "note": "initial"
+              },
+              {
+                "t": 5,
+                "type": "broken_tackle",
+                "a": 10,
+                "b": 17,
+                "pos": {
+                  "x": 48.17,
+                  "y": 8.37
+                },
+                "note": "hold slipped"
+              }
+            ]
+          }
+        ],
+        "firstChangedAgents": null,
+        "firstRunnerChange": null,
+        "firstSelectedDefenderChange": null,
+        "exactRecordedFramesStatesEvents": true
+      }
+    ],
+    "firstSSCapCue": {
+      "t": 0.5,
+      "job": "zone:quarter_s_in",
+      "runFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "alley",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack"
+      },
+      "cues": [
+        {
+          "scale": 1,
+          "caller": "at executeRunFit (/workspace/football-yac-angle/src/sim/run-fits.ts:186:34)",
+          "picture": {
+            "pos": {
+              "x": 28.52918888876824,
+              "y": 26.537342460364858
+            },
+            "vel": {
+              "x": 0.9980594540782393,
+              "y": -0.3920947855307422
+            },
+            "stance": null,
+            "facing": -0.3577693368227719,
+            "age": 0.2,
+            "pose": "up",
+            "carrying": false
+          }
+        }
+      ],
+      "command": {
+        "vel": {
+          "x": -3.1685527366314132,
+          "y": 4.871417607130335
+        },
+        "facing": 3.141592653589793
+      }
+    },
+    "seconds": 0.7938302039999999
+  },
+  "independentSavedComparisons": [
+    {
+      "case": "A042",
+      "nativeEnd": 3.8,
+      "candidateCensored": false,
+      "framesExact": false,
+      "statesExact": false,
+      "eventsExactThroughWindow": false,
+      "arms": [
+        {
+          "arm": "reference",
+          "firstGrasp": 3.3,
+          "runner": 6,
+          "tackler": 21,
+          "eventPositionSeparation": 1.6900295855398522,
+          "firstTacklerSlip": 3.65,
+          "finish": null
+        },
+        {
+          "arm": "candidate",
+          "firstGrasp": 3.25,
+          "runner": 6,
+          "tackler": 21,
+          "eventPositionSeparation": 0.8633075929238653,
+          "firstTacklerSlip": null,
+          "finish": 3.75
+        }
+      ]
+    },
+    {
+      "case": "A006",
+      "nativeEnd": 4.55,
+      "candidateCensored": false,
+      "framesExact": false,
+      "statesExact": false,
+      "eventsExactThroughWindow": false,
+      "freshReferenceMatchesOriginalFrames": true,
+      "arms": [
+        {
+          "arm": "reference",
+          "firstGrasp": 3.25,
+          "runner": 6,
+          "tackler": 21,
+          "eventPositionSeparation": 1.774063133036702,
+          "firstTacklerSlip": 3.5,
+          "finish": 4.7
+        },
+        {
+          "arm": "candidate",
+          "firstGrasp": 3.2,
+          "runner": 6,
+          "tackler": 21,
+          "eventPositionSeparation": 1.059481005020856,
+          "firstTacklerSlip": 3.5,
+          "finish": 4.5
+        }
+      ]
+    },
+    {
+      "case": "A003",
+      "nativeEnd": 3.2,
+      "candidateCensored": false,
+      "framesExact": false,
+      "statesExact": false,
+      "eventsExactThroughWindow": false,
+      "arms": [
+        {
+          "arm": "reference",
+          "firstGrasp": 2.55,
+          "runner": 6,
+          "tackler": 15,
+          "eventPositionSeparation": 1.0824047302187854,
+          "firstTacklerSlip": null,
+          "finish": 3.15
+        },
+        {
+          "arm": "candidate",
+          "firstGrasp": 2.55,
+          "runner": 6,
+          "tackler": 15,
+          "eventPositionSeparation": 1.0824047302187854,
+          "firstTacklerSlip": null,
+          "finish": 3.15
+        }
+      ]
+    },
+    {
+      "case": "A008",
+      "nativeEnd": 3.85,
+      "candidateCensored": false,
+      "framesExact": true,
+      "statesExact": true,
+      "eventsExactThroughWindow": true,
+      "arms": [
+        {
+          "arm": "reference",
+          "firstGrasp": 2.5,
+          "runner": 7,
+          "tackler": 19,
+          "eventPositionSeparation": 1.0965856099730604,
+          "firstTacklerSlip": null,
+          "finish": 3.8
+        },
+        {
+          "arm": "candidate",
+          "firstGrasp": 2.5,
+          "runner": 7,
+          "tackler": 19,
+          "eventPositionSeparation": 1.0965856099730604,
+          "firstTacklerSlip": null,
+          "finish": 3.8
+        }
+      ]
+    },
+    {
+      "case": "A020",
+      "nativeEnd": 5.1,
+      "candidateCensored": true,
+      "framesExact": true,
+      "statesExact": true,
+      "eventsExactThroughWindow": true,
+      "arms": [
+        {
+          "arm": "reference",
+          "firstGrasp": 4.65,
+          "runner": 10,
+          "tackler": 17,
+          "eventPositionSeparation": 1.3122880781291895,
+          "firstTacklerSlip": 5,
+          "finish": null
+        },
+        {
+          "arm": "candidate",
+          "firstGrasp": 4.65,
+          "runner": 10,
+          "tackler": 17,
+          "eventPositionSeparation": 1.3122880781291895,
+          "firstTacklerSlip": 5,
+          "finish": null
+        }
+      ]
+    }
+  ],
+  "firstNativeSsStateDifference": 0.5,
+  "firstNativeCapCue": {
+    "t": 0.5,
+    "job": "zone:quarter_s_in",
+    "runFit": {
+      "gap": "D",
+      "side": -1,
+      "kind": "alley",
+      "technique": "attack",
+      "edge": "box",
+      "pace": "stack"
+    },
+    "cues": [
+      {
+        "scale": 1,
+        "caller": "at executeRunFit (/workspace/football-yac-angle/src/sim/run-fits.ts:186:34)",
+        "picture": {
+          "pos": {
+            "x": 28.52918888876824,
+            "y": 26.537342460364858
+          },
+          "vel": {
+            "x": 0.9980594540782393,
+            "y": -0.3920947855307422
+          },
+          "stance": null,
+          "facing": -0.3577693368227719,
+          "age": 0.2,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ],
+    "command": {
+      "vel": {
+        "x": -3.1685527366314132,
+        "y": 4.871417607130335
+      },
+      "facing": 3.141592653589793
+    }
+  },
+  "firstNativeTick": {
+    "t": 0.5,
+    "body": {
+      "pos": {
+        "x": 47,
+        "y": 17.89192880159933
+      },
+      "vel": {
+        "x": 0,
+        "y": 0.9146842580690078
+      },
+      "facing": 2.549434631329524,
+      "energy": 0.9975311660781685,
+      "profile": {
+        "vmax": 9.45175092917949,
+        "tau": 1.2423641257855118,
+        "brake": 6.316768707482992,
+        "lateral": 6.651894557823131,
+        "turnRate": 9.026666666666667,
+        "backpedal": 0.7075510204081633,
+        "shuffle": 0.6152,
+        "massKg": 93.89362059,
+        "heightYd": 2.0166666666666666,
+        "radius": 0.26454545454545453,
+        "reach": 1.0197222222222222,
+        "maxCatchHeight": 3.477722222222222,
+        "reactReach": 2.9804999999999997,
+        "reactionTime": 0.19195918367346942,
+        "power": 92.44210186353213,
+        "balance": 0.2653061224489796,
+        "bend": 0.6477278911564627,
+        "stepSpeed": 3.7018503401360543,
+        "getUp": 0.8678333333333333
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.19956256649104823,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 0,
+          "y": 2.7335463194846943
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 3.571383521610576,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 1.5707963267948966
+    },
+    "ratings": {
+      "tackling": 0.7755102040816326,
+      "awareness": 0.8469387755102041,
+      "pursuit": 0.7040816326530612,
+      "anticipation": 0.7551020408163265
+    },
+    "speedScale": 0.9999686863656596,
+    "runFit": {
+      "gap": "D",
+      "side": -1,
+      "kind": "alley",
+      "technique": "attack",
+      "edge": "box",
+      "pace": "stack"
+    },
+    "down": false,
+    "engaged": false,
+    "bonded": false,
+    "hasJoint": false,
+    "job": "zone:quarter_s_in",
+    "target": null,
+    "cues": [
+      {
+        "scale": 1,
+        "caller": "at executeRunFit (/workspace/football-yac-angle/src/sim/run-fits.ts:186:34)",
+        "picture": {
+          "pos": {
+            "x": 28.52918888876824,
+            "y": 26.537342460364858
+          },
+          "vel": {
+            "x": 0.9980594540782393,
+            "y": -0.3920947855307422
+          },
+          "stance": null,
+          "facing": -0.3577693368227719,
+          "age": 0.2,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ],
+    "command": {
+      "vel": {
+        "x": -3.1685527366314132,
+        "y": 4.871417607130335
+      },
+      "facing": 3.141592653589793
+    },
+    "worldBefore": {
+      "pos": {
+        "x": 47,
+        "y": 17.89192880159933
+      },
+      "vel": {
+        "x": 0,
+        "y": 0.9146842580690078
+      },
+      "facing": 2.549434631329524,
+      "energy": 0.9975311660781685,
+      "profile": {
+        "vmax": 9.45175092917949,
+        "tau": 1.2423641257855118,
+        "brake": 6.316768707482992,
+        "lateral": 6.651894557823131,
+        "turnRate": 9.026666666666667,
+        "backpedal": 0.7075510204081633,
+        "shuffle": 0.6152,
+        "massKg": 93.89362059,
+        "heightYd": 2.0166666666666666,
+        "radius": 0.26454545454545453,
+        "reach": 1.0197222222222222,
+        "maxCatchHeight": 3.477722222222222,
+        "reactReach": 2.9804999999999997,
+        "reactionTime": 0.19195918367346942,
+        "power": 92.44210186353213,
+        "balance": 0.2653061224489796,
+        "bend": 0.6477278911564627,
+        "stepSpeed": 3.7018503401360543,
+        "getUp": 0.8678333333333333
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.19956256649104823,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 0,
+          "y": 2.7335463194846943
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 3.571383521610576,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 1.5707963267948966
+    },
+    "applied": {
+      "vel": {
+        "x": -3.1685527366314132,
+        "y": 4.871417607130335
+      },
+      "facing": 3.141592653589793
+    },
+    "worldAfter": {
+      "pos": {
+        "x": 46.993320757784566,
+        "y": 17.942589504964637
+      },
+      "vel": {
+        "x": -0.2671696886172473,
+        "y": 1.1117438765432741
+      },
+      "facing": 2.8025140881226296,
+      "energy": 0.9971762055063077,
+      "profile": {
+        "vmax": 9.45175092917949,
+        "tau": 1.2423641257855118,
+        "brake": 6.316768707482992,
+        "lateral": 6.651894557823131,
+        "turnRate": 9.026666666666667,
+        "backpedal": 0.7075510204081633,
+        "shuffle": 0.6152,
+        "massKg": 93.89362059,
+        "heightYd": 2.0166666666666666,
+        "radius": 0.26454545454545453,
+        "reach": 1.0197222222222222,
+        "maxCatchHeight": 3.477722222222222,
+        "reactReach": 2.9804999999999997,
+        "reactionTime": 0.19195918367346942,
+        "power": 92.44210186353213,
+        "balance": 0.2653061224489796,
+        "bend": 0.6477278911564627,
+        "stepSpeed": 3.7018503401360543,
+        "getUp": 0.8678333333333333
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.1995062332156337,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -3.8124858250552522,
+          "y": 3.5951959832508846
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 6.551794750113647,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 2.02212966012823
+    },
+    "contacts": []
+  },
+  "hostQualification": "Exact source-only archives. No candidate is edited; no integration or collection branch is changed.",
+  "newNativeExecutions": 0,
+  "seconds": 3.804697141982615
+}

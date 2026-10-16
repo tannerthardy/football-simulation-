@@ -1,0 +1,16 @@
+{
+  "pins": {
+    "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "queue": "ef214373f9dd101a044b5246879c7e5007c8fb55",
+    "cost": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+    "costEvidence": "c6c8b4823acb27c13769f32305a79d5628cf19b2",
+    "alley": "78a00645e4f821d45604a1ed68c35592de1f5926",
+    "collectionFrozen": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6"
+  },
+  "questions": [
+    "Is the settled-line zero-forecast rejection a valid bound under unchanged movement, including scalar speed/facing/effort caps?",
+    "Does the alley input use acquired velocity and retain run-belief, PA/recognized-throw priority and installed cap depth?"
+  ],
+  "reuse": "Cost23 checks/typecheck; alley101 checks/typecheck and saved native arms, subject to hash/source validation.",
+  "newIfNeeded": "Only a tiny same-player World line probe and direct ZoneCoverage PA/depth hook probe; no native football continuation, new roster panel, collection variant or suite."
+}

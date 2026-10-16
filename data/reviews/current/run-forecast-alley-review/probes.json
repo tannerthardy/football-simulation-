@@ -1,0 +1,273 @@
+{
+  "schema": "run-independent-forecast-alley-probes-v1",
+  "qualification": "Synthetic unit poses/history using existing unit-test players; exact archived production hooks and World. No PlaySim.tick/native football continuation or candidate source edit.",
+  "node": "v22.23.3",
+  "operatorSha256": "7db3a7809f795160b134e0e1be7aa77c17853c550ca114197a19ea7cfb179cbc",
+  "travel": [
+    {
+      "heading": 0,
+      "kind": "coast",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 0,
+      "maxWorkResidual": 0,
+      "endPos": {
+        "x": 55.400000000000034,
+        "y": 26
+      },
+      "endVel": {
+        "x": 9,
+        "y": 0
+      },
+      "support": "up"
+    },
+    {
+      "heading": 0,
+      "kind": "facing-effort-cap",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 0,
+      "maxWorkResidual": 3.943512183468556e-13,
+      "endPos": {
+        "x": 54.10535074398994,
+        "y": 26
+      },
+      "endVel": {
+        "x": 4.684515128476756,
+        "y": 0
+      },
+      "support": "up"
+    },
+    {
+      "heading": 0,
+      "kind": "fatigued-cap",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 0,
+      "maxWorkResidual": 4.831690603168681e-13,
+      "endPos": {
+        "x": 54.11570942363306,
+        "y": 26
+      },
+      "endVel": {
+        "x": 4.719132681206304,
+        "y": 0
+      },
+      "support": "up"
+    },
+    {
+      "heading": 0.7853981633974483,
+      "kind": "coast",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 4.440892098500626e-16,
+      "maxWorkResidual": 0,
+      "endPos": {
+        "x": 53.81837661840737,
+        "y": 29.81837661840737
+      },
+      "endVel": {
+        "x": 6.3639610306789285,
+        "y": 6.363961030678928
+      },
+      "support": "up"
+    },
+    {
+      "heading": 0.7853981633974483,
+      "kind": "facing-effort-cap",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 7.327471962526033e-15,
+      "maxWorkResidual": 1.0551559626037488e-12,
+      "endPos": {
+        "x": 52.90292135022453,
+        "y": 28.90292135022452
+      },
+      "endVel": {
+        "x": 3.3124524139168874,
+        "y": 3.3124524139168865
+      },
+      "support": "up"
+    },
+    {
+      "heading": 0.7853981633974483,
+      "kind": "fatigued-cap",
+      "unchangedProductionRequest": true,
+      "maxTransverseYd": 2.886579864025407e-15,
+      "maxWorkResidual": 7.212008767965017e-13,
+      "endPos": {
+        "x": 52.91024604284432,
+        "y": 28.910246042844317
+      },
+      "endVel": {
+        "x": 3.336930720200032,
+        "y": 3.336930720200032
+      },
+      "support": "up"
+    }
+  ],
+  "zone": [
+    {
+      "side": -1,
+      "read": "run",
+      "actualPassCall": "pa_post_dig",
+      "acquired": {
+        "pos": {
+          "x": 36.919999999999995,
+          "y": 24.815
+        },
+        "vel": {
+          "x": 1.2,
+          "y": -1.85
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.1,
+        "pose": "up",
+        "carrying": false
+      },
+      "request": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": -2.6092416275538413
+        },
+        "facing": 3.141592653589793
+      },
+      "referenceRequest": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": -0.7592416275538412
+        },
+        "facing": 3.141592653589793
+      },
+      "observedOppositeRequest": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": 1.8307583724461538
+        },
+        "facing": 3.141592653589793
+      },
+      "forwardVelocityCannotCollapseCap": true,
+      "minimumDepth": 10.040645132337382,
+      "maxResidual": 2.1316282072803006e-14
+    },
+    {
+      "side": 1,
+      "read": "run",
+      "actualPassCall": "pa_post_dig",
+      "acquired": {
+        "pos": {
+          "x": 36.919999999999995,
+          "y": 27.185
+        },
+        "vel": {
+          "x": 1.2,
+          "y": 1.85
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.1,
+        "pose": "up",
+        "carrying": false
+      },
+      "request": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": 2.630758372446151
+        },
+        "facing": 3.141592653589793
+      },
+      "referenceRequest": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": 0.7807583724461509
+        },
+        "facing": 3.141592653589793
+      },
+      "observedOppositeRequest": {
+        "vel": {
+          "x": -4.400000000000006,
+          "y": -1.809241627553844
+        },
+        "facing": 3.141592653589793
+      },
+      "forwardVelocityCannotCollapseCap": true,
+      "minimumDepth": 10.041570765456996,
+      "maxResidual": 1.7763568394002505e-14
+    }
+  ],
+  "hiddenBack": {
+    "unchangedAcquiredPicture": true,
+    "unchangedRequest": true,
+    "perceptionQueryReadOnly": true,
+    "rngEqual": true
+  },
+  "playActionPassUnsure": [
+    {
+      "read": "pass",
+      "side": -1,
+      "requestsExact": true,
+      "request": {
+        "vel": {
+          "x": 2.7951040131524634,
+          "y": -6.987760032881158
+        },
+        "facing": 3.0090411212931194
+      }
+    },
+    {
+      "read": "pass",
+      "side": 1,
+      "requestsExact": true,
+      "request": {
+        "vel": {
+          "x": 1.7590948888885607,
+          "y": -7.915926999998523
+        },
+        "facing": -3.0090411212931194
+      }
+    },
+    {
+      "read": "unsure",
+      "side": -1,
+      "requestsExact": true,
+      "request": {
+        "vel": {
+          "x": 2.7951040131524634,
+          "y": -6.987760032881158
+        },
+        "facing": 3.0090411212931194
+      }
+    },
+    {
+      "read": "unsure",
+      "side": 1,
+      "requestsExact": true,
+      "request": {
+        "vel": {
+          "x": 1.7590948888885607,
+          "y": -7.915926999998523
+        },
+        "facing": -3.0090411212931194
+      }
+    }
+  ],
+  "recognizedFlight": [
+    {
+      "read": "run",
+      "recognizedThrowWins": true,
+      "requestsExact": true
+    },
+    {
+      "read": "pass",
+      "recognizedThrowWins": true,
+      "requestsExact": true
+    }
+  ],
+  "worldSteps": 96,
+  "nativeFootballExecutions": 0,
+  "sourcePins": {
+    "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "queue": "ef214373f9dd101a044b5246879c7e5007c8fb55",
+    "cost": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+    "costEvidence": "c6c8b4823acb27c13769f32305a79d5628cf19b2",
+    "alley": "78a00645e4f821d45604a1ed68c35592de1f5926",
+    "collectionFrozen": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6"
+  },
+  "seconds": 0.384883155
+}
