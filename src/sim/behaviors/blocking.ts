@@ -1663,6 +1663,7 @@ function readAwayStretch(observer: Agent, sim: PlaySim, combo: Combination): voi
   const down = sim.see(observer, combo.defender), covered = sim.see(observer, owner);
   const side = playSideSign(sim, run);
   if (!known(down) || !known(covered) || down.pose !== 'up' || covered.pose !== 'up'
+    || down.pos.x < sim.los-.25
     || (down.pos.y-helper.pos.y)*side <= helper.profile.radius+combo.defender.profile.radius
     || down.vel.y*side <= 0) return;
   const visiblyFitted = (blocker: Agent, body: Perceived, defender: Agent, target: Perceived) =>

@@ -32,8 +32,8 @@ for(const id of ids){
     const combo=this.plan.combination;if(!combo||combo.released||actor.engagement||combo.members[1]!==actor||!combo.backer)throw Error('Not a free uncovered helper');
     const keeper=combo.members[0],e=keeper.engagement;
     if(!e||e.blocker!==keeper||e.defender!==combo.defender||e.helpers.length)throw Error('Keeper does not retain solo contact');
-    const down=reads.findLast((r:any)=>r.a===actor.idx&&r.b===combo.defender.idx)?.seen;
-    const backer=reads.findLast((r:any)=>r.a===actor.idx&&r.b===combo.backer!.idx)?.seen;
+    const down=[...reads].reverse().find((r:any)=>r.a===actor.idx&&r.b===combo.defender.idx)?.seen;
+    const backer=[...reads].reverse().find((r:any)=>r.a===actor.idx&&r.b===combo.backer!.idx)?.seen;
     // The choice uses the player's ordinary target/backer reads plus one
     // teammate picture on this same decision beat, not private live motion.
     const covered=world.see(actor,keeper);
