@@ -162,6 +162,10 @@ function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
     const y = end.pos.y + s * (end.radius + a.profile.radius + .4);
     candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, end.pos.x + .5) : Math.min(sim.los - .5, end.pos.x - .5), y });
   }
+  // Openings are read from a lateral projection, so a body a yard behind the
+  // line can hide a real seam in front of him. Sample the line every yard as
+  // well; the path, body and timing checks below judge them in two dimensions.
+  for (let k = -8; k <= 8; k++) candidates.push({ x: sim.los + .5 * dir, y: clamp(sim.ballY + k, .5, FIELD_WIDTH - .5) });
   const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   // Time for a defender to be in the runner's way at p, with block leverage.
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number => {

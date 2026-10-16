@@ -736,6 +736,10 @@ const CLIMB_SPACE = process.env.CLIMB_SPACE === '1';
  * man's near shoulder at running speed instead of orbiting him. */
 const CLIMB_EXIT = process.env.CLIMB_EXIT === '1';
 
+/** Experimental double-team discipline (COMBO_SECURE=1, off): nobody leaves a
+ * partner who is visibly being beaten around his shoulder. */
+const COMBO_SECURE = process.env.COMBO_SECURE === '1';
+
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
   private pullIdx = 0;
@@ -1582,6 +1586,13 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
   const control = contactControl(e, keeper);
+  // COMBO_SECURE: the climber can see the man working around his partner's
+  // shoulder (angular progress) and the rep going the man's way; leaving now
+  // hands the man the gap. Stay until the partner has him.
+  if (COMBO_SECURE && keeper === e.blocker && (Math.abs(e.phi) >= .5 || e.win >= .5)) {
+    tally('keeper:beaten');
+    return null;
+  }
   // ZONE_COMBO: the keeper must have his own hands on the man and a usable
   // base; whether he wins this instant's hand fight is not the question.
   // He must also own the man's path to the track: on the man's play side, or
