@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-174-3-2-jet-hit-sparrow.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips Flanker Drive with Bench backside / Sparrow
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Hit Sparrow is the 3x1 version of Falcon; shallow/basic is the core, with post and tagged Bench/option mechanics outside it.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HMGc0DsXYAA9Dq-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-273-stuff-adjustments.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Stuff split-field adjustments for flow, trips and bunch
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Patty, Area, Book, Box, Buster and Read adjust allocation and distribution. This sheet's Roy/Lou side determines halves; verify orientation before using a Stuff alias from elsewhere.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HQThC2uXoAE-QeM.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

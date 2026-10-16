@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-005-300-jet-steamer.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Steamer: underneath spacing/read routes with clearouts
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Four examples vary the clearout and underneath routes, including a shallow-cross/basic tag. File with spacing/read combinations rather than declaring every example the same play.
+
+**Browse:** [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat)
+
 Original archive path(s): `HonestNFL/G-_xWHMW4AAGH50.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

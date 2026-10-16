@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-053-box-vs-bunch.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Box quarters distribution against bunch
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Four-over-three area match sorts first in/out low and deep. Trix changes the handling of the third vertical, so the box drawing alone is insufficient.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HAXGzZ5WkAAKu_D.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

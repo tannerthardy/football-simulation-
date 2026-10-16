@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-381-system-information.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Run-hole numbering, backfield depths, splits and formation rules
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines local numbering and alignment conventions; it is system metadata, not a run concept or evidence of a universal NFL standard.
+
+**Browse:** [Formations / motion / alignment](../../CONCEPTS.md#formation-motion), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HUwb4yyXgAADR9s.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

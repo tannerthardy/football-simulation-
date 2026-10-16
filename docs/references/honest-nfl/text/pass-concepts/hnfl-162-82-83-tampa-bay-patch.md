@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-162-82-83-tampa-bay-patch.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Dig/read/flat paired with slant–seam/inside-fade rub
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tampa Bay is the zone triangle; Patch supplies key slant and special seam/inside fade for man. The primary side depends on alignment and help.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HLNFZVrWsAAfoDg.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

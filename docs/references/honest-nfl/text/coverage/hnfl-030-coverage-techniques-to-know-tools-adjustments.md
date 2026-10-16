@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-030-coverage-techniques-to-know-tools-adjustments.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Read/Palms-style flat-trigger tools and trips adjustments
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Read #2-to-#1 can exchange quarter and half responsibilities on a flat release; Book/Stump key #3-to-#2. Includes Buster, Sink and Trix tools.
+
+**Browse:** [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_yLkC8W8AEWpQv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

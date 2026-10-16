@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-283-cover-9-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 3 match glossary / source Cover 9
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tight-third, seam-flat, #3 hook, carry/deliver and adjustment terminology explain the actual three-deep distribution.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HRwWOZ9akAAkQJi.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-355-2019-eagles-sproles-plays.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Back-matchup menu: Stache, Mesh Rail and Wrap/Tampa
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Maestro appears in normal and empty forms, alongside Stache HBR and X Wrap Tampa. Same personnel focus does not make every panel the same route concept.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HTlpJCeWAAARXoQ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

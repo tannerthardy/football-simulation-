@@ -2,6 +2,14 @@
 
 [Original image](../../images/receiver-technique/hnfl-349-route-tree-outside-wrs.jpeg) · [Topic](../../topics/receiver-technique.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Outside receiver route tree: comeback, shallow, deep corner and corner-post
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Foil is quick-fly/comeback, Shallow has man/zone rules, Angle is a deep pylon break and Angle Post adds a post break. The word Angle is not the same as HB Texas here.
+
+**Browse:** [Route technique / leverage / conversions](../../CONCEPTS.md#route-technique)
+
 Original archive path(s): `HonestNFL/HT4k3axXcAAQmU_.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

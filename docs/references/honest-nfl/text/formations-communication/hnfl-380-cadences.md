@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-380-cadences.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cadence types, snap-count codes and visual/audible triggers
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Rhythmic/non-rhythmic color-number, silent and dummy counts coordinate players. Preserve installation-specific code words rather than treating them as league standards.
+
+**Browse:** [Cadence / huddle / call communication](../../CONCEPTS.md#operation)
+
 Original archive path(s): `HonestNFL/HUwb4yyWUAApuf3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

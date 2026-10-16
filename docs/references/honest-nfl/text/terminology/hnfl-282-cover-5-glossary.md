@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-282-cover-5-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Man-under/deep-help glossary: Fist, Pounder and bracket tools
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Preserves leverage, help and exchange definitions in the Cover 5 family. These are man techniques despite the split-safety presentation.
+
+**Browse:** [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HRwWOZ4acAAB14p.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

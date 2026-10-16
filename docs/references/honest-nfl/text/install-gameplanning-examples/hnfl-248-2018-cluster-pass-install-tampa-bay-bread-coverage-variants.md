@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-248-2018-cluster-pass-install-tampa-bay-bread-coverage-variants.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tampa Bay Bread distributions against multiple coverages
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Same cluster call shown versus one-high, buzz and match looks. These are coverage examples of one package rather than four independent concepts.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HQcqi3FXQAAT1Q0.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-325-sub-8-roy-lou-to-nickel.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Source Cover 8: halves strong, quarters weak
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Roy/Lou is to nickel and the opposite side uses quarters. Includes Trix/Squat/Buster formation checks and a repeated position label; verify assignments before implementing them.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HSs5ytEWQAA2SIj.jpeg`, `HonestNFL/HSxqVPfWAAENb_z.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

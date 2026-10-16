@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-051-read-concept.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Palms / 2-Read: corner traps #2 flat, safety takes #1
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Read explicitly lists Palms, Clamp and 2-Read; quarters-like duties change when #2 releases flat. The built-in Smash rule matters.
+
+**Browse:** [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HAXGzZ1XIAAGP1j.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

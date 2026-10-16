@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-371-the-alchemy-of-offensive-play-calling.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Play-calling principles and complementary sequencing
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Discusses explosives, simplicity, player fit and situational preparation. Reference material for later strategy work, not new scope for current snap-level repairs.
+
+**Browse:** [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HUILMrRXUAA9unj.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-041-2-3-jet-hit-candlestick-spot-cake.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch Spot/Snag-style triangle with corner and speed out
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Candlestick Spot replaces the Branch element with a settling spot route, creating the explicit triangle. Keep it distinct from the untagged Candlestick sheet.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HARBlEcWgAAoL8B.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

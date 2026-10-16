@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-148-quarterback-reads-deep-horizontal-stretch.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Deep horizontal stretch / two-on-one seam-and-go read
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Davis example reads the squeeze of deep zone defenders inside-out. Carried seams change the problem from a zone stretch to matched routes.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads), [Verticals / All Go / HOSS relatives](../../CONCEPTS.md#verticals)
+
 Original archive path(s): `HonestNFL/HK5lD12WoAAR-Bi.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

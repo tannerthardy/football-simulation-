@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-255-half-techniques-squat-reads-and-reactions.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Match-halves squat corner progression
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Alignment, collision/funnel, depth and flat reaction are staged. No flat threat permits a man-under conversion; source is a technique teaching sequence.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HQhkUCTWoAABSxp.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

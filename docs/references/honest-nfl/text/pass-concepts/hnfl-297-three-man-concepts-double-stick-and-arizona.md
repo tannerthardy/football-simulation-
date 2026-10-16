@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-297-three-man-concepts-double-stick-and-arizona.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Double Stick, Arizona and Stache
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Three common-language families on one page: stick/out/go, quick in-breaker layers, and man option. They are neighboring tools rather than synonyms.
+
+**Browse:** [Stick / double Stick / hitch–seam relatives](../../CONCEPTS.md#sticks), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HRZ5XmjbAAAIsMu.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-107-double-post-diesel.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Double Post Diesel: post–over with shallow and back outlet
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+QB works outside post/deep cross, shallow, back wide; man alert can start at Thru. Similar to post-over/Yankee principles, but not a claim of identical classic two-route Yankee.
+
+**Browse:** [Post–over / double-post / deep-cross shots](../../CONCEPTS.md#post-cross), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HEYwgGfbIAAHnOe.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

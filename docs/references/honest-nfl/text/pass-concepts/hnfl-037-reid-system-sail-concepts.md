@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-037-reid-system-sail-concepts.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Sail / flood family with Seattle and Detroit routes
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A collection of three-level outside stretches with play-action and dropback variants. The title explicitly identifies Sail concepts.
+
+**Browse:** [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood)
+
 Original archive path(s): `HonestNFL/HAQdCY4W4AAi2HI.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

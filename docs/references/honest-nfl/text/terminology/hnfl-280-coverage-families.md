@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-280-coverage-families.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Coverage-family number definitions and updated terminology
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines local 0–9 structures and notes later naming changes, including Pack/Stuff. Treat the page as versioned vocabulary rather than rewriting older source sheets.
+
+**Browse:** [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology), [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HRuI6jabAAEd2qO.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

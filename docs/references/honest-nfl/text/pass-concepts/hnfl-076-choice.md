@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-076-choice.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner–option / Smash-style choice combination
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Choice reads corner against a settling/escaping read route, with a post conversion against Cover 2; BOMS supplies the opposite-side answer. It is more specific than generic receiver choice.
+
+**Browse:** [Smash-style corner high/lows](../../CONCEPTS.md#smash), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HCmTk8QaMAA_ryU.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

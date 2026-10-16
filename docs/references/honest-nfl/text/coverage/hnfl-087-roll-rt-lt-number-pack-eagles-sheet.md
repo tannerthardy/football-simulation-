@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-087-roll-rt-lt-number-pack-eagles-sheet.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Directional front roll with Roy/Lou split-field match
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A distinct Eagles-branded Roll Pack installation. Read the half/quarter role assignments rather than inferring coverage from the front name.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HDgRyj8WUAAOM4E.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

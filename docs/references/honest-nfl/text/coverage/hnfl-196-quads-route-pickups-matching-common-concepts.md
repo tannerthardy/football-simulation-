@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-196-quads-route-pickups-matching-common-concepts.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters pickups versus verticals, Drive, Crash, Dagger and Pow
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A defensive distribution sheet against familiar offensive families. It is valuable as a counterexample library, not an offensive install for every pictured play.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HP2TAkZWUAAaSfP.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

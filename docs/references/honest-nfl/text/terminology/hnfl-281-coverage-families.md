@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-281-coverage-families.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pressure shells: fire, burn, deuce, quattro, quiz and hot zone
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Five-rush fire/burn differ by sky/buzz; Deuce has two-deep/four-under; Hot has six rushers and three-deep/two-under. Red-zone, bunch and slot are context categories, not one shell.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HRuI6jnbQAAk7H-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

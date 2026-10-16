@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-323-maestro.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Mesh Rail with over-the-ball sit/hook
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly says Maestro is classic Mesh with an OTB element and rail. QB yes/no's rail then reads the triangle; a tagged depth setter and man stairstep/zone sit rules define this version.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh)
+
 Original archive path(s): `HonestNFL/HSrm4wLXEAActEh.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

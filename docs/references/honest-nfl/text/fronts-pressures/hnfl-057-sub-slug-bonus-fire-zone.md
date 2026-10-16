@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-057-sub-slug-bonus-fire-zone.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Four-man simulated pressure with three-deep match coverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Slug replaces a rush end with a nickel edge rush and keeps a bonus underneath dropper. Fire-zone terminology here does not automatically mean five rushers.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HBdMviSXsAAAtTe.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

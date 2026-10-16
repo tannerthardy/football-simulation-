@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-303-four-strong-and-weak-loaded-zone-pressures.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nail/Sand five-man loaded zone pressure
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+This is a position-based pattern rather than Nomad/Sadam's count-based pattern. End, tackle, linebacker and DB tasks differ even when the finished rush count matches.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HS8oKmaXQAAiRus.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

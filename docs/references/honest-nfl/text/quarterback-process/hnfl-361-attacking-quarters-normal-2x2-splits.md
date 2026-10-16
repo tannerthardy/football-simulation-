@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-361-attacking-quarters-normal-2x2-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters attack menu by void, isolation, quick game and flat stress
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another visual version of normal-split attacks. It is mechanism teaching and should not be reduced to outcome guarantees or one universal countercall.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HUchKqQWcAIGZ7Z.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

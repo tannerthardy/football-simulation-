@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-379-cadence-kill-procedure.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-play Kill check, fake Kill and revert procedures
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Kill switches to a packaged alternative; Dahmer is a fake and Dexter reverts by the source's convention. These are call communications, not separate concepts or universal NFL code words.
+
+**Browse:** [Cadence / huddle / call communication](../../CONCEPTS.md#operation)
+
 Original archive path(s): `HonestNFL/HUwb4y3XoAA-uw6.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-186-coverage-tendencies-by-personnel-teaching-report.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Personnel-specific coverage and pressure tendency example
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A scouting/teaching report rather than a play diagram. Percentages describe this source example and are not a calibration dataset for the engine.
+
+**Browse:** [Install examples / scouting / later strategy](../../CONCEPTS.md#installation), [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HNYKZ7gWoAAQe91.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

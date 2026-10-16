@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-219-2x2-coverage-concepts-split-safety.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-by-two split-safety menu: quarters, Palms, Buster and Tampa
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Includes MOD/MEG presentation differences and Trap/Switch man-match tools. The shared pre-snap shell does not collapse these to one concept.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HPiULL7XUAAGM3y.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

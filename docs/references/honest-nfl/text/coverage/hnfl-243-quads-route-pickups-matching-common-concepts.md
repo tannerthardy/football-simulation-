@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-243-quads-route-pickups-matching-common-concepts.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters matching common offensive route combinations
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+All Go, Flanker Drive, Crash, Dagger, Pow and stacked Drive supply distribution examples. Defensive pickups are the subject of the page.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HQbXemEXMAA2COu.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

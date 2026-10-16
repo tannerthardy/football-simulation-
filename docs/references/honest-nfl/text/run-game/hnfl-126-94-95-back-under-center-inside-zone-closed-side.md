@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-game/hnfl-126-94-95-back-under-center-inside-zone-closed-side.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Split inside zone to the closed side
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+94–95 Back is explicitly under-center inside zone with a crossing FB/U cutting off the backside end. Runner presses the inside hip of tackle and reads the first covered playside lineman.
+
+**Browse:** [Inside zone / split zone / zone-blocking teaching](../../CONCEPTS.md#run-zone)
+
 Original archive path(s): `HonestNFL/HIZky50WgAAJ-3g.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-075-cover-5-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** 2-Man / man-under help-technique glossary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines Fist, Pounder, Finger, Rolex and their leverage/help rules. Number 5 is local terminology, not five-deep zone.
+
+**Browse:** [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HCCh5-iWEAA54Og.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-328-attacking-cover-2-normal-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Halves coverage attack menu by defender and distribution mode
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Stretches on safety, corner, apex or midpoint are separate mechanisms; hole shots and void attacks need route spacing and actual coverage reactions.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HSsUN--WsAABDDS.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-017-last-1-shake-check-squash.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** End-of-half deep coverage with a Squash pressure check
+
+**Basis:** description-only — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The Rams sheet combines a last-play deep/end-zone distribution with a slot pressure adjustment versus a particular formation. Do not reduce it to a normal Cover 1 alias from the call name alone.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/G_CkJSkXgAAC1mF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-226-baltimore-coverage-glossary-simulator-continuation.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Simulated-pressure glossary: four-man replacements behind Cover 3 or Tampa
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Manning/Cam and other QB names label Cover 3 simulators; NBA names label two-high simulators. Replacement positions and rotation differ despite the shared rush count.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HPyWogRWYAALVvm.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

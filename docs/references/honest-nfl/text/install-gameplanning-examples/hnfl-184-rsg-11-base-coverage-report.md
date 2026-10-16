@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-184-rsg-11-base-coverage-report.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Base defense scouting example: halves/quarters combinations
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Will 6, Backer 4 and Sam 8 are source opponent-report labels. These are teaching frequencies and descriptions, not measured simulator or league-wide rates.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HNYKZ7eXIAE3TiI.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-307-three-man-2x2-concepts-sail-and-seattle.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Sail/flood, Seattle return-out and Flutie post variant
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Go–sail–flat is foundational; Seattle sells an over before returning out; Flutie replaces/adjusts the high element with a post. All share outside-stretch principles with meaningful route differences.
+
+**Browse:** [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood)
+
 Original archive path(s): `HonestNFL/HSgIbwqXsAEpAsU.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

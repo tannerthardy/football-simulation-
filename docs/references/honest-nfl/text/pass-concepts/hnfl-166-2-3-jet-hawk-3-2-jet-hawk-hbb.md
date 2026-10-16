@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-166-2-3-jet-hawk-3-2-jet-hawk-hbb.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Hawk / Drive-family dig–shallow with post and corner alerts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another Hawk version changes the verbal alert description. Same core family, separate evidence and route/read instructions retained.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HLwjkSNXgAAYtqz.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

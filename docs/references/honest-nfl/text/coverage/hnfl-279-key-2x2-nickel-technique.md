@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-279-key-2x2-nickel-technique.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Release-keyed safety redistribution when a TE cancels
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Key is specifically a 2x2 nickel technique within Cover 8 here: TE release frees a safety to push strong, changing the nickel's carry duty. Do not generalize the word Key to every other coverage tool.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HRNGsOeXEAgBnBP.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

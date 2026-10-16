@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-310-cover-6-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 6 quarters-side tools with halves away
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Book, Binder, Erase, Trio, Stump and MEG change the strong-side handling while preserving the overall quarter/half allocation. This is a tool menu within a shell.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HShK3o9WAAAm8Pn.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

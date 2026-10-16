@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-125-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Apex-triangle coverage identification
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Uses near corner, apex and safety to classify single-high or split-safety pictures. A second source version of the recognition framework.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HIxrVPxXEAAzPmF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

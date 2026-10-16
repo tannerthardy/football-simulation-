@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-006-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner–apex–safety coverage recognition
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Apex triangles are a recognition framework using alignment, leverage and safety location; the diagram is not a new coverage call.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/G_10uYEWIAABkiU.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

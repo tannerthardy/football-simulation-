@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-206-cover-5-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** 2-Man, quarter-help man and mixed-side man-help package
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Fist, Pounder, Finger, Rolex, Trap and Push vary deep help and underneath leverage. The source calls the umbrella Cover 5.
+
+**Browse:** [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2)
+
 Original archive path(s): `HonestNFL/HPetlgAW0AAoNYC.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

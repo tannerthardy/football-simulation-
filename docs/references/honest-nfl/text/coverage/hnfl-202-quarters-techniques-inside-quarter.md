@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-202-quarters-techniques-inside-quarter.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters safety vertical matching and squeeze help
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Safety maintains vertical separation on #2 or zones/squeezes #1 when available. Another source version of the inside-quarter teaching chart.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HP2UHkYXEAAdhSa.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

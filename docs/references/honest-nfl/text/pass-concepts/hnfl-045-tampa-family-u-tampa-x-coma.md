@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-045-tampa-family-u-tampa-x-coma.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner/read/flat plus corner–pivot combination
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tampa supplies the corner–arrow–flat side; X Coma Return supplies a corner with a return/pivot route. Copper is a coverage alert, not a separate base family.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HAvcbxpWQAAaiRk.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

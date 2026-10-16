@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-097-roy-lou-techniques-call-side.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Roy/Lou call side: match halves and force
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Squat corner, vertical curl, middle hook and deep half organize the called side. Corner is primary run force; Trix can change the weak safety.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HDQzMiWXEAA2T-d.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

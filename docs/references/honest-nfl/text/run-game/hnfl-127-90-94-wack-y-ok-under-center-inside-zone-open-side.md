@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-game/hnfl-127-90-94-wack-y-ok-under-center-inside-zone-open-side.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Split inside zone to the open side with quick throw access
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Wack crosses FB/TE to the backside end and adds a built-in advantage throw/Y quick rule. It is not automatically a post-snap RPO simply because a throw is available.
+
+**Browse:** [Inside zone / split zone / zone-blocking teaching](../../CONCEPTS.md#run-zone), [Pass protection / hot / sight adjustment](../../CONCEPTS.md#protection-hot)
+
 Original archive path(s): `HonestNFL/HIZky52WoAAMYDV.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

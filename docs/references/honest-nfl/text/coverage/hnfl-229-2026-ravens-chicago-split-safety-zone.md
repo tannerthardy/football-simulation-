@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-229-2026-ravens-chicago-split-safety-zone.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Chicago: halves to a selected threat/back side, quarters away
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Half side is game-plan selected; default is offset back or field when back is home, with Pound in empty. This is target-oriented split-field coverage, not a fixed strong/weak numbering synonym.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HPyWwb1WcAAL3X_.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

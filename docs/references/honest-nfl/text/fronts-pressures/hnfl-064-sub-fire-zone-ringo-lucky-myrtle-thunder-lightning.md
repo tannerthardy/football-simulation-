@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-064-sub-fire-zone-ringo-lucky-myrtle-thunder-lightning.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Three-deep fire-zone pressure installation
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Ringo/Lucky, Myrtle and Thunder/Lightning identify rotation/pressure versions. Coverage and rush assignments must be read together.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HBUMGy1awAAXCMy.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

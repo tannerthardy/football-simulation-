@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-189-sub-four-down-games-tex-exit-twist-and-combo.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Defensive-line games: tackle–end, end–tackle and tackle twists
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tex sends tackle first then end under; Exit reverses the order; Twist uses two tackles; Combo coordinates both sides. Name the penetrator and looper rather than only the stunt nickname.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HOQ421WWUAAKx64.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

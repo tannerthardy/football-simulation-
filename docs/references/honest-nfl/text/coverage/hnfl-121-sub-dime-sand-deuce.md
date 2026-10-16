@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-121-sub-dime-sand-deuce.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-deep / four-under zone pressure with safety and dime rush
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Sand Deuce sends the called safety and dime while an end drops to Deuce Hook and nickel/other safety top the coverage. This rules page supplies pressure context missing from the formation-only pages.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HHvtdmkXMAYZ0JF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

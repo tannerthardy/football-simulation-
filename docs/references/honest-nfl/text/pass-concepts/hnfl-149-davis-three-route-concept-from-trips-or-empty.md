@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-149-davis-three-route-concept-from-trips-or-empty.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** All Go Special / three vertical threats with a deep crossing Special
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Davis is explicitly Raider/All Go family from trips or empty. The Special adjusts man/zone/halves; not every receiver runs a straight go.
+
+**Browse:** [Verticals / All Go / HOSS relatives](../../CONCEPTS.md#verticals), [Post–over / double-post / deep-cross shots](../../CONCEPTS.md#post-cross)
+
 Original archive path(s): `HonestNFL/HK5lD18WsAAuRQU.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

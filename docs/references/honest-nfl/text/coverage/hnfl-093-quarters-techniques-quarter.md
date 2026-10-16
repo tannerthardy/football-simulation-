@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-093-quarters-techniques-quarter.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters corner route reactions and China/In exchanges
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Man on #1 unless a qualifying China/In call permits zoning to close the corner-route window. This is a source-specific trigger chart.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HDQz9DFXsAAyPh7.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

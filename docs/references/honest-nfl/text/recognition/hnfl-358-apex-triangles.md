@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-358-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Apex triangles: combine safety, corner and apex cues
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Updated recognition sheet includes structure/alignment/behavior assessment and several possible coverages for each picture. These are clues with alternatives, not a guaranteed diagnosis.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HTLVhkkXYAEsjMJ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

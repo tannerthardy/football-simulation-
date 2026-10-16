@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-033-cover-4-quads.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 4 quarters match, including trips poach
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly defines Quads as quarters key-and-match coverage. Trix is the trips adjustment; route distribution is central.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HAd3Z1yXIAIJnoy.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

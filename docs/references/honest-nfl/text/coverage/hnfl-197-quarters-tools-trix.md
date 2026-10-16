@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-197-quarters-tools-trix.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips poach safety / Trix five-over-three help
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Weak safety takes #3 vertical and relieves the midpoint. This creates a tradeoff for the isolated receiver side; keep the whole allocation visible.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HP2TXDUXkAE1mI8.jpeg`, `HonestNFL/HRFelRvWYAAOiG2.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

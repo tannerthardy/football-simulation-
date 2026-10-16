@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-208-cover-5-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Man-under adjustments for trips, trap, brackets and exchanges
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Choke, Trix, Binder, Thumbs, Nail and Switch retain deep help while changing matches. This is the continuation of a Cover 5 family menu.
+
+**Browse:** [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HPetlgKWEAA3maF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

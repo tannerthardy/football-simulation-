@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-269-quads-vs-bunch-zone-it.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch quarters zone-distribution check / Zone It
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Deep inside/outside matches and final-#2/#3 distribution replace rigid initial-number assignments as releases declare. It has specific vertical and low-route duties.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HQTbfM5WgAA8j62.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

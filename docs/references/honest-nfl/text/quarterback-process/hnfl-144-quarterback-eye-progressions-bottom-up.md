@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-144-quarterback-eye-progressions-bottom-up.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Low-first reads plus triangle/diamond progression geometry
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A distinct bottom-up teaching version. Keep the situational emphasis on short yardage/red zone without equating it to all triangle reads.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HJXOkLzW8AImSQV.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

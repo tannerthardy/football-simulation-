@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-008-2x2-split-safety-rotations-fangio-system.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-by-two coverage rotation and bracket menu
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Fangio-system rotations include halves, quarters, split-field, single-high and bracket/man answers. Local call numbers must travel with their side rules.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/G_12T1_WUAADgB-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-285-cover-2-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Halves coverage role glossary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Squat/Smash/Wall/middle-read/deep-half roles distinguish match and vision variants. Keep the defender's eye and help rules with the term.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HRwWOZkWIAAgiQW.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

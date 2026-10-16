@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-game/hnfl-300-run-blocking-terms-and-schemes.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Zone combination blocks: center–guard, guard–tackle, tackle–TE
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Single/Double/Triple name the blocking pair, not the number of defenders or an entire run. Hard versus Big distinguishes inside/outside zone technique; one Triple line names a different pair, so verify the drawing and preserve the inconsistency.
+
+**Browse:** [Inside zone / split zone / zone-blocking teaching](../../CONCEPTS.md#run-zone), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HRZwExUasAALuUr.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

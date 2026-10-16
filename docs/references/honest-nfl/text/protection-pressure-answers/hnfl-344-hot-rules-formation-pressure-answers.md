@@ -2,6 +2,14 @@
 
 [Original image](../../images/protection-pressure-answers/hnfl-344-hot-rules-formation-pressure-answers.jpeg) · [Topic](../../topics/protection-pressure-answers.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Hot and peek rules tied to protection counts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Separates unaccounted rushers from sight adjustments and a slot peek rule. Quick protections and audible checks have their own handling.
+
+**Browse:** [Pass protection / hot / sight adjustment](../../CONCEPTS.md#protection-hot)
+
 Original archive path(s): `HonestNFL/HT0blEwW4AAJR0T.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

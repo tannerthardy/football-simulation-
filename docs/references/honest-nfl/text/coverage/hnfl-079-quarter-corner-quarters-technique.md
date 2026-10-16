@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-079-quarter-corner-quarters-technique.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters corner: MOD with In/China zone-off rules
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Corner matches #1 except an actual shallow/China trigger, then zones and finds work. Preserve the trigger rather than dropping any in-breaker automatically.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HCXgdtwaAAAZrBv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-254-roll-rt-lt-number-pack.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Roll front with directional Roy/Lou half–quarter allocation
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Direction or targeted jersey sets the half side; final shape can be quarter–quarter–half or its reverse. Front and coverage names are separate pieces of the call.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HQhkUAxWoAAXbQn.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-073-cover-6-stuff-and-stuff-area.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarter–quarter–half: quarters strong, halves weak
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Stuff is Cover 6 here. Passing strength/nickel sets the quarter side; trips may use Area. Preserve orientation rather than treating any Cover 6 numbering as universal.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HBZnx57bcAMlTkD.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-181-pre-snap-motions.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Short, return/yo-yo, jet, jolt and stack motion paths
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Shows movement and whether the receiver throttles, returns or snaps in motion. These are formation/communication tools, not full plays.
+
+**Browse:** [Formations / motion / alignment](../../CONCEPTS.md#formation-motion)
+
 Original archive path(s): `HonestNFL/HMZ6kPOXAAAOjUE.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

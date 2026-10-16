@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-164-82-83-tampa-pirate.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tampa corner triangle plus Pirate/basic high–low
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Single-high works Tampa; split-safety works Pirate side off the apex. The two-sided package cannot be faithfully renamed as only one three-route concept.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat)
+
 Original archive path(s): `HonestNFL/HLNFZVyWIAEgKaL.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

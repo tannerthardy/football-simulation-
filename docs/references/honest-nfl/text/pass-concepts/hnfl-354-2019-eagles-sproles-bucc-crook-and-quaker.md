@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-354-2019-eagles-sproles-bucc-crook-and-quaker.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Back-matchup menu: Buccaneer, pivot/Texas and Drive
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Bucc/Crook/Quaker, Yoshi/Racer and Falcon H Stiffy target different man/zone answers. Yoshi's back Trail is Texas-like; preserve each panel and eligible player's role.
+
+**Browse:** [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HTlpJCdW8AAJIih.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

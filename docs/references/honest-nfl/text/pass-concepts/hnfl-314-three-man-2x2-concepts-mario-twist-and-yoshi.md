@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-314-three-man-2x2-concepts-mario-twist-and-yoshi.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Mario switch triangle, Yoshi return/Texas, and Submarine shallow–rail
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Mario Twist swaps #1/#2 releases. Yoshi has a Shorty-sell Bow return, over-ball sit and HB Trail/Texas; Submarine pairs slow slant and shallow with rail. These are three distinct designs, not one universal alias.
+
+**Browse:** [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HSJUxbsa4AA4kgd.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

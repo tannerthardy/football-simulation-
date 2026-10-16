@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-070-cloud-true-cover-2-8.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** True Cover 2 vision-and-break zone
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Cloud explicitly identifies itself as true halves and says it is not Tampa 2. Read QB cues while maintaining route spacing and deep help.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HBYiP0rbIAAP3sZ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

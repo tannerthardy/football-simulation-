@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-357-2019-eagles-sproles-plays.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tampa variants, Torpedo, triple slants and a motion isolation read
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Several pass families share a player-focused install. The bottom-right call uses bump/follow information to select the back or Y isolation; keep the observation and decision separate.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HTlpJChXQAAiZ6D.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

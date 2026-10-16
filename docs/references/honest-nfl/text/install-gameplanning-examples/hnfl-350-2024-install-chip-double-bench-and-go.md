@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-350-2024-install-chip-double-bench-and-go.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Double out-and-up / Bench-and-Go with middle-read and chip flats
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Both outside receivers sell a Bench out then go; middle read changes by coverage. This is a double-move shot package, not plain Double Bench or four straight verticals.
+
+**Browse:** [Scissors / divide / wheels / double moves](../../CONCEPTS.md#scissors-post-wheel), [Verticals / All Go / HOSS relatives](../../CONCEPTS.md#verticals), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HT5x6ggWgAAl5_V.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

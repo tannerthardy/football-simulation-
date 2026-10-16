@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-302-2026-ravens-deuce-zone-pressure.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-deep / four-under Deuce zone pressure
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Read/Cloud principles, soft-squat flat triggers and Deuce-hook roles sit behind a five-man charge in the family glossary. Trips uses DOT strong/Smack weak; retain those exchanges.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HS8oKlVWkAAP1w4.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

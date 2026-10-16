@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-161-82-83-tampa-z-shoot-racer.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner–flat triangle with shoot/post and option alerts
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tampa Z Shoot adds an option-sell to post, a backside four-way option and Racer key-slant/sloppy-corner alternative. Keep those conversions distinct from base Snag.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HLNFZVoXMAA59_t.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

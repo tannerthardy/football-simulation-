@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-235-82-83-torpedo-kill-missile.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Torpedo/Missile: corner-flat plus cross-field in-breakers
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A separate source version of the Kill pair. Zone uses Basic; man can use inside slant. Diagram and conditional QB progression remain attached.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HQb7iuyXUAE6oeE.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

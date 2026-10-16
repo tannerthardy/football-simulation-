@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-195-quarters-adjustments-trix-and-area.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters adjustment menu: poach, lock/read, box and bunch match
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Trix, Area, Book, Box Trix, Buster and Read solve different receiver distributions. This version's Area uses a triangle distribution; compare its actual rules with other Area sheets.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HP2TAkXXUAAW5mg.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

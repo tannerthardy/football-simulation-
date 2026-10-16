@@ -2,6 +2,14 @@
 
 [Original image](../../images/protection-pressure-answers/hnfl-004-cat-alert-detached-receiver-pressure-communication.jpeg) · [Topic](../../topics/protection-pressure-answers.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Slot-blitz alert and sight adjustment
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Detached innermost receiver points out the Cat threat and confirms an actual blitz; this is pressure communication, not an offensive route concept.
+
+**Browse:** [Pass protection / hot / sight adjustment](../../CONCEPTS.md#protection-hot), [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/G-_p5LAWEAEmD16.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

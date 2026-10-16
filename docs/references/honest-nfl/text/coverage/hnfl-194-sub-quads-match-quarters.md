@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-194-sub-quads-match-quarters.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nickel quarters-match installation across formations
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Sub Quads gives corner/apex/hook/safety assignments and communication. Potential four-deep structure is produced by routes and matching, not four fixed landmarks alone.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HP2TAkhWsAAOC_l.jpeg`, `HonestNFL/HSs5ytMWUAA-i9A.jpeg`, `HonestNFL/HSwWpy6XUAAwFcc.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

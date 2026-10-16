@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-135-quarterback-reads-corner-collapse.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner-collapse high/low / Smash-style corner read
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Crash pairs Pirate underneath with a corner. QB reads whether the deep defender stays over the top or commits to the underneath route.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HJVWlX8XIAEW1Ar.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

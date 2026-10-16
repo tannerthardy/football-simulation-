@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-241-2026-ravens-tampa-miami-and-boca.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tampa 2 family with middle runner and disguise variants
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Miami is Tampa from man alignments; Boca adds a buzz invert. Two deep halves can widen because a middle runner closes the post on seams.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HQBna38XIAAUF5y.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

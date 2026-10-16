@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-074-cover-5-hands-package.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** 2-Man and quarter-help man coverage package
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Hands is the source's Cover 5 family. Fist means 2-Man with inside trail; Pounder uses quarters-technique safety help; Finger mixes them by side.
+
+**Browse:** [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2)
+
 Original archive path(s): `HonestNFL/HCCh5-fWcAECY6p.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

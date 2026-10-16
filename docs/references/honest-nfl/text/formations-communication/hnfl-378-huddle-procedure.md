@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-378-huddle-procedure.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Huddle alignment, communication order and break procedure
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Operational teaching for transmitting a call. Source instructions belong to the playbook reference, not to repository contributors.
+
+**Browse:** [Cadence / huddle / call communication](../../CONCEPTS.md#operation)
+
 Original archive path(s): `HonestNFL/HUwb4y3WYAAQMdc.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

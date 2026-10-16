@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-009-reading-your-2x2-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Recognizing single-high Cover 3 from apex triangles
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Strong and weak corner/apex pictures combine with a middle-closed safety to identify the example Trey structure.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/G_12T2FXoAAE8yb.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

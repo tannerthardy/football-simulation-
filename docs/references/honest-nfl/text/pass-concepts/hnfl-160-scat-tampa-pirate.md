@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-160-scat-tampa-pirate.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner/read/flat paired with Pirate/basic in-breakers
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Scat Tampa Pirate selects a side by safety structure and includes a signaled YAC conversion. Family filing does not replace that read or hot mechanism.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat)
+
 Original archive path(s): `HonestNFL/HLIe0JlXYAAKv3i.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

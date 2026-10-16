@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-364-sub-dime-package-rush-wild.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Rush-front nickel/dime Wild halves installation
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Combines a Rush front with two-deep Wild coverage and formation alignments. Following strength motion is specified; it is not proof of man coverage.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HUDir9jXoAAhpPO.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

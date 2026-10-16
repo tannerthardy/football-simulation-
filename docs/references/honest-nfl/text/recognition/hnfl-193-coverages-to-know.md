@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-193-coverages-to-know.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Opponent quarters-match recognition and stress points
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Coverages to Know is a contextual scouting explanation of MOD/Trix and related calls, not a universal rulebook or measured defect list.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HOV6km6XoAA4W6P.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

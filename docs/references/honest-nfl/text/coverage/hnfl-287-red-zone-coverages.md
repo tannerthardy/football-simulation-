@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-287-red-zone-coverages.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Red-zone bracket and half/quarter split-field coverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Red 7 Bracket, Red 6 Pack and Red 8 Stuff compress spacing near the goal line. This page contains several different coverages; the label Red is a situational modifier.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2)
+
 Original archive path(s): `HonestNFL/HRxVRipa8AAEhnB.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

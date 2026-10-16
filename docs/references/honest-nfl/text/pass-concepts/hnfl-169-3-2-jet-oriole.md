@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-169-3-2-jet-oriole.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Drive plus corner–spray-out / Oriole
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Oriole combines shallow/basic with Ole's corner and spray Omaha. QB progresses Omaha–corner–shallow/basic–back; it is more than plain Drive.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HLyKya8WEAEW_At.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

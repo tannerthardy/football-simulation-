@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-264-2026-ravens-spin-zone-pressure.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Five-rush three-deep fire zone with DL plus nickel
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Spin shares the broad 3-deep/3-under structure with Tracy but uses a different charge. Formation can substitute LB/FS; preserve rush personnel.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HQMlNhDW8AAlq1u.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/install-gameplanning-examples/hnfl-187-rsg-11-wednesday-qb-cheat-sheet-constructed-teaching-example.jpeg) · [Topic](../../topics/install-gameplanning-examples.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Constructed QB opponent-scouting cheat sheet
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly says it is made from multiple reports for teaching. Do not promote its combined tendencies into factual claims about one NFL defense.
+
+**Browse:** [Install examples / scouting / later strategy](../../CONCEPTS.md#installation), [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HNYKZ7hWYAA5cWJ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

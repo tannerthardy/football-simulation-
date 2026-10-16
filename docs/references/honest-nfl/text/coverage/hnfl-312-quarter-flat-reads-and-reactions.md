@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-312-quarter-flat-reads-and-reactions.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarter-flat reactions conditioned on #2 and #3 location
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Six route combinations show matching flats, replacing/handing shallow routes and rerouting verticals. #3-to-you and #3-away are different help situations.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HSJtlooWMAYJRZI.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

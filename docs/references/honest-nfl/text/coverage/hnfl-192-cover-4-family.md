@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-192-cover-4-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 4 family: Quads/MOD and trips Trix
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Describes the quarters structure plus distribution variants. Explicitly warns that a nickel following strength motion is not, by itself, a man-coverage tell.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HOrG2VVWoAAyB3l.jpeg`, `HonestNFL/HOV6km3W0AAOscz.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

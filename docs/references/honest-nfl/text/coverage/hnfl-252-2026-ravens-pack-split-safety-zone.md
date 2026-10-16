@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-252-2026-ravens-pack-split-safety-zone.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Ravens Pack: strong quarters and weak halves, formation tools
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A separate Pack version retains passing-strength orientation and Stubbie/Stump/Read details. Same broad family does not make variants disposable duplicates.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HQFtmY6W0AA_8Jj.jpeg`, `HonestNFL/HQTbfNKX0AAHzKc.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

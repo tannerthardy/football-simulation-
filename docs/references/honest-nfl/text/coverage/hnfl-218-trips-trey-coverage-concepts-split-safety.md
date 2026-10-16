@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-218-trips-trey-coverage-concepts-split-safety.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips coverage menu: Quads, Wild, Read/Palms and man-under
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A separate version of the multi-family trips comparison. Lock, poach and midpoint-carry differences must remain visible.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2)
+
 Original archive path(s): `HonestNFL/HPiULL7W0AEL7OB.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-275-coverages-6-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarter–quarter–half with formation-based half/quarter tools
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The 6-family Chicago sheet explicitly places quarters to nickel and halves away. Its local Chicago label differs from target-oriented Chicago on other sheets.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HQThtiGWIAA3RZ7.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

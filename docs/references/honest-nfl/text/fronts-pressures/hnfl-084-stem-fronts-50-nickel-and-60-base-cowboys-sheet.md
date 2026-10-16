@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-084-stem-fronts-50-nickel-and-60-base-cowboys-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pre-snap front stems from Over/Tite to gap-and-a-half spacing
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A distinct Cowboys-branded version of the 50/60 stem sheet. Keep initial/final and closed-side adjustment rules attached.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDeaYYBWAAE4oZ8.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-327-attacking-cover-3-9-all-variations.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Attacking spot and match Cover 3 with different conflicts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Vertical stretches, deep horizontals, individual matchups and clearout/void reads target different distributions. Clue third and tight-third match do not offer the same two-on-one.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HSsNjKJXIAARE87.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

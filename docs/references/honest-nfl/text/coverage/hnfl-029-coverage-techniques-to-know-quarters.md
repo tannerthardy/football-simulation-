@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-029-coverage-techniques-to-know-quarters.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters technique dictionary: MOD, tight quarter, flat and hook
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Distinguishes man-out-and-deep, isolated-side match and true quarter-zone roles. These are not all four-deep spot drops.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/G_whrIPXgAA0lr3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

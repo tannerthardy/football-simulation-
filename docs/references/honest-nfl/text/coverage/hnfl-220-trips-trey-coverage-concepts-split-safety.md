@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-220-trips-trey-coverage-concepts-split-safety.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips checks: Trix, Book, Binder, Stump, Trio, Area and Zorro
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Each tool changes locks, read keys or distribution. Keep this as a comparison sheet rather than assigning one preferred alias to all panels.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HPiULMJXgAA-mns.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

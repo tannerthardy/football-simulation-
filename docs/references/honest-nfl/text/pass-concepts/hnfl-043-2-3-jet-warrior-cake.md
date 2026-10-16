@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-043-2-3-jet-warrior-cake.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch switch corner/out man beater
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The source defines Warrior as Frisco with #1 and #3 exchanging routes. Release leverage attacks point-in/out coverage; it is not the same assignment map as Frisco.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HARBlEGXIAAnsUS.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

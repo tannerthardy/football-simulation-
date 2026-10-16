@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-090-sub-fronts-penny-and-third-down-cowboys-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Penny/Tite, Tornado, Load and dollar-front menu
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A second team-branded version of the odd/sink front menu; gap-and-a-half and third-down mechanics remain installation-specific.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDgUbycXkAAseIT.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

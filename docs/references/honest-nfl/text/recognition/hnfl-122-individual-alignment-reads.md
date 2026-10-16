@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-122-individual-alignment-reads.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Individual alignment clues: squat, wall, squeeze, fist and heads
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Adds contextual examples to technique alignments. These clues support an inference about coverage, not certainty from a stance alone.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HHzr0E2W8AMw1Qi.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

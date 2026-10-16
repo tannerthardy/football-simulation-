@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-game/hnfl-320-jab-92-93-rub.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Under-center Duo with inside-out linebacker read
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+92–93 Rub is explicitly the under-center Duo concept: vertical doubles, no kick-out fit, and sequential LB read with possible Jab footwork. Offensive Rub here is not a pass pick route.
+
+**Browse:** [Duo / gap / lead and perimeter runs](../../CONCEPTS.md#run-gap)
+
 Original archive path(s): `HonestNFL/HSnkonvWsAAHsot.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

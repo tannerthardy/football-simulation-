@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-063-cover-9-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 3 match technique and communication glossary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Explains tight third, seam-flat, midpoint, match-carry-deliver and Push/In calls. The source calls the installation Cover 9.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HBi_WX7XsAACAvR.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

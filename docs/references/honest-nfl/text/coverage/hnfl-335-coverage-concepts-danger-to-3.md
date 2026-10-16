@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-335-coverage-concepts-danger-to-3.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Danger / Cover 3 match to the #3 side
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tight-third, seam-flat and #3-hook distribute routes; x1 becomes Strap. The sheet contrasts man-like vertical/out coverage with zoning against shallows.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HSXQQZZWMAAUNeZ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-294-attacking-cover-2-normal-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Attacking halves: high/low, deep horizontal stretch and voids
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Examples distinguish stretching corner, apex, midpoint and safety. These are mechanisms behind several concepts, not a promise that one Cover 2 beater works against every mode.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HRZ4-UwbEAABkSI.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

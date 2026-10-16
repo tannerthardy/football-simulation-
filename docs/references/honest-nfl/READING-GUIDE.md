@@ -1,8 +1,15 @@
 # Ways into the collection
 
-[Collection](README.md) · [All sources](CATALOG.md) · [Term finder](TERMS.md)
+[Collection](README.md) · [Familiar concepts / name crosswalk](CONCEPTS.md) · [All sources](CATALOG.md) · [Term finder](TERMS.md)
 
 These are suggested reading paths through supplied material, not an implementation queue. Source IDs are stable. Each linked text companion opens its original full-resolution image.
+
+For a familiar starting point, use the [concept-family guide](CONCEPTS.md):
+Maestro → Mesh Rail with OTB, Falcon/Sparrow → Flanker Drive variants,
+Flutie → post–sail–flat, and the explicit Duo run sheets. The guide distinguishes
+source-stated relationships from diagram-supported comparisons and descriptive
+labels whose exact alias remains open. Do not carry one installation's Stuff,
+Oakland, Wasp or protection meaning into another sheet without checking it.
 
 ## Get oriented: language and diagrams
 

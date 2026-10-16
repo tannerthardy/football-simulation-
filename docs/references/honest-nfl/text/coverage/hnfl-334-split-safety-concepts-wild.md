@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-334-split-safety-concepts-wild.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Wild match halves with #3-dependent midpoint
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Corner funnels then sinks, apex walls up/in, midpoint relates to final #3 and safety squeezes verticals. It is not Cloud vision zone by a different name.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HSXQQZYWQAA1eGu.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

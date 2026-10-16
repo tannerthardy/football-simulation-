@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-082-sub-fronts-nickel-dime-package-cowboys-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nickel/dime over/even fronts and double-A mug presentation
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The Cowboys version explicitly labels Over and Even families. Cheat, Cassie and Flex do not share every alignment or back-setting rule.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDcDHyVXwAAvcjF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

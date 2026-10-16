@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-077-inside-quarter-safety-quarters-technique.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters safety: match #2 vertical, squeeze #1 if free
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Inside-quarter teaching shows top-down #2 versus zoning/squeezing other routes. Includes route-distribution examples, not a new coverage shell.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HCXgds_XYAAgWb2.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

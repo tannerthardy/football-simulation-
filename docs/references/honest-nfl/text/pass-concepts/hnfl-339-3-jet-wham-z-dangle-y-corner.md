@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-339-3-jet-wham-z-dangle-y-corner.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Three-level stretch with Dangle cross/dig and opposite corner
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Wham Z Dangle Y Corner uses deep in-breaker, chip drag/flat and an angle alert; the notes explicitly call it top-down three-level. Route name Angle here is a deep outside route, not the back's Texas angle.
+
+**Browse:** [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HSYJthZXUAAqwHf.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

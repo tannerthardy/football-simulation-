@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-367-scat-tampa-bay-read-bunch.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch Tampa Bay: dig/read/flat with opposite corner/read
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Progression can be pure, triangle or area by plan; YAC converts the Basic to corner against selected man tools. Keep that distinction from base corner-route Tampa.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HUffvLSXUAAmasJ.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

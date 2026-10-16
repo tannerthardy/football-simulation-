@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-382-dropback-pass-call-structure.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** West Coast-style call grammar: formation, protection, concept and tags
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Breaks down the call into fields and distinguishes shift/motion/protection/base concept/alert/Kill/cadence. Same word can belong to different namespaces.
+
+**Browse:** [Cadence / huddle / call communication](../../CONCEPTS.md#operation), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HUwc9JgWcAAFdpy.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-385-pre-snap-procedure.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Structured pre-snap assessment of shell, leverage, eyes and box
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A second full pre-snap procedure page; it teaches bounded cues and anticipation rather than exact knowledge of defensive intent.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HUwcpPjXIAAuY2v.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

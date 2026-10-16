@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-240-sub-lurk.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 1 Lurk / zone presentation with man pickups
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Low-hole and post help support man assignments; source equates the mechanics to its Yankee call. Offensive Yankee/post-over is a different use of the word.
+
+**Browse:** [Cover 1 / rat / robber / lurk](../../CONCEPTS.md#man1)
+
 Original archive path(s): `HonestNFL/HQBE8IoWkAAfBD3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

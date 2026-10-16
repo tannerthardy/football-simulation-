@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-031-important-terms-to-know.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Defensive coverage and pressure glossary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines local terms such as banjo, match, carry, deliver, MOD and zone alignment. Treat definitions as belonging to this installation.
+
+**Browse:** [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/G_yLkDFXEAAS4I-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

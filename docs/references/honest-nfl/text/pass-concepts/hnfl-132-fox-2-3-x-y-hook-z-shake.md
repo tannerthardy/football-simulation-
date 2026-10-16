@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-132-fox-2-3-x-y-hook-z-shake.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Play-fake hook/curl spacing with a shake alert
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Fox hook tags attach two hook routes and check-burst to a run/show-fake package; Z Shake is the double-move alert. This sheet illustrates the pass attachment, not proof that Fox always means this route set.
+
+**Browse:** [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Draw / designed QB runs / run-pass packages](../../CONCEPTS.md#draw-qb-run)
+
 Original archive path(s): `HonestNFL/HJnnwx6XUAAEnqy.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

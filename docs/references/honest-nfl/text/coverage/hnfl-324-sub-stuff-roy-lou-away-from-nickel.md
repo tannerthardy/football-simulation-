@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-324-sub-stuff-roy-lou-away-from-nickel.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Source Stuff/Cover 6: quarters strong, halves weak
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+This Sub Stuff version sets Roy/Lou away from nickel, producing quarter–quarter–half. It differs from Ravens Stuff on HNFL-230; never translate the bare name without source context.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HSs5ys4W4AA2QqA.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

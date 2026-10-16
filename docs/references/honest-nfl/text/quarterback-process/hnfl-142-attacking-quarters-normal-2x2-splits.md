@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-142-attacking-quarters-normal-2x2-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Ways to stress quarters: voids, isolation, quick game and flats
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Several mechanisms share a coverage target but use different route designs. This is an attack menu, not a single anti-quarters play.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HJxdV5RW8AAKE3k.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

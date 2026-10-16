@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-022-cadence-timing-and-communication.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cadence and snap synchronization
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Distinguishes rhythmic, non-rhythmic, silent and dummy cadence cues. This is team communication rather than a route or blocking concept.
+
+**Browse:** [Cadence / huddle / call communication](../../CONCEPTS.md#operation)
+
 Original archive path(s): `HonestNFL/G_iZ6jhXcAA9MsT.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

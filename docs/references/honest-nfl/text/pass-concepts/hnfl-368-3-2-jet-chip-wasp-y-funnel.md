@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-368-3-2-jet-chip-wasp-y-funnel.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Wasp shot: sell deep cross then return corner, plus deep in-breaker
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The frontside double move horizontally stresses the post safety; Funnel and Dagger/Angle provide other windows. This offensive Wasp is unrelated to the defensive Wasp replacement-pressure call.
+
+**Browse:** [Scissors / divide / wheels / double moves](../../CONCEPTS.md#scissors-post-wheel), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HUfg7IRWMAAKyeA.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-024-stack-coverage-concepts.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Stack coverage menu: lock, switch, in/out and triangle
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Lock/Top Hat/Limbo use specific matchups; Combo/Key exchange by release; Triangle adds a third defender. Trap and Zorro are different tools.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_MWmPCW8AAsWp2.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

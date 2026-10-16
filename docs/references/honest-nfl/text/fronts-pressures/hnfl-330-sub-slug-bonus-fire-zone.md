@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-330-sub-slug-bonus-fire-zone.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Slug nickel simulated pressure with bonus coverage dropper
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The nickel rush replaces an opposite end; three-deep/four-under match closes a hot window. This is related to Punch presentation but retains the extra dropper.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HSwjtJSWsAEEvL9.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

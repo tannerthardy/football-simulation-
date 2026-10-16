@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-071-buster-cover-2-match.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Buster/Bingo-style strong-side match halves
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A Cover 2-family pattern match that protects #2/#3 exchanges, with a sink corner and middle read. Bunch and detached versions retain their own rules.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HBYiP0sbwAAXTsT.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

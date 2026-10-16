@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-309-split-safety-concepts-book.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Book: MEG #1 with 3-to-2 Read inside
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The page explicitly defines the lock-plus-Read mechanism and relates it to trips tools. Use the written rules when comparing Book with Stubbie from another installation.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HShJMSDWcAAyTVs.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

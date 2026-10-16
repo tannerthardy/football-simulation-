@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-109-82-83-sushi-rub.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bingo post/dig triangle with Stache and rail
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Sushi Rub uses Bingo Post, Bingo Basic, Stache and rail with a triangle over the ball, plus man/quarters alerts. This is not Mesh merely because routes cross.
+
+**Browse:** [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HFJROicbsAA7FdG.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

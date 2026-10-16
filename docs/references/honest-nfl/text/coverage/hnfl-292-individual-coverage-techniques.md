@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-292-individual-coverage-techniques.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Individual coverage-role dictionary across shells
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A cross-family technique reference: quarters, thirds, match-carry-deliver, squat, Tampa and hook roles. Multiple shell contexts are intentional.
+
+**Browse:** [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology), [Man / vision zone / zone match / man match](../../CONCEPTS.md#coverage-modes)
+
 Original archive path(s): `HonestNFL/HRZ4-UDWQAANvEr.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

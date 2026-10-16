@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-227-baltimore-system-coverage-glossary.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Ravens coverage-name dictionary by actual shell and rush
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Pound=quarters both; Pack=quarters strong/half weak; Stuff=half strong/quarters weak here. Also defines Biggie brackets, Tupac Tampa, 3 Lock/Site and five-rush Deuce; preserve the installation context.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HPyWogVW8AAgG_e.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-217-four-strong-and-weak-loaded-zone-pressures.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Five-man loaded zone pressure with replacement DL drops
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Nomad/Sadam uses count-based rush patterns: both linebackers rush and two DL away drop. The number in four-strong/four-weak names does not mean only four rushers.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HPhhya6WYAA5hT3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

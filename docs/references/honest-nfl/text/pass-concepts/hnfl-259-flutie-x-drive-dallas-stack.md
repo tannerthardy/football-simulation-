@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-259-flutie-x-drive-dallas-stack.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Flutie plus Drive: post/out stretch paired with shallow–dig
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly identifies the two paired two-man concepts. The natural rub has prescribed spacing; do not rename the whole five-route call as only Flood or only Drive.
+
+**Browse:** [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HQlMW1qWkAAm4R0.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

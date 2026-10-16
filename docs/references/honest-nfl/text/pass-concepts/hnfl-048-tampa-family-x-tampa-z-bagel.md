@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-048-tampa-family-x-tampa-z-bagel.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner/read/flat paired with dig/biscuit option
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tampa is the corner triangle; Bagel is basic/dig plus biscuit with a corner conversion against man. Keep the paired sides and conversions.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HAvcUxFasAAbJW9.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

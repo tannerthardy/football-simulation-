@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-066-trips-trey-coverage-concepts-single-safety-middle.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips single-high menu: spot zone, match zone and man-free
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Trey/Load/Danger/Raider/Kick/Freeze/Robber/Lurk show distinct distribution modes inside broadly single-high structures.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Cover 1 / rat / robber / lurk](../../CONCEPTS.md#man1), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HBUMGyWW8AEMY5Q.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

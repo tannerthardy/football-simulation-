@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-376-scat-bach-slip.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bach: Mesh Rail with receiver rail and HB slip attachment
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The source explicitly defines Bach as Maestro with rail run by #2/#3, allowing six-man Jet protection or an extra HB-adjuster element. That role/protection difference makes this more than a cosmetic rename.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh)
+
 Original archive path(s): `HonestNFL/HUJoGjyXEAAXmIv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

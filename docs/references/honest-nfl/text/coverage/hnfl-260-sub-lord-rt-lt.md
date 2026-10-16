@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-260-sub-lord-rt-lt.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Targeted halves/quarters split-field coverage / Lord
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Roy/Lou side gets match halves, the opposite gets quarters. Direction or jersey target sets the allocation; the original contains a repeated safety-position label, so confirm the image before installing roles.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HQM7_uFXAAAntwa.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

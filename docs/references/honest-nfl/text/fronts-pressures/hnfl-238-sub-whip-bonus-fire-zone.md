@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-238-sub-whip-bonus-fire-zone.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Whip four-man simulated pressure with bonus hook/dropper
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Weak LB rush replaces an end; three-deep/four-under match coverage remains. Rush replacement distinguishes it from ordinary five-rush fire zone.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HQBE8InWkAAMjfT.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

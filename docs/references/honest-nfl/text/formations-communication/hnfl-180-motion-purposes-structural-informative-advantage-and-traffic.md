@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-180-motion-purposes-structural-informative-advantage-and-traffic.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Motion purposes: structure, information, leverage and traffic
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Informative motion confirms contextual inferences rather than guaranteeing a man/zone tell. Motion purpose is separate from its path name.
+
+**Browse:** [Formations / motion / alignment](../../CONCEPTS.md#formation-motion)
+
 Original archive path(s): `HonestNFL/HMZ6kPGWUAAm7Sw.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

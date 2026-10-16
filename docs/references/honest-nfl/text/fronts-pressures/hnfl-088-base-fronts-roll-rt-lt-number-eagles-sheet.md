@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-088-base-fronts-roll-rt-lt-number-eagles-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Directional front roll with an edge dropping to cover
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Roll direction and numbered receiver target set the front and closed-side call. The companion coverage must still be specified.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDgRyj8WwAARAqv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

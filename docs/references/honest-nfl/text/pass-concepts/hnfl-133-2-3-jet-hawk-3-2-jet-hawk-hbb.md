@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-133-2-3-jet-hawk-3-2-jet-hawk-hbb.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Drive / dig–shallow with corner and post alerts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Hawk is identified as a Bird-family Bingo-Shallow concept: shallow/basic stretch, back outlet, corner-collapse and safety-collapse alerts. HBB changes the back answer versus man.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HJVWlX3WgAA90gq.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-116-important-terms-to-know.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Defensive assignment, match and pressure vocabulary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another Important Terms glossary, including individual role and communication definitions. Retain its source wording separately from familiar-language navigation.
+
+**Browse:** [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HHgbvKLWUAAl-aX.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

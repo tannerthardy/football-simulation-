@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-056-sub-9-rob-lee-away-from-nickel.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nickel Cover 3 match with sky/buzz rotation options
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A related Sub 9 version permits Rob/Lee or Sally/Rose by plan. Preserve this as a distinct source version, not a byte duplicate or identical rule set.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HBdLfZpW4AAlj-u.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

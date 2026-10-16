@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-172-sparrow-variations.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Sparrow / trips Drive with backside and back tags
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Copper, Flan, Hinge, 49er and HBB alter alerts and outlets around the shallow/basic core. Each panel remains a variant rather than a separate unrelated family.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HMGc0DoWEAEgUE-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

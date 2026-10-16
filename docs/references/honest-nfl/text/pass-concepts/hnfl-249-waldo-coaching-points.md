@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-249-waldo-coaching-points.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Waldo: deep Search option with seam-hinge and outside comeback
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet calls this Raider family with a Search element. Search sits at 12–14 yards versus zone or works down/out versus man; two hinge/comeback routes add negative breaks to the deep horizontal stretch. It is not Mesh.
+
+**Browse:** [Verticals / All Go / HOSS relatives](../../CONCEPTS.md#verticals), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HQcrjHkXQAAuK3s.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

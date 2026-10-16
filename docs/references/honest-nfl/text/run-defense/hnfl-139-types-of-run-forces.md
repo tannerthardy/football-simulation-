@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-defense/hnfl-139-types-of-run-forces.jpeg) · [Topic](../../topics/run-defense.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Sky, cloud, apex and easy force / crack replacement
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Primary force changes with coverage: safety, corner or apex. Secondary force and cutback/boot/reverse duties are part of the coordinated fit.
+
+**Browse:** [Run fits / force / gap-and-a-half](../../CONCEPTS.md#run-fits)
+
 Original archive path(s): `HonestNFL/HJWdtgUXUAcdlCt.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

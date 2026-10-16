@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-032-the-four-modes-of-coverage.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Man, vision zone, zone match and man match
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A behavior taxonomy rather than four coverage shells; the same shell can host different distribution and eye techniques.
+
+**Browse:** [Man / vision zone / zone match / man match](../../CONCEPTS.md#coverage-modes)
+
 Original archive path(s): `HonestNFL/HAA1P7DW8AASrqT.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-322-82-83-y-maestro.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Mesh Rail + over-ball hook with man/zone adjustments
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another Y Maestro detail sheet: shallows set/under the mesh, deep hook settles or escapes, rail is the back release and Dagger is adjustable. The alias is explicitly confirmed in HNFL-323.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh)
+
 Original archive path(s): `HonestNFL/HSrm4wIWsAAyqz7.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

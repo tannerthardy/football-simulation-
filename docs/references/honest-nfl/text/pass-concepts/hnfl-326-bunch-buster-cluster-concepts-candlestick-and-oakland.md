@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-326-bunch-buster-cluster-concepts-candlestick-and-oakland.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Candlestick corner/out/Branch; Oakland Spot triangle; Frisco
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly calls Oakland Candlestick Spot. Branch versus Spot changes the underneath space and read, while Frisco changes release/route pairing. Broad Snag/Spot family filing is not an identity claim for every panel.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HSsNFV1XwAAHyg6.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

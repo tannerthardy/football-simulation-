@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-081-sub-fronts-nickel-dime-package-eagles-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nickel/dime over/even fronts and double-A mug presentation
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Cheat/Cassie/Flex/Rush label front and stance families; alignments and run/pass intent distinguish them. Team-branded version retained.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDcC65TbIAAgwXz.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

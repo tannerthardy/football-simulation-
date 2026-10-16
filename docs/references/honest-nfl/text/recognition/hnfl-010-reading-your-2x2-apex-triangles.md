@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-010-reading-your-2x2-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Recognizing half-field plus quarters coverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The example combines strong-side halves and weak-side quarters, called Cover 8 here. Do not translate the number without its strength orientation.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/G_12T2GWMAA1Y_u.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

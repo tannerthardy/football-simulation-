@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-040-2-3-jet-hit-candlestick-cake.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch corner–speed-out combination with backside dig
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Candlestick pairs a corner with a speed-turn 49er out route and a Branch element; this version attacks Box. It resembles a bunch corner/out triangle, not an exact universal Snag alias.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HARBlEbXsAACCk_.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

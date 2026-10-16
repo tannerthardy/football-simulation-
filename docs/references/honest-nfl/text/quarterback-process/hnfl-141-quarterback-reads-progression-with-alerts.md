@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-141-quarterback-reads-progression-with-alerts.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Progression plus a matchup/coverage alert
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Falcon Pressure illustrates a yes/no alert before the base shallow/basic progression. Keep the specific alert trigger rather than converting it to an omniscient best-target selection.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HJWeE1RWAAY4Orv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

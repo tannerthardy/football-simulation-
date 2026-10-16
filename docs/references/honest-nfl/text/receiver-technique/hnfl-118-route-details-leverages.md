@@ -2,6 +2,14 @@
 
 [Original image](../../images/receiver-technique/hnfl-118-route-details-leverages.jpeg) · [Topic](../../topics/receiver-technique.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Receiver leverage: stacked, capped, post, pylon and break angles
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Explains route positioning and finishing leverage, including basic/bench relationships. These are route techniques, not whole-concept aliases.
+
+**Browse:** [Route technique / leverage / conversions](../../CONCEPTS.md#route-technique)
+
 Original archive path(s): `HonestNFL/HHghh2jXkAA0CE5.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

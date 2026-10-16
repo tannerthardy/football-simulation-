@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-035-outside-3-level-vertical-stretch.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Three-level sideline stretch / flood read
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The Piston example stretches deep and underneath defenders with high, intermediate and low routes. This use of levels is an outside flood, not automatically the standard two-in-breaker Levels concept.
+
+**Browse:** [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HAnmRpmXwAAZP9G.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

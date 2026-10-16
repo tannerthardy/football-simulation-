@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-242-bird-wasp-simulated-zone-pressure.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Sting/Wasp replacement pressure: quarters vs x2, buzz vs x1
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Open ILB is fourth rusher; coverage changes with formation. This is a four-man simulated pressure, not automatically a five-man blitz.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HQbPXJJXkAAe2Cg.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

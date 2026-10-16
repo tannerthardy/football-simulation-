@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-291-cover-2-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Halves family with Wild/Smack and trips midpoint adjustments
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Displays 2x2/3x1 roles and different initial deep-half landmarks. Routes and installation determine final drops; landmark numbers are not universal calibration targets.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HRZ4-UCWgAQFoEO.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

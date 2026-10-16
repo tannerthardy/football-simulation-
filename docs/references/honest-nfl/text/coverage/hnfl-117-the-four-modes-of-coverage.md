@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-117-the-four-modes-of-coverage.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Four coverage behavior modes: man, zone and two match styles
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Separates who/what is read from the deep shell. This sheet is conceptual teaching rather than a complete defensive call.
+
+**Browse:** [Man / vision zone / zone match / man match](../../CONCEPTS.md#coverage-modes)
+
 Original archive path(s): `HonestNFL/HHgbvLCW0AAAmnP.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-277-quads-vs-2-receivers.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters match examples with seam protection and shallow handoffs
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Two-receiver combinations illustrate why #3-away removes normal delivery help. Source includes post/dig/safety protection duties.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HQThtizXUAAe0DA.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-108-alignment-reads-individual-techniques.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Recognizing coverage from defender alignment and leverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Squat, Smash, Wall, Squeeze, Fist, Hole and Clue are individual alignment clues. They are evidence of a technique, not guaranteed knowledge of the entire call.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HF5ca44XUAE9DHF.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

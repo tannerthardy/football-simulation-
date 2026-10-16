@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-313-mario-snug-low-red-zone-concept.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Short-post / short-cross sit / flat triangle
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Mario's nod Shorty is paired with an over-ball sit/escape and back flat. It is a low-red-zone triangle, not classic corner-route Snag or Mesh Rail.
+
+**Browse:** [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot)
+
 Original archive path(s): `HonestNFL/HSJUxbobQAAmxh6.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

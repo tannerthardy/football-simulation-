@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-083-stem-fronts-50-nickel-and-60-base-eagles-sheet.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pre-snap front stems into 50/60 gap-and-a-half looks
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Cadence-triggered shifts change the initial Over/Tite pictures into final spacing. The initial and final alignments are separate information states.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts)
+
 Original archive path(s): `HonestNFL/HDeaJRRXsAAfUQP.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

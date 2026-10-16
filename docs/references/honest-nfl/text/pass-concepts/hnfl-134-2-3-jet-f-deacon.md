@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-134-2-3-jet-f-deacon.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Mesh with deep cross and spray dig: Deacon
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Two opposing shallows establish a mesh; a deep cross replaces Maestro's deep hook/rail emphasis and a spray Dagger remains. Same family does not mean the same progression.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh), [Post–over / double-post / deep-cross shots](../../CONCEPTS.md#post-cross)
+
 Original archive path(s): `HonestNFL/HJVWlX4W0AApSrA.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

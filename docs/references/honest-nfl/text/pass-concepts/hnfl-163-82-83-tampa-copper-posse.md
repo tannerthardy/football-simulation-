@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-163-82-83-tampa-copper-posse.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner-post double move over arrow/flat with seam/return side
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Copper sells corner before breaking post; Posse combines special seam with a Pirate-sell return inside. This is a tagged Tampa-family package, not ordinary Snag unchanged.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Post–over / double-post / deep-cross shots](../../CONCEPTS.md#post-cross)
+
 Original archive path(s): `HonestNFL/HLNFZVvXYAAJACb.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

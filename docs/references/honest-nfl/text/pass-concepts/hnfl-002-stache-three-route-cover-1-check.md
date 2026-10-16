@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-002-stache-three-route-cover-1-check.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Inside-fade man beater with smoke and an inside option
+
+**Basis:** description-only — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Stache combines #2 inside fade, #1 smoke and #3 Stache. It is a Cover 1 alignment check, not a demonstrated alias for one universal stock concept.
+
+**Browse:** [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/G-6BCKMXcAAZy9N.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

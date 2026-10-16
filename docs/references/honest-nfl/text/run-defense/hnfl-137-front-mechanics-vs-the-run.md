@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-defense/hnfl-137-front-mechanics-vs-the-run.jpeg) · [Topic](../../topics/run-defense.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** One-gap, gap-and-a-half and two-gap run defense
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Compares primary fit ownership, read/anchor mechanics and shed responsibilities across front styles. Scheme choice changes what a defender is trying to protect.
+
+**Browse:** [Run fits / force / gap-and-a-half](../../CONCEPTS.md#run-fits)
+
 Original archive path(s): `HonestNFL/HJWdtglW8AEXmzW.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

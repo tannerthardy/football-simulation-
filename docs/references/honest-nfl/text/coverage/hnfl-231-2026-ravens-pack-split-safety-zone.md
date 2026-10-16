@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-231-2026-ravens-pack-split-safety-zone.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Ravens Pack: quarters strong / halves weak
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Nickel/passing strength sets the quarter side. Formation tools include Stubbie, Stump, Box, Cloud and Read; Pack is the umbrella allocation.
+
+**Browse:** [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HPyWwbuWoAAFjBS.jpeg`, `HonestNFL/HT56JvhXAAAUQhv.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

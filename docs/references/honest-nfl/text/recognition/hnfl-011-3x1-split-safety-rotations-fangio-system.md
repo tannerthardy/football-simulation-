@@ -2,6 +2,14 @@
 
 [Original image](../../images/recognition/hnfl-011-3x1-split-safety-rotations-fangio-system.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips coverage rotations and backside safety poach
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A rotation menu against 3x1, including Trix and multiple split-field/man possibilities; drops depend on receiver releases.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_12T2IXIAAoALg.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

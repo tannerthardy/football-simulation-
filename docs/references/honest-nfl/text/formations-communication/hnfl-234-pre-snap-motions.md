@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-234-pre-snap-motions.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pre-snap short, return, jet, jolt and stack motions
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another motion-path version showing starting/ending positions and intentions. Motion type and motion purpose are separate fields.
+
+**Browse:** [Formations / motion / alignment](../../CONCEPTS.md#formation-motion)
+
 Original archive path(s): `HonestNFL/HQb7iuxXUAANcZ7.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

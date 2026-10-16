@@ -2,6 +2,14 @@
 
 [Original image](../../images/receiver-technique/hnfl-080-route-tree-tes.jpeg) · [Topic](../../topics/receiver-technique.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tight-end route tree: sail, return-out and option
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Seattle sells an over before breaking back outside; Detroit sells an inside route; Stache is an option. Route names here should not be mistaken for whole-play names.
+
+**Browse:** [Route technique / leverage / conversions](../../CONCEPTS.md#route-technique), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HDa_vn-WMAAecA6.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

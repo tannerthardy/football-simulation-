@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-111-concept-families-reads-quarterbacks.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Passing-family and QB-read taxonomy
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines pure progression, alerts, high/low, squeeze, triangle and cloud-attacker reads; names Florida/Snag, Dagger/dig, Music/Mesh, Marine/shallow and Bird/Drive families.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads), [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology)
+
 Original archive path(s): `HonestNFL/HFwCc9gXcAEf8pL.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

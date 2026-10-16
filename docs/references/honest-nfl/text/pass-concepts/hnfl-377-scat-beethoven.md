@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-377-scat-beethoven.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Beethoven: cross/hook traffic, corner and spray-dig with HB slip
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Source calls this a Music-family man/zone package and describes mesh traffic for the back. The drawing is not plain two-shallow Mesh Rail: corner, hook/cross and spray Dagger are distinct elements.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh), [Post–over / double-post / deep-cross shots](../../CONCEPTS.md#post-cross), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HUJoGjzWMAALeW0.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

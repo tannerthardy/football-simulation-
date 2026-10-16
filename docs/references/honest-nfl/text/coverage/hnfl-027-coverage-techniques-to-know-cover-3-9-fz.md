@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-027-coverage-techniques-to-know-cover-3-9-fz.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 3 / fire-zone technique dictionary
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Separates clue-third vision zone from tight-third match and distinguishes curl-flat from seam-flat. Shared shell does not imply shared underneath behavior.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/G_whrIBWUAAlbE-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-055-sub-9-rob-lee-away-from-nickel.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Nickel weak-rotation Cover 3 match
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Sub 9 begins Rob/Lee away from nickel, carries seams and adjusts Nine/Strap/Clue by formation. This is a full installation sheet.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HBdLfZlXUAAdbPG.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

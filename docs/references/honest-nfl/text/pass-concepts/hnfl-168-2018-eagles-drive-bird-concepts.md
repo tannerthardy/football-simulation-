@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-168-2018-eagles-drive-bird-concepts.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Drive family crosswalk: Falcon, Sparrow, Hawk and Oriole
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The sheet explicitly maps Falcon to 2x2 Flanker Drive, Sparrow to 3x1 Flanker Drive, Hawk to Flanker Shark/Bingo, and Oriole to Drive plus Ole. This is a key alias source.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HLwjkSQWQAACdkd.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

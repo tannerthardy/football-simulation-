@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-047-tampa-family-x-tampa-bay-bread.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Tampa Bay dig triangle with backside corner/read
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tampa Bay reads basic/dig–arrow–flat, with a corner conversion; Bread supplies a corner/read pair. This is not the same geometry as base Tampa.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HAvcUwgXYAA9Pyw.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

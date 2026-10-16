@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-214-slide-buzz-gun-bulls-and-gun-twister.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Field/boundary Slide front with Buzz and empty checks
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Gun Bulls/Gun Twister are back-location/formation checks around Slide Buzz; front and coverage change by presentation. The source includes home/empty exceptions.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HPhhWmXXgAAyzQM.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

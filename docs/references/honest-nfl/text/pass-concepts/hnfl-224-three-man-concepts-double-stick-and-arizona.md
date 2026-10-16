@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-224-three-man-concepts-double-stick-and-arizona.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Double Stick, Arizona and Stache quick-game comparison
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Double Stick is go–Omaha–stick; Arizona layers slant and Pirates; Stache is a man option. Three separate mechanisms share one teaching page.
+
+**Browse:** [Stick / double Stick / hitch–seam relatives](../../CONCEPTS.md#sticks), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HPy4aoHWYAAwOh1.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

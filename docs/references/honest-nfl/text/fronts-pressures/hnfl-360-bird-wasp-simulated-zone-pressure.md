@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-360-bird-wasp-simulated-zone-pressure.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bird Wasp: four-man replacement rush with quarters/buzz choice
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another version of the Sting installation: x2 plays Quads, x1 plays Buzz and an open-side ILB replaces a dropper. Keep formation-sensitive coverage and pressure rules together.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HUcf1HkXAAABjNN.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

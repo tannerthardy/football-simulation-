@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-274-quads-vs-2-receivers.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters distribution versus two-receiver route exchanges
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Examples include zone-quarter, man on top, matching #2 low and final-#3 redistribution. This is a defensive reaction chart, not a new offensive concept list.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HQThthHWkAAoaEw.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

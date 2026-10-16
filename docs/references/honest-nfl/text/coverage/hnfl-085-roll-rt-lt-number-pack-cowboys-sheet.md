@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-085-roll-rt-lt-number-pack-cowboys-sheet.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Directional front roll paired with halves/quarters coverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Roll sets the Eagle front and Roy/Lou half side by direction or targeted jersey. Pack can finish quarter–quarter–half or half–quarter–quarter; the heading alone does not fix the final side.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HDgR6IVXkAEcw9t.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

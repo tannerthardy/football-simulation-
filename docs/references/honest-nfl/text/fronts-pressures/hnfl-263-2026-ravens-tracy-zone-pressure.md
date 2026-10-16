@@ -2,6 +2,14 @@
 
 [Original image](../../images/fronts-pressures/hnfl-263-2026-ravens-tracy-zone-pressure.jpeg) · [Topic](../../topics/fronts-pressures.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Five-rush three-deep fire zone with ILB/nickel overload
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tracy uses key-and-match coverage, safety replacement of nickel and final-#3 hook help. Four-strong describes overload organization, not total rush count.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3)
+
 Original archive path(s): `HonestNFL/HQMlNg6WkAASHY4.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

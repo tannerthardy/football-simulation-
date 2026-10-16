@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-333-split-safety-concepts-quads-to-3.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters four-over-three to the #3 side
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Midpoint walls/carries final #3 while apex can deliver the shallow; trips often checks to relieve vertical stress. Distinct help allocation from HNFL-332.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HSXQQZJWgAACwED (1).jpeg`, `HonestNFL/HSXQQZJWgAACwED.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-078-quarter-flat-match-reroute-and-deliver.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarters apex: match flat, reroute seam, deliver inside
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Quarter-flat duties depend on where #3 is; when the midpoint is occupied away, the apex may need to take #2 back across. This qualification matters for transfer.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HCXgdtGXcAAXnX9.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

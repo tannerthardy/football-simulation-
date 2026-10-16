@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-042-3-2-jet-hit-frisco-fraction.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner/out combination with divide-post and deep dig
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Frisco Fraction combines a 49er out/corner read with a Fraction divide route and Dagger. It has both a sideline combination and a Cover 2 alert, not one simple alias.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HARBlEeW0AAmDAW.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-175-hawk-variations.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Hawk variations: stops, return, rail/wheel and corner-post tags
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Cards, Bench, Beard, HB Wheel and Copper alter the complementary routes. Wheel or Copper makes a tagged variant, not a new name for every Hawk call.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive), [Scissors / divide / wheels / double moves](../../CONCEPTS.md#scissors-post-wheel)
+
 Original archive path(s): `HonestNFL/HMGc0DyWwAEUzoX.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

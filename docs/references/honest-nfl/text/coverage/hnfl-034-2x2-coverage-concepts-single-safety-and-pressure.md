@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-034-2x2-coverage-concepts-single-safety-and-pressure.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Single-high coverage menu and pressure coverage
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Hole/Lurk/Robber/Single are man-free variants; Trey/Danger/Freeze/Deuce have different zone or pressure rules. This is a menu, not one call.
+
+**Browse:** [Cover 1 / rat / robber / lurk](../../CONCEPTS.md#man1), [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HAL1Eq9W8AEP6Ui.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

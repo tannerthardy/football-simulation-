@@ -2,6 +2,14 @@
 
 [Original image](../../images/terminology/hnfl-115-coverage-structure-terminology.jpeg) · [Topic](../../topics/terminology.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Coverage structure numbering crosswalk
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Defines local Covers 0–9 and pressure structures. Read the actual shell, rotation and distribution; numbers are installation-specific, especially 5/6/8/9.
+
+**Browse:** [Glossaries / legends / system vocabulary](../../CONCEPTS.md#terminology), [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
 Original archive path(s): `HonestNFL/HHgbvIbXUAAoGvN.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

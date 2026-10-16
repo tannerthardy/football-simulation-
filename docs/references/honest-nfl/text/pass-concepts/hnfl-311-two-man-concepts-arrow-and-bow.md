@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-311-two-man-concepts-arrow-and-bow.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner–arrow option, dig–arrow and corner-post–arrow
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Arrow, Bow and Archer differ in the high route and read. Arrow has a sit/escape route, unlike a simple flat; these are Smash/high–low relatives rather than exact classic Smash aliases.
+
+**Browse:** [Smash-style corner high/lows](../../CONCEPTS.md#smash), [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Dagger / dig and in-breaker families](../../CONCEPTS.md#dagger-dig)
+
 Original archive path(s): `HonestNFL/HSJIWqYWcAMjpbl.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

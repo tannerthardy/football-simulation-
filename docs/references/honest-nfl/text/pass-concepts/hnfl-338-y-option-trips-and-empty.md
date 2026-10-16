@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-338-y-option-trips-and-empty.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Y Option / inside leverage option with seam-post and swing
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The inside route can sit, win across, continue shallow or use peek response; outside seam-post can become a runaround. This is a decision concept, not a fixed stick route.
+
+**Browse:** [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice)
+
 Original archive path(s): `HonestNFL/HSyDqj9WEAAeMIG.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

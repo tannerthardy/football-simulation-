@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-012-2x2-coverage-concepts-split-safety-and-man.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Halves zone, 2-Man and bracket coverage menu
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Wild is match halves; Cloud is vision-and-break halves. Fist is 2-Man; Pounder uses quarter-technique help. Bracket, Cut and Cone are separate double-team tools.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_9KbCpXsAEABnl.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/formations-communication/hnfl-178-1x3-slot-formations.jpeg) · [Topic](../../topics/formations-communication.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips/one-by-three formation and split variations
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Trey, Flex, Open, Zoom, Tram, Poke and Trot change alignment and eligibility relationships. Formation names do not by themselves specify a route concept.
+
+**Browse:** [Formations / motion / alignment](../../CONCEPTS.md#formation-motion)
+
 Original archive path(s): `HonestNFL/HMZ2fcaXQAAtaMn.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

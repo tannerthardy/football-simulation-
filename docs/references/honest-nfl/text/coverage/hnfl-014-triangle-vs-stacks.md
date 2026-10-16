@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-014-triangle-vs-stacks.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Three-over-two triangle zone match against stacks
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Inside/outside underneath defenders distribute low routes while a topper handles vertical or second breaks. Family resemblance does not erase the source's distribution rules.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_9M8SEWcAALaJL.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

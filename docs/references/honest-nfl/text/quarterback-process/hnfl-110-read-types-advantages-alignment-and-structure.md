@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-110-read-types-advantages-alignment-and-structure.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pre-snap advantage/alignment reads versus post-snap structure reads
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Distinguishes counting advantages, man/zone, single/split safety, middle-open/closed and leverage reads. Their timing and available cues matter.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HFwCc99a4AA10GS.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

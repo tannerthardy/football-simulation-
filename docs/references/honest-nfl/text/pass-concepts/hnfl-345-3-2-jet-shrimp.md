@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-345-3-2-jet-shrimp.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Shallow Cross Swing / shallow–hook with swing and vertical alert
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Shrimp explicitly equals Shallow Cross Swing; Prawn changes Y to a middle read. This single-shallow concept differs from two-crosser Mesh even though both can build middle triangles.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HT0blEyXEAAUhBg.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

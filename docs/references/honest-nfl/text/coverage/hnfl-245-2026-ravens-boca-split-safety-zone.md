@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-245-2026-ravens-boca-split-safety-zone.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Inverted Tampa 2 / nickel deep half with safety underneath
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Boca sells a weak rotation/3-Lock picture before inverting late; middle-read and half roles change players. This is disguise plus redistribution, not a different shell name alone.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/HQCeE9rWwAADFkC.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

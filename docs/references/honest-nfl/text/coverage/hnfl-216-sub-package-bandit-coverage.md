@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-216-sub-package-bandit-coverage.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Pressure man coverage with two low-hole adjusters / Bandit
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The source describes man with two low-hole players, back/peel/scramble duties and five rushers. There is no deep safety help; this is not ordinary Cover 1 Robber.
+
+**Browse:** [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure), [Cover 0 / man pressure / low-hole variants](../../CONCEPTS.md#man0)
+
 Original archive path(s): `HonestNFL/HPhhya3WcAAixO3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

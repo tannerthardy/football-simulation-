@@ -1,6 +1,14 @@
 # HNFL-146 — 40 KG — Y motion Gun Trips Bunch
 
-[Original image](../../images/pass-concepts/hnfl-146-40-kg-y-motion-gun-trips-bunch.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
+[Original image](../../images/pass-concepts/hnfl-146-40-kg-y-motion-gun-trips-bunch.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Wack Crack perimeter run with receiver crack blocks
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+T.98 Wack Crack shows rightward back action, crack blocks and swap alert from Y-motion bunch. It is a run diagram, not a pass concept; exact sweep/toss/zone blocking label remains source-specific.
+
+**Browse:** [Inside zone / split zone / zone-blocking teaching](../../CONCEPTS.md#run-zone), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
 
 Original archive path(s): `HonestNFL/HK4C7GiWUAAT-ql.jpeg`.
 

@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-173-2-3-jet-hawk-teaching-sheet.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Hawk dig–shallow triangle with post/corner alerts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another Hawk teaching layout retains the base mechanism and man back-burst alert; timing and route conversions remain in the original.
+
+**Browse:** [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
 Original archive path(s): `HonestNFL/HMGc0DrW8AA7c-h.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-210-cover-0-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 0: pressure, peel/train, double-hole and bracket variants
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+No true deep help is the family definition; the page also shows non-max-pressure underneath adjusters. Zero does not always imply every available defender rushes.
+
+**Browse:** [Cover 0 / man pressure / low-hole variants](../../CONCEPTS.md#man0), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HPeuVYeWIAEeBMi.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

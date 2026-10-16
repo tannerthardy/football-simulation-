@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-336-squat-trix-bunch.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bunch match halves plus backside poach / Squat Trix
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Corner takes final #1 low, nickel relates to #2 up/in, midpoint handles #3 low and weak safety overtakes #3 up/over. This redistributes duties across the whole back end.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HSxqVPiWcAA1NDD.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-096-quarters-techniques-strong-side.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Strong-side quarters distribution
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Quads coordinates corner, apex, midpoint and inside-quarter safety. The sheet includes conditions for choosing this tool, not a new four-deep static zone.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HDQzMiVXkAA1iUB.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

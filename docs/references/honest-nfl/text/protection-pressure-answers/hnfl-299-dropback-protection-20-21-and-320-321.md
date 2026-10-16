@@ -2,6 +2,14 @@
 
 [Original image](../../images/protection-pressure-answers/hnfl-299-dropback-protection-20-21-and-320-321.jpeg) · [Topic](../../topics/protection-pressure-answers.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Six-man dual-read dropback protection / weak-side dual
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+20–21 blocks four down plus Mike; the back checks Buck to strong perimeter. Rip/Liz/Base and front alerts change who is hot. This rules sheet adds context to HNFL-128's diagrams.
+
+**Browse:** [Pass protection / hot / sight adjustment](../../CONCEPTS.md#protection-hot)
+
 Original archive path(s): `HonestNFL/HRZwExIWoAIkBPs.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

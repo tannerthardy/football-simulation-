@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-039-reid-system-mesh-concepts.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Mesh family: Maestro, Deacon and play-action variants
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Opposing shallow crossers create the mesh; rail/sit/clearout elements vary. The sheet includes several installations, not just Maestro.
+
+**Browse:** [Mesh / Mesh Rail](../../CONCEPTS.md#mesh)
+
 Original archive path(s): `HonestNFL/HAQdCY7XgAAmkbm.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

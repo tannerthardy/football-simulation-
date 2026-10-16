@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-182-ole-two-route-out-breaker-from-snug.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Corner plus speed-out high/low from condensed splits
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Ole is explicitly spray Omaha plus corner. It has Smash-style high/low geometry, but the low route is a spray out rather than the classic outside hitch.
+
+**Browse:** [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HNnzunMWoAIZv_f.jpeg`, `HonestNFL/HNnzunOW4AAioZK.jpeg`, `HonestNFL/HNnzunOWcAALIGp.jpeg`, `HonestNFL/HNnzunOXkAAd_s-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

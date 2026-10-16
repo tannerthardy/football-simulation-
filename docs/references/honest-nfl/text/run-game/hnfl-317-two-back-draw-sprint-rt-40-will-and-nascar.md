@@ -2,6 +2,14 @@
 
 [Original image](../../images/run-game/hnfl-317-two-back-draw-sprint-rt-40-will-and-nascar.jpeg) · [Topic](../../topics/run-game.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Two-back draw / sprint-set draw
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Sprint RT 40 Will and Nascar show pass-set action, back draw track and lead/spot blocking. Formation and front alerts alter assignments; QB can have a possible advantage throw.
+
+**Browse:** [Draw / designed QB runs / run-pass packages](../../CONCEPTS.md#draw-qb-run)
+
 Original archive path(s): `HonestNFL/HSLsZVaWIAAffQO.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

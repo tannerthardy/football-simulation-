@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-207-cover-1-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 1 variants: rat, funnel, doubles and replacement pressures
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Rat/Funnel/Double/Train/Whip/Slug differ in adjuster and rush/drop roles. Do not conflate a shared post safety with identical man mechanics.
+
+**Browse:** [Cover 1 / rat / robber / lurk](../../CONCEPTS.md#man1), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
 Original archive path(s): `HonestNFL/HPetlgAXQAAiF_-.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

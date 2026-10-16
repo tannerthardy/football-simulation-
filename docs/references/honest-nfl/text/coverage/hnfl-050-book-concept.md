@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-050-book-concept.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips Stubbie/Special-style: lock #1, read #3-to-#2
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Book explicitly lists Stubbie/Mini/Special among aliases. The defining rules here are MEG on #1 and a three-over-two Read distribution inside; other systems can use these names differently.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Palms / 2-Read / trap / inside trips Read](../../CONCEPTS.md#palms-trap)
+
 Original archive path(s): `HonestNFL/HAXGzbfXgAAiXhM.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

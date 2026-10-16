@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-013-top-hat-vs-stacks.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Stack man coverage with switched matchups / anti-rub technique
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Top Hat reroutes the point receiver then takes the off receiver; the deeper defender takes the point. This differs from Lock and from an in/out banjo exchange.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/G_9M8SDWAAAnZJk.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

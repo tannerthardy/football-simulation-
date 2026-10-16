@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-199-quarters-techniques-weak-side.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Weak-side Quads and isolated receiver rules
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Includes quarter-flat handling of #2 and tight-quarter technique versus x1. Source-specific exchange conditions remain authoritative.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HP2TXDYXEAETRP3.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

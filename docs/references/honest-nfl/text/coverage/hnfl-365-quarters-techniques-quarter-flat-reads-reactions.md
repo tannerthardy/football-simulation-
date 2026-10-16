@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-365-quarters-techniques-quarter-flat-reads-reactions.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Quarter-flat reads with route-number/help contingencies
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Same broad role as other quarter-flat sheets, with six explicit #2/#3 cases. Preserve final-number and midpoint-help conditions.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
 Original archive path(s): `HonestNFL/HUDW-4-WkAA8J8n.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

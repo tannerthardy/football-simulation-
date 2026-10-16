@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-298-three-man-concepts-steer-and-shrop.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Stick/seam/stop, option/post/stop and hook-based combinations
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Steer pairs Stick with special seam and mini-Thunder; Shrop uses Stache/Shorty; Sushi adds deeper in-breaker spacing. The route sets support familiar descriptions, not one universal alias for every panel.
+
+**Browse:** [Stick / double Stick / hitch–seam relatives](../../CONCEPTS.md#sticks), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat)
+
 Original archive path(s): `HonestNFL/HRZ5XmTWcAMZ2Kp.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-209-cover-1-family.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Cover 1 Hole, Lurk, Robber, Thief and man-pressure variants
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The adjuster can be a low-hole linebacker, robber/thief safety or extra rusher. Alignments and help leverage vary by call.
+
+**Browse:** [Cover 1 / rat / robber / lurk](../../CONCEPTS.md#man1)
+
 Original archive path(s): `HonestNFL/HPetlgLWAAANuVV.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

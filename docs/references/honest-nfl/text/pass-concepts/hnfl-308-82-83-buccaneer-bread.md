@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-308-82-83-buccaneer-bread.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Buccaneer middle-read triangle paired with corner/read
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Bread supplies the man answer; middle-read changes to Bingo Basic, Stamp/post or YAC/corner by structure. A static curl-flat rename would lose those decisions.
+
+**Browse:** [Spacing / curls / quick in-breakers / Slant–Flat](../../CONCEPTS.md#spacing-curl-flat), [Smash-style corner high/lows](../../CONCEPTS.md#smash)
+
 Original archive path(s): `HonestNFL/HShJMR6W8AAV_cP.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

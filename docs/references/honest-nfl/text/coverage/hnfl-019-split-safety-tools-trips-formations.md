@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-019-split-safety-tools-trips-formations.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Trips checks: poach, quarters match and bunch distribution
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Trix, 8 Trix, Area, Book, Box and Squat are a menu of related answers, not synonyms. Side and #3-release rules decide the distribution.
+
+**Browse:** [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack), [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2)
+
 Original archive path(s): `HonestNFL/G_dZHNhWsAIub2g.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

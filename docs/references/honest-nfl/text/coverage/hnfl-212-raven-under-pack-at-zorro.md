@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-212-raven-under-pack-at-zorro.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Under-front split-field coverage with formation checks
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Raven Under Pack selects Quads/Read/Cloud/Smack/Zorro by closed/open side, receiver width and motion. Read this installation's rules rather than importing a global Pack definition.
+
+**Browse:** [Fronts / stems / defensive-line games](../../CONCEPTS.md#fronts), [Split-field quarters–halves / target-based coverage](../../CONCEPTS.md#split-field)
+
 Original archive path(s): `HonestNFL/HPhhWmSWsAAISMt.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

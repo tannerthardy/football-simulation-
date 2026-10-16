@@ -2,6 +2,14 @@
 
 [Original image](../../images/quarterback-process/hnfl-124-quarterback-eye-progressions-bottom-up.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Bottom-up, triangle and four-route diamond reads
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Bottom-up prioritizes quick outlets in tight areas; triangle and diamond exploit multi-level spacing. Direction is a processing rule, not a play name.
+
+**Browse:** [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
 Original archive path(s): `HonestNFL/HI2msbzWsAAUB2J.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

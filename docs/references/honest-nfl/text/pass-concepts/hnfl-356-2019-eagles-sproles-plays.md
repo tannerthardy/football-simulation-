@@ -2,6 +2,14 @@
 
 [Original image](../../images/pass-concepts/hnfl-356-2019-eagles-sproles-plays.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Davis, Hootie flood, Beethoven traffic and Yoda choice examples
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+The source explicitly calls Hootie an HB Flutie with Rattler post-first/corner-under rules. Beethoven uses crossing traffic for a slip; the other panels are distinct calls.
+
+**Browse:** [Verticals / All Go / HOSS relatives](../../CONCEPTS.md#verticals), [Sail / Flood / three-level outside stretches](../../CONCEPTS.md#sail-flood), [Mesh / Mesh Rail](../../CONCEPTS.md#mesh), [Option / Choice / pivot / Texas](../../CONCEPTS.md#option-choice), [Install examples / scouting / later strategy](../../CONCEPTS.md#installation)
+
 Original archive path(s): `HonestNFL/HTlpJCgXEAA-FAz.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.

@@ -2,6 +2,14 @@
 
 [Original image](../../images/coverage/hnfl-337-clue-stacked-or-bunched-number-1.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
 
+**Familiar language:** Clue-third zoning against stacked/bunched releases
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Corner reads #2-to-#1 and midpoint-squeezes vertical threats; apex converts curl-flat. This exchange answer differs from tightly matching initial receiver numbers.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Trips / bunch / stack coverage distribution](../../CONCEPTS.md#bunch-stack)
+
 Original archive path(s): `HonestNFL/HSxr0QSWAAA9NvO.jpeg`.
 
 **Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
