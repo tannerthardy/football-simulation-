@@ -169,6 +169,27 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
 }
 
 interface PassingFrame { peer: number; forward: {x:number;y:number}; normal: {x:number;y:number} }
+
+/** Compare the same short achieved-motion model before keeping a runner's
+ * radial brake. Restore only the original action, without changing his gap,
+ * when it improves both peer clearance and progress under the same pictures.
+ * This conditional forecast cannot certify the next reacting movement. */
+function keepUsefulRunnerMotion(a:Agent,raw:Intent,chosen:Intent,peers:readonly PeerPicture[],context?:SpacingContext):Intent {
+  if(a.behavior.kind!=='carrier'||(raw.vel.x===chosen.vel.x&&raw.vel.y===chosen.vel.y)
+    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
+    ||!forecastPeers(a,raw,peers,context).length)return chosen;
+  const original=previewFreeMovement(a.body,raw,context!.now,TURN_STEPS);
+  if(original.some(p=>p.support!=='up'))return chosen;
+  const clear=Math.min(...peers.map(p=>sweptClearance(a,original,p)));
+  if(clear<0)return chosen;
+  const modified=previewFreeMovement(a.body,chosen,context!.now,TURN_STEPS);
+  const other=Math.min(...peers.map(p=>sweptClearance(a,modified,p)));
+  const speed=Math.hypot(raw.vel.x,raw.vel.y);
+  const progress=(path:MovementSample[])=>{
+    const end=path[path.length-1];return ((end.pos.x-a.pos.x)*raw.vel.x+(end.pos.y-a.pos.y)*raw.vel.y)/speed;
+  };
+  return clear>other+TURN_MARGIN&&progress(original)>progress(modified)+TURN_MARGIN?raw:chosen;
+}
 // Own maneuver state, not remembered peer motion. Every evaluation uses this
 // tick's acquired picture; a missing picture ends the maneuver.
 const passingFrames=new WeakMap<Agent,PassingFrame>();
@@ -306,6 +327,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
     }
     const gathered=gatherForMotion(a,spaced,peers,context);
-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
+    const useful=keepUsefulRunnerMotion(a,ia,gathered,peers,context);
+    intents[i]=stepAroundTraffic(a,ia,useful,peers,context);
   }
 }
