@@ -23,6 +23,7 @@ import { showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { withMovementObjective } from '../movement-objective.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -803,7 +804,8 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     const control = 2.2 + 2.5 * (1 - a.r('tackling'));
     const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
     const sp = Math.min(a.profile.vmax, allowed);
-    return movingCatchApproach(a,sim,{vel:{x:(dx/d)*sp,y:(dy/d)*sp}},window,spot);
+    return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
+      { kind: 'fixed', point: tgt }),window,spot);
   }
   return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
 }

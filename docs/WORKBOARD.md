@@ -15,16 +15,18 @@ entire merged tree equals publication and protected files equal passing freeze.
 Integration boundary released; no unchanged suite/native/panel/game repeat.
 [Actual pin, receipts and owner handoff](INTEGRATION.md#accepted-development).
 
-## Active #87 review boundary
+## Active #87 exact integration boundary
 
-#87 producer metadata is approved by Catching; its whole movement-policy review
-is requested from Run. Check its overlapping spacing/common movement and #89
-moving-goal input before any later composition. Run consults Catching; Do-It-All
-retains the frozen policy and extracts only its reviewed post-dependency scope
-when ready. Accepted cost/collection/alley changes are now9adb7b3; preserve all
-three at clean checkpoints. Do not add #87 to the completed #90 verification.
-No #86 diagnostic, observer/research ancestry, #76 override, rejected variants,
-experimental Physics, capabilities/defaults or historical reference changes.
+Integration owns `codex/mesh-policy-integration` on accepted9adb7b3 plus metadata
+12956c6. Extract only the independently accepted seven-file patch: spacing.ts,
+movement-objective.ts, behaviors/common.ts, behaviors/defense.ts,
+catch-approach.ts, traffic-step.test.ts and its fixture. All seven blobs equal
+reviewed9760de0; composed source668acb1. Run accepts whole movement policy/#89
+interaction at b1c75b8; Catching producer approval retained. Accepted #88/#89 and
+settled-line cost proof/tests remain. Integration owns one frozen combined run;
+contributors supply compatible39 focused/typecheck and source-pinned native
+receipts. No old dependency ancestry, observer, variants, experimental Physics
+or extra campaign. Preserve off-ball costs, censored outcomes and RNG limits.
 
 ## Historical completed #85 Duo-only adoption — then #81 held separately
 

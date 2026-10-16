@@ -7,8 +7,8 @@ Do not use the historical sections below as a current starting-reference pin.
 - **Completed #90:** #88 collection, #89 moving alley and minimal #81+d80dcd3
   cost successor are adopted as9adb7b3 after one passing exact verification.
   1,772 TS/150 files,145 Python,typecheck/build pass;195.589s,44flags/components1.
-  #87 producer metadata is approved, but its full movement-policy/overlap review
-  is pending with Run; it does not hold #88. No observer/experiment import.
+  #87 now has both independent producer and whole-policy/#89 interaction approval;
+  its seven-file successor is assembled for one exact verification. No observer/experiment import.
   [Exact queue](INTEGRATION.md#ready-blocked-experimental).
 - **Operating policy:** contributors submit fetchable work through the single
   `integration-ready` GitHub queue; readiness requests independent review.
@@ -16,7 +16,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `9adb7b3f730c5637e5a6547f9bc151a17ce301b2`**, merged #90 with reviewed #88 collection, #81/cost successor and #89 alley flow; prior #84/#82/#78/#74/#72/#63/#65/#12 retained. #87 remains held with Run for whole-policy/interaction review. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr90-merge.json).
+- **Accepted develop: `9adb7b3f730c5637e5a6547f9bc151a17ce301b2`**, merged #90 with reviewed #88 collection, #81/cost successor and #89 alley flow; prior #84/#82/#78/#74/#72/#63/#65/#12 retained. #87 is approved for isolated exact verification, not yet adopted. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr90-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;

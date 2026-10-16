@@ -159,10 +159,12 @@ cost successor; original zero-preview test is unchanged and counts0/0/0. The
 old failed combined receipt remains failed. This reviewed successor is adopted
 with independently accepted #88/#89 through #90 as9adb7b3. One exact combined
 verification passes1,772 TS/145 Python/typecheck/build in195.589s; no rerun.
-[Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 new movement policy remains
-separate pending Run's full consumer/interaction review; Catching approved only
-producer metadata. Its common-track objective would consume #89's acquired
-lateral flow, so do not infer compatibility from a clean textual patch.
+[Actual merge and preserved limits](../data/reviews/current/pr90-merge.json). #87 now has Run's independent whole-policy/interaction ACCEPT6208072709 on
+accepted9adb7b3, plus Catching producer approval. Its exact seven-file successor
+is assembled for Integration's one required verification; not yet adopted.
+Current A042 primary bodies/requests and RNG match through3.80; off-ball changes
+and censoring remain. The old A044 catch/drop is a draw-scheduling change, not
+a catchability or postcatch benefit. [Intake](../data/reviews/current/mesh-policy-integration/intake.json).
 Run also accepts #89 one-line alley flow/four contracts: fixed x cap, same
 acquired lateral picture, existing PA/recognized-ball/carrying gates. Preserve
 A006 later support delay/first broken hold, A003 late changes and censored
