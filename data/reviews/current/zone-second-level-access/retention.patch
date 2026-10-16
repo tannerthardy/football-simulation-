@@ -1,0 +1,22 @@
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1217,7 +1217,7 @@
+   // keep replacing feet using the retained visual landmark in that case.
+   if (hands?.normalForce || hands?.tangentForce) {
+     const contact = norm(sub(h.pos, e.defender.pos));
+-    if (contact.x*axis.x + contact.y*axis.y > 0) return null;
++    if ((h.pos.x-e.defender.pos.x)*axis.x+(h.pos.y-e.defender.pos.y)*axis.y >= .5*(h.profile.radius+e.defender.profile.radius)) return null;
+   }
+   let read = helperFits.get(h);
+   if (!read || read.rep !== e || read.owner !== e.blocker || sim.t >= read.nextRead) {
+@@ -1232,7 +1232,9 @@
+     const hip = { x: owner.pos.x+lat.x*width*side, y: owner.pos.y+lat.y*width*side };
+     const offset = sub(hip, defender.pos), relative = sub(h.pos, defender.pos);
+     const depth = offset.x*axis.x+offset.y*axis.y;
+-    const recovery = depth <= 0 || relative.x*axis.x+relative.y*axis.y <= 0;
++    const recovery = depth <= 0 || relative.x*axis.x+relative.y*axis.y <= 0
++      || (!!(hands?.normalForce || hands?.tangentForce)
++        && (h.pos.x-e.defender.pos.x)*axis.x+(h.pos.y-e.defender.pos.y)*axis.y < .5*(h.profile.radius+e.defender.profile.radius));
+     let goal = hip;
+     if (recovery) {
+       const contact = h.profile.radius+e.defender.profile.radius;

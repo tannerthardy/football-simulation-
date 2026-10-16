@@ -1,0 +1,11 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1181,6 +1181,8 @@
+       return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
+         contact, a.profile.radius + target.profile.radius, command, sim.t);
+     }
++    if (plan.kind === 'combo' && plan.combination?.helpPolicy?.kind === 'check')
++      return track(a, aim, seen.vel, { speed: 1, gain: 3 });
+     const original = runThrough(a, aim, { speed: 1 });
+     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
+       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,

@@ -1,0 +1,23 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -501,7 +501,8 @@
+   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
+     const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
+       soloKind: plans.get(partner)!.kind };
+-    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
++    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone'
++      || ((concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') && !isOL(partner) && isOL(b)))
+       combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
+     plans.get(partner)!.combination = combination;
+     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
+@@ -1686,7 +1687,9 @@
+   if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
+   if (sim.t - combo.checkSince! < .15) return;
+   const backer = sim.see(observer, combo.backer);
+-  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
++  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
++    || (FLOW_RELEASE && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
++      && backerShows(observer, sim, backer));
+   const runner = sim.slot('RB');
+   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+   if (!filling && !arriving) return;

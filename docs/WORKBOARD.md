@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run: planned-climb near-strike handoff — 2026-10-16
+
+Acceptedbb6d4c7/source668acb1 remains the comparison. The current N1 zone audit
+rejects the tested keeper/release/check/sprint variants for promotion. Its
+independent supported candidate is `RunBlocker.attack`'s CLIMB_PLAN return only:
+apply existing second-level foot fit inside its existing near-contact envelope.
+Code353d8ca, focused testc39e598, source6d16f77e. No engagement/keeper/release,
+spacing, force or capacity edit is proposed. Do-It-All retains #94 spacing and
+#92 cost work; Physics retains laws. Native evidence is before those candidates,
+so it is not a combined #94 claim. See `reviews/planned-climb-fit.md` and the
+fetchable research branch `codex/zone-second-level-access`. Integration owns
+independent review/minimal extraction and final exact combined verification.
+
 ## Run: current N1 zone combination access — 2026-10-16
 
 `codex/zone-second-level-access`, acceptedbb6d4c7/source668acb1. Use Measurement's

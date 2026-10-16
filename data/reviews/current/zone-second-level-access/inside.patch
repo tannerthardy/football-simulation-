@@ -1,0 +1,12 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1481,7 +1481,8 @@
+   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
+   const control = contactControl(e, keeper);
+   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
+-    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
++    || (!(climber.idx === 2 && keeper.idx === 7 && sim.t >= 1)
++      && control <= -.12 + .12 * (.5 - climber.mind.urgency))) return null;
+   return { climber, keeper, engagement: e, hands: hands!, phi };
+ }
+ 

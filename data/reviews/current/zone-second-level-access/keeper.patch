@@ -1,0 +1,11 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1478,7 +1478,7 @@
+   // have carried force and remain within the same hand law's attainable reach.
+   const touching = hands && distance <= workingReach && (distance <= hands.extension
+     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
+-  const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
++  const useful = KEEPER_TORSO || keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
+   const control = contactControl(e, keeper);
+   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
+     || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;

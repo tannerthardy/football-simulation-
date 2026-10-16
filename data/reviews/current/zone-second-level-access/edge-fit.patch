@@ -1,0 +1,62 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -501,7 +501,8 @@
+   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
+     const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
+       soloKind: plans.get(partner)!.kind };
+-    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
++    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone'
++      || ((concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') && !isOL(partner) && isOL(b)))
+       combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
+     plans.get(partner)!.combination = combination;
+     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
+@@ -1173,7 +1174,15 @@
+     }
+     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
+       const fit = this.plannedClimb(a, sim, target, contact);
+-      if (fit) return fit;
++      if (fit) {
++        const bodyContact = a.profile.radius + target.profile.radius;
++        // Interception supplies the approach, not permission to run through
++        // the man. Use the same acquired near-strike fit as other climbs.
++        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
++          return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
++            placementError, contact, bodyContact, fit, sim.t);
++        return fit;
++      }
+     }
+     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
+@@ -1362,7 +1371,9 @@
+   // A full measured arm is a visible contact envelope, not a demand to
+   // reacquire extended existing hands at the shorter fresh-strike range.
+   const reach = owner.profile.radius + combo.defender.profile.radius + owner.player.measurables.armIn / 36;
+-  if (covered.pose !== 'up' || down.pose !== 'up' || Math.abs(phi) >= .55
++  const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
++  const relation = KEEPER_TORSO && stretch ? chestOff(covered.facing, covered.pos, down.pos) : Math.abs(phi);
++  if (covered.pose !== 'up' || down.pose !== 'up' || relation >= .55
+     || Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) > reach
+     || policy.side * (down.pos.y - covered.pos.y) >= 0) return null;
+ 
+@@ -1675,7 +1686,9 @@
+     combo.checkSince = -1;
+     return;
+   }
+-  const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
++  const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
++  const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60
++    && (KEEPER_TORSO && stretch ? chestOff(owner.facing, owner.pos, combo.defender.pos) < .65 : Math.abs(e.phi) < .55);
+   if (!secure) {
+     combo.checkSince = -1;
+     observer.tags.add('combo-held');
+@@ -1686,7 +1699,9 @@
+   if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
+   if (sim.t - combo.checkSince! < .15) return;
+   const backer = sim.see(observer, combo.backer);
+-  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
++  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
++    || (FLOW_RELEASE && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
++      && backerShows(observer, sim, backer));
+   const runner = sim.slot('RB');
+   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+   if (!filling && !arriving) return;
