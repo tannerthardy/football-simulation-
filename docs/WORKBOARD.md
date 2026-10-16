@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Do-It-All movement follow-through — 2026-10-15
+
+Start acceptedbb6d4c73948d53ba841dd9338dd240146c739f8c, source668acb1;
+published queue reconciled. #81 cost/#87 policy are complete and unchanged.
+First classify saved movement stages; no new avoidance option or all-role
+rollout. Current A042 tape nominates helper gather/spacing zeros with absent
+own-goal metadata; first prove the captured acquired cue exactly reproduces
+the existing producer and whether the accepted action can improve that same
+physical state. Own scripts/diag/movement-followthrough.ts and its evidence
+only until a mechanism is established. Catching owns objective/gather semantics
+(#89 coordination6208754138/6208796903); Run owns blocking (#88 coordination6208754726).
+Measurement alone owns the authorized current48 arm. No duplicate panel,
+physics/capacity, perception/memory or production edit claimed. Integration
+owns any independent review/combined verification.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
