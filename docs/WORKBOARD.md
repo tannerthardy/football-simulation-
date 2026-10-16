@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Run: independent #94 review and #96 interaction — 2026-10-15 Phoenix
+
+Review host `codex/run-joint-spacing-review`, acceptedbb6d4c7. Review exactly
+#94 code4a7eebd/publication4564a66: spacing.ts + joint-spacing test/fixture.
+No authored modification of Do-It-All's patch. Inspect acquired-only constraints,
+free/contact ownership, complete closest-request projection and adverse A028
+progress; reuse its source-qualified native A028/A018/A006 receipts.
+Then one two-prefix #94+#96 interaction (saved Under/A030 to3.60) versus #96's
+compatible saved tapes; all22 react normally, no new baseline, panel or game.
+Run does not independently approve its own #96 candidate. Integration owns
+exact final verification/adoption; Physics and capacities remain untouched.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
