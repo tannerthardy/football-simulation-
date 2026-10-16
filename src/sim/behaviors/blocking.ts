@@ -1237,8 +1237,12 @@ export class RunBlocker implements Behavior {
     const goal = { x: pos.x - dir * .35, y: pos.y + half };
     const capacity = a.body.support ? availability(a.body.support,
       supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
-    this.stretchStep = movingArrivalVelocity(a.body, goal, seen.vel,
+    const arrival = movingArrivalVelocity(a.body,
+      { x: a.pos.x, y: goal.y }, { x: 0, y: seen.vel.y },
       a.profile.vmax, 0, 0, .8 + .3 * a.r('runBlock'), capacity);
+    // Maintain the existing upfield drive while fitting laterally. Following
+    // a penetrator's retreat would surrender depth before an anchor can act.
+    this.stretchStep = { x: dir * 2.4, y: arrival.y };
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
