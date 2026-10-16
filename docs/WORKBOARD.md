@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active collection/cap integration — 2026-10-15
+## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
 `codex/collection-cap-integration`. Independently approved immediate scope:
@@ -9,15 +9,29 @@ minimal #81 admission + d80dcd3 cost successor (`spacing.ts`, residual-motion
 test/fixture and traffic-turning test); #89 one alley input in `run-fits.ts` plus
 coverage-run-support contracts. Preserve each authored/reviewed file blob.
 Do-It-All accepts #88; Run accepts cost successor and #89. Reuse their focused
-receipts/controls, then one exact combined verification under Integration.
+receipts/controls; exact freeze5e32b7a passes1,772 TS/150 files,145 Python,
+typecheck/build,195.589s,44flags/components1. Adopted as9adb7b3 through #90;
+entire merged tree equals publication and protected files equal passing freeze.
+Integration boundary released; no unchanged suite/native/panel/game repeat.
+[Actual pin, receipts and owner handoff](INTEGRATION.md#accepted-development).
 
-#87 producer metadata is approved by Catching; its whole movement-policy review
-is requested from Run. Check its overlapping spacing/common movement and #89
-moving-goal input before any later composition; #88 does not wait for it.
-No #86 diagnostic, observer/research ancestry, #76 override, rejected variants,
-experimental Physics, capabilities/defaults or historical reference changes.
+## Active #87 exact integration boundary
 
-## Completed #85 Duo-only adoption — #81 held separately
+Integration owns `codex/mesh-policy-integration` on accepted9adb7b3 plus metadata
+12956c6. Extract only the independently accepted seven-file patch plus independently reviewed pull-fit test-only reload adapter: spacing.ts,
+movement-objective.ts, behaviors/common.ts, behaviors/defense.ts,
+catch-approach.ts, traffic-step.test.ts and its fixture. All seven blobs equal
+reviewed9760de0; composed source668acb1. Run accepts whole movement policy/#89
+interaction at b1c75b8; Catching producer approval retained. Accepted #88/#89 and
+settled-line cost proof/tests remain. Integration owns one frozen combined run;
+contributors supply compatible39 focused/typecheck and source-pinned native
+receipts. First exact run failed6 cross-module Symbol identity comparisons;
+independent semantic comparison review accepts the test-only repair,12 focused
+checks pass. Source668acb1 unchanged; final validation tree is a distinct candidate.
+No old dependency ancestry, observer, variants, experimental Physics
+or extra campaign. Preserve off-ball costs, censored outcomes and RNG limits.
+
+## Historical completed #85 Duo-only adoption — then #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
 Do-It-All accepts exact #84 head4af71ac; only `readJoinedCombination` in

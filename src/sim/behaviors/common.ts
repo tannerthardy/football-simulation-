@@ -6,6 +6,7 @@ import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
+import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -69,7 +70,8 @@ export function track(a: Agent, target: Vec2, targetVel: Vec2, opts: { facing?: 
     vx *= vmax / sp;
     vy *= vmax / sp;
   }
-  return { vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill };
+  return withMovementObjective({ vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill },
+    { kind: 'moving', point: target, velocity: targetVel });
 }
 
 export function angleTo(from: Vec2, to: Vec2): number {
