@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Run: independent forecast-cost and moving-alley reviews
+
+User assigned d80dcd3015358e604f91cb026f562f6f4f4781e5 cost-proof review,
+then #89 at78a00645e4f821d45604a1ed68c35592de1f5926 producer/consumer,
+acquired-information, play-action and depth review. Host starts accepted86250bb4;
+published queueef214373 agrees. This is source/evidence review plus only a
+specific unanswered correctness probe; no production edit, new collection
+variant, game, broad panel or shared suite. Do-It-All/Catching retain their
+respective candidates; Integration owns combined verification/adoption.
+#88 remains frozen at6573521bc28ea09c2aa6c05770f20b2089cc9fe6.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.
