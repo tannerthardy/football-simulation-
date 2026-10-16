@@ -15,7 +15,7 @@ import {spaceTeammates} from '../../src/sim/spacing.js';
 import {sourceVersion} from '../source-version.js';
 
 const pin='b1c75b872428237a8d9813ba4724b87f924c042d',root='data/reviews/current/pr87-run-policy-review/';
-const blob=(name:string)=>execFileSync('git',['show',`${pin}:${root}${name}`]);
+const blob=(name:string)=>execFileSync('git',['show',`${pin}:${root}${name}`],{maxBuffer:16*1024*1024});
 const pair=JSON.parse(gunzipSync(blob('A042-paired.json.gz')).toString()),data=pair.candidate;
 const setup=JSON.parse(blob('A042-setup.json').toString()).setup;
 assert.equal(data.source,sourceVersion());
