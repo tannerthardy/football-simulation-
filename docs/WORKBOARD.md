@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Do-It-All inline zone-keeper eligibility — 2026-10-16
+## Ready Do-It-All inline zone-keeper eligibility — 2026-10-16
 
 Own only `RunBlocker.zoneEligible`'s installed inline-role gate plus new
 `test/inline-zone-keeper.test.ts`, directly on freshly fetched accepted
@@ -12,6 +12,14 @@ solo inline-Y access to the existing acquired technique and retained contact
 frame, preserving detached/climb/live-combo/helper guards. Native opponent
 velocity pictures are complete delayed reads; no new unknown-motion contract
 is asserted. Root owns short matched coupled comparisons and publication choice.
+Code `c07a9fdc7e7cf44ff9ae0c09dd248da7c7244a95` passes9 focused controls and
+one typecheck; red proof retains2 expected failures/7 passing controls.
+Native evidence separately uses exact one-line body on D+span source1de979,
+without paired policy: four62-tick controls exact; acquired runoff/real keeper
+load demonstrated, no general run-entry benefit. Original OZ initial-overlap/late LT–LG impact retained. One legal-start pair
+confirms Y–NB fit/normal benefit without those contacts; press keeper, marginal
+Mike collection and free Will win remain. Advance narrow role correctness for review;
+all old paired variants remain held. [Report](reviews/inline-zone-keeper.md).
 
 ## Completed #90 collection/cap adoption — 2026-10-15
 
