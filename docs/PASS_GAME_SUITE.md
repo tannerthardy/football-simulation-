@@ -198,8 +198,10 @@ decision quality, information, execution or numerics; investigate material
 adverse changes before promotion.
 
 Sample caps are explicit (80 state samples and 1,800 consumed-cue samples per
-play, with omission counters). Cue sampling is at most twice per second per
-observer/target pair. Caps can omit a decisive cue; request a targeted replay
+play, with omission counters). The cue window preserves the first 600 and
+latest 1,200 samples in time order, so early line-play queries cannot permanently
+exclude late catch/pursuit information. Cue sampling is at most twice per second
+per observer/target pair. Caps can omit a decisive middle cue; request a targeted replay
 only when it changes the decision. Positions in diagnostic geometry are truth
 for measurement, **never injected into controllers**. This suite does not
 certify all consumers' information correctness.

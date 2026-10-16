@@ -11,6 +11,19 @@ import { instantiate, sha, type Manifest, type Scenario } from './pass-suite-cas
 const copy = <T>(v:T):T => structuredClone(v);
 const q=(v:number)=>Math.round(v*1e6)/1e6;
 const label=(a:Agent)=>({index:a.idx,id:a.player.id,slot:a.slot,team:a.team});
+/** Retain opening context and the latest evidence without unbounded logs or RNG. */
+export class EvidenceWindow<T> {
+  private first:T[]=[];private recent:T[]=[];private next=0;omitted=0;
+  constructor(private readonly opening=600,private readonly latest=1200) {
+    if(!Number.isInteger(opening)||!Number.isInteger(latest)||opening<0||latest<1)throw new Error('Invalid evidence window');
+  }
+  push(value:T) {
+    if(this.first.length<this.opening)this.first.push(value);
+    else if(this.recent.length<this.latest)this.recent.push(value);
+    else{this.recent[this.next]=value;this.next=(this.next+1)%this.latest;this.omitted++;}
+  }
+  values(){return [...this.first,...this.recent.slice(this.next),...this.recent.slice(0,this.next)];}
+}
 function state(a:Agent) {
   const job=Reflect.get(a.behavior,'job');
   return {...label(a),pos:{...a.pos},vel:{...a.vel},facing:a.facing,behavior:a.behavior.kind,
@@ -56,7 +69,7 @@ export function measure(m:Manifest,c:Scenario,options:{observe?:boolean;record?:
     'supportIntegration','boundedAttachment'].map(k=>[k,Reflect.get(sim.world,k)]));
   const initial=sim.agents.map(a=>({...state(a),profile:copy(a.profile),ratings:copy(a.player.ratings),runFit:copy(a.runFit)}));
   const snapshots:unknown[]=[],grasps:Array<Record<string,any>>=[],jointRecords=new Map<GraspJoint,Record<string,any>>();
-  const cues:unknown[]=[],cueClock=new Map<string,number>();let omittedCues=0,omittedSamples=0;
+  const cues=new EvidenceWindow<unknown>(),cueClock=new Map<string,number>();let omittedSamples=0;
   const reads:unknown[]=[],jobs=new Map<number,string>(),falls:unknown[]=[];
   let firstBodyContact:unknown=null,catchPicture:unknown=null,firstWrap:unknown=null,firstLoaded:unknown=null;
   let lastEvents=0,steps=0,nearQBAt:number|null=null,error:string|null=null,wall=false;
@@ -76,7 +89,7 @@ export function measure(m:Manifest,c:Scenario,options:{observe?:boolean;record?:
     sim.see=(a,b,delayScale)=>{
       const p=originalSee(a,b,delayScale),key=a.idx+':'+b.idx;
       if(sim.t-(cueClock.get(key)??-Infinity)>=.5){cueClock.set(key,sim.t);
-        if(cues.length<1800)cues.push({t:q(sim.t),observer:a.idx,target:b.idx,picture:copy(p)});else omittedCues++;}
+        cues.push({t:q(sim.t),observer:a.idx,target:b.idx,picture:copy(p)});}
       return p;
     };
     sim.world.step=(intents,dt)=>{
@@ -145,7 +158,7 @@ export function measure(m:Manifest,c:Scenario,options:{observe?:boolean;record?:
         &&sim.agents[e.a??-1]?.player.id===sim.stats.receiver)?.t??null},
     initial,initialSha256:sha(initial),worldSettings,installed:{offCall:copy(sim.offCall),defCall:copy(sim.defCall),
       offense:copy(sim.offAlign),defense:copy(sim.defAlign)},physicalSignature:physicalSignature(sim),
-    observation:{snap,snapshots,cues,omittedCues,omittedSamples,reads,catchPicture,firstBodyContact,firstWrap,firstLoaded,grasps,falls,
+    observation:{snap,snapshots,cues:cues.values(),omittedCues:cues.omitted,cueRetention:{opening:600,latest:1200},omittedSamples,reads,catchPicture,firstBodyContact,firstWrap,firstLoaded,grasps,falls,
       invariants,maxPenetration,events:copy(sim.events),segments:copy(r.segments),
       limits:'Sampled consumed cues/cached rules, not extra observations. Geometry is diagnostic truth. Requests and achieved motion share labeled intervals. Grasp acquisition is interval-censored at the first solved step; brokenAt is first observed broken tick. Collection caps are explicit.'},
     film:options.record?{id:c.id,result:r,players:sim.agents.map(a=>({...label(a),name:a.name,profile:a.profile,jersey:a.player.jersey}))}:null};

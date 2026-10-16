@@ -8,7 +8,7 @@ import { COVERAGE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { sourceVersion } from '../scripts/source-version.js';
 import { buildManifest, frozenInput, instantiate, sha, validateManifest } from '../scripts/diag/pass-suite-cases.js';
-import { measure, outcomeMetrics } from '../scripts/diag/pass-suite-measure.js';
+import { EvidenceWindow, measure, outcomeMetrics } from '../scripts/diag/pass-suite-measure.js';
 import { aggregate, compact, html, makeReport } from '../scripts/diag/pass-suite-report.js';
 import { cacheEnvelope, caseKey, main, provenance, readIndex, readJSON, runCampaign, selectCases, validateCache, validateComparison, writeJSON } from '../scripts/diag/pass-game-suite.js';
 import type { PlayResult } from '../src/sim/types.js';
@@ -130,5 +130,12 @@ describe('explicit broad pass-game checkpoint',()=>{
   it('checks index integrity before trusting a comparison or offline report',()=>{
     const path=join(temp(),'index.json');writeJSON(path,{schema:'pass-game-index-envelope-v1',sha256:'wrong',index:{}});
     expect(()=>readIndex(path)).toThrow('Corrupt index');
+  });
+  it('retains opening cues and the newest evidence in order when a long play exceeds the log budget',()=>{
+    const window=new EvidenceWindow<number>(2,3);
+    for(let i=1;i<=9;i++)window.push(i);
+    expect(window.values()).toEqual([1,2,7,8,9]);expect(window.omitted).toBe(4);
+    expect(window.values()).toEqual([1,2,7,8,9]); // reading diagnostics never advances acquisition
+    expect(()=>new EvidenceWindow(0,0)).toThrow('Invalid evidence window');
   });
 });
