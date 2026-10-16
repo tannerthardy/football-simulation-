@@ -36,3 +36,8 @@ data/reviews/**/*.txt
 # Keep these bounded aggregate references available to current diagnostics.
 !data/reviews/rushing-benchmark/reference/nfl-benchmark.json.gz
 !data/reviews/rushing-benchmark/concepts/report.json.gz
+
+# Compact accepted-panel receipts; raw traces remain outside tracked source.
+!data/reviews/current/panel-bb6d4c7/
+!data/reviews/current/panel-bb6d4c7/*.json
+!data/reviews/current/panel-bb6d4c7/*.json.gz
