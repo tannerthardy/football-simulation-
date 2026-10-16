@@ -1,0 +1,152 @@
+{
+  "accepted": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "runtimeSourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "inputArchiveSha256": "60c4d4af04713583c19a59224831d9e89a48011cd4affaebd891cfe1e35f0919",
+  "originalInputs": [
+    {
+      "case": "A020",
+      "rawSha256": "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4",
+      "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+      "sourceArtifact": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+      "archivePath": "accepted-broad-audit/cases/A020.json"
+    },
+    {
+      "case": "A008",
+      "rawSha256": "aa2b701aacad149f5a45299d076da2ff8ce47d93465d70407086c58ed43c5e1c",
+      "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "sourceArtifact": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+      "archivePath": "accepted-broad-audit/cases/A008.json"
+    },
+    {
+      "case": "A006",
+      "rawSha256": "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195",
+      "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+      "sourceArtifact": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+      "archivePath": "accepted-broad-audit/cases/A006.json"
+    },
+    {
+      "case": "A042",
+      "rawSha256": "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0",
+      "inputSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
+      "sourceArtifact": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+      "archivePath": "accepted-broad-audit/cases/A042.json"
+    }
+  ],
+  "launcherCommandSeconds": 13.282680208999999,
+  "nativeLauncherCommandSeconds": 10.179340796,
+  "nativeExecutions": 10,
+  "simulatedSeconds": 46.3,
+  "maxNativeSeconds": 5.1,
+  "fullGames": 0,
+  "fullSuiteRepeats": 0,
+  "productionChanges": 0,
+  "referenceComparisons": "Saved original actor telemetry/rounded position sequences; not bit-exact unrecorded bodies or cross-source RNG. See reducer source qualifications.",
+  "reused": {
+    "alleyFlowHead": "78a00645e4f821d45604a1ed68c35592de1f5926",
+    "alleyFlowCaptureFiles": [
+      "moving-cap-A042.json.gz",
+      "moving-cap-A006.json.gz"
+    ],
+    "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+    "negativeApproachTrial": "3bc12ffcda220f883beebb80596ae7b0a5f8468b"
+  },
+  "payloads": [
+    {
+      "path": "A006-current-launcher.json",
+      "sha256": "206283fc1f3b6fc2e379ab5c0b96a7930d603803077f8cb2c4b7c5c216f645d8",
+      "bytes": 2380
+    },
+    {
+      "path": "A006-current.json.gz",
+      "sha256": "68c7e1d08a3b2f4abb1cec8db547256cc0b336823d002e01e6c057474c0ba553",
+      "bytes": 67482
+    },
+    {
+      "path": "A008-current-launcher.json",
+      "sha256": "28a6cf08f656b32dc78c35c8032cb87853f43b0385f4e67d162e459f581fb0ea",
+      "bytes": 2373
+    },
+    {
+      "path": "A008-current.json.gz",
+      "sha256": "ad93368bc47752ad0cce7a832d4b0c6e0dae118663ebb87db4439e8cfb6b3fa5",
+      "bytes": 66374
+    },
+    {
+      "path": "A020-current-goals.json.gz",
+      "sha256": "93f55dcc0dd3ceab62044de736daba1d62b3d9ae9de561b33ae40f6e65f65431",
+      "bytes": 79040
+    },
+    {
+      "path": "A020-current-launcher.json",
+      "sha256": "ebf59d9f1316ac22945be83f7100cdbf9e445f38eabdd64bd0a8ca65962184c3",
+      "bytes": 2373
+    },
+    {
+      "path": "A020-current-traffic.json.gz",
+      "sha256": "fa80cfdade41cb4af49ecac15d83aefe4e918b4b7c50a72fe646200fd94d9e95",
+      "bytes": 116498
+    },
+    {
+      "path": "A020-current.json.gz",
+      "sha256": "e1418d2279faccdb9bf5b64bd060aeefcd2fc49509df7c9003e1c3b7f88ca7c4",
+      "bytes": 77866
+    },
+    {
+      "path": "A020-goals-launcher.json",
+      "sha256": "f96a67b817116d118c9914637bfbe4cb6b2358d980e5ec137a1120489ac2f123",
+      "bytes": 2379
+    },
+    {
+      "path": "A020-traffic-launcher.json",
+      "sha256": "fee0be8f9f177593d320dafafaf9a680386b8a48c066f62871b1d2aef5972257",
+      "bytes": 2388
+    },
+    {
+      "path": "metadata-neutrality.json",
+      "sha256": "384cfd33b9bfac8caa2aefd006e22657da6b09c31804a6c74cd926d2ab67c16b",
+      "bytes": 594
+    },
+    {
+      "path": "support-access-final-launcher.json",
+      "sha256": "84a805ecc6e2fa300084dd007b997b5faa4535697f2e043cd01b186f4497d6db",
+      "bytes": 2327
+    },
+    {
+      "path": "support-access-final.json",
+      "sha256": "dc2099e3646a17a6dc533ec7979dd9df11b84b739f58ef42bd0b5e3c3bf7c520",
+      "bytes": 39839
+    },
+    {
+      "path": "support-access-launcher.json",
+      "sha256": "63bb60d0dfe5158e42e3ba4815158be9b8e97f9a5d51204eb1412d89b07f5285",
+      "bytes": 2314
+    },
+    {
+      "path": "support-access-qualified-launcher.json",
+      "sha256": "eacdd359d00c428b75c09877a08769ba8291568cab9684d9f017322f508d5f73",
+      "bytes": 2324
+    },
+    {
+      "path": "support-access-qualified.json",
+      "sha256": "2ba4075862a1b32d5e1899deab575018dc2bb5139e097b33d8ea95a2fbf2d47b",
+      "bytes": 39860
+    },
+    {
+      "path": "support-access.json",
+      "sha256": "8a72ab3c886709df4f41c3239bd85c166499d8b78ab4f1295fc9151a9320b5f2",
+      "bytes": 30708
+    },
+    {
+      "path": "traffic-score-launcher.json",
+      "sha256": "700cc3df0161a6a254eaaa87c806f9f283db5defa3d2822144f1f9782df23a46",
+      "bytes": 2399
+    },
+    {
+      "path": "traffic-score.json",
+      "sha256": "d0ef75f7ab9754323d0f4065c10fb9313b3cc7e5ad3d2d80ad9db245b5d95021",
+      "bytes": 7457
+    }
+  ],
+  "freeForecastWorldSteps": 48,
+  "supersededReductionNotes": "Initial support-access/final annotations overstated A042 source compatibility. support-access-qualified is authoritative: the old #89 ending is historical only; Runs9adb7b3-to-#87 control is separate and live at3.80. Original outputs retained."
+}

@@ -1,0 +1,16 @@
+{
+  "signatureEqual": true,
+  "eventsEqual": true,
+  "signature": "2d17c401ea0ee7d166938ae999e394603c08454de67c60474ff8650a68dc1461",
+  "seeCalls": [
+    38443,
+    38443,
+    38443
+  ],
+  "operatorSha256": [
+    "90d01296831e2faa3aa625791101e9eaae2611704f7917816bc23287cdd80ebe",
+    "063739aecc9374375c6b6443dc3d2674f8a5dc22b80976c33e39409aa05cc270",
+    "d062276d978efe4492d66867294abe52be340f7899908f96d9e8d13117267d29"
+  ],
+  "meaning": "Original, own-goal and consumed-peer recorder versions preserve the same native state/events/query count; each also passes its observed/plain pair."
+}

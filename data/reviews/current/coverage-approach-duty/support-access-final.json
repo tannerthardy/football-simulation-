@@ -1,0 +1,1356 @@
+{
+  "schema": "coverage-support-access-v1",
+  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "operatorSha256": "c25ea22d23b14eed10688c81d2d4aa4b2547fd68f373c8763a8ea20c19b7ea5f",
+  "inputs": [
+    {
+      "path": "out/coverage-approach-duty/A020.json",
+      "sha256": "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4"
+    },
+    {
+      "path": "out/coverage-approach-duty/A020-current.json.gz",
+      "sha256": "e1418d2279faccdb9bf5b64bd060aeefcd2fc49509df7c9003e1c3b7f88ca7c4"
+    },
+    {
+      "path": "out/coverage-approach-duty/A008.json",
+      "sha256": "aa2b701aacad149f5a45299d076da2ff8ce47d93465d70407086c58ed43c5e1c"
+    },
+    {
+      "path": "out/coverage-approach-duty/A008-current.json.gz",
+      "sha256": "ad93368bc47752ad0cce7a832d4b0c6e0dae118663ebb87db4439e8cfb6b3fa5"
+    },
+    {
+      "path": "out/coverage-approach-duty/A006.json",
+      "sha256": "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195"
+    },
+    {
+      "path": "out/coverage-approach-duty/A006-current.json.gz",
+      "sha256": "68c7e1d08a3b2f4abb1cec8db547256cc0b336823d002e01e6c057474c0ba553"
+    },
+    {
+      "path": "out/coverage-approach-duty/A042.json",
+      "sha256": "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0"
+    },
+    {
+      "path": "out/coverage-approach-duty/moving-cap-A042.json.gz",
+      "sha256": "cf82c6ad149bf5f349e3ff770c48a42eb021e668d498d5dee2a29b3f0f99735c"
+    },
+    {
+      "path": "out/coverage-approach-duty/A006.json",
+      "sha256": "0bc1139cf21cc7dbda59704160cf8d57be213a519b7d56871f6044227b63a195"
+    },
+    {
+      "path": "out/coverage-approach-duty/moving-cap-A006.json.gz",
+      "sha256": "05c4486d928383b586885dc445c0c743ce04a5d8df8430ec539f036eb71a42b8"
+    }
+  ],
+  "nativeExecutions": 0,
+  "worldSteps": 0,
+  "elapsedSeconds": 0.6910884679999999,
+  "rows": [
+    {
+      "case": "A020",
+      "capture": "A020-current.json.gz",
+      "qualification": "Current accepted #91 runtime; new observed/plain pair.",
+      "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+      "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "runner": {
+        "idx": 10,
+        "id": "S74O-WR2",
+        "team": "O",
+        "slot": "H",
+        "name": "E.King",
+        "jersey": 85,
+        "position": "WR"
+      },
+      "tackler": {
+        "idx": 17,
+        "id": "S74D-CB3",
+        "team": "D",
+        "slot": "CB_S",
+        "name": "T.Graham",
+        "jersey": 26,
+        "position": "CB"
+      },
+      "firstGrasp": 4.65,
+      "firstEnding": {
+        "t": 5,
+        "type": "broken_tackle",
+        "a": 10,
+        "b": 17,
+        "pos": {
+          "x": 48.17,
+          "y": 8.37
+        },
+        "note": "hold slipped"
+      },
+      "firstHoldInterval": 0.34999999999999964,
+      "entry": {
+        "roundedCenterSeparation": 1.3038404810405306,
+        "defenderVelocity": {
+          "x": -1.32,
+          "y": -2.13
+        },
+        "runnerVelocity": {
+          "x": 4.62,
+          "y": -7.75
+        },
+        "defenderSpeed": 2.5058531481313904,
+        "travelHeadingDifferenceDegrees": 62.58765014720464,
+        "aheadAlongRunner": -0.0380157454999015,
+        "transverseToRunner": 1.303286155490838
+      },
+      "contactDecision": {
+        "t": 4.65,
+        "a": 17,
+        "kind": "tackle-opportunity",
+        "chose": "attempt current opportunity",
+        "cue": "delayed carrier motion and attainable movement",
+        "options": [
+          "keep feet moving",
+          "attempt current opportunity",
+          "take last reach"
+        ],
+        "detail": "Observed possession held; wrap quality 0.20; best attainable decision sample 0.26 at 0.05 s. Held movement command; future cuts and contacts are unknown."
+      },
+      "helpers": [
+        {
+          "idx": 21,
+          "id": "S74D-CB4",
+          "slot": "SS",
+          "initialGap": 6.132699242584785,
+          "velocity": {
+            "x": 3.59,
+            "y": -7.28
+          },
+          "range": 2.2555681818181816,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 2.843206381592499,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 15,
+          "id": "S74D-LB1",
+          "slot": "LB_M",
+          "initialGap": 6.91158447825099,
+          "velocity": {
+            "x": 4.6,
+            "y": -5.91
+          },
+          "range": 2.2930176767676764,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 3.8234961684099424,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 20,
+          "id": "S74D-S1",
+          "slot": "FS",
+          "initialGap": 7.915806970865321,
+          "velocity": {
+            "x": 1.28,
+            "y": -7.13
+          },
+          "range": 2.3089772727272724,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 4.350344365590741,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 19,
+          "id": "S74D-S2",
+          "slot": "NB",
+          "initialGap": 13.440610105199836,
+          "velocity": {
+            "x": 3.19,
+            "y": -4.97
+          },
+          "range": 2.263383838383838,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 10.761733977481509,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 12,
+          "id": "S74D-EDGE2",
+          "slot": "DE_S",
+          "initialGap": 16.635504200354134,
+          "velocity": {
+            "x": 4.07,
+            "y": -3.17
+          },
+          "range": 2.3889646464646463,
+          "acceleration": 11.79715113735783,
+          "freeMovementExclusionMargin": 14.018872040725856,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 13,
+          "id": "S74D-DT1",
+          "slot": "DT_S",
+          "initialGap": 19.02235526952433,
+          "velocity": {
+            "x": 2.61,
+            "y": -2.23
+          },
+          "range": 2.445871212121212,
+          "acceleration": 11.79715113735783,
+          "freeMovementExclusionMargin": 16.35749830171633,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 11,
+          "id": "S74D-EDGE1",
+          "slot": "DE_W",
+          "initialGap": 19.548913013259842,
+          "velocity": {
+            "x": 4.24,
+            "y": -3.9
+          },
+          "range": 2.385871212121212,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 16.899581400149483,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 14,
+          "id": "S74D-DT3",
+          "slot": "DT_W",
+          "initialGap": 20.321663317750346,
+          "velocity": {
+            "x": 2.9,
+            "y": -2.89
+          },
+          "range": 2.4098989898989895,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 17.692778572164567,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 18,
+          "id": "S74D-CB1",
+          "slot": "CB_W",
+          "initialGap": 29.124731758421397,
+          "velocity": {
+            "x": 1.03,
+            "y": -6.91
+          },
+          "range": 2.2686363636363636,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 25.18382033175365,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 16,
+          "id": "S74D-LB3",
+          "slot": "LB_W",
+          "initialGap": 30.680612770934026,
+          "velocity": {
+            "x": 1.71,
+            "y": -2.97
+          },
+          "range": 2.338800505050505,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 28.122826510196735,
+          "excludedWithoutExternalAssistance": true
+        }
+      ],
+      "allOtherDefendersExcludedFromFreeArrival": true,
+      "recordedParityWithOriginalInput": {
+        "10": {
+          "id": "S74O-WR2",
+          "firstRecordedBodyDifference": null,
+          "firstRecordedRequestDifference": null,
+          "firstRoundedPositionDifference": null
+        },
+        "17": {
+          "id": "S74D-CB3",
+          "firstRecordedBodyDifference": null,
+          "firstRecordedRequestDifference": null,
+          "firstRoundedPositionDifference": null
+        },
+        "20": {
+          "id": "S74D-S1",
+          "firstRecordedBodyDifference": null,
+          "firstRecordedRequestDifference": null,
+          "firstRoundedPositionDifference": null
+        },
+        "21": {
+          "id": "S74D-CB4",
+          "firstRecordedBodyDifference": 2.05,
+          "firstRecordedRequestDifference": 2.05,
+          "firstRoundedPositionDifference": 2.5
+        }
+      },
+      "end": {
+        "t": 5.1,
+        "censored": true
+      },
+      "events": [
+        {
+          "t": 3.35,
+          "type": "catch",
+          "a": 10,
+          "pos": {
+            "x": 41.75,
+            "y": 20.38
+          }
+        },
+        {
+          "t": 4.65,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 10,
+          "pos": {
+            "x": 47.72,
+            "y": 11.09
+          },
+          "note": "initial"
+        },
+        {
+          "t": 5,
+          "type": "broken_tackle",
+          "a": 10,
+          "b": 17,
+          "pos": {
+            "x": 48.17,
+            "y": 8.37
+          },
+          "note": "hold slipped"
+        }
+      ]
+    },
+    {
+      "case": "A008",
+      "capture": "A008-current.json.gz",
+      "qualification": "Current accepted #91 runtime; new observed/plain successful opposing control.",
+      "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "runner": {
+        "idx": 7,
+        "id": "S30O-TE2",
+        "team": "O",
+        "slot": "Y",
+        "name": "S.Owens",
+        "jersey": 41,
+        "position": "TE"
+      },
+      "tackler": {
+        "idx": 19,
+        "id": "S30D-CB3",
+        "team": "D",
+        "slot": "NB",
+        "name": "C.Sanders",
+        "jersey": 20,
+        "position": "CB"
+      },
+      "firstGrasp": 2.5,
+      "firstEnding": {
+        "t": 3.8,
+        "type": "tackle",
+        "a": 19,
+        "b": 7,
+        "pos": {
+          "x": 40.73,
+          "y": 34.75
+        }
+      },
+      "firstHoldInterval": 1.2999999999999998,
+      "entry": {
+        "roundedCenterSeparation": 1.118033988749895,
+        "defenderVelocity": {
+          "x": 0.49,
+          "y": 4.36
+        },
+        "runnerVelocity": {
+          "x": 0.44,
+          "y": 4.93
+        },
+        "defenderSpeed": 4.387448005389921,
+        "travelHeadingDifferenceDegrees": 1.3121918238888235,
+        "aheadAlongRunner": -0.40912430494876517,
+        "transverseToRunner": -1.0404889730795757
+      },
+      "contactDecision": {
+        "t": 2.45,
+        "a": 19,
+        "kind": "tackle-opportunity",
+        "chose": "keep feet moving",
+        "cue": "delayed carrier motion and attainable movement",
+        "options": [
+          "keep feet moving",
+          "attempt current opportunity",
+          "take last reach"
+        ],
+        "detail": "Observed possession unconfirmed; wrap quality 0.69; best attainable decision sample 0.87 at 0.30 s. Held movement command; future cuts and contacts are unknown."
+      },
+      "helpers": [
+        {
+          "idx": 15,
+          "id": "S30D-LB3",
+          "slot": "LB_M",
+          "initialGap": 4.060788100849391,
+          "velocity": {
+            "x": -1.87,
+            "y": 0.42
+          },
+          "range": 2.3468181818181817,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -6.261292685519619,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 16,
+          "id": "S30D-LB2",
+          "slot": "LB_W",
+          "initialGap": 6.726812023536854,
+          "velocity": {
+            "x": -1.31,
+            "y": 4.97
+          },
+          "range": 2.375719696969697,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -5.732459707651585,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 20,
+          "id": "S30D-CB6",
+          "slot": "FS",
+          "initialGap": 9.701546268507926,
+          "velocity": {
+            "x": -2.82,
+            "y": -0.71
+          },
+          "range": 2.3057323232323235,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -3.336702057041558,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 21,
+          "id": "S30D-LB1",
+          "slot": "SS",
+          "initialGap": 3.862641583165596,
+          "velocity": {
+            "x": -1.07,
+            "y": -3.67
+          },
+          "range": 2.319027777777778,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -3.241486196663398,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 14,
+          "id": "S30D-EDGE3",
+          "slot": "DT_W",
+          "initialGap": 6.627216610312359,
+          "velocity": {
+            "x": -0.54,
+            "y": -0.01
+          },
+          "range": 2.384962121212121,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -1.2651210307081742,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 11,
+          "id": "S30D-EDGE2",
+          "slot": "DE_W",
+          "initialGap": 8.764131445842192,
+          "velocity": {
+            "x": -1.8,
+            "y": -0.93
+          },
+          "range": 2.333371212121212,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 0.7193329114284729,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 13,
+          "id": "S30D-DT2",
+          "slot": "DT_S",
+          "initialGap": 7.300684899377591,
+          "velocity": {
+            "x": -1.64,
+            "y": 0.08
+          },
+          "range": 2.466237373737374,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 1.1859745315560073,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 18,
+          "id": "S30D-CB1",
+          "slot": "CB_W",
+          "initialGap": 18.346934348822426,
+          "velocity": {
+            "x": 6.43,
+            "y": -0.15
+          },
+          "range": 2.289747474747475,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 3.001767061090606,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 12,
+          "id": "S30D-EDGE1",
+          "slot": "DE_S",
+          "initialGap": 8.188406438373708,
+          "velocity": {
+            "x": -2.07,
+            "y": -0.85
+          },
+          "range": 2.3689898989898985,
+          "acceleration": 11.79715113735783,
+          "freeMovementExclusionMargin": 3.515395790328567,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 17,
+          "id": "S30D-CB2",
+          "slot": "CB_S",
+          "initialGap": 20.060907257649138,
+          "velocity": {
+            "x": 6.2,
+            "y": 0.65
+          },
+          "range": 2.300479797979798,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 14.572862340903374,
+          "excludedWithoutExternalAssistance": true
+        }
+      ],
+      "allOtherDefendersExcludedFromFreeArrival": false,
+      "recordedParityWithOriginalInput": {
+        "7": {
+          "id": "S30O-TE2",
+          "firstRecordedBodyDifference": null,
+          "firstRecordedRequestDifference": null,
+          "firstRoundedPositionDifference": null
+        },
+        "19": {
+          "id": "S30D-CB3",
+          "firstRecordedBodyDifference": null,
+          "firstRecordedRequestDifference": null,
+          "firstRoundedPositionDifference": null
+        }
+      },
+      "end": {
+        "t": 3.85,
+        "censored": false
+      },
+      "events": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 38.5,
+            "y": 27.94
+          }
+        },
+        {
+          "t": 2.5,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.48,
+            "y": 27.65
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.8,
+          "type": "tackle",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 40.73,
+            "y": 34.75
+          }
+        }
+      ]
+    },
+    {
+      "case": "A006",
+      "capture": "A006-current.json.gz",
+      "qualification": "Current accepted #91 runtime; new observed/plain fresh-player helper trace. This supersedes the old failed-hold ending for current-source claims.",
+      "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+      "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "runner": {
+        "idx": 6,
+        "id": "S30O-RB1",
+        "team": "O",
+        "slot": "RB",
+        "name": "M.Russell",
+        "jersey": 31,
+        "position": "RB"
+      },
+      "tackler": {
+        "idx": 21,
+        "id": "S30D-LB1",
+        "team": "D",
+        "slot": "SS",
+        "name": "W.Bailey",
+        "jersey": 52,
+        "position": "LB"
+      },
+      "firstGrasp": 3.2,
+      "firstEnding": {
+        "t": 3.95,
+        "type": "tackle",
+        "a": 21,
+        "b": 6,
+        "pos": {
+          "x": 42.53,
+          "y": 18.86
+        }
+      },
+      "firstHoldInterval": 0.75,
+      "entry": {
+        "roundedCenterSeparation": 1.0440306508910542,
+        "defenderVelocity": {
+          "x": -1.49,
+          "y": -2.29
+        },
+        "runnerVelocity": {
+          "x": 7,
+          "y": -3.75
+        },
+        "defenderSpeed": 2.732068813189009,
+        "travelHeadingDifferenceDegrees": 94.87165266854697,
+        "aheadAlongRunner": -0.20777742150678685,
+        "transverseToRunner": 1.0231463937834064
+      },
+      "contactDecision": {
+        "t": 3.2,
+        "a": 21,
+        "kind": "tackle-opportunity",
+        "chose": "attempt current opportunity",
+        "cue": "delayed carrier motion and attainable movement",
+        "options": [
+          "keep feet moving",
+          "attempt current opportunity",
+          "take last reach"
+        ],
+        "detail": "Observed possession held; wrap quality 0.67; best attainable decision sample 0.67 at 0.05 s. Held movement command; future cuts and contacts are unknown."
+      },
+      "helpers": [
+        {
+          "idx": 17,
+          "id": "S30D-CB2",
+          "slot": "CB_S",
+          "initialGap": 6.862215385719104,
+          "velocity": {
+            "x": 1.74,
+            "y": 5.13
+          },
+          "range": 2.264116161616162,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": -5.653511159292499,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 20,
+          "id": "S30D-CB6",
+          "slot": "FS",
+          "initialGap": 5.131276644266998,
+          "velocity": {
+            "x": -0.44,
+            "y": -7.46
+          },
+          "range": 2.269368686868687,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -5.231356336611142,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 12,
+          "id": "S30D-EDGE1",
+          "slot": "DE_S",
+          "initialGap": 4.414748010928827,
+          "velocity": {
+            "x": 2.71,
+            "y": 0.21
+          },
+          "range": 2.3326262626262624,
+          "acceleration": 11.79715113735783,
+          "freeMovementExclusionMargin": -0.7443082500772195,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 16,
+          "id": "S30D-LB2",
+          "slot": "LB_W",
+          "initialGap": 6.621933252457324,
+          "velocity": {
+            "x": 0.94,
+            "y": -0.67
+          },
+          "range": 2.3393560606060606,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 2.627157959280226,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 14,
+          "id": "S30D-EDGE3",
+          "slot": "DT_W",
+          "initialGap": 8.405355435673142,
+          "velocity": {
+            "x": 0.07,
+            "y": -2.96
+          },
+          "range": 2.348598484848485,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 2.6563682405127382,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 13,
+          "id": "S30D-DT2",
+          "slot": "DT_S",
+          "initialGap": 5.953990258641681,
+          "velocity": {
+            "x": 0.36,
+            "y": -0.02
+          },
+          "range": 2.4298737373737374,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 2.7749777234189676,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 15,
+          "id": "S30D-LB3",
+          "slot": "LB_M",
+          "initialGap": 7.051950084905593,
+          "velocity": {
+            "x": 1.68,
+            "y": 1.67
+          },
+          "range": 2.3104545454545455,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 4.4123057008874955,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 19,
+          "id": "S30D-CB3",
+          "slot": "NB",
+          "initialGap": 12.093386622447827,
+          "velocity": {
+            "x": 0.63,
+            "y": 1.36
+          },
+          "range": 2.2548358585858583,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 9.303228619925244,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 11,
+          "id": "S30D-EDGE2",
+          "slot": "DE_W",
+          "initialGap": 12.385879056409365,
+          "velocity": {
+            "x": -0.39,
+            "y": 0.08
+          },
+          "range": 2.2970075757575756,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 9.444296024002021,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 18,
+          "id": "S30D-CB1",
+          "slot": "CB_W",
+          "initialGap": 18.678329689776863,
+          "velocity": {
+            "x": 3.07,
+            "y": -4.96
+          },
+          "range": 2.2533838383838383,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 10.815318735273186,
+          "excludedWithoutExternalAssistance": true
+        }
+      ],
+      "allOtherDefendersExcludedFromFreeArrival": false,
+      "recordedParityWithOriginalInput": {
+        "6": {
+          "id": "S30O-RB1",
+          "firstRecordedBodyDifference": 2.75,
+          "firstRecordedRequestDifference": 3.05,
+          "firstRoundedPositionDifference": 3.2
+        },
+        "21": {
+          "id": "S30D-LB1",
+          "firstRecordedBodyDifference": 0.65,
+          "firstRecordedRequestDifference": 0.65,
+          "firstRoundedPositionDifference": 0.8
+        }
+      },
+      "end": {
+        "t": 4,
+        "censored": false
+      },
+      "events": [
+        {
+          "t": 3.2,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 39.98,
+            "y": 21.75
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.95,
+          "type": "tackle",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 42.53,
+            "y": 18.86
+          }
+        }
+      ]
+    },
+    {
+      "case": "A042",
+      "capture": "moving-cap-A042.json.gz",
+      "qualification": "Published #89 source; Run independently verified runner6/SS21/FS20 body/requests equal current #87 composition through3.80 only. Other helper bounds below are historical, not current-composition claims.",
+      "inputSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
+      "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+      "runner": {
+        "idx": 6,
+        "id": "S69O-RB1",
+        "team": "O",
+        "slot": "RB",
+        "name": "M.Clark",
+        "jersey": 39,
+        "position": "RB"
+      },
+      "tackler": {
+        "idx": 21,
+        "id": "S69D-S1",
+        "team": "D",
+        "slot": "SS",
+        "name": "J.Webb",
+        "jersey": 40,
+        "position": "S"
+      },
+      "firstGrasp": 3.25,
+      "firstEnding": {
+        "t": 3.75,
+        "type": "tackle",
+        "a": 21,
+        "b": 6,
+        "pos": {
+          "x": 42.32,
+          "y": 18.94
+        }
+      },
+      "firstHoldInterval": 0.5,
+      "entry": {
+        "roundedCenterSeparation": 0.854400374531752,
+        "defenderVelocity": {
+          "x": -0.67,
+          "y": -2.93
+        },
+        "runnerVelocity": {
+          "x": 7.09,
+          "y": -4.06
+        },
+        "defenderSpeed": 3.005628054167714,
+        "travelHeadingDifferenceDegrees": 73.08323999600239,
+        "aheadAlongRunner": -0.13720642457058718,
+        "transverseToRunner": 0.8433115658263878
+      },
+      "contactDecision": {
+        "t": 3.2,
+        "a": 21,
+        "kind": "tackle-opportunity",
+        "chose": "keep feet moving",
+        "cue": "delayed carrier motion and attainable movement",
+        "options": [
+          "keep feet moving",
+          "attempt current opportunity",
+          "take last reach"
+        ],
+        "detail": "Observed possession held; wrap quality 0.69; best attainable decision sample 0.95 at 0.10 s. Held movement command; future cuts and contacts are unknown."
+      },
+      "helpers": [
+        {
+          "idx": 20,
+          "id": "S69D-CB3",
+          "slot": "FS",
+          "initialGap": 3.635931792539569,
+          "velocity": {
+            "x": 0.23,
+            "y": -7.24
+          },
+          "range": 2.216868686868687,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -3.3170166052248784,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 17,
+          "id": "S69D-CB1",
+          "slot": "CB_S",
+          "initialGap": 5.249761899362677,
+          "velocity": {
+            "x": 2.69,
+            "y": 4.63
+          },
+          "range": 2.2572222222222225,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -2.8972215856730363,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 12,
+          "id": "S69D-LB3",
+          "slot": "DE_S",
+          "initialGap": 4,
+          "velocity": {
+            "x": 3.7,
+            "y": 0.78
+          },
+          "range": 2.3498737373737373,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 0.5319884592683272,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 16,
+          "id": "S69D-LB2",
+          "slot": "LB_W",
+          "initialGap": 6.390618123468181,
+          "velocity": {
+            "x": 2.14,
+            "y": -1.71
+          },
+          "range": 2.284128787878788,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 3.1512810440949783,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 15,
+          "id": "S69D-LB1",
+          "slot": "LB_M",
+          "initialGap": 6.9296464556281645,
+          "velocity": {
+            "x": 0.59,
+            "y": -3.42
+          },
+          "range": 2.379671717171717,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 3.948572938545219,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 13,
+          "id": "S69D-EDGE3",
+          "slot": "DT_S",
+          "initialGap": 8.249242389456137,
+          "velocity": {
+            "x": 1.85,
+            "y": 1.95
+          },
+          "range": 2.3553282828282827,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 5.674928350941065,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 11,
+          "id": "S69D-EDGE1",
+          "slot": "DE_W",
+          "initialGap": 11.552056094046629,
+          "velocity": {
+            "x": 1.24,
+            "y": -2.12
+          },
+          "range": 2.3789646464646466,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 8.214813388313813,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 14,
+          "id": "S69D-EDGE2",
+          "slot": "DT_W",
+          "initialGap": 11.399122773266368,
+          "velocity": {
+            "x": 1.75,
+            "y": 0.21
+          },
+          "range": 2.4092929292929295,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 8.670710841853843,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 19,
+          "id": "S69D-S2",
+          "slot": "NB",
+          "initialGap": 11.866338946785564,
+          "velocity": {
+            "x": -0.16,
+            "y": -0.19
+          },
+          "range": 2.248308080808081,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 9.399045110290693,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 18,
+          "id": "S69D-CB2",
+          "slot": "CB_W",
+          "initialGap": 18.494593804677088,
+          "velocity": {
+            "x": 3.05,
+            "y": -5
+          },
+          "range": 2.2962626262626262,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 13.107779137793113,
+          "excludedWithoutExternalAssistance": true
+        }
+      ],
+      "allOtherDefendersExcludedFromFreeArrival": false,
+      "recordedParityWithOriginalInput": {},
+      "end": {
+        "t": 3.8,
+        "censored": false
+      },
+      "events": [
+        {
+          "t": 3.25,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 40.55,
+            "y": 20.9
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.7,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 43.83,
+            "y": 19.03
+          },
+          "note": "assist"
+        },
+        {
+          "t": 3.75,
+          "type": "tackle",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 42.32,
+            "y": 18.94
+          }
+        }
+      ]
+    },
+    {
+      "case": "A006",
+      "capture": "moving-cap-A006.json.gz",
+      "qualification": "Published fresh-player #89 transfer, older runtime. No current #91 equivalence established.",
+      "inputSha256": "ceeb3b340b9a1fd960307e4c0bd0d0708f6d0f0a13832a40e646035fcb0fb8ea",
+      "sourceSha256": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae",
+      "runner": {
+        "idx": 6,
+        "id": "S30O-RB1",
+        "team": "O",
+        "slot": "RB",
+        "name": "M.Russell",
+        "jersey": 31,
+        "position": "RB"
+      },
+      "tackler": {
+        "idx": 21,
+        "id": "S30D-LB1",
+        "team": "D",
+        "slot": "SS",
+        "name": "W.Bailey",
+        "jersey": 52,
+        "position": "LB"
+      },
+      "firstGrasp": 3.2,
+      "firstEnding": {
+        "t": 3.5,
+        "type": "broken_tackle",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 41.27,
+          "y": 19.95
+        },
+        "note": "hold slipped"
+      },
+      "firstHoldInterval": 0.2999999999999998,
+      "entry": {
+        "roundedCenterSeparation": 1.0440306508910542,
+        "defenderVelocity": {
+          "x": -1.49,
+          "y": -2.29
+        },
+        "runnerVelocity": {
+          "x": 7,
+          "y": -3.75
+        },
+        "defenderSpeed": 2.732068813189009,
+        "travelHeadingDifferenceDegrees": 94.87165266854697,
+        "aheadAlongRunner": -0.20777742150678685,
+        "transverseToRunner": 1.0231463937834064
+      },
+      "contactDecision": {
+        "t": 3.2,
+        "a": 21,
+        "kind": "tackle-opportunity",
+        "chose": "attempt current opportunity",
+        "cue": "delayed carrier motion and attainable movement",
+        "options": [
+          "keep feet moving",
+          "attempt current opportunity",
+          "take last reach"
+        ],
+        "detail": "Observed possession held; wrap quality 0.67; best attainable decision sample 0.67 at 0.05 s. Held movement command; future cuts and contacts are unknown."
+      },
+      "helpers": [
+        {
+          "idx": 20,
+          "id": "S30D-CB6",
+          "slot": "FS",
+          "initialGap": 5.131276644266998,
+          "velocity": {
+            "x": -0.44,
+            "y": -7.46
+          },
+          "range": 2.269368686868687,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": -0.45356171558295955,
+          "excludedWithoutExternalAssistance": false
+        },
+        {
+          "idx": 17,
+          "id": "S30D-CB2",
+          "slot": "CB_S",
+          "initialGap": 6.862215385719104,
+          "velocity": {
+            "x": 1.73,
+            "y": 5.13
+          },
+          "range": 2.264116161616162,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 0.9960709360533465,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 15,
+          "id": "S30D-LB3",
+          "slot": "LB_M",
+          "initialGap": 4.472135954999582,
+          "velocity": {
+            "x": 3.91,
+            "y": -2.64
+          },
+          "range": 2.3104545454545455,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 1.4692769138957555,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 12,
+          "id": "S30D-EDGE1",
+          "slot": "DE_S",
+          "initialGap": 4.414748010928827,
+          "velocity": {
+            "x": 2.79,
+            "y": -0.09
+          },
+          "range": 2.3326262626262624,
+          "acceleration": 11.79715113735783,
+          "freeMovementExclusionMargin": 1.8631359926157762,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 13,
+          "id": "S30D-DT2",
+          "slot": "DT_S",
+          "initialGap": 5.905929224093361,
+          "velocity": {
+            "x": 0.49,
+            "y": -0.13
+          },
+          "range": 2.4298737373737374,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 3.257069731032835,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 16,
+          "id": "S30D-LB2",
+          "slot": "LB_W",
+          "initialGap": 6.407807737440319,
+          "velocity": {
+            "x": 1.27,
+            "y": -1.12
+          },
+          "range": 2.3393560606060606,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 3.8494659211474698,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 14,
+          "id": "S30D-EDGE3",
+          "slot": "DT_W",
+          "initialGap": 8.405355435673142,
+          "velocity": {
+            "x": 0.33,
+            "y": -2.97
+          },
+          "range": 2.348598484848485,
+          "acceleration": 11.797151137357831,
+          "freeMovementExclusionMargin": 5.32166837178765,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 19,
+          "id": "S30D-CB3",
+          "slot": "NB",
+          "initialGap": 11.882760622010359,
+          "velocity": {
+            "x": 0.87,
+            "y": 1.04
+          },
+          "range": 2.2548358585858583,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 9.408939007737711,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 11,
+          "id": "S30D-EDGE2",
+          "slot": "DE_W",
+          "initialGap": 12.256018929489299,
+          "velocity": {
+            "x": -0.27,
+            "y": -0.38
+          },
+          "range": 2.2970075757575756,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 9.740025598044934,
+          "excludedWithoutExternalAssistance": true
+        },
+        {
+          "idx": 18,
+          "id": "S30D-CB1",
+          "slot": "CB_W",
+          "initialGap": 18.678329689776863,
+          "velocity": {
+            "x": 3.07,
+            "y": -4.96
+          },
+          "range": 2.2533838383838383,
+          "acceleration": 11.797151137357833,
+          "freeMovementExclusionMargin": 14.768157080571319,
+          "excludedWithoutExternalAssistance": true
+        }
+      ],
+      "allOtherDefendersExcludedFromFreeArrival": false,
+      "recordedParityWithOriginalInput": {},
+      "end": {
+        "t": 4.55,
+        "censored": false
+      },
+      "events": [
+        {
+          "t": 3.2,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 39.98,
+            "y": 21.75
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.5,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 41.27,
+            "y": 19.95
+          },
+          "note": "hold slipped"
+        },
+        {
+          "t": 3.9,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 44.75,
+            "y": 18.97
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.95,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 6,
+          "pos": {
+            "x": 43.87,
+            "y": 17.04
+          },
+          "note": "assist"
+        },
+        {
+          "t": 4.5,
+          "type": "tackle",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 47.09,
+            "y": 16.66
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Oracle saved runner path is used only to rule out late free-movement repairs. It is never an input to a football controller.",
+    "Positive tube margin excludes ground-driven arrival from the first-grasp state without external assistance; new contacts/holds could supply external impulses. Negative margin is inconclusive, not proof of a feasible approach or good choice.",
+    "0.16yd reserve covers saved position/velocity precision and within-tick interpolation; an additional .05s of traction allowance is deliberately generous.",
+    "Event and frame labels use the enclosing20Hz decision tick, after its physics; comparisons retain that same boundary throughout.",
+    "No grasp forces, slip law, execution draws or terminal RNG equivalence are inferred from marginal entry or a shared event time.",
+    "A020 is unfinished at5.10. Do not use its provisional buildResult YAC field as a completed result."
+  ]
+}

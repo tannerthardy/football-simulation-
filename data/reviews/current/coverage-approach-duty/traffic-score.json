@@ -1,0 +1,319 @@
+{
+  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "operatorSha256": "c1c0bbbc2e16bcb5714e705f26fdc7294ecc42ffe0f5f8fd901cfdfa5861613e",
+  "inputSha256": "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4",
+  "captureSha256": "fa80cfdade41cb4af49ecac15d83aefe4e918b4b7c50a72fe646200fd94d9e95",
+  "t": 2.25,
+  "actor": 21,
+  "target": 10,
+  "goal": {
+    "kind": "moving",
+    "point": {
+      "x": 40.3085390316703,
+      "y": 28.29799156289953
+    },
+    "velocity": {
+      "x": 1.1193442925917167,
+      "y": -6.217100803393389
+    }
+  },
+  "peers": [
+    {
+      "idx": 11,
+      "picture": {
+        "pos": {
+          "x": 30.865170540423332,
+          "y": 30.53109119922122
+        },
+        "vel": {
+          "x": -2.9220395338817746,
+          "y": -0.06889320976890415
+        },
+        "stance": null,
+        "facing": 3.9030447515800173,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 12,
+      "picture": {
+        "pos": {
+          "x": 32.02620819246762,
+          "y": 23.554354841917558
+        },
+        "vel": {
+          "x": -3.7194599710917977,
+          "y": -1.6772834905239478
+        },
+        "stance": null,
+        "facing": 2.6330653894801825,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 13,
+      "picture": {
+        "pos": {
+          "x": 32.60004015385786,
+          "y": 25.05623410269289
+        },
+        "vel": {
+          "x": -2.0196935521202577,
+          "y": 0.2917582790184237
+        },
+        "stance": null,
+        "facing": 2.874311975757823,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 14,
+      "picture": {
+        "pos": {
+          "x": 31.748887271587623,
+          "y": 29.090764238092923
+        },
+        "vel": {
+          "x": -2.2817760698958973,
+          "y": 1.2046648254368781
+        },
+        "stance": null,
+        "facing": 3.608214623522682,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 15,
+      "picture": {
+        "pos": {
+          "x": 42.87071145732363,
+          "y": 27.396747317899
+        },
+        "vel": {
+          "x": -1.4010257437638327,
+          "y": 0.6509080872086198
+        },
+        "stance": null,
+        "facing": 5.808607819012594,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 16,
+      "picture": {
+        "pos": {
+          "x": 38.43374546733156,
+          "y": 32.93387549731037
+        },
+        "vel": {
+          "x": -1.0739101040344887,
+          "y": 6.017041989345058
+        },
+        "stance": null,
+        "facing": 1.7440050640201692,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 17,
+      "picture": {
+        "pos": {
+          "x": 42.13460347118491,
+          "y": 9.3775574703947
+        },
+        "vel": {
+          "x": 4.395488279319187,
+          "y": 0.222539139789885
+        },
+        "stance": null,
+        "facing": 6.378352531912308,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 18,
+      "picture": {
+        "pos": {
+          "x": 43.54583564697701,
+          "y": 44.16556490559361
+        },
+        "vel": {
+          "x": 6.920444477897839,
+          "y": 0.38306803643262527
+        },
+        "stance": null,
+        "facing": 0.04851143478005718,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 19,
+      "picture": {
+        "pos": {
+          "x": 36.04770217074309,
+          "y": 24.691030670612097
+        },
+        "vel": {
+          "x": 1.264115662117703,
+          "y": 0.8891681889163239
+        },
+        "stance": null,
+        "facing": 6.868755241340967,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "idx": 20,
+      "picture": {
+        "pos": {
+          "x": 50.548423897720454,
+          "y": 28.523431581074114
+        },
+        "vel": {
+          "x": 0.47959332656189807,
+          "y": -0.7180070308939869
+        },
+        "stance": null,
+        "facing": 3.2238470976482434,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    }
+  ],
+  "samples": [
+    {
+      "name": "raw",
+      "command": {
+        "vel": {
+          "x": -1.9714866415324397,
+          "y": -9.338659146327736
+        },
+        "cutSkill": 1.075
+      },
+      "predictedTorsoClearance": -0.2538527267723271,
+      "worstPeer": 15,
+      "allUpright": true,
+      "achievedEndpoint": {
+        "pos": {
+          "x": 41.86861039704286,
+          "y": 26.95347541055541
+        },
+        "vel": {
+          "x": -0.7775151809880325,
+          "y": -6.608313951121293
+        }
+      },
+      "goalError": 2.5458094369772897,
+      "progressAlongRaw": 3.468452249468853,
+      "firstStepError": null
+    },
+    {
+      "name": "half",
+      "command": {
+        "vel": {
+          "x": -0.9857433207662198,
+          "y": -4.669329573163868
+        },
+        "cutSkill": 1.075
+      },
+      "predictedTorsoClearance": -0.06279285130988438,
+      "worstPeer": 15,
+      "allUpright": true,
+      "achievedEndpoint": {
+        "pos": {
+          "x": 41.61001604011081,
+          "y": 27.625600216381212
+        },
+        "vel": {
+          "x": -0.9857433207662198,
+          "y": -4.669329573163868
+        }
+      },
+      "goalError": 3.1220666892581277,
+      "progressAlongRaw": 2.864236795529889,
+      "firstStepError": null
+    },
+    {
+      "name": "gather",
+      "command": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1.075
+      },
+      "predictedTorsoClearance": 0.3871091675603102,
+      "worstPeer": 15,
+      "allUpright": true,
+      "achievedEndpoint": {
+        "pos": {
+          "x": 42.11898358125453,
+          "y": 28.664089068836496
+        },
+        "vel": {
+          "x": -0.00486057780988034,
+          "y": -1.0478624625711426
+        }
+      },
+      "goalError": 4.251717382037658,
+      "progressAlongRaw": 1.7430124380252279,
+      "firstStepError": null
+    },
+    {
+      "name": "applied",
+      "command": {
+        "vel": {
+          "x": -1.470347155157992,
+          "y": 0.2622575685170311
+        },
+        "cutSkill": 1.075
+      },
+      "predictedTorsoClearance": 0.3771560292188817,
+      "worstPeer": 15,
+      "allUpright": true,
+      "achievedEndpoint": {
+        "pos": {
+          "x": 41.800118222308356,
+          "y": 28.627732448287603
+        },
+        "vel": {
+          "x": -1.0749547047166672,
+          "y": -1.1434063536883696
+        }
+      },
+      "goalError": 4.14197612172882,
+      "progressAlongRaw": 1.844449052289346,
+      "firstStepError": {
+        "position": 0,
+        "velocity": 0
+      }
+    }
+  ],
+  "freePreviewSteps": 48,
+  "nativeExecutions": 0,
+  "elapsedSeconds": 0.332511306,
+  "limits": [
+    "The .6s peer paths are conditional constant-velocity pictures, not their future decisions. Age is not advanced again.",
+    "These are the existing available movement choices; no new policy or outcome is selected.",
+    "Defensive behavior classes in this encounter have no calledMotion override. The recorded see pictures are therefore the spacing pictures."
+  ]
+}

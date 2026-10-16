@@ -5,8 +5,13 @@
 `codex/coverage-approach-duty` starts accepted
 `bb6d4c73948d53ba841dd9338dd240146c739f8c` (#91). Reuse saved A020/A042 and
 ordinary controls to identify one repeated pre-contact decision: installed duty,
-consumed cue, attainable objective, request and achieved motion. Initial boundary
-is a diagnostic/report only; no runtime edits claimed yet. A020/A042 initiating
+consumed cue, attainable objective, request and achieved motion. The delivered
+[diagnosis](reviews/coverage-approach-duty.md) supports no new approach patch:
+A020 retains its duty but yields to real acquired traffic, with helpers too far
+away by its first short hold; current A006 finishes and A008's actual Y/NB
+defense survives. Catalog rat-cut versus generic-zone fallback is the next
+bounded coaching-contract question, not an A020-specific change. Boundary is
+diagnostics/report only; all runtime files remain accepted source. A020/A042 initiating
 causes remain distinct. Coordinate any spacing/common movement-modifier change
 with Flex/Do-It-All before editing. Preserve all accepted recognition/support/
 lateral-flow/traffic corrections and real contact physics. Integration owns
