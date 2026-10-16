@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Run: extensive run / play-action stress suite — 2026-10-16
+
+Explicit user checkpoint: design and execute a broad, complete installed-run
+suite and complementary play actions against varied fronts/looks. Branch
+`codex/run-playaction-stress` from acceptedbb6d4c73948d53ba841dd9338dd240146c739f8c,
+queuebb1c44d. Run owns new scripts/lab manifests, collector tests and reports;
+no shared production/controller/physics edit in this diagnostic pass. Preserve
+#99 atd212b41 as a separately pinned prototype host, not accepted production.
+Freeze input coverage and execution budget before results. All22 react normally,
+ordinary capabilities/flags, matched PA/no-fake controls and legitimate scouting
+histories. Record censoring, numerical/budget failures and omitted contracts.
+Existing PA fake tags do not install distinct run techniques: audit and report
+that limitation, never count relabelled copies as independent physical tests.
+Integration keeps full-suite/promotion authority; this user-requested broad
+campaign is a diagnostic exception to routine small-worker checks, not a new
+mandatory screen or an automatic game campaign.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
