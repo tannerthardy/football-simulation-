@@ -1,7 +1,7 @@
 {
   "schema": "accepted-broad-audit-shared-access-v1",
   "status": "Resolved: both immediate subsets independently verified by Integration; Measurement also published both full48 arms and completed the #82 comparison. No recollection or duplicate full download.",
-  "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "acceptedDevelop": "86250bb4f0c6f421878c204161864d523c3e30b6",
   "savedAuditCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
   "savedAuditSourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
   "publishedInventoryCommit": "58303d6e22a42a5dce78b6ad0b967229140a59e1",
@@ -97,7 +97,7 @@
   "newSimulations": 0,
   "newSharedSuiteRuns": 0,
   "validation": {
-    "acceptedRefRechecked": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+    "acceptedRefRechecked": "86250bb4f0c6f421878c204161864d523c3e30b6",
     "completed69ReviewRepeated": false,
     "sourceTestsSettingsFixturesChanged": false,
     "originalCommittedReceiptsChanged": false,
@@ -249,6 +249,7 @@
     "reportUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md",
     "publicationUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/data/reviews/current/panel-pr82/artifact-publication.json",
     "measurementVerifiedNativeMembers": 96,
-    "state": "complete; no automatic repeat for new intake"
+    "state": "complete; no automatic repeat for new intake",
+    "currentAcceptedPinNotMeasured": "86250bb4f0c6f421878c204161864d523c3e30b6"
   }
 }

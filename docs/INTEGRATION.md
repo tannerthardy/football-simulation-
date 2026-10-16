@@ -49,6 +49,42 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@86250bb4f0c6f421878c204161864d523c3e30b6`** is accepted after
+routine [#85](https://github.com/tannerthardy/football-simulation-/pull/85) adoption.
+Its entire tree equals publication `b313013b6296707ae6780ff8f14485de3b07cd90`.
+[Actual merge receipt](../data/reviews/current/pr85-merge.json).
+
+Included **#84 only**: exact independently reviewed joined Duo admission and
+combo-transfer controls, two protected files. Do-It-All accepted exact4af71ac;
+source equals the reviewed/tested author dcebbee. Existing keeper security,
+physical loads/capabilities and all earlier accepted controllers stay preserved.
+
+Exact final freeze `572711032afeec75aaa83bb6edf8f288f2223db3`: **1,760 TS/148
+files,145 Python,typecheck/build pass**,192.598s,44flags/components1,Node22.23.3,
+no skips/input drift. Source `dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3`;
+validation `5b58b54b18873b3b8d40c52c47162c329fda57c6ed10c1299e3283576f2338dd`.
+[Final #84-only receipt](../data/reviews/current/duo-motion-integration/final-receipt.json).
+No unchanged check was repeated to publish or merge.
+
+**#81 is not adopted.** First combined bbc4f82 failed one existing zero-preview
+cost assertion. One three-lane diagnostic preserves commands/contact/budgets but
+adds15/0/14 forecasts. Run consults Do-It-All on that contract; no assertion waiver.
+#81 was normally reverted before the separate exact #84-only verification.
+[Failed receipt/diagnostic](../data/reviews/current/duo-motion-integration/review-receipt.json)
+remain failed/source-pinned. Total command cost396.324s includes both different
+candidate runs and the single1.451s diagnostic; no new panel or evaluation games.
+
+A030 simultaneous DT/LB load before runner arrival supports the Duo mechanism.
+A018 still misses RG/LB; changed C release/draws, longer doubles and broader
+front/formation/contact-law limitations remain. Run resumes that bounded A018
+question after reconciling this accepted pin; no new full-game evaluation.
+#76 parked; lateral/low-speed/observer/transport/navigation/Physics remain separate.
+Historical4ded6b6, GitHub default, branches and scientific evidence unchanged.
+Measurement's prior7eb2554 panel is complete; it is not a measurement of this pin.
+
+<details>
+<summary>Previous accepted #82 /7eb2554 record — historical</summary>
+
 **`develop@7eb2554f5dbb497cff169f386704a5b0f4cf43fe`** is the accepted shared
 tree after routine [#82](https://github.com/tannerthardy/football-simulation-/pull/82)
 adoption under standing user authority. Its entire tree equals publication
@@ -81,6 +117,8 @@ Measurement completed the one frozen48-case comparison against saved8ca8dee;
 [report and complete arm transport](https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md).
 No baseline recollection or repeat comparison for this intake. The independent four-game packet requires a CEO call. Contributors
 reconcile relevant accepted changes at clean checkpoints, not forced rebases.
+
+</details>
 
 <details>
 <summary>Previous accepted #78 /90edc525 record — historical</summary>
@@ -166,9 +204,39 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
 
-### Current intake — 2026-10-15
+### Current collection/cap batch — 2026-10-15
 
-Accepted develop remains **7eb2554**. Independent reviews accepted #84 and #81,
+Accepted develop remains86250bb. Independently accepted scope is assembled as
+nine exact file blobs in `codex/collection-cap-integration`; Integration owns one
+all-phase verification, reusing focused/native receipts. #88 does not wait for #87.
+
+**Passing frozen candidate:** `5e32b7afd69bdf72d01df03c19bd221e67d54c45`,
+1,772 TS/150 files,145 Python,typecheck/build pass;195.589s,44flags/components1,
+Node22.23.3, no skipped phases/input drift. Source6532e6d, validationc8fd0f8.
+[Final combined receipt](../data/reviews/current/collection-cap-integration/final-receipt.json).
+Publication changes only documentation/evidence; adoption awaits final ref/tree checks.
+No additional standalone native execution, panel or evaluation games.
+[Exact intake, dependencies, byte checks and portable patches](../data/reviews/current/collection-cap-integration/intake.json).
+
+| Item | Included scope / exact pin | Independent acceptance and remaining football limits |
+| --- | --- | --- |
+| #88 collection | `6573521bc28ea09c2aa6c05770f20b2089cc9fe6`: post-release blocking.ts clearance, direct test/fixture only | [Do-It-All ACCEPT6206668974](https://github.com/tannerthardy/football-simulation-/pull/88#issuecomment-6206668974). Actual A018 Mike load while RT retains DT; release unchanged. Later C/LG collision49.969 remains; A030 shorter ending/D05 changed same attempt/D07 censored. #86 diagnostic is not a dependency. |
+| #81 minimal admission + cost | `f04235ed91ad41ca79cbd22cbfccab48477d06db` + `d80dcd3015358e604f91cb026f562f6f4f4781e5`, evidence `c6c8b4823acb27c13769f32305a79d5628cf19b2`; four files | [Run ACCEPT6206768415](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6206768415). Original clear-lane zero-preview assertion unchanged; counts0/0/0, residual/recovery/crossing still forecast. No movement-law or full-engine speedup claim. Old #81 head/failed receipt stay distinct and unchanged. |
+| #89 moving alley | `78a00645e4f821d45604a1ed68c35592de1f5926`: one run-fits.ts lateral velocity input + four coverage contracts | [Run ACCEPT6206768642](https://github.com/tannerthardy/football-simulation-/pull/89#issuecomment-6206768642). Existing acquired lateral motion, fixed longitudinal cap. Better A042/A006 entry; A006 hold still breaks and later FS acquisition worsens3.75→3.90. A003 late changes; censored controls remain censored. |
+| #87 policy held separately | `9760de031cae3bda7c926735f8edeb97fa4574e5`, executed52518be | Catching approves objective producers only. [Run full policy/interaction review requested](https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6206932842). New spacing gate/common-track/catch metadata overlaps cost and consumes #89 moving flow. Text-clean application is not policy approval. No #87 source or observer included now. |
+
+Three disjoint production hunks preserve shared physics/capacities/defaults,
+keeper security, acquired-picture ownership and installed responsibilities.
+Thirty-three published evidence payload hashes and four source digests verified;
+23/71/101 focused checks and typecheck receipts reused. No new native cases,
+roster/panel/game collection or contributor suite. [Independent reviews](../data/reviews/current/collection-cap-integration/cost-alley-independent-review.json),
+[#88 audit](../data/reviews/current/collection-cap-integration/pr88-independent-review.json).
+Rejected common/gather/shoulder/lateral variants, old research ancestry, #76 and
+experimental Physics remain separate. Historical4ded6b6/GitHub default unchanged.
+
+### Previous #85 intake — completed historical stage
+
+Accepted develop is **86250bb** through #85 with #84 only. Independent reviews accepted #84 and #81,
 but first exact combined freezebbc4f82 fails one existing #81 zero-preview cost
 contract:1,761 TS pass/one fail;145 Python/typecheck/build pass,202.275s, all
 phases complete/inputs unchanged. [Preserved failure](../data/reviews/current/duo-motion-integration/review-receipt.json).
@@ -176,19 +244,19 @@ One targeted diagnostic of its three original lanes preserves commands, actual
 contact-free motion and physical budgets; preview calls are15/0/14. The cost
 contract is with Run consulting Do-It-All; no assertion has been changed.
 
-**#85 now advances only independently accepted #84.** Its final protected diff is
+**#85 adopted only independently accepted #84 as86250bb.** Its final protected diff is
 blocking.ts + combo-transfer.test.ts, exactly the reviewed blobs/source dcebbee.
 #81 runtime/test/fixture are removed by a normal revert; original candidate,
 failed receipt, diagnostic and portable patch remain fetchable in history.
 Exact #84-only freeze5727110 passes all phases: 1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s.
 [Final #84-only receipt](../data/reviews/current/duo-motion-integration/final-receipt.json).
-No skips/input drift. Final ref/tree checks precede routine adoption; original
+No skips/input drift. Final ref/tree checks passed; #85 is merged as86250bb. Original
 failed combined receipt remains failed. No unchanged verification repeat. No new panel/replay/game campaign.
 [Intake, reviews and patches](../data/reviews/current/duo-motion-integration/intake.json).
 
 | Item | Exact scope / pins | Independent decision and owner |
 | --- | --- | --- |
-| #84 Duo surface release | Head `4af71ac8a8f320456e87a027579200469a0c1ee0`, clean code/tests `aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173`, evidence `70ed238a2246cd89d3c4108d647245baf5ff70bb`; joined Duo admission + existing combo-transfer tests only | [Do-It-All ACCEPT](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280): own acquired surface, necessary climb/crossing-fill controls and preserved defensive wins.66 focused/typecheck and published native evidence reused; A018 missed LB, A030 changed C release and execution-draw limits remain. |
+| #84 accepted via merged #85 | Head `4af71ac8a8f320456e87a027579200469a0c1ee0`, clean code/tests `aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173`, evidence `70ed238a2246cd89d3c4108d647245baf5ff70bb`; joined Duo admission + existing combo-transfer tests only | [Do-It-All ACCEPT](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280): own acquired surface, necessary climb/crossing-fill controls and preserved defensive wins.66 focused/typecheck and published native evidence reused; A018 missed LB, A030 changed C release and execution-draw limits remain. |
 | #81 independently accepted; integration HOLD | Minimal `f27456b5f4cd7e5d628417662a77e4ede5b85bfc`, reconciled `edad30904780523896092f592f4c30f1686cc764`, head/evidence `6e19ad2d4aac73e71ae57c1893a9b389074eeaa5`; spacing.ts + residual-motion test/fixture only | [Run ACCEPT](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204555966): attainable tube/World preview, acquired peer data and shared spacing contracts.13 focused/typecheck reused. A044 collision/drop/result unchanged; A008 exact. No avoidance/mesh benefit claim; observer excluded. New zero-preview cost conflict is held; Run + Do-It-All disposition required. |
 | #76 parked/frozen disposition | Unchanged head `4cf253efead2cac450abe0bc74aa5e0db0306126`, code `2e1dfa343a77f142b02a3a23fa49a88c0b40ef13`, base8ca8dee | [Do-It-All confirmation requested](https://github.com/tannerthardy/football-simulation-/pull/76#issuecomment-6204471833): close as preserved parked research, or name a live objective/current-tree next action. No #81/#84 dependency; not adopted or rejected. No new tests for bookkeeping. |
 | Separate lateral trial | `codex/mesh-lateral-approach@498b36ea36fc08e6dad5686244e75e6de79c6df8` | HOLD, not a production candidate. A044 impulse falls but collision persists/robber position worsens; A008 exact. Earlier alternatives remain unproved. Low-speed expansion, observer, #76 carrier override and experimental Physics excluded from this batch. |
@@ -201,6 +269,13 @@ included. #84 preserves simultaneously loaded DT/LB work without extra informati
 or a capability boost; A018 still misses the LB. #81 adds the missing attainable
 forecast without repairing current A044's collision. No blanket football benefit
 or unchanged per-case randomness claim.
+
+[Consolidated #85 accepted-pin and owner handoff](https://github.com/tannerthardy/football-simulation-/pull/85#issuecomment-6204783778)
+is posted. [#84 is closed as incorporated by extraction](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204784817),
+with its branch/evidence preserved. #81 remains open but `integration-ready` is
+removed; its original author body is preserved beneath an explicit Integration
+HOLD notice. [Current #81 next decision](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204786315).
+No further unchanged verification, panel or games are requested for publication.
 
 **Measurement's requested #82 comparison is complete**, not awaiting collection.
 [Immutable report and full-arm distribution](https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md).

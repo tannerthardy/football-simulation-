@@ -237,6 +237,23 @@ describe('achievable teammate turning', () => {
     }
   });
 
+  it('still previews a matched request when support is recovering or an acquired peer crosses the travel line', () => {
+    for (const kind of ['recovering', 'crossing'] as const) {
+      const { a, b } = stage();
+      if (kind === 'recovering') a.body.support!.xi.y = .1;
+      const picture = { pos: { ...b.pos }, vel: { x: 0, y: kind === 'crossing' ? -2 : 0 } };
+      const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
+      try {
+        const intents: Intent[] = [{ vel: { ...a.vel } }, { vel: { x: 0, y: 0 }, free: true }];
+        const source = structuredClone(a.body);
+        // Private peer motion stays still; only the supplied picture crosses.
+        spaceTeammates([a, b], intents, () => picture, { now: 2 });
+        expect(preview).toHaveBeenCalled();
+        expect(a.body).toEqual(source);
+      } finally { preview.mockRestore(); }
+    }
+  });
+
   it('still collides when a straight runner is already too close to stop', () => {
     const { a, b } = stage(); b.body.pos = { x: 51, y: CENTER_Y };
     const world = new World([a.body, b.body]); world.time = 2;
