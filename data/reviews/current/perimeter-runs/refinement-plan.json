@@ -1,0 +1,15 @@
+{
+  "initialFreeze": "31bb0ac80475ab658ed40b62c60e3ed9d915a7f1/source36bbbf77b9c64e1e5ebc1e9c9199d0f106b65db09563049d20dfc4dbfb8e74db",
+  "buck": {
+    "question": "Does using the already implemented under-center wide mesh for the new Buck call supply its sweep approach, instead of an inside Power mesh that crosses the pin wall early?",
+    "change": "Buck only joins existing stretch-mesh geometry; runner scoring, cadence, blockers, World and physical handoff eligibility unchanged.",
+    "case": "B01 exact frozen input, max5simseconds/5wallseconds. Compare requested/achieved approach, first contact and guard work; yards do not determine pass."
+  },
+  "pinPull": {
+    "question": "Does allocating free climbers as a group avoid stealing the outside TE's near backer and forcing him across LT?",
+    "evidence": "P01: free LG gets Will while outside H gets Mike; H crosses loaded LT at.70, six peer impacts follow. Existing global surface matcher can assign LG/Mike and H/Will without inventing new jobs.",
+    "change": "New perimeter installation only: existing maximum-account/minimum-lateral-travel matcher across remaining free climbers/backers. Pin/force/puller jobs, physical capabilities and controllers unchanged.",
+    "case": "P01 exact frozen input, max5simseconds/5wallseconds. Run after isolated B01 refinement, whose new Buck branch is inactive in P01. Judge actual access/load/traffic and preserve legitimate DE recovery."
+  },
+  "crack": "C01 six-yard ending is not proof of complete protection: RT never loads CB_S before its runner contact. Inspect existing requests, clearance and acquired target before proposing any change. No automatic fix or extra coverage controller."
+}
