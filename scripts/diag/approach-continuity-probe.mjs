@@ -16,7 +16,7 @@ import {requestToCover} from '../../src/sim/motion-plan.ts';
 import {PerceptionBuffer} from '../../src/sim/perception.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
 import {sourceVersion} from '../source-version.ts';
-const [dir,out]=process.argv.slice(2),start=performance.now(),hash=b=>createHash('sha256').update(b).digest('hex');
+const [dir,out,modeArg]=process.argv.slice(2),start=performance.now(),hash=b=>createHash('sha256').update(b).digest('hex');
 assert.ok(!existsSync(out));
 const fixtures=[];
 for(const [name,t]of [['A020',3.75],['A042',2.65],['A008',2.5]]){
@@ -42,7 +42,16 @@ function planned(a,seen,contact,offset,ordinary){
   vel={x:requestToCover(gaitLag(a.profile),goal.x-a.pos.x,time,a.vel.x),
    y:requestToCover(gaitLag(a.profile),goal.y-a.pos.y,time,a.vel.y)},
   speed=Math.hypot(vel.x,vel.y),cap=a.profile.vmax*a.speedScale;
- if(speed>cap){vel.x*=cap/speed;vel.y*=cap/speed;}
+ if(modeArg==='--terminal'){
+  // Minimum-effort double-integrator meeting of position AND velocity.
+  // These are requested velocities; the unchanged World supplies all forces.
+  const tau=gaitLag(a.profile),T=Math.max(.2,time),
+   ax=6*(goal.x-a.pos.x)/(T*T)-(4*a.vel.x+2*seen.vel.x)/T,
+   ay=6*(goal.y-a.pos.y)/(T*T)-(4*a.vel.y+2*seen.vel.y)/T;
+  vel.x=a.vel.x+tau*ax;vel.y=a.vel.y+tau*ay;
+ }
+ const requestedSpeed=Math.hypot(vel.x,vel.y);
+ if(requestedSpeed>cap){vel.x*=cap/requestedSpeed;vel.y*=cap/requestedSpeed;}
  return{...ordinary,vel,facing:Math.atan2(vel.y,vel.x)};
 }
 const rows=[];
@@ -73,11 +82,13 @@ for(const f of fixtures)for(const side of [1,-1])for(const mode of ['baseline','
   if(gap<best.distance)best=sample;
   if(!entry&&gap<=contact)entry=sample;
   sequence.push(sample);
-  if(entry||d.body.support.state!=='up')break;
+  if(gap<=d.profile.radius+target.profile.radius+.25||d.body.support.state!=='up'
+   ||actual.pos.y<=0||actual.pos.y>=FIELD_WIDTH)break;
  }
  rows.push({case:f.name,side,mode,inputHash:f.inputHash,captureHash:f.captureHash,contact,best,entry,sequence});
 }
 const result={schema:'approach-continuity-probe-v1',source:sourceVersion(),operator:hash(readFileSync(import.meta.filename)),
+ mode:modeArg??'waypoint',
  nativeExecutions:0,seconds:(performance.now()-start)/1000,
  limits:['Declared constant runner path; unloaded defender World; no contact, tackle or force prediction.',
   'Both controllers replan from the same delayed channel at 20Hz. Pursuit execution bias fixed to zero in this controlled probe.'],rows};
