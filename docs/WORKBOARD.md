@@ -1,5 +1,15 @@
 # Current work ownership
 
+## Claude open-field tackling investigation — 2026-10-16
+
+Claude owns `claude/open-field-tackling`, stacked on `claude/zone-run-breakthrough`
+`50f6a08` (accepted base c3264b0; not integrated). Edited: `run-fits.ts` new
+`isRunCap`/`capFit` and one flag-gated line in `executeRunFit`; `DEEP_CAP` is
+default-off and parked (better secondary depth and conditional tail, but it
+exposes soft box fits). Diagnostics under `scripts/diag/open-field/`. No
+World, tackle-law or capacity edits; two physics questions handed off in the
+[review](reviews/open-field-tackling.md).
+
 ## Claude zone run game investigation — 2026-10-16
 
 Claude owns `claude/zone-run-breakthrough` from accepted c3264b0 (not

@@ -140,6 +140,34 @@ const PULL_READ = process.env.PULL_READ !== '0';
 /** Diagnostic pull acquisition from observed departure, independent of an
  * opponent's current engagement. Default off pending matched controls. */
 const PULL_CUE = process.env.PULL_CUE === '1';
+/** Experimental (default-off): a deep-zone defender fitting a run is the last
+ * level and keeps his installed depth until the ball crosses the line, rather
+ * than coming down to the alley landmark at linebacker depth. See capFit. */
+const DEEP_CAP = process.env.DEEP_CAP === '1';
+
+/** Is this defender the installed deep cap on a run? Installed zone, not the
+ * offense's call: a deep-zone defender with an alley fit. */
+export function isRunCap(a: Agent, sim: PlaySim): boolean {
+  if (!DEEP_CAP || a.runFit?.kind !== 'alley') return false;
+  const role = sim.defAlign.spots[a.slot as DefSlot]?.role;
+  return role?.kind === 'zone' && isDeepZone(role.zone);
+}
+
+/**
+ * The cap is the last level until the ball crosses the line: he keeps his
+ * installed depth, mirroring the runner he sees with inside-out leverage, and
+ * does not come down to an alley landmark at linebacker depth first. Once the
+ * runner he sees is past the line he pursues like everyone else, closing the
+ * cushion with the ordinary chase and gathering approach. Only the consumed
+ * picture of the runner is used.
+ */
+function capFit(a: Agent, sim: PlaySim, c: Agent, seen: Perceived, side: number) {
+  const dir = sim.attackDir(c.team);
+  if ((seen.pos.x - sim.los) * dir > 0) return chase(sim, a, c);
+  const home = (sim.defAlign.spots[a.slot as DefSlot]!.pos.x - sim.los) * dir;
+  const aim = a.mind.aim('cap-fit', { x: sim.los + dir * home, y: seen.pos.y + side * 1.2 + a.mind.placementError }, sim.t);
+  return track(a, aim, { x: 0, y: seen.vel.y }, { speed: .9, gain: 2, facing: dir > 0 ? Math.PI : 0 });
+}
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
@@ -184,6 +212,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
   const seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  if (!premesh && isRunCap(a, sim) && sim.catchAt < 0 && (c !== sim.qb || !sim.scrambled)) return capFit(a, sim, c, seen, job.side);
   if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
   let gy = liveGapY(sim, a, job.gap, job.side);
