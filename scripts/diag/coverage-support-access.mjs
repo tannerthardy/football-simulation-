@@ -25,6 +25,7 @@ assert.equal(segmentDistance({x:2,y:0},{x:3,y:0}),2);
 const selected=[
  {id:'A020',file:'A020-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain pair.'},
  {id:'A008',file:'A008-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain successful opposing control.'},
+ {id:'A006',file:'A006-current.json.gz',qualification:'Current accepted #91 runtime; new observed/plain fresh-player helper trace. This supersedes the old failed-hold ending for current-source claims.'},
  {id:'A042',file:'moving-cap-A042.json.gz',qualification:'Published #89 source; Run independently verified runner6/SS21/FS20 body/requests equal current #87 composition through3.80 only. Other helper bounds below are historical, not current-composition claims.'},
  {id:'A006',file:'moving-cap-A006.json.gz',qualification:'Published fresh-player #89 transfer, older runtime. No current #91 equivalence established.'},
 ];
@@ -69,12 +70,20 @@ for(const spec of selected){
  const u={x:rvel.x/speed,y:rvel.y/speed};
  const degrees=Math.acos(Math.max(-1,Math.min(1,dot(dvel,rvel)/Math.max(1e-12,norm(dvel)*speed))))*180/Math.PI;
  const contactDecision=(c.native.decisions??[]).filter(d=>d.kind==='tackle-opportunity'&&d.a===tackler&&d.t<=first.t).at(-1);
- rows.push({case:spec.id,qualification:spec.qualification,inputSha256:c.inputSha256,sourceSha256:c.sourceSha256,
+ const parity={};
+ if(spec.file.endsWith('-current.json.gz'))for(const i of [runner,tackler,...(spec.id==='A020'?[20,21]:[])]){
+  const original=raw.result.telemetry.frames,of=raw.result.frames;
+  parity[i]={id:c.actors[i].id,
+   firstRecordedBodyDifference:c.native.states.find((f,k)=>JSON.stringify(f.agents[i].body)!==JSON.stringify(original[k]?.agents[i]?.body))?.t??null,
+   firstRecordedRequestDifference:c.native.states.find((f,k)=>JSON.stringify(f.agents[i].intent)!==JSON.stringify(original[k]?.agents[i]?.intent))?.t??null,
+   firstRoundedPositionDifference:c.native.frames.find((f,k)=>JSON.stringify(xy(f,i))!==JSON.stringify(of[k]&&xy(of[k],i)))?.t??null};
+ }
+ rows.push({case:spec.id,capture:spec.file,qualification:spec.qualification,inputSha256:c.inputSha256,sourceSha256:c.sourceSha256,
   runner:c.actors[runner],tackler:c.actors[tackler],firstGrasp:first.t,firstEnding:end,
   firstHoldInterval:end.t-first.t,entry:{roundedCenterSeparation:norm(delta),defenderVelocity:dvel,runnerVelocity:rvel,
    defenderSpeed:norm(dvel),travelHeadingDifferenceDegrees:degrees,aheadAlongRunner:dot(delta,u),
    transverseToRunner:-delta.x*u.y+delta.y*u.x},contactDecision:contactDecision??null,
-  helpers,allOtherDefendersExcludedFromFreeArrival:helpers.every(h=>h.excludedWithoutExternalAssistance),
+  helpers,allOtherDefendersExcludedFromFreeArrival:helpers.every(h=>h.excludedWithoutExternalAssistance),recordedParityWithOriginalInput:parity,
   end:{t:c.end,censored:c.censored},events:c.events.filter(e=>['catch','tackle_wrap','broken_tackle','missed_tackle','tackle'].includes(e.type)),
  });
 }
