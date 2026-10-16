@@ -2,19 +2,21 @@
 
 ## Coherent defensive interception — 2026-10-16
 
-Catching owns the bounded acquired moving-alley-cap return in
-`run-fits.ts:executeRunFit`, consulting Run (PR85 comments), plus its approach
-diagnostics on `codex/defensive-interception-continuity`, from accepted
-86250bb4f0c6f421878c204161864d523c3e30b6 (#85/#84-only). Prior rejected trial/evidence
-remain on e133d27 and separate trial3bc12ff. First explain why real football's
-intercept-and-gather objective fails over successive requests; then test one
-coherent acquired-picture alternative across crossing, incoming, rear and useful
-successful approaches before native A020/A042/control transfer. Preserve information,
-responsibilities, contests, force leverage, valid desperation and earned offense.
-Late gather/steering trials were adverse and normally reverted; normal lateral
-tracking of the acquired cap is the next initiating-objective question. No
-spacing/helper, contact physics, capacity or grip edits. Run/Do-It-All retain
-Duo/access/mesh ownership. Integration owns any combined verification.
+Catching completed the re-diagnosis on `codex/defensive-interception-continuity`,
+accepted86250bb4f0c6f421878c204161864d523c3e30b6. Late waypoint, braking-gate,
+moving-gather and alley-shoulder trials are preserved and normally reverted.
+Net runtime correction is ONE line in `run-fits.ts:executeRunFit` alley cap:
+its already acquired lateral aim now supplies acquired lateral velocity to track,
+while longitudinal cap motion stays zero. Run consulted on PR85; independent
+owner review pending. Common/approach source boundary released, no helper/spacing,
+force/insertion/release, capacities or physics changes. [Football evidence](reviews/alley-cap-moving-picture.md):
+A042 entry1.690→.863yd; fresh A0061.774→1.059yd, first hold still breaks.
+A003 Wide Zone timing preserved with small late movement change; A008 complete
+and A020 unfinished pass-control recorded histories/events exact.101 focused
+checks/typecheck pass;20 short native executions including rejected trials,
+41.675 total/15.954 native launcher seconds; no full suite/build/games.
+Submit portable two-file runtime/test extraction, not research ancestry.
+Integration owns exact combined verification; Run/Do-It-All retain their scopes.
 
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 

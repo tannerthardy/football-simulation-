@@ -1,0 +1,62 @@
+{
+  "schema": "approach-reassessment-rejected-v1",
+  "files": [
+    {
+      "path": "continuity-probe-v1.json.gz",
+      "sha256": "5d02757943177cfdd81c0befbe48c2547c9e7372d6733a8e79785195a6e40c25",
+      "uncompressedSha256": "322afab3aba5a378156028d14f69eb1681a5a26dd966b751b9e1298c55a066b8"
+    },
+    {
+      "path": "continuity-terminal-v2.json.gz",
+      "sha256": "e1f91dcd3510e680637caf36d1d35786836c47a75c3e3ca71abd88fa675a7a56",
+      "uncompressedSha256": "d5b1cc0a82620ac9c989373ee4a93283cb3f4166d8f83a423e6c5d8717684e11"
+    },
+    {
+      "path": "continuity-earlier.json.gz",
+      "sha256": "77f6e9ed921f3a3dce775f4273ab2ce9114a5a2eb23569a1df75b270506d4294",
+      "uncompressedSha256": "b1f5769e1a39b42b932d58d84f1a3aaaaf56206778457cfd86021e232f9f2b9d"
+    },
+    {
+      "path": "arrival-clock.json.gz",
+      "sha256": "a669cc0ec11f235bddc45c08089dda053e07bf17331322dcac9b8c24618678e8",
+      "uncompressedSha256": "ab9a3a5066997e947eb3a6d6af652b7e54aa9cbc4fd705de51740e87bf5c8509"
+    },
+    {
+      "path": "collision-course-probe.json.gz",
+      "sha256": "22b5a727f8efdf78cedd99ed7a1fdf80036aba700d527404792beb9463aeb38d",
+      "uncompressedSha256": "337f45b008bad31227da0bc123fea66ff4f78f4dc474bbc9f0df957d5a6cc96e"
+    },
+    {
+      "path": "tracking-objective.json.gz",
+      "sha256": "a127b460768c3ad1cfcf90c847efd60a002141d51044a561a7706dbf37d4a3be",
+      "uncompressedSha256": "f936cee1ef28a647ac5f92f0869a7d31d70bfe7864aa25d09e28741aa249f44b"
+    },
+    {
+      "path": "working-gather-probe.json.gz",
+      "sha256": "7bc1c848c798b89a41e31a1a1fedbad769a655b952f62bd6f2741d2fe2feeb36",
+      "uncompressedSha256": "452445dd6544743abf6d7cf519f9e556def23b33f7984c42c3e6c65283f9ecf1"
+    },
+    {
+      "path": "working-A020.json.gz",
+      "sha256": "85328211bb8352fcfcd187880161a5020f4f22df753278d5e9c79dac8c9e22fd"
+    },
+    {
+      "path": "working-A042.json.gz",
+      "sha256": "79c768395ec1d60cd697ef36608eadb5f36960e5bdb6e2b474bad87f940ba60f"
+    },
+    {
+      "path": "alley-A042.json.gz",
+      "sha256": "9e792eed36adaccd5a4fb5b62aa022d21bbb7682f2de69ce3a67bedc6e8b531e"
+    }
+  ],
+  "notes": [
+    "All rejected trials are separate from the moving-cap candidate. Full launcher source/flags/inputs/runtimes are in sibling alley-cap-motion/receipt.json.",
+    "Unloaded declared-line probes are not native plays, contact/grip tests or observed future cuts. Zero pursuit bias in the lab only.",
+    "Geometric mirrors did not reflect all saved spin/support fields; they are not an exact physical symmetry certificate. Native and existing mirrored correctness controls govern the candidate."
+  ],
+  "branches": {
+    "gate": "codex/oblique-braking-gate-trial@ada140b",
+    "movingGather": "codex/moving-gather-trial@77a207d",
+    "shoulder": "codex/alley-shoulder-trial@0238ea6"
+  }
+}
