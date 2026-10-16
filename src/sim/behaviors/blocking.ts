@@ -755,10 +755,21 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
+  private stretchCombination(a: Agent): Combination | null {
+    if (this.plan.combination)
+      return this.plan.combination.released ? null : this.plan.combination;
+    const held = this.stretchTrackRead, e = a.engagement;
+    // Release changes the helper's job, not this keeper's struck half.
+    // Retain only our own continuing contact and unchanged responsibility.
+    return held?.combo.released && this.plan.kind === held.combo.soloKind
+      && this.plan.target === held.target && e?.type === 'run'
+      && e.blocker === a && e.defender === held.target ? held.combo : null;
+  }
+
   contactMotion(a: Agent): Vec2 | null {
     const e = a.engagement, read = this.zoneRead, held = this.stretchTrackRead;
     if (e?.blocker === a && !e.surfaceAxis && held && this.stretchStep && e.defender === held.target
-      && this.plan.target === held.target && this.plan.combination === held.combo && !held.combo.released)
+      && this.plan.target === held.target && this.stretchCombination(a) === held.combo)
       return this.stretchStep;
     if (!RUN_CONTACT_TRACK) return null;
 
@@ -1206,8 +1217,8 @@ export class RunBlocker implements Behavior {
   /** Continue the called half while acquiring hands, using a personal held
    * picture. This changes feet only, never the acquired contact surface. */
   private readStretchTrack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): void {
-    const combo = this.plan.combination, run = sim.offCall.run;
-    if (!ZONE_FLOW || !combo || combo.released || combo.defender !== target
+    const combo = this.stretchCombination(a), run = sim.offCall.run;
+    if (!ZONE_FLOW || !combo || combo.defender !== target
       || !combo.members.includes(a) || this.plan.target !== target
       || !run || (run.scheme !== 'wideZone' && run.scheme !== 'outsideZone')) {
       this.stretchTrackRead = null;

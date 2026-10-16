@@ -1104,7 +1104,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
       if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
         anchored = true;
-        blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
+        blockVel = !e.surfaceAxis && contactTrack
+          ? { x: up * 2.4, y: preAnchor.y * 0.3 }
+          : { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
       }
     } else {
       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;

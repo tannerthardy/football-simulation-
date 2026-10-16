@@ -6,6 +6,7 @@ import type { Intent } from '../src/physics/world.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 import { updateEngagements } from '../src/sim/engagement.js';
+import { runContactObservers } from '../src/sim/run-contact-observer.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { contactFixture } from '../scripts/diag/run-contact-technique.js';
 
@@ -135,6 +136,21 @@ describe('paired stretch fits use the acquired picture and their installed half'
     f.sim.t += .05;
     expect(f.update()).toBeNull();
   });
+
+  it('keeps the continuing keeper\'s fit when production release removes its combination', () => {
+    const f = fixture(), before = f.update();
+    f.combo.released = true;
+    f.behavior.plan.combination = undefined;
+    f.combo.soloKind = 'reach';
+    f.sim.t += .05;
+    expect(f.update()).toEqual(before);
+    f.sim.t = 2;
+    expect(f.update()).not.toBeNull();
+    expect(f.see).toHaveBeenCalledTimes(2);
+    f.behavior.plan.kind = 'climb';
+    f.sim.t += .05;
+    expect(f.update()).toBeNull();
+  });
 });
 
 describe('existing lost-depth anchoring retains priority over paired approach feet', () => {
@@ -146,16 +162,24 @@ describe('existing lost-depth anchoring retains priority over paired approach fe
     f.see.mockRestore(); // Ordinary defensive contact reads remain native.
     if (!usePlan) vi.spyOn(f.behavior, 'contactMotion').mockReturnValue(null);
     const intents: Intent[] = f.sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+    let trace: any;
+    runContactObservers.set(f.sim, (e, phase, data) => { if (e === f.engagement && phase === 'movement') trace = structuredClone(data); });
     updateEngagements(f.sim, intents);
-    return { command: intents[f.blocker.idx], drive: f.engagement.drive,
+    return { trace, command: intents[f.blocker.idx], drive: f.engagement.drive,
       axis: f.engagement.surfaceAxis, control: f.engagement.control,
       hands: { extension: f.engagement.hands!.extension, push: f.engagement.hands!.push,
         hold: f.engagement.hands!.hold, steer: f.engagement.hands!.steer },
       rng: JSON.stringify(f.sim.rng), released: f.combo.released };
   }
 
-  it('preserves the same anchored command, hands, control and execution draws', () => {
-    expect(anchored(true)).toEqual(anchored(false));
+  it('braces normally while retaining the acquired lateral direction and unchanged hands/control/draws', () => {
+    const withPlan = anchored(true), legacy = anchored(false);
+    expect(withPlan.trace.anchored).toBe(true);
+    expect(withPlan.trace.preAnchor.y).toBeLessThan(0);
+    expect(withPlan.command.vel.x).toBe(2.4);
+    expect(withPlan.command.vel.y).toBeCloseTo(withPlan.trace.preAnchor.y * .3, 12);
+    const metadata = ({ command, trace, ...rest }: typeof withPlan) => rest;
+    expect(metadata(withPlan)).toEqual(metadata(legacy));
   });
 
   it('does not apply a framed legacy hook when stretch handling is disabled', async () => {
