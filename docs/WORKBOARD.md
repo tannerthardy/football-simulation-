@@ -2,16 +2,20 @@
 
 ## Useful defensive approach family — 2026-10-15
 
-Catching owns the bounded approach question on `codex/defensive-approach-family`
+Catching completed the bounded approach question on `codex/defensive-approach-family`
 from accepted `86250bb4f0c6f421878c204161864d523c3e30b6` (#85, #84-only).
-Use saved A020/A042 plus successful A008 and preselected A032 transfer. First
-test whether the full-gather decision bypasses an achievable better approach
-under the same acquired picture. Potential correction boundary: common.ts
-`gatheringApproach`/`chase`, approach-control.ts only if evidence justifies it;
-no coverage responsibility/recognition, spacing, physics, grip or capacity edit.
-Do-It-All owns mesh spacing; Run owns Duo/access. Any passive capture must settle
-this decision, preserve source-specific prefixes and prove recording neutrality.
-One supported correction or clear limitation; no general panel/game campaign.
+Full-gather's early return is shared by A020/A042, but one momentum-aware
+alternative's better held-request forecast does not improve achieved first entry.
+A020 arrives sooner with worse extension/alignment; A042 still takes its last
+reach, slips sooner, but gets earlier help and a runner fall within an unfinished
+window. Successful A008/A032 wraps/finishes remain. **No correction promoted.**
+Trial3bc12ff is preserved on `codex/defensive-approach-trial`; normal revert08a6623
+restores accepted production/tests/settings. [Diagnosis, pins and evidence](reviews/defensive-approach-family.md):
+25 focused checks pass;16 short native executions (8 neutral observed/plain pairs),
+12.427 native/21.220 total launcher-command seconds; no full suite or games.
+Next experiment, not started: assess the sequence of replanned approach requests
+before another native variant. Source boundary released. Do-It-All owns mesh
+spacing; Run owns Duo/access; recognition/information/physics/capacities unchanged.
 
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
