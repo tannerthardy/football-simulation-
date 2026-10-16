@@ -20,13 +20,22 @@ function stage(f:any){
 }
 
 describe('neighboring teammate closing limits',()=>{
- it.each(fixtures)('retains every admitted limit at $caseId/$t without reading private motion',f=>{
+ it.each(fixtures.slice(0,2))('retains every admitted free-footwork limit at $caseId/$t without reading private motion',f=>{
   const s=stage(f),before=structuredClone(s.a.body);s.run();const command=s.commands[0];
   expect(f.limits.some((c:any)=>f.ordinary.vel.x*c.nx+f.ordinary.vel.y*c.ny>c.limit+1e-7)).toBe(true);
   for(const c of f.limits)expect(command.vel.x*c.nx+command.vel.y*c.ny).toBeLessThanOrEqual(c.limit+1e-8);
   expect(Math.hypot(command.vel.x,command.vel.y)).toBeLessThanOrEqual(s.a.profile.vmax*s.a.speedScale+1e-8);
   expect({...command,vel:undefined}).toEqual({...f.raw,vel:undefined});
   expect(s.a.body).toEqual(before);
+ });
+ it.each(fixtures.slice(2))('preserves loaded contact work at $caseId/$t',f=>{
+  const s=stage(f);s.run();expect(s.commands[0]).toEqual(f.ordinary);
+ });
+ it('respects tactile constraint ownership before a load registers',()=>{
+  const f=fixtures[0],s=stage(f);
+  spaceTeammates([s.a,...s.peers],s.commands,(_a,b)=>f.peers.find((p:any)=>p.idx===b.idx).seen,
+    {now:f.t,constrained:new Set([s.a.body])});
+  expect(s.commands[0]).toEqual(f.ordinary);
  });
  it('keeps the ordinary response when moving peers make the limits inconsistent',()=>{
   const f=structuredClone(fixtures[0]);f.body.pos={x:0,y:0};f.body.vel={x:0,y:0};f.body.support=newSupport();

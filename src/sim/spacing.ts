@@ -296,7 +296,14 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
-      spaced = { ...ia, vel: jointClosingRequest(ia.vel,{ x: vx*scale, y: vy*scale },limits,cap) };
+      const ordinary={x:vx*scale,y:vy*scale},s=a.body.support;
+      // This is free footwork. A loaded blocker or committed strike cannot
+      // be allocated a new joint velocity from radial headway alone: the
+      // contact controller owns that work, and the World resolves its load.
+      const free=context&&Number.isFinite(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
+        &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
+        &&!s.foot&&!s.strike&&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
+      spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
     }
     const gathered=gatherForMotion(a,spaced,peers,context);
     intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
