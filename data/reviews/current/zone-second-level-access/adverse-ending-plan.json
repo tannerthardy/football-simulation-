@@ -1,0 +1,7 @@
+{
+  "question": "Why does A030 keep SS first contact at3.30 and both early broken holds, but lose the third CB hold break at4.50?",
+  "evidence": "Saved accepted A030 telemetry identifies a CB_W assist at3.90, the baseline break at4.50 and candidate runner fall at4.50. Actual native hold execution was not recorded in the saved panel, so the existing evidence cannot distinguish a changed wrap draw from a position/contact defect.",
+  "scope": "One passive reference and one passive candidate A030 prefix to4.55. Capture native bond execution/grip/legs and before/after World state, no substitutions. Reuse full accepted ending and candidate ending already collected.",
+  "budget": "Two existing-input prefixes, 5wallseconds each; zero new games, rosters or panel cases.",
+  "decision": "Classify the material adverse ending before recommending near-fit; do not require the prior touchdown or waive a physical contract."
+}
