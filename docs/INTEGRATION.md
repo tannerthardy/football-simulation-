@@ -46,7 +46,7 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
-## Current candidate — #110/#111 exact verification
+## Verified #112 candidate — guarded adoption pending
 
 Accepted develop remains `c3264b0bad72bd2c208602e0ecf0461c00d9669f` pending adoption.
 Integration owns `codex/run-entry-connection-integration`, based on that accepted
@@ -57,8 +57,11 @@ review; source `bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616
 equals the reviewed interaction, without its diagnostic ancestry.
 
 Reuse the published65/66 focused checks and matching typechecks, not131 unique
-checks or a composed-suite pass. Integration owns one frozen combined verification
-with Node22.23.3, unchanged44 flags, components1 and CF_FLOW unset. No remaining
+checks or a composed-suite pass. Exact freeze `df900af6960988dc2eca4bb2ba220ce4ac126cc1` passes **1906 TS/164 files, 145 Python, typecheck/build** in 213.321 command seconds.
+Node22.23.3, unchanged44 flags, components1 and CF_FLOW unset; no skips/input drift.
+One exact combined run; no unchanged rerun to publish/merge.
+[Final receipt and raw log](../data/reviews/current/run-entry-connection-integration/final-receipt.json).
+[Guarded adoption PR #112](https://github.com/tannerthardy/football-simulation-/pull/112). No remaining
 local contract calls for another focused test, native continuation, panel or game.
 [Pinned independent review and portable patches](reviews/pr110-111-independent-review.md).
 [Intake, exact approval and risks](../data/reviews/current/run-entry-connection-integration/intake.json).
@@ -458,7 +461,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 <a id="ready-blocked-experimental"></a>
 
-**Next approved batch:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file extraction prepared for one exact verification on acceptedc3264b0. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
+**Next approved batch:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate #112 passes its exact verification on acceptedc3264b0; guarded adoption pending. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
 
 
 ### Current disposition after merged #107
