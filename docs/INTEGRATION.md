@@ -118,8 +118,8 @@ the cutoff. No capacity/default/force-law experiment is activated.
 Catching reconciles coverage/support/rat; Run and Do-It-All reconcile keeper security,
 attainable collection and runner entry; Physics records isolated validity without
 solver promotion. Adopt at clean checkpoints; no forced rebases or historical-tape
-relabeling. Integration has released its extraction boundary. Delivered scopes can
-close by extraction with branches/evidence retained. #101 tooling repair stays held;
+relabeling. Integration has released its extraction boundary. Delivered95/97/100/102/104 PRs are closed as incorporated by extraction, with
+branches/evidence retained. [Exact closure dispositions](../data/reviews/current/coverage-run-integration/dispositions.json). #101 tooling repair stays held;
 Measurement/Run review stub controls, not another1848-study campaign. The existing
 frozen-panel comparison is the next shared measurement checkpoint; games need a
 separate CEO call. Historical4ded6b6/default/remaining research remain unchanged.

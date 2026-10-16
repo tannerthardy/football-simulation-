@@ -1,0 +1,47 @@
+{
+  "acceptedDevelop": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "successorPR": 107,
+  "method": "Closed as incorporated by minimal extraction; no full ancestry merge or branch deletion.",
+  "closures": [
+    {
+      "pr": 95,
+      "head": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "comment": {
+        "id": 6221644685
+      },
+      "closed": true
+    },
+    {
+      "pr": 97,
+      "head": "1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6",
+      "comment": {
+        "id": 6221647486
+      },
+      "closed": true
+    },
+    {
+      "pr": 100,
+      "head": "9f30428df552301ec25b51bade76ce4965d9fcda",
+      "comment": {
+        "id": 6221650198
+      },
+      "closed": true
+    },
+    {
+      "pr": 102,
+      "head": "7b09c65b770583d404d173972c50d7ee5ed87645",
+      "comment": {
+        "id": 6221653051
+      },
+      "closed": true
+    },
+    {
+      "pr": 104,
+      "head": "bcd0dc8eb5bcd26731934694b32fd068c03bfb56",
+      "comment": {
+        "id": 6221656065
+      },
+      "closed": true
+    }
+  ]
+}
