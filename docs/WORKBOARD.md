@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run: independent #87 movement-policy / accepted #89 interaction review
+
+Requested review of frozen #87 at9760de031cae3bda7c926735f8edeb97fa4574e5,
+implementation52518be, on accepted9adb7b3f730c5637e5a6547f9bc151a17ce301b2
+(published queue12956c66 agrees). Review the seven-file post-dependency scope:
+brake/transverse selection, achieved progress/containment, acquired cues,
+contact exclusions, retained settled-line cost proof and #89 moving alley.
+Reuse39 focused/typecheck and saved A044/A008 where compatible. Only an
+unanswered interaction gets a tiny specific probe; no duplicated native panel,
+game campaign, collection variant, physics/default edit or final combined suite.
+Do-It-All owns the candidate, Catching's producer acceptance remains scoped,
+Integration owns exact combined verification/adoption. Return pinned ACCEPT/HOLD.
+
 ## Active collection/cap integration — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
