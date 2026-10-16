@@ -5,7 +5,7 @@ import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type
 import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
-import { chooseApproach, chooseGatherApproach } from '../approach-control.js';
+import { chooseApproach } from '../approach-control.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -207,8 +207,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
     * clamp((dist - contact) / 6, 0, 1);
   const { near, gather } = gatheringApproach(a, seen, contact, offset);
-  if (gather >= 1 && !sim.bond?.tacklers.includes(a))
-    return chooseGatherApproach(a, seen, contact, offset, near!, sim.t);
+  if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return near!;
   const p = pursuitPoint(sim, a, target, horizon);
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
