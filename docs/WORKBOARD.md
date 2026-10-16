@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Do-It-All inline zone-keeper eligibility — 2026-10-16
+
+Own only `RunBlocker.zoneEligible`'s installed inline-role gate plus new
+`test/inline-zone-keeper.test.ts`, directly on freshly fetched accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c` in `codex/inline-zone-keeper`.
+Existing queue prose predates accepted #91; actual fetched develop agrees with
+this explicit accepted pin. Run coordination: PR #96 comment6212359502.
+No D/span, paired-controller or #96/#98 runtime dependency. Prove ordinary
+solo inline-Y access to the existing acquired technique and retained contact
+frame, preserving detached/climb/live-combo/helper guards. Native opponent
+velocity pictures are complete delayed reads; no new unknown-motion contract
+is asserted. Root owns short matched coupled comparisons and publication choice.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
