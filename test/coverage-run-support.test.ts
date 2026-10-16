@@ -49,6 +49,50 @@ function flight(f: ReturnType<typeof stage>, recognized = false) {
 }
 
 describe('installed support survives a coverage target replacement', () => {
+  it.each([-1, 1])('tracks an acquired moving alley laterally while keeping its depth, side=%s', side => {
+    const positive = stage(true, side), negative = stage(true, side);
+    for (const f of [positive, negative]) f.reassign();
+    negative.setPicture({ ...negative.picture(), vel: { x: 1.2, y: -side * 1.85 } });
+    const p = positive.update(), n = negative.update();
+    expect(p.vel.y * side).toBeGreaterThan(0);
+    expect(n.vel.y * side).toBeLessThan(0);
+    for (const [f, command] of [[positive, p], [negative, n]] as const) {
+      const before = structuredClone(f.a.body), world = new World([f.a.body]);
+      const result = world.step([command], .05);
+      expect(f.a.vel.x).toBeLessThan(before.vel.x);
+      expect(f.a.pos.x).toBeGreaterThan(f.sim.los + 4);
+      expect(f.a.body.support!.state).toBe('up');
+      expect(Math.abs(result.work.residual)).toBeLessThan(1e-8);
+      expect(f.a.runFit!.kind).toBe('alley');
+    }
+    expect(positive.a.vel.y * side).toBeGreaterThan(negative.a.vel.y * side);
+  });
+
+  it('does not turn observed forward speed into permission to collapse the alley cap', () => {
+    const slow = stage(true), fast = stage(true);
+    slow.reassign(); fast.reassign();
+    fast.setPicture({ ...fast.picture(), vel: { x: 9, y: fast.picture().vel.y } });
+    expect(fast.update()).toEqual(slow.update());
+  });
+
+  it('retains the same moving-cap request across hidden back changes and advancing reality snapshots', () => {
+    const reference = stage(true), changed = stage(true);
+    reference.reassign(); changed.reassign();
+    for (let k = 0; k < 4; k++) {
+      changed.rb.body.pos = { x: 85+k, y: 5+k };
+      changed.rb.body.vel = { x: -8, y: 9-k };
+      // The controller's acquired back picture remains unchanged. Advancing
+      // reality is not permission to replace that picture with hidden truth.
+      reference.sim.perception.record(reference.sim.agents);
+      changed.sim.perception.record(changed.sim.agents);
+      const before = structuredClone(changed.sim.perception);
+      expect(changed.update()).toEqual(reference.update());
+      expect(changed.sim.perception).toEqual(before);
+      expect(changed.sim.rng).toEqual(reference.sim.rng);
+      changed.sim.t += .05; reference.sim.t += .05;
+    }
+  });
+
   it.each([-1, 1])('retains the acquired insertion after zone becomes man on another receiver, side=%s', side => {
     const f = stage(false, side), expected = stage(false, side);
     f.update(); expect(f.behavior.job.startsWith('zone:')).toBe(true); f.reassign();

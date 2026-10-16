@@ -2,15 +2,18 @@
 
 ## Coherent defensive interception — 2026-10-16
 
-Catching owns `chase`/`gatheringApproach` in common.ts and its bounded helper in
-approach-control.ts on `codex/defensive-interception-continuity`, from accepted
+Catching owns the bounded acquired moving-alley-cap return in
+`run-fits.ts:executeRunFit`, consulting Run (PR85 comments), plus its approach
+diagnostics on `codex/defensive-interception-continuity`, from accepted
 86250bb4f0c6f421878c204161864d523c3e30b6 (#85/#84-only). Prior rejected trial/evidence
 remain on e133d27 and separate trial3bc12ff. First explain why real football's
 intercept-and-gather objective fails over successive requests; then test one
 coherent acquired-picture alternative across crossing, incoming, rear and useful
 successful approaches before native A020/A042/control transfer. Preserve information,
 responsibilities, contests, force leverage, valid desperation and earned offense.
-No spacing/helper, contact physics, capacity or grip edits. Run/Do-It-All retain
+Late gather/steering trials were adverse and normally reverted; normal lateral
+tracking of the acquired cap is the next initiating-objective question. No
+spacing/helper, contact physics, capacity or grip edits. Run/Do-It-All retain
 Duo/access/mesh ownership. Integration owns any combined verification.
 
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
