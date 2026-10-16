@@ -1,0 +1,398 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index 31e4c584a81b3d44e8c56e742ed1188c45e59084..04cf8dc3e32f535fc5bb088e3be2c73590283e25 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -61,52 +61,113 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
+   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
+ }
+ 
+-/** Read the current surface, rather than a two-second forecast through it.
+- * Entry points are between moving blockers, or outside a kick/log. */
++/** Read entries and routes from acquired bodies on both teams. A nominal
++ * block is neither an empty lane nor guaranteed future protection. */
++interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
++
+ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+   if (!opts.run || !opts.aim) return null;
+-  const side=opts.run.side;
+-  const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
+-    .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
+-  if (surface.length<5) return null;
+-  let preferred=liveAim(a,sim,opts)!.y;
+-  if (opts.run.scheme === 'duo' && opts.run.readKey) {
+-    const key=sim.see(a,opts.run.readKey);
+-    // Press the inside double. A declaring MIKE closes his insertion side;
+-    // the back bends to the other adjacent interior crease.
+-    if (key.pos.x<sim.los+2.5 && Math.abs(key.vel.y)>.7) preferred=sim.ballY-Math.sign(key.vel.y)*.8;
++  const dir = sim.attackDir(a.team), run = opts.run;
++  const depth = (p: Vec2) => (p.x - sim.los) * dir;
++  let preferred = liveAim(a, sim, opts)!.y;
++  if (run.scheme === 'duo' && run.readKey) {
++    const key = sim.see(a, run.readKey);
++    if (key.pos.x < sim.los + 2.5 && Math.abs(key.vel.y) > .7) preferred = sim.ballY - Math.sign(key.vel.y) * .8;
+   }
+-  const kick=opts.run.kick;
++  const kick = run.kick;
+   if (kick) {
+-    const s=sim.see(a,kick);
+-    if (s.pos.x>sim.los-1.5) preferred=s.pos.y+(kick.tags.has('block-log') ? side*.85 : -side*.85);
++    const s = sim.see(a, kick);
++    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
++  }
++  // Everything below is the runner's own picture: perceived positions, motion
++  // and pose, and public body size and reach. Neither the engagement record
++  // nor a nearby teammate promises protection. Keep off-feet defenders in
++  // the threat picture with their acquired recovery allowance.
++  const pictures: Array<{ agent: Agent; seen: Perceived; team: 'O' | 'D' }> = [];
++  for (const o of [...sim.offense, ...sim.defense]) {
++    if (o === a || o === sim.qb) continue;
++    const seen = sim.see(a, o);
++    pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
++  }
++  const bodies: LineBody[] = [];
++  for (const { agent: o, seen: s, team } of pictures) {
++    if (s.pose === 'down') continue;
++    if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
++    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+   }
+-  const candidates:Vec2[]=[];
+-  for(let i=1;i<surface.length;i++) {
+-    const l=surface[i-1],r=surface[i];
+-    const width=r.pos.y-r.radius-l.pos.y-l.radius;
+-    if(width>a.profile.radius*1.4) candidates.push({x:Math.max(sim.los+.5,(l.pos.x+r.pos.x)/2+.6),y:(l.pos.y+r.pos.y)/2});
++  if (bodies.filter((b) => b.team === 'O').length < 3) return null;
++  bodies.sort((p, q) => p.pos.y - q.pos.y);
++  const candidates: Vec2[] = [];
++  const squeeze = a.profile.radius * 1.4;
++  for (let i = 1; i < bodies.length; i++) {
++    const l = bodies[i - 1], r = bodies[i];
++    if (r.pos.y - r.radius - (l.pos.y + l.radius) < squeeze) continue;
++    const y = (l.pos.y + l.radius + r.pos.y - r.radius) / 2;
++    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, Math.max(l.pos.x, r.pos.x) + .6) : Math.min(sim.los - .5, Math.min(l.pos.x, r.pos.x) - .6), y });
+   }
+-  for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
+-  let best:Vec2|null=null,cost=Infinity;
++  for (const [end, s] of [[bodies[0], -1], [bodies.at(-1)!, 1]] as const) {
++    const y = end.pos.y + s * (end.radius + a.profile.radius + .4);
++    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, end.pos.x + .5) : Math.min(sim.los - .5, end.pos.x - .5), y });
++  }
++  // Openings are read from a lateral projection, so a body a yard behind the
++  // line can hide a real seam in front of him. Sample the line every yard as
++  // well; the path, body and timing checks below judge them in two dimensions.
++  for (let k = -8; k <= 8; k++) candidates.push({ x: sim.los + .5 * dir, y: clamp(sim.ballY + k, .5, FIELD_WIDTH - .5) });
++  const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
++  // Acquired motion already contains a block's observed slowdown. Nearby
++  // bodies do not promise retention or a future pursuit delay. In particular,
++  // a defender occupying the entry remains a threat, on either side of a block.
++  const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
++    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
++      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
++  let best: Vec2 | null = null, cost = Infinity;
+   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+-  for(const p of candidates) {
+-    let risk=0;
+-    for(const d of sim.opponents(a)) {
+-      const s=sim.see(a,d);
+-      if(Math.hypot(s.pos.x-p.x,s.pos.y-p.y)>6) continue;
+-      // Acquired motion already carries a block's observed slowdown. An
+-      // engagement flag cannot promise another quarter second of protection.
+-      const recovery=observedRecoveryAllowance(s,d.profile.getUp,sim.dt);
+-      const reach=timeToReach({...s,profile:d.profile},p,d.profile.radius+a.profile.radius)+recovery;
+-      const arrive=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
+-      risk+=Math.max(0,arrive-reach)*3;
++  // Bodies on a segment block the run along it.
++  const blockedBy = (from: Vec2, to: Vec2): number => {
++    const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
++    let r = 0;
++    for (const b of bodies) {
++      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
++      // Include the endpoint: a route ending in a defender is still occupied.
++      // At the start, only charge a body when the route approaches it; an
++      // already touching runner must remain free to move away from that body.
++      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
++      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
++      if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
++    }
++    return r;
++  };
++  const cruise = Math.max(4, a.profile.vmax * .8);
++  for (const p of candidates) {
++    // Two ways to the entry: straight, or flatten behind the line first and
++    // then turn up (the cutback's dog-leg). Each has its own arrival time.
++    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
++    if (depth(a.pos) < -1.6) {
++      const w = { x: sim.los - 1.2 * dir, y: p.y };
++      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+     }
+-    const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
++    let risk = Infinity, via = p;
++    const beyond = { x: p.x + 2 * dir, y: p.y };
++    for (const route of routes) {
++      const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
++      // Who is there first, at the entry and two yards beyond it: the
++      // earliest defender decides, as in the open-field read.
++      let m1 = Infinity, m2 = Infinity;
++      for (const { agent: d, seen: s, team } of pictures) {
++        if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
++        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
++        m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
++      }
++      const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
++        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
++      if (r < risk) { risk = r; via = route.via; }
++    }
++    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
+     if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
+-    if(score<cost) {cost=score;best=p;}
++    // Run the chosen route: its first leg is where he heads now.
++    if (score < cost) { cost = score; best = via; }
+   }
+-  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface });
++  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
+   return best;
+ }
+ 
+@@ -121,6 +182,8 @@ export class BallCarrier implements Behavior {
+   private plannedExit = false;
+   private boundaryRecovery = false;
+   private readDone = false;
++  private pressEntry: Vec2 | null = null;
++  private pressReadAt = 0;
+ 
+   constructor(
+     private readonly opts: CarrierOptions = {},
+@@ -153,7 +216,16 @@ export class BallCarrier implements Behavior {
+ 
+     // Designed phase: press the aiming point.
+     if (designed) {
+-      const aim = liveAim(a, sim, this.opts)!;
++      let aim = liveAim(a, sim, this.opts)!;
++      // Press the installed track, reading its occupied approach on the same
++      // finite beat as other carrier decisions. Speed and movement stay ordinary.
++      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
++        if (sim.t >= this.pressReadAt) {
++          this.pressReadAt = sim.t + a.mind.decisionInterval;
++          this.pressEntry = runReadAim(a, sim, this.opts);
++        }
++        if (this.pressEntry) aim = this.pressEntry;
++      }
+       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
+       this.heading = h;
+       // Only abandon the design early if the aiming point is clearly closed.
+diff --git a/test/carrier-crease.test.ts b/test/carrier-crease.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..6164ffbf33af3be1d43aecd6eb89e17ed263477e
+--- /dev/null
++++ b/test/carrier-crease.test.ts
+@@ -0,0 +1,178 @@
++/** Crease route reader extracted from Claude zone work.
++ * Held-body scenes with exact perception: these test what the reader does
++ * with a picture, not a football outcome. */
++import { describe, expect, it } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { BallCarrier, runReadAim } from '../src/sim/behaviors/carrier.js';
++import { runReadObservers } from '../src/sim/run-read-observer.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++const offense = generateTeam(new Rng(31), 'Lane offense', 'LO', { strength: .55 });
++const defense = generateTeam(new Rng(32), 'Lane defense', 'LD', { strength: .55 });
++const LOS = 40;
++
++/** Line at the LOS (C at the ball, guards ±1.4, tackles ±2.8), RB 4.5 yd deep
++ * at lateral `rb` (mirror sign m). Everyone else parked far away. */
++function scene(m: 1 | -1, rb = 1, depth = 4.5) {
++  const formation = FORMATION_BY_ID.ace_11;
++  const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
++    offCall: { formation, kind: 'run', flip: false, run: RUN_BY_ID.iz_strong, label: 'lane' },
++    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'lane' },
++    los: LOS, ballY: CENTER_Y, firstDownX: 50, seed: 5, record: false });
++  for (const a of sim.agents) { a.body.pos = { x: 5 + a.idx, y: 2 }; a.body.vel = { x: 0, y: 0 }; }
++  const put = (slot: string, x: number, y: number) => { const a = sim.slot(slot as never)!; a.body.pos = { x, y: CENTER_Y + m * y }; return a; };
++  for (const [s, y] of [['C', 0], ['LG', -1.4], ['RG', 1.4], ['LT', -2.8], ['RT', 2.8]] as const) put(s, LOS - .5, y);
++  const back = put('RB', LOS - depth, rb);
++  sim.see = (_a, t) => ({ pos: { ...t.pos }, vel: { ...t.vel }, stance: null, facing: 0, pose: 'up', age: .1 } satisfies Perceived);
++  sim.ball = { kind: 'held', carrier: back } as never;
++  return { sim, put, back, m };
++}
++
++const opts = (m: number, aimY: number) => ({ aim: { x: LOS + .6, y: CENTER_Y + m * aimY }, run: { scheme: 'insideZone' as const, side: m } });
++const lat = (y: number, m: number) => (y - CENTER_Y) * m;
++
++describe('acquired crease route', () => {
++  it('a defender standing in the called gap closes it', () => {
++    for (const m of [1, -1] as const) {
++      // Near the line, where a little time to arrive used to make an occupied
++      // gap look cheap.
++      const open = scene(m, 2.1, 1.6);
++      const free = runReadAim(open.back, open.sim, opts(m, 2.1))!;
++      expect(Math.abs(lat(free.y, m) - 2.1)).toBeLessThan(.6);
++      const closed = scene(m, 2.1, 1.6);
++      closed.put('DT_S', LOS, 2.1);
++      const entry = runReadAim(closed.back, closed.sim, opts(m, 2.1))!;
++      expect(Math.abs(lat(entry.y, m) - 2.1)).toBeGreaterThan(.8);
++    }
++  });
++
++  it('a block protects the hole on the blocker\'s side, not the defender\'s free side', () => {
++    for (const m of [1, -1] as const) {
++      // RT has walled the end inside him... the end is engaged playside of RT
++      // with RT on his inside: the opening inside RT is protected; the
++      // outside, the end's free side, is not.
++      const s = scene(m, 3.4, 1.6);
++      const end = s.put('DE_S', LOS + .2, 3.9), rt = s.sim.slot('RT')!;
++      rt.body.pos = { x: LOS - .1, y: CENTER_Y + m * 3.1 };
++      const e = s.sim.engage(rt, end, 'run');
++      expect(e).toBeTruthy();
++      e!.win = 0; e!.phi = 0;
++      const entry = runReadAim(s.back, s.sim, opts(m, 4.6))!;
++      // Called outside the end, but he takes the protected side of the block.
++      expect(lat(entry.y, m)).toBeLessThan(3.3);
++    }
++  });
++
++  it('is mirror-symmetric', () => {
++    const pick = (m: 1 | -1) => {
++      const s = scene(m, 1.5);
++      s.put('DT_S', LOS + .3, 1.6); s.put('LB_M', LOS + 4, 2.5); s.put('DE_W', LOS + .4, -3.4);
++      const e = runReadAim(s.back, s.sim, opts(m, 2))!;
++      return { x: e.x, y: lat(e.y, m) };
++    };
++    const a = pick(1), b = pick(-1);
++    expect(b.x).toBeCloseTo(a.x, 9);
++    expect(b.y).toBeCloseTo(a.y, 9);
++  });
++
++  it('flattens behind the line before turning up when bodies stand on the straight run', () => {
++    for (const m of [1, -1] as const) {
++      // Back pressing play side; the only clean entry is back across the
++      // center, and the playside guard and his man stand on the straight line.
++      const s = scene(m, 3.5);
++      s.back.body.pos = { x: LOS - 2.4, y: CENTER_Y + m * 3.5 };
++      s.put('DT_S', LOS + .2, 2.2); s.put('DE_S', LOS + .2, 3.6); s.put('LB_S', LOS + 1, 4.2);
++      const rg = s.sim.slot('RG')!; rg.body.pos = { x: LOS - .8, y: CENTER_Y + m * 2.1 };
++      const entry = runReadAim(s.back, s.sim, { ...opts(m, -1.5), run: { scheme: 'insideZone' as const, side: m } })!;
++      // He heads for the waypoint behind the line, not the entry itself.
++      expect(entry.x).toBeLessThan(LOS - .5);
++    }
++  });
++});
++
++
++/** These call the actual possession hook. A passing teammate must not make
++ * an occupied entry safe; hidden engagement changes must not alter that read. */
++describe('production carrier entry commands', () => {
++  it.each([1, -1] as const)('does not drive into an end-point defender beside an incidental receiver, mirror %s', m => {
++    const picks = [];
++    for (const nearby of [false, true]) {
++      const s = scene(m, 2, 1.6);
++      const dt = s.put('DT_S', LOS + .5, 2);
++      if (nearby) {
++        const z = s.put('Z', dt.pos.x + dt.profile.radius + s.sim.slot('Z')!.profile.radius + .1, 2);
++        z.body.vel = { x: 5, y: 0 }; // Beyond the end, moving away; no interposition.
++      }
++      let occupiedRisk = 0;
++      runReadObservers.set(s.sim, event => {
++        if (event.phase !== 'aim') return;
++        const candidate = (event.candidates as Array<{entry: {x: number; y: number}; risk: number}>)
++          .find(c => Math.abs(c.entry.x - dt.pos.x) < 1e-8 && Math.abs(c.entry.y - dt.pos.y) < 1e-8);
++        occupiedRisk = candidate!.risk;
++      });
++      const command = new BallCarrier(opts(m, 2), s.back).update(s.back, s.sim);
++      // The old false hold credit selected a straight full-speed command.
++      expect(Math.abs(command.vel.y)).toBeGreaterThan(.5);
++      expect(occupiedRisk).toBeGreaterThan(4);
++      picks.push(command.vel);
++    }
++    expect(picks[1]).toEqual(picks[0]);
++  });
++
++  it('uses the acquired image through the real hook despite private engagement and body changes', () => {
++    const s = scene(1, 2, 1.6), dt = s.put('DT_S', LOS + .5, 2), rt = s.sim.slot('RT')!;
++    const images = new Map(s.sim.agents.map(a => [a, s.sim.see(s.back, a)]));
++    s.sim.see = (_observer, a) => structuredClone(images.get(a)!);
++    const choose = () => new BallCarrier(opts(1, 2), s.back).update(s.back, s.sim);
++    const acquired = choose();
++    // This is an information-only perturbation; it prescribes no native result.
++    rt.body.pos = { x: dt.pos.x - .5, y: dt.pos.y };
++    const engagement = s.sim.engage(rt, dt, 'run');
++    expect(engagement).toBeTruthy();
++    engagement!.win = .99;
++    dt.body.pos = { x: 55, y: CENTER_Y - 6 };
++    dt.body.vel = { x: 4, y: -5 };
++    dt.body.support!.state = 'down';
++    dt.downUntil = s.sim.t + 10;
++    expect(choose()).toEqual(acquired);
++  });
++
++  it('holds the press entry until the ordinary decision beat', () => {
++    const s = scene(1, 2.1, 2.4), dt = s.sim.slot('DT_S')!;
++    let reads = 0;
++    runReadObservers.set(s.sim, e => { if (e.phase === 'aim') reads++; });
++    const carrier = new BallCarrier({ ...opts(1, 2.1), aimUntil: 10 }, s.back);
++    carrier.update(s.back, s.sim);
++    expect(reads).toBe(1);
++    s.put('DT_S', LOS, 2.1);
++    s.sim.t = .05;
++    carrier.update(s.back, s.sim);
++    expect(reads).toBe(1);
++    s.sim.t = Math.ceil(s.back.mind.decisionInterval / .05) * .05;
++    carrier.update(s.back, s.sim);
++    expect(reads).toBe(2);
++    expect(dt.pos.y).toBeCloseTo(CENTER_Y + 2.1);
++  });
++
++  it('keeps a visibly down defender in the future threat picture', () => {
++    const s = scene(1, 2, 3.4), dt = s.put('DT_S', LOS + .5, 2);
++    const original = s.sim.see;
++    s.sim.see = (a, b, ...rest) => ({ ...original(a, b, ...rest), pose: b === dt ? 'down' : 'up', age: 1.9 });
++    let occupiedRisk = 0;
++    runReadObservers.set(s.sim, event => {
++      if (event.phase !== 'aim') return;
++      occupiedRisk = (event.candidates as Array<{entry: {x: number; y: number}; risk: number}>)
++        .find(c => Math.abs(c.entry.x - dt.pos.x) < 1e-8 && Math.abs(c.entry.y - dt.pos.y) < 1e-8)!.risk;
++    });
++    new BallCarrier(opts(1, 2), s.back).update(s.back, s.sim);
++    // A stale fall is not permanent removal. This asserts a risk, not a
++    // mandatory cut or a particular football ending.
++    expect(occupiedRisk).toBeGreaterThan(4);
++  });
++});
+diff --git a/test/run-entry-opponent-information.test.ts b/test/run-entry-opponent-information.test.ts
+index 74d52cb7b63d9c05a5d6c1e4c66f4ac781ac2382..8edfbf85bf41a7e292bbbcc66c540628342371ad 100644
+--- a/test/run-entry-opponent-information.test.ts
++++ b/test/run-entry-opponent-information.test.ts
+@@ -29,7 +29,26 @@ describe('acquired opponent entry risk without teammate transport',()=>{
+     }
+     expect(s.read()).toEqual(entry);
+   });
+-  it('preserves the saved contrasting entry without approach policy',()=>{
+-    const s=scene('waiting-control');expect(s.read()).toEqual(s.parentEntry);
++  it('retains a clear approach in the saved contrasting corridor',()=>{
++    const s=scene('waiting-control'),entry=s.read()!,rb=s.actors[6];
++    // The old assertion pinned the former scorer's exact y. With an explicit
++    // approach read the choice shifts .125 yd in this same corridor. Both the
++    // old and new routes must still clear the acquired bodies, not keep one
++    // historical coordinate by decree.
++    expect(entry.x).toBe(s.parentEntry.x);
++    const lower=s.sim.see(rb,s.actors.find((a:Agent)=>a.slot==='LT')!);
++    const upper=s.sim.see(rb,s.actors.find((a:Agent)=>a.slot==='DE_S')!);
++    expect(entry.y).toBeGreaterThan(lower.pos.y+rb.profile.radius);
++    expect(entry.y).toBeLessThan(upper.pos.y-rb.profile.radius);
++    for(const p of [entry,s.parentEntry]) {
++      const dx=p.x-rb.pos.x,dy=p.y-rb.pos.y,l2=dx*dx+dy*dy;
++      for(const a of s.actors.filter((a:Agent)=>a!==rb&&a.slot!=='QB')) {
++        const seen=s.sim.see(rb,a);
++        if(seen.pose==='down')continue;
++        const u=Math.max(0,Math.min(1,((seen.pos.x-rb.pos.x)*dx+(seen.pos.y-rb.pos.y)*dy)/l2));
++        const clearance=Math.hypot(rb.pos.x+u*dx-seen.pos.x,rb.pos.y+u*dy-seen.pos.y)-a.profile.radius-rb.profile.radius;
++        expect(clearance).toBeGreaterThan(0);
++      }
++    }
+   });
+ });

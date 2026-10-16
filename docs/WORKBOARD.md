@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Independent #110/#111 review — 2026-10-16
+
+Do-It-All owns source/evidence adjudication and minimal extraction artifacts
+for #110 runner entry and #111 stretch connection geometry, based on accepted
+c3264b0bad72bd2c208602e0ecf0461c00d9669f. Scope is this note, a review report,
+compact manifest and portable patches. No production behavior or existing test
+edits; reuse author controls/receipts and add a focused probe only for an
+unresolved review question. Run remains author; Integration owns exact combined
+verification/adoption. Tackle/contact-ownership policy and CLIMB_EXIT remain
+separate, with no broad panel or contributor shared-suite repetition.
+
 ## Active coverage/run integration boundary — 2026-10-16
 
 Integration owns only minimal extraction/reconciliation in defense.ts, coverage/{rules,defender,techniques}.ts, engagement.ts, blocking.ts and eight reviewed tests/fixtures on accepted3723204 plus queue db0d512. #97/#100 and95 independently accepted;102 independently accepted as existing-law validity;104 explicitly user-approved overriding author-independent hold. Shared acquired entry once,95 cut separate,104 preserves96.20 existing overlap checks pass; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build in226.175s, total228.048s including overlap. #107 awaits guarded adoption; no unchanged rerun. Contributors reuse their focused receipts and continue independent work; no shared-suite duplication or forced rebase. #101 Run repairs wall-censor index/partial traces; Measurement reviews stubs, no census recollection. Experimental Physics/perimeter/mesh diagnosis remain separate. [Current queue and evidence](INTEGRATION.md#ready-blocked-experimental).
