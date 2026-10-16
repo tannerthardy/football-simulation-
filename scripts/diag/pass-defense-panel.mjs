@@ -59,7 +59,8 @@ const provenance={sourceSha256:source,checkout,node:process.version,platform:pro
 mkdirSync(out,{recursive:true});
 const body=a=>({pos:{...a.pos},vel:{...a.vel},facing:a.facing,energy:a.body.energy,
  support:a.body.support?.state??null,deviation:copy(a.body.support?.deviation??null),
- pose:a.pose,recog:a.recog?.read??null,job:a.behavior.job??a.behavior.kind,target:a.behavior.target?.idx??null});
+ pose:a.pose,recog:a.recog?.read??null,job:typeof a.behavior.job==='string'?a.behavior.job:a.behavior.kind,
+ target:a.behavior.target?.idx??null});
 function trial(f,observe) {
  const started=performance.now();
  const setup={
@@ -121,7 +122,19 @@ function trial(f,observe) {
 const summaries=[];let neutral=null,skipped=[];
 for(const [i,f]of selected.entries()){
  if(performance.now()-began>30000){skipped=selected.slice(i).map(f=>f.id);break;}
- const packet=trial(f,true);writeFileSync(join(out,`${f.id}.json.gz`),gzipSync(JSON.stringify(packet)));
+ const packet=trial(f,true);
+ // Preserve a completed summary even if a new encounter exposes a field
+ // that cannot yet be represented in the detailed diagnostic packet.
+ writeFileSync(join(out,`${f.id}.summary.json`),JSON.stringify(packet.summary));
+ let serialized;
+ try{serialized=JSON.stringify(packet);}catch(error){
+  const active=new Map();let cycle=null;
+  const walk=(v,p)=>{if(cycle||!v||typeof v!=='object')return;
+   if(active.has(v)){cycle={at:p,ancestor:active.get(v),constructor:v.constructor?.name};return;}
+   active.set(v,p);for(const k of Object.keys(v))walk(v[k],`${p}.${k}`);active.delete(v);};
+  walk(packet,'packet');console.error(JSON.stringify({id:f.id,serializationCycle:cycle}));throw error;
+ }
+ writeFileSync(join(out,`${f.id}.json.gz`),gzipSync(serialized));
  if(i===0&&neutrality==='--neutral'){
   const plain=trial(f,false);assert.equal(packet.summary.endpointSha256,plain.summary.endpointSha256);
   assert.equal(packet.summary.queryCount,plain.summary.queryCount);neutral={id:f.id,endpointEqual:true,
