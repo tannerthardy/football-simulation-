@@ -1,0 +1,178 @@
+[
+  {
+    "case": "A030",
+    "departureFirstLast": [
+      1.05,
+      2.55
+    ],
+    "firstPlannedInterception": 3.85,
+    "firstRunnerContact": {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+        "x": 39.66,
+        "y": 21.14
+      },
+      "note": "grasp"
+    }
+  },
+  {
+    "case": "A018",
+    "departureFirstLast": [
+      1.05,
+      3.35
+    ],
+    "firstPlannedInterception": 3.4,
+    "firstRunnerContact": {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 15,
+      "pos": {
+        "x": 39.03,
+        "y": 21.68
+      },
+      "note": "grasp"
+    },
+    "sample2_50": {
+      "raw": {
+        "vel": {
+          "x": 0.04244952911510674,
+          "y": 0.9475445080426452
+        },
+        "facing": 0.11227577648254665
+      },
+      "final": {
+        "vel": {
+          "x": 0.04244952911510674,
+          "y": 0.9475445080426452
+        },
+        "facing": 0.11227577648254665
+      },
+      "achievedPosition": {
+        "x": 35.371439357025466,
+        "y": 26.3065172100955
+      },
+      "achievedVelocity": {
+        "x": 0.042467417472189545,
+        "y": 0.9475234819729436
+      },
+      "bodySupport": {
+        "xi": {
+          "x": 0.002916667835903944,
+          "y": -0.00045986031468430886
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.1946240349583269,
+        "lean": {
+          "x": 0.042149694181297936,
+          "y": -0.04954297388325377
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": -0.0017042165640407134,
+          "y": 0.00023560253281560363
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0.135626143887813,
+        "out": 0,
+        "feltTip": {
+          "x": -4.2422566620842854e-06,
+          "y": 5.865275922440077e-07
+        },
+        "causes": {
+          "contact": 0.007903037382385689,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -1.1140563784993174,
+          "y": -2.309346662313851
+        },
+        "tipAccel": {
+          "x": 5.6178070212654745e-05,
+          "y": -7.580252035642399e-06
+        }
+      },
+      "departureRead": {
+        "at": 2.3,
+        "nextRead": 2.5307337663228364,
+        "exit": {
+          "x": 35.509025800896154,
+          "y": 26.269912690325718
+        },
+        "flow": {
+          "x": -0.23801457995999092,
+          "y": 0.3499926560970706
+        },
+        "backer": {
+          "pos": {
+            "x": 36.16407548614681,
+            "y": 26.34602232187288
+          },
+          "vel": {
+            "x": -0.8197175441954859,
+            "y": -0.384092175885972
+          },
+          "stance": null,
+          "facing": 3.1415936960378783,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    }
+  },
+  {
+    "case": "D05",
+    "departureFirstLast": [
+      1.05,
+      2.05
+    ],
+    "firstPlannedInterception": 4.45,
+    "firstRunnerContact": {
+      "t": 3.8,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 20,
+      "pos": {
+        "x": 43.15,
+        "y": 19.08
+      },
+      "note": "grasp"
+    }
+  },
+  {
+    "case": "D07",
+    "departureFirstLast": [
+      1.05,
+      4
+    ],
+    "firstPlannedInterception": 4,
+    "firstRunnerContact": {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+        "x": 39.77,
+        "y": 21.39
+      },
+      "note": "grasp"
+    }
+  }
+]

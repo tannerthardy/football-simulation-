@@ -1,0 +1,77 @@
+{
+  "schema": "duo-transfer-artifacts-v1",
+  "accepted": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "predeclaredExecutedPin": "fce94b11826ebe261c59451eeccf2fe3e7149f15",
+  "sourceUnchanged": true,
+  "files": {
+    "data/reviews/current/duo-transfer/inputs.json": {
+      "bytes": 833714,
+      "sha256": "243a30e97b1198a8d474690145f920aad45c2e006841bf0cf2939ed0fbbf45ec"
+    },
+    "data/reviews/current/duo-transfer/summary.json": {
+      "bytes": 78503,
+      "sha256": "543ffae18f551e8b63bddab69170a283ee76a25ae9eb8b2abe59fbd72e5145ab"
+    },
+    "data/reviews/current/duo-transfer/paired-tapes.json.gz": {
+      "bytes": 6072948,
+      "sha256": "6d0a34be3251db65cc01e12e2333bf3f2455b3f9627b77ab91fd22570c3b7782"
+    },
+    "data/reviews/current/duo-transfer/route-states.json": {
+      "bytes": 29668,
+      "sha256": "342d551421859580ffc9cd2739ea3b0bd01ba3019dfe7eeda83ba31e19782370"
+    },
+    "data/reviews/current/duo-transfer/admission.json": {
+      "bytes": 7883,
+      "sha256": "b7aea053015eaeb3440d579b4ddf1c02b23f41c11f2ba748f6e31f38306f6f23"
+    },
+    "data/reviews/current/duo-transfer/collection-stages.json": {
+      "bytes": 3657,
+      "sha256": "74f93ffc68395e1fe5a475da38d5e89b84c7404b71a945d19b6ea52e4841e6a9"
+    },
+    "data/reviews/current/duo-transfer/native-integrity.json": {
+      "bytes": 2747,
+      "sha256": "2b9f99b1b7dbb480dc26f374fb59218256761a99ae96f3458a7f4fbdafa2b114"
+    },
+    "data/reviews/current/duo-transfer/variety.png": {
+      "bytes": 230160,
+      "sha256": "b8d9839016d99e7d0ca8c206e891726bef09faf8dfcddf524c37c7877100a2d2"
+    },
+    "data/reviews/current/duo-transfer/paths.png": {
+      "bytes": 205768,
+      "sha256": "cdd95c7c1c914c870c85851876a692cb5ec519b9d07b0a51d9067609c2aa30a5"
+    },
+    "data/reviews/current/duo-transfer/receipts/current-launcher.json": {
+      "bytes": 2388,
+      "sha256": "63c7b847b5e40a7336fd6b9816105a8cbf4207950272264b5e29739a6d02b041"
+    },
+    "data/reviews/current/duo-transfer/receipts/reference-launcher.json": {
+      "bytes": 2391,
+      "sha256": "968a9a7e72b462b7976addd519463aea46d1df83ffb01b1e1d8f786b88ee9abd"
+    },
+    "scripts/diag/duo-transfer-capture.mjs": {
+      "bytes": 8887,
+      "sha256": "f28052a5d0c6160965819982327225b569d2391bddb32b7a28e809c7f28b5e21"
+    },
+    "scripts/diag/duo-transfer-plan.mjs": {
+      "bytes": 4700,
+      "sha256": "e80d62b1866fd0fcb07b50ab17491ed34ec8cdfe499b8a5ade463c3faaa48599"
+    },
+    "scripts/diag/duo-transfer-report.py": {
+      "bytes": 12615,
+      "sha256": "e5da470b2439f9014eaefe69f84c5863ab123ce5d3d0950a4851f925be1176c0"
+    },
+    "scripts/diag/duo-transfer-admission.mjs": {
+      "bytes": 3240,
+      "sha256": "06bf7b30363d2641b22e2658c34872d24ab7d673f8915e71424690a9d516b067"
+    },
+    "scripts/diag/duo-transfer-visuals.py": {
+      "bytes": 6031,
+      "sha256": "764d6aa526ae1a5034c715e6084c9eb437177a5428d7a01dc6746cbe23676e93"
+    },
+    "docs/reviews/duo-transfer-audit.md": {
+      "bytes": 15808,
+      "sha256": "227189d6d9cd445e469c1051da2bd5ebc9f7eda2fee990c0667b8f89b0decbe8"
+    }
+  },
+  "rawPolicy": "Full support captures stay in ignored out; compressed all22 tapes and small acquired-cue/stage witnesses are published. Reconstruct native captures with exact frozen commands."
+}

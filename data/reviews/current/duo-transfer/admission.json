@@ -1,0 +1,314 @@
+{
+  "sourceFunctionSha256": "076afc33008bcc35e94fc8031bd2bcbec81bff905e9365c8b702b228344bc05c",
+  "qualification": "Exact native climbRoute on captured acquired pictures and actual pre-step own body. Pure admission result only, no feasible-path or physical-counterfactual claim.",
+  "rows": [
+    {
+      "case": "D05",
+      "t": 0.95,
+      "actor": "C",
+      "keeper": "LG",
+      "backer": "LB_W",
+      "dt": 0.1835511738576756,
+      "own": -0.5045027931204409,
+      "partner": 0.5719655053233446,
+      "key": 1.3711558109805182,
+      "nextKey": 1.3920295146188688,
+      "nextPartner": 0.5981323153589468,
+      "route": {
+        "exit": {
+          "x": 35.390794452245075,
+          "y": 26.347534719824715
+        },
+        "flow": {
+          "x": -0.9976562120683943,
+          "y": -0.07898585091805578
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "D06",
+      "t": 0.95,
+      "actor": "C",
+      "keeper": "RG",
+      "backer": "LB_W",
+      "dt": 0.18358602976290284,
+      "own": 0.38058678812048896,
+      "partner": -0.5916717309055883,
+      "key": -1.3851820908604715,
+      "nextKey": -1.4122768680051523,
+      "nextPartner": -0.5991793480489808,
+      "route": {
+        "exit": {
+          "x": 35.12883257214159,
+          "y": 26.958222102657153
+        },
+        "flow": {
+          "x": -0.7709653804962959,
+          "y": 0.04092836489664302
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "D06",
+      "t": 1.8,
+      "actor": "LT",
+      "keeper": "LG",
+      "backer": "LB_M",
+      "dt": 0.20472048296332246,
+      "own": 0.40482142987396585,
+      "partner": -0.24830383663326572,
+      "key": -1.0790827090459914,
+      "nextKey": -1.0649647317829447,
+      "nextPartner": -0.20008262905144808,
+      "route": {
+        "exit": {
+          "x": 36.34729541120588,
+          "y": 29.31509245176656
+        },
+        "flow": {
+          "x": 1.6429008981974709,
+          "y": -0.1896621426511436
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "D06",
+      "t": 2.05,
+      "actor": "LT",
+      "keeper": "LG",
+      "backer": "LB_M",
+      "dt": 0.20498698516749814,
+      "own": 0.4130532986183262,
+      "partner": -0.21648713147916965,
+      "key": -1.037723769224371,
+      "nextKey": -1.0287351535578688,
+      "nextPartner": -0.1997045722340952,
+      "route": {
+        "exit": {
+          "x": 36.89321115869738,
+          "y": 29.27271576057005
+        },
+        "flow": {
+          "x": 1.9666925217320816,
+          "y": -0.1983878782332102
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": true,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "D06",
+      "t": 2.3,
+      "actor": "LT",
+      "keeper": "LG",
+      "backer": "LB_M",
+      "dt": 0.20522450637092238,
+      "own": 0.4340772767448655,
+      "partner": -0.1884457403551032,
+      "key": -0.842528934751904,
+      "nextKey": -0.6990372784983137,
+      "nextPartner": -0.17779366577620842,
+      "route": {
+        "exit": {
+          "x": 37.4990346125134,
+          "y": 29.210603635298988
+        },
+        "flow": {
+          "x": 2.2099321105324075,
+          "y": -0.2521380922590712
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": true,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 0.8,
+      "actor": "RT",
+      "keeper": "RG",
+      "backer": "LB_M",
+      "dt": 0.19754945110887379,
+      "own": -0.689475703936747,
+      "partner": 0.29251324423918845,
+      "key": 0.3104881625977427,
+      "nextKey": 0.3034463939095678,
+      "nextPartner": 0.2916554535130196,
+      "route": {
+        "exit": {
+          "x": 35.38530377191696,
+          "y": 24.02182906480766
+        },
+        "flow": {
+          "x": -1.0649902679673573,
+          "y": -0.15688955398047197
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 1,
+      "actor": "RT",
+      "keeper": "RG",
+      "backer": "LB_M",
+      "dt": 0.20019499463201118,
+      "own": -0.49836864287058447,
+      "partner": 0.4583344369274691,
+      "key": 0.6917066228605862,
+      "nextKey": 0.8904010654658707,
+      "nextPartner": 0.5620253406836639,
+      "route": {
+        "exit": {
+          "x": 35.45595271361851,
+          "y": 23.86059203381113
+        },
+        "flow": {
+          "x": 0.015383790835355664,
+          "y": -0.5635130900157462
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 1.1,
+      "actor": "LG",
+      "keeper": "C",
+      "backer": "LB_W",
+      "dt": 0.2197645841544107,
+      "own": 0.2777495132874286,
+      "partner": -0.7743521008148022,
+      "key": -0.20319367037432912,
+      "nextKey": -0.42834571591878073,
+      "nextPartner": -0.7273255394326479,
+      "route": {
+        "exit": {
+          "x": 35.07539774127433,
+          "y": 28.62769736410632
+        },
+        "flow": {
+          "x": 0.32810301713009826,
+          "y": 0.6980927267802862
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 1.35,
+      "actor": "LG",
+      "keeper": "C",
+      "backer": "LB_W",
+      "dt": 0.22126668656465132,
+      "own": 0.1330134306520634,
+      "partner": -0.9171832863089548,
+      "key": -0.6747391472604995,
+      "nextKey": -1.0115883653587185,
+      "nextPartner": -0.9692166047505837,
+      "route": {
+        "exit": {
+          "x": 35.10519246746514,
+          "y": 28.263435950709727
+        },
+        "flow": {
+          "x": 0.8399895602781516,
+          "y": 1.2596246266134834
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 1.6,
+      "actor": "LG",
+      "keeper": "C",
+      "backer": "LB_W",
+      "dt": 0.22199893252061176,
+      "own": 0.15011760911849237,
+      "partner": -0.9100064856890739,
+      "key": -0.6964363135113345,
+      "nextKey": -0.8461994716951221,
+      "nextPartner": -0.9228019597588448,
+      "route": {
+        "exit": {
+          "x": 35.40395732098519,
+          "y": 28.522801352347326
+        },
+        "flow": {
+          "x": 1.0418903454495114,
+          "y": 1.0842117265457534
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    },
+    {
+      "case": "A018",
+      "t": 1.85,
+      "actor": "LG",
+      "keeper": "C",
+      "backer": "LB_W",
+      "dt": 0.2224204529417988,
+      "own": 0.17878299820454302,
+      "partner": -0.9106167178515534,
+      "key": -0.7831677577215217,
+      "nextKey": -0.8782631146593588,
+      "nextPartner": -0.9157919534928964,
+      "route": {
+        "exit": {
+          "x": 35.66296372394367,
+          "y": 28.818426285402985
+        },
+        "flow": {
+          "x": 1.043172417330109,
+          "y": 1.067346847739564
+        }
+      },
+      "halfGate": true,
+      "filling": true,
+      "arriving": false,
+      "withheldByDuoGate": true,
+      "nativeProposal": null
+    }
+  ]
+}

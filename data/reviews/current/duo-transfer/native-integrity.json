@@ -1,0 +1,126 @@
+{
+  "newExecutions": 20,
+  "cases": [
+    {
+      "arm": "current",
+      "id": "D02",
+      "ending": 3.45,
+      "maxAbsWorkResidual": 5.576872297297086e-12
+    },
+    {
+      "arm": "current",
+      "id": "D04",
+      "ending": 3.35,
+      "maxAbsWorkResidual": 4.0394354527961696e-12
+    },
+    {
+      "arm": "current",
+      "id": "D05",
+      "ending": 4.5,
+      "maxAbsWorkResidual": 8.281375585283968e-12
+    },
+    {
+      "arm": "current",
+      "id": "D06",
+      "ending": 3.5,
+      "maxAbsWorkResidual": 6.5778493762991275e-12
+    },
+    {
+      "arm": "current",
+      "id": "D07",
+      "ending": 4.55,
+      "maxAbsWorkResidual": 8.690825836765725e-12
+    },
+    {
+      "arm": "current",
+      "id": "D08",
+      "ending": 4.15,
+      "maxAbsWorkResidual": 6.821210263296962e-12
+    },
+    {
+      "arm": "current",
+      "id": "D09",
+      "ending": 4.35,
+      "maxAbsWorkResidual": 1.5086598637026327e-11
+    },
+    {
+      "arm": "current",
+      "id": "D10",
+      "ending": 3.05,
+      "maxAbsWorkResidual": 5.6843418860808015e-12
+    },
+    {
+      "arm": "current",
+      "id": "D12",
+      "ending": 4.2,
+      "maxAbsWorkResidual": 6.366462912410498e-12
+    },
+    {
+      "arm": "current",
+      "id": "IZ",
+      "ending": 3.6,
+      "maxAbsWorkResidual": 5.649702927712497e-12
+    },
+    {
+      "arm": "current",
+      "id": "POWER",
+      "ending": 3.5,
+      "maxAbsWorkResidual": 4.863665026277886e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D02",
+      "ending": 4.2,
+      "maxAbsWorkResidual": 5.7269744502264075e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D04",
+      "ending": 3.35,
+      "maxAbsWorkResidual": 5.6488147492927965e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D05",
+      "ending": 4.45,
+      "maxAbsWorkResidual": 6.30961949354969e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D06",
+      "ending": 4.65,
+      "maxAbsWorkResidual": 8.851586130731448e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D07",
+      "ending": 4.6,
+      "maxAbsWorkResidual": 1.0649703341414352e-11
+    },
+    {
+      "arm": "reference",
+      "id": "D08",
+      "ending": 3.3,
+      "maxAbsWorkResidual": 3.879563337250147e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D09",
+      "ending": 4.35,
+      "maxAbsWorkResidual": 1.5086598637026327e-11
+    },
+    {
+      "arm": "reference",
+      "id": "D10",
+      "ending": 3.1,
+      "maxAbsWorkResidual": 3.836930773104541e-12
+    },
+    {
+      "arm": "reference",
+      "id": "D12",
+      "ending": 4.2,
+      "maxAbsWorkResidual": 6.366462912410498e-12
+    }
+  ],
+  "qualified": "Finite22 body motion and reported work residuals; no new physics-law certification or complete contact audit."
+}
