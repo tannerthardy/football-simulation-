@@ -141,12 +141,33 @@ function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
     const s = sim.see(a, kick);
     if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
   }
+  // Everything below is the runner's own picture: perceived positions, motion
+  // and pose, and public body size and reach. Whether a defender is blocked,
+  // and how well, is read from the bodies he sees in contact, never from the
+  // engagement record, the other players' fatigue or their true pose.
+  const pictures: Array<{ agent: Agent; seen: Perceived; team: 'O' | 'D' }> = [];
+  for (const o of [...sim.offense, ...sim.defense]) {
+    if (o === a || o === sim.qb) continue;
+    const seen = sim.see(a, o);
+    if (seen.pose === 'down') continue;
+    pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
+  }
   const bodies: LineBody[] = [];
-  for (const o of sim.agents) {
-    if (o === a || o.isDown(sim.t) || o === sim.qb) continue;
-    const s = sim.see(a, o);
+  for (const { agent: o, seen: s, team } of pictures) {
     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
-    bodies.push({ pos: s.pos, vel: s.vel, radius: o.profile.radius, team: o.team === a.team ? 'O' : 'D', agent: o });
+    bodies.push({ pos: s.pos, vel: s.vel, radius: o.profile.radius, team, agent: o });
+  }
+  // A defender a teammate's body is on, as seen: that teammate.
+  const heldBy = new Map<Agent, { seen: Perceived; radius: number }>();
+  for (const d of pictures) {
+    if (d.team !== 'D') continue;
+    let best: { seen: Perceived; radius: number } | null = null, gap = Infinity;
+    for (const o of pictures) {
+      if (o.team !== 'O') continue;
+      const g = Math.hypot(o.seen.pos.x - d.seen.pos.x, o.seen.pos.y - d.seen.pos.y) - o.agent.profile.radius - d.agent.profile.radius;
+      if (g < .25 && g < gap) { gap = g; best = { seen: o.seen, radius: o.agent.profile.radius }; }
+    }
+    if (best) heldBy.set(d.agent, best);
   }
   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
   bodies.sort((p, q) => p.pos.y - q.pos.y);
@@ -170,18 +191,18 @@ function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   // Time for a defender to be in the runner's way at p, with block leverage.
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number => {
     const recovery = observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
-    const e = d.engagement;
-    const reach = e ? d.profile.reach * .4 : d.profile.reach * .75;
-    let t = timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, p, d.profile.radius + a.profile.radius + reach) + recovery;
-    if (e && !e.blocker.isDown(sim.t)) {
-      const b = sim.see(a, e.blocker);
+    const b = heldBy.get(d);
+    const reach = b ? d.profile.reach * .4 : d.profile.reach * .75;
+    let t = timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + reach) + recovery;
+    if (b) {
       // Blocker between the defender and the point (laterally, at the line):
-      // the defender must get off or around him first.
-      const toP = p.y - s.pos.y, toB = b.pos.y - s.pos.y;
-      const walled = Math.sign(toP) === Math.sign(toB) || Math.abs(toB) < (e.blocker.profile.radius + d.profile.radius) * .5;
-      // A block on the hole side protects it as long as it holds: a square
-      // block (win near 0) for most of a second, a losing one hardly at all.
-      if (walled) t += .2 + 1.3 * clamp(1 - e.win, 0, 1);
+      // the defender must get off or around him first. A block on the hole
+      // side protects it as long as it holds: most of a second while the man
+      // is not sliding off it toward the point, hardly at all once he is.
+      const toP = p.y - s.pos.y, toB = b.seen.pos.y - s.pos.y;
+      const walled = Math.sign(toP) === Math.sign(toB) || Math.abs(toB) < (b.radius + d.profile.radius) * .5;
+      const sliding = Math.max(0, (s.vel.y - b.seen.vel.y) * Math.sign(toP || toB || 1));
+      if (walled) t += .2 + 1.1 * clamp(1 - sliding / 1.5, 0, 1);
     }
     return t;
   };
@@ -215,10 +236,8 @@ function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
       // Who is there first, at the entry and two yards beyond it: the
       // earliest defender decides, as in the open-field read.
       let m1 = Infinity, m2 = Infinity;
-      for (const d of sim.opponents(a)) {
-        if (d.isDown(sim.t)) continue;
-        const s = sim.see(a, d);
-        if (Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+      for (const { agent: d, seen: s, team } of pictures) {
+        if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
         m1 = Math.min(m1, threatTime(d, s, p) - arrive);
         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
       }
@@ -425,8 +444,10 @@ export class BallCarrier implements Behavior {
     // a lane through a blocker and his man is no more open than one through
     // the blocker alone.
     if (RUN_LANE) for (const d of sim.opponents(a)) {
-      if (!d.engagement || d.isDown(sim.t) || Math.hypot(d.pos.x - p.x, d.pos.y - p.y) >= 12) continue;
-      blockers.push({ ...sim.see(a, d), radius: d.profile.radius });
+      const s = sim.see(a, d);
+      if (s.pose === 'down' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) >= 12) continue;
+      if (blockers.some((b) => Math.hypot(b.pos.x - s.pos.x, b.pos.y - s.pos.y) < b.radius + d.profile.radius + .25))
+        blockers.push({ ...s, radius: d.profile.radius });
     }
     for (const d of sim.opponents(a)) {
       const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
