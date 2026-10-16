@@ -1189,7 +1189,7 @@ export class RunBlocker implements Behavior {
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
     const e = a.engagement;
-    return isOL(a) && this.plan.kind === 'reach'
+    return (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline) && this.plan.kind === 'reach'
       && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
       && (!this.plan.combination || this.plan.combination.released)
       && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))
