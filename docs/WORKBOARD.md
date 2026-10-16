@@ -928,3 +928,18 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+## Measurement: independent #101 tooling review (2026-10-16)
+
+Review-only boundary: `docs/reviews/pr101-measurement-tooling-review.md`, two
+saved-only reproducers under `docs/reviews/pr101-tooling-review/`, and
+`data/reviews/current/pr101-measurement-tooling-review.json`. Inspect frozen
+`4d224096739953406bcd25da9e3e8e5ddb0929d9` source and saved evidence; reuse
+the existing eight focused checks/typecheck. No native cases, games, shared
+suite, engine edits or prototype import. Review host starts at accepted
+`3723204bd0743713bca3e87f10ca01bfebf00a15` (queue `db0d512`).
+
+Completed tooling-only HOLD: failure-path index/partial-retention correction
+required; all saved case/key/source joins and compatible focused receipts pass.
+Zero native executions or repeated suites. Report and offline stub reproduction
+are in the claimed paths; Run/Integration receive the finding on #101.

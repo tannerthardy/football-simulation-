@@ -1,0 +1,202 @@
+{
+  "schema": "pr101-independent-tooling-review-v1",
+  "verdict": "HOLD",
+  "reviewedHead": "4d224096739953406bcd25da9e3e8e5ddb0929d9",
+  "reviewHostAccepted": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+  "canonicalQueue": "db0d512666823c49f7d5afed84138b32ffcf449f",
+  "scope": "tooling and saved evidence only",
+  "nativeCasesExecuted": 0,
+  "PlaySimConstructed": 0,
+  "games": 0,
+  "sharedSuites": 0,
+  "focusedTestsRerun": 0,
+  "typecheckRerun": 0,
+  "blockingFindings": [
+    {
+      "id": "failure-retention-accounting",
+      "severity": "P2",
+      "file": "scripts/diag/run-action-suite.ts",
+      "line": 284,
+      "observation": "wall-censored attempt omitted from index/censor count and counted as skipped; thrown numerical failure omits executed attempt and accumulated partial observations",
+      "returnCondition": "persist attempted outcome/available partial observations; keep failed/censored attempts separate from untouched tail; preserve stop and no-retry behavior; focused stub/failure evidence, no campaign rerun"
+    }
+  ],
+  "savedValidation": {
+    "nativeExecutions": 0,
+    "scope": "Saved bytes and pure input/key reconstruction only; no PlaySim construction or ticks",
+    "arms": {
+      "accepted": {
+        "head": "579a20e2062d0a159c3a4e88b10e21819f88b7c1",
+        "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+        "planned": 1608,
+        "executed": 1608,
+        "cached": 0,
+        "terminal": 1606,
+        "censored": 2,
+        "skipped": 0,
+        "elapsedSeconds": 266.50203262199994
+      },
+      "perimeter": {
+        "head": "9163ef542af3c1ced10657043b3c803073ed8ca9",
+        "source": "ca40378fb18a3285c02031228e0e87190b2b0cb4aeeb70c48b51926816c19a0b",
+        "planned": 240,
+        "executed": 240,
+        "cached": 0,
+        "terminal": 240,
+        "censored": 0,
+        "skipped": 0,
+        "elapsedSeconds": 45.477378171999995
+      }
+    },
+    "checks": [
+      "1848 ordered case/input/key/index/compact joins",
+      "both historical engine source hashes and collector/lock/helper hashes",
+      "terminal/censor nullability",
+      "family descriptive statistics and 216 pair metrics",
+      "40 witness keys/source/metrics (raw row digests unavailable)",
+      "self-contained film IDs, states, timing and source separation",
+      "all seven receipts and frozen focused-test validation tree"
+    ],
+    "focusedReceiptValidationMatchesFreeze": true,
+    "film": {
+      "views": 20,
+      "cases": 40,
+      "frames": 1024,
+      "states": 22528,
+      "maxEndingGap": 0.15000000000000036,
+      "externalRequests": false
+    },
+    "receipts": {
+      "count": 7,
+      "failed": 2,
+      "commandSeconds": 350.612062173
+    }
+  },
+  "offlineFailurePathCheck": {
+    "nativeExecutions": 0,
+    "engineImports": 0,
+    "description": "Exact frozen main() transpiled; in-memory IO and measure() stubs. Observed behavior, not a proposed fix.",
+    "results": [
+      {
+        "scenario": "wall-censor",
+        "stubbedAttempts": 1,
+        "executed": 1,
+        "censored": 0,
+        "rows": 0,
+        "skipped": [
+          "first",
+          "second",
+          "third"
+        ],
+        "failure": {
+          "id": "first",
+          "error": "Error: Per-case wall budget exhausted"
+        },
+        "cacheSaved": true,
+        "exitCode": 1
+      },
+      {
+        "scenario": "exception",
+        "stubbedAttempts": 1,
+        "executed": 0,
+        "censored": 0,
+        "rows": 0,
+        "skipped": [
+          "first",
+          "second",
+          "third"
+        ],
+        "failure": {
+          "id": "first",
+          "error": "Error: Material physics discrepancy (stub)"
+        },
+        "cacheSaved": false,
+        "exitCode": 1
+      }
+    ]
+  },
+  "additionalChecks": {
+    "filmJavaScriptSyntax": "pass (node --check)",
+    "sourceFlagInventory": "all 44 environment names exactly covered",
+    "productionAndSettingsDiff": "unchanged versus bb6d4c7",
+    "collectorAndFocusedTestDiff": "unchanged between passing 579a20e freeze and reviewed head"
+  },
+  "limits": [
+    "Full ignored ~130MB compressed caches are not available in this environment; raw rowSha256 values could not be recomputed.",
+    "Observer neutrality receipt covers one loaded WZ opening through 1.1 seconds; no universal neutrality claim.",
+    "Film JSON/syntax checked; no visual browser rendering claimed.",
+    "Budgets are cooperative at tick/batch boundaries; not a hard OS deadline.",
+    "Study accepted arm is historical bb6d4c7, not current develop 3723204.",
+    "Native PA has generic OL show and .7s QB/RB fake, not named run-specific installation."
+  ],
+  "artifactHashes": {
+    "data/reviews/current/run-action-suite/accepted-index.json.gz": {
+      "bytes": 135988,
+      "sha256": "ea047d36520f9a4bb8f200ae800c7ef0f5ca2ef821c60f084527713edad68f35"
+    },
+    "data/reviews/current/run-action-suite/accepted-manifest.json.gz": {
+      "bytes": 93420,
+      "sha256": "f65516d74b60951f322a2b71a66a0c889e3a83010022add7314720eb612b0617"
+    },
+    "data/reviews/current/run-action-suite/costs.json": {
+      "bytes": 2800,
+      "sha256": "8cc215da489d857c889f4b3661b62b20278c506fd6b23bfcadf36c29f9cb1f5e"
+    },
+    "data/reviews/current/run-action-suite/film-selections.json": {
+      "bytes": 6325,
+      "sha256": "68bef505cff02ea9840b05b292075309d63251165556dff1fcd79391a5088357"
+    },
+    "data/reviews/current/run-action-suite/perimeter-index.json.gz": {
+      "bytes": 22069,
+      "sha256": "4eda5e8a6f1410dbea2661be7e0b7f37f10bbbcf414d1e92559398156ae5ec66"
+    },
+    "data/reviews/current/run-action-suite/perimeter-manifest.json.gz": {
+      "bytes": 29652,
+      "sha256": "1ad38ec3011c7cfc1847325c7685c4b6a8590bbc262ad4469f3e330ec6592fec"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138529159-293382.json": {
+      "bytes": 2247,
+      "sha256": "c3db7d14f66afc01a8cf97621a41f91b1c5e05263968bf6cb85c8feb5c8d5dda"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138557058-293593.json": {
+      "bytes": 2240,
+      "sha256": "d84b1e55c9c6cdb7d1b144156b55333e03340b942db6d61f1ad603c9b747a0c3"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138557058-293594.json": {
+      "bytes": 2172,
+      "sha256": "38f985c006f65332b3b358ba09751a61fb0b334513526b38ab21a6059c4a856d"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138598964-294048.json": {
+      "bytes": 2239,
+      "sha256": "515a745ae71186224956a95359f0744ef44ee8a2dd998bfac78ef7e43e4730a3"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138598980-294055.json": {
+      "bytes": 2166,
+      "sha256": "f12b96ca53da17927804d126ec8f10630484fbd502e05a11a748a182f107dd04"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138624502-294264.json": {
+      "bytes": 2493,
+      "sha256": "178e4f450bb8fa29d59bd3be576b2819f18b7c2fb78b91f13fb44d450ad9b923"
+    },
+    "data/reviews/current/run-action-suite/receipts/run-1792138921080-294608.json": {
+      "bytes": 2504,
+      "sha256": "1417ccff5e7348c13caa6870c070b1398f2b046b4f1949003ffea61657462349"
+    },
+    "data/reviews/current/run-action-suite/rows.json.gz": {
+      "bytes": 461200,
+      "sha256": "cb862d86d7940a9c287e2b3abe28dc3c75bfe5fc82181aa8d85a28bbc6c84f77"
+    },
+    "data/reviews/current/run-action-suite/summary.json": {
+      "bytes": 601414,
+      "sha256": "00cc817b53f88ed3883ca2b602394a2474af99dc51ed2d3f9521fc6b38670690"
+    },
+    "data/reviews/current/run-action-suite/witness-packet.json.gz": {
+      "bytes": 43311,
+      "sha256": "0e019afc94bb0acad159d26ed91960ab7331e9e0e9a7b5105ab271f5b0f6e22e"
+    }
+  },
+  "reviewScripts": {
+    "docs/reviews/pr101-tooling-review/failure-accounting.cjs": "f68c1ef56b284da4e701cc374414ccbf3107882411546b2928088b38144350ee",
+    "docs/reviews/pr101-tooling-review/verify-saved.mjs": "bad6a12c7756bfb322b209b84ce9edbe93ece2fe01c38e613b6d2f47e4721520"
+  }
+}
