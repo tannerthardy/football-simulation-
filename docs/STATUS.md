@@ -8,7 +8,8 @@ Do not use the historical sections below as a current starting-reference pin.
   cost successor are adopted as9adb7b3 after one passing exact verification.
   1,772 TS/150 files,145 Python,typecheck/build pass;195.589s,44flags/components1.
   #87 now has both independent producer and whole-policy/#89 interaction approval;
-  its seven-file successor is assembled for one exact verification. No observer/experiment import.
+  its seven-file successor fails six cross-module command equality assertions.
+  Integration holds adoption while checking private-symbol identity versus semantics. No observer/experiment import.
   [Exact queue](INTEGRATION.md#ready-blocked-experimental).
 - **Operating policy:** contributors submit fetchable work through the single
   `integration-ready` GitHub queue; readiness requests independent review.

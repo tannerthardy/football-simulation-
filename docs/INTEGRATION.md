@@ -257,6 +257,13 @@ exact seven-file post-dependency policy on that pin; Catching approved its own
 objective producers. The portable patch applies directly and all seven blobs
 equal reviewed author9760de0. Source668acb1 includes accepted #88/#89/cost.
 Integration owns one exact combined verification in `codex/mesh-policy-integration`.
+
+**Verification HOLD:** freezeb3caeb8 completes all phases with six existing
+pull-fit whole-command comparison failures:1,774 TS pass/6 fail,145 Python,
+typecheck/build pass;200.811s, no skipped phase/input drift.
+[Preserved failed receipt](../data/reviews/current/mesh-policy-integration/failed-receipt.json).
+First question: distinguish module-reload symbol identity from physical/own-goal
+semantic changes. No source change or test waiver; no merge.
 [Intake, approvals and thirty evidence hash checks](../data/reviews/current/mesh-policy-integration/intake.json).
 [Fetchable exact patch](../data/reviews/current/mesh-policy-integration/traffic-controller.patch).
 
