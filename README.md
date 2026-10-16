@@ -30,6 +30,9 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
   [interpret improvement/regression](docs/BEHAVIOR_REVIEW.md),
   [validation](docs/VALIDATION.md). Contributors supply focused receipts;
   one integration owner verifies the exact combined candidate.
+- **Pass-game checkpoints:** [3,198-play frozen suite](docs/PASS_GAME_SUITE.md)
+  covers major passing-game changes; `npm run pass:suite` plans zero snaps.
+  Broad execution requires an explicit checkpoint and preserves adverse evidence.
 - **Branches and recovery:** [branch map, cleanup record and pending decisions](docs/BRANCHES.md).
 - **Evidence and research:** [current receipts](data/reviews/current),
   [pinned reviews](docs/reviews), [archived research](docs/archive/reviews),

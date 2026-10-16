@@ -21,7 +21,7 @@ on a future engine. Reference: accepted develop
 `3723204bd0743713bca3e87f10ca01bfebf00a15` (#105), runtime SHA-256
 `cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318`.
 Manifest content SHA-256:
-`9db8d7d35155955a44289a9a99b4a442753120d2209e6bc4eac5f1bdcd0f633e`.
+`2004a6e31f4afa98db8d2ed4eb93983815cbb106d7389f0512a219c5bdab5e14`.
 This identifies the input design, **not** a completed baseline campaign.
 
 | Area | Exposures | Football question |
@@ -31,7 +31,7 @@ This identifies the input design, **not** a completed baseline campaign.
 | Formation transfer | 216 | All 18 native formations: 10/11/12/13/21/22 personnel, under center/pistol/gun, empty, trips, bunch, attached TE and heavy surfaces |
 | Pressure | 176 | Six packages on/off: A/B-gap, double-A, nickel edge, fire zone and zero-six; quick, cross, vertical and comeback answers |
 | Front | 60 | Over/Under, Wide 9 and Odd/Tite with matched front controls |
-| Situation | 246 | Backed up, red zone, goal line, short/long third down, fourth down, hurry, either boundary, crosswind and fatigue |
+| Situation | 246 | Backed up, red zone, goal line, short/long third down, fourth down, hurry, both NFL hashes, crosswind and fatigue |
 | Capability transfer | 192 | Fresh generated offensive-advantage and defensive-advantage players, two seeds and both directions |
 | Concept laboratory | 96 | Existing routes combined into wheel/vertical, snag/corner/flat, back angle, double post/seam, empty stick/hook and back wheel conflicts |
 | Play action | 216 | Three native PA concepts versus no-fake copies with routes, protection choices and drop held; neutral, run-heavy and pass-alert contexts |
@@ -56,6 +56,8 @@ There are four generated roster cohorts (ordinary A/B plus two opposing
 capability advantages), with no hand-edited speed, balance or grip ratings.
 These are matched experiments, not independent population samples. Same-seed
 branches can consume different execution draws once their decisions diverge.
+Hash cases snap at 23.5833 / 29.75 yd across the field; receivers and runners
+can subsequently approach either sideline. These are not illegal sideline snaps.
 
 ## Commands and cost
 
@@ -182,6 +184,9 @@ The evidence separates:
 - **Numerics and completion:** finite physical state, existing momentum/work
   and arm/motor capacity assertions, penetration diagnostic, failed prefixes,
   simulation/wall/engine censors, skipped cases and new versus cached runtime.
+  Step counters and solver assertions start after native constructor setup;
+  existing pre-snap stem/creep physics is included in elapsed cost but is not
+  intercepted by the live-step observer.
 
 No-contact is distinct from failed contact. An unfinished no-contact prefix
 is not a tackle failure. Release distributions use throws; clean terminal YAC

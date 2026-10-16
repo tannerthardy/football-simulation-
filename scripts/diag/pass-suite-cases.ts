@@ -89,7 +89,7 @@ export function buildManifest(reference: Manifest['reference']): Manifest {
       backed_up:{los:12,ballY:FIELD_WIDTH/2,down:1,distance:10},redzone:{los:102,ballY:FIELD_WIDTH/2,down:2,distance:6},
       goal:{los:108,ballY:FIELD_WIDTH/2,down:3,distance:2},third_short:{los:55,ballY:FIELD_WIDTH/2,down:3,distance:2},
       third_long:{los:40,ballY:FIELD_WIDTH/2,down:3,distance:15},fourth_down:{los:65,ballY:FIELD_WIDTH/2,down:4,distance:4},
-      hurry:{los:60,ballY:FIELD_WIDTH/2,down:2,distance:8,hurry:true},boundary:{los:40,ballY:4,down:1,distance:10},
+      hurry:{los:60,ballY:FIELD_WIDTH/2,down:2,distance:8,hurry:true},hash:{los:40,ballY:FIELD_WIDTH/2-37/12,down:1,distance:10},
       crosswind:{los:40,ballY:FIELD_WIDTH/2,down:1,distance:10,wind:{x:0,y:6}},
       fatigued:{los:40,ballY:FIELD_WIDTH/2,down:1,distance:10,energy:.65},
       run_heavy:{los:40,ballY:FIELD_WIDTH/2,down:1,distance:10,history:[...Array(18).fill(false),...Array(6).fill(true)]},
@@ -143,7 +143,7 @@ export function buildManifest(reference: Manifest['reference']): Manifest {
       m.pairs.push({id:`front/${front}/${concept}/${roster}/${mirror}`,question:'What changes with the same personnel and a different rush/front geometry?',a,b,changed:['front']});
     }
   }
-  for(const context of ['backed_up','redzone','goal','third_short','third_long','fourth_down','hurry','boundary','crosswind','fatigued'])
+  for(const context of ['backed_up','redzone','goal','third_short','third_long','fourth_down','hurry','hash','crosswind','fatigued'])
     for(const concept of ['slant_flat','four_verts','drive','smash'])for(const look of ['cover1_off','cover2_match','cover4'])for(const mirror of [false,true])
       add('situation',concept,look,'ordinaryA',17001,mirror,'gun_doubles_11',context);
   m.looks.bear0={...structuredClone(m.looks.cover0),personnel:'goalline',front:FRONT_BY_ID.bear,label:'bear0'};

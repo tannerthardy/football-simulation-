@@ -27,6 +27,7 @@ describe('explicit broad pass-game checkpoint',()=>{
     for(const f of Object.keys(FORMATION_BY_ID))expect(m.cases.some(c=>c.formation===f)).toBe(true);
     expect(new Set(m.cases.map(c=>c.mirror))).toEqual(new Set([false,true]));
     expect(new Set(m.cases.map(c=>c.roster)).size).toBe(4);
+    expect(m.contexts.hash.ballY).toBeCloseTo(23.583333,5);
     expect(new Set(m.cases.map(c=>c.inputSha256)).size).toBe(m.cases.length);
     expect(m.cases.some(c=>c.groups.length>1)).toBe(true);
     const shipped=readJSON('config/pass-game-suite-v1.json.gz');
