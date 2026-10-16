@@ -1239,11 +1239,12 @@ export class RunBlocker implements Behavior {
     const capacity = a.body.support ? availability(a.body.support,
       supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
     const arrival = movingArrivalVelocity(a.body,
-      { x: a.pos.x, y: goal.y }, { x: 0, y: seen.vel.y },
+      goal, seen.vel,
       a.profile.vmax, 0, 0, .8 + .3 * a.r('runBlock'), capacity);
-    // Maintain the existing upfield drive while fitting laterally. Following
-    // a penetrator's retreat would surrender depth before an anchor can act.
-    this.stretchStep = { x: dir * 2.4, y: arrival.y };
+    // Brake the normal approach too, rather than running past the struck
+    // half. Preserve the ordinary drive ceiling and do not chase a
+    // penetrator backward; the existing felt-load anchor still opposes him.
+    this.stretchStep = { x: dir * clamp(arrival.x * dir, 0, 2.4), y: arrival.y };
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
