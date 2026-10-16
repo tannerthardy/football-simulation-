@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Run: combination departure to useful collection
+
+User asks to make normal football technique work after the transfer audit. Host `codex/combo-strike-access` starts accepted86250bb4f0c6f421878c204161864d523c3e30b6 (remote/queueef214373 agree). Run owns only `blocking.ts` climbRoute/leaveCombination and directly affected collection tests/diagnostics. Do-It-All retains spacing/carrier/forecast-cost; Physics retains all solver/hand/capacity work. First question: does current A018 RG have a physically attainable, cue-supported collection opportunity that its recurring departure objective withholds? Reuse #86/#84 baseline; one targeted native alternative plus an obstructed/useful control before any transfer subset. Existing old first-strike-only RT negative remains visible; no new exit-angle/timer sweep, strength increase or body/spacing bypass. Keep RG's release/RT keeper and the installed jobs, information, roster and physical law unchanged. All22 react normally. Claims must distinguish prediction, requested/achieved motion and actual runner protection.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.

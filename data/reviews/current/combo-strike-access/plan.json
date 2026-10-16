@@ -1,0 +1,21 @@
+{
+  "question": "Does first-strike clearance allow the already released A018 RG to collect Mike usefully before runner arrival without surrendering near-level protection?",
+  "base": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "cachedReference": "ed30b821c3aa621b129ce861e5c5a66b5d5cf23c",
+  "initialCases": [
+    "A018",
+    "A030"
+  ],
+  "opposition": "A030 existing simultaneous RT/DT and RG/LB protection; captured blocked initial A018 read must still refuse premature clearance. Direct native-hook/mirror controls if the physical candidate works.",
+  "candidate": "Only post-release route endpoint uses the existing arm strike range; no earlier release or policy/capacity/info change. The prior old-source RT first-strike trial remains negative, not adoption evidence.",
+  "budget": "2 initial short candidates, max5 native seconds/5wall each; conditional D05/D07/D06/Under/WZ controls only if a useful action is achieved. Stop on genuine correctness blocker; no games/new rosters/automatic suite.",
+  "unchanged": [
+    "assignments",
+    "takeover security",
+    "release admission",
+    "perception laws/cadence",
+    "runner",
+    "spacing",
+    "world/rosters/capacities/defaults"
+  ]
+}
