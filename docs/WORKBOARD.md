@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Run: installed backside wall versus generic zone track — 2026-10-15 Phoenix
+
+Branch `codex/zone-backside-wall` on re-fetched acceptedbb6d4c7/source668acb1.
+#96 stays frozen/separate; this owns only `RunBlocker.zoneFlow`'s admission
+for an already installed contactFit. Saved A027/A025/A015/A039 show the
+backside LT tracking away from his installed outside wall. Test one correction
+letting the existing wall fit own the approach after the existing opening foot.
+No assignment, keeper/release, shared spacing, law, grip or capability change.
+Do-It-All retains #94/#92, Physics retains laws. Two declared existing-input
+candidate prefixes (A027 WZ/A002 OZ opposing useful-block/defensive-win control)
+to3.05; no baseline recollection, panel, games or release variants. Integration
+owns independent adoption and final exact verification. Stop if the existing
+wall cannot develop useful lawful protection or compromises the controls.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
