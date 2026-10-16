@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Do-It-All local coverage traffic controller — 2026-10-15
+
+Start accepted86250bb4f0c6f421878c204161864d523c3e30b6; queue agrees.
+Branch codex/mesh-traffic-controller minimally extracts the separately reviewed
+motion/cost candidate (f04235e/d80dcd3) as an explicit pending dependency.
+Own spacing.ts compound brake/steer consumer, movement-objective.ts and focused
+traffic tests/reproducer. Producer edits are limited to track's already-computed
+moving objective and playBall.catch-drive's fixed predicted point. Catching's
+common/approach trial is released/reverted at08a6623; coordination6205761929
+follows contract proposal6205251618. Do not import its rejected trial, the
+diagnostic observer, #76 carrier policy or old research ancestry. No change to
+coverage responsibility/recognition, gatheringApproach/chase, physics, acquisition,
+memory, body size or capabilities. Same-state proof then short A044/A008 reacting
+comparison only. Integration owns independent review and combined verification.
+
 ## Verified #85 Duo-only scope, adoption pending — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.

@@ -14,6 +14,8 @@ import {previewFreeMovement,type MovementSample} from '../physics/movement-previ
 import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
+import { movementObjective } from './movement-objective.js';
+import { containCoverage } from './coverage-space.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -34,6 +36,8 @@ export interface SpacingContext {
 }
 
 interface PeerPicture {
+  key: number;
+  age?: number;
   pos: {x:number;y:number};
   vel: {x:number;y:number};
   touch: number;
@@ -57,13 +61,13 @@ function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPic
  * This is a held-command forecast against observed constant-velocity peers,
  * not a contact solve or knowledge of their next decisions. Replan next tick.
  */
-function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):readonly PeerPicture[] {
   const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
   if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
-    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return original;
+    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return [];
   // A nearly aligned request does not remove momentum.
   // Admit by the attainable tube below, then evaluate the actual held-command
   // movement rather than assuming the body immediately adopts its request.
@@ -78,7 +82,7 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
     const closest=v2>1e-12?Math.max(0,Math.min(TURN_HORIZON,(dx*rx+dy*ry)/v2)):0;
     return Math.hypot(dx-rx*closest,dy-ry*closest)<=peer.touch+tube+1e-9;
   });
-  if(!near.length)return original;
+  if(!near.length)return [];
   // An exactly matched request and settled support preserve the current
   // travel line in free movement. Speed/facing caps can brake along it, but
   // supply no transverse force. Reject only peers whose entire acquired
@@ -95,8 +99,14 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
     const last=first+(peer.vel.x*nx+peer.vel.y*ny)*TURN_HORIZON;
     return Number.isFinite(first)&&Number.isFinite(last)&&first*last>0
       &&Math.min(Math.abs(first),Math.abs(last))>peer.touch+1e-9;
-  }))return original;
-  const samples=previewFreeMovement(a.body,original,context.now,TURN_STEPS);
+  }))return [];
+  return near;
+}
+
+function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+  const near=forecastPeers(a,original,peers,context);
+  if(!near.length)return original;
+  const samples=previewFreeMovement(a.body,original,context!.now,TURN_STEPS);
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
@@ -105,17 +115,94 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   // safely follows the same observed peers. Keep posture/facing/skill and let
   // ordinary movement decide whether this request is actually achievable.
   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
-  const slower=previewFreeMovement(a.body,slowed,context.now,TURN_STEPS);
+  const slower=previewFreeMovement(a.body,slowed,context!.now,TURN_STEPS);
   if(slower.every(sample=>sample.support==='up')
     &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
   const gather:Intent={...original,vel:{x:0,y:0}};
-  const gathered=previewFreeMovement(a.body,gather,context.now,TURN_STEPS);
+  const gathered=previewFreeMovement(a.body,gather,context!.now,TURN_STEPS);
   if(gathered.some(sample=>sample.support!=='up'))return original;
   const alternative=near.map(peer=>sweptClearance(a,gathered,peer));
   // Do not cure one overlap by creating another in a previously clear lane.
   if(alternative.some((clearance,i)=>clearances[i]>=0&&clearance<0)
     ||Math.min(...alternative)<=worst+TURN_MARGIN)return original;
   return gather;
+}
+
+interface PassingFrame { peer: number; forward: {x:number;y:number}; normal: {x:number;y:number} }
+// Own maneuver state, not remembered peer motion. Every evaluation uses this
+// tick's acquired picture; a missing picture ends the maneuver.
+const passingFrames=new WeakMap<Agent,PassingFrame>();
+
+/** One compound local action: keep useful forward braking while matching the
+ * obstructing teammate's acquired transverse motion. This is not a new route
+ * or assignment. Full/half/gather alone can all intersect the same teammate.
+ */
+function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+  const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
+  const clear=()=>{passingFrames.delete(a);return chosen;};
+  if((a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<1e-9
+    ||![goal.point.x,goal.point.y].every(Number.isFinite)
+    ||(goal.kind==='moving'&&(!goal.velocity||![goal.velocity.x,goal.velocity.y].every(Number.isFinite)))
+    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0
+      ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
+    ||!forecastPeers(a,raw,peers,context).length)return clear();
+  const now=context!.now,flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
+  const forward={x:raw.vel.x/speed,y:raw.vel.y/speed};
+  const dot=(x:number,y:number,v:{x:number;y:number})=>x*v.x+y*v.y;
+  const gaps=(path:readonly MovementSample[])=>peers.map(p=>sweptClearance(a,path,p));
+  const originalPath=previewFreeMovement(a.body,raw,now,TURN_STEPS);
+  const originalGaps=gaps(originalPath);
+  const residual=previewFreeMovement(a.body,{...raw,vel:{...a.vel}},now,TURN_STEPS);
+  const residualGaps=gaps(residual);
+  let passing=passingFrames.get(a);
+  if(passing){
+    const p=peers.find(p=>p.key===passing!.peer);
+    if(!p||dot(p.pos.x-a.pos.x,p.pos.y-a.pos.y,passing.forward)<=0
+      ||dot(forward.x,forward.y,passing.forward)<=0)passing=undefined;
+  }
+  if(!passing){
+    const conflicts=Math.min(...originalGaps)<0?originalGaps:residualGaps;
+    const worst=Math.min(...conflicts);
+    if(worst>=0)return clear();
+    const peer=peers[conflicts.indexOf(worst)];
+    const normal={x:-forward.y,y:forward.x};
+    if(dot(peer.pos.x-a.pos.x,peer.pos.y-a.pos.y,normal)>0){normal.x=-normal.x;normal.y=-normal.y;}
+    passing={peer:peer.key,forward,normal};
+  }
+  passingFrames.set(a,passing);
+  const peer=peers.find(p=>p.key===passing!.peer)!,normal=passing.normal;
+  const oldPath=chosen===raw?originalPath:previewFreeMovement(a.body,chosen,now,TURN_STEPS);
+  const oldGaps=gaps(oldPath),previous=Math.min(...oldGaps);
+  const error=(path:readonly MovementSample[])=>{
+    const end=path[path.length-1];
+    return Math.hypot(end.pos.x-goal.point.x-flow.x*end.t,end.pos.y-goal.point.y-flow.y*end.t);
+  };
+  const stationaryError=Math.hypot(a.pos.x-goal.point.x-flow.x*TURN_HORIZON,
+    a.pos.y-goal.point.y-flow.y*TURN_HORIZON);
+  function evaluate(base:Intent):Intent|undefined {
+    const correction=dot(peer.vel.x-base.vel.x,peer.vel.y-base.vel.y,normal);
+    const vx=base.vel.x+normal.x*correction,vy=base.vel.y+normal.y*correction;
+    const scale=Math.min(1,speed/Math.max(1e-9,Math.hypot(vx,vy)));
+    // Preserve field containment, facing, posture and all other modifiers.
+    const command:Intent={...base,vel:containCoverage(a,{...base,vel:{x:vx*scale,y:vy*scale}}).vel};
+    const path=previewFreeMovement(a.body,command,now,TURN_STEPS),next=gaps(path),end=path[path.length-1];
+    if(path.some(s=>s.support!=='up')||dot(end.pos.x-a.pos.x,end.pos.y-a.pos.y,forward)<=0
+      ||next.some((g,i)=>oldGaps[i]>=0&&g<0))return;
+    // An unsafe unloaded sprint's endpoint is not an achievable-contact
+    // benchmark. During overlap demand useful progress plus material relief;
+    // when the native action clears, improve the original goal without a hit.
+    if(previous<0?Math.min(...next)>previous+TURN_MARGIN&&error(path)<stationaryError
+      :Math.min(...next)>=0&&error(path)<error(oldPath))return command;
+  }
+  const adjusted=evaluate(chosen);
+  if(adjusted)return adjusted;
+  if(previous<0){
+    // Retain current facing/posture constraints; add only the existing
+    // half-speed option composed with that same transverse adjustment.
+    const combined=evaluate({...chosen,vel:{x:raw.vel.x*.5,y:raw.vel.y*.5}});
+    if(combined)return combined;
+  }
+  return chosen;
 }
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
@@ -125,7 +212,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
   for (let i = 0; i < n; i++) {
     const a = agents[i];
     const ia = intents[i];
-    if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
+    if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') { passingFrames.delete(a); continue; }
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
@@ -137,7 +224,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
       const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
-      peers.push({pos:seen.pos,vel:seen.vel,touch});
+      peers.push({key:b.idx,pos:seen.pos,vel:seen.vel,touch,age:(seen as Perceived).age});
       const gap = d - touch;
       if (d < 1e-6) continue;
       const nx = dx / d, ny = dy / d;
@@ -169,6 +256,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
-    intents[i]=gatherForMotion(a,spaced,peers,context);
+    const gathered=gatherForMotion(a,spaced,peers,context);
+    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
   }
 }
