@@ -527,7 +527,13 @@ function perimeterInstallation(sim: PlaySim, concept: RunConcept, line: Agent[],
     plans.set(a,{kind:'pull',pullRole:kick?'kick':'lead',target,drive:kick?norm({x:.3,y:ps}):up(0),
       pullPath:[{x:sim.los-depth,y:a.pos.y},{x:sim.los-depth,y:edgeY-ps*.5},{x:sim.los+.5,y:edgeY}]});
   }
-  for(const a of line)if(!plans.has(a))plans.set(a,{kind:'climb',target:backer(a.pos.y),drive:up(0)});
+  const free=line.filter(a=>!plans.has(a));
+  // Allocate these together: an inside free blocker must not take an outer
+  // TE's near backer and leave that TE crossing the first-level wall.
+  for(const [a,d] of zoneOwnership(free,lb.filter(d=>!claimed.has(d)),4.5)){
+    claimed.add(d);plans.set(a,{kind:'climb',target:d,drive:up(0)});
+  }
+  for(const a of free)if(!plans.has(a))plans.set(a,{kind:'climb',target:null,drive:up(0)});
   return plans;
 }
 
