@@ -1,0 +1,121 @@
+{
+  "kind": "bounded metadata review; synthetic sideline translation, not a play outcome",
+  "interior": {
+    "kind": "moving",
+    "point": {
+      "x": 40.3,
+      "y": 22
+    },
+    "velocity": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "lowerCommand": {
+    "x": -0.5483857185065338,
+    "y": -9.4358289901303
+  },
+  "lowerGoal": {
+    "kind": "moving",
+    "point": {
+      "x": 40.3,
+      "y": -0.1
+    },
+    "velocity": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "clampedGoal": {
+    "kind": "moving",
+    "point": {
+      "x": 40.3,
+      "y": 0.3
+    },
+    "velocity": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "supplied": {
+    "ownPosition": {
+      "x": 42.022721939514625,
+      "y": 3.5
+    },
+    "peerPicture": {
+      "pos": {
+        "x": 39.20092299060623,
+        "y": 0.3735586408583522
+      },
+      "vel": {
+        "x": 1.2537432897413803,
+        "y": 4.5671321701587315
+      },
+      "stance": null,
+      "facing": 1.285860324085849,
+      "age": 0.05,
+      "pose": "up",
+      "carrying": false
+    },
+    "rawVelocity": {
+      "x": -2.649463396303622,
+      "y": 0
+    },
+    "selectedVelocity": {
+      "x": -2.107367681628172,
+      "y": 0.6006205593174583
+    },
+    "objective": {
+      "kind": "moving",
+      "point": {
+        "x": 40.3,
+        "y": -0.1
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "effective": {
+    "ownPosition": {
+      "x": 42.022721939514625,
+      "y": 3.5
+    },
+    "peerPicture": {
+      "pos": {
+        "x": 39.20092299060623,
+        "y": 0.3735586408583522
+      },
+      "vel": {
+        "x": 1.2537432897413803,
+        "y": 4.5671321701587315
+      },
+      "stance": null,
+      "facing": 1.285860324085849,
+      "age": 0.05,
+      "pose": "up",
+      "carrying": false
+    },
+    "rawVelocity": {
+      "x": -2.649463396303622,
+      "y": 0
+    },
+    "selectedVelocity": {
+      "x": -2.107367681628172,
+      "y": 0.6006205593174583
+    },
+    "objective": {
+      "kind": "moving",
+      "point": {
+        "x": 40.3,
+        "y": 0.3
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "spacingSelectionChanged": false
+}
