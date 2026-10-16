@@ -168,8 +168,9 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 ### PASS-007 — Mesh approach coordination and request attribution
 
 Current intake2026-10-16: #92 forecast reuse and #94 free-footwork projection
-are independently accepted for exact combined verification, not yet adopted.
-Their shared implementation is explicitly reconciled; ten focused checks pass.
+are independently accepted and adopted through #105 as3723204.
+Their shared implementation is explicitly reconciled; ten focused checks and
+full1,816-TS/145-Python/typecheck/build verification pass. Exact receipts below.
 Loaded extension/runner restoration remain rejected or held.
 [Recent pins and owners](INTEGRATION.md#ready-blocked-experimental).
 
@@ -252,7 +253,8 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
 
 Current intake2026-10-16: reviewed #96 near-fit, #98 legal initial stance and
-#103 outside D objective join #92/#94 for exact verification. Correct setup/goal
+#103 outside D objective join #92/#94 in adopted3723204 through #105. Exact
+verification passes all phases; see [actual merge](../data/reviews/current/pr105-merge.json). Correct setup/goal
 identity is distinct from better rushing; A002 lost Mike load, #96 lost A030 TD
 and #103 slower entry remain. #104 inline role and #102 span remain separately
 held for Run/Physics review.

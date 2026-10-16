@@ -49,6 +49,51 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@3723204bd0743713bca3e87f10ca01bfebf00a15`** is accepted after routine
+[#105](https://github.com/tannerthardy/football-simulation-/pull/105) adoption.
+Its entire tree equals publication `aaa7842a4dfe0f8a59d39bcd140388aad4db05e2`;
+protected source/tests/settings/tooling equal passing freeze
+`75c76583e5cc5a3a4039f0626cd7c7d88df44573`.
+[Actual merge and preservation receipt](../data/reviews/current/pr105-merge.json).
+
+Included five routine corrections: **#92** exact-request forecast reuse, **#94**
+jointly consistent free-footwork requests, **#96** existing near fit for planned
+climbs, **#98** legal initial pressed-DB stance and **#103** outer D objective
+identity. Five runtime files/16 protected files. Run independently accepts94,
+Do-It-All96; Integration's independent92/98/103 decisions and exact source proof
+are published. Shared92/94 selector/cache/projection contracts compose explicitly;
+all unshared blobs match author pins. No diagnostic or experimental ancestry.
+
+**1,816 TS/156 files,145 Python,typecheck/build pass**,222.569 command seconds,
+Node22.23.3,44flags/components1, no skipped phase/input drift. One exact combined
+run; ten targeted spacing-overlap checks cost1.050s, total223.619s. No extra
+standalone native case, roster/panel/evaluation games or unchanged rerun to merge.
+Source `cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318`;
+validation `b64484633e311f9d5344bddc82cd0892fc99ccde1af27557d976970c5372183c`.
+[Final exact receipt, log and reviews](../data/reviews/current/recent-controller-integration/final-receipt.json).
+
+Preserve adverse evidence: A028 runner progress is slower despite fewer teammate
+impacts; #96 A030 loses its old TD with changed late-wrap execution; #98 A002
+loses Mike load and gives an earlier defensive win; #103 contact is later but
+LOS entry slower/unfinished. These are coherent local corrections, not a yardage
+target or general rushing/coverage/YAC certificate. Component and94+96 native
+evidence remain source-qualified, not relabeled as a new five-fix panel. Failed
+collectors/expected-red controls, old raw retention limits and rejected trials stay.
+
+[Consolidated accepted-pin and affected-owner handoff](https://github.com/tannerthardy/football-simulation-/pull/105#issuecomment-6220557501).
+Delivered92/94/96/98/103 PRs are closed as incorporated by minimal extraction;
+all branches, evidence and ongoing research history are preserved. Authors adopt
+relevant accepted changes at clean checkpoints, without forced rebases or another
+shared suite. Held items keep their exact pins and named reviews below; a blocked
+patch holds itself. **No further user approval is needed for these routine
+accepted scopes.** Any102 physical-law/capability choice must still escalate;
+prototype99 and experimental Physics/default/historical changes are not authorized.
+Historical4ded6b6, GitHub default, physical laws/capacities/settings and old
+scientific receipts remain unchanged. No branch deletion or new baseline.
+
+<details>
+<summary>Previous accepted #91 /bb6d4c7 record — historical</summary>
+
 **`develop@bb6d4c73948d53ba841dd9338dd240146c739f8c`** is accepted after routine
 [#91](https://github.com/tannerthardy/football-simulation-/pull/91) adoption.
 Its entire tree equals publication `4c3ae29252105baaf33ad290948ec58c010d8557`;
@@ -99,6 +144,8 @@ named open football question; no automatic panel or four-game evaluation.
 #76, unused transport/navigation, rejected variants and experimental Physics stay
 separate. Historical4ded6b6, GitHub default, physical laws/capacities/defaults,
 all branches and prior evidence are preserved.
+
+</details>
 
 <details>
 <summary>Previous accepted #90 /9adb7b3 record — historical</summary>
@@ -263,9 +310,9 @@ silently become approval; investigate a disagreement with this ledger.
 <a id="audit-priorities-and-access"></a>
 ## Current investigations and saved audit access
 
-Accepted development isbb6d4c7 after #91; #69 is complete through #78. Do not repeat
+Accepted development is3723204 after #105; #69 is complete through #78. Do not repeat
 completed reviews or unchanged verification. The saved audit is a separate
-**8ca8dee** observation, not a measurement of currentbb6d4c7 behavior.
+**8ca8dee** observation, not a measurement of current3723204 behavior.
 [Published diagnosis and caveats](https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md).
 
 | Investigation | Accountable owner / smallest next question | Saved evidence and controls |
@@ -306,17 +353,19 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
 
-### Current recent-controller intake — 2026-10-16
+### Completed #105 recent-controller adoption — 2026-10-16
 
-Accepted develop remainsbb6d4c7. Five routine scopes are assembled in
-`codex/recent-controller-integration`; Integration owns one exact verification.
+Accepted develop is **3723204bd0743713bca3e87f10ca01bfebf00a15** through #105. Five routine
+scopes were assembled and verified once in `codex/recent-controller-integration`.
 Only16 source/test/fixture files; no diagnostics or experimental ancestry.
 
 Passing freeze `75c76583e5cc5a3a4039f0626cd7c7d88df44573`: **1,816 TS/156 files,145 Python,
 typecheck/build pass**;222.569s,Node22.23.3,44flags/components1, no skips/input
 drift. Ten focused overlap checks cost1.050s; total223.619s.
 [Final exact receipt](../data/reviews/current/recent-controller-integration/final-receipt.json).
-Publication changes only docs/evidence; adoption awaits final ref/tree checks.
+Publication changed only docs/evidence. Fresh preview and actual merge equal
+publication; protected files equal passing freeze.
+[Actual merged pin](../data/reviews/current/pr105-merge.json).
 No extra native panel, roster screen or evaluation games.
 [Exact pins, independent decisions and preservation checks](../data/reviews/current/recent-controller-integration/intake.json).
 
@@ -335,7 +384,8 @@ No extra native panel, roster screen or evaluation games.
 | #93 | Coverage approach diagnosis | Evidence only; unchanged runtime. Link findings, no mandatory merge/suite. |
 | #99 | Perimeter development concepts | Explicitly held prototype; no automatic calling/production promotion. |
 
-All13 recent PR heads were refreshed; readiness labels request review rather
+All13 recent PR heads were refreshed. Included92/94/96/98/103 are now adopted
+and closed with exact successor records; all branches remain. Readiness labels request review rather
 than self-approve. #92/#94 shared spacing code is explicitly reconciled and ten
 targeted checks pass. Other included blobs match their published scopes.
 Reuse source-qualified component/94+96 native evidence; the entire five-fix tree

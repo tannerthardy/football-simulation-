@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active recent-controller integration — 2026-10-16
+## Completed #105 recent-controller integration — 2026-10-16
 
 Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus
 queuebb1c44d. Exact minimal scopes: #92/#94 spacing plus their two tests/fixtures;
@@ -8,10 +8,15 @@ queuebb1c44d. Exact minimal scopes: #92/#94 spacing plus their two tests/fixture
 pre-history PlaySim hooks/test/fixture; #103 gapIn D identity/test/two fixtures.
 Sixteen protected files, five runtime files. The spacing merge retains exact
 projection and cache contracts; ten focused composition checks pass. Existing
-reviews/component receipts reused; Integration owns exact combined verification.
+reviews/component receipts reused. Exact freeze75c7658 passes1,816 TS/156 files,
+145 Python,typecheck/build,222.569s; focused1.050s,total223.619s. Adopted as3723204;
+entire merged tree equals publication and protected files equal passing freeze.
+Integration boundary released. [Actual pin and owner handoff](INTEGRATION.md#accepted-development).
 Coverage97/100/95, inline104, contact102, tooling101 and held perimeter99 are not
 imported. No owner branch moved or research evidence rewritten. Authors reconcile
-the accepted pin only after publication, at clean checkpoints.
+accepted3723204 at clean checkpoints. The five delivered PRs are closed by
+extraction; branches/evidence remain. Current held-item reviews are posted with
+copyable prompts in the queue; no contributor suite or broad native recollection.
 
 ## Completed #91 / #87 exact integration boundary
 
