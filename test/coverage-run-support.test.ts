@@ -95,7 +95,13 @@ describe('installed support survives a coverage target replacement', () => {
 
   it.each([-1, 1])('retains the acquired insertion after zone becomes man on another receiver, side=%s', side => {
     const f = stage(false, side), expected = stage(false, side);
-    f.update(); expect(f.behavior.job.startsWith('zone:')).toBe(true); f.reassign();
+    const first = f.update();
+    // The initial zone-kind technique now reads its installed #2 while
+    // preserving the same run fit; it has not completed a man assignment.
+    expect(f.behavior.kind).toBe('zone');
+    expect(f.behavior.job.startsWith('read:')).toBe(true);
+    expect(first).toEqual(runFit(expected.a, expected.sim, 'B', side));
+    f.reassign();
     expect(f.update()).toEqual(runFit(expected.a, expected.sim, 'B', side, { target: expected.rb, cue: expected.picture() }));
     expect(f.behavior.job).toBe('man:H');
     expect(f.behavior.target).toBe(f.receiver);

@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Catching: preserve match-release cushion — 2026-10-16
+
+`codex/match-release-cushion` starts from fetched/canonical accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c`. User authorizes a controller
+correction and bounded pass experiments. Claim `seamCurlFlat`/`wallTwo` in
+`coverage/rules.ts`, existing acquired ManCoverage entry if required, one
+focused contract file and source-qualified saved/native evidence. Reuse #97's
+diagnostic collector only; #97 coaching and #95 rat remain separate. No shared
+movement, physics, capacity or helper-policy edits. First question: can the
+installed #2 read preserve cushion before a vertical match activates without
+stealing genuine shallow/flat or run duties? Compare achieved velocity/leverage,
+then assess whether the later handoff remains the first useful next correction.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
