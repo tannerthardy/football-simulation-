@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "question": "Does the isolated span correction activate in fresh/front/OZ controls, and what native changes follow?",
+  "candidateCommit": "71ff14cfe926ddc02599d27948a9fab0063bd3ee",
+  "spanImplementation": "84a71afb85298b8e154bc3a3a468f1cebd801f28",
+  "forceUnits": "kg*yd/s^2, not Newtons",
+  "executionCost": "Root owns billing of these existing transfer continuations. This read-only comparison executes zero simulations and zero tests.",
+  "verdict": "All three prefixes activate the law at an actually over-span no-helper contact. Defensive access can become earlier; later offensive/ball-security changes include altered random draw streams and do not establish rushing benefit. Previous A003/A015/A039/A025 exact-prefix preservation remains true.",
+  "cases": [
+    {
+      "case": "F002",
+      "referenceSource": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "candidateSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "until": 3.1,
+      "phase": "live",
+      "initialEqual": true,
+      "inputEqual": true,
+      "flagsEqual": true,
+      "worldEqual": true,
+      "exactCompletePrefixFrames": 57,
+      "firstDivergence": {
+        "t": 2.85,
+        "beforeBodiesEqual": true,
+        "footballGoalsEqual": true,
+        "rngBeforeEqual": true,
+        "rngAfterEqual": false,
+        "changedCommandActors": [
+          2,
+          12
+        ],
+        "contact": {
+          "blocker": "RT",
+          "defender": "DE_S",
+          "helpers": [],
+          "distanceBefore": 1.732529379630341,
+          "referenceDistanceAfter": 1.8598076540957587,
+          "fullSpan": 1.6293434343434345,
+          "separatingRadialSpeed": 2.5413704478325045,
+          "referenceControl": -0.16538693868967327,
+          "referenceHands": {
+            "normal": 0,
+            "tangent": 193.17287438950714,
+            "extension": 0.8247240937421342
+          },
+          "candidateEnd": {
+            "owner": 2,
+            "defender": 12,
+            "helpers": [],
+            "phase": "end",
+            "data": {
+              "reason": "separation",
+              "apart": 1.0670748341757954
+            }
+          }
+        }
+      },
+      "referenceCanonicalFramesSha256": "f26a15eae24b6fc1703df5ae73cc22dec71871119baeb504c992cddeaeb56838",
+      "candidateCanonicalFramesSha256": "03db230f6357b051bec03c394049d8dd5649377d4ada8b5a1b8e3e0edd917e33",
+      "referenceCompressedSha256": "745bd3d38c63813636f1b26a89797b23b3b83b7627f2d880b8e9407d49faae57",
+      "candidateCompressedSha256": "060ad6ca3dbc5977a53f97eb717f4663bbeff0c9a510a997eab4f3f2f9af306c",
+      "carrierEvents": [
+        {
+          "reference": [
+            {
+              "t": 2.95,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 34.75,
+                "y": 20.14
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.95,
+              "type": "tackle_wrap",
+              "a": 12,
+              "b": 6,
+              "pos": {
+                "x": 32.99,
+                "y": 19.24
+              },
+              "note": "initial"
+            },
+            {
+              "t": 2.95,
+              "type": "tackle_wrap",
+              "a": 16,
+              "b": 6,
+              "pos": {
+                "x": 36.2,
+                "y": 20.41
+              },
+              "note": "assist"
+            }
+          ]
+        },
+        {
+          "candidate": [
+            {
+              "t": 2.85,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 34.64,
+                "y": 20.32
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.85,
+              "type": "tackle_wrap",
+              "a": 12,
+              "b": 6,
+              "pos": {
+                "x": 33.33,
+                "y": 19.38
+              },
+              "note": "initial"
+            },
+            {
+              "t": 2.95,
+              "type": "tackle_wrap",
+              "a": 16,
+              "b": 6,
+              "pos": {
+                "x": 36.2,
+                "y": 20.41
+              },
+              "note": "assist"
+            }
+          ]
+        }
+      ],
+      "runnerPositionAtCutoff": {
+        "reference": {
+          "x": 34.89677734959433,
+          "y": 19.97357391379354
+        },
+        "candidate": {
+          "x": 34.83503588087236,
+          "y": 19.92364656767129
+        }
+      }
+    },
+    {
+      "case": "A002",
+      "referenceSource": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "candidateSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "until": 3.1,
+      "phase": "live",
+      "initialEqual": true,
+      "inputEqual": true,
+      "flagsEqual": true,
+      "worldEqual": true,
+      "exactCompletePrefixFrames": 32,
+      "firstDivergence": {
+        "t": 1.6,
+        "beforeBodiesEqual": true,
+        "footballGoalsEqual": true,
+        "rngBeforeEqual": true,
+        "rngAfterEqual": false,
+        "changedCommandActors": [
+          7,
+          19
+        ],
+        "contact": {
+          "blocker": "Y",
+          "defender": "NB",
+          "helpers": [],
+          "distanceBefore": 1.5412858123717244,
+          "referenceDistanceAfter": 1.6646100686443444,
+          "fullSpan": 1.426060606060606,
+          "separatingRadialSpeed": 2.5015874601241155,
+          "referenceControl": 0.7563363452706136,
+          "referenceHands": {
+            "normal": -148.146323223567,
+            "tangent": -443.44607146038913,
+            "extension": 0.775441838475629
+          },
+          "candidateEnd": {
+            "owner": 7,
+            "defender": 19,
+            "helpers": [],
+            "phase": "end",
+            "data": {
+              "reason": "separation",
+              "apart": 0.9985585396444516
+            }
+          }
+        }
+      },
+      "referenceCanonicalFramesSha256": "14bd68977895d1f7c3c6badbbab35d7cfab3fa4823b21b6a86b9ce3c76d1e315",
+      "candidateCanonicalFramesSha256": "ca18a21e8c802ffa692bb4198af8ed3bf53618f0c635a6d8c03f519f59a7fed8",
+      "referenceCompressedSha256": "1a08e15c9f210dfc49ff23da46116211bfb5d021ff02920b7c92005ac680909b",
+      "candidateCompressedSha256": "f912c90b916e13ed7a5756331e58eec78ff7d52dae25bd49319f45e42d9480e8",
+      "carrierEvents": [
+        {
+          "reference": [
+            {
+              "t": 2.75,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 36.82,
+                "y": 20.3
+              },
+              "note": "body collision"
+            }
+          ]
+        },
+        {
+          "candidate": [
+            {
+              "t": 2.7,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 36.56,
+                "y": 20.42
+              },
+              "note": "body collision"
+            },
+            {
+              "t": 2.85,
+              "type": "missed_tackle",
+              "a": 12,
+              "b": 6,
+              "pos": {
+                "x": 37.38,
+                "y": 20.21
+              }
+            }
+          ]
+        }
+      ],
+      "runnerPositionAtCutoff": {
+        "reference": {
+          "x": 37.98069561020123,
+          "y": 19.144838214102286
+        },
+        "candidate": {
+          "x": 37.58401992282306,
+          "y": 19.105884739262017
+        }
+      }
+    },
+    {
+      "case": "A027",
+      "referenceSource": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "candidateSource": "720c059367e89e4ac262017739a14b592827fcc9b62bbcd726cbb06131163ddd",
+      "until": 3.1,
+      "phase": "live",
+      "initialEqual": true,
+      "inputEqual": true,
+      "flagsEqual": true,
+      "worldEqual": true,
+      "exactCompletePrefixFrames": 53,
+      "firstDivergence": {
+        "t": 2.65,
+        "beforeBodiesEqual": true,
+        "footballGoalsEqual": true,
+        "rngBeforeEqual": true,
+        "rngAfterEqual": false,
+        "changedCommandActors": [
+          4,
+          14
+        ],
+        "contact": {
+          "blocker": "LG",
+          "defender": "DT_W",
+          "helpers": [],
+          "distanceBefore": 1.6969785881941564,
+          "referenceDistanceAfter": 1.7401420567176156,
+          "fullSpan": 1.690050505050505,
+          "separatingRadialSpeed": 0.8757131367969304,
+          "referenceControl": 0.19831517501356719,
+          "referenceHands": {
+            "normal": 0,
+            "tangent": -340.2186782664515,
+            "extension": 0.8995445738891479
+          },
+          "candidateEnd": {
+            "owner": 4,
+            "defender": 14,
+            "helpers": [],
+            "phase": "end",
+            "data": {
+              "reason": "separation",
+              "apart": 0.9597058609214291
+            }
+          }
+        }
+      },
+      "referenceCanonicalFramesSha256": "2bbda44863ada814db1009286b05a99654179202fbca6ada7d8ef8a6f8364df3",
+      "candidateCanonicalFramesSha256": "b5f456dde93fdb6ca2a8d17ea12640cc1090646110fdeb4fa70cbb7ad31eaa12",
+      "referenceCompressedSha256": "f07d481a0911b4606c3d1a6499927d37f3c2018056438a06f8eed25ff6d7525f",
+      "candidateCompressedSha256": "3fb82b4989cbd9106f8c54ae03e29b180ea5011257f58fcb127700c8b7f61427",
+      "carrierEvents": [
+        {
+          "reference": [
+            {
+              "t": 2.8,
+              "type": "hit",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 35.85,
+                "y": 20.78
+              }
+            },
+            {
+              "t": 2.8,
+              "type": "fumble",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 35.01,
+                "y": 20.42
+              }
+            }
+          ]
+        },
+        {
+          "candidate": [
+            {
+              "t": 2.8,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 35.01,
+                "y": 20.42
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.8,
+              "type": "tackle_wrap",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 35.85,
+                "y": 20.78
+              },
+              "note": "initial"
+            }
+          ]
+        }
+      ],
+      "runnerPositionAtCutoff": {
+        "reference": {
+          "x": 35.302051644468854,
+          "y": 19.6958759507591
+        },
+        "candidate": {
+          "x": 35.402422419498414,
+          "y": 19.706493376753286
+        }
+      },
+      "sameEncounterLimit": {
+        "t": 2.8,
+        "mikeBeforeBodyAndCommandEqual": true,
+        "runnerPositionDifferenceYd": 7.280189381321983e-07,
+        "rngBeforeEqual": false,
+        "interpretation": "The same-time Mike encounter remains; fumble versus wrap is not demonstrated protection or ball-security improvement. Random stream and small motion differences both remain."
+      }
+    }
+  ]
+}

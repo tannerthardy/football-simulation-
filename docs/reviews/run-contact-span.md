@@ -113,12 +113,67 @@ Raw traces stay local. Root's existing collection cost was 2.694489 s in the
 collector summary / 3.062662 s command time; this comparison added **zero
 simulation or tests**. The earlier focused checks were not repeated.
 
+## Additional transfer evidence: the law does activate
+
+The preceding four-case statement remains true. It does **not** extend to
+other D-gap continuations. Root's later saved F002, A002 and A027 transfer
+prefixes, on the same combined `71ff14c` / source `720c0593`, activate this law.
+The comparison is against the same D-only source `e29daf4b`, with identical
+initial bodies, inputs, flags and World settings. No additional simulations or
+tests were executed for this review; root owns the transfer execution receipt
+and cost, so that bill is not duplicated here.
+
+| Case | First divergence | Invalid isolated contact | Before distance / full span (yd) | Old hand force magnitude |
+| --- | --- | --- | --- | --- |
+| F002, fresh front | 2.85 s | RT–DE_S | 1.732529 / 1.629343 | 193.173 |
+| A002, OZ | 1.60 s | Y–NB | 1.541286 / 1.426061 | 467.538 |
+| A027, WZ | 2.65 s | LG–DT_W | 1.696979 / 1.690051 | 340.219 |
+
+All three contacts are separating at that boundary. Before bodies, football
+goals and RNG states match exactly at the first divergence. The candidate ends
+the out-of-span rep; the first changed commands belong only to its two actors.
+F002 previously carries defender-controlled steering without normal force;
+A002 carries offensive steering and cloth tension; A027 carries offensive
+steering without normal force. The same physical limit applies regardless of
+which team controls the hands. Forces use kg·yd/s², not Newtons.
+
+The coupled consequences are material and retained:
+
+- F002's DE reaches the runner at **2.85 rather than 2.95 s**. The defensive win
+  remains; the earlier access follows release of an impossible distant contact.
+  Both prefixes are live at 3.10; this is not a terminal tackle comparison.
+- A002's DE body contact moves from **2.75 to 2.70 s**; the candidate then records
+  a missed tackle at 2.85. The runner is about **0.397 yd less far downfield** at
+  the 3.10 cutoff. Existing RG-to-Mike collection remains (contact 2.35 → 2.30),
+  and the earlier strong RT–DE contact is untouched at the first divergence.
+  The later miss does not establish an offensive improvement.
+- A027 keeps Mike's **2.80 s encounter**, but the reference hit/fumble becomes
+  a grasp/wrap. Mike's full body and request at 2.80 are exactly unchanged;
+  the runner's position differs by only 0.000000728 yd. The earlier release
+  also changes the random stream by omitting the ended rep's hand-fight draws.
+  Small movement differences remain, so this is **not proved ball-security or
+  protection improvement**. The fumble-versus-wrap sensitivity stays visible.
+
+Useful acquired blocking is not categorically removed: F002's RG–DT contact
+still carries 757.944 normal force at 3.05; A002 keeps 979.490 RT–DE normal
+force at the first changed boundary; A027 keeps C–DT normal force 804.519 and
+RT helper normal force 429.552 at its first changed boundary. Later forces
+and hand-control draws can differ after release; no capacity was increased.
+
+[Compact transfer comparison, first changed contacts and event deltas](../../data/reviews/current/run-contact-span/transfer-summary.json).
+Raw traces remain local. This corrects the earlier provisional assumption that
+the span law would also be inactive in the fresh-front/OZ/WZ transfer controls.
+It does not amend the four verified exact-prefix comparisons above.
+
 ## Limits and next decision
 
 This corrects a demonstrated physical-contact validity failure. It does not
 establish better native run production. The bounded coupled test preserves
-all four D-only prefixes exactly. Root owns the publication decision; no PR
-or merge was created here.
+four D-only prefixes exactly and changes three additional transfer controls at
+demonstrated invalid contacts. Defensive access may become earlier, and the
+changed random stream affects later outcomes. Draft PR #102 remains a separate
+mechanical correction for independent Physics review; no adoption or merge is
+claimed here.
 
 The 20 Hz check guarantees validity at the decision boundary, not an exact
 substep reach cutoff. The longer arm plus both radii is deliberately generous;
