@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Run: development perimeter concepts — 2026-10-15 Phoenix
+
+User requests Buck sweep, pin-and-pull and crack toss: build distinct calls,
+test native execution and refine demonstrated errors. Isolated branch
+`codex/perimeter-run-concepts`, acceptedbb6d4c7/source668acb1/queuebb1c44d.
+Run owns new explicit-call concept/schema/condensed formation entries,
+planRunBlocking's new perimeter installation, existing pull-path composition,
+new controlled receiver crack approach and new-call mesh/pitch wiring.
+Existing automatic formation/concept catalogs remain exact; new calls are
+explicit development entries pending review. #96/#94/#92/#97 remain separate.
+Do-It-All retains shared spacing/movement, Catching retains coverage/replacement,
+Physics retains laws/capacities. No solver, grip, roster or automatic game-caller
+changes. Use Ace12 under center for Buck/pin-pull; reduced-split Ace12 for crack.
+Three native witnesses plus existing Power/Toss correctness; mirrors/adverse
+front only for named assignment/physical risks, no new game campaign. Exact
+inputs/flags/cost and adverse/inconclusive outcomes recorded before promotion.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in
