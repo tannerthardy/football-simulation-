@@ -2,6 +2,14 @@
 
 ## Run: independent forecast-cost and moving-alley reviews
 
+Completed: **accept both narrow deltas for Integration's final composition**.
+[Independent findings, precise scope and costs](reviews/run-forecast-alley-independent-review.md).
+d80dcd3 preserves the original zero-preview contract without excluding residual
+motion; #89 uses acquired lateral motion while preserving PA/depth/throw gates.
+Reused23/101 focused checks plus respective typechecks; tiny specific unit
+probes add no native openings, games, roster campaign or suite. #81 old head
+stays excluded; #87 movement policy is separate. #88 remains frozen unchanged.
+
 User assigned d80dcd3015358e604f91cb026f562f6f4f4781e5 cost-proof review,
 then #89 at78a00645e4f821d45604a1ed68c35592de1f5926 producer/consumer,
 acquired-information, play-action and depth review. Host starts accepted86250bb4;
