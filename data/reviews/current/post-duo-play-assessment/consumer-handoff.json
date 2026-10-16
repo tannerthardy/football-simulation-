@@ -1,0 +1,20 @@
+{
+  "assessmentPublication": "66227b2c57b24e1ec4f8d5ced68d3c5ae93ebab4",
+  "acceptedRuntime": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "integration": "https://github.com/tannerthardy/football-simulation-/pull/85#issuecomment-6205101313",
+  "run": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6205102058",
+  "catching": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6205102978",
+  "receiptReuse": {
+    "authorFocusedChecks": 66,
+    "authorNewControls": 7,
+    "authorTypecheck": "reused",
+    "independentReview": "7b550026e4e63543f9ff91b7912d69b908831c11 reused",
+    "integrationSuite": "passing572711032afeec75aaa83bb6edf8f288f2223db3/source dcebbee reused"
+  },
+  "newNativeExecutions": 0,
+  "newTests": 0,
+  "newGames": 0,
+  "rawNflScans": 0,
+  "exposureCaution": "Four selected play pairs, not current full48 or a population defect rate; old #82 remains historical.",
+  "nextDecision": "Run owns bounded A018 departure-to-interception access; Catching owns fixed-helper geometry/contact timing. No automatic next collection."
+}

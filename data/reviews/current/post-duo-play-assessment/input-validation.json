@@ -168,5 +168,11 @@
   "newGames": 0,
   "newTests": 0,
   "rawNFLScans": 0,
-  "bulkAcquisition": false
+  "bulkAcquisition": false,
+  "completedNflGeometry": {
+    "commit": "a3acce9ef7434b997ab473f5123fde7a72b48782",
+    "path": "data/reviews/current/accepted-audit-handoff/nfl-support-geometry.json",
+    "sha256": "ea5d3e08dfd2892e8f724a5f69ed62989a0e4fc812610abcd688c8185286acda",
+    "matchesPublishedReference": true
+  }
 }
