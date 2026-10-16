@@ -1,9 +1,13 @@
 # Current project status
 
-Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
+Updated **2026-10-16 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
+- **Current intake:** reviewed #92/#94/#96/#98/#103 assembled for one exact
+  verification on acceptedbb6d4c7. Coverage97/100, contact102, inline104, rat95
+  and tooling101 retain their specific review gates;99 is a held prototype.
+  [Current queue](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #91:** independently reviewed #87 compound coverage-traffic policy
   is adopted asbb6d4c7; accepted #88/#89/cost retained. One exact run passes
   1,780 TS/151 files,145 Python,typecheck/build;200.787s,44flags/components1.

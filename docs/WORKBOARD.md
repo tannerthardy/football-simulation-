@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Active recent-controller integration — 2026-10-16
+
+Integration owns `codex/recent-controller-integration` from acceptedbb6d4c7 plus
+queuebb1c44d. Exact minimal scopes: #92/#94 spacing plus their two tests/fixtures;
+#96 RunBlocker.attack near-fit/test/fixture; #98 alignment initial stance and
+pre-history PlaySim hooks/test/fixture; #103 gapIn D identity/test/two fixtures.
+Sixteen protected files, five runtime files. The spacing merge retains exact
+projection and cache contracts; ten focused composition checks pass. Existing
+reviews/component receipts reused; Integration owns exact combined verification.
+Coverage97/100/95, inline104, contact102, tooling101 and held perimeter99 are not
+imported. No owner branch moved or research evidence rewritten. Authors reconcile
+the accepted pin only after publication, at clean checkpoints.
+
 ## Completed #91 / #87 exact integration boundary
 
 Integration's isolated `codex/mesh-policy-integration` extracts only the approved

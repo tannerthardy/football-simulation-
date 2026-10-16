@@ -1,6 +1,6 @@
 # Shared integration queue
 
-Updated **2026-10-15 (America/Phoenix)**. Integration in this chat owns queue
+Updated **2026-10-16 (America/Phoenix)**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
@@ -305,6 +305,37 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
+
+### Current recent-controller intake — 2026-10-16
+
+Accepted develop remainsbb6d4c7. Five routine scopes are assembled in
+`codex/recent-controller-integration`; Integration owns one exact verification.
+Only16 source/test/fixture files; no diagnostics or experimental ancestry.
+[Exact pins, independent decisions and preservation checks](../data/reviews/current/recent-controller-integration/intake.json).
+
+| Item | Scope | Current decision |
+| --- | --- | --- |
+| #92 | Exact-request forecast reuse | Integration independent ACCEPT; ten composed92/94 checks pass; no policy change. |
+| #94 | Free-footwork joint request projection | Run ACCEPT6210001625; loaded/committed scope excluded. RB delay remains. |
+| #96 | Existing near fit for planned climbs | Do-It-All ACCEPT6210210423; Under/A030 composition receipt reused, adverse lost TD retained. |
+| #98 | Initial pressed DB stance legalization | Integration accepts setup correctness; A002 earlier defensive win retained. |
+| #103 | D position matches outer width/velocity identity | Integration accepts acquired-objective correction; slower LOS entry remains. |
+| #97 +100 | Overlapping coverage controllers | HOLD: Run independent review and explicit three provisional-block conditions/composed extraction needed; adverse Drive/seam cases retained. |
+| #104 | Inline zone-technique role gate | HOLD: Run independent review; native evidence uses D/span and legal-start context, not all accepted source. |
+| #102 | Isolated contact-span lifecycle | HOLD: Physics independent review/contract classification; do not import it via104 evidence. |
+| #101 | Opt-in run/PA tooling and1848-case evidence | Tooling/Measurement review pending; no engine correction. Reuse completed study, no second campaign. |
+| #95 | Rat shallow-cut policy | HOLD: independent acquired-cut and Drive collision/recovery adjudication. |
+| #93 | Coverage approach diagnosis | Evidence only; unchanged runtime. Link findings, no mandatory merge/suite. |
+| #99 | Perimeter development concepts | Explicitly held prototype; no automatic calling/production promotion. |
+
+All13 recent PR heads were refreshed; readiness labels request review rather
+than self-approve. #92/#94 shared spacing code is explicitly reconciled and ten
+targeted checks pass. Other included blobs match their published scopes.
+Reuse source-qualified component/94+96 native evidence; the entire five-fix tree
+has no new native claim. Initial setup and D-objective corrections can change
+trajectories; preserved adverse results are not required to revert to old gains.
+No new roster/panel/game campaign. Held work holds only itself. Historical4ded6b6,
+default, physical laws/capacities/settings and research branches stay unchanged.
 
 ### Completed #91 / #87 policy adoption — 2026-10-15
 

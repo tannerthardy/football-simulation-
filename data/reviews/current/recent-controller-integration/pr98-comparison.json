@@ -1,0 +1,4236 @@
+{
+  "schema": "press-front-stance-review-v1",
+  "acceptedBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "candidate": "c574615d90943c9e839c506882989a1be6bc89eb",
+  "candidateRuntimeCommit": "c2a08154199a0f7adb17105e4e86c5dac34a673c",
+  "cases": [
+    {
+      "caseId": "A002",
+      "cap": 2.8,
+      "inputSha256": "c89114b0e70a701a69f3429a69e709d4897b825b4547fbd5ee0834b2b2dd8c2f",
+      "referenceSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "candidateSource": "34375c7813ba221a589e50c63690f790958c9b8627431f6903a2526a1cb5b744",
+      "initialChanges": [
+        "NB"
+      ],
+      "initialJobsExact": true,
+      "initialRngExact": true,
+      "ticksExact": false,
+      "eventsExact": false,
+      "fullResultExact": false,
+      "firstRngDifference": 0.55,
+      "nativeEngineSeconds": {
+        "reference": 0.536960284,
+        "candidate": 0.560756208
+      },
+      "reference": {
+        "initialRng": {
+          "key": 71002,
+          "s0": -835253143,
+          "s1": -1207870149,
+          "s2": -344619817,
+          "s3": 3341323839,
+          "spareNormal": null
+        },
+        "end": 2.8,
+        "phase": "live",
+        "censored": true,
+        "outcome": "timeout",
+        "rushingYardsIfFinished": null,
+        "runnerAtEnd": {
+          "pos": {
+            "x": 36.81618863584253,
+            "y": 20.30269657608711
+          },
+          "vel": {
+            "x": 3.6325537240028307,
+            "y": -3.5671527856746574
+          },
+          "facing": -0.28682205764955737,
+          "energy": 0.9705931031049218,
+          "profile": {
+            "vmax": 9.8271050033632,
+            "tau": 1.2901009369414183,
+            "brake": 7.329342403628117,
+            "lateral": 7.757469387755103,
+            "turnRate": 10.157777777777778,
+            "backpedal": 0.5275510204081633,
+            "shuffle": 0.5476000000000001,
+            "massKg": 90.718474,
+            "heightYd": 1.9166666666666667,
+            "radius": 0.2581818181818182,
+            "reach": 0.9772222222222222,
+            "maxCatchHeight": 3.3002777777777776,
+            "reactReach": 2.8308333333333335,
+            "reactionTime": 0.2397142857142857,
+            "power": 79.99888288857143,
+            "balance": 0.7346938775510204,
+            "bend": 0.9936054421768707,
+            "stepSpeed": 4.335038548752834,
+            "getUp": 0.7764444444444445
+          },
+          "support": {
+            "xi": {
+              "x": -0.36861001831439494,
+              "y": -0.1312146035125088
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19424146542920204,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": -304.1756885939178,
+              "y": -72.21134509402917
+            },
+            "felt": {
+              "x": -2540.849796111713,
+              "y": -785.5581929092106
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.2699802210547989,
+            "out": 0.024999999999999998,
+            "feltTip": {
+              "x": -1.3192667931387334,
+              "y": -0.4078796155401022
+            },
+            "causes": {
+              "contact": 0.3623556177381621,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -25.7727343810115,
+              "y": -9.618851079936276
+            },
+            "tipAccel": {
+              "x": -0.21134089761724992,
+              "y": -0.059862765372544396
+            }
+          },
+          "spin": 2.6281981445073956,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.4121787142323795
+        },
+        "events": [
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 39.97,
+              "y": 27.37
+            },
+            "note": "run; pPass=0.28 focus=0.83 urgency=0.74"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 39.96,
+              "y": 24.83
+            },
+            "note": "run; pPass=0.28 focus=0.85 urgency=0.69"
+          },
+          {
+            "t": 0.45,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 39.04,
+              "y": 34.61
+            },
+            "note": "run; pPass=0.31 focus=1.00 urgency=0.73"
+          },
+          {
+            "t": 0.5,
+            "type": "block_contact",
+            "a": 3,
+            "b": 13,
+            "pos": {
+              "x": 34.61366953234767,
+              "y": 26.40469347689426
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 35.71,
+              "y": 23.44
+            },
+            "note": "run; pPass=0.32 focus=0.89 urgency=0.71"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 35.67,
+              "y": 26.19
+            },
+            "note": "run; pPass=0.28 focus=0.90 urgency=0.77"
+          },
+          {
+            "t": 0.6,
+            "type": "block_contact",
+            "a": 2,
+            "b": 12,
+            "pos": {
+              "x": 34.5912214353146,
+              "y": 23.832464215406453
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 48.25,
+              "y": 26.63
+            },
+            "note": "run; pPass=0.33 focus=1.00 urgency=0.82"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 36.3,
+              "y": 9.45
+            },
+            "note": "run; pPass=0.29 focus=0.98 urgency=0.77"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 36.26,
+              "y": 43.78
+            },
+            "note": "run; pPass=0.30 focus=0.90 urgency=0.86"
+          },
+          {
+            "t": 0.7,
+            "type": "block_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 35.756058763593245,
+              "y": 22.874549802458265
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 36.45,
+              "y": 23.34
+            },
+            "note": "run; pPass=0.27 focus=0.44 urgency=0.90"
+          },
+          {
+            "t": 0.75,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 34.73599897748998,
+              "y": 27.453004254228407
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.75,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 35.32,
+              "y": 28.19
+            },
+            "note": "run; pPass=0.32 focus=0.84 urgency=0.80"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 35.11,
+              "y": 30.6
+            },
+            "note": "run; pPass=0.30 focus=0.94 urgency=0.72"
+          },
+          {
+            "t": 1.3,
+            "type": "block_climb",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 35.42,
+              "y": 23.97
+            },
+            "note": "secured DE_S; RT stays"
+          },
+          {
+            "t": 1.55,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 31.32,
+              "y": 24.43
+            }
+          },
+          {
+            "t": 2.35,
+            "type": "block_contact",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 37.30749095320491,
+              "y": 22.051586689741583
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.5,
+            "type": "block_contact",
+            "a": 10,
+            "b": 21,
+            "pos": {
+              "x": 36.89115368146095,
+              "y": 30.32479163703294
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.55,
+            "type": "block_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 38.19702859547053,
+              "y": 23.820904648990986
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.75,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 36.82,
+              "y": 20.3
+            },
+            "note": "body collision"
+          }
+        ],
+        "mikeLoads": [
+          {
+            "t": 2.3,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.32839356375540796,
+            "phi": -0.7082017017694409,
+            "normal": -103.41970240766578,
+            "tangent": -416.47900184199875
+          },
+          {
+            "t": 2.35,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.34540266733432695,
+            "phi": -0.7594498426484527,
+            "normal": -34.1505834258107,
+            "tangent": -428.2635450666612
+          },
+          {
+            "t": 2.4,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.3645521409647398,
+            "phi": -0.8232304418786731,
+            "normal": 0,
+            "tangent": -441.5310167285321
+          },
+          {
+            "t": 2.45,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.3619605017409144,
+            "phi": -0.9044429940078769,
+            "normal": 614.3938586289244,
+            "tangent": -439.7354321279565
+          },
+          {
+            "t": 2.5,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.3481233757224082,
+            "phi": -1.0061579818882271,
+            "normal": 725.9426830181025,
+            "tangent": -430.14855361236613
+          },
+          {
+            "t": 2.55,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.357905409670287,
+            "phi": -1.1231138218020174,
+            "normal": 212.02788274989078,
+            "tangent": -436.92591265124975
+          },
+          {
+            "t": 2.6,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.34928978510909275,
+            "phi": -1.2450165440259036,
+            "normal": 0,
+            "tangent": -430.95668566772474
+          },
+          {
+            "t": 2.65,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.36779381538450445,
+            "phi": -1.3714796246533498,
+            "normal": -19.304644960894137,
+            "tangent": -443.77697002893683
+          },
+          {
+            "t": 2.7,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.36454826499087856,
+            "phi": -1.494677399900393,
+            "normal": -114.80576125623497,
+            "tangent": -441.52833130885114
+          },
+          {
+            "t": 2.75,
+            "a": 5,
+            "b": 15,
+            "helpers": [],
+            "control": 0.3637405801799927,
+            "phi": -1.598485880797469,
+            "normal": -114.5514002333642,
+            "tangent": -440.96873705853545
+          }
+        ],
+        "fieldHashes": {
+          "rng": "dfd7f454495aeffa492055f13379309b1ee0dc3f7c8785ca23f3a9aa1b1104c9",
+          "bodies": "5855b2d5635c0fdae7e74b1fa8ae9c83c2d16f0b6cdf72a416e3843f622cff2a",
+          "commands": "a11b30daaf25f9ac3278d40f2b73e0930e54dc32de832d73deeab4c5026df700",
+          "goals": "cba493cbeb3d593eb6ff6e16ff85fc46421ba5082466eebe9ad09d2515b24adc",
+          "contacts": "fb044dfe73ba92567299b1149c9ebf7e5199613ca8fa882677d01c12659b16ac",
+          "blocks": "ac2a28ff2b1c8c1b8338f1c15b557e74a35747624821130b6615655d3f62579d"
+        },
+        "fullResultHash": "cf96df870f0e0007aa7ced7cd5e6131417b130ca05abe7f85a657506e6b3ad1f",
+        "rawTapeSha256": "67d7abea1aa697a7f16c62c93923ede513f3e4512041f64140d4a37d26fa59d1",
+        "initialFullBodyHash": "99c231663f07c1dca859c9cf9f0b36b11b6231558f384082737830de7cde45a8",
+        "initialStances": [
+          {
+            "index": 0,
+            "slot": "QB",
+            "pos": {
+              "x": 33.4,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27,
+            "job": "qb-handoff",
+            "plan": null
+          },
+          {
+            "index": 1,
+            "slot": "LT",
+            "pos": {
+              "x": 34.45,
+              "y": 29.26666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3527272727272727,
+            "job": "run-block",
+            "plan": {
+              "kind": "cutoff",
+              "target": 11,
+              "combination": null
+            }
+          },
+          {
+            "index": 2,
+            "slot": "RT",
+            "pos": {
+              "x": 34.45,
+              "y": 24.066666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3654545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 12,
+              "combination": {
+                "members": [
+                  2,
+                  5
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 3,
+            "slot": "C",
+            "pos": {
+              "x": 34.45,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3618181818181818,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 13,
+              "combination": null
+            }
+          },
+          {
+            "index": 4,
+            "slot": "LG",
+            "pos": {
+              "x": 34.45,
+              "y": 27.96666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3609090909090909,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 14,
+              "combination": null
+            }
+          },
+          {
+            "index": 5,
+            "slot": "RG",
+            "pos": {
+              "x": 34.45,
+              "y": 25.366666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.36636363636363634,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 12,
+              "combination": {
+                "members": [
+                  2,
+                  5
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 6,
+            "slot": "RB",
+            "pos": {
+              "x": 28.2,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.2581818181818182,
+            "job": "mesh",
+            "plan": null
+          },
+          {
+            "index": 7,
+            "slot": "Y",
+            "pos": {
+              "x": 34.4,
+              "y": 22.76666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.29454545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 19,
+              "combination": null
+            }
+          },
+          {
+            "index": 8,
+            "slot": "X",
+            "pos": {
+              "x": 34.4,
+              "y": 44.66666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27636363636363637,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 18,
+              "combination": null
+            }
+          },
+          {
+            "index": 9,
+            "slot": "Z",
+            "pos": {
+              "x": 33.8,
+              "y": 8.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.23636363636363636,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 17,
+              "combination": null
+            }
+          },
+          {
+            "index": 10,
+            "slot": "H",
+            "pos": {
+              "x": 33.8,
+              "y": 35.266666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.25727272727272726,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 21,
+              "combination": null
+            }
+          },
+          {
+            "index": 11,
+            "slot": "DE_W",
+            "pos": {
+              "x": 35.9,
+              "y": 31.738873431375136
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2809090909090909,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 12,
+            "slot": "DE_S",
+            "pos": {
+              "x": 35.9,
+              "y": 23.314022529086827
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 13,
+            "slot": "DT_S",
+            "pos": {
+              "x": 35.9,
+              "y": 26.235836592367285
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.37363636363636366,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 14,
+            "slot": "DT_W",
+            "pos": {
+              "x": 35.9,
+              "y": 28.618329143730133
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.29,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 15,
+            "slot": "LB_M",
+            "pos": {
+              "x": 39.9,
+              "y": 24.8143770953425
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28727272727272724,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 16,
+            "slot": "LB_W",
+            "pos": {
+              "x": 40,
+              "y": 27.369739300955516
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3090909090909091,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 17,
+            "slot": "CB_S",
+            "pos": {
+              "x": 36.2,
+              "y": 9.398907203229925
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.26454545454545453,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 18,
+            "slot": "CB_W",
+            "pos": {
+              "x": 36.2,
+              "y": 43.80342295202108
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24909090909090909,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 19,
+            "slot": "NB",
+            "pos": {
+              "x": 36.2,
+              "y": 23.281769335272212
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24818181818181817,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 20,
+            "slot": "FS",
+            "pos": {
+              "x": 48,
+              "y": 26.639482460446278
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2509090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 21,
+            "slot": "SS",
+            "pos": {
+              "x": 39,
+              "y": 34.63406289361976
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28545454545454546,
+            "job": "man",
+            "plan": null
+          }
+        ],
+        "firstTick": {
+          "t": 0,
+          "rng": {
+            "key": 71002,
+            "s0": -835253143,
+            "s1": -1207870149,
+            "s2": -344619817,
+            "s3": 3341323839,
+            "spareNormal": null
+          },
+          "contacts": [
+            {
+              "i": 12,
+              "j": 19,
+              "impulse": 0,
+              "closing": 0
+            }
+          ],
+          "commands": [
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            }
+          ],
+          "nbEnd": [
+            {
+              "index": 12,
+              "pos": {
+                "x": 35.87764329274682,
+                "y": 23.31642611312715
+              },
+              "vel": {
+                "x": 1.1125920199210187e-16,
+                "y": 2.995907395084317e-17
+              }
+            },
+            {
+              "index": 19,
+              "pos": {
+                "x": 36.2290992062661,
+                "y": 23.27864086080704
+              },
+              "vel": {
+                "x": 4.437808644306012e-16,
+                "y": -4.4501408875627006e-17
+              }
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "initialRng": {
+          "key": 71002,
+          "s0": -835253143,
+          "s1": -1207870149,
+          "s2": -344619817,
+          "s3": 3341323839,
+          "spareNormal": null
+        },
+        "end": 2.75,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "rushingYardsIfFinished": -0.86,
+        "runnerAtEnd": {
+          "pos": {
+            "x": 34.139013271053535,
+            "y": 21.368559492319196
+          },
+          "vel": {
+            "x": 0.25729157149554993,
+            "y": -0.6801957451793968
+          },
+          "facing": -3.5513910984451345,
+          "energy": 0.9787347012274344,
+          "profile": {
+            "vmax": 9.8271050033632,
+            "tau": 1.2901009369414183,
+            "brake": 7.329342403628117,
+            "lateral": 7.757469387755103,
+            "turnRate": 10.157777777777778,
+            "backpedal": 0.5275510204081633,
+            "shuffle": 0.5476000000000001,
+            "massKg": 90.718474,
+            "heightYd": 1.9166666666666667,
+            "radius": 0.2581818181818182,
+            "reach": 0.9772222222222222,
+            "maxCatchHeight": 3.3002777777777776,
+            "reactReach": 2.8308333333333335,
+            "reactionTime": 0.2397142857142857,
+            "power": 79.99888288857143,
+            "balance": 0.7346938775510204,
+            "bend": 0.9936054421768707,
+            "stepSpeed": 4.335038548752834,
+            "getUp": 0.7764444444444445
+          },
+          "support": {
+            "xi": {
+              "x": -1.0648236787036303,
+              "y": 0.9672059942129562
+            },
+            "state": "down",
+            "since": 2.712500000000001,
+            "posture": 0.4957469402454869,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 249.64937163156821,
+              "y": -545.719576677384
+            },
+            "felt": {
+              "x": 239.84997833280084,
+              "y": -466.7552317929341
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0.257660735349159,
+              "y": -0.6818948962155665
+            },
+            "fall": {
+              "x": -0.7402221879825921,
+              "y": 0.6723623371503373
+            },
+            "peak": 1.014084669933122,
+            "out": 0.11249999999999999,
+            "feltTip": {
+              "x": 0.39600416026685525,
+              "y": 1.373950423483599
+            },
+            "causes": {
+              "contact": 0.8752311609509414,
+              "legs": 0.31818791507985805,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -0.24166709961816873,
+              "y": 1.187201569611138
+            },
+            "tipAccel": {
+              "x": 0.3960396392844262,
+              "y": 1.3739241694487727
+            },
+            "foot": {
+              "anchor": {
+                "x": 33.991273017601344,
+                "y": 21.342355579396344
+              },
+              "offset": {
+                "x": -0.14774025345219055,
+                "y": -0.02620391292285233
+              },
+              "target": {
+                "x": 33.990199431204054,
+                "y": 21.345196808130574
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 116.47497295086502,
+                "y": -671.06104774642
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            },
+            "cause": "contact"
+          },
+          "spin": 1.0589295696748555,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.07463716837034062
+        },
+        "events": [
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 39.97,
+              "y": 27.37
+            },
+            "note": "run; pPass=0.28 focus=0.83 urgency=0.74"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 39.96,
+              "y": 24.83
+            },
+            "note": "run; pPass=0.28 focus=0.85 urgency=0.69"
+          },
+          {
+            "t": 0.45,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 39.04,
+              "y": 34.61
+            },
+            "note": "run; pPass=0.31 focus=1.00 urgency=0.73"
+          },
+          {
+            "t": 0.5,
+            "type": "block_contact",
+            "a": 3,
+            "b": 13,
+            "pos": {
+              "x": 34.61366953234767,
+              "y": 26.40469347689426
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 35.78,
+              "y": 23.43
+            },
+            "note": "run; pPass=0.32 focus=0.89 urgency=0.71"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 35.67,
+              "y": 26.19
+            },
+            "note": "run; pPass=0.28 focus=0.90 urgency=0.77"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 48.25,
+              "y": 26.63
+            },
+            "note": "run; pPass=0.33 focus=1.00 urgency=0.82"
+          },
+          {
+            "t": 0.65,
+            "type": "block_contact",
+            "a": 2,
+            "b": 12,
+            "pos": {
+              "x": 34.5407901325878,
+              "y": 23.7418863581693
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 36.3,
+              "y": 9.45
+            },
+            "note": "run; pPass=0.29 focus=0.98 urgency=0.77"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 36.26,
+              "y": 43.78
+            },
+            "note": "run; pPass=0.30 focus=0.90 urgency=0.86"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 36.6,
+              "y": 23.36
+            },
+            "note": "run; pPass=0.27 focus=0.43 urgency=0.90"
+          },
+          {
+            "t": 0.75,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 34.735959333755474,
+              "y": 27.453118067173943
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.75,
+            "type": "block_contact",
+            "a": 7,
+            "b": 19,
+            "pos": {
+              "x": 35.95249110447798,
+              "y": 22.886740635491094
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.75,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 35.32,
+              "y": 28.19
+            },
+            "note": "run; pPass=0.32 focus=0.84 urgency=0.80"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 35.11,
+              "y": 30.6
+            },
+            "note": "run; pPass=0.31 focus=0.94 urgency=0.72"
+          },
+          {
+            "t": 1.15,
+            "type": "block_climb",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 35.32,
+              "y": 23.88
+            },
+            "note": "secured DE_S; RT stays"
+          },
+          {
+            "t": 1.55,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 31.32,
+              "y": 24.43
+            }
+          },
+          {
+            "t": 2.1,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 33.46,
+              "y": 22.08
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.1,
+            "type": "tackle_wrap",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 34.27,
+              "y": 21.61
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.1,
+            "type": "hit",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 34.27,
+              "y": 21.61
+            }
+          },
+          {
+            "t": 2.15,
+            "type": "block_exchange",
+            "a": 2,
+            "b": 5,
+            "pos": {
+              "x": 34.81,
+              "y": 22.46
+            },
+            "note": "adjacent crossing threats"
+          },
+          {
+            "t": 2.3,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 33.93,
+              "y": 21.74
+            },
+            "note": "contact"
+          },
+          {
+            "t": 2.5,
+            "type": "block_contact",
+            "a": 10,
+            "b": 21,
+            "pos": {
+              "x": 36.890863024909194,
+              "y": 30.327777055547784
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.7,
+            "type": "tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 34.17,
+              "y": 20.87
+            }
+          }
+        ],
+        "mikeLoads": [],
+        "fieldHashes": {
+          "rng": "40d2b66d5ff093f5575c2aeb1e8db1e738a8bbd74f565f1c5d3033b85d0b0199",
+          "bodies": "ff15c7810a5c5033f29a3a887765f211e444b7789512aa282b4bb654257dc0cb",
+          "commands": "8271dab5d18fc8ee92827013d0791c363d24b0ed56ac913193afb951a742929c",
+          "goals": "50ee99a2d7c60697d35a9d2894eaa3c2406c9c566c76f93c675f7e6171902850",
+          "contacts": "e455c661f6db6d601d2176c8d8e03a4b9fbbf0b04a2311749d1e691a61adcc57",
+          "blocks": "1d2c3ea6280b5113527ebac116b81cb810b6a27b74e9b74e7642a945b87f21a8"
+        },
+        "fullResultHash": "4beaa24b7f3e64f3ee326965be011122c96b23a77c2e097ade976b7b452bea79",
+        "rawTapeSha256": "70edf78cb251b9850f651438277b4f535147659c892e0d0b6ca6bf4464e4bcb5",
+        "initialFullBodyHash": "ff398b02fd923382181e2b9cce926a5d55642378b4acfb9afa75e45442e0c0d6",
+        "initialStances": [
+          {
+            "index": 0,
+            "slot": "QB",
+            "pos": {
+              "x": 33.4,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27,
+            "job": "qb-handoff",
+            "plan": null
+          },
+          {
+            "index": 1,
+            "slot": "LT",
+            "pos": {
+              "x": 34.45,
+              "y": 29.26666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3527272727272727,
+            "job": "run-block",
+            "plan": {
+              "kind": "cutoff",
+              "target": 11,
+              "combination": null
+            }
+          },
+          {
+            "index": 2,
+            "slot": "RT",
+            "pos": {
+              "x": 34.45,
+              "y": 24.066666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3654545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 12,
+              "combination": {
+                "members": [
+                  2,
+                  5
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 3,
+            "slot": "C",
+            "pos": {
+              "x": 34.45,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3618181818181818,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 13,
+              "combination": null
+            }
+          },
+          {
+            "index": 4,
+            "slot": "LG",
+            "pos": {
+              "x": 34.45,
+              "y": 27.96666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3609090909090909,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 14,
+              "combination": null
+            }
+          },
+          {
+            "index": 5,
+            "slot": "RG",
+            "pos": {
+              "x": 34.45,
+              "y": 25.366666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.36636363636363634,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 12,
+              "combination": {
+                "members": [
+                  2,
+                  5
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 6,
+            "slot": "RB",
+            "pos": {
+              "x": 28.2,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.2581818181818182,
+            "job": "mesh",
+            "plan": null
+          },
+          {
+            "index": 7,
+            "slot": "Y",
+            "pos": {
+              "x": 34.4,
+              "y": 22.76666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.29454545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 19,
+              "combination": null
+            }
+          },
+          {
+            "index": 8,
+            "slot": "X",
+            "pos": {
+              "x": 34.4,
+              "y": 44.66666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27636363636363637,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 18,
+              "combination": null
+            }
+          },
+          {
+            "index": 9,
+            "slot": "Z",
+            "pos": {
+              "x": 33.8,
+              "y": 8.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.23636363636363636,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 17,
+              "combination": null
+            }
+          },
+          {
+            "index": 10,
+            "slot": "H",
+            "pos": {
+              "x": 33.8,
+              "y": 35.266666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.25727272727272726,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 21,
+              "combination": null
+            }
+          },
+          {
+            "index": 11,
+            "slot": "DE_W",
+            "pos": {
+              "x": 35.9,
+              "y": 31.738873431375136
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2809090909090909,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 12,
+            "slot": "DE_S",
+            "pos": {
+              "x": 35.9,
+              "y": 23.314022529086827
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 13,
+            "slot": "DT_S",
+            "pos": {
+              "x": 35.9,
+              "y": 26.235836592367285
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.37363636363636366,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 14,
+            "slot": "DT_W",
+            "pos": {
+              "x": 35.9,
+              "y": 28.618329143730133
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.29,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 15,
+            "slot": "LB_M",
+            "pos": {
+              "x": 39.9,
+              "y": 24.8143770953425
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28727272727272724,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 16,
+            "slot": "LB_W",
+            "pos": {
+              "x": 40,
+              "y": 27.369739300955516
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3090909090909091,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 17,
+            "slot": "CB_S",
+            "pos": {
+              "x": 36.2,
+              "y": 9.398907203229925
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.26454545454545453,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 18,
+            "slot": "CB_W",
+            "pos": {
+              "x": 36.2,
+              "y": 43.80342295202108
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24909090909090909,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 19,
+            "slot": "NB",
+            "pos": {
+              "x": 36.44723216030665,
+              "y": 23.281769335272212
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24818181818181817,
+            "job": "man",
+            "plan": null
+          },
+          {
+            "index": 20,
+            "slot": "FS",
+            "pos": {
+              "x": 48,
+              "y": 26.639482460446278
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2509090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 21,
+            "slot": "SS",
+            "pos": {
+              "x": 39,
+              "y": 34.63406289361976
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28545454545454546,
+            "job": "man",
+            "plan": null
+          }
+        ],
+        "firstTick": {
+          "t": 0,
+          "rng": {
+            "key": 71002,
+            "s0": -835253143,
+            "s1": -1207870149,
+            "s2": -344619817,
+            "s3": 3341323839,
+            "spareNormal": null
+          },
+          "contacts": [],
+          "commands": [
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            }
+          ],
+          "nbEnd": [
+            {
+              "index": 12,
+              "pos": {
+                "x": 35.9,
+                "y": 23.314022529086827
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "index": 19,
+              "pos": {
+                "x": 36.44723216030665,
+                "y": 23.281769335272212
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "A003",
+      "cap": 2.8,
+      "inputSha256": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+      "referenceSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "candidateSource": "34375c7813ba221a589e50c63690f790958c9b8627431f6903a2526a1cb5b744",
+      "initialChanges": [],
+      "initialJobsExact": true,
+      "initialRngExact": true,
+      "ticksExact": true,
+      "eventsExact": true,
+      "fullResultExact": true,
+      "firstRngDifference": null,
+      "nativeEngineSeconds": {
+        "reference": 0.40697004300000006,
+        "candidate": 0.3644249010000001
+      },
+      "reference": {
+        "initialRng": {
+          "key": 71001,
+          "s0": 1223792498,
+          "s1": -224626706,
+          "s2": -809962013,
+          "s3": 1901730062,
+          "spareNormal": null
+        },
+        "end": 2.8,
+        "phase": "live",
+        "censored": true,
+        "outcome": "timeout",
+        "rushingYardsIfFinished": null,
+        "runnerAtEnd": {
+          "pos": {
+            "x": 35.93301778378661,
+            "y": 21.568357228834653
+          },
+          "vel": {
+            "x": 0.4163505035511242,
+            "y": -0.22590233831466047
+          },
+          "facing": 0.8936357291340215,
+          "energy": 0.974342998077679,
+          "profile": {
+            "vmax": 9.8271050033632,
+            "tau": 1.2901009369414183,
+            "brake": 7.329342403628117,
+            "lateral": 7.757469387755103,
+            "turnRate": 10.157777777777778,
+            "backpedal": 0.5275510204081633,
+            "shuffle": 0.5476000000000001,
+            "massKg": 90.718474,
+            "heightYd": 1.9166666666666667,
+            "radius": 0.2581818181818182,
+            "reach": 0.9772222222222222,
+            "maxCatchHeight": 3.3002777777777776,
+            "reactReach": 2.8308333333333335,
+            "reactionTime": 0.2397142857142857,
+            "power": 79.99888288857143,
+            "balance": 0.7346938775510204,
+            "bend": 0.9936054421768707,
+            "stepSpeed": 4.335038548752834,
+            "getUp": 0.7764444444444445
+          },
+          "support": {
+            "xi": {
+              "x": -0.29545368327380833,
+              "y": -1.2309964020862436
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.4949144557486821,
+            "lean": {
+              "x": 281.5085231148118,
+              "y": 180.34670180361235
+            },
+            "load": {
+              "x": 569.9514189140175,
+              "y": 1333.1924192118513
+            },
+            "felt": {
+              "x": -4290.1256132124545,
+              "y": -467.216816333216
+            },
+            "feetLock": 1,
+            "feetVel": {
+              "x": 1.4772599599405964,
+              "y": -0.20831613535599683
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.8925256457088301,
+            "out": 0.13333333333333333,
+            "feltTip": {
+              "x": -13.429647070202634,
+              "y": -5.939779210868645
+            },
+            "causes": {
+              "contact": 0.8365735172486191,
+              "legs": 0.8403710591462449,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -48.23749772282227,
+              "y": -0.9571390325914035
+            },
+            "tipAccel": {
+              "x": -12.398767794183012,
+              "y": -4.397948964594315
+            },
+            "foot": {
+              "anchor": {
+                "x": 35.66614406106076,
+                "y": 21.77298081578059
+              },
+              "offset": {
+                "x": -0.2668737227258454,
+                "y": 0.20462358694593655
+              },
+              "target": {
+                "x": 35.47959689208302,
+                "y": 20.726773380583875
+              },
+              "desired": {
+                "x": -0.7033385360095873,
+                "y": -4.08249158747883
+              },
+              "achieved": {
+                "x": 1.0832898638451978,
+                "y": 0.02712420436644969
+              },
+              "force": {
+                "x": 353.59787803715676,
+                "y": 813.3484409307447
+              },
+              "capacity": 819.8833381421417,
+              "mobility": 0.005052712447745636,
+              "state": "placing"
+            }
+          },
+          "spin": 1.531107765093831,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 1.2076236759940118
+        },
+        "events": [
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 39.88,
+              "y": 25.43
+            },
+            "note": "run; pPass=0.30 focus=0.91 urgency=0.69"
+          },
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 39.64,
+              "y": 27.93
+            },
+            "note": "run; pPass=0.28 focus=0.85 urgency=0.63"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 5,
+            "b": 13,
+            "pos": {
+              "x": 34.64689779491617,
+              "y": 24.967740230886964
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 35.66,
+              "y": 24.74
+            },
+            "note": "run; pPass=0.26 focus=0.87 urgency=0.73"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 47,
+              "y": 17.91
+            },
+            "note": "run; pPass=0.31 focus=0.91 urgency=0.73"
+          },
+          {
+            "t": 0.6,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 34.73506565716719,
+              "y": 27.57718522358499
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 35.65,
+              "y": 21.4
+            },
+            "note": "run; pPass=0.30 focus=0.81 urgency=0.68"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 35.71,
+              "y": 27.63
+            },
+            "note": "run; pPass=0.27 focus=0.84 urgency=0.76"
+          },
+          {
+            "t": 0.65,
+            "type": "block_contact",
+            "a": 7,
+            "b": 12,
+            "pos": {
+              "x": 34.96088660561036,
+              "y": 21.769967789484152
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 35.48,
+              "y": 31.98
+            },
+            "note": "run; pPass=0.32 focus=0.99 urgency=0.75"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 41.06,
+              "y": 9.33
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.73"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 39.64,
+              "y": 34.22
+            },
+            "note": "run; pPass=0.24 focus=1.00 urgency=0.76"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 41.09,
+              "y": 44.25
+            },
+            "note": "run; pPass=0.28 focus=0.86 urgency=0.73"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 47,
+              "y": 35.38
+            },
+            "note": "run; pPass=0.31 focus=0.81 urgency=0.81"
+          },
+          {
+            "t": 1.55,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 31.24,
+              "y": 24.5
+            }
+          },
+          {
+            "t": 2.1,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 34.71,
+              "y": 20.04
+            },
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.6,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 35.43,
+              "y": 21.54
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.6,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 36.02,
+              "y": 22.08
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.6,
+            "type": "hit",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 36.02,
+              "y": 22.08
+            }
+          },
+          {
+            "t": 2.75,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 36.43,
+              "y": 21.48
+            },
+            "note": "assist"
+          }
+        ],
+        "mikeLoads": [],
+        "fieldHashes": {
+          "rng": "587ede84b7a754ce84c21f5942039f0ae996a32a33ecb35eedbf58b6a68a80d2",
+          "bodies": "17640daf1053dba0a83c1f0ed2ff703318f333ed1cb00adefdac1e45f7595e08",
+          "commands": "309184a037aef0004a800003e62fd95036722f978926b2b9305af07aa5c5f810",
+          "goals": "a8e84fc379e0f91d3b9e5aa656e43c724ac000ae72813ffd930d1bf04856af29",
+          "contacts": "10e76e949c526a022d8a8f360ed165dddc408fdb31ec031f000159d268075531",
+          "blocks": "c0b60e1a055580e0b203dd62545472e38171b959b0438270d8b020f7b800e3bb"
+        },
+        "fullResultHash": "0454ef6bc6fc6e8cf2c419066b35423306fd939b5ab1af62f367ab515bfebaba",
+        "rawTapeSha256": "cfce0331ca79ce25b33bb1de83edf7207801ce2dccb12832da7e20fb01a89be1",
+        "initialFullBodyHash": "abedb4e6b854c966862af8bfc60ddeaaa515eea89012c35250145eee2e2642ff",
+        "initialStances": [
+          {
+            "index": 0,
+            "slot": "QB",
+            "pos": {
+              "x": 33.4,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27,
+            "job": "qb-handoff",
+            "plan": null
+          },
+          {
+            "index": 1,
+            "slot": "LT",
+            "pos": {
+              "x": 34.45,
+              "y": 29.26666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3527272727272727,
+            "job": "run-block",
+            "plan": {
+              "kind": "cutoff",
+              "target": 11,
+              "combination": null
+            }
+          },
+          {
+            "index": 2,
+            "slot": "RT",
+            "pos": {
+              "x": 34.45,
+              "y": 24.066666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3654545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 12,
+              "combination": {
+                "members": [
+                  7,
+                  2
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 3,
+            "slot": "C",
+            "pos": {
+              "x": 34.45,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3618181818181818,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 13,
+              "combination": {
+                "members": [
+                  5,
+                  3
+                ],
+                "defender": 13,
+                "backer": 16
+              }
+            }
+          },
+          {
+            "index": 4,
+            "slot": "LG",
+            "pos": {
+              "x": 34.45,
+              "y": 27.96666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3609090909090909,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 14,
+              "combination": null
+            }
+          },
+          {
+            "index": 5,
+            "slot": "RG",
+            "pos": {
+              "x": 34.45,
+              "y": 25.366666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.36636363636363634,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 13,
+              "combination": {
+                "members": [
+                  5,
+                  3
+                ],
+                "defender": 13,
+                "backer": 16
+              }
+            }
+          },
+          {
+            "index": 6,
+            "slot": "RB",
+            "pos": {
+              "x": 28.2,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.2581818181818182,
+            "job": "mesh",
+            "plan": null
+          },
+          {
+            "index": 7,
+            "slot": "Y",
+            "pos": {
+              "x": 34.4,
+              "y": 22.76666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.29454545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 12,
+              "combination": {
+                "members": [
+                  7,
+                  2
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 8,
+            "slot": "X",
+            "pos": {
+              "x": 34.4,
+              "y": 44.66666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27636363636363637,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 18,
+              "combination": null
+            }
+          },
+          {
+            "index": 9,
+            "slot": "Z",
+            "pos": {
+              "x": 33.8,
+              "y": 8.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.23636363636363636,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 17,
+              "combination": null
+            }
+          },
+          {
+            "index": 10,
+            "slot": "H",
+            "pos": {
+              "x": 33.8,
+              "y": 35.266666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.25727272727272726,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 19,
+              "combination": null
+            }
+          },
+          {
+            "index": 11,
+            "slot": "DE_W",
+            "pos": {
+              "x": 35.9,
+              "y": 31.845929483305593
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2809090909090909,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 12,
+            "slot": "DE_S",
+            "pos": {
+              "x": 35.9,
+              "y": 21.15633186721531
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 13,
+            "slot": "DT_S",
+            "pos": {
+              "x": 35.9,
+              "y": 24.752507971720537
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.37363636363636366,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 14,
+            "slot": "DT_W",
+            "pos": {
+              "x": 35.9,
+              "y": 27.50995310456106
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.29,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 15,
+            "slot": "LB_M",
+            "pos": {
+              "x": 39.9,
+              "y": 25.46619922132457
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28727272727272724,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 16,
+            "slot": "LB_W",
+            "pos": {
+              "x": 39.6,
+              "y": 27.9372716808372
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3090909090909091,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 17,
+            "slot": "CB_S",
+            "pos": {
+              "x": 41,
+              "y": 9.612130230372856
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.26454545454545453,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 18,
+            "slot": "CB_W",
+            "pos": {
+              "x": 41,
+              "y": 43.942187149857745
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24909090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 19,
+            "slot": "NB",
+            "pos": {
+              "x": 40,
+              "y": 34.27442453758261
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24818181818181817,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 20,
+            "slot": "FS",
+            "pos": {
+              "x": 47,
+              "y": 35.69516913837599
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2509090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 21,
+            "slot": "SS",
+            "pos": {
+              "x": 47,
+              "y": 17.68231022070292
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28545454545454546,
+            "job": "zone",
+            "plan": null
+          }
+        ],
+        "firstTick": {
+          "t": 0,
+          "rng": {
+            "key": 71001,
+            "s0": 1223792498,
+            "s1": -224626706,
+            "s2": -809962013,
+            "s3": 1901730062,
+            "spareNormal": null
+          },
+          "contacts": [],
+          "commands": [
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            }
+          ],
+          "nbEnd": [
+            {
+              "index": 12,
+              "pos": {
+                "x": 35.9,
+                "y": 21.15633186721531
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "index": 19,
+              "pos": {
+                "x": 40,
+                "y": 34.27442453758261
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "initialRng": {
+          "key": 71001,
+          "s0": 1223792498,
+          "s1": -224626706,
+          "s2": -809962013,
+          "s3": 1901730062,
+          "spareNormal": null
+        },
+        "end": 2.8,
+        "phase": "live",
+        "censored": true,
+        "outcome": "timeout",
+        "rushingYardsIfFinished": null,
+        "runnerAtEnd": {
+          "pos": {
+            "x": 35.93301778378661,
+            "y": 21.568357228834653
+          },
+          "vel": {
+            "x": 0.4163505035511242,
+            "y": -0.22590233831466047
+          },
+          "facing": 0.8936357291340215,
+          "energy": 0.974342998077679,
+          "profile": {
+            "vmax": 9.8271050033632,
+            "tau": 1.2901009369414183,
+            "brake": 7.329342403628117,
+            "lateral": 7.757469387755103,
+            "turnRate": 10.157777777777778,
+            "backpedal": 0.5275510204081633,
+            "shuffle": 0.5476000000000001,
+            "massKg": 90.718474,
+            "heightYd": 1.9166666666666667,
+            "radius": 0.2581818181818182,
+            "reach": 0.9772222222222222,
+            "maxCatchHeight": 3.3002777777777776,
+            "reactReach": 2.8308333333333335,
+            "reactionTime": 0.2397142857142857,
+            "power": 79.99888288857143,
+            "balance": 0.7346938775510204,
+            "bend": 0.9936054421768707,
+            "stepSpeed": 4.335038548752834,
+            "getUp": 0.7764444444444445
+          },
+          "support": {
+            "xi": {
+              "x": -0.29545368327380833,
+              "y": -1.2309964020862436
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.4949144557486821,
+            "lean": {
+              "x": 281.5085231148118,
+              "y": 180.34670180361235
+            },
+            "load": {
+              "x": 569.9514189140175,
+              "y": 1333.1924192118513
+            },
+            "felt": {
+              "x": -4290.1256132124545,
+              "y": -467.216816333216
+            },
+            "feetLock": 1,
+            "feetVel": {
+              "x": 1.4772599599405964,
+              "y": -0.20831613535599683
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.8925256457088301,
+            "out": 0.13333333333333333,
+            "feltTip": {
+              "x": -13.429647070202634,
+              "y": -5.939779210868645
+            },
+            "causes": {
+              "contact": 0.8365735172486191,
+              "legs": 0.8403710591462449,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -48.23749772282227,
+              "y": -0.9571390325914035
+            },
+            "tipAccel": {
+              "x": -12.398767794183012,
+              "y": -4.397948964594315
+            },
+            "foot": {
+              "anchor": {
+                "x": 35.66614406106076,
+                "y": 21.77298081578059
+              },
+              "offset": {
+                "x": -0.2668737227258454,
+                "y": 0.20462358694593655
+              },
+              "target": {
+                "x": 35.47959689208302,
+                "y": 20.726773380583875
+              },
+              "desired": {
+                "x": -0.7033385360095873,
+                "y": -4.08249158747883
+              },
+              "achieved": {
+                "x": 1.0832898638451978,
+                "y": 0.02712420436644969
+              },
+              "force": {
+                "x": 353.59787803715676,
+                "y": 813.3484409307447
+              },
+              "capacity": 819.8833381421417,
+              "mobility": 0.005052712447745636,
+              "state": "placing"
+            }
+          },
+          "spin": 1.531107765093831,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 1.2076236759940118
+        },
+        "events": [
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 39.88,
+              "y": 25.43
+            },
+            "note": "run; pPass=0.30 focus=0.91 urgency=0.69"
+          },
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 39.64,
+              "y": 27.93
+            },
+            "note": "run; pPass=0.28 focus=0.85 urgency=0.63"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 5,
+            "b": 13,
+            "pos": {
+              "x": 34.64689779491617,
+              "y": 24.967740230886964
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 35.66,
+              "y": 24.74
+            },
+            "note": "run; pPass=0.26 focus=0.87 urgency=0.73"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 47,
+              "y": 17.91
+            },
+            "note": "run; pPass=0.31 focus=0.91 urgency=0.73"
+          },
+          {
+            "t": 0.6,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 34.73506565716719,
+              "y": 27.57718522358499
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 35.65,
+              "y": 21.4
+            },
+            "note": "run; pPass=0.30 focus=0.81 urgency=0.68"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 35.71,
+              "y": 27.63
+            },
+            "note": "run; pPass=0.27 focus=0.84 urgency=0.76"
+          },
+          {
+            "t": 0.65,
+            "type": "block_contact",
+            "a": 7,
+            "b": 12,
+            "pos": {
+              "x": 34.96088660561036,
+              "y": 21.769967789484152
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 35.48,
+              "y": 31.98
+            },
+            "note": "run; pPass=0.32 focus=0.99 urgency=0.75"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 41.06,
+              "y": 9.33
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.73"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 39.64,
+              "y": 34.22
+            },
+            "note": "run; pPass=0.24 focus=1.00 urgency=0.76"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 41.09,
+              "y": 44.25
+            },
+            "note": "run; pPass=0.28 focus=0.86 urgency=0.73"
+          },
+          {
+            "t": 0.7,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 47,
+              "y": 35.38
+            },
+            "note": "run; pPass=0.31 focus=0.81 urgency=0.81"
+          },
+          {
+            "t": 1.55,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 31.24,
+              "y": 24.5
+            }
+          },
+          {
+            "t": 2.1,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 34.71,
+              "y": 20.04
+            },
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.6,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 35.43,
+              "y": 21.54
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.6,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 36.02,
+              "y": 22.08
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.6,
+            "type": "hit",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 36.02,
+              "y": 22.08
+            }
+          },
+          {
+            "t": 2.75,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 36.43,
+              "y": 21.48
+            },
+            "note": "assist"
+          }
+        ],
+        "mikeLoads": [],
+        "fieldHashes": {
+          "rng": "587ede84b7a754ce84c21f5942039f0ae996a32a33ecb35eedbf58b6a68a80d2",
+          "bodies": "17640daf1053dba0a83c1f0ed2ff703318f333ed1cb00adefdac1e45f7595e08",
+          "commands": "309184a037aef0004a800003e62fd95036722f978926b2b9305af07aa5c5f810",
+          "goals": "a8e84fc379e0f91d3b9e5aa656e43c724ac000ae72813ffd930d1bf04856af29",
+          "contacts": "10e76e949c526a022d8a8f360ed165dddc408fdb31ec031f000159d268075531",
+          "blocks": "c0b60e1a055580e0b203dd62545472e38171b959b0438270d8b020f7b800e3bb"
+        },
+        "fullResultHash": "0454ef6bc6fc6e8cf2c419066b35423306fd939b5ab1af62f367ab515bfebaba",
+        "rawTapeSha256": "dbfaeeeb9a8368c77b7e82cdc3e10cb817bc1109b4e7942939fbea70b700304e",
+        "initialFullBodyHash": "abedb4e6b854c966862af8bfc60ddeaaa515eea89012c35250145eee2e2642ff",
+        "initialStances": [
+          {
+            "index": 0,
+            "slot": "QB",
+            "pos": {
+              "x": 33.4,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27,
+            "job": "qb-handoff",
+            "plan": null
+          },
+          {
+            "index": 1,
+            "slot": "LT",
+            "pos": {
+              "x": 34.45,
+              "y": 29.26666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3527272727272727,
+            "job": "run-block",
+            "plan": {
+              "kind": "cutoff",
+              "target": 11,
+              "combination": null
+            }
+          },
+          {
+            "index": 2,
+            "slot": "RT",
+            "pos": {
+              "x": 34.45,
+              "y": 24.066666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3654545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 12,
+              "combination": {
+                "members": [
+                  7,
+                  2
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 3,
+            "slot": "C",
+            "pos": {
+              "x": 34.45,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3618181818181818,
+            "job": "run-block",
+            "plan": {
+              "kind": "combo",
+              "target": 13,
+              "combination": {
+                "members": [
+                  5,
+                  3
+                ],
+                "defender": 13,
+                "backer": 16
+              }
+            }
+          },
+          {
+            "index": 4,
+            "slot": "LG",
+            "pos": {
+              "x": 34.45,
+              "y": 27.96666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.3609090909090909,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 14,
+              "combination": null
+            }
+          },
+          {
+            "index": 5,
+            "slot": "RG",
+            "pos": {
+              "x": 34.45,
+              "y": 25.366666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.36636363636363634,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 13,
+              "combination": {
+                "members": [
+                  5,
+                  3
+                ],
+                "defender": 13,
+                "backer": 16
+              }
+            }
+          },
+          {
+            "index": 6,
+            "slot": "RB",
+            "pos": {
+              "x": 28.2,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.2581818181818182,
+            "job": "mesh",
+            "plan": null
+          },
+          {
+            "index": 7,
+            "slot": "Y",
+            "pos": {
+              "x": 34.4,
+              "y": 22.76666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.29454545454545455,
+            "job": "run-block",
+            "plan": {
+              "kind": "reach",
+              "target": 12,
+              "combination": {
+                "members": [
+                  7,
+                  2
+                ],
+                "defender": 12,
+                "backer": 15
+              }
+            }
+          },
+          {
+            "index": 8,
+            "slot": "X",
+            "pos": {
+              "x": 34.4,
+              "y": 44.66666666666667
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.27636363636363637,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 18,
+              "combination": null
+            }
+          },
+          {
+            "index": 9,
+            "slot": "Z",
+            "pos": {
+              "x": 33.8,
+              "y": 8.666666666666668
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.23636363636363636,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 17,
+              "combination": null
+            }
+          },
+          {
+            "index": 10,
+            "slot": "H",
+            "pos": {
+              "x": 33.8,
+              "y": 35.266666666666666
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0,
+            "radius": 0.25727272727272726,
+            "job": "run-block",
+            "plan": {
+              "kind": "stalk",
+              "target": 19,
+              "combination": null
+            }
+          },
+          {
+            "index": 11,
+            "slot": "DE_W",
+            "pos": {
+              "x": 35.9,
+              "y": 31.845929483305593
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2809090909090909,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 12,
+            "slot": "DE_S",
+            "pos": {
+              "x": 35.9,
+              "y": 21.15633186721531
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 13,
+            "slot": "DT_S",
+            "pos": {
+              "x": 35.9,
+              "y": 24.752507971720537
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.37363636363636366,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 14,
+            "slot": "DT_W",
+            "pos": {
+              "x": 35.9,
+              "y": 27.50995310456106
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.29,
+            "job": "rush",
+            "plan": {
+              "target": null,
+              "combination": null
+            }
+          },
+          {
+            "index": 15,
+            "slot": "LB_M",
+            "pos": {
+              "x": 39.9,
+              "y": 25.46619922132457
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28727272727272724,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 16,
+            "slot": "LB_W",
+            "pos": {
+              "x": 39.6,
+              "y": 27.9372716808372
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.3090909090909091,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 17,
+            "slot": "CB_S",
+            "pos": {
+              "x": 41,
+              "y": 9.612130230372856
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.26454545454545453,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 18,
+            "slot": "CB_W",
+            "pos": {
+              "x": 41,
+              "y": 43.942187149857745
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24909090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 19,
+            "slot": "NB",
+            "pos": {
+              "x": 40,
+              "y": 34.27442453758261
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.24818181818181817,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 20,
+            "slot": "FS",
+            "pos": {
+              "x": 47,
+              "y": 35.69516913837599
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.2509090909090909,
+            "job": "zone",
+            "plan": null
+          },
+          {
+            "index": 21,
+            "slot": "SS",
+            "pos": {
+              "x": 47,
+              "y": 17.68231022070292
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 3.141592653589793,
+            "radius": 0.28545454545454546,
+            "job": "zone",
+            "plan": null
+          }
+        ],
+        "firstTick": {
+          "t": 0,
+          "rng": {
+            "key": 71001,
+            "s0": 1223792498,
+            "s1": -224626706,
+            "s2": -809962013,
+            "s3": 1901730062,
+            "spareNormal": null
+          },
+          "contacts": [],
+          "commands": [
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 0,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.7
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            },
+            {
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": 3.141592653589793,
+              "push": 0,
+              "posture": 0.3
+            }
+          ],
+          "nbEnd": [
+            {
+              "index": 12,
+              "pos": {
+                "x": 35.9,
+                "y": 21.15633186721531
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "index": 19,
+              "pos": {
+                "x": 40,
+                "y": 34.27442453758261
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "runtime": {
+    "launchers": {
+      "typecheck.json": 11.227920095,
+      "setup-final.json": 1.510199721,
+      "focused.json": 1.7911845100000001,
+      "reference-native.json": 1.575402985,
+      "presnap.json": 3.9646452890000003,
+      "creep.json": 1.5696074919999998,
+      "candidate-native.json": 1.639390305
+    },
+    "launcherSecondsTotal": 23.278350397,
+    "standaloneNativeEngineSeconds": 1.869111436,
+    "note": "Focused finite-stem contract also internally executes two ordinary snaps; included in presnap receipt, not standalone count."
+  },
+  "rawTapeLocalDirectory": "/workspace/press-front-stance/out/press-front-stance",
+  "reproductionInputEquality": "Compact frozen-lineup setups deeply equal the original archived setups for both cases."
+}
