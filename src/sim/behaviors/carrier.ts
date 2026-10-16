@@ -65,6 +65,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
  * Entry points are between moving blockers, or outside a kick/log. */
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
+  if (RUN_LANE) return creaseAim(a, sim, opts);
   const side=opts.run.side;
   const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
     .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
@@ -112,6 +113,109 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
 
+/** Experimental runner lane model (RUN_LANE=1): engaged defenders occupy
+ * space, and the crease is read from every body at the line with block
+ * leverage (creaseAim). */
+const RUN_LANE = process.env.RUN_LANE === '1';
+
+interface LineBody { pos: Vec2; vel: Vec2; radius: number; team: 'O' | 'D'; agent: Agent }
+
+/** The crease as the runner sees it (RUN_LANE): openings between the bodies
+ * actually at the line, offense and defense alike, so a defender standing in
+ * a gap closes it. Each opening is judged by who can be there before the
+ * runner. A blocked defender is late only where his blocker stands between
+ * him and that point; on his free side he is there now, with the shortened
+ * reach of a man still engaged. Then the path to it must be clear of bodies,
+ * and what waits two yards beyond it (second-level fitters) still counts.
+ * The designed aim and the run's side keep their pull on the choice. */
+function creaseAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+  const dir = sim.attackDir(a.team), run = opts.run!;
+  const depth = (p: Vec2) => (p.x - sim.los) * dir;
+  let preferred = liveAim(a, sim, opts)!.y;
+  if (run.scheme === 'duo' && run.readKey) {
+    const key = sim.see(a, run.readKey);
+    if (key.pos.x < sim.los + 2.5 && Math.abs(key.vel.y) > .7) preferred = sim.ballY - Math.sign(key.vel.y) * .8;
+  }
+  const kick = run.kick;
+  if (kick) {
+    const s = sim.see(a, kick);
+    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
+  }
+  const bodies: LineBody[] = [];
+  for (const o of sim.agents) {
+    if (o === a || o.isDown(sim.t) || o === sim.qb) continue;
+    const s = sim.see(a, o);
+    if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
+    bodies.push({ pos: s.pos, vel: s.vel, radius: o.profile.radius, team: o.team === a.team ? 'O' : 'D', agent: o });
+  }
+  if (bodies.filter((b) => b.team === 'O').length < 3) return null;
+  bodies.sort((p, q) => p.pos.y - q.pos.y);
+  const candidates: Vec2[] = [];
+  const squeeze = a.profile.radius * 1.4;
+  for (let i = 1; i < bodies.length; i++) {
+    const l = bodies[i - 1], r = bodies[i];
+    if (r.pos.y - r.radius - (l.pos.y + l.radius) < squeeze) continue;
+    const y = (l.pos.y + l.radius + r.pos.y - r.radius) / 2;
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, Math.max(l.pos.x, r.pos.x) + .6) : Math.min(sim.los - .5, Math.min(l.pos.x, r.pos.x) - .6), y });
+  }
+  for (const [end, s] of [[bodies[0], -1], [bodies.at(-1)!, 1]] as const) {
+    const y = end.pos.y + s * (end.radius + a.profile.radius + .4);
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, end.pos.x + .5) : Math.min(sim.los - .5, end.pos.x - .5), y });
+  }
+  const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+  // Time for a defender to be in the runner's way at p, with block leverage.
+  const threatTime = (d: Agent, s: Perceived, p: Vec2): number => {
+    const recovery = observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+    const e = d.engagement;
+    const reach = e ? d.profile.reach * .4 : d.profile.reach * .75;
+    let t = timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, p, d.profile.radius + a.profile.radius + reach) + recovery;
+    if (e && !e.blocker.isDown(sim.t)) {
+      const b = sim.see(a, e.blocker);
+      // Blocker between the defender and the point (laterally, at the line):
+      // the defender must get off or around him first.
+      const toP = p.y - s.pos.y, toB = b.pos.y - s.pos.y;
+      const walled = Math.sign(toP) === Math.sign(toB) || Math.abs(toB) < (e.blocker.profile.radius + d.profile.radius) * .5;
+      // A block on the hole side protects it as long as it holds: a square
+      // block (win near 0) for most of a second, a losing one hardly at all.
+      if (walled) t += .2 + 1.3 * clamp(1 - e.win, 0, 1);
+    }
+    return t;
+  };
+  let best: Vec2 | null = null, cost = Infinity;
+  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+  for (const p of candidates) {
+    const arrive = timeToReach(me, p, 0);
+    let risk = 0;
+    // Path to the entry: any body standing on it blocks the straight run.
+    const sx = p.x - a.pos.x, sy = p.y - a.pos.y, l2 = sx * sx + sy * sy || 1;
+    for (const b of bodies) {
+      const u = clamp(((b.pos.x - a.pos.x) * sx + (b.pos.y - a.pos.y) * sy) / l2, 0, 1);
+      if (u <= 0 || u >= 1) continue;
+      const miss = Math.hypot(a.pos.x + u * sx - b.pos.x, a.pos.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      if (miss < 0) risk += 1.5 + 4 * Math.min(1, -miss);
+    }
+    // Who is there first, at the entry and two yards beyond it: the earliest
+    // defender decides, as in the open-field read.
+    const beyond = { x: p.x + 2 * dir, y: p.y };
+    const arrive2 = arrive + 2 / Math.max(4, a.profile.vmax * .8);
+    let m1 = Infinity, m2 = Infinity;
+    for (const d of sim.opponents(a)) {
+      if (d.isDown(sim.t)) continue;
+      const s = sim.see(a, d);
+      if (Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+      m1 = Math.min(m1, threatTime(d, s, p) - arrive);
+      m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+    }
+    risk += m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0;
+    risk += m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0;
+    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
+    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
+    if (score < cost) { cost = score; best = p; }
+  }
+  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
+  return best;
+}
+
 export class BallCarrier implements Behavior {
   readonly kind = 'carrier';
   private heading: number | null = null;
@@ -121,6 +225,8 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
+  private pressEntry: Vec2 | null = null;
+  private pressReadAt = 0;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -153,7 +259,17 @@ export class BallCarrier implements Behavior {
 
     // Designed phase: press the aiming point.
     if (designed) {
-      const aim = liveAim(a, sim, this.opts)!;
+      let aim = liveAim(a, sim, this.opts)!;
+      // RUN_LANE: the press is a read, not a blind run at a painted point.
+      // On his ordinary beat he reads the line he is pressing; the designed
+      // aim keeps its pull inside that read, so an open aim is still run.
+      if (RUN_LANE && this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
+        if (!this.pressEntry || sim.t >= this.pressReadAt) {
+          this.pressReadAt = sim.t + a.mind.decisionInterval;
+          this.pressEntry = creaseAim(a, sim, this.opts);
+        }
+        if (this.pressEntry) aim = this.pressEntry;
+      }
       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
       this.heading = h;
       // Only abandon the design early if the aiming point is clearly closed.
@@ -285,6 +401,14 @@ export class BallCarrier implements Behavior {
     // Perceived defenders (vision-filtered).
     const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
     const blockers = sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
+    // RUN_LANE (experimental): a blocked defender is still a body standing in
+    // the lane. His engagement delays his pursuit; it does not remove him, so
+    // a lane through a blocker and his man is no more open than one through
+    // the blocker alone.
+    if (RUN_LANE) for (const d of sim.opponents(a)) {
+      if (!d.engagement || d.isDown(sim.t) || Math.hypot(d.pos.x - p.x, d.pos.y - p.y) >= 12) continue;
+      blockers.push({ ...sim.see(a, d), radius: d.profile.radius });
+    }
     for (const d of sim.opponents(a)) {
       const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
       if (dd > range) continue;
