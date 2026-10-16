@@ -204,7 +204,30 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 <a id="ready-blocked-experimental"></a>
 ## Ready, blocked and experimental
 
-### Current intake — 2026-10-15
+### Current collection/cap batch — 2026-10-15
+
+Accepted develop remains86250bb. Independently accepted scope is assembled as
+nine exact file blobs in `codex/collection-cap-integration`; Integration owns one
+all-phase verification, reusing focused/native receipts. #88 does not wait for #87.
+[Exact intake, dependencies, byte checks and portable patches](../data/reviews/current/collection-cap-integration/intake.json).
+
+| Item | Included scope / exact pin | Independent acceptance and remaining football limits |
+| --- | --- | --- |
+| #88 collection | `6573521bc28ea09c2aa6c05770f20b2089cc9fe6`: post-release blocking.ts clearance, direct test/fixture only | [Do-It-All ACCEPT6206668974](https://github.com/tannerthardy/football-simulation-/pull/88#issuecomment-6206668974). Actual A018 Mike load while RT retains DT; release unchanged. Later C/LG collision49.969 remains; A030 shorter ending/D05 changed same attempt/D07 censored. #86 diagnostic is not a dependency. |
+| #81 minimal admission + cost | `f04235ed91ad41ca79cbd22cbfccab48477d06db` + `d80dcd3015358e604f91cb026f562f6f4f4781e5`, evidence `c6c8b4823acb27c13769f32305a79d5628cf19b2`; four files | [Run ACCEPT6206768415](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6206768415). Original clear-lane zero-preview assertion unchanged; counts0/0/0, residual/recovery/crossing still forecast. No movement-law or full-engine speedup claim. Old #81 head/failed receipt stay distinct and unchanged. |
+| #89 moving alley | `78a00645e4f821d45604a1ed68c35592de1f5926`: one run-fits.ts lateral velocity input + four coverage contracts | [Run ACCEPT6206768642](https://github.com/tannerthardy/football-simulation-/pull/89#issuecomment-6206768642). Existing acquired lateral motion, fixed longitudinal cap. Better A042/A006 entry; A006 hold still breaks and later FS acquisition worsens3.75→3.90. A003 late changes; censored controls remain censored. |
+| #87 policy held separately | `9760de031cae3bda7c926735f8edeb97fa4574e5`, executed52518be | Catching approves objective producers only. [Run full policy/interaction review requested](https://github.com/tannerthardy/football-simulation-/pull/87#issuecomment-6206932842). New spacing gate/common-track/catch metadata overlaps cost and consumes #89 moving flow. Text-clean application is not policy approval. No #87 source or observer included now. |
+
+Three disjoint production hunks preserve shared physics/capacities/defaults,
+keeper security, acquired-picture ownership and installed responsibilities.
+Thirty-three published evidence payload hashes and four source digests verified;
+23/71/101 focused checks and typecheck receipts reused. No new native cases,
+roster/panel/game collection or contributor suite. [Independent reviews](../data/reviews/current/collection-cap-integration/cost-alley-independent-review.json),
+[#88 audit](../data/reviews/current/collection-cap-integration/pr88-independent-review.json).
+Rejected common/gather/shoulder/lateral variants, old research ancestry, #76 and
+experimental Physics remain separate. Historical4ded6b6/GitHub default unchanged.
+
+### Previous #85 intake — completed historical stage
 
 Accepted develop is **86250bb** through #85 with #84 only. Independent reviews accepted #84 and #81,
 but first exact combined freezebbc4f82 fails one existing #81 zero-preview cost

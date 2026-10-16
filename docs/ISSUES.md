@@ -148,6 +148,18 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
+Current: Run accepts minimal #81 admission plus separate d80dcd3 settled-line
+cost successor; original zero-preview test is unchanged and counts0/0/0. The
+old failed combined receipt remains failed. Integration verifies this reviewed
+successor with independently accepted #88/#89. #87 new movement policy remains
+separate pending Run's full consumer/interaction review; Catching approved only
+producer metadata. Its common-track objective would consume #89's acquired
+lateral flow, so do not infer compatibility from a clean textual patch.
+Run also accepts #89 one-line alley flow/four contracts: fixed x cap, same
+acquired lateral picture, existing PA/recognized-ball/carrying gates. Preserve
+A006 later support delay/first broken hold, A003 late changes and censored
+A020/A042 reference. No general YAC or law/default claim.
+
 Current: Run independently accepts #81's exact admission-only scope, but exact
 #85 combined verification exposes the preserved fast-straight zero-preview
 assertion at traffic-turning.test.ts:212.1,761 TS pass/one fail;145 Python and
@@ -195,6 +207,13 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
+
+Current: Do-It-All independently accepts #88 head6573521 minimal post-release
+strike-clearance correction; actual A018 RG/Mike load while RT retains DT, no
+release/range/force change. Existing obstruction/keeper controls pass. Later
+A018 C/LG impact, A030 shorter ending and D07 unfinished remain. Integration
+combines compatible cost/#89 scope once; #86 research is not a dependency and
+#87 does not hold collection. Earlier #84 findings below remain source-pinned.
 
 Current: #84 head4af71ac/codeaebb0ab/evidence70ed238 is a ready Duo-only
 surface-admission candidate on accepted7eb2554. Do-It-All independent review accepts the exact correction: preserved near-half/

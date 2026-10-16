@@ -1,0 +1,47 @@
+{
+  "schema": "run-independent-forecast-alley-review-v1",
+  "decision": {
+    "forecastCost": "ACCEPT minimal d80dcd3 successor after f04235e, old PR81 head stays held",
+    "movingAlley": "ACCEPT exact PR89 one-line input and four contracts",
+    "collection": "PR88 stays frozen, no new variants"
+  },
+  "pins": {
+    "base": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "cost": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+    "costEvidence": "c6c8b4823acb27c13769f32305a79d5628cf19b2",
+    "alley": "78a00645e4f821d45604a1ed68c35592de1f5926",
+    "alleyExecutedHost": "e10e0cb526004afdcd1290daa0bdf5a72eae3462"
+  },
+  "sources": {
+    "86250bb4f0c6f421878c204161864d523c3e30b6": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+    "d80dcd3015358e604f91cb026f562f6f4f4781e5": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "78a00645e4f821d45604a1ed68c35592de1f5926": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae"
+  },
+  "executedProbeCommit": "befd221e6039b20d63ba020ceabc7ec114b0259c",
+  "staticAuditCommit": "296332168233ba4017081ffc03e8227e3e81d322",
+  "newNativeFootballExecutions": 0,
+  "newGames": 0,
+  "newFullSuites": 0,
+  "finalProbeWorldSteps": 96,
+  "allProbeWorldStepsIncludingHarnessFailure": 192,
+  "newLauncherSecondsIncludingFailures": 1.35200346,
+  "lastSuccessfulOfflineAuditSeconds": 3.804697141982615,
+  "operatorSha256": {
+    "static": "b5622568e9d100cb44f5d8f49488e651521ca9d4b8096408f8c878d5eb7a920a",
+    "probe": "7db3a7809f795160b134e0e1be7aa77c17853c550ca114197a19ea7cfb179cbc"
+  },
+  "reusedChecks": {
+    "costFocused": 23,
+    "costTypecheck": "pass",
+    "alleyFocusedUnique": 101,
+    "alleyTypecheck": "pass"
+  },
+  "limitations": [
+    "No combined-source suite run; Integration owns it.",
+    "No whole-engine cost, aggregate YAC or football-distribution claim.",
+    "A042 offense reacts before contact; identical seed does not establish identical tackle draws.",
+    "A006 first grip still breaks and later support is delayed. A003 late bodies/events differ. A020 and A042 reference remain censored.",
+    "Review launcher source is accepted host; exact cost/alley archives are imported and independently hashed.",
+    "Initial loader and prototype-comparison harness failures retained; no candidate source changed."
+  ]
+}

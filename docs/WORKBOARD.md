@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Active collection/cap integration — 2026-10-15
+
+Integration starts from accepted86250bb plus queue metadataef21437, isolated in
+`codex/collection-cap-integration`. Independently approved immediate scope:
+#88 `blocking.ts` post-release climb clearance + combo-strike-access test/fixture;
+minimal #81 admission + d80dcd3 cost successor (`spacing.ts`, residual-motion
+test/fixture and traffic-turning test); #89 one alley input in `run-fits.ts` plus
+coverage-run-support contracts. Preserve each authored/reviewed file blob.
+Do-It-All accepts #88; Run accepts cost successor and #89. Reuse their focused
+receipts/controls, then one exact combined verification under Integration.
+
+#87 producer metadata is approved by Catching; its whole movement-policy review
+is requested from Run. Check its overlapping spacing/common movement and #89
+moving-goal input before any later composition; #88 does not wait for it.
+No #86 diagnostic, observer/research ancestry, #76 override, rejected variants,
+experimental Physics, capabilities/defaults or historical reference changes.
+
 ## Completed #85 Duo-only adoption — #81 held separately
 
 Integration owns the isolated branch from accepted7eb2554 plus current queue.

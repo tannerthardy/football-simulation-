@@ -1,0 +1,185 @@
+{
+  "reviewed": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6",
+  "acceptedBase": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "executedEquivalent": "61fde14a1bc5582b579a37d98eb8a98851a89d11",
+  "evidence": "8fb028eafc19b803cf082a8d31d5594319bd5165",
+  "runtimeSource": "bed54d7389957f713c4a8a61e899fff1ea707f2545bd275e1fb8ff814e65bf37",
+  "protectedPayloads": [
+    {
+      "path": "src/sim/behaviors/blocking.ts",
+      "sha256": "4b80ac347b4f53716bef86a305f3736d1187ab52be743872b9869c5d07e755d5",
+      "matchesExecuted": true
+    },
+    {
+      "path": "test/combo-strike-access.test.ts",
+      "sha256": "43dbebe29757ab0678d6b87e899c28ad107901e1b117c5d8a2e8cb43da82bc26",
+      "matchesExecuted": true
+    },
+    {
+      "path": "test/fixtures/combo-strike-access.json.gz",
+      "sha256": "54d29ddea501d3c65e32f0b4ce389ec20ba078fdce1154c7d5411072ccc66fee",
+      "matchesExecuted": true
+    }
+  ],
+  "evidencePayloadsVerified": 20,
+  "unchangedSavedControls": [
+    "D06",
+    "A027",
+    "POWER"
+  ],
+  "sameA018DepartureTime": 1.05,
+  "firstA018RequestDifference": 2.3,
+  "existingStrikeRange": 1.1636363636363636,
+  "actualStrikeDistance": 1.099979336166135,
+  "observedBackerDistance": 0.8964956369806952,
+  "centerChecks": [
+    {
+      "peer": 13,
+      "dt": 0,
+      "clear": false,
+      "nearest": 0.7180916017525688,
+      "bodyClearance": -0.026453852792885812
+    },
+    {
+      "peer": 13,
+      "dt": 0.2307337663228366,
+      "clear": false,
+      "nearest": 0.6185412834550198,
+      "bodyClearance": -0.12600417109043482
+    },
+    {
+      "peer": 2,
+      "dt": 0,
+      "clear": true,
+      "nearest": 1.3792967476969524,
+      "bodyClearance": 0.6647512931514978
+    },
+    {
+      "peer": 2,
+      "dt": 0.2307337663228366,
+      "clear": true,
+      "nearest": 1.3389276146010567,
+      "bodyClearance": 0.6243821600556021
+    }
+  ],
+  "strikeChecks": [
+    {
+      "peer": 13,
+      "dt": 0,
+      "clear": true,
+      "nearest": 0.768406434492853,
+      "bodyClearance": 0.02386097994739833
+    },
+    {
+      "peer": 13,
+      "dt": 0.2307337663228366,
+      "clear": true,
+      "nearest": 0.6720539892548093,
+      "bodyClearance": -0.07249146529064532
+    },
+    {
+      "peer": 2,
+      "dt": 0,
+      "clear": true,
+      "nearest": 1.38040112771412,
+      "bodyClearance": 0.6658556731686653
+    },
+    {
+      "peer": 2,
+      "dt": 0.2307337663228366,
+      "clear": true,
+      "nearest": 1.3460020837375721,
+      "bodyClearance": 0.6314566291921175
+    }
+  ],
+  "loadsThroughRunnerArrival": [
+    {
+      "tick": 2.3,
+      "after": 2.35,
+      "rgMike": 191.13158443754224,
+      "rtDT": 955.8508828124528
+    },
+    {
+      "tick": 2.35,
+      "after": 2.4,
+      "rgMike": 203.05273807563412,
+      "rtDT": 968.7303548800486
+    },
+    {
+      "tick": 2.4,
+      "after": 2.45,
+      "rgMike": 215.98290783172297,
+      "rtDT": 955.4600088544615
+    },
+    {
+      "tick": 2.45,
+      "after": 2.5,
+      "rgMike": 212.3773427950626,
+      "rtDT": 965.3453796480569
+    },
+    {
+      "tick": 2.5,
+      "after": 2.55,
+      "rgMike": 222.29724197097045,
+      "rtDT": 987.8128998939712
+    },
+    {
+      "tick": 2.55,
+      "after": 2.6,
+      "rgMike": 231.9621187768889,
+      "rtDT": 979.5518351815628
+    },
+    {
+      "tick": 2.6,
+      "after": 2.65,
+      "rgMike": 249.697340164001,
+      "rtDT": 975.0486376033224
+    }
+  ],
+  "minimumRunnerOLTorsoClearanceThroughArrival": 1.3294394496492838,
+  "A018FirstCarrierContact": {
+    "reference": {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 15,
+      "pos": {
+        "x": 39.03,
+        "y": 21.68
+      },
+      "note": "grasp"
+    },
+    "candidate": {
+      "t": 3.4,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+        "x": 39.68,
+        "y": 21.42
+      },
+      "note": "grasp"
+    }
+  },
+  "retainedA018TeammateImpacts": [
+    {
+      "tick": 3.75,
+      "i": 3,
+      "j": 4,
+      "impulse": 49.96892109045921,
+      "closing": 0.7042091670268298
+    }
+  ],
+  "retainedA030Yards": {
+    "reference": 12.66,
+    "candidate": 11.61
+  },
+  "D05SameAttemptTime": 3.25,
+  "D07CensoredAt": 5,
+  "authorReusedNativeExecutions": 10,
+  "authorReusedNativeSeconds": 10.615530815,
+  "authorReusedAllLauncherSeconds": 57.207336172999995,
+  "newNativeExecutions": 0,
+  "newTestExecutions": 0,
+  "reviewAuditSeconds": 0.34208730900718365
+}

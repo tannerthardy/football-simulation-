@@ -4,6 +4,11 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
+- **Current integration:** independently accepted #88 collection, #89 moving alley
+  and minimal #81+d80dcd3 cost successor are assembled for one exact verification.
+  #87 producer metadata is approved, but its full movement-policy/overlap review
+  is pending with Run; it does not hold #88. No observer/experiment import.
+  [Exact queue](INTEGRATION.md#ready-blocked-experimental).
 - **Operating policy:** contributors submit fetchable work through the single
   `integration-ready` GitHub queue; readiness requests independent review.
   Integration checks it on resume/working checkpoints, owns one exact combined
