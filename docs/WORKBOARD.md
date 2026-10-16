@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Catching: installed low-hole rat cut — 2026-10-15
+
+`codex/rat-crosser-duty` starts accepted
+`bb6d4c73948d53ba841dd9338dd240146c739f8c`, fetched and reconciled with the
+published queue. Own `coverage/rules.ts`'s rat dispatch and bounded cut lifecycle,
+one focused rat controller contract and a small matched native diagnostic.
+`behaviors/defense.ts` also owns the optional acquired entry position for this
+new match's initial cushion; existing producers retain their prior behavior.
+Question: does the installed rat cut a legitimately acquired incoming shallow
+without chasing outgoing/vertical/unavailable routes or losing support/ball
+priority? Ordinary Cover 1's robber remains distinct. No spacing, movement
+modifier, physics, capability or original-man handoff edits. Flex retains
+movement policy; Integration retains combined verification. #93's diagnosis
+and evidence remain independently preserved; this is a separate runtime boundary.
+
 ## Completed #90 collection/cap adoption — 2026-10-15
 
 Integration starts from accepted86250bb plus queue metadataef21437, isolated in

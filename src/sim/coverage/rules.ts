@@ -13,6 +13,8 @@
  */
 import type { ZoneId, ZoneStyle, MatchRule } from '../../playbook/types.js';
 import type { Agent } from '../agent.js';
+import type { Vec2 } from '../../core/vec.js';
+import { zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
 import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
@@ -108,14 +110,19 @@ function seamCurlFlat(c: RuleCtx, carry: number): Directive {
 /**
  * Cut: a hook defender jumps a shallow crosser coming into his area ("under"
  * call from the curl-flat player) and carries him until he has run through it,
- * then gives him to the next hook and looks for the dig behind (robot).
+ * then looks for the dig behind (robot). A rat's installed low-hole area
+ * stays fixed while he moves; this alone does not signal a man exchange.
  */
-function cut(c: RuleCtx): Directive | null {
+function cut(c: RuleCtx, area?: Vec2): Directive | null {
   const st = c.state;
+  const center = area ?? c.a.pos;
+  // A newly accepted rat match starts from his acquired picture. The man
+  // technique must not initialize its cushion from the hidden live receiver.
+  const carry = (rd: ReceiverRead) => man(rd, { lev: 'head', ...(area ? { initialPosition: { ...rd.pos } } : {}) });
   if (st.cut) {
     const rd = c.reader.read(c.sim, st.cut);
     // Through my area (8+ yards past me toward the far side) or turned upfield: let him go.
-    if (rd && rd.release === 'under' && Math.abs(rd.pos.y - c.a.pos.y) < 8 && rd.depth < 8) return man(rd, { lev: 'head' });
+    if (rd && rd.release === 'under' && Math.abs(rd.pos.y - center.y) < 8 && rd.depth < 8) return carry(rd);
     st.cut = undefined;
     return null;
   }
@@ -124,7 +131,11 @@ function cut(c: RuleCtx): Directive | null {
   for (const r of c.sim.offense) {
     const rd = c.reader.read(c.sim, r);
     if (!rd || rd.release !== 'under' || rd.depth > 7) continue;
-    const toward = Math.sign(c.a.pos.y - rd.pos.y) * rd.vel.y > 1.5;
+    // "Under" also includes an early diagonal in-break. The low-hole rat
+    // keeps playing the window until the acquired path is actually across
+    // him; a shallow declaration alone does not make a climbing stem a cross.
+    if (area && (Math.abs(rd.pos.y - center.y) >= 8 || Math.abs(rd.vel.y) <= Math.abs(rd.vel.x))) continue;
+    const toward = Math.sign(center.y - rd.pos.y) * rd.vel.y > 1.5;
     const d = Math.hypot(rd.pos.x - c.a.pos.x, rd.pos.y - c.a.pos.y);
     if (toward && d < 9 && d < bd) {
       best = rd;
@@ -133,7 +144,7 @@ function cut(c: RuleCtx): Directive | null {
   }
   if (!best) return null;
   st.cut = best.r;
-  return man(best, { lev: 'head' });
+  return carry(best);
 }
 
 /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot. */
@@ -321,7 +332,7 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);
     case 'invert_safety': return invertSafety(c);
-    case 'rat':
+    case 'rat': return cut(c, zoneLandmark(c.zone, c.sim.offAlign)) ?? zoneOf(c);
     case 'robber': return zoneOf(c);
   }
 }

@@ -177,6 +177,8 @@ export interface ManOptions {
   lev?: 'inside' | 'outside' | 'head';
   trail?: boolean;
   overTop?: boolean;
+  /** Acquired entry picture for a new match; used only to initialize cushion. */
+  initialPosition?: Vec2;
 }
 
 /** Man coverage with press/off technique, leverage and hip turn. */
@@ -208,7 +210,7 @@ export class ManCoverage implements Behavior {
     readonly opts: ManOptions = {},
   ) {
     this.press = press;
-    this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
+    this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
     void sim;
   }
 
