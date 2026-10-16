@@ -39,4 +39,15 @@ describe('stretch connection footwork closes the actual separation',()=>{
   const gap=.9-f.blocker.profile.radius-f.defender.profile.radius;
   expect(commands[f.blocker.idx].vel.x).toBeCloseTo(gap*3,12);
  });
+ it.each([-1,1])('uses the normal distance to contact without sacrificing the existing lateral offset, mirror=%s',side=>{
+  const f=fit(side,.8,.4),{commands,movement}=f.read();
+  expect(movement.anchored).toBe(false);
+  // Inspect the requested proportional goal, not an assertion that the
+  // body instantly executes it: removing its gain must end on the torso
+  // clearance circle at this same lateral offset.
+  const forwardGoal=commands[f.blocker.idx].vel.x/3;
+  const remainingX=f.defender.pos.x-f.blocker.pos.x-forwardGoal;
+  const lateral=f.defender.pos.y-f.blocker.pos.y;
+  expect(Math.hypot(remainingX,lateral)).toBeCloseTo(f.blocker.profile.radius+f.defender.profile.radius,12);
+ });
 });
