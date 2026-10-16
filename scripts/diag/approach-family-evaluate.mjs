@@ -8,14 +8,16 @@ import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {FIELD_WIDTH} from '../../src/core/field.ts';
 import {clamp} from '../../src/core/vec.ts';
-import {fatigueFactor,movingArrivalVelocity} from '../../src/physics/kinematics.ts';
+import {fatigueFactor,gaitLag,movingArrivalVelocity} from '../../src/physics/kinematics.ts';
+import {interceptPoint} from '../../src/physics/reach.ts';
 import {availability,supportParams} from '../../src/physics/support.ts';
 import {previewFreeMovement} from '../../src/physics/movement-preview.ts';
 import {gatheringApproach,leverage} from '../../src/sim/behaviors/common.ts';
 import {contactQuality} from '../../src/sim/tackle-window.ts';
+import {requestToCover} from '../../src/sim/motion-plan.ts';
 import {sourceVersion} from '../source-version.ts';
 
-const [rawPath,path,out]=process.argv.slice(2),began=performance.now(),
+const [rawPath,path,out,mode]=process.argv.slice(2),began=performance.now(),
  hash=v=>createHash('sha256').update(v).digest('hex'),
  raw=JSON.parse(readFileSync(rawPath)),c=JSON.parse(gunzipSync(readFileSync(path)));
 assert.ok(!existsSync(out));assert.equal(c.sourceSha256,sourceVersion());
@@ -49,7 +51,22 @@ for(const r of c.rows){
   }
   return{command,best,first:samples[0],upright:samples.every(s=>s.support==='up')};
  }
- const options=Object.fromEntries([['actualGather',r.command],['existingArrival',arrival],['matchObservedVelocity',match]]
+ const commands=[['actualGather',r.command],['existingArrival',arrival],['matchObservedVelocity',match]];
+ if(mode==='--momentum-intercept'){
+  const path=t=>({x:seen.pos.x+seen.vel.x*t,y:clamp(seen.pos.y+seen.vel.y*t,0,FIELD_WIDTH)}),
+   ip=interceptPoint({pos:a.pos,vel:a.vel,profile:a.profile,speedScale:a.speedScale},path,
+    {horizon:.6,step:.05,radius:contact});
+  let command=r.command;
+  if(ip.t>=.1&&dist>contact+.5){
+   const vel={x:requestToCover(gaitLag(a.profile),ip.point.x-a.pos.x,ip.t,a.vel.x),
+    y:requestToCover(gaitLag(a.profile),clamp(ip.point.y+offset,0,FIELD_WIDTH)-a.pos.y,ip.t,a.vel.y)},
+    speed=Math.hypot(vel.x,vel.y),cap=a.profile.vmax*a.speedScale;
+   if(speed>cap){vel.x*=cap/speed;vel.y*=cap/speed;}
+   command={...near,vel};
+  }
+  commands.push(['momentumIntercept',command]);
+ }
+ const options=Object.fromEntries(commands
   .map(([name,command])=>[name,forecast(command)]));
  const current=options.actualGather,better=Object.entries(options).filter(([name,v])=>name!=='actualGather'
   &&v.upright&&v.best.distance+.1<current.best.distance).map(([name])=>name),
@@ -63,7 +80,7 @@ for(const r of c.rows){
 const result={schema:'approach-family-same-picture-v1',sourceSha256:c.sourceSha256,
  captureSha256:hash(readFileSync(path)),operatorSha256:hash(readFileSync(import.meta.filename)),
  inputNativeSha256:c.inputNativeSha256,actor:c.actors[c.actor],target:c.actors[c.target],
- nativeExecutions:0,forecastWorldSteps:rows.length*3*12,rows,seconds:(performance.now()-began)/1000,
+ nativeExecutions:0,forecastWorldSteps:rows.length*(mode==='--momentum-intercept'?4:3)*12,rows,seconds:(performance.now()-began)/1000,
  limits:['Held-command empty-space forecast, not future cut/grip/contact knowledge.',
   'Best separation sampled only at ordinary decision boundaries.',
   'Improved forecast alone is not evidence of a useful coupled continuation.']};
