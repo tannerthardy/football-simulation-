@@ -29,4 +29,6 @@ for(const id of ['A028','A018','A006']){
  }
 }
 writeFileSync(output,JSON.stringify(rows,null,2)+'\n');
-console.log(JSON.stringify({count:rows.length,byActor:Object.entries(Object.groupBy(rows,r=>`${r.id}:${r.kind}`)).map(([actor,rs])=>({actor,n:rs!.length,first:rs![0].t,worst:Math.max(...rs!.flatMap(r=>r.violations.map((v:any)=>v.excess)))})),first:rows.slice(0,3)}));
+const groups=new Map<string,any[]>();
+for(const row of rows){const key=`${row.id}:${row.kind}`;groups.set(key,[...(groups.get(key)??[]),row]);}
+console.log(JSON.stringify({count:rows.length,byActor:[...groups].map(([actor,rs])=>({actor,n:rs.length,first:rs[0].t,worst:Math.max(...rs.flatMap(r=>r.violations.map((v:any)=>v.excess)))})),first:rows.slice(0,3)}));

@@ -1,20 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { enduranceFactor, fatigueFactor } from '../src/physics/kinematics.js';
+import { enduranceFactor, fatigueFactor, type Body } from '../src/physics/kinematics.js';
 import { newSupport } from '../src/physics/support.js';
 import type { Intent } from '../src/physics/world.js';
 import type { Agent } from '../src/sim/agent.js';
 import { spaceTeammates } from '../src/sim/spacing.js';
 
-const fixtures=JSON.parse(readFileSync(new URL('./fixtures/joint-spacing.json',import.meta.url),'utf8'));
-function stage(f:any){
+interface Fixture {
+ caseId:string; t:number; idx:number; body:Body; raw:Intent; ordinary:Intent;
+ peers:{idx:number;profile:Body['profile'];seen:{pos:{x:number;y:number};vel:{x:number;y:number};age?:number}}[];
+ limits:{nx:number;ny:number;limit:number}[];
+}
+const fixtures:Fixture[]=JSON.parse(readFileSync(new URL('./fixtures/joint-spacing.json',import.meta.url),'utf8'));
+function stage(f:Fixture){
  const body=structuredClone(f.body);
  const a={idx:f.idx,team:'O',behavior:{kind:'run-block'},body,profile:body.profile,
   get pos(){return body.pos;},get vel(){return body.vel;},
   get speedScale(){return fatigueFactor(body.energy)*enduranceFactor(body)*(1-.08*(body.squeeze??0));},
-  isDown:()=>false} as Agent;
- const peers=f.peers.map((p:any)=>({idx:p.idx,team:'O',profile:p.profile,
-  get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as Agent));
+  isDown:()=>false} as unknown as Agent;
+ const peers=f.peers.map(p=>({idx:p.idx,team:'O',profile:p.profile,
+  get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as unknown as Agent));
  const commands:Intent[]=[structuredClone(f.raw),...peers.map(()=>({free:true,vel:{x:0,y:0}}))];
  return {a,peers,commands,run:()=>spaceTeammates([a,...peers],commands,(_a,b)=>f.peers.find((p:any)=>p.idx===b.idx).seen,{now:f.t})};
 }
