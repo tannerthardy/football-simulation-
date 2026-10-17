@@ -1,0 +1,100 @@
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941
+Running npx vitest run test/acquired-mesh-contradiction.test.ts
+
+ RUN  v3.2.4 /workspace/football-yac-angle
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P003' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P003","t":4,"actor":"CB_S","qb":{"pos":{"x":51.4,"y":21.47},"vel":{"x":0,"y":0},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":55.8,"y":19.52},"vel":{"x":1.94,"y":2.47},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":1.490714854756422,"y":-3.7754847376450957},"achieved":{"x":1.09252015140463,"y":-2.878737316275613}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P087' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P087","t":2.9,"actor":"LB_M","qb":{"pos":{"x":40.67,"y":24.58},"vel":{"x":0,"y":0},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":45.06,"y":21.48},"vel":{"x":2.22,"y":-1.4},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":0.6000000000000085,"y":-9.144683714196729},"achieved":{"x":0.7977438690603424,"y":-1.5838691218734144}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P141' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P141","t":2.6,"actor":"LB_S","qb":{"pos":{"x":41.89,"y":21.53},"vel":{"x":-1.17,"y":0.72},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":46.51,"y":19.42},"vel":{"x":2.85,"y":-0.6},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":2.325210496164594,"y":-9.023320444445606},"achieved":{"x":-1.1991380613176674,"y":-1.5117126511635244}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G4-P142' uses the acquired carrying QB after the empty back leaves
+{"id":"G4-P142","t":2.4,"actor":"LB_S","qb":{"pos":{"x":29.65,"y":24.17},"vel":{"x":-2.44,"y":-0.84},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":34.26,"y":22.03},"vel":{"x":4.82,"y":-1.05},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":0.22242285123996725,"y":-9.232692453066464},"achieved":{"x":-0.07033116998878541,"y":-3.944062812945609}}
+
+ ❯ |core| test/acquired-mesh-contradiction.test.ts (10 tests | 2 failed) 123ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > 'G3-P003' uses the acquired carrying QB after the empty back leaves 25ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > 'G3-P087' uses the acquired carrying QB after the empty back leaves 7ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > 'G3-P141' uses the acquired carrying QB after the empty back leaves 19ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > 'G4-P142' uses the acquired carrying QB after the empty back leaves 4ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > preserves the successful Ace mesh and does not use elapsed time or initial QB possession alone 13ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > requires positive QB and negative back possession, rather than hidden reality 21ms
+   × retire an unkeyed mesh expectation from acquired contradiction > retains retirement for this observer without sharing it or reviving the mesh when the back returns 15ms
+     → expected { vel: { …(2) }, …(2), …(1) } to not deeply equal { vel: { …(2) }, …(2), …(1) }
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > keeps requests invariant under hidden QB/back movement while reality snapshots advance 5ms
+   ✓ retire an unkeyed mesh expectation from acquired contradiction > leaves keyed acquired-back fits independent of the retired unkeyed expectation 6ms
+   × retire an unkeyed mesh expectation from acquired contradiction > also retires mesh for an acquired carrying QB beyond the existing commitment surface 7ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > retains retirement for this observer without sharing it or reviving the mesh when the back returns
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to not deeply equal { vel: { …(2) }, …(2), …(1) }
+
+Compared values have no visual difference.
+
+ ❯ test/acquired-mesh-contradiction.test.ts:92:28
+     90|     expected.sim.scrambled = true;
+     91|     expect(f.update()).toEqual(expected.fit());
+     92|     expect(f.update()).not.toEqual(untouched.update());
+       |                            ^
+     93|   });
+     94| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |core| test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > also retires mesh for an acquired carrying QB beyond the existing commitment surface
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+
+- Expected
++ Received
+
+  {
+    "cutSkill": undefined,
+-   "effort": 1,
+-   "facing": undefined,
++   "facing": 3.141592653589793,
+    "vel": {
+-     "x": -9.817192551049015,
+-     "y": -2.021174583762767,
++     "x": -4.186788756626543,
++     "y": -4.991610039527167,
++   },
++   Symbol(own movement objective): {
++     "kind": "moving",
++     "point": {
++       "x": 53,
++       "y": 25.416088406132154,
++     },
++     "velocity": {
++       "x": 0,
++       "y": -3.23,
++     },
+    },
+  }
+
+ ❯ test/acquired-mesh-contradiction.test.ts:124:21
+    122|     for (const s of [f, expected]) s.pictures.get(s.sim.qb.idx)!.pos.x…
+    123|     expected.sim.scrambled = true;
+    124|     expect(f.fit()).toEqual(expected.fit());
+       |                     ^
+    125|   });
+    126| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  04:42:48
+   Duration  1.15s (transform 650ms, setup 0ms, collect 792ms, tests 123ms, environment 0ms, prepare 54ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/acquired-qb-contract/mesh-red.json; exit 1
