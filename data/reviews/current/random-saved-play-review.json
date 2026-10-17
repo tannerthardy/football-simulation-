@@ -7584,5 +7584,10 @@
     "nativeOutcomesPreserved": 24,
     "engineExecuted": false,
     "reducerSha256": "ebfc7ba2c8a9c90fac3b5bbc940242409f7567a22b78b0311c94223f5e21200c"
+  },
+  "handoffs": {
+    "audit129": "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6241836058",
+    "catching132": "https://github.com/tannerthardy/football-simulation-/pull/132#issuecomment-6241836629",
+    "run136": "https://github.com/tannerthardy/football-simulation-/pull/136#issuecomment-6241837184"
   }
 }
