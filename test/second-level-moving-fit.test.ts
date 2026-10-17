@@ -15,6 +15,7 @@ import {movementObjective} from '../src/sim/movement-objective.js';
 import type {Perceived} from '../src/sim/perception.js';
 import {PlaySim} from '../src/sim/playsim.js';
 import {executeRunFit,type RunFitJob} from '../src/sim/run-fits.js';
+import * as steering from '../src/sim/behaviors/common.js';
 
 const offense=generateTeam(new Rng(31),'O','O',{strength:.55});
 const defense=generateTeam(new Rng(32),'D','D',{strength:.55});
@@ -37,7 +38,8 @@ function fixture(side:number,velocity=2,kind:RunFitJob['kind']='insert',techniqu
  const see=sim.see.bind(sim);sim.see=(observer,target,delay)=>picture.get(target)??see(observer,target,delay);
  const gap=liveGap(sim,a,'A',side),flow=clamp(gap.vel*a.mind.decisionInterval*2,-2,2);
  a.body.pos={x:41.5,y:gap.y+flow};a.body.vel={x:0,y:side*velocity};a.body.facing=Math.PI;
- return {sim,a,rb,picture,read:()=>executeRunFit(a,sim,'A',side)};
+ return {sim,a,rb,picture,read:(keyed=false)=>executeRunFit(a,sim,'A',side,
+  keyed?{target:rb,cue:picture.get(rb)!}:undefined)};
 }
 
 afterEach(()=>vi.restoreAllMocks());
@@ -101,5 +103,41 @@ describe('second-level insertion owns a moving fit rather than a stationary stop
   f.sim.t+=f.a.mind.decisionInterval+.01;
   expect(f.read()).toEqual(command);
   expect(movementObjective(command)!.velocity).toEqual({x:0,y:0});
+ });
+});
+
+describe('shallow acquired runner keeps insertion from returning to its old surface',()=>{
+ it.each([-1,1])('can close on an observed runner who straightens up, side=%s',side=>{
+  const f=fixture(side,0),cue=f.picture.get(f.rb)!;
+  cue.pos={x:38.8,y:f.a.pos.y+side*3};cue.vel={x:2,y:0};
+  const original=structuredClone(f.a.body),spy=vi.spyOn(steering,'chase');
+  const command=f.read(true);
+  expect(spy).toHaveBeenCalledWith(f.sim,f.a,f.rb,2);
+  expect(command.vel.y*side).toBeGreaterThan(0);
+  const body=structuredClone(original),world=new World([body]);
+  for(let k=0;k<4;k++)world.step([command],.05);
+  const destination={x:cue.pos.x+cue.vel.x*.2,y:cue.pos.y};
+  expect(Math.hypot(body.pos.x-destination.x,body.pos.y-destination.y))
+   .toBeLessThan(Math.hypot(original.pos.x-destination.x,original.pos.y-destination.y));
+  expect(body.support!.state).toBe('up');expect(f.a.body).toEqual(original);
+ });
+
+ it.each(['deep','not-carrying','unknown','cutback','lag'] as const)('preserves the %s control',control=>{
+  const f=fixture(1,0,control==='cutback'?'cutback':'insert',control==='lag'?'lag':'attack');
+  const cue=f.picture.get(f.rb)!;
+  cue.pos={x:control==='deep'?38.3:38.8,y:f.a.pos.y+3};cue.vel={x:2,y:0};
+  if(control==='not-carrying')cue.carrying=false;
+  if(control==='unknown')cue.carrying=null;
+  const spy=vi.spyOn(steering,'chase');f.read(true);
+  expect(spy).not.toHaveBeenCalled();
+ });
+
+ it('uses acquired possession and geometry rather than the hidden handoff or live runner',()=>{
+  const f=fixture(1,0),cue=f.picture.get(f.rb)!;
+  cue.pos={x:38.8,y:f.a.pos.y+3};cue.vel={x:2,y:0};
+  const first=f.read(true);
+  f.sim.ball={kind:'held',carrier:f.sim.qb};f.sim.handoffAt=-1;
+  f.rb.body.pos={x:70,y:5};f.rb.body.vel={x:9,y:-8};
+  expect(f.read(true)).toEqual(first);
  });
 });

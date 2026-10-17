@@ -257,8 +257,15 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // projected position), never against his own gap. Backside cutback and
   // lag duties stay home. FLOW_READ=0 restores the landmark-only fit.
   let flowing = false;
-  if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && Math.abs(seen.vel.y) > 1.5) {
-    const f = Math.sign(seen.vel.y);
+  // An identified runner at the existing declaration surface can straighten
+  // up without ceasing to occupy his crease. Keep inside-out leverage there;
+  // a deep mesh or uncertain possession still requires the original flow cue.
+  const shallowRunner = job.kind === 'insert' && !premesh && seen.carrying === true
+    && seen.pos.x > sim.los - 1.6;
+  const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
+    : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
+  if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
+    const f = flowSide;
     const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
     if ((onBall - gy) * f > 0) { gy = onBall; flowing = true; a.tags.add('fit-flow-read'); }
   }
