@@ -9,7 +9,7 @@
     "prior117122": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
     "cohort": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e"
   },
-  "decision": "Independent support for narrow technique-contract correction only with exact reviewed #117+#122 cohort; Integration final verification pending. No standalone promotion or weak-zone rescue claim.",
+  "decision": "Independent support for narrow initial-combination contract correction; currentdevelop70b4db6 alreadycontains117/122. Current-source focused+native transfer retained. Integration finalcombinedverificationpending. Do not promote historical standalone branch on d682b1f or claimweakzone rescue.",
   "tests": {
     "standaloneUniquePass": 130,
     "standaloneTypecheck": "pass",
@@ -26,11 +26,17 @@
     "focusedAndTypecheck": 19.156026357,
     "redAndRejectedFixtures": 5.157295295,
     "frozenTrafficPreview": 0.201443993,
-    "allMeasuredCommands": 37.273200411,
+    "allMeasuredCommands": 56.838819786,
     "chartCommand": 1.696298038,
     "chartRendererInternal": 0.505772191,
-    "totalIncludingChart": 38.969498449,
-    "qualification": "Command child elapsed times, not full chat wall clock. Includes repeated checks, failed/fixture reds and passive native captures. Cached prior work excluded."
+    "totalIncludingChart": 58.535117824,
+    "qualification": "Command child elapsed times, not full chat wall clock. Includes repeated checks, failed/fixture reds and passive native captures. Cached prior work excluded.",
+    "historicalPassCommands": 37.273200411,
+    "currentTransferCommands": 19.565619375,
+    "currentTransferNative": 5.780963246,
+    "currentTransferFocusedAndTypecheck": 13.784656129000002,
+    "currentTransferNativeCommandCount": 4,
+    "currentTransferNativeContinuations": 10
   },
   "measurements": {
     "weakAt2s": {
@@ -881,6 +887,535 @@
           ],
           "offensiveTeammateImpactCount": 0,
           "frameCount": 71
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/current-baseline.json.gz",
+      "sha256": "b1554374c8923fd0d05d63ad227404fcbb69d1c250d540885320ef3c1920732c",
+      "bytes": 2008248,
+      "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "collectorSeconds": 1.450252048,
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.9,
+          "gain": 7.99,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 1.1115330877942142e-11,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.25,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 20,
+              "pos": {
+                "x": 44.71,
+                "y": 18.13
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.85,
+              "type": "tackle",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 47.51,
+                "y": 17.08
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 78
+        },
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.9,
+          "gain": 6.68,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.503331289626658e-12,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.2,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 21,
+              "pos": {
+                "x": 43.99,
+                "y": 17.96
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.85,
+              "type": "tackle",
+              "a": 20,
+              "b": 6,
+              "pos": {
+                "x": 47.03,
+                "y": 16.51
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 78
+        },
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.8,
+          "gain": 3.08,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.4416028894575e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 3.1,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.62,
+                "y": 35.98
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.75,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 42.41,
+                "y": 37.64
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 76
+        },
+        {
+          "id": "useful-climb-opponent",
+          "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+          "terminal": false,
+          "error": null,
+          "t": 3.5,
+          "gain": null,
+          "ending": "explicit-prefix-censor",
+          "maxima": {
+            "workResidual": 5.9392490925347374e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.45,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 31.79,
+                "y": 26.22
+              }
+            },
+            {
+              "t": 3.25,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 21,
+              "pos": {
+                "x": 39.75,
+                "y": 21.91
+              },
+              "note": "grasp"
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 70
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/current-candidate.json.gz",
+      "sha256": "f521215b180f19c4239e3604d8b6c2a229e16a299792fa521b901cf3f3f00f8c",
+      "bytes": 2025923,
+      "source": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "collectorSeconds": 1.554497854,
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4.4,
+          "gain": 7.11,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.73070496506989e-12,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.5,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 18,
+              "pos": {
+                "x": 44.93,
+                "y": 17.93
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 4.35,
+              "type": "tackle",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 47.36,
+                "y": 17.01
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 88
+        },
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4,
+          "gain": 7.23,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 9.35784782996052e-12,
+            "armImpulseExcess": 2.842170943040401e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.2,
+              "type": "missed_tackle",
+              "a": 21,
+              "b": 6,
+              "pos": {
+                "x": 42.87,
+                "y": 15.99
+              },
+              "note": "dive"
+            },
+            {
+              "t": 3.3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 20,
+              "pos": {
+                "x": 44.67,
+                "y": 17.65
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.95,
+              "type": "tackle",
+              "a": 20,
+              "b": 6,
+              "pos": {
+                "x": 47.37,
+                "y": 16.43
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 80
+        },
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.6,
+          "gain": 3.11,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 8.5087492607272e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.16,
+                "y": 35.4
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.55,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 42.69,
+                "y": 37.22
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 72
+        },
+        {
+          "id": "useful-climb-opponent",
+          "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+          "terminal": false,
+          "error": null,
+          "t": 3.5,
+          "gain": null,
+          "ending": "explicit-prefix-censor",
+          "maxima": {
+            "workResidual": 5.9392490925347374e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.45,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 31.79,
+                "y": 26.22
+              }
+            },
+            {
+              "t": 3.25,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 21,
+              "pos": {
+                "x": 39.75,
+                "y": 21.91
+              },
+              "note": "grasp"
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 70
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/current-fresh-baseline.json.gz",
+      "sha256": "cdd30f75fa4275f658640f59994d532dc8fdd9a92fd09432b0b639ecd81aa8b5",
+      "bytes": 156468,
+      "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "collectorSeconds": 0.582322181,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.85,
+          "gain": 3.12,
+          "ending": "tackle",
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.04,
+                "y": 35.35
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.8,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 41.96,
+                "y": 37.53
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 77
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/current-fresh-candidate.json.gz",
+      "sha256": "398eed10f701473921a0b0877824c59c1fe7da3a252ca529ab154062cd6d0524",
+      "bytes": 157292,
+      "source": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "collectorSeconds": 0.626720245,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.85,
+          "gain": 3.31,
+          "ending": "tackle",
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.95,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.02,
+                "y": 35.27
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.8,
+              "type": "tackle",
+              "a": 19,
+              "b": 6,
+              "pos": {
+                "x": 43.52,
+                "y": 39.08
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 77
         }
       ]
     }
@@ -3173,6 +3708,1087 @@
       "finishedAt": "2026-10-17T02:01:16.717Z",
       "inputsUnchanged": true,
       "exitCode": 0
+    },
+    "current-baseline-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T02:13:39.384Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/current-baseline.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.9821909869999996
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:41.369Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "current-candidate-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T02:13:42.441Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/current-candidate.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.023796991
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:44.468Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "current-focused-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T02:13:45.561Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "test/helper-fit.test.ts",
+            "test/combo-attention.test.ts",
+            "test/stretch-anchor-footwork.test.ts",
+            "test/stretch-normal-follow.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.635878123
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:49.201Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "current-fresh-baseline-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T02:13:41.459Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/current-fresh-baseline.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.872943404
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:42.335Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "current-fresh-candidate-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T02:13:44.560Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/current-fresh-candidate.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.902031864
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:45.466Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "current-typecheck-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+      "validationSha256": "1be3bca6f036cda0fefa5347a0c0bb83f57a92a8f290015e078fc1a588ea43c1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T02:13:49.291Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.148778006
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:13:59.442Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
     }
+  },
+  "currentProductionTransfer": {
+    "acceptedCommit": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "codeCommit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+    "acceptedSource": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+    "candidateSource": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+    "reason": "#125 was accepted during investigation. Rechecked same3Ace plus predeclaredfreshconcept and unaffected Duo opposing prefix on currentproduction; no newconcept/roster/front panel.",
+    "focusedPass": 68,
+    "typecheck": "pass",
+    "inputsUnchanged": true,
+    "rows": [
+      {
+        "file": "out/zone-combo-surface/current-baseline.json.gz",
+        "sha256": "b1554374c8923fd0d05d63ad227404fcbb69d1c250d540885320ef3c1920732c",
+        "bytes": 2008248,
+        "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+        "collectorSeconds": 1.450252048,
+        "rows": [
+          {
+            "id": "oz-strong-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.9,
+            "gain": 7.99,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 1.1115330877942142e-11,
+              "armImpulseExcess": 2.1316282072803006e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 24.43
+                }
+              },
+              {
+                "t": 3.25,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 20,
+                "pos": {
+                  "x": 44.71,
+                  "y": 18.13
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.85,
+                "type": "tackle",
+                "a": 18,
+                "b": 6,
+                "pos": {
+                  "x": 47.51,
+                  "y": 17.08
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 78
+          },
+          {
+            "id": "wz-strong-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.9,
+            "gain": 6.68,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 7.503331289626658e-12,
+              "armImpulseExcess": 2.1316282072803006e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 24.43
+                }
+              },
+              {
+                "t": 3.2,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 43.99,
+                  "y": 17.96
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.85,
+                "type": "tackle",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 47.03,
+                  "y": 16.51
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 78
+          },
+          {
+            "id": "wz-weak-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.8,
+            "gain": 3.08,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 7.4416028894575e-12,
+              "armImpulseExcess": 0,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 28.91
+                }
+              },
+              {
+                "t": 3.1,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 41.62,
+                  "y": 35.98
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.75,
+                "type": "tackle",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 42.41,
+                  "y": 37.64
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 76
+          },
+          {
+            "id": "useful-climb-opponent",
+            "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+            "terminal": false,
+            "error": null,
+            "t": 3.5,
+            "gain": null,
+            "ending": "explicit-prefix-censor",
+            "maxima": {
+              "workResidual": 5.9392490925347374e-12,
+              "armImpulseExcess": 0,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.45,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 31.79,
+                  "y": 26.22
+                }
+              },
+              {
+                "t": 3.25,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 39.75,
+                  "y": 21.91
+                },
+                "note": "grasp"
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 70
+          }
+        ]
+      },
+      {
+        "file": "out/zone-combo-surface/current-candidate.json.gz",
+        "sha256": "f521215b180f19c4239e3604d8b6c2a229e16a299792fa521b901cf3f3f00f8c",
+        "bytes": 2025923,
+        "source": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+        "collectorSeconds": 1.554497854,
+        "rows": [
+          {
+            "id": "oz-strong-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 4.4,
+            "gain": 7.11,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 7.73070496506989e-12,
+              "armImpulseExcess": 2.1316282072803006e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 24.43
+                }
+              },
+              {
+                "t": 3.5,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 18,
+                "pos": {
+                  "x": 44.93,
+                  "y": 17.93
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 4.35,
+                "type": "tackle",
+                "a": 18,
+                "b": 6,
+                "pos": {
+                  "x": 47.36,
+                  "y": 17.01
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 88
+          },
+          {
+            "id": "wz-strong-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 4,
+            "gain": 7.23,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 9.35784782996052e-12,
+              "armImpulseExcess": 2.842170943040401e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 24.43
+                }
+              },
+              {
+                "t": 3.2,
+                "type": "missed_tackle",
+                "a": 21,
+                "b": 6,
+                "pos": {
+                  "x": 42.87,
+                  "y": 15.99
+                },
+                "note": "dive"
+              },
+              {
+                "t": 3.3,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 20,
+                "pos": {
+                  "x": 44.67,
+                  "y": 17.65
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.95,
+                "type": "tackle",
+                "a": 20,
+                "b": 6,
+                "pos": {
+                  "x": 47.37,
+                  "y": 16.43
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 80
+          },
+          {
+            "id": "wz-weak-over3",
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.6,
+            "gain": 3.11,
+            "ending": "tackle",
+            "maxima": {
+              "workResidual": 8.5087492607272e-12,
+              "armImpulseExcess": 0,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 28.91
+                }
+              },
+              {
+                "t": 3,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 41.16,
+                  "y": 35.4
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.55,
+                "type": "tackle",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 42.69,
+                  "y": 37.22
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 72
+          },
+          {
+            "id": "useful-climb-opponent",
+            "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+            "terminal": false,
+            "error": null,
+            "t": 3.5,
+            "gain": null,
+            "ending": "explicit-prefix-censor",
+            "maxima": {
+              "workResidual": 5.9392490925347374e-12,
+              "armImpulseExcess": 0,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0
+            },
+            "selectedEvents": [
+              {
+                "t": 1.45,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 31.79,
+                  "y": 26.22
+                }
+              },
+              {
+                "t": 3.25,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 21,
+                "pos": {
+                  "x": 39.75,
+                  "y": 21.91
+                },
+                "note": "grasp"
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 70
+          }
+        ]
+      },
+      {
+        "file": "out/zone-combo-surface/current-fresh-baseline.json.gz",
+        "sha256": "cdd30f75fa4275f658640f59994d532dc8fdd9a92fd09432b0b639ecd81aa8b5",
+        "bytes": 156468,
+        "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+        "collectorSeconds": 0.582322181,
+        "rows": [
+          {
+            "input": {
+              "concept": "oz",
+              "dir": "weak",
+              "look": "over3",
+              "roster": "pair11",
+              "seed": 77,
+              "formation": "ace_12"
+            },
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.85,
+            "gain": 3.12,
+            "ending": "tackle",
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 28.91
+                }
+              },
+              {
+                "t": 3,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 41.04,
+                  "y": 35.35
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.8,
+                "type": "tackle",
+                "a": 15,
+                "b": 6,
+                "pos": {
+                  "x": 41.96,
+                  "y": 37.53
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 77
+          }
+        ]
+      },
+      {
+        "file": "out/zone-combo-surface/current-fresh-candidate.json.gz",
+        "sha256": "398eed10f701473921a0b0877824c59c1fe7da3a252ca529ab154062cd6d0524",
+        "bytes": 157292,
+        "source": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+        "collectorSeconds": 0.626720245,
+        "rows": [
+          {
+            "input": {
+              "concept": "oz",
+              "dir": "weak",
+              "look": "over3",
+              "roster": "pair11",
+              "seed": 77,
+              "formation": "ace_12"
+            },
+            "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+            "terminal": true,
+            "error": null,
+            "t": 3.85,
+            "gain": 3.31,
+            "ending": "tackle",
+            "selectedEvents": [
+              {
+                "t": 1.55,
+                "type": "handoff",
+                "a": 0,
+                "b": 6,
+                "pos": {
+                  "x": 36.34,
+                  "y": 28.91
+                }
+              },
+              {
+                "t": 2.95,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 15,
+                "pos": {
+                  "x": 41.02,
+                  "y": 35.27
+                },
+                "note": "grasp"
+              },
+              {
+                "t": 3.8,
+                "type": "tackle",
+                "a": 19,
+                "b": 6,
+                "pos": {
+                  "x": 43.52,
+                  "y": 39.08
+                }
+              }
+            ],
+            "offensiveTeammateImpactCount": 0,
+            "frameCount": 77
+          }
+        ]
+      }
+    ],
+    "freshFirstMikeGraspSeconds": {
+      "accepted": 3.0,
+      "candidate": 2.95
+    },
+    "usefulDuo": "Frames/events exactly equal accepted versus candidate through explicit3.50secondcensor; no old-endingrequirement."
   }
 }

@@ -5,13 +5,55 @@ Independent review supports conditional adoption in the exact tested cohort,
 it makes the combination's first approach and acquired contact frame
 describe the same installed half-man job. The useful cohort includes #117's
 contact-following/loaded-footwork correction and #122's bounded traffic pace.
-Adoption must assess that exact composition, including the depth costs below.
+Those two prerequisites are now accepted through #125. The current-source check below includes them and the other newly accepted repairs. The historical isolated patch on `d682b1f` is not the proposed adoption target.
 
 Weak WZ now produces sustained lateral first-level work from the combination.
 It still fails to collect Mike before the runner arrives. That remaining miss
 is explicit; final gain is not the adoption criterion.
 
-## Pins, settings and responsibility
+## Current accepted-build check
+
+Integration accepted #125 during this investigation. The branch preserves the
+historical experiment commits, then reconciles accepted `develop`
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30` at runtime/test commit
+`78a2574557d957d81a1c2bd255aff13420aad8fa`. Accepted source is
+`9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941`;
+this candidate is
+`4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4`.
+Only `blocking.ts` differs in the production source. #117/#122 are already in
+that accepted build; the other owners' #118/#120/#121/#123/#124 repairs are
+preserved exactly.
+
+The bounded current-source comparison repeats the same inputs because those
+accepted accounting and defensive changes could affect loaded execution. It
+adds no roster, front or concept beyond the declared screen and fresh transfer.
+
+| Current production → this patch | Gain | Protection finding |
+| --- | ---: | --- |
+| Strong wide zone | 6.68 → 7.23 yd | End/DT stay off runner; RG depth cost remains |
+| Weak wide zone | 3.08 → 3.11 yd | Coherent LG keeper work, C still misses Mike; wrap .10s earlier |
+| Strong outside zone | 7.99 → 7.11 yd | Defensive win and shorter ending retained |
+| Preselected fresh weak outside zone | 3.12 → 3.31 yd | C climb still misses Mike; wrap 3.00 → 2.95s |
+| Useful Duo climb | Both explicitly censored at 3.50s | Opposing prefix retained; patch excludes Duo |
+
+All ten native continuations retain all 22 ordinary reactions and have zero
+offensive teammate impacts. The useful Duo frames/events are exactly unchanged
+through its 3.50s censor. Current-source contact accounting changes some later
+facing histories relative to the old cohort; neither chart nor report claims
+all-body historical equality. Four current native commands cost **5.781s**.
+**68 focused checks and typecheck pass** on this exact source; these repeat
+relevant earlier checks rather than adding 68 unique cases. The current accepted
+build's 1,980 TS/145 Python/typecheck/build receipt belongs to Integration and is
+not represented as a full-suite pass for this candidate.
+
+The chart below remains explicitly source-qualified to the earlier #117+#122
+mechanism comparison. It is not relabeled as an exact current-build trace.
+Current native results and receipts are separately preserved in the summary.
+The original accepted `d682b1f` comparisons and isolated adverse endings remain
+below; fresh weak OZ's old 5.59 yd baseline must not be confused with current
+production's 3.12 yd.
+
+## Historical pins, settings and responsibility
 
 - Accepted base: `d682b1f474cb6ba260a7b8b1119a62919c5a2159`.
 - Candidate runtime/tests: `45106c1b3c0f30cc35bed722931207cbaf9d676d`.
@@ -136,7 +178,7 @@ explained away as random, nor does it alone establish a controller defect.
 
 ## Focused checks and next decision
 
-130 unique focused checks pass on the standalone candidate, plus typecheck.
+130 unique focused checks pass on the historical standalone candidate, plus typecheck.
 The exact cohort passes 68 focused checks: 48 repeated candidate/contracts and
 20 #117 checks. This is **not 198 unique tests** and is not the full integration
 suite. Initial surface, mirrored installation, existing-hand frames and supported
@@ -146,7 +188,9 @@ Expected reds, rejected fixtures and adverse native evidence remain in receipts.
 Most native baselines are reused compatible saved results; only the declared
 fresh input needed a new accepted continuation. No broad roster panel, game
 campaign or shared full suite was run. Integration owns exact combined verification.
-The summary records command costs; rendering this static chart took 1.696298038
+All measured commands including chart generation cost **58.535s**, including
+failed fixtures, repeated checks and passive captures; cached earlier work is
+excluded. The summary records individual command costs. Rendering this static chart took 1.696298038
 command seconds (0.505772191s within the renderer). No film or zip was generated.
 
 To regenerate the chart without ignored traces or simulations:
@@ -157,3 +201,5 @@ explicit #117+#122 cohort, subject to Integration's exact combined verification.
 Preserve the initial-frame contract, visible depth tradeoffs, keeper/climber sequence and
 the still-unprotected Mike route as the next bounded diagnostic; do not infer a
 need for more force, another release timer or a universal weak-side bonus.
+
+[Portable two-file extraction](promotion.patch) · [Reproduction instructions](reproduce/README.md).

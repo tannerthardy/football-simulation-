@@ -3405,5 +3405,16 @@
     "src/sim/behaviors/blocking.ts",
     "test/zone-combo-surface.test.ts"
   ],
-  "promotion": "Conditional exact #117+#122 cohort review only; independent review supports contract repair, second-level protection remains unfinished. Integration owns assembly/full verification."
+  "promotion": "Submit minimal2file patch on accepted70b4db6 with existing117/122 alreadyincorporated. Integrationowns final exactcombinedverification; no standalone claim againstoldd682b1f.",
+  "currentProductionTransfer": {
+    "acceptedCommit": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "codeCommit": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+    "acceptedSource": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+    "candidateSource": "4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4",
+    "reason": "#125 was accepted during investigation. Rechecked same3Ace plus predeclaredfreshconcept and unaffected Duo opposing prefix on currentproduction; no newconcept/roster/front panel.",
+    "focusedPass": 68,
+    "typecheck": "pass",
+    "inputsUnchanged": true,
+    "qualification": "Original acceptedCommit/codeCommit fields describe preserved historical diagnosis. This current pin supersedes only the adoption target, not old evidence provenance."
+  }
 }

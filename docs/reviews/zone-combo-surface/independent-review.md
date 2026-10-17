@@ -1,5 +1,73 @@
 # Independent review: initial stretch-combination surface
 
+## Current accepted-source refresh
+
+**Support the narrow correction against accepted develop
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30`, subject to Integration's exact
+combined verification. No new adoption blocker was found.** The earlier
+#117/#122 prerequisite is now part of accepted production through #125; the
+historical cohort qualification and adverse evidence below remain preserved.
+This refresh does not approve the old isolated intervention on `d682b1f`.
+
+Reviewed reconciled code: `78a2574557d957d81a1c2bd255aff13420aad8fa`.
+Current accepted comparison source:
+`9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941`.
+Current candidate source:
+`4dbe2201f31fc0b114c8aa9f35705fb4fce7350503e97d0770b4a737b5dd97a4`.
+The current baseline/candidate receipts have identical resolved flags and World
+defaults, including all 44 accepted settings, `RUN_CONTACT_COMPONENTS=1` and
+`CF_FLOW` unset. Their initial-state hashes match case by case. All current
+collector, focused-test and typecheck receipts succeed with inputs unchanged.
+
+| Current matched case | Accepted gain | Candidate gain | Relevant protection observation |
+| --- | ---: | ---: | --- |
+| Strong wide zone | 6.68 yd | 7.23 yd | RG's two-second upfield position still decreases 2.13 yd; DT_S remains loaded with no recorded runner wrap/hit/tackle. |
+| Weak wide zone | 3.08 yd | 3.11 yd | LG carries 649 kg·yd/s² at two seconds; Mike's first wrap is earlier, 3.10 to 3.00 s. |
+| Strong outside zone | 7.99 yd | 7.11 yd | Shorter ending remains visible; no recorded DL runner wrap/hit/tackle. |
+| Preselected fresh outside zone weak | 3.12 yd | 3.31 yd | Mike's first wrap is earlier, 3.00 to 2.95 s; C's climb still fails to establish collection. |
+| Useful Duo opposing control | 3.50 s prefix, no terminal gain | Same | All recorded body frames and events are exactly unchanged between the current arms through the explicit censor. |
+
+The current fresh baseline is **3.12 yards**, not the older isolated-build
+result. All recorded impact lists are empty in these current pairs. The full
+Ace/fresh continuations contain no recorded DL wrap/hit/tackle on the runner
+in either arm. Those observations preserve useful first-level work but do not
+make earlier Mike access or the RG depth sacrifice improvements. Weak second-
+level protection remains the specific unfinished task.
+
+### Historical-cohort compatibility is qualified, not exact
+
+The current results reproduce the three cohort final gains and the opening
+mechanism, but strict old-to-current body equality fails. The first differences
+include meaningful late facing changes, not only floating-point translation:
+baseline strong WZ's SS facing differs by up to **0.459889 rad** beginning at
+3.30 s; baseline OZ first differs at 3.35 s in FS facing, and baseline weak WZ
+at 3.20 s in Mike facing. These follow the saved first runner-contact events,
+outside the initial combination/protection window under review.
+
+| Old cohort to current | First changed position or velocity | Maximum absolute position-coordinate difference |
+| --- | --- | ---: |
+| Baseline strong OZ | 3.45 s, RB | 0.000092492 yd |
+| Baseline strong WZ | 3.40 s, RB | 0.000030088 yd |
+| Baseline weak WZ | None | 0 yd; later facing differs |
+| Candidate strong OZ | 4.15 s, RB | 0.000002028 yd |
+| Candidate strong WZ | 3.45 s, RB | 0.000077126 yd |
+| Candidate weak WZ | 3.15 s, RB | 0.000040480 yd |
+
+Thus the current paired evidence supports the same contract recommendation;
+it does not turn the historical film or receipt into an exact current-source
+replay. Preserve its source label. No newly observed opening interaction
+requires another native experiment before Integration's combined check.
+
+Current evidence is saved in
+`out/zone-combo-surface/current-{baseline,candidate}.json.gz` and
+`current-fresh-{baseline,candidate}.json.gz`, with their corresponding
+`*-receipt.json` files. The author supplied **68 focused passing checks and a
+passing typecheck** on the reconciled candidate. This independent refresh only
+read those receipts and saved continuations; it ran no additional simulations
+or tests and changed no source or assertions.
+
+## Historical cohort review, preserved
+
 **Support the narrow correction for Integration's explicitly tested #117 + #122
 cohort. Do not promote it as a standalone correction or claim weak wide zone is
 solved.** Integration retains ownership of exact combined verification and

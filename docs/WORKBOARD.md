@@ -19,6 +19,23 @@ promising. Fresh concept transfer preselected: OZ weak Over3, same pair11/seed77
 Ace12 under center, box/stack, LOS40/Y26.67. Reuse compatible saved baselines;
 no replaced adverse case, broad census or games. Integration owns full suite.
 
+Outcome/checkpoint: runtime/test45106c1 repairs the incompatible half-man
+approach/initial contact reference; no old-hand frame rewrite or other controller
+change. Historical candidate-alone adverse cases remain. Independent review
+supports the explicitly tested117+122 cohort, not an old-base standalone promotion.
+After125 adopted70b4db6, reconciled at78a2574 and repeated only same3Ace,
+predeclaredOZweak and usefulDuo opposing prefix:68focused/typecheck pass,
+zero offensive teammate impacts. Exact current source4dbe220; all other runtime
+files equal70b4db6. Weak first-levelLG work improves but C still missesMike,
+wrap3.10→3.00; strongRG loses2.132yd depth while gaining.796yd lateral.
+Fresh current OZweak3.12→3.31 is not a collection rescue; Mike wraps
+3.00→2.95. The usefulDuo opposing prefix is exactly unchanged through3.50s. Total measuredcommands
+including chart58.535s; current natives5.781s. Integration owns final exact
+combined suite/adoption. Portable2file scope, independent review, flags/inputs,
+old/new sources and adverse outcomes: [review](reviews/zone-combo-surface/README.md).
+Keep116/119 and physics experiments separate; next blocker is useful second-level
+access from the coherent new keeper/climber sequence, not another blind exit tweak.
+
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
