@@ -1,18 +1,19 @@
-/** Explicit perimeter development runner. Default plans zero snaps. */
+/** Passive all22 puller diagnosis. Default plans zero snaps; prototypes require their explicit installation. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {execFileSync} from 'node:child_process';
+import {RUN_BY_ID} from '../../src/playbook/concepts.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.ts';
 import {sourceVersion} from '../source-version.ts';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
-const [mode='plan',out='out/perimeter-runs',ids='B01,P01,C01',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz']=process.argv.slice(2);
+const [mode='plan',out='out/perimeter-runs',ids='K01,K02',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz']=process.argv.slice(2);
 if(mode==='plan'){ console.log(JSON.stringify({question:'Puller route progress and acquired collection; no snaps without explicit run mode',inputs:inputPath,simulatedSnaps:0}));process.exit(0); }
 assert.equal(mode,'run');const bytes=readFileSync(inputPath),manifest=JSON.parse(inputPath.endsWith('.gz')?gunzipSync(bytes):bytes),until=Number(untilText);
 assert(until>0&&until<=5);const selected=ids.split(',').map(id=>{const r=manifest.rows.find(r=>r.id===id);assert(r,`Missing frozen case ${id}`);return r;});
-assert(selected.length<=6);const rows=[],started=performance.now();
+assert(selected.length<=6);for(const input of selected)assert(RUN_BY_ID[input.call]?.scheme===input.setup.offCall.run.scheme,`Missing concept installation for ${input.id}/${input.call}; zero snaps`);const rows=[],started=performance.now();
 const snapshot=a=>structuredClone(a.body);
 const plan=a=>a.behavior instanceof RunBlocker?{kind:a.behavior.plan.kind,target:a.behavior.target?.idx??null,drive:a.behavior.plan.drive,
  pullRole:a.behavior.plan.pullRole??null,pullPath:structuredClone(a.behavior.plan.pullPath??null),pullIdx:a.behavior.pullIdx,
@@ -39,7 +40,7 @@ for(const input of selected){
  };
  const start=performance.now();while(sim.phase==='live'&&sim.t<until){assert(performance.now()-start<5000,'Case wall budget');sim.tick();}
  const result=sim.buildResult(),summary={id:input.id,inputSha256:input.inputSha256,source:sourceVersion(),elapsedSeconds:(performance.now()-start)/1000,
-  phase:sim.phase,endTime:sim.t,censor:sim.phase==='live'?`live at${sim.t}`:'native ending',outcome:result.outcome,
+  phase:sim.phase,endTime:sim.t,censor:sim.phase==='live'?`live at${sim.t}`:'native ending',outcome:sim.phase==='live'?null:result.outcome,
   gain:sim.phase==='live'?null:result.offenseYards,firstContact:sim.events.find(e=>e.type==='carrier_contact')??null,
   installed:initial.filter(a=>a.plan).map(a=>({slot:a.slot,...a.plan})),events:sim.events};
  rows.push({...summary,initial,frames,cues,calls,result});console.log(JSON.stringify(summary));

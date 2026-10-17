@@ -847,10 +847,10 @@ export class RunBlocker implements Behavior {
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
-          // A wrapper collects its acquired backer once the flat pull is
-          // achieved behind the observed wall. The upfield snap waypoint is
-          // an installation landmark, not another stop before interception.
-          const fit = plan.pullRole === 'lead' ? this.pullIdx >= 2 || distance < 1.2
+          // The wrapper's existing near-target transition uses the same
+          // acquired picture as its eventual approach, not private live
+          // distance. Preserve the installed track and normal clearance.
+          const fit = plan.pullRole === 'lead' ? distance < 1.2
             : approachingDepth < sim.los || distance < 1.2;
           if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
@@ -985,7 +985,7 @@ export class RunBlocker implements Behavior {
     let target = plan.target;
     // A named wrapper job cannot disappear because of the target's private
     // live contact. Approach and unavailability use its acquired picture.
-    if (plan.kind === 'pull' && plan.pullRole === 'lead') return target;
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
