@@ -88,6 +88,8 @@ must be shared, publish them outside the source tree. Do not force-add ignored
 generated files. Existing history still occupies disk; shrinking that history
 would require a separate owner-approved migration.
 
+The newer [four-game checkpoint and audit handoff](../docs/reviews/accepted-game-checkpoint-2026-10-16.md) records accepted `70b4db6`: 559 full-telemetry snaps, 27,784 frames, fixed seeds 701–704. [Download its complete saved data](https://github.com/tannerthardy/football-simulation-/tree/b9b9c17597970ddc87aa4a4e271fc4cfeef71909); hashes and individual links are in [the artifact record](reviews/current/game-checkpoint-artifacts.json). This is a dedicated orphan evidence root outside development ancestry; never merge it into develop. All remote bytes were independently fetched and SHA256-verified. Capped football endings remain unknown and two-point film gaps remain explicit.
+
 The current random play audit is [here](reviews/current/random-play-review.json).
 It uses saved native light frames and records what was observable, not invented
 mental states. Small reference extracts remain under `data/reviews/`; the old

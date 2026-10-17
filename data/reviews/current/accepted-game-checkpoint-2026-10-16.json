@@ -1099,12 +1099,15 @@
   },
   "retention": {
     "local": "/workspace/football-game-audit/out/accepted-game-checkpoint-2026-10-16",
-    "archiveTag": "evidence-accepted-games-70b4db6-2026-10-16",
-    "kind": "Local verified archives; GitHub asset upload blocked HTTP401. No remote raw/film asset is currently published.",
-    "rawAndFullFilm": "Five named archives at /workspace/football-game-audit/out/accepted-game-checkpoint-assets; hashes in game-checkpoint-artifacts.json.",
-    "redundantRecoveryPrefixes": "Both append-only prefixes and full raw gzip retained in named archives for exact independent verification.",
-    "noAutomaticExpiration": "Keep local data and archives until verified remote retention is established; local workspace lifetime is not guaranteed.",
-    "nextAction": "Upload preserved archives using an upload-capable GitHub session; do not recollect."
+    "kind": "Published data-only orphan evidence root, independently fetched and SHA256-verified.",
+    "evidenceBranch": "codex/accepted-games-70b4db6-evidence-v1",
+    "evidenceCommit": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+    "treeUrl": "https://github.com/tannerthardy/football-simulation-/tree/b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+    "downloadAllZip": "https://github.com/tannerthardy/football-simulation-/archive/b9b9c17597970ddc87aa4a4e271fc4cfeef71909.zip",
+    "rawAndFullFilm": "Five named archives preserve every full film, raw gzip, append-only recovery prefix, observation, input, script and shared audit panel; hashes/downloads in game-checkpoint-artifacts.json.",
+    "noAutomaticExpiration": "Retain the evidence branch and immutable commit until explicit owner cleanup. Never merge into simulator development ancestry.",
+    "nextAction": "Download, verify and audit saved data; no games or shared suite rerun.",
+    "previousReleaseUploadIssue": "HTTP401 at uploads.github.com; resolved for this dataset through authenticated Git publication."
   },
   "limitations": [
     "Four frozen generated-roster games are diagnostic exposure, not a population estimate or untouched validation set.",

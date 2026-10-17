@@ -51,14 +51,30 @@ Every owner uses the same stable G1–G4/Pxxx IDs. Review assignment → acquire
 
 ## Retrieval and limits
 
-Local entry point: `out/accepted-game-checkpoint-2026-10-16/index.html`. It links four standalone full-telemetry films plus `report/play-index.{json,csv}` and `report/audit-panel.json`. Raw native results are `accepted/<fixture>/game.json.gz`. The published CSV preserves film paths relative to the saved `report/` directory. Large outputs stay outside git. All five local archives (about 309 MB) are verified, with hashes and retention in [the artifact record](../../data/reviews/current/game-checkpoint-artifacts.json). **Remote raw/film publication is blocked:** `uploads.github.com` returned HTTP401 “Bad credentials”, although repository/PR/metadata access works. Zero assets were uploaded; the empty draft release was removed. The films, raw data, prefixes and archives remain intact locally. An upload-capable owner can publish these exact archives under reserved tag `evidence-accepted-games-70b4db6-2026-10-16`; do not rerun games to solve an upload failure. Local workspace lifetime is not guaranteed.
+**[All evidence on GitHub](https://github.com/tannerthardy/football-simulation-/tree/b9b9c17597970ddc87aa4a4e271fc4cfeef71909) · [Download the complete evidence ZIP](https://github.com/tannerthardy/football-simulation-/archive/b9b9c17597970ddc87aa4a4e271fc4cfeef71909.zip).** This immutable data-only root contains the five archives plus README, receipt and SHA256SUMS. All eight files were fetched into a separate repository and their sizes/SHA256 digests matched. The five archives total 309,367,797 bytes. The four original game-archive hashes are unchanged; only the small audit packet's publication notes were updated.
+
+The repository already uses orphan evidence branches. This fallback keeps generated data outside simulator development ancestry and adds about 309 MB to repository storage. **Never merge `codex/accepted-games-70b4db6-evidence-v1` into `develop`.** Keep this exact commit and its branch until an explicit owner cleanup decision. Release uploads returned HTTP401; normal authenticated Git publication succeeded, so no credential change or new simulation is needed for access to this cohort.
+
+The [artifact record](../../data/reviews/current/game-checkpoint-artifacts.json) contains individual immutable downloads, hashes and remote verification. Local files also remain at `out/accepted-game-checkpoint-2026-10-16`. The published CSV's film paths are relative to the saved `report/` directory.
+
+Download the ZIP and extract it, or fetch only this evidence branch in a separate directory:
 
 ```sh
-# Current local saved-data report; no engine execution.
-node scripts/accepted-game-audit-report.mjs out/accepted-game-checkpoint-2026-10-16
-# After verified remote upload, download the five archives and extract together:
-gh release download evidence-accepted-games-70b4db6-2026-10-16 \
-  --repo tannerthardy/football-simulation- --dir out/game-checkpoint-download
+git clone --depth 1 --single-branch \
+  --branch codex/accepted-games-70b4db6-evidence-v1 \
+  https://github.com/tannerthardy/football-simulation-.git football-game-evidence
+cd football-game-evidence
+git rev-parse HEAD
+# Expected: b9b9c17597970ddc87aa4a4e271fc4cfeef71909
+sha256sum -c SHA256SUMS
+mkdir -p extracted
+for archive in accepted-games-*.tar.gz; do tar -xzf "$archive" -C extracted; done
+# Open extracted/index.html for four standalone full-telemetry films.
+# Raw files: extracted/accepted/<fixture>/game.json.gz
+# Full play index and the 48 ordinary / 12 tail panel: extracted/report/
+# Optional saved-data reporting; no engine execution:
+cd extracted
+node evidence/accepted-game-audit-report.mjs .
 ```
 
 Frame cadence is 0.1 seconds and positions are rounded to 0.1 yard. Full numeric telemetry is sampled/rounded; last-step contacts are not the complete force history. Facing is not gaze; final intents cannot reconstruct unrecorded stages. Two-point native film is absent in the current Game path. Four generated-roster games cannot establish population defect rates, and whole-game calls/condition/RNG diverge from historical builds. These are not paired historical patch comparisons. Native capped ends have unknown football outcomes.

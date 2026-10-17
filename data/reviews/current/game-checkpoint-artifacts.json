@@ -1,45 +1,49 @@
 {
   "schema": "accepted-game-evidence-artifacts-v1",
-  "status": "Archive-verified locally; GitHub release-asset publication blocked by HTTP401 at uploads.github.com. No assets were uploaded.",
-  "releaseTag": "evidence-accepted-games-70b4db6-2026-10-16",
+  "status": "Published on GitHub and independently read-back verified: all eight remote file sizes and SHA256 digests match.",
   "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
   "repository": "tannerthardy/football-simulation-",
   "createdAt": "2026-10-17T03:25:53.152237+00:00",
-  "kind": "draft evidence release; no engine/reference promotion",
-  "retention": "All five archives and their SHA256SUMS are preserved under /workspace/football-game-audit/out/accepted-game-checkpoint-assets. Raw/uncompressed files remain under out/accepted-game-checkpoint-2026-10-16. Local workspace lifetime is not guaranteed; remote upload is unresolved.",
-  "retrieval": "Local archives now; the named release download command becomes valid only after successful upload.",
+  "kind": "Data-only orphan evidence root; never merge into simulator development ancestry.",
+  "retention": "Retain this evidence branch and immutable commit until an explicit owner cleanup decision. Data is outside develop ancestry; this publication adds about 309 MB of repository object storage. Release/CI artifact storage remains preferable for future cohorts when upload access is available.",
+  "retrieval": "git clone --depth 1 --single-branch --branch codex/accepted-games-70b4db6-evidence-v1 https://github.com/tannerthardy/football-simulation-.git football-game-evidence; verify HEAD equals b9b9c17597970ddc87aa4a4e271fc4cfeef71909, then SHA256SUMS before extraction.",
   "extraction": "Extract all five archives into one directory, then open index.html. Raw data, full films, recovery prefixes, manifests, collector/report sources and shared panel are included.",
-  "totalArchiveBytes": 309367846,
+  "totalArchiveBytes": 309367797,
   "artifacts": [
     {
       "name": "accepted-games-G1-zone-reference.tar.gz",
       "bytes": 79620439,
       "sha256": "32f521bb60cb9a0a4b755b1cffc25898a0c44c409d717897c8aed46644d14c8e",
-      "members": 7
+      "members": 7,
+      "downloadUrl": "https://github.com/tannerthardy/football-simulation-/raw/b9b9c17597970ddc87aa4a4e271fc4cfeef71909/accepted-games-G1-zone-reference.tar.gz"
     },
     {
       "name": "accepted-games-G2-spread-air.tar.gz",
       "bytes": 72716894,
       "sha256": "53e8e9e3358c04cd369578991dd1f6d68848ab64dc65940c6843901cf3694123",
-      "members": 7
+      "members": 7,
+      "downloadUrl": "https://github.com/tannerthardy/football-simulation-/raw/b9b9c17597970ddc87aa4a4e271fc4cfeef71909/accepted-games-G2-spread-air.tar.gz"
     },
     {
       "name": "accepted-games-G3-power-zone.tar.gz",
       "bytes": 75519458,
       "sha256": "949eca941632f77ce3aa479c876630cf11ee7ea1054cc84dac6f46205bbdc0ec",
-      "members": 7
+      "members": 7,
+      "downloadUrl": "https://github.com/tannerthardy/football-simulation-/raw/b9b9c17597970ddc87aa4a4e271fc4cfeef71909/accepted-games-G3-power-zone.tar.gz"
     },
     {
       "name": "accepted-games-G4-west-spread.tar.gz",
       "bytes": 81062426,
       "sha256": "55f0276df7fc9f2bd326c2245fa9c44c6da65b50c22e08a1b3ebc02135457166",
-      "members": 7
+      "members": 7,
+      "downloadUrl": "https://github.com/tannerthardy/football-simulation-/raw/b9b9c17597970ddc87aa4a4e271fc4cfeef71909/accepted-games-G4-west-spread.tar.gz"
     },
     {
       "name": "accepted-games-audit-packet.tar.gz",
-      "bytes": 448629,
-      "sha256": "d06bf2c711658dd9fe04fcae120e812bfbad7bd47528ad6ddbd54d47baf9db7c",
-      "members": 26
+      "bytes": 448580,
+      "sha256": "7d1c7cba970752b2176ff6ca38737a56180c50f1a2b339582464bd21ff967b16",
+      "members": 26,
+      "downloadUrl": "https://github.com/tannerthardy/football-simulation-/raw/b9b9c17597970ddc87aa4a4e271fc4cfeef71909/accepted-games-audit-packet.tar.gz"
     }
   ],
   "uploadFailure": {
@@ -50,7 +54,73 @@
     "attempts": "One batch upload plus one small SHA256SUMS diagnostic; no simulation rerun.",
     "assetsUploaded": 0,
     "emptyDraftRelease": "Created without assets; removed as empty task scaffolding.",
-    "nextAction": "Use existing local archives with an upload-capable GitHub session. Preserve data; do not rerun games."
+    "nextAction": "Resolved for this dataset: use immutable evidence-branch downloads. No new games needed.",
+    "resolvedBy": "Normal authenticated Git publication to the existing repository evidence-branch pattern at b9b9c17597970ddc87aa4a4e271fc4cfeef71909; release-asset endpoint remains unavailable.",
+    "apiHostDiagnostic": "POST to api.github.com release-assets route returned404; removed empty draft."
   },
-  "verification": "All archive paths/streams validated; per-game archives preserve exact frozen data. Audit packet refreshed only for truthful remote-upload status."
+  "verification": "Fresh authenticated depth1 fetch into a separate bare repository with fsckObjects=true and no alternates; stream-hashed every remote blob. Independent metadata review confirms zero-parent root and complete archive inventory.",
+  "evidenceBranch": "codex/accepted-games-70b4db6-evidence-v1",
+  "evidenceCommit": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "treeUrl": "https://github.com/tannerthardy/football-simulation-/tree/b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "downloadAllZip": "https://github.com/tannerthardy/football-simulation-/archive/b9b9c17597970ddc87aa4a4e271fc4cfeef71909.zip",
+  "remoteVerification": {
+    "commit": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+    "tree": "fb73af3c8c4be63f2e30ad4a711e16e453723320",
+    "branch": "codex/accepted-games-70b4db6-evidence-v1",
+    "status": "Pushed and independently fetched from GitHub; all eight file sizes and SHA256 digests match.",
+    "verifiedAt": "2026-10-17T03:38:26.742757+00:00",
+    "verificationRepository": "out/accepted-game-checkpoint-remote-verification.git",
+    "verificationMethod": "Fresh authenticated depth1 fetch with fsckObjects=true and no alternates, then streaming SHA256 of every remote blob.",
+    "files": [
+      {
+        "name": "accepted-games-G1-zone-reference.tar.gz",
+        "bytes": 79620439,
+        "sha256": "32f521bb60cb9a0a4b755b1cffc25898a0c44c409d717897c8aed46644d14c8e",
+        "matches": true
+      },
+      {
+        "name": "accepted-games-G2-spread-air.tar.gz",
+        "bytes": 72716894,
+        "sha256": "53e8e9e3358c04cd369578991dd1f6d68848ab64dc65940c6843901cf3694123",
+        "matches": true
+      },
+      {
+        "name": "accepted-games-G3-power-zone.tar.gz",
+        "bytes": 75519458,
+        "sha256": "949eca941632f77ce3aa479c876630cf11ee7ea1054cc84dac6f46205bbdc0ec",
+        "matches": true
+      },
+      {
+        "name": "accepted-games-G4-west-spread.tar.gz",
+        "bytes": 81062426,
+        "sha256": "55f0276df7fc9f2bd326c2245fa9c44c6da65b50c22e08a1b3ebc02135457166",
+        "matches": true
+      },
+      {
+        "name": "accepted-games-audit-packet.tar.gz",
+        "bytes": 448580,
+        "sha256": "7d1c7cba970752b2176ff6ca38737a56180c50f1a2b339582464bd21ff967b16",
+        "matches": true
+      },
+      {
+        "name": "README.md",
+        "bytes": 2143,
+        "sha256": "9d22bfcbbd503d0d6fe293715460159b96a6e4a3c1f770a51240b1624b4fa12d",
+        "matches": true
+      },
+      {
+        "name": "receipt.json",
+        "bytes": 2312,
+        "sha256": "14da49839d27731ae8e1081abe2d8c312d59c3bc9a991d541cf07096dbe0d500",
+        "matches": true
+      },
+      {
+        "name": "SHA256SUMS",
+        "bytes": 514,
+        "sha256": "b9cef2cf8a86a9bc5628ef08078dee5bac1c5936df597d84e9453f53f3599401",
+        "matches": true
+      }
+    ],
+    "treeUrl": "https://github.com/tannerthardy/football-simulation-/tree/b9b9c17597970ddc87aa4a4e271fc4cfeef71909"
+  }
 }
