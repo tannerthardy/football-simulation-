@@ -2,6 +2,8 @@
 
 ## Puller coordination continuation — 2026-10-17 UTC
 
+Checkpoint: joint Counter count and cleared-kick fit have focused support; 59 contracts pass. A distinct held perimeter experiment accounts for near support and valid pin direction, with actual PinPull C/Sam protection and retained early-end/traffic failures. Reactive wrapper arcs, lead/force forecast promotion and PULL_STEP remain out. Next: exact minimal Counter extraction on accepted develop; do not promote the prototype host or claim the second wrapper collection is fixed. Shared movement/spacing/Physics remain untouched.
+
 Run owns codex/puller-coordination, started from accepted0000e560e0dbe31905151465152d412ba838803d / canonicalqueueaa9ed35272cc334ce0a7c79eec709970e5c628fc. #140/e9f56e3 remains frozen for independent information review. Explicit research dependencies: extracted140 acquired wrapper contract, held99 explicit concepts, isolated achieved-corner correction; automatic calling stays held.
 Boundary: planRunBlocking gap second-level ledger, perimeterInstallation job/route contracts, RunBlocker acquired pull/strike transitions. Do-It-All retains shared movement/spacing/carrier and unrelated collection; no Physics/capacity/roster/grip/contact-law changes. Before expanding another owner’s file, coordinate on workboard/PR.
 Next question: jointly allocate immediate free/wrapper jobs before conditional combination climbs, using installed approach landmarks rather than pulling players’ original stance. Preserve down/edge work, free-climber access and defensive counters. Then diagnose execution of coherent jobs across B01/P01/C01/K01 with P02/C02/K02 opposing controls; no games or gain target. Reuse140 saved evidence where source/input/measurement contracts remain compatible.
