@@ -1,0 +1,484 @@
+{
+  "disposition": "Both departure alternatives parked; zero production runtime difference in final research publication. Review initial acquired combination surface/helper recovery before another route trial.",
+  "acceptedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "heldForecastTrial": "9099d19b2cdc1e4a3326c892fe197c050d5e2857",
+  "sources": {
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "heldForecast": "c639a7ef432b702a112d72ef2cf00b65dea6b7abe6780024f594a57b1d119eb1"
+  },
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "input": {
+    "formation": "ace_12",
+    "concept": "wideZone",
+    "direction": "weak",
+    "look": "base43/over/cover3",
+    "runPolicy": {
+      "edge": "box",
+      "linebacker": "stack"
+    },
+    "roster": "pair11",
+    "offenseSeed": 11,
+    "defenseSeed": 12,
+    "strength": 0.55,
+    "playSeed": 77,
+    "los": 40,
+    "ballY": 26.67,
+    "firstDownX": 50,
+    "down": 1,
+    "audibles": false,
+    "hurry": false
+  },
+  "initialization": "Replay from snap; all22 ordinary reactions. Frozen setup export exactly matches all22 initial bodies/profiles. Do not resume a selected frame without its observer/mind/controller history.",
+  "setup": {
+    "path": "ace-weak-over3.setup.json.gz",
+    "bytes": 6028,
+    "sha256": "d0924ac559b25f6a00a5ba31fb2b3f0d9b009c6cddcd23de66d3dcbdafd127c5",
+    "exportSimulationTicks": 0
+  },
+  "arms": [
+    {
+      "mode": "baseline",
+      "changes": "none; passive wrapper; exactly matches compatible accepted cached histories",
+      "gain": 5.34,
+      "MikeContact": 2.8,
+      "usefulLGMikeLoad": false
+    },
+    {
+      "mode": "through",
+      "changes": "only LG departure requested velocity traverses same acquired exit via runThrough; all other fields/spacing/cadence/contact/reactions retained",
+      "gain": 5.24,
+      "MikeContact": 2.8,
+      "usefulLGMikeLoad": false,
+      "disposition": "rejected as protection repair"
+    },
+    {
+      "mode": "forecast",
+      "changes": "climbRoute corridor/shoulder destination uses existing acquired moving interception forecast; original keeper/cue/release time1.10 retained; ordinary movement/spacing",
+      "gain": 5.35,
+      "MikeContact": 2.8,
+      "usefulLGMikeLoad": false,
+      "disposition": "parked; improved access without protection"
+    }
+  ],
+  "identity": {
+    "baseline": "all22 pos/vel/facing and complete length exactly equal saved accepted",
+    "forecastModifier": "all22 complete histories exactly equal original forecast native",
+    "acceptedOpening": "all22 prefix through1.15 exactly equal accepted"
+  },
+  "trafficAtController2_50": {
+    "raw": {
+      "x": -0.07513761498456795,
+      "y": 7.328268765617297
+    },
+    "final": {
+      "x": -0.5144706334881917,
+      "y": 4.064665122714544
+    },
+    "mechanism": "exact radial closing-budget projection against acquired loadedLT; not half-speed gather",
+    "rawLTPreviewClearance": -0.25782412295282614,
+    "finalLTPreviewClearance": 0.07442409265881711,
+    "qualification": "held-command own-body free preview against acquired constantvelocity LT; not proof every alternative route impossible"
+  },
+  "earlierOpeningQuestion": {
+    "controllerTime": 0.75,
+    "source": "helperFit recovery via helperIntents; spacing copies unchanged",
+    "command": {
+      "x": -2.1494743898686295,
+      "y": -2.5644926954332883
+    },
+    "axis": {
+      "x": -0.485642931178632,
+      "y": -0.8741572761215376
+    },
+    "explicitSurfaceAxis": false,
+    "stretchClassification": false,
+    "unresolved": "Choose compatible initial approach and RunContactSurface before first hands; do not rotate loaded rep or weaken useful/far-side recovery checks. A vertical axis is not prescribed universally.",
+    "demonstrated": "Authored playside helper half-man offset lies in forbidden half-plane of fallback -drive for WZ and OZ reach drive. Approach/recovery semantics disagree; replacement installation remains unresolved."
+  },
+  "nativeExecutions": 4,
+  "nativePrefixes": 1,
+  "cost": {
+    "commandSeconds": 4.283060181,
+    "includes": "two alternative native executions, one passive baseline identity check, one passive forecast modifier replay, one accepted opening prefix, frozen traffic analysis and zero-tick input export",
+    "fullSuites": 0,
+    "newGames": 0,
+    "newOpposingControls": "not expanded; neither alternative established protection"
+  },
+  "receipts": [
+    {
+      "path": "receipts/baseline.json",
+      "sha256": "0b1f76b806bef35dc136898d07d6f734d73e002b4c5d6c7e0da3ee6173992cd7",
+      "commandSeconds": 0.807004837,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "commit": "13dfe18a8214879f24034e3c4732a844a2664cb4",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/through.json",
+      "sha256": "99e67db1654734acec51bafca4d7c4dd580aeffb311ff3b9e4d553a248827fe0",
+      "commandSeconds": 0.787805852,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "commit": "13dfe18a8214879f24034e3c4732a844a2664cb4",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/forecast.json",
+      "sha256": "48dec8679961cd57c8d1fe2017e6e6ab23643e180fddf3c40f41a9966f97d74d",
+      "commandSeconds": 0.963805611,
+      "source": "c639a7ef432b702a112d72ef2cf00b65dea6b7abe6780024f594a57b1d119eb1",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/modifier.json",
+      "sha256": "399641bc27c35194aee3fd9866c1c979fbb213e776874a469b3d2fc8758e707e",
+      "commandSeconds": 0.758780845,
+      "source": "c639a7ef432b702a112d72ef2cf00b65dea6b7abe6780024f594a57b1d119eb1",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/traffic-check.json",
+      "sha256": "3dc5573093d3e97bc7ad40e2542d4f6c5b58de69f611bb9b289391401cafdbd6",
+      "commandSeconds": 0.22535026,
+      "source": "c639a7ef432b702a112d72ef2cf00b65dea6b7abe6780024f594a57b1d119eb1",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/opening.json",
+      "sha256": "c48bae40cf4840da8de48868000c947680abaca8293f432d5ac4b9d76423c5be",
+      "commandSeconds": 0.44289191600000005,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "commit": "9099d19b2cdc1e4a3326c892fe197c050d5e2857",
+      "exitCode": 0
+    },
+    {
+      "path": "receipts/freeze-input.json",
+      "sha256": "4419d2e62595fec27fb39f01d481da7b2f69914ec4b56132fc2b28eeb65fc9a5",
+      "commandSeconds": 0.29742086,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "commit": "9099d19b2cdc1e4a3326c892fe197c050d5e2857",
+      "exitCode": 0
+    }
+  ],
+  "outputs": [
+    {
+      "path": "out/weak-departure/baseline.json.gz",
+      "bytes": 322114,
+      "sha256": "a3edd70cdbd6e06b8913abd3c4f0ef1d28923d94ff4e0732509ce81cdd3cc951"
+    },
+    {
+      "path": "out/weak-departure/through.json.gz",
+      "bytes": 321819,
+      "sha256": "04b17d1c2244f393d7bdeaa433ca1331eea7860a6379b9d98cbfde7eefb151a2"
+    },
+    {
+      "path": "out/weak-departure/forecast.json.gz",
+      "bytes": 315726,
+      "sha256": "5f0030924bb92ecd320962cb0882132d3e68089bc7849fdbe155ae134aca234e"
+    },
+    {
+      "path": "out/weak-departure/modifier.json.gz",
+      "bytes": 12302,
+      "sha256": "c3b811ad1dc62c0bcfbce696700e79bed1a90367f6e3593b3b13b3c026f43a01"
+    },
+    {
+      "path": "out/weak-departure/opening.json.gz",
+      "bytes": 25307,
+      "sha256": "298178e4a5a3e31cf1a733d2c5a33dcc901f23f503bd83c5f23bd2e2315c0812"
+    },
+    {
+      "path": "out/weak-departure/traffic-check.json",
+      "bytes": 3882,
+      "sha256": "7cba6ce3202770f1c07a622422538490fa123a5a2dc7ea7cd4e1c73012460e69"
+    }
+  ],
+  "archiveSources": [
+    {
+      "path": "reproduce/forecast-exit.ts",
+      "sha256": "eaca2979f7284bde46247b3796c70b78b2751f3c40fb109d1b55ecaf62460aea"
+    },
+    {
+      "path": "reproduce/freeze-input.ts",
+      "sha256": "7f8db365d5314f38d84ecabcd952ac572bd590fa716333083d16b3e746c75073"
+    },
+    {
+      "path": "reproduce/modifier.ts",
+      "sha256": "76cccb77e8355b1062340e0c14f0157757a43413520e3279e75f54b083b0a9a8"
+    },
+    {
+      "path": "reproduce/opening.ts",
+      "sha256": "ecb298dd1e19a20b0bbc7a54b5c3943fcb02fba759d3b9b512f944a9b6757cc9"
+    },
+    {
+      "path": "reproduce/through-exit.ts",
+      "sha256": "da156c63e2ac2669574e3efc23b9bbc20499c069976da03ccbaad6bfba697543"
+    },
+    {
+      "path": "reproduce/traffic-check.ts",
+      "sha256": "b0f000bbebb1d72f5a8db0e5a7fce7ed929b830d3c9acbbab397e8cdbd4424fe"
+    }
+  ],
+  "separateCandidates": [
+    "PR122 pace",
+    "PR117 loaded normal/anchor",
+    "PR119 moving-blocker runner read",
+    "PR116 solo runoff"
+  ],
+  "nextDecision": "Review initial combo surface/helper landmark with Do-It-All/Integration; no new exit variant or spacing bypass. Physics law/capacities unchanged.",
+  "distinctFrozenTrafficCommands": 2,
+  "frozenTrafficPreviewEvaluations": 4,
+  "approachRecoveryWitness": [
+    {
+      "concept": "wideZone",
+      "k": 1.8,
+      "playSideSign": -1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.4856429311786321,
+        "y": 0.8741572761215378
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": 0.650761527779367,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "wideZone",
+      "k": 1.8,
+      "playSideSign": -1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.4856429311786321,
+        "y": 0.8741572761215378
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": -0.3108114759543246,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "wideZone",
+      "k": 1.8,
+      "playSideSign": 1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.4856429311786321,
+        "y": -0.8741572761215378
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": 0.650761527779367,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "wideZone",
+      "k": 1.8,
+      "playSideSign": 1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.4856429311786321,
+        "y": -0.8741572761215378
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": -0.3108114759543246,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "outsideZoneReach",
+      "k": 1.1,
+      "playSideSign": -1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.6726727939963124,
+        "y": 0.7399400733959437
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": 0.6424025182664783,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "outsideZoneReach",
+      "k": 1.1,
+      "playSideSign": -1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.6726727939963124,
+        "y": 0.7399400733959437
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": -0.1715315624690597,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "outsideZoneReach",
+      "k": 1.1,
+      "playSideSign": 1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.6726727939963124,
+        "y": -0.7399400733959437
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": 0.6424025182664783,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "outsideZoneReach",
+      "k": 1.1,
+      "playSideSign": 1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.6726727939963124,
+        "y": -0.7399400733959437
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": -0.1715315624690597,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "insideZoneDrive",
+      "k": 0.6,
+      "playSideSign": -1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.8574929257125441,
+        "y": 0.5144957554275265
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": 0.58309518948453,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "insideZoneDrive",
+      "k": 0.6,
+      "playSideSign": -1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.8574929257125441,
+        "y": 0.5144957554275265
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": 0.017149858514250882,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "insideZoneDrive",
+      "k": 0.6,
+      "playSideSign": 1,
+      "helperHalf": -1,
+      "axis": {
+        "x": -0.8574929257125441,
+        "y": -0.5144957554275265
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": -0.55
+      },
+      "dot": 0.58309518948453,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    },
+    {
+      "concept": "insideZoneDrive",
+      "k": 0.6,
+      "playSideSign": 1,
+      "helperHalf": 1,
+      "axis": {
+        "x": -0.8574929257125441,
+        "y": -0.5144957554275265
+      },
+      "authoredHalfManOffset": {
+        "x": -0.35,
+        "y": 0.55
+      },
+      "dot": 0.017149858514250882,
+      "qualification": "analytic installed-offset witness, no body reposition or World continuation; zero native ticks"
+    }
+  ]
+}

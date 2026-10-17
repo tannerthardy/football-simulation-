@@ -1033,7 +1033,7 @@ export class RunBlocker implements Behavior {
       // not a walk through that defender's center beyond useful contact.
       const strike = a.profile.radius + departure.backer.profile.radius + .1
         + a.player.measurables.armIn / 36 * .45;
-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, departure.backer.profile.radius, strike);
+      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
         exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
       // Only a personally observed clear route ends the departure. A blocked
@@ -1410,13 +1410,7 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
  * that the whole climb or linebacker block will succeed. Check the DL and
  * partner through the next read; a moving or mistaken picture can still lose. */
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
-  partner: Agent, covered: Perceived, backer: Perceived, backerRadius: number, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
-  // Departure and the following climb need the same moving destination.
-  // This acquired constant-velocity forecast chooses a corridor, not a claim
-  // that the body can execute it through contact; World still determines that.
-  const meet = CLIMB_INTERCEPT ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
-    (tt) => ({ x: backer.pos.x + backer.vel.x * tt, y: backer.pos.y + backer.vel.y * tt }),
-    { horizon: 1.5, step: .05, radius: a.profile.radius + backerRadius }).point : backer.pos;
+  partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
     { seen: covered, radius: a.profile.radius + partner.profile.radius }];
   const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
@@ -1435,12 +1429,12 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
     }
     return true;
   });
-  const ray = sub(meet, a.pos), distance = Math.hypot(ray.x, ray.y);
+  const ray = sub(backer.pos, a.pos), distance = Math.hypot(ray.x, ray.y);
   const through = Math.max(0, distance - strike) / Math.max(distance, 1e-12);
-  const first = strike > 0 ? { x: a.pos.x + ray.x * through, y: a.pos.y + ray.y * through } : meet;
+  const first = strike > 0 ? { x: a.pos.x + ray.x * through, y: a.pos.y + ray.y * through } : backer.pos;
   if (clear(first, backer.vel)) return { exit: null, flow: backer.vel };
   for (const body of bodies) {
-    const relative = sub(a.pos, body.seen.pos), goal = sub(meet, body.seen.pos);
+    const relative = sub(a.pos, body.seen.pos), goal = sub(backer.pos, body.seen.pos);
     const distance = Math.hypot(relative.x,relative.y);
     if (distance < 1e-9) continue;
     const turn = Math.atan2(relative.x*goal.y-relative.y*goal.x,relative.x*goal.x+relative.y*goal.y);
@@ -1554,7 +1548,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (!filling && !arriving) return;
-  const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer, combo.backer!.profile.radius);
+  const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
     // A vertical double's acquired backer can still belong to the other
