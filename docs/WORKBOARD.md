@@ -30,6 +30,13 @@ Next physics gate is a task-matched supported push/anchor reproduction before a
 coefficient change. Run handoff: weakWZ LT315/DE270 near-runner opportunity has
 an unmeasured engagement-win tackle gate; do not label it a mass/force failure.
 
+Deeper continuation: Physics owns `directional-brace` diagnostic/test and, only
+after its mechanical witness, the settled-moment cancellation at World's
+load-filter stage. Question: can achieved forward lean erase a transverse
+height-derived couple above the existing ankle budget? Keep mass/capacities,
+support/recovery rates and production adoption separate. Other reviewers are
+read-only; one solver owner. Preserve collinear bracing and source-task limits.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
