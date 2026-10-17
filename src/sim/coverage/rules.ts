@@ -226,6 +226,22 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
   return zoneOf(c);
 }
 
+/** Quarter-flat owns #2's acquired low out, including a later wheel.
+ * Palms shares the seam wall but installs its corner as the flat matcher;
+ * its apex must instead retain the curl. This is installed call knowledge,
+ * not a query of the corner's private live choice or a promised handoff. */
+function quarterFlat(c: RuleCtx): Directive {
+  const two = ref(c, 2);
+  const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];
+  const cornerTakesFlat = corner?.kind === 'zone' && corner.rule === 'palms_corner';
+  if (!cornerTakesFlat && two && c.state.mode !== 'zoned'
+    && (c.state.mode === 'flat' || isQuickOut(two, c.sim))) {
+    c.state.mode = 'flat';
+    return man(two, { lev: 'inside', overTop: true });
+  }
+  return wallTwo(c, 10, true);
+}
+
 /** Palms/2-Read corner: trap #2's quick out; otherwise MOD on #1. */
 function palmsCorner(c: RuleCtx): Directive {
   const two = ref(c, 2);
@@ -333,7 +349,7 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'q_corner_mod': return qCorner(c, false);
     case 'q_corner_meg': return qCorner(c, true);
     case 'q_safety': return qSafety(c);
-    case 'q_apex': return wallTwo(c, 10, true);
+    case 'q_apex': return quarterFlat(c);
     case 'palms_corner': return palmsCorner(c);
     case 'palms_safety': return palmsSafety(c);
     case 'cloud_corner': return cloudCorner(c, false);
