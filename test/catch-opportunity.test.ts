@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { closestCatchOpportunity } from '../src/physics/catch-opportunity.js';
+import { readFileSync } from 'node:fs';
+import type { Vec2, Vec3 } from '../src/core/vec.js';
+import { closestCatchOpportunity, type CatchEnvelope, type CatchOpportunity } from '../src/physics/catch-opportunity.js';
 
 const envelope = { reach: 1.3, low: .1, top: 3 };
 const at = (x: number, y = 0, z = 1) => ({ x, y, z });
@@ -61,5 +63,24 @@ describe('same-time closest catch opportunity', () => {
     // Add the same endpoint displacement (uniform frame velocity) to both paths.
     const shifted = closestCatchOpportunity(at(10.5, -4), at(12.5, -2), at(10, -3), at(13, -3), envelope);
     expect(shifted).toEqual(plain);
+  });
+
+  const native = JSON.parse(readFileSync(new URL('./fixtures/same-time-catch.json', import.meta.url), 'utf8')) as {
+    cases: Array<{ id: string; body0: Vec2; body1: Vec2; ball0: Vec3; ball1: Vec3; envelope: CatchEnvelope; old: CatchOpportunity }>;
+  };
+  it.each(native.cases)('retains the exact saved geometry contract for $id', c => {
+    const opportunity = closestCatchOpportunity(c.body0, c.body1, c.ball0, c.ball1, c.envelope);
+    if (c.id === 'G1-P020') {
+      // Exact data: final-body distance1.292149 grants the old opportunity;
+      // same-time minimum1.508345 while legally high is beyond reach1.317361.
+      expect(c.old.dh).toBeLessThan(c.envelope.reach);
+      expect(opportunity).toBeNull();
+    } else {
+      // These native controls reach at the final instant in both operators.
+      expect(opportunity!.s).toBe(1);
+      expect(opportunity!.dh).toBeCloseTo(c.old.dh, 12);
+      expect(opportunity!.z).toBe(c.old.z);
+      expect(opportunity!.dh).toBeLessThan(c.envelope.reach);
+    }
   });
 });

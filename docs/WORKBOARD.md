@@ -13,6 +13,14 @@ native capture, if decision-relevant, is limited to G1-P020/G2-P107/G2-P143.
 Then retain one complete short force/moment/recovery ledger for G1-P167/P036
 versus G1-P130/G3-P069. No World behavior, capacity, recovery/LEG_BRACE or solver
 changes; existing angular-law/support-history research remains separate.
+Helper published in #131 (`659dee9`), source `1b79ca6`:10 focused geometry
+checks/typecheck pass. Three exact-input catch reproductions match all saved
+frames/events/telemetry/stats; P020 exposes a false opportunity, P107/P143 retain
+reach. P020 achieved-substep query also rejects it by.19113yd. P124/P150 untraced.
+Three complete short wrap/impact ledgers close momentum/work; P167 is explicitly
+held for missing pre-constructor staged context.47.839s launcher cost, no games
+or full suite. Catching owns minimal caller hookup/semantic review; helper alone
+is not a production fix. [Portable evidence, limits and ready criteria](reviews/same-time-catch-physics.md).
 
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
