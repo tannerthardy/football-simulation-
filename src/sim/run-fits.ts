@@ -128,6 +128,9 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
+/** Own insertion action, held on the same read as mind.aim. Its observed
+ * motion is not refreshed between reads or promised future movement. */
+const insertionMotion = new WeakMap<Agent, { sim: PlaySim; aim: Vec2; at: number; velocity: number }>();
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
 const PULL_PLAN = process.env.PULL_PLAN === '1';
@@ -264,6 +267,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // The back no longer pulls the landmark; he decides when to attack it.
   // SCRAPE=0 restores the old lean toward the back's lateral position.
   const gap = liveGap(sim, a, job.gap, job.side);
+  let fitVelocity = flowing ? seen.vel.y : gap.vel;
   const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
   let pullSide = 0;
@@ -276,7 +280,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
       if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
-        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
+        gy = target; pullSide = dir; fitVelocity = p.vel.y; a.tags.add('fit-pull-read');
       }
     }
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
@@ -302,7 +306,17 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
-  const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
+  let point = aim, velocity = 0;
+  if (LB_PLAN && job.kind === 'insert' && job.technique !== 'lag') {
+    let held = insertionMotion.get(a);
+    if (!held || held.sim !== sim || held.aim !== aim) {
+      held = { sim, aim, at: sim.t, velocity: flowing || Math.abs(gap.vel) > 1 ? fitVelocity : 0 };
+      insertionMotion.set(a, held);
+    }
+    velocity = held.velocity;
+    point = { x: aim.x, y: aim.y + velocity * (sim.t - held.at) };
+  } else insertionMotion.delete(a);
+  const fit = track(a,point,{x:0,y:velocity},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
   // chased with lateral work planned with his own body (the law every
   // position plans with): the speed that puts him there within two reads,
@@ -312,9 +326,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // beat. Do not amplify the still-held action away from that observed pull.
   const planPull = PULL_PLAN && job.kind === 'insert' && job.technique !== 'lag'
     && (aim.y - a.pos.y) * pullSide > 0;
-  if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
+  if (!LB_PLAN || !(velocity !== 0 || flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
   const horizon = 2 * a.mind.decisionInterval;
-  const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
+  // Reach the moving action where its acquired motion puts it then, rather
+  // than braking to stop at the old point. World still limits the request.
+  const vy = clamp(requestToCover(gaitLag(a.profile), point.y + velocity * horizon - a.pos.y,
+    horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
   return { ...fit, vel: { x: fit.vel.x, y: vy } };
 }
 
