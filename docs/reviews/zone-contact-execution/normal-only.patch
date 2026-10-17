@@ -1,0 +1,26 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 7f880da..acae763 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1082,8 +1082,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+       }
+     }
+   }
+-  let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
+-    : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
++  let blockVel: Vec2;
++  if (RUN_CONTACT_COMPONENTS && stretch) {
++    // Follow motion across the contact surface in that same normal frame.
++    // Projecting the defender onto a diagonal drive aliases shoulder flow
++    // into depth work, then attenuates true normal motion a second time.
++    // Keep the existing projected closure and bounds: a tangential drive
++    // earns no extra normal request, and no angle division is needed.
++    const driveNormal = -(drive.x * axis.x + drive.y * axis.y);
++    const defenderNormal = -(d.vel.x * axis.x + d.vel.y * axis.y);
++    const normal = clamp(defenderNormal + driveNormal * gap * 3,
++      Math.min(-driveNormal, 2.4 * driveNormal), Math.max(-driveNormal, 2.4 * driveNormal));
++    blockVel = { x: -axis.x * normal + lat.x * lateral, y: -axis.y * normal + lat.y * lateral };
++  } else blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+   const preAnchor = blockVel;
+   let anchored = false;
+   // Anchor against the normal threat only (lost depth), and keep the

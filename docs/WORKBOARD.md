@@ -1,5 +1,34 @@
 # Current work ownership
 
+## Run zone anchoring/protection investigation — 2026-10-17
+
+Run owns `codex/zone-anchor-protection`: `stepRunRep` offensive stretch-contact
+normal feed-forward in `engagement.ts`, new stretch-normal-follow test,
+`scripts/diag/box-defense-review/protection.ts` and its evidence/report. Engine starts at last verified
+accepted `d682b1f474cb6ba260a7b8b1119a62919c5a2159` (bed3c36), with #113's
+review/tooling-only f2cedae ancestor. Shell Git initially rejected authentication;
+read-only API and command-local existing CLI credential helper now both work.
+Fresh fetch confirms accepted d682b1f and queue bf493d8; no auth settings changed.
+No shared solver, contact law, capacity, run assignments, release timing,
+spacing, YAC movement, active hands or default-flag changes. Root alone edits
+shared engagement.ts; parallel readers review anchoring, execution and cached
+protection independently. Production-hook probes establish a specific upstream
+frame error: diagonal drive projects lateral defender velocity into normal OL
+requests. Native OZ LG and WZ guard/tackle contacts exercise it. Correct only that
+feed-forward, then separately test retaining existing stretch shoulder work under
+the same lost-depth anchor. Both isolated arms and their composition are recorded.
+Final runtime/tests frozen as15fcbcd (source905ac9d, measured353a28c differs only
+in comments; emitted JS verified identical).65 focused checks/typecheck pass;
+41.196 command seconds including expected reds, a rejected fixture and fixed
+test-type error. Strong WZ useful inside passage improves; weak gain5.34→2.93
+follows an acquired LT traffic cue and unchanged gather. Duo is exact and fresh
+Under3 remains a short stop. Mirrored bull/cross-face controls retain load and
+show the real depth cost. Independent execution/technique/protection readers
+support bounded Integration review; no full suite or games by contributors.
+[Evidence, adverse outcomes, film and minimal extraction](reviews/zone-contact-execution/README.md).
+Final production extraction is engagement.ts and two new tests only. Spacing's
+weak-case traffic witness and OZ defensive-follow limitation stay separate.
+
 ## Run independent open-field/box review — 2026-10-16
 
 Run owns `codex/box-defense-independent-review`, from accepted

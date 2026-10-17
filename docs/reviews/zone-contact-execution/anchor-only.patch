@@ -1,0 +1,14 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 7f880da..9b51e6d 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1102,7 +1102,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
+       if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
+         anchored = true;
+-        blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
++        const shoulderWork = lateral * (stretch ? 1 : 0.3);
++        blockVel = { x: up * 2.4 + lat.x * shoulderWork, y: lat.y * shoulderWork };
+       }
+     } else {
+       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;

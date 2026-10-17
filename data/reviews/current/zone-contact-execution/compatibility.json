@@ -1,0 +1,10 @@
+{
+  "measuredSource": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+  "publishedSource": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+  "changedRuntimeFile": "src/sim/engagement.ts",
+  "difference": "three corrected comment lines only; emitted JavaScript identical",
+  "emittedJavaScriptSha256": "f4b13a6b290ac538d097ca008387359393430228d37935adc6ad2c9ba458360a",
+  "sameEmittedCode": true,
+  "testAnnotation": "Intent[] and type-only import fix inference; emitted test JS identical to the passing 65-check run",
+  "testEmittedSha256": "42959bbdeddfaea57e1f69c4538f3aba174090b8052d159a2ba77df24c39fac7"
+}
