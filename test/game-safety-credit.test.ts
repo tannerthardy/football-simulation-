@@ -11,7 +11,8 @@ function stopped(id: string) {
   delete r.sim.stats.sackedBy;
   delete r.sim.stats.passer;
   // Replay only the finishing boundary, leaving the archived result untouched.
-  r.sim.events = r.c.events.filter(e => !(e.t === event.t && ['sack','tackle','safety'].includes(e.type)));
+  const prefix = r.c.events.filter(e => !(e.t === event.t && ['sack','tackle','safety'].includes(e.type)));
+  r.sim.events.splice(0, r.sim.events.length, ...prefix);
   r.sim.t = event.t;
   r.sim.bond = { carrier: r.carrier, tacklers: [r.agents[wrap.a!]], start: wrap.t, progressX: r.result.endX, down: false };
   return r;

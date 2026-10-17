@@ -60,10 +60,11 @@ export function restore(id: string) {
     clockStops: ['touchdown', 'safety', 'oob', 'incomplete', 'touchback'].includes(c.log.outcome!) || last.team === 'D',
     stats: structuredClone(c.log.stats!), events: structuredClone(c.events),
   };
-  const game: Game = Object.assign(Object.create(Game.prototype), { box: new BoxScore() });
+  const box = new BoxScore();
+  const game: Game = Object.assign(Object.create(Game.prototype), { box });
   const record = (r = result) => {
     Reflect.get(Game.prototype, 'recordStats').call(game, sim, r, off, def);
-    return game.box;
+    return box;
   };
   return { c, sim, qb, carrier, agents, off, def, result, game, record };
 }
