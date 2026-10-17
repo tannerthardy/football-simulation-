@@ -1,0 +1,7588 @@
+{
+  "schema": "random-saved-play-review-v1",
+  "selectionCommit": "72ed5b0",
+  "selection": {
+    "schema": "random-saved-play-audit-selection-v1",
+    "seed": "measurement/random-play-nitpick/2026-10-17/v1",
+    "algorithm": "Within each game, rank SHA256(UTF8(seed + LF + stable play ID)) ascending; take first six. No redraws. Outcome, call, gain, duration and prior flags are not inputs.",
+    "population": {
+      "G1": 135,
+      "G2": 140,
+      "G3": 117,
+      "G4": 139
+    },
+    "excluded": {
+      "nonfilmedOtherLogs": 179,
+      "twoUnfilmedPhysicalTries": 2,
+      "nullifiedFilmedScrimmages": 28
+    },
+    "acceptedAtReview": "0000e560e0dbe31905151465152d412ba838803d",
+    "queueAtReview": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+    "gameRuntime": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "runtimeSourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+    "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+    "existingAuditEvidence": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "indexSha256": "6dac3b2abe704012ef9536ef24534ac1e897edbb4b43ae16953ccb3d0acd7b8b",
+    "selected": [
+      {
+        "id": "G1-P075",
+        "selectionHash": "00d8cc5902b9c5bfae88e541e1b62a8b15f8aa4c8c63a62e1050e5661e5ac28b",
+        "nativeSha256": "bf2f12a2107cda37e398cc594dbff04632bc21222b0e9f6e9a2220706852cada",
+        "observationIndex": 55,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G1-P177",
+        "selectionHash": "01f46327841009458bc1500976b2621eb514dcb1a5142a0ded3e45f22acf14ae",
+        "nativeSha256": "96b14717fbc9de44c32dcb3d301fb18fae1582e864fe772a6865e52c15b540c3",
+        "observationIndex": 135,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G1-P180",
+        "selectionHash": "03f8811b8694c4f3b06f211adac853746a6ab06c65a7258600823d2cd20defbd",
+        "nativeSha256": "cb035b5877962d4120a2068ea990d2e5a59cf4191403b23a134214dc79af3a59",
+        "observationIndex": 136,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G1-P195",
+        "selectionHash": "04bfc2bd9e1f715c7d0205afcf324f5c9332bb67b6c365a8d48f1ce9b0c43d36",
+        "nativeSha256": "ec16101105ca0f623feb7868b29bd5425411a50a8bcdeef475a583fff13e2b24",
+        "observationIndex": 146,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G1-P140",
+        "selectionHash": "0529da5809f10ace780c2dc071546673fb3773b2976de6f69ab2d14e2ba11ed2",
+        "nativeSha256": "830c88d2d809a27de6ea1ea929e52865360f0df273aa6f8ba1687af290422eb2",
+        "observationIndex": 104,
+        "oldOrdinaryPanel": true,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G1-P127",
+        "selectionHash": "05466a24202f0f94c21dd06172312149459b85c10c1aaf97ef0b6256290fa1c5",
+        "nativeSha256": "2e13651db32a8352a918b7f7195bdeec1fb548031dd6faeed71f3a36917f9e0f",
+        "observationIndex": 95,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P142",
+        "selectionHash": "0044f67b5549162ad1b65050082f753717d688f71d18102e0d2a43f942d606e1",
+        "nativeSha256": "678792b8219ea5fd069a631c1e192cd4d51e87c44cfa3e52d0fbfbd036c3c607",
+        "observationIndex": 110,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P154",
+        "selectionHash": "01d576ad7a9716bb42376e1220d0bfa9676f32e0d28e50fb03154d6e1c9d33bb",
+        "nativeSha256": "b6af1ab5be83db546bfcc9baf32ae368717c80b22e8da73d377043a315911870",
+        "observationIndex": 122,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P002",
+        "selectionHash": "03c55c3c39f400b87896c3a0fdbfa6255322d9157ff70de73a87f43004844119",
+        "nativeSha256": "36b2aa1a7ca68d996f132c5bc8c2125da828204c77712f97db35749626d49ef8",
+        "observationIndex": 0,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P062",
+        "selectionHash": "0572e426bbe360ab6b9fa61ac903ef6909affe8946956da6d093677ca6889609",
+        "nativeSha256": "7ed3b00396748670ac3691d2c8d6c3e39e9891ec59ea3c2833ab75303e8ba27d",
+        "observationIndex": 46,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P122",
+        "selectionHash": "06159742ce6581010a6223e4f6ab5246115f82d362063d2d1c6ec624923e8a8a",
+        "nativeSha256": "7f1a78a10c601f7521a2595bdc4eb5e7934708dcb53313c0e2d1ea37fee31c55",
+        "observationIndex": 95,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G2-P024",
+        "selectionHash": "06dd20ff29aad53d3989e4946ed20b0b16a80a1a09a26e50d49cbd13801c2958",
+        "nativeSha256": "04c9150bf8c9e0ad196a41d099fdc314f1803e74fb2f1bad2e1f20a7b66c1f3b",
+        "observationIndex": 16,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P120",
+        "selectionHash": "01bb193304d2ead4ea3822828097e87bdc4bf4cceb16b60d4974d71c50dbad8d",
+        "nativeSha256": "4330ecdf13473eca896a3906afac2189a34202e7335daba8519746813e13c6b5",
+        "observationIndex": 95,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P079",
+        "selectionHash": "0551538ab9a7c5e68a006ccea48b3a23cc49a835a155dd106c92272f13df1e31",
+        "nativeSha256": "1f36e57fdc656d79a635781afd0bdba6e2055e4b85b8d10ea4263d7f6c7903d3",
+        "observationIndex": 65,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P035",
+        "selectionHash": "08b80c6056d6a71b50e367ec89c74dbbef593bcef0cb80ed88b56be7ca8b151f",
+        "nativeSha256": "3ae608ac9e76c1903f35321a8b4df55aeca57705ef402f49e0cd4823b79b6e14",
+        "observationIndex": 27,
+        "oldOrdinaryPanel": true,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P137",
+        "selectionHash": "097e4f4ca48d7bc505d29a93b6c4adde12d26c21ec657b97134eba35a21dae01",
+        "nativeSha256": "2a16371124eedee45d0a7b2cd45da65d454f7b26e4a683ef49f90aef7ae12a45",
+        "observationIndex": 109,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P012",
+        "selectionHash": "0c8e97e517f9bd67d3ce9e7f53741788400d4e1e4c3d2efd630fbae7978c41fd",
+        "nativeSha256": "34491505617e6710d39ccc1f9088fa2a1bec84bc772d53317b537dd7652e2d1c",
+        "observationIndex": 7,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G3-P123",
+        "selectionHash": "0f3be8a130d3a98e1a8108f4563014d82f6cedcbd1aa0491a9571b574add6ebc",
+        "nativeSha256": "0159ad8751fc9a24abe6b09b295c3421bcb44691b3217a3df9e37502bddfca5e",
+        "observationIndex": 98,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P015",
+        "selectionHash": "08bf6ada2303b58fcbe9d59d47616c43e6d2ff48bd92b5d800eccec5af4b45bf",
+        "nativeSha256": "b569635ac46d860a077255c3eb7fa0bbe00346b60a8153e0411768dc12c2cad6",
+        "observationIndex": 9,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P109",
+        "selectionHash": "0a825d05841a4d0fae15a86f19fc540cc1df071cfc02aa27a4de1788203b2df5",
+        "nativeSha256": "50a4e83408d8e724ac8dfb6a6117712e88151d86e90484c9b91f625232889f72",
+        "observationIndex": 76,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P042",
+        "selectionHash": "10955a86c077e7d43fac58b1a8a943d283c0a930c1556dfcc17be91eaac8b958",
+        "nativeSha256": "5048972f669f00da27717ec249a0362c3467f3e8585276de529fe5140bc2720a",
+        "observationIndex": 28,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P041",
+        "selectionHash": "12582cc4ebf74b778f98f56398c6ff0bdef413bf34e3e0c2433ed858a5dad79d",
+        "nativeSha256": "2f2b0b62d37029dc5617a4807779f2f7edb2cb5d327c76cd4c3b03d83305e138",
+        "observationIndex": 27,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P152",
+        "selectionHash": "12c7972348a699047fde0d822374ca339b4a77b4337fea9dac290a4060e081ba",
+        "nativeSha256": "f05942d8313613928c096e7793b14602cd90610ff187caffe43da78540d970a2",
+        "observationIndex": 108,
+        "oldOrdinaryPanel": true,
+        "oldTailPanel": false
+      },
+      {
+        "id": "G4-P066",
+        "selectionHash": "12e503ae2e9ed271f0e409363916682feefce5374b06e77d256bee895f89087a",
+        "nativeSha256": "41b1a4d9e0894ba186a480e1f03d355ee835be2f04b389039928bceba8a42877",
+        "observationIndex": 47,
+        "oldOrdinaryPanel": false,
+        "oldTailPanel": false
+      }
+    ]
+  },
+  "reviewHost": "0000e560e0dbe31905151465152d412ba838803d",
+  "originalAuditCurrent": "a2a61fde768622c536452a88d6e136373c18c05e",
+  "extraction": {
+    "manifestSha256": "2f1e09b7d6e86b530761c232ea37707b7b282c1ed19410d1e63971dfbbc5ed0f",
+    "cases": {
+      "G1-P075": {
+        "nativeSha256": "bf2f12a2107cda37e398cc594dbff04632bc21222b0e9f6e9a2220706852cada",
+        "extractedSha256": "673d2317596ac9bf979fc556a3d973688c4c6e9fef10020867e4ace3186e6710",
+        "frames": 44,
+        "observationIndex": 55,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G1-P127": {
+        "nativeSha256": "2e13651db32a8352a918b7f7195bdeec1fb548031dd6faeed71f3a36917f9e0f",
+        "extractedSha256": "f804861bcaec616ba7f717add324bbf6fe7b0f7952186897464a7ef3285ec097",
+        "frames": 88,
+        "observationIndex": 95,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G1-P140": {
+        "nativeSha256": "830c88d2d809a27de6ea1ea929e52865360f0df273aa6f8ba1687af290422eb2",
+        "extractedSha256": "1fa184e847319b1a7df6abcb8069fed962ae68033355b79662f3dc872bf9face",
+        "frames": 48,
+        "observationIndex": 104,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G1-P177": {
+        "nativeSha256": "96b14717fbc9de44c32dcb3d301fb18fae1582e864fe772a6865e52c15b540c3",
+        "extractedSha256": "2b4c8b5d55c152c5f0373dec99b293f25aef67efcfe3f6f17de3fed7f36fb508",
+        "frames": 44,
+        "observationIndex": 135,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G1-P180": {
+        "nativeSha256": "cb035b5877962d4120a2068ea990d2e5a59cf4191403b23a134214dc79af3a59",
+        "extractedSha256": "49b4a965be6f2e1c7458ab23558c6efec56e2f1f628922796715cf36290d9ba3",
+        "frames": 38,
+        "observationIndex": 136,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G1-P195": {
+        "nativeSha256": "ec16101105ca0f623feb7868b29bd5425411a50a8bcdeef475a583fff13e2b24",
+        "extractedSha256": "d5b14b092e997bbc35897efd286d66c14a8c939d1303a03c709f4f000e59c56a",
+        "frames": 42,
+        "observationIndex": 146,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P002": {
+        "nativeSha256": "36b2aa1a7ca68d996f132c5bc8c2125da828204c77712f97db35749626d49ef8",
+        "extractedSha256": "134b184093cb6dc3c28052170f528cef3a2f4b127d67e568717b6b69b58ecf8c",
+        "frames": 57,
+        "observationIndex": 0,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P024": {
+        "nativeSha256": "04c9150bf8c9e0ad196a41d099fdc314f1803e74fb2f1bad2e1f20a7b66c1f3b",
+        "extractedSha256": "eb0552c99d12a059f1237b1a7130bd86241e8c9e2fd3a3f085c584db646010d9",
+        "frames": 70,
+        "observationIndex": 16,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P062": {
+        "nativeSha256": "7ed3b00396748670ac3691d2c8d6c3e39e9891ec59ea3c2833ab75303e8ba27d",
+        "extractedSha256": "e0b99fdaacfde922e07b5cca4bed9b3d1c24e2bc4c77df7075c37c5a3521a5c1",
+        "frames": 36,
+        "observationIndex": 46,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P122": {
+        "nativeSha256": "7f1a78a10c601f7521a2595bdc4eb5e7934708dcb53313c0e2d1ea37fee31c55",
+        "extractedSha256": "62bd16fab8a8f336364c7f06210631bca643e292c42eb83f411cf08bbc1ef0fd",
+        "frames": 42,
+        "observationIndex": 95,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P142": {
+        "nativeSha256": "678792b8219ea5fd069a631c1e192cd4d51e87c44cfa3e52d0fbfbd036c3c607",
+        "extractedSha256": "3ffb5554d34e95e728f73e2e84202070734572ef3e4019cf5fa2e84d0680837a",
+        "frames": 30,
+        "observationIndex": 110,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G2-P154": {
+        "nativeSha256": "b6af1ab5be83db546bfcc9baf32ae368717c80b22e8da73d377043a315911870",
+        "extractedSha256": "cea2e924f9404fe89d7fa3487de84c1c614f3327a0e3b90033c98438c55d775f",
+        "frames": 43,
+        "observationIndex": 122,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P012": {
+        "nativeSha256": "34491505617e6710d39ccc1f9088fa2a1bec84bc772d53317b537dd7652e2d1c",
+        "extractedSha256": "b4cc69f43c45bb0cd3b0eab140275e20eab5e5d868005b45d02701e0b23673d3",
+        "frames": 38,
+        "observationIndex": 7,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P035": {
+        "nativeSha256": "3ae608ac9e76c1903f35321a8b4df55aeca57705ef402f49e0cd4823b79b6e14",
+        "extractedSha256": "804b7f2810ffb0942258ea3ef68129937e0628a04a8b957cde0b6a16096b1823",
+        "frames": 40,
+        "observationIndex": 27,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P079": {
+        "nativeSha256": "1f36e57fdc656d79a635781afd0bdba6e2055e4b85b8d10ea4263d7f6c7903d3",
+        "extractedSha256": "df355b24b48343cd73861e94995ad162c90a3c8a96aa2058b9442a41e221228b",
+        "frames": 91,
+        "observationIndex": 65,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P120": {
+        "nativeSha256": "4330ecdf13473eca896a3906afac2189a34202e7335daba8519746813e13c6b5",
+        "extractedSha256": "d3e91f79406d5bfd99db84166ad566290bcfcbff2a8713bcdf3cd3290d92975d",
+        "frames": 82,
+        "observationIndex": 95,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P123": {
+        "nativeSha256": "0159ad8751fc9a24abe6b09b295c3421bcb44691b3217a3df9e37502bddfca5e",
+        "extractedSha256": "bfceff9dcdc1a101136071129dfd4699b4bc549a327df1b897d7d12fd5834ee2",
+        "frames": 40,
+        "observationIndex": 98,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G3-P137": {
+        "nativeSha256": "2a16371124eedee45d0a7b2cd45da65d454f7b26e4a683ef49f90aef7ae12a45",
+        "extractedSha256": "233170860244480f8d2db65a7b1b570f7217dc00959cd1327dc475c8ad58f2dc",
+        "frames": 29,
+        "observationIndex": 109,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P015": {
+        "nativeSha256": "b569635ac46d860a077255c3eb7fa0bbe00346b60a8153e0411768dc12c2cad6",
+        "extractedSha256": "0d3d4e6ca0dba069b63fa61d00090b86ec8b5685c98fe6dce0ddde93b3ec426c",
+        "frames": 44,
+        "observationIndex": 9,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P041": {
+        "nativeSha256": "2f2b0b62d37029dc5617a4807779f2f7edb2cb5d327c76cd4c3b03d83305e138",
+        "extractedSha256": "6e94dc9710d5dcb23f93ce39be6096fe6f38bb63e545f948a07d3ada80f9c443",
+        "frames": 41,
+        "observationIndex": 27,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P042": {
+        "nativeSha256": "5048972f669f00da27717ec249a0362c3467f3e8585276de529fe5140bc2720a",
+        "extractedSha256": "895417ca4d962cadccc22e8248b6a1c516f48a8bc403fe55ed3178c5da91d979",
+        "frames": 35,
+        "observationIndex": 28,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P066": {
+        "nativeSha256": "41b1a4d9e0894ba186a480e1f03d355ee835be2f04b389039928bceba8a42877",
+        "extractedSha256": "0d2163323f047c9caef5e421e623ffd9b99baa22214fef5b5a69c6f5c8c4177f",
+        "frames": 107,
+        "observationIndex": 47,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P109": {
+        "nativeSha256": "50a4e83408d8e724ac8dfb6a6117712e88151d86e90484c9b91f625232889f72",
+        "extractedSha256": "71a5c0bf81f87c92da225b39c664ae379828c094777ff1ba264bb7e05b2d81a3",
+        "frames": 29,
+        "observationIndex": 76,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      },
+      "G4-P152": {
+        "nativeSha256": "f05942d8313613928c096e7793b14602cd90610ff187caffe43da78540d970a2",
+        "extractedSha256": "5a237711dc35f37834cc95ca251ba39a915efc9ee6a325ffd8e2cf145227d64c",
+        "frames": 39,
+        "observationIndex": 108,
+        "actorJoin": "22 unique IDs / index / slot / team match",
+        "frameJoin": "one-to-one exact time"
+      }
+    },
+    "newSimulations": 0,
+    "elapsedSeconds": 32.180813173006754
+  },
+  "coverage": {
+    "sampledPlays": 24,
+    "pairedFrames": 1197,
+    "actorFrameSamples": 26334,
+    "calledRuns": 11,
+    "calledDropbacks": 13,
+    "throws": 12,
+    "completions": 8,
+    "scrambles": 1,
+    "nativeEndings": {
+      "tackle": 14,
+      "slide": 1,
+      "touchdown": 4,
+      "incomplete": 4,
+      "oob": 1
+    },
+    "contactedPlays": 17,
+    "teammateContactExposedPlays": 6,
+    "selectedCensored": 0,
+    "populationCensored": 4,
+    "priorOrdinaryOverlap": 3,
+    "priorTailOverlap": 0,
+    "visualReview": "72 saved-path phase panels across24 plays; not every animation frame watched",
+    "numericReview": "All selected native events and1197paired frames screened; detailed stage ledgers on every play."
+  },
+  "newExecution": {
+    "simulations": 0,
+    "games": 0,
+    "newRosters": 0,
+    "newSeeds": 0,
+    "engineTests": 0,
+    "downloadBytes": 0,
+    "extractionSeconds": 32.180813173006754,
+    "measurementCommandSeconds": [
+      0.94661018,
+      1.691701166
+    ],
+    "offlinePlotFailure": "Initial plot failed because a local inspect.py shadowed stdlib inspect; renamed stage-ledger.py. Corrected four plot sheets completed; no engine ran. Other offline commands were not timed as one total."
+  },
+  "sourceCompatibility": {
+    "src/sim/assign.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "67af3251f0fffb86fce44ef2d394be1e9743a230",
+      "0000e560e0dbe31905151465152d412ba838803d": "67af3251f0fffb86fce44ef2d394be1e9743a230"
+    },
+    "src/sim/behaviors/defense.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6",
+      "0000e560e0dbe31905151465152d412ba838803d": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6"
+    },
+    "src/sim/behaviors/receiver.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "89f1fbbe1f8dc51ef0d3b5bbe54c0c09be27fd7a",
+      "0000e560e0dbe31905151465152d412ba838803d": "89f1fbbe1f8dc51ef0d3b5bbe54c0c09be27fd7a"
+    },
+    "src/sim/behaviors/blocking.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "b312fcfc4d823db7558332b8af613804add4cd20",
+      "0000e560e0dbe31905151465152d412ba838803d": "b312fcfc4d823db7558332b8af613804add4cd20"
+    },
+    "src/sim/engagement.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "8ad94db042665f460cfb0703264a0b2e7280aa4d",
+      "0000e560e0dbe31905151465152d412ba838803d": "8ad94db042665f460cfb0703264a0b2e7280aa4d"
+    },
+    "src/sim/tackle.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "43bc9c2bce6503bea3f5be1e561fa06e2a053679",
+      "0000e560e0dbe31905151465152d412ba838803d": "43bc9c2bce6503bea3f5be1e561fa06e2a053679"
+    },
+    "src/sim/telemetry.ts": {
+      "70b4db6a3ef53acc1a0e90cd055f1087205daa30": "a0bde8d5725a575c9ce63f1a7481c71ac9657164",
+      "0000e560e0dbe31905151465152d412ba838803d": "a0bde8d5725a575c9ce63f1a7481c71ac9657164"
+    }
+  },
+  "operatorDefinitions": {
+    "velocity": "stored full-telemetry body.velocity; never differentiated rounded positions",
+    "events": "native event time and original index, not assumed chronological array order",
+    "snapshots": "bracketing saved frames, with explicit time offset; no invented event-frame state",
+    "separation": "planar rounded positions; identity retained within postcatch minima, nearest-frame list may change identity",
+    "contact": "native body-impact/successful-grasp event versus sampled block/tackle membership; proximity alone is not contact",
+    "request": "recorded final intent only; rejected/missing earlier requests cannot be reconstructed",
+    "cue": "actual controller-consumed see() picture and age; neither gaze nor full attention/acquisition proof"
+  },
+  "catchSwitchExposure": {
+    "catches": 8,
+    "defenderActorUpdates": 88,
+    "allPursuit": 88,
+    "consumedCarryingFalse": 88,
+    "interpretation": "Exposure and unconditional source boundary, not88 proven wrong action requests or causal outcome changes."
+  },
+  "cases": [
+    {
+      "id": "G1-P075",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A1-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A1-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A1-OG2",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A1-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A1-WR3",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A1-WR2",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A1-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A1-WR5",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H1-EDGE5",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H1-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H1-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H1-EDGE1",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H1-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H1-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H1-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H1-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H1-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H1-LB5",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Spread \u2014 Dagger",
+      "defense": "4-3 Over Cover 1 (Man-Free)",
+      "calledKind": "pass",
+      "nativeYards": 21.74,
+      "ending": "tackle",
+      "duration": 4.3,
+      "frameCount": 44,
+      "frameTimeRange": [
+        0,
+        4.25
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Protection keeps four rushers outside5.7yd at release2.00. Y makes a moving tight catch3.30; real offensive completion.",
+      "defenseReview": "NB obtains immediate grasp at3.30, receiver falls3.85, stop4.25. 5.48 physical YAC after grasp is an execution ledger question, not a missed-approach label.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "H1-EDGE5",
+          "slot": "DE_W",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 26.532433,
+          "at": 3.3
+        },
+        {
+          "idx": 12,
+          "id": "H1-EDGE2",
+          "slot": "DE_S",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 21.780725,
+          "at": 3.3
+        },
+        {
+          "idx": 13,
+          "id": "H1-DT3",
+          "slot": "DT_S",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 19.697716,
+          "at": 3.3
+        },
+        {
+          "idx": 14,
+          "id": "H1-EDGE1",
+          "slot": "DT_W",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 19.241622,
+          "at": 4.25
+        },
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 2.630589,
+          "at": 4.25
+        },
+        {
+          "idx": 16,
+          "id": "H1-LB2",
+          "slot": "LB_W",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 9.924717,
+          "at": 4.25
+        },
+        {
+          "idx": 17,
+          "id": "H1-CB2",
+          "slot": "CB_S",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 2.624881,
+          "at": 4.25
+        },
+        {
+          "idx": 18,
+          "id": "H1-CB1",
+          "slot": "CB_W",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 18.186808,
+          "at": 4.25
+        },
+        {
+          "idx": 19,
+          "id": "H1-CB3",
+          "slot": "NB",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 0.412311,
+          "at": 4.2
+        },
+        {
+          "idx": 20,
+          "id": "H1-CB6",
+          "slot": "FS",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 1.17047,
+          "at": 4.1
+        },
+        {
+          "idx": 21,
+          "id": "H1-LB5",
+          "slot": "SS",
+          "firstEligibleSample": 3.3,
+          "minSampledSeparation": 7.560423,
+          "at": 4.25
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2,
+          "type": "throw",
+          "a": 0,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 3.3,
+          "type": "catch",
+          "a": 7,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 7,
+          "b": 19,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.3,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.85,
+          "type": "fall",
+          "a": 7,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 4.25,
+          "type": "tackle",
+          "a": 19,
+          "b": 7,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G1-P127",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A1-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A1-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A1-OG2",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A1-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A1-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A1-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A1-WR2",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A1-WR6",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H1-EDGE5",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H1-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H1-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H1-EDGE1",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H1-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H1-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H1-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H1-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H1-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H1-LB5",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Doubles \u2014 Smash",
+      "defense": "4-3 Under 2-Man",
+      "calledKind": "pass",
+      "nativeYards": 27.86,
+      "ending": "slide",
+      "duration": 8.7,
+      "frameCount": 88,
+      "frameTimeRange": [
+        0,
+        8.65
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "LT loses DE_W access: pressure2.20, grasp2.35; QB slips hold2.70 and earns escape. Scramble3.20, slide8.65; 27.86yd includes a real broken tackle.",
+      "defenseReview": "LB_M consumes carrying QB beyondLOS+2 at5.40, age.15, while pass belief persists; continues man:H until run read7.70. CTRL-001 repeats. Preserve DE pressure and earned escape; #133 handles already emitted pressure credit.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.2,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.35,
+          "type": "carrier_contact",
+          "a": 0,
+          "b": 11,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 2.35,
+          "type": "tackle_wrap",
+          "a": 11,
+          "b": 0,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 2.7,
+          "type": "broken_tackle",
+          "a": 0,
+          "b": 11,
+          "note": "hold slipped"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3,
+          "type": "missed_tackle",
+          "a": 11,
+          "b": 0,
+          "note": "dive"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.05,
+          "type": "fall",
+          "a": 11,
+          "b": null,
+          "note": "dive"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 3.2,
+          "type": "scramble",
+          "a": 0,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 33,
+          "t": 5.7,
+          "type": "fall",
+          "a": 2,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 46,
+          "t": 8.65,
+          "type": "slide",
+          "a": 0,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G1-P140",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H1-QB3",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H1-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H1-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H1-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H1-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H1-WR4",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H1-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H1-WR1",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A1-EDGE3",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A1-DT1",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A1-EDGE1",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A1-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A1-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A1-LB1",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A1-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A1-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A1-S1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A1-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A1-CB2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Ace \u2014 Draw",
+      "defense": "4-3 Over Cover 2 (spot) (shows Cover 3 (Sky))",
+      "calledKind": "run",
+      "nativeYards": 4.13,
+      "ending": "tackle",
+      "duration": 4.7,
+      "frameCount": 48,
+      "frameTimeRange": [
+        0,
+        4.65
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Draw sell and successful1.45 exchange; first-level work lets RB redirect to4.13yd. Y/C release2.85/3.25 does not prove timely second-level work.",
+      "defenseReview": "CB_S contacts4.05, NB assists4.20, receiver/runner falls4.25, stop4.65. Useful outside-in finish; no blanket support failure.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 14,
+          "t": 1.45,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 24,
+          "t": 2.85,
+          "type": "block_climb",
+          "a": 7,
+          "b": 15,
+          "note": "secured DE_S; RT stays"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 3.25,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "nativeIndex": 30,
+          "t": 4.05,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 31,
+          "t": 4.05,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 32,
+          "t": 4.05,
+          "type": "hit",
+          "a": 17,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 33,
+          "t": 4.2,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 34,
+          "t": 4.2,
+          "type": "hit",
+          "a": 19,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 35,
+          "t": 4.25,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 38,
+          "t": 4.65,
+          "type": "tackle",
+          "a": 17,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G1-P177",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H1-QB3",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H1-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H1-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H1-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H1-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H1-WR4",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H1-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H1-TE1",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A1-EDGE3",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A1-DT1",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A1-EDGE1",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A1-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A1-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A1-LB1",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A1-LB5",
+          "slot": "LB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A1-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A1-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A1-S1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A1-S2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Twin TE \u2014 Duo",
+      "defense": "4-3 Over Cover 3 (Sky) (match)",
+      "calledKind": "run",
+      "nativeYards": 1.34,
+      "ending": "touchdown",
+      "duration": 2.8,
+      "frameCount": 44,
+      "frameTimeRange": [
+        -1.5,
+        2.75
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Duo creates1.34yd needed at goal line. Existing first-level loaded blocks survive runner arrival; TD2.75.",
+      "defenseReview": "Mike earns grasp at2.75 as goal plane is crossed. The recorded2.75 wrap is not an opportunity that should automatically erase a TD; event interval/order lacks exact crossing chronology.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 1.3,
+          "type": "block_climb",
+          "a": 5,
+          "b": 20,
+          "note": "secured LB_W; RT stays"
+        },
+        {
+          "nativeIndex": 19,
+          "t": 1.45,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 2.75,
+          "type": "touchdown",
+          "a": 6,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G1-P180",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A1-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A1-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A1-OG2",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A1-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A1-WR3",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A1-WR2",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A1-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A1-WR5",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H1-EDGE5",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H1-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H1-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H1-EDGE1",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H1-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H1-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H1-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H1-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H1-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H1-LB5",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Trips Open \u2014 Slant-Flat",
+      "defense": "4-3 Over Cover 3 Match (Rip/Liz) (match) (shows 2-Man)",
+      "calledKind": "pass",
+      "nativeYards": 12.13,
+      "ending": "tackle",
+      "duration": 3.75,
+      "frameCount": 38,
+      "frameTimeRange": [
+        0,
+        3.7
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Slant wins moving completion2.45;12.13yd. Protection works despite a later DE_S/DT_S teammate bump.",
+      "defenseReview": "CB_W trails cut; LB_W closes from interior and grasps3.10, fall3.30, stop3.70. Preserve complementary pursuit and legitimate first down.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "H1-EDGE5",
+          "slot": "DE_W",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 12.701181,
+          "at": 2.7
+        },
+        {
+          "idx": 12,
+          "id": "H1-EDGE2",
+          "slot": "DE_S",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 16.337993,
+          "at": 3.7
+        },
+        {
+          "idx": 13,
+          "id": "H1-DT3",
+          "slot": "DT_S",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 17.678235,
+          "at": 3.1
+        },
+        {
+          "idx": 14,
+          "id": "H1-EDGE1",
+          "slot": "DT_W",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 10.14002,
+          "at": 3.7
+        },
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 4.949747,
+          "at": 3.7
+        },
+        {
+          "idx": 16,
+          "id": "H1-LB2",
+          "slot": "LB_W",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 0.424264,
+          "at": 3.4
+        },
+        {
+          "idx": 17,
+          "id": "H1-CB2",
+          "slot": "CB_S",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 16.007811,
+          "at": 3.7
+        },
+        {
+          "idx": 18,
+          "id": "H1-CB1",
+          "slot": "CB_W",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 2.022375,
+          "at": 2.5
+        },
+        {
+          "idx": 19,
+          "id": "H1-CB3",
+          "slot": "NB",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 15.465122,
+          "at": 3.7
+        },
+        {
+          "idx": 20,
+          "id": "H1-CB6",
+          "slot": "FS",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 3.001666,
+          "at": 3.7
+        },
+        {
+          "idx": 21,
+          "id": "H1-LB5",
+          "slot": "SS",
+          "firstEligibleSample": 2.5,
+          "minSampledSeparation": 3.920459,
+          "at": 3.7
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.6,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2.45,
+          "type": "catch",
+          "a": 8,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.1,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 16,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.1,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 8,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.3,
+          "type": "fall",
+          "a": 8,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.7,
+          "type": "tackle",
+          "a": 16,
+          "b": 8,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G1-P195",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H1-QB3",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H1-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H1-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H1-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H1-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H1-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H1-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H1-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H1-WR4",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H1-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H1-WR1",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A1-EDGE3",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A1-DT1",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A1-EDGE1",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A1-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A1-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A1-LB1",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A1-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A1-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A1-S1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A1-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A1-CB2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Pistol Doubles \u2014 Inside Zone",
+      "defense": "Wide-9 Nickel Cover 2 Match (match) (shows Cover 1 (Man-Free))",
+      "calledKind": "run",
+      "nativeYards": 6.54,
+      "ending": "tackle",
+      "duration": 4.1,
+      "frameCount": 42,
+      "frameTimeRange": [
+        0,
+        4.05
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "C leaves DT_S1.65 toward Mike, later retargets NB. New block3.35 is after runner contact3.25, despite6.54yd gain. RT only gets Mike3.80.",
+      "defenseReview": "DT_S stays involved against RG and grasps3.25; FS assists3.45. Useful defensive win within a positive offensive play; second-level timing unresolved.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 15,
+          "t": 1.2,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.65,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "note": "check DT_S; RG stays"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.7,
+          "type": "fall",
+          "a": 15,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 18,
+          "t": 1.75,
+          "type": "fall",
+          "a": 2,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.25,
+          "type": "tackle_wrap",
+          "a": 13,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.45,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.65,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 28,
+          "t": 4.05,
+          "type": "tackle",
+          "a": 13,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P002",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H2-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H2-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H2-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H2-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H2-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H2-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H2-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H2-TE2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A2-EDGE3",
+          "slot": "LB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Wing \u2014 PA Post-Dig",
+      "defense": "4-3 Under Cover 1 Off",
+      "calledKind": "pass",
+      "nativeYards": 25.62,
+      "ending": "tackle",
+      "duration": 5.65,
+      "frameCount": 57,
+      "frameTimeRange": [
+        0,
+        5.6
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "PA Post-Dig creates cut/separation and25.62yd completion4.30. Edge reaches1.94yd from QB at2.90 release; no native pressure event.",
+      "defenseReview": "CB_S follows and FS closes/grips4.80, CB assists5.15, stop5.60. The completion and short YAC are earned; proximity to QB alone is not a pressure credit.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 24.148085,
+          "at": 5.6
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 30.927819,
+          "at": 5.6
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 22.760712,
+          "at": 5.6
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 24.990398,
+          "at": 5.6
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 1.3,
+          "at": 5.6
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 3.921734,
+          "at": 4.8
+        },
+        {
+          "idx": 17,
+          "id": "A2-EDGE3",
+          "slot": "LB_S",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 16.92956,
+          "at": 5.6
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 0.447214,
+          "at": 5.6
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 8.697701,
+          "at": 5.6
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 0.4,
+          "at": 5.2
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "firstEligibleSample": 4.3,
+          "minSampledSeparation": 19.33727,
+          "at": 5.6
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 2.9,
+          "type": "throw",
+          "a": 0,
+          "b": 9,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 4.3,
+          "type": "catch",
+          "a": 9,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 4.8,
+          "type": "carrier_contact",
+          "a": 9,
+          "b": 20,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 4.8,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 9,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 5.15,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 9,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 5.2,
+          "type": "fall",
+          "a": 9,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 5.6,
+          "type": "tackle",
+          "a": 20,
+          "b": 9,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P024",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H2-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H2-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H2-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H2-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H2-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H2-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H2-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H2-WR1",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Doubles \u2014 Comebacks",
+      "defense": "4-3 Over Cover 1 (Man-Free)",
+      "calledKind": "pass",
+      "nativeYards": 10.34,
+      "ending": "tackle",
+      "duration": 6.9,
+      "frameCount": 70,
+      "frameTimeRange": [
+        0,
+        6.85
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Comeback caught5.10 with stored vx-4.63yd/s. Requests begin turning after catch; physical YAC-2.590 from105.0343 to102.4442. This is actual backward motion, not end-zone credit artifact.",
+      "defenseReview": "CB_S closes from4.00yd at catch to grasp6.20, fall6.45, stop6.85. Preserve catch while moving backward and finite braking; exact optimal postcatch steering unproved.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 14.621901,
+          "at": 6.85
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 12.872451,
+          "at": 6.85
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 16.54237,
+          "at": 6.85
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 17.860011,
+          "at": 6.85
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 4.701064,
+          "at": 6.85
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 5.651548,
+          "at": 6.85
+        },
+        {
+          "idx": 17,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 0.447214,
+          "at": 6.8
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 29.179616,
+          "at": 6.85
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB3",
+          "slot": "NB",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 10.568822,
+          "at": 6.85
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 15.380832,
+          "at": 6.85
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "firstEligibleSample": 5.1,
+          "minSampledSeparation": 20.807931,
+          "at": 6.85
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.95,
+          "type": "fall",
+          "a": 3,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.65,
+          "type": "throw",
+          "a": 0,
+          "b": 9,
+          "note": null
+        },
+        {
+          "nativeIndex": 22,
+          "t": 5.1,
+          "type": "catch",
+          "a": 9,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 23,
+          "t": 6.2,
+          "type": "carrier_contact",
+          "a": 9,
+          "b": 17,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 6.2,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 9,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 6.45,
+          "type": "fall",
+          "a": 9,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 26,
+          "t": 6.85,
+          "type": "tackle",
+          "a": 17,
+          "b": 9,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P062",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A2-QB2",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A2-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A2-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A2-OG2",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A2-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A2-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A2-WR5",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A2-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H2-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H2-DT2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H2-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H2-EDGE2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H2-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H2-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H2-CB3",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H2-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H2-CB1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Trips \u2014 Trap",
+      "defense": "4-3 Under Cover 1 Robber",
+      "calledKind": "run",
+      "nativeYards": 3.43,
+      "ending": "tackle",
+      "duration": 3.55,
+      "frameCount": 36,
+      "frameTimeRange": [
+        0,
+        3.5
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Trap RG earns DE_S contact2.10 before RB contact2.95; actual access control. LT releases1.60 but no LB_W engagement before tackle.",
+      "defenseReview": "LB_W stays free to grasp2.95 despite successful trap elsewhere.3.43yd does not certify second-level protection; later block_log3.05 cannot explain earlier success.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 10,
+          "t": 0.9,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 15,
+          "t": 1.6,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "note": "secured DT_S; LG stays"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.95,
+          "type": "squeeze",
+          "a": 6,
+          "b": null,
+          "note": "turn shoulders through a narrow opening"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 2.95,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 2.95,
+          "type": "hit",
+          "a": 16,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.05,
+          "type": "block_log",
+          "a": 5,
+          "b": 12,
+          "note": "kick target crossed inside shoulder"
+        },
+        {
+          "nativeIndex": 28,
+          "t": 3.1,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 33,
+          "t": 3.5,
+          "type": "tackle",
+          "a": 16,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P122",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H2-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H2-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H2-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H2-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H2-WR1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H2-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H2-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H2-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Spread \u2014 Dagger",
+      "defense": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match) + Mike A-Gap",
+      "calledKind": "pass",
+      "nativeYards": 0,
+      "ending": "incomplete",
+      "duration": 3.8,
+      "frameCount": 42,
+      "frameTimeRange": [
+        -0.3,
+        3.75
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Dagger throw2.25 before Mike blitz reaches QB; no lost-protection outcome invented.",
+      "defenseReview": "CB_S PBU3.10 and incomplete3.75. Preserve real defensive ball win; source catch-opportunity uncertainty does not invalidate this named PBU.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2.25,
+          "type": "throw",
+          "a": 0,
+          "b": 9,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 3.1,
+          "type": "pbu",
+          "a": 17,
+          "b": 9,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 3.75,
+          "type": "incomplete",
+          "a": null,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P142",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H2-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H2-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H2-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H2-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H2-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H2-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H2-WR6",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H2-WR1",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A2-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A2-LB2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A2-DT2",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A2-DT3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A2-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A2-LB5",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A2-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A2-CB3",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Ace \u2014 Inside Zone",
+      "defense": "Wide-9 Nickel Cover 1 (Man-Free) + Will B-Gap (shows 2-Man)",
+      "calledKind": "run",
+      "nativeYards": -1.05,
+      "ending": "tackle",
+      "duration": 2.9,
+      "frameCount": 30,
+      "frameTimeRange": [
+        0,
+        2.85
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "C climbs1.10 and actually links Mike1.90 before RB arrival2.35. Useful second-level work exists in a-1.05yd loss.",
+      "defenseReview": "DT_S beats/works past LG into RB2.35; fall2.50, stop2.85. Opposing control against globally earlier/later climbs or stronger blocks.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 15,
+          "t": 1.1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "note": "check DT_S; LG stays"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 2.35,
+          "type": "tackle_wrap",
+          "a": 13,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 2.35,
+          "type": "hit",
+          "a": 13,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 23,
+          "t": 2.5,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 2.85,
+          "type": "tackle",
+          "a": 13,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G2-P154",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A2-QB2",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A2-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A2-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A2-OG2",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A2-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A2-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A2-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A2-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A2-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A2-WR5",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A2-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H2-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H2-DT2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H2-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H2-EDGE2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H2-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H2-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H2-CB3",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H2-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H2-CB1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H2-S2",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H2-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Trey (TE attached) \u2014 Four Verticals",
+      "defense": "4-3 Under Cover 1 (Man-Free) (shows Cover 6 / Stuff (quarters strong, half weak))",
+      "calledKind": "pass",
+      "nativeYards": 0,
+      "ending": "incomplete",
+      "duration": 4.25,
+      "frameCount": 43,
+      "frameTimeRange": [
+        0,
+        4.2
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Four Verticals throw2.05; no PBU/drop/catch named, incomplete4.20. No hands failure diagnosis without exact opportunity/draw.",
+      "defenseReview": "NB follows H, FS converges. Their late proximity cannot establish which initial ball/player query or execution failed; valid defensive stress, cause unknown.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 2.05,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 4.2,
+          "type": "incomplete",
+          "a": null,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P012",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A3-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A3-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A3-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A3-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A3-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A3-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H3-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H3-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Doubles \u2014 Inside Zone Weak",
+      "defense": "4-3 Under Cover 1 Robber",
+      "calledKind": "run",
+      "nativeYards": 4.56,
+      "ending": "tackle",
+      "duration": 3.7,
+      "frameCount": 38,
+      "frameTimeRange": [
+        0,
+        3.65
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Inside Zone Weak exchange1.05; C releases1.75, only reaches LB_W2.75. RB earns4.56yd through first-level work.",
+      "defenseReview": "CB_W grasps3.15, falls3.25, runner falls3.30, stop3.65. Contact/fall sequence exists; no automatic tackle-strength defect.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 15,
+          "t": 1.05,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.75,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.15,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.15,
+          "type": "hit",
+          "a": 18,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 25,
+          "t": 3.25,
+          "type": "fall",
+          "a": 18,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.3,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 29,
+          "t": 3.65,
+          "type": "tackle",
+          "a": 18,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P035",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A3-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A3-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A3-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A3-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A3-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A3-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H3-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H3-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Doubles \u2014 Counter",
+      "defense": "4-3 Under Cover 1 Robber",
+      "calledKind": "run",
+      "nativeYards": 3.86,
+      "ending": "tackle",
+      "duration": 3.95,
+      "frameCount": 40,
+      "frameTimeRange": [
+        0,
+        3.9
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Counter gains3.86 despite neither RG kick nor RT wrapper acquiring a sampled block or native block_contact. RG is2.90yd from end at runner contact2.70.",
+      "defenseReview": "DE_W wins initial access2.70; RB slips hold3.10; LB_W/CB_W complete tackle3.90. Genuine escape plus useful defense; positive gain hides failed blocking access.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 14,
+          "t": 1.3,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.6,
+          "type": "fall",
+          "a": 15,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 16,
+          "note": "secured DT_W; LT stays"
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.7,
+          "type": "tackle_wrap",
+          "a": 11,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 2.75,
+          "type": "fall",
+          "a": 11,
+          "b": null,
+          "note": "dive"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.1,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 11,
+          "note": "hold slipped"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.3,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.4,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 3.4,
+          "type": "hit",
+          "a": 18,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.55,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 28,
+          "t": 3.9,
+          "type": "tackle",
+          "a": 16,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P079",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A3-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A3-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A3-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A3-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A3-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A3-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H3-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H3-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Trips \u2014 Dagger",
+      "defense": "4-3 Under Cover 8 (half strong, quarters weak) (match)",
+      "calledKind": "pass",
+      "nativeYards": 69,
+      "ending": "touchdown",
+      "duration": 9,
+      "frameCount": 91,
+      "frameTimeRange": [
+        0,
+        8.95
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Dagger completion3.75 for69.00yd,46.71YAC. H/A3-WR2 already carries8.03 forward/.87 lateral speed at3.70. Protectors buy2.55s throw.",
+      "defenseReview": "Half safety H3-S1 is already behind/wide at3.70, forward3.80/lateral-4.36. No carrier-contact event; same-safety postcatch min3.748yd. CB_W globally switches to pursuit while its catch cue remains false. No grip claim.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 28.953929,
+          "at": 3.8
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 29.138634,
+          "at": 3.8
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 26.242904,
+          "at": 3.8
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 27.776969,
+          "at": 3.8
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 20.321417,
+          "at": 3.8
+        },
+        {
+          "idx": 16,
+          "id": "H3-LB3",
+          "slot": "LB_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 22.629185,
+          "at": 3.8
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 10.143471,
+          "at": 7.7
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 12.801562,
+          "at": 8.9
+        },
+        {
+          "idx": 19,
+          "id": "H3-S2",
+          "slot": "NB",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 4.701064,
+          "at": 3.9
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 12.300406,
+          "at": 8.7
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 3.748333,
+          "at": 4.1
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2.55,
+          "type": "throw",
+          "a": 0,
+          "b": 10,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 3.75,
+          "type": "catch",
+          "a": 10,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 8.95,
+          "type": "touchdown",
+          "a": 10,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P120",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A3-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A3-OG1",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A3-RB2",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A3-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A3-WR3",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A3-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H3-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H3-CB5",
+          "slot": "DB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Trips \u2014 Y-Cross",
+      "defense": "4-3 Over Quarters (MOD) (match) (shows Cover 1 (Man-Free))",
+      "calledKind": "pass",
+      "nativeYards": 17.12,
+      "ending": "oob",
+      "duration": 6.75,
+      "frameCount": 82,
+      "frameTimeRange": [
+        -1.4,
+        6.7
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Y-Cross reaches third-and11 with3.13air/13.99YAC. Y/A3-TE2 stops near catch then accelerates; completion is not a running in-stride P045 analogue.",
+      "defenseReview": "NB initially walls H; late Y flat support is8.82yd away at catch4.00. NB actually grasps5.25 then slips5.65; CB_S/SS rewrap6.20/6.35 and force OOB6.70. SS/CB traffic6.65 occurs after new contacts, not proof of missed approach.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "H3-EDGE4",
+          "slot": "DE_W",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 18.872467,
+          "at": 6.7
+        },
+        {
+          "idx": 12,
+          "id": "H3-EDGE3",
+          "slot": "DE_S",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 14.117365,
+          "at": 5
+        },
+        {
+          "idx": 13,
+          "id": "H3-DT3",
+          "slot": "DT_S",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 16.548414,
+          "at": 5
+        },
+        {
+          "idx": 14,
+          "id": "H3-DT2",
+          "slot": "DT_W",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 18.816216,
+          "at": 4
+        },
+        {
+          "idx": 15,
+          "id": "H3-LB1",
+          "slot": "LB_M",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 4.638965,
+          "at": 6.7
+        },
+        {
+          "idx": 16,
+          "id": "H3-CB1",
+          "slot": "CB_S",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 0.565685,
+          "at": 6.6
+        },
+        {
+          "idx": 17,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 23.623082,
+          "at": 6.7
+        },
+        {
+          "idx": 18,
+          "id": "H3-S2",
+          "slot": "NB",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 1.702939,
+          "at": 5.2
+        },
+        {
+          "idx": 19,
+          "id": "H3-CB5",
+          "slot": "DB",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 9.400532,
+          "at": 6.7
+        },
+        {
+          "idx": 20,
+          "id": "H3-CB6",
+          "slot": "FS",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 4.68188,
+          "at": 6.7
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "firstEligibleSample": 4,
+          "minSampledSeparation": 0.538516,
+          "at": 6.7
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 2.85,
+          "type": "throw",
+          "a": 0,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 4,
+          "type": "catch",
+          "a": 7,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 21,
+          "t": 5.25,
+          "type": "carrier_contact",
+          "a": 7,
+          "b": 18,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 5.25,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 7,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 5.3,
+          "type": "fall",
+          "a": 18,
+          "b": null,
+          "note": "dive"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 5.65,
+          "type": "broken_tackle",
+          "a": 7,
+          "b": 18,
+          "note": "hold slipped"
+        },
+        {
+          "nativeIndex": 26,
+          "t": 6.2,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 7,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 27,
+          "t": 6.35,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 7,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 28,
+          "t": 6.35,
+          "type": "hit",
+          "a": 21,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 29,
+          "t": 6.65,
+          "type": "fall",
+          "a": 21,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 30,
+          "t": 6.7,
+          "type": "out_of_bounds",
+          "a": 7,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P123",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H3-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H3-OT3",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H3-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H3-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H3-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H3-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H3-TE2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A3-DT3",
+          "slot": "NT",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A3-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A3-DT2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A3-DT1",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A3-EDGE3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A3-LB2",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A3-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A3-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A3-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A3-S1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A3-LB5",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Twin TE \u2014 Power",
+      "defense": "3-4 Odd Quarters (MOD) (match)",
+      "calledKind": "run",
+      "nativeYards": 1.97,
+      "ending": "tackle",
+      "duration": 3.9,
+      "frameCount": 40,
+      "frameTimeRange": [
+        0,
+        3.85
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Power RG actually kicks DE_S2.50. LT joins Mike2.30 before RB arrives3.10; C releases NT1.05 but never reaches LB_W.",
+      "defenseReview": "LB_W makes first grasp3.10 while Mike is occupied; FS assists3.75, stop3.85.1.97yd reflects a free other fitter, not failure of the successful kick.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 3,
+          "b": 17,
+          "note": "secured NT; LG stays"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.25,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "note": "secured DT_S; Y stays"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.1,
+          "type": "squeeze",
+          "a": 6,
+          "b": null,
+          "note": "turn shoulders through a narrow opening"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.1,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.1,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 3.1,
+          "type": "hit",
+          "a": 17,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 27,
+          "t": 3.35,
+          "type": "fall",
+          "a": 17,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 28,
+          "t": 3.5,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 29,
+          "t": 3.75,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 30,
+          "t": 3.85,
+          "type": "tackle",
+          "a": 17,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G3-P137",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H3-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H3-OT1",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H3-OT2",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H3-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H3-OT3",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H3-OG3",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H3-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H3-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H3-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H3-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H3-FB1",
+          "slot": "F",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A3-DT3",
+          "slot": "NT",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A3-EDGE2",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A3-DT2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A3-DT1",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A3-EDGE3",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A3-LB2",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A3-LB3",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A3-LB5",
+          "slot": "LB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A3-CB2",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A3-CB1",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A3-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "I-Form Pro \u2014 Duo",
+      "defense": "Bear (goal line) Cover 0 + Zero Blitz",
+      "calledKind": "run",
+      "nativeYards": 1.4,
+      "ending": "touchdown",
+      "duration": 2.85,
+      "frameCount": 29,
+      "frameTimeRange": [
+        0,
+        2.8
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Goal-line Duo wins1.40yd with loaded first-level work and no runner contact; F reaches DE_S2.40.",
+      "defenseReview": "NT/DT_S and DE_W/DT_W teammate contacts overlap while blocked;28 positive all-step teammate entries,678.04kg*yd/s total. This is a traffic lead, not28 avoidable mistakes; no free clear stopper demonstrated.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 5,
+          "b": 16,
+          "note": "secured DT_S; RT stays"
+        },
+        {
+          "nativeIndex": 18,
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.8,
+          "type": "touchdown",
+          "a": 6,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P015",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A4-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A4-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A4-WR2",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A4-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A4-WR3",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H4-EDGE3",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H4-EDGE1",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H4-DT4",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H4-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H4-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H4-CB3",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H4-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H4-CB1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H4-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Bunch \u2014 PA Shot",
+      "defense": "4-3 Under Cover 1 Off + Will B-Gap",
+      "calledKind": "pass",
+      "nativeYards": 19.88,
+      "ending": "tackle",
+      "duration": 4.35,
+      "frameCount": 44,
+      "frameTimeRange": [
+        0,
+        4.3
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "PA Shot complete3.60 for19.88yd despite RB falling2.30 against blitz. QB releases2.45 before free blitzer can finish; OL work still useful.",
+      "defenseReview": "CB_W stays close and grasps at catch3.60, runner falls3.90, stop4.30. Preserve direct catch-to-contact defensive execution even after protection access deteriorates.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "H4-EDGE3",
+          "slot": "DE_W",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 24.085265,
+          "at": 4.3
+        },
+        {
+          "idx": 12,
+          "id": "H4-EDGE1",
+          "slot": "DE_S",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 28.248186,
+          "at": 4.3
+        },
+        {
+          "idx": 13,
+          "id": "H4-DT4",
+          "slot": "DT_S",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 24.661711,
+          "at": 4.3
+        },
+        {
+          "idx": 14,
+          "id": "H4-DT2",
+          "slot": "DT_W",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 23.152106,
+          "at": 4.3
+        },
+        {
+          "idx": 15,
+          "id": "H4-LB1",
+          "slot": "LB_M",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 19.305181,
+          "at": 4.3
+        },
+        {
+          "idx": 16,
+          "id": "H4-LB2",
+          "slot": "LB_W",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 27.211762,
+          "at": 4.3
+        },
+        {
+          "idx": 17,
+          "id": "H4-CB3",
+          "slot": "CB_S",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 17.802528,
+          "at": 4.3
+        },
+        {
+          "idx": 18,
+          "id": "H4-CB2",
+          "slot": "CB_W",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 0.412311,
+          "at": 3.8
+        },
+        {
+          "idx": 19,
+          "id": "H4-S2",
+          "slot": "NB",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 16.700299,
+          "at": 4.3
+        },
+        {
+          "idx": 20,
+          "id": "H4-CB1",
+          "slot": "FS",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 16.95671,
+          "at": 4.3
+        },
+        {
+          "idx": 21,
+          "id": "H4-S1",
+          "slot": "SS",
+          "firstEligibleSample": 3.6,
+          "minSampledSeparation": 12.931357,
+          "at": 4.3
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 2.3,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.45,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.95,
+          "type": "fall",
+          "a": 1,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.6,
+          "type": "catch",
+          "a": 8,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 22,
+          "t": 3.6,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 18,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.6,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 8,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.9,
+          "type": "fall",
+          "a": 8,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 25,
+          "t": 4.3,
+          "type": "tackle",
+          "a": 18,
+          "b": 8,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P041",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H4-OT1",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H4-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H4-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H4-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H4-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A4-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A4-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A4-EDGE4",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A4-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A4-S1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A4-CB3",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Trips \u2014 Power",
+      "defense": "4-3 Under Cover 3 Seam (match) + Fire Zone (SS + Will, DE drops) (shows 2-Man)",
+      "calledKind": "run",
+      "nativeYards": 4.95,
+      "ending": "tackle",
+      "duration": 4.05,
+      "frameCount": 41,
+      "frameTimeRange": [
+        0,
+        4
+      ],
+      "intervals": [
+        0.1
+      ],
+      "offenseReview": "Power gains4.95; first-level block and RT join2.35 work. LG kick has no recorded engagement before runner contact3.20.",
+      "defenseReview": "Mike reaches RB3.20 and FS assists3.55, stop4.00. Useful defense and successful first-level offense coexist; gain does not validate the missing kick.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 3.2,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.2,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 3.55,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "nativeIndex": 24,
+          "t": 3.55,
+          "type": "hit",
+          "a": 20,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 26,
+          "t": 3.65,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 29,
+          "t": 4,
+          "type": "tackle",
+          "a": 15,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P042",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H4-OT1",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H4-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H4-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H4-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H4-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A4-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A4-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A4-EDGE4",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A4-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A4-LB4",
+          "slot": "LB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A4-S1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Empty \u2014 All Hitch",
+      "defense": "4-3 Over Cover 2 Match (match)",
+      "calledKind": "pass",
+      "nativeYards": 0,
+      "ending": "incomplete",
+      "duration": 3.4,
+      "frameCount": 35,
+      "frameTimeRange": [
+        0,
+        3.35
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "All Hitch throw2.30; current protection still cannot remove every line-of-flight bat.",
+      "defenseReview": "DT_S bats at2.45, incomplete3.35. Explicit line deflection is a legitimate defensive win; no receiver drop inferred.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.3,
+          "type": "throw",
+          "a": 0,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.45,
+          "type": "deflection",
+          "a": 13,
+          "b": null,
+          "note": "batted at the line"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 3.35,
+          "type": "incomplete",
+          "a": null,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P066",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H4-OT1",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H4-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H4-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H4-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H4-FB1",
+          "slot": "F",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A4-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A4-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A4-EDGE4",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A4-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A4-LB4",
+          "slot": "LB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A4-S1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Strong Offset I \u2014 Comebacks",
+      "defense": "4-3 Over Cover 2 (match)",
+      "calledKind": "pass",
+      "nativeYards": 71.9,
+      "ending": "touchdown",
+      "duration": 10.6,
+      "frameCount": 107,
+      "frameTimeRange": [
+        0,
+        10.55
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Comebacks completion3.75 for71.90yd/55.18YAC. Receiver is slowing at3.70, stored velocity[2.44,2.67]; legitimate catch then acceleration. LG/F teammate impulse1.40 occurs independently of final score.",
+      "defenseReview": "A4-S2 half support is4.41yd away at3.70, moving[.27,4.43]; postcatch same-safety min3.00yd, no carrier contact. A4-CB5 never closes inside4.71yd. Untouched chase is not a missed grip.",
+      "postCatchSameDefenderMinima": [
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 29.124732,
+          "at": 4.1
+        },
+        {
+          "idx": 12,
+          "id": "A4-EDGE2",
+          "slot": "DE_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 31.852158,
+          "at": 3.8
+        },
+        {
+          "idx": 13,
+          "id": "A4-DT3",
+          "slot": "DT_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 27.322152,
+          "at": 3.8
+        },
+        {
+          "idx": 14,
+          "id": "A4-EDGE4",
+          "slot": "DT_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 26.375178,
+          "at": 3.8
+        },
+        {
+          "idx": 15,
+          "id": "A4-LB3",
+          "slot": "LB_M",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 15.420117,
+          "at": 4.6
+        },
+        {
+          "idx": 16,
+          "id": "A4-LB2",
+          "slot": "LB_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 16.62077,
+          "at": 5.9
+        },
+        {
+          "idx": 17,
+          "id": "A4-LB4",
+          "slot": "LB_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 13.223086,
+          "at": 5.6
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 4.709565,
+          "at": 4.9
+        },
+        {
+          "idx": 19,
+          "id": "A4-CB2",
+          "slot": "CB_W",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 15.847397,
+          "at": 10.55
+        },
+        {
+          "idx": 20,
+          "id": "A4-S1",
+          "slot": "FS",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 9.847335,
+          "at": 10.55
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "firstEligibleSample": 3.8,
+          "minSampledSeparation": 3.0,
+          "at": 4.6
+        }
+      ],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 16,
+          "t": 1.35,
+          "type": "fall",
+          "a": 4,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.55,
+          "type": "throw",
+          "a": 0,
+          "b": 9,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 3.75,
+          "type": "catch",
+          "a": 9,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 21,
+          "t": 5.15,
+          "type": "fall",
+          "a": 10,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 5.15,
+          "type": "fall",
+          "a": 11,
+          "b": null,
+          "note": "contact"
+        },
+        {
+          "nativeIndex": 23,
+          "t": 10.55,
+          "type": "touchdown",
+          "a": 9,
+          "b": null,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P109",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "H4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "H4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "H4-OT1",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "H4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "H4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "H4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "H4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "H4-TE1",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "H4-WR1",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "H4-WR3",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "H4-WR2",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "A4-EDGE2",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "A4-DT3",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "A4-EDGE4",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "A4-LB3",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "A4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "A4-S1",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "A4-CB3",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Singleback Trips \u2014 Counter",
+      "defense": "4-3 Over 2-Man",
+      "calledKind": "run",
+      "nativeYards": -3.56,
+      "ending": "tackle",
+      "duration": 2.8,
+      "frameCount": 29,
+      "frameTimeRange": [
+        0,
+        2.75
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Counter loses3.56: RG kick/RT wrapper never acquire block; RG gap1.43yd at2.10 before runner grasp2.15. Source/request-stage choice versus finite body turn unresolved.",
+      "defenseReview": "DE_W wins access and real tackle2.15, fall2.40, stop2.75. block_log2.40 happens after access is already lost. Context16.41s/noTO: following FG displays0s but rounded clock cannot prove illegal snap.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 12,
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 15,
+          "t": 1.6,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "note": "grasp"
+        },
+        {
+          "nativeIndex": 18,
+          "t": 2.15,
+          "type": "tackle_wrap",
+          "a": 11,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "nativeIndex": 19,
+          "t": 2.15,
+          "type": "hit",
+          "a": 11,
+          "b": 6,
+          "note": null
+        },
+        {
+          "nativeIndex": 20,
+          "t": 2.4,
+          "type": "block_log",
+          "a": 5,
+          "b": 11,
+          "note": "kick target crossed inside shoulder"
+        },
+        {
+          "nativeIndex": 21,
+          "t": 2.4,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "nativeIndex": 22,
+          "t": 2.75,
+          "type": "tackle",
+          "a": 11,
+          "b": 6,
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "G4-P152",
+      "actors": [
+        {
+          "idx": 0,
+          "id": "A4-QB1",
+          "slot": "QB",
+          "team": "O"
+        },
+        {
+          "idx": 1,
+          "id": "A4-OT2",
+          "slot": "LT",
+          "team": "O"
+        },
+        {
+          "idx": 2,
+          "id": "A4-OT4",
+          "slot": "RT",
+          "team": "O"
+        },
+        {
+          "idx": 3,
+          "id": "A4-C1",
+          "slot": "C",
+          "team": "O"
+        },
+        {
+          "idx": 4,
+          "id": "A4-OG2",
+          "slot": "LG",
+          "team": "O"
+        },
+        {
+          "idx": 5,
+          "id": "A4-OG4",
+          "slot": "RG",
+          "team": "O"
+        },
+        {
+          "idx": 6,
+          "id": "A4-RB1",
+          "slot": "RB",
+          "team": "O"
+        },
+        {
+          "idx": 7,
+          "id": "A4-TE2",
+          "slot": "Y",
+          "team": "O"
+        },
+        {
+          "idx": 8,
+          "id": "A4-WR2",
+          "slot": "X",
+          "team": "O"
+        },
+        {
+          "idx": 9,
+          "id": "A4-WR1",
+          "slot": "Z",
+          "team": "O"
+        },
+        {
+          "idx": 10,
+          "id": "A4-WR3",
+          "slot": "H",
+          "team": "O"
+        },
+        {
+          "idx": 11,
+          "id": "H4-EDGE3",
+          "slot": "DE_W",
+          "team": "D"
+        },
+        {
+          "idx": 12,
+          "id": "H4-EDGE1",
+          "slot": "DE_S",
+          "team": "D"
+        },
+        {
+          "idx": 13,
+          "id": "H4-DT4",
+          "slot": "DT_S",
+          "team": "D"
+        },
+        {
+          "idx": 14,
+          "id": "H4-DT2",
+          "slot": "DT_W",
+          "team": "D"
+        },
+        {
+          "idx": 15,
+          "id": "H4-LB1",
+          "slot": "LB_M",
+          "team": "D"
+        },
+        {
+          "idx": 16,
+          "id": "H4-LB2",
+          "slot": "LB_W",
+          "team": "D"
+        },
+        {
+          "idx": 17,
+          "id": "H4-CB3",
+          "slot": "CB_S",
+          "team": "D"
+        },
+        {
+          "idx": 18,
+          "id": "H4-CB2",
+          "slot": "CB_W",
+          "team": "D"
+        },
+        {
+          "idx": 19,
+          "id": "H4-S2",
+          "slot": "NB",
+          "team": "D"
+        },
+        {
+          "idx": 20,
+          "id": "H4-CB1",
+          "slot": "FS",
+          "team": "D"
+        },
+        {
+          "idx": 21,
+          "id": "H4-S1",
+          "slot": "SS",
+          "team": "D"
+        }
+      ],
+      "call": "Gun Doubles \u2014 Dagger",
+      "defense": "4-3 Under Cover 0 + Zero Blitz",
+      "calledKind": "pass",
+      "nativeYards": 0,
+      "ending": "incomplete",
+      "duration": 3.8,
+      "frameCount": 39,
+      "frameTimeRange": [
+        0,
+        3.75
+      ],
+      "intervals": [
+        0.05,
+        0.1
+      ],
+      "offenseReview": "Dagger throw2.00 while C/LG have positive teammate impulses beginning1.70; no attribution of PBU to this jam.",
+      "defenseReview": "NB earns PBU2.85; incomplete3.75.20 all-step teammate contact entries are not20 incidents or proof of absent protection. Preserve defense and examine only named request stage if owner needs it.",
+      "postCatchSameDefenderMinima": [],
+      "events": [
+        {
+          "nativeIndex": 0,
+          "t": 0,
+          "type": "snap",
+          "a": 3,
+          "b": null,
+          "note": null
+        },
+        {
+          "nativeIndex": 17,
+          "t": 2,
+          "type": "throw",
+          "a": 0,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 18,
+          "t": 2.85,
+          "type": "pbu",
+          "a": 19,
+          "b": 7,
+          "note": null
+        },
+        {
+          "nativeIndex": 19,
+          "t": 3.75,
+          "type": "incomplete",
+          "a": null,
+          "b": null,
+          "note": null
+        }
+      ]
+    }
+  ],
+  "namedFrameEvidence": [
+    {
+      "id": "G1-P127",
+      "t": 5.4,
+      "los": 43,
+      "agents": [
+        {
+          "idx": 15,
+          "id": "H1-LB1",
+          "slot": "LB_M",
+          "position": [
+            70.9,
+            45.3
+          ],
+          "kind": "man",
+          "job": "man:H",
+          "target": 10,
+          "man": {
+            "leverage": "inside",
+            "initialCushion": 5.200000000000003,
+            "press": false,
+            "hipsOpen": true,
+            "trail": false,
+            "overTop": false,
+            "routeRead": true
+          },
+          "intent": {
+            "velocity": [
+              7.92,
+              4.26
+            ]
+          },
+          "runFit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              6.31,
+              5.77
+            ],
+            "energy": 0.93,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.29,
+            "supportDeviation": [
+              0.01,
+              -0.01
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 0.21
+          },
+          "consumedCues": [
+            {
+              "a": 15,
+              "b": 0,
+              "t": 5.4,
+              "source": "see",
+              "position": [
+                45.05,
+                32.3
+              ],
+              "velocity": [
+                6.49,
+                3.02
+              ],
+              "age": 0.15,
+              "pose": "up",
+              "carrying": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G3-P079",
+      "t": 3.7,
+      "los": 41,
+      "agents": [
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "position": [
+            62.9,
+            33.8
+          ],
+          "kind": "track",
+          "intent": {
+            "velocity": [
+              9,
+              -0.98
+            ],
+            "facing": -2.77
+          },
+          "body": {
+            "velocity": [
+              8.03,
+              -0.87
+            ],
+            "energy": 0.93,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.26,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "position": [
+            59.8,
+            8.7
+          ],
+          "kind": "man",
+          "job": "man:X",
+          "man": {
+            "leverage": "outside",
+            "initialCushion": 6.600000000000001,
+            "press": false,
+            "hipsOpen": true,
+            "trail": false,
+            "overTop": false,
+            "routeRead": true
+          },
+          "target": 8,
+          "intent": {
+            "velocity": [
+              1.66,
+              9.73
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              4.89,
+              3.92
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.22,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 18,
+              "b": 10,
+              "t": 3.7,
+              "source": "see",
+              "position": [
+                62.48,
+                33.85
+              ],
+              "velocity": [
+                8.31,
+                -0.91
+              ],
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        {
+          "idx": 19,
+          "id": "H3-S2",
+          "slot": "NB",
+          "position": [
+            58.2,
+            33.6
+          ],
+          "kind": "zone",
+          "job": "zone:hook_s",
+          "zone": "hook_s",
+          "landmark": [
+            51,
+            31.67
+          ],
+          "target": null,
+          "intent": {
+            "velocity": [
+              7.87,
+              0.45
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              7.39,
+              0.42
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.31,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 19,
+              "b": 10,
+              "t": 3.7,
+              "source": "see",
+              "position": [
+                62.48,
+                33.85
+              ],
+              "velocity": [
+                8.32,
+                -0.91
+              ],
+              "age": 0.2,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "position": [
+            61.5,
+            38
+          ],
+          "kind": "zone",
+          "job": "zone:deep_half_s",
+          "zone": "deep_half_s",
+          "landmark": [
+            56,
+            39.83
+          ],
+          "target": 10,
+          "intent": {
+            "velocity": [
+              3.55,
+              -5.98
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              3.8,
+              -4.36
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.26,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 21,
+              "b": 10,
+              "t": 3.7,
+              "source": "see",
+              "position": [
+                62.48,
+                33.85
+              ],
+              "velocity": [
+                8.32,
+                -0.91
+              ],
+              "age": 0.2,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G3-P079",
+      "t": 3.8,
+      "los": 41,
+      "agents": [
+        {
+          "idx": 10,
+          "id": "A3-WR2",
+          "slot": "H",
+          "position": [
+            63.7,
+            33.7
+          ],
+          "kind": "carrier",
+          "intent": {
+            "velocity": [
+              9.88,
+              -0.7
+            ]
+          },
+          "body": {
+            "velocity": [
+              7.71,
+              -0.55
+            ],
+            "energy": 0.93,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.26,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "position": [
+            60.3,
+            9.1
+          ],
+          "kind": "pursuit",
+          "intent": {
+            "velocity": [
+              6.85,
+              5.19
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              4.97,
+              4.04
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.22,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 18,
+              "b": 10,
+              "t": 3.8,
+              "source": "see",
+              "position": [
+                63.3,
+                33.76
+              ],
+              "velocity": [
+                8.3,
+                -0.9
+              ],
+              "age": 0.4,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        {
+          "idx": 21,
+          "id": "H3-S1",
+          "slot": "SS",
+          "position": [
+            61.9,
+            37.6
+          ],
+          "kind": "pursuit",
+          "intent": {
+            "velocity": [
+              7.12,
+              -6.54
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              4.05,
+              -4.34
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.26,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 21,
+              "b": 10,
+              "t": 3.8,
+              "source": "see",
+              "position": [
+                63.31,
+                33.76
+              ],
+              "velocity": [
+                8.31,
+                -0.91
+              ],
+              "age": 0.35,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G3-P079",
+      "t": 4.2,
+      "los": 41,
+      "agents": [
+        {
+          "idx": 18,
+          "id": "H3-CB3",
+          "slot": "CB_W",
+          "position": [
+            62.3,
+            10.8
+          ],
+          "kind": "pursuit",
+          "intent": {
+            "velocity": [
+              6.27,
+              5.88
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              5.11,
+              4.84
+            ],
+            "energy": 0.94,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.22,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 18,
+              "b": 10,
+              "t": 4.2,
+              "source": "see",
+              "position": [
+                66.48,
+                33.55
+              ],
+              "velocity": [
+                7.98,
+                -0.57
+              ],
+              "age": 0.4,
+              "pose": "up",
+              "carrying": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G4-P066",
+      "t": 3.7,
+      "los": 38.1,
+      "agents": [
+        {
+          "idx": 9,
+          "id": "H4-WR3",
+          "slot": "Z",
+          "position": [
+            54.7,
+            41.9
+          ],
+          "kind": "track",
+          "intent": {
+            "velocity": [
+              2.82,
+              9.32
+            ],
+            "facing": 3.13
+          },
+          "body": {
+            "velocity": [
+              2.44,
+              2.67
+            ],
+            "energy": 0.92,
+            "posture": 0.18,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.26,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 18,
+          "id": "A4-CB5",
+          "slot": "CB_S",
+          "position": [
+            48.4,
+            40.2
+          ],
+          "kind": "zone",
+          "job": "zone:flat_s",
+          "zone": "flat_s",
+          "landmark": [
+            42.1,
+            44.33
+          ],
+          "target": null,
+          "intent": {
+            "velocity": [
+              7.92,
+              4.39
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              5.13,
+              2.79
+            ],
+            "energy": 0.93,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.3,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 18,
+              "b": 9,
+              "t": 3.7,
+              "source": "see",
+              "position": [
+                54.62,
+                41.61
+              ],
+              "velocity": [
+                3.02,
+                0.87
+              ],
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        {
+          "idx": 21,
+          "id": "A4-S2",
+          "slot": "SS",
+          "position": [
+            54.4,
+            37.5
+          ],
+          "kind": "zone",
+          "job": "zone:deep_half_s",
+          "zone": "deep_half_s",
+          "landmark": [
+            53.1,
+            39.83
+          ],
+          "target": 9,
+          "intent": {
+            "velocity": [
+              1.12,
+              7.95
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              0.27,
+              4.43
+            ],
+            "energy": 0.95,
+            "posture": 0.19,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.28,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 21,
+              "b": 9,
+              "t": 3.7,
+              "source": "see",
+              "position": [
+                54.62,
+                41.61
+              ],
+              "velocity": [
+                3.02,
+                0.87
+              ],
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G2-P024",
+      "t": 5.1,
+      "los": 92.1,
+      "agents": [
+        {
+          "idx": 9,
+          "id": "H2-WR6",
+          "slot": "Z",
+          "position": [
+            105,
+            9.7
+          ],
+          "kind": "carrier",
+          "intent": {
+            "velocity": [
+              -9.73,
+              0.27
+            ],
+            "facing": 2.69
+          },
+          "body": {
+            "velocity": [
+              -4.63,
+              0.13
+            ],
+            "energy": 0.91,
+            "posture": 0.18,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.3,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 17,
+          "id": "A2-CB2",
+          "slot": "CB_S",
+          "position": [
+            109,
+            9.8
+          ],
+          "kind": "pursuit",
+          "intent": {
+            "velocity": [
+              -7.45,
+              0.05
+            ]
+          },
+          "runFit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          },
+          "body": {
+            "velocity": [
+              -4.49,
+              0.07
+            ],
+            "energy": 0.91,
+            "posture": 0.18,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.21,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "pass",
+            "passProbability": 1
+          },
+          "consumedCues": [
+            {
+              "a": 17,
+              "b": 9,
+              "t": 5.1,
+              "source": "see",
+              "position": [
+                105.35,
+                9.72
+              ],
+              "velocity": [
+                -3.54,
+                0.1
+              ],
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G4-P109",
+      "t": 2.1,
+      "los": 83.5,
+      "agents": [
+        {
+          "idx": 2,
+          "id": "H4-OT1",
+          "slot": "RT",
+          "position": [
+            82.4,
+            30.4
+          ],
+          "kind": "run-block",
+          "job": "pull",
+          "target": 15,
+          "runBlock": {
+            "kind": "pull",
+            "target": 15,
+            "drive": [
+              1,
+              0
+            ],
+            "pullRole": "lead",
+            "pullPath": [
+              [
+                82.25,
+                27.15
+              ],
+              [
+                82.35,
+                31.2
+              ],
+              [
+                84,
+                31.7
+              ]
+            ]
+          },
+          "intent": {
+            "velocity": [
+              -0.22,
+              3.03
+            ]
+          },
+          "body": {
+            "velocity": [
+              -0.21,
+              2.91
+            ],
+            "energy": 0.92,
+            "posture": 0.18,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.39,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 5,
+          "id": "H4-OG4",
+          "slot": "RG",
+          "position": [
+            80.8,
+            32.8
+          ],
+          "kind": "run-block",
+          "job": "pull",
+          "target": 11,
+          "runBlock": {
+            "kind": "pull",
+            "target": 11,
+            "drive": [
+              0.29,
+              0.96
+            ],
+            "pullRole": "kick",
+            "pullPath": [
+              [
+                82.25,
+                28.45
+              ],
+              [
+                82.35,
+                32.39
+              ],
+              [
+                83.4,
+                32.59
+              ]
+            ]
+          },
+          "intent": {
+            "velocity": [
+              -1.2,
+              1.5
+            ],
+            "facing": 2.5
+          },
+          "body": {
+            "velocity": [
+              -1.5,
+              3.09
+            ],
+            "energy": 0.91,
+            "posture": 0.18,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.35,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "consumedCues": []
+        },
+        {
+          "idx": 11,
+          "id": "A4-EDGE1",
+          "slot": "DE_W",
+          "position": [
+            79.5,
+            33.4
+          ],
+          "kind": "rush",
+          "intent": {
+            "velocity": [
+              1.75,
+              -0.97
+            ],
+            "facing": 5.09,
+            "posture": 0.5760204081632654
+          },
+          "runFit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "FS"
+          },
+          "body": {
+            "velocity": [
+              0.08,
+              -1.94
+            ],
+            "energy": 0.92,
+            "posture": 0.56,
+            "balance": 1,
+            "state": "up",
+            "squeeze": 0,
+            "lean": [
+              0,
+              0
+            ],
+            "padHeight": 1.17,
+            "supportDeviation": [
+              0,
+              0
+            ]
+          },
+          "belief": {
+            "read": "run",
+            "passProbability": 0.01
+          },
+          "consumedCues": []
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "selectionFrozenUnchanged": true,
+    "rankingAndPopulationReproduced": true,
+    "originalRawLineAndExtractedFileHashes": 24,
+    "actorJoins": 24,
+    "pairedFrames": 1197,
+    "sourceBlobsComparedUnchanged": 7,
+    "pythonSyntax": "pass",
+    "diffWhitespace": "pass",
+    "nativeOutcomesPreserved": 24,
+    "engineExecuted": false,
+    "reducerSha256": "ebfc7ba2c8a9c90fac3b5bbc940242409f7567a22b78b0311c94223f5e21200c"
+  }
+}
