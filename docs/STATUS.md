@@ -4,7 +4,9 @@ Updated **2026-10-16 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Verified #125, guarded adoption pending:** independent reviews accept117/122,123/124 and118/120/121 narrow repairs on acceptedd682b1f. Freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s;24 protected/seven runtime files,44flags/components1, no drift/skips. Focused/native receipts reused.106 resume-accounting defect confirmed by a zero-engine stub;106/101 remain held for author repair,108 stays a separate documentation lane. [Tasks and current queue](INTEGRATION.md#ready-blocked-experimental).
+- **Verified #130 / #128 only:** freeze82fdc79 passes1988 TS/145 Python/typecheck/build in212.180s,44settings/components1, no drift/skips; adoption pending. #126 held for Run/nonauthor adjudication of an existing double-command contract; initial failed219.553s receipt preserved, no assertion change. #127 stays held. [Exact receipt/cost/risks](../data/reviews/current/zone-force-integration/final-receipt.json).
+- **Saved70b4 audit reconciled:** [immutable report](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md); archive/checksum verified without recollection. Run offensive recovery and Pass defensive continuation implement independently, sharing composed evidence before better-broken-play claims. Physics/Catching own local same-time query/caller semantics; Flex owns acquired receiver forecast. [Current contracts and holds](INTEGRATION.md#accepted-development). Audit changes no engine/settings/baseline; evidence histories stay separate.
+- **Completed #125:** independent reviews accept117/122,123/124 and118/120/121 narrow repairs, adopted as70b4db6. Freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s;24 protected/seven runtime files,44flags/components1, no drift/skips. Focused/native receipts reused.106 resume-accounting defect confirmed by a zero-engine stub;106/101 remain held for author repair,108 stays a separate documentation lane. [Tasks and current queue](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #112:** #110 acquired run-entry reasoning plus final #111 connection travel, six exact reviewed files on acceptedc3264b0. Independent review de3de0c accepts their composition; adopted asd682b1f. Freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s with44 flags/components1. Reuse focused/native evidence, retain earlier contact/shorter IZ/Duo censor costs. No Physics/departure activation or new game campaign. [Queue](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #107:** #97/#100 release contracts, #95 acquired rat duty, #102 bounded contact-span validity and user-approved #104 inline role. Fourteen protected files; exact freeze90240f5 passes1,890 TS/145 Python/typecheck/build,226.175s plus1.873s overlap,total228.048s. Adopted asc3264b0; actual tree equals publication/protected passing freeze. #101 tooling-HOLD: Run repairs lost wall-censor accounting/exception traces; Measurement reviews without a study rerun. [Exact scope and owners](INTEGRATION.md#ready-blocked-experimental).
 - **Completed #105:** #92/#94/#96/#98/#103 adopted as3723204 after independent
@@ -23,7 +25,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `d682b1f474cb6ba260a7b8b1119a62919c5a2159`**, merged #112 with reviewed acquired run entries and final connection travel; #107 and all earlier accepted controllers retained. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr112-merge.json).
+- **Accepted develop: `70b4db6a3ef53acc1a0e90cd055f1087205daa30`**, merged #125 with independently reviewed movement/defense/accounting repairs; #112 and all earlier accepted scopes retained. Historical `4ded6b6` separate. [Actual merge](../data/reviews/current/pr125-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -72,10 +74,9 @@ Do not use the historical sections below as a current starting-reference pin.
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
 
-Current investigations are [second-level blocking access (Run), run-support
-continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
+Current audit priorities are broken-play continuity (Run plus defensive acquired-QB gates), the QB acquired receiver-forecast boundary (Flex with Awareness/Pass), and same-time catch opportunity geometry (Physics/Catching). [Exact ownership and contracts](INTEGRATION.md#accepted-development). Earlier second-level/mesh investigations and saved evidence remain separately identified below.
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop isd682b1f; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop is70b4db6; saved #82 panel remains7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
 Measurement completed/published the one frozen48 comparison at40af332; no

@@ -2,8 +2,15 @@
 
 # Master issue register
 
-Updated **2026-10-15 (America/Phoenix)**. Accepted development reference:
-`develop` at `90edc52530caa71efdebf257f17d954a8a629ea0` (merged #78 / bounded #69; #74/#72/#63/#65 retained).
+Latest saved-data review: **2026-10-16 America/Phoenix / 2026-10-17 UTC**, accepted engine
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30` (queue `c933dbc3`).
+[Full six-owner audit and next priorities](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md).
+Older entries retain their dated integration history; consult the canonical
+[integration queue](INTEGRATION.md#accepted-development) for the live accepted pin.
+The previous register header's `90edc525` was the accepted reference at its publication,
+not the current development instruction.
+
+Current runtime disposition: #128 acquired quarter-flat force-support correction is verified through #130, adoption pending; #126 held for exact zone-reach planned-double contract adjudication by Run/nonauthor reviewer; #127 broad approach trials remain held. [Full receipt, limits and preserved failure](../data/reviews/current/zone-force-integration/final-receipt.json). The70b4 audit remains measured historical evidence, not a later-source result.
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -41,7 +48,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
-| [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
+| [RUN-006](#RUN-006) | Riding cadence repaired; failed-exchange continuation still missing | Accepted cadence fix / current observed continuation failure | Continuation active; cadence scope resolved in #63 | Run Game; four70b4 prefixes, first acquired failure/recovery cue, preserve normal mesh and reach |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
 | [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 accepted via #78 at90edc525, preserved by #82 | Integration/Run; complete, no repeat review; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
@@ -53,6 +60,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Bounded #75 information correction accepted via #82; broader coverage open | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
+| [GAME-003](#GAME-003) | Two-point participant energy persistence | Bookkeeping correction | Adopted via125 | Exact reviewed writeback; retain recovery/bench/score contracts |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
 | [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
 | [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Risk-only accepted via #74; broader migration parked | Awareness + affected controller owner; after first reusable boundary passes |
@@ -72,6 +80,86 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [DATA-001](#DATA-001) | Capability mappings and contact-capacity calibration | Evidence gap | Deferred | Roster/audit owner, no active assignment claimed; one named trait/measurement question |
 | [REPO-001](#REPO-001) | GitHub default is still the old engine branch | Confirmed navigation problem | Open administrative item | Integration; separate reviewed default-branch decision |
 | [REPO-002](#REPO-002) | Legacy PR/branch retirement and external evidence preservation | Historical cleanup holds; current disposition needs recheck | Parked | Integration + affected owners; refreshed preservation manifest |
+
+## Accepted70b4 saved-cohort additions — source-qualified audit
+
+These rows extend this register, not a separate backlog. [Coverage, evidence and
+owner prompts](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md) distinguish
+source-confirmed defects from hypotheses. Screening counts are not defect rates.
+No runtime correction or promotion is claimed by this audit.
+
+| ID | Evidence / next decision | Owner and boundary |
+| --- | --- | --- |
+| [CTRL-001](#CTRL-001) | Acquired QB commitment can lose to retained pass/premesh expectations | Pass/Awareness; existing man/fit gates, no global phase manager; joint broken-exchange review with Run |
+| [BALL-001](#BALL-001) | Final-body/swept-ball catch query mixes times | Physics + Catching; local relative query and exact opportunity inputs; native incidence unresolved |
+| [COV-004](#COV-004) | Shallow cut admission and retention disagree near8–9yd | Pass; coherent existing predicate, preserve legitimate release/vertical exit |
+| [COV-005](#COV-005) | Trips fast-#3 flat takeover responsibility is unclear | Pass; one installed-duty/attainable-handover diagnosis, no automatic extra defender |
+| [GAME-004](#GAME-004) | Defensive TD, safety and pressure-scramble branches omit credits | Measurement + Integration; independent small result-contract fixes, safety yardage convention unresolved |
+
+<a id="CTRL-001"></a>
+### CTRL-001 — Acquired QB continuation
+
+Six official scramble witnesses (G1-P086/P127, G2-P174, G3-P093,
+G4-P173/P177) have personally consumed positive QB possession beyondLOS+2
+while man/pass-belief work continues away. `pursueIfLive` can return pursuit
+that `ManCoverage.coverMan` rejects. Separately, all four RUN-006 caps retain
+unkeyed premesh routing despite sustained acquired contradictory possession.
+QB carrying at the start of an ordinary mesh is not sufficient evidence to leave
+one's fit. [Source-qualified finding and controls](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/cross-system.md).
+Implement local gates independently of offensive recovery; evaluate composed
+broken-play behavior before claiming improved football. No private scramble flag
+or universal timer substitutes for the acquired cue.
+
+<a id="BALL-001"></a>
+### BALL-001 — Catch query time consistency
+
+`resolveCatchOpportunities` compares a body's attained final position to the whole
+ball chord. A simple .05s analytic case admits1.25yd proximity while simultaneous
+separation is always at least1.50yd, outside1.30yd reach. This confirms an operator
+defect. G1-P020/G2-P124/G2-P150 remain rounded native sensitivity leads, not proven
+invalid interceptions. [Independent Physics challenge and controls](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/physics.md).
+Physics/Catching owns a local same-time query, preserving legal height, eligibility,
+retry, difficulty and ordering; no World rewrite or ratings change required.
+
+<a id="COV-004"></a>
+### COV-004 — Shallow-cut entry/continuation mismatch
+
+The non-area cut rule can admit an approaching under route within9yd while its
+continuation rejects lateral distance8yd or greater. G3-P008 and G3-P104 repeat
+adjacent man/zone decisions; the latter still produces tight coverage/short gain.
+[Pass evidence](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/pass-awareness.md).
+Pass owns a coherent existing predicate, not a new hysteresis framework. Other
+rapid job-change flags are unadjudicated and should not be counted as this defect.
+
+<a id="COV-005"></a>
+### COV-005 — Fast-#3 installed duty
+
+G2-P180 and G4-P184 expose open #3 flats while other defenders retain legitimate
+wall/roof/high duties; actual checked coverage differs from initial display labels.
+The missing question is who can acquire/take over the low release, with which
+remaining budget and feasible redirect. An open flat under a high/low stretch
+alone is not a defect. [Pass evidence and opposing #2/wheel controls](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/pass-awareness.md).
+Ready#128 is narrower force-duty preservation, not this takeover or CTRL-001.
+
+<a id="GAME-004"></a>
+### GAME-004 — Result branches lose existing credits
+
+G1-P156's pick-six bypasses team turnover credit; G2-P140's valid safety bypasses
+underlying sack/tackle credit and records zero box yardage against native−7.50;
+eight pressured scrambles lose existing `hurriedBy` player credit. Safety yardage
+needs an explicit goal-plane convention, not automatic adoption of native−7.50.
+[Exact evidence, all IDs and ordinary controls](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/measurement.md).
+Measurement owns narrow result fixtures/contracts with Integration. These fixes
+can batch independently of the three main football workstreams; no new games.
+
+Existing INFO-002/INFO-003 now have a concrete next consumer: Flex owns QB receiver
+forecast evaluation/release with a legitimate receiver-acquisition boundary and
+immutable installed prior. Current teammate refresh is not acquisition, and
+current QBMind defender memory does not provide receiver memory. Forecast-only
+hidden-state invariance is the initial contract; other live QB reads remain debt.
+RUN-007 retains G2-P099 forecast/path versus G1-P164 loaded collection evidence;
+no achieved-motion/capacity defect is established. Known PHY-001/003 remain open;
+the cohort does not adjudicate their saved-game outcome cost.
 
 ## Accepted corrections and retained failures
 
@@ -113,6 +201,8 @@ in its parent history is separate, not a dependency. **Resolved gap-identity sco
 <a id="RUN-006"></a>
 ### RUN-006 — Riding departure starts before the mesh window
 
+Current-source checkpoint on accepted70b4db6 corroborates the unresolved exchange/continuation class: G3-P003/P087/P141 and G4-P142 are under-center I/Offset-I Outside Zone, QB retains the snap through25-second caps without exchange or carrier contact. This does not establish the same initial F-crossing cause or a new regression. Run reuses#101 evidence and traces the earliest cue/request/reach plus failed-exchange continuation; no new census or physics capacity change. [Exact cohort and audit handoff](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-checkpoint-2026-10-16.md).
+
 New diagnosis #101 on acceptedbb6d4c7: I21/Wide9 F crosses the exchange, QB/RB
 lose physical reach and remain stranded through two20s live censors. Run owns
 bounded exchange recovery, with ordinary Ace reachable transfer as control.
@@ -132,7 +222,7 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
 
-Latest defensive reviewd01d020 accepts123 shallow positive-observed-possession/assigned-side handover and124 narrow Quarters flat/wheel duty with Palms distinct.2.8s123 prefixes prove closing, not a tackle; broader tracker/Counter/PA bump remain held.124 retains early flat-cushion/top-depth cost and changed target/censored limits; no complete top-down coverage or populationYAC claim. Exact minimal six-file pair has no108 import dependency; exact125 verification passes; guarded adoption pending. [Pinned review](reviews/independent-defense-123-124.md).
+Latest defensive reviewd01d020 accepts123 shallow positive-observed-possession/assigned-side handover and124 narrow Quarters flat/wheel duty with Palms distinct.2.8s123 prefixes prove closing, not a tackle; broader tracker/Counter/PA bump remain held.124 retains early flat-cushion/top-depth cost and changed target/censored limits; no complete top-down coverage or populationYAC claim. Exact minimal six-file pair has no108 import dependency; exact125 verification passes; adopted via125 as70b4db6; actual/protected tree preservation verified. [Pinned review](reviews/independent-defense-123-124.md).
 
 2026-10-16 update: Do-It-All accepts exact #97/#100 release-read/provisional-block composition and separate #95 acquired rat duty at ba399712 on3723204. Integration has reconciled the shared entry producer once;20 existing overlap checks and exact #107 freeze90240f5 pass:1,890 TS/145 Python/typecheck/build. Adopted via107 asc3264b0; actual tree equals publication/protected passing freeze, no unchanged rerun. Drive high/low losses, exposed seam, changed targets/RNG and rat collision/fall/lost availability remain accepted local costs, not proof of overall coverage/tackling improvement. [Current scope](INTEGRATION.md#ready-blocked-experimental). The earlier review-request paragraph below describes the prior stage.
 
@@ -256,7 +346,7 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
 
-Latest independent review9ea0782 accepts117 normal following/anchor shoulder and122 bounded verified pacing, including their eight-file composition on d682b1f. Preserve weak1175.34→2.93, mirrored depth concessions and1225.34→5.21; tackle-sensitive gains do not prove extra blocking. LG/Mike collection remains unresolved, and later exit trials are rejected. The new initial combination-approach/persistent helper-surface diagnosis is a separate next mechanism, not a ready patch or a reason to bypass useful LT work.Exact24-file125 freeze910c058 passes1980 TS/145 Python/typecheck/build; guarded adoption pending; no new native campaign. [Current tasks](INTEGRATION.md#ready-blocked-experimental).
+Latest independent review9ea0782 accepts117 normal following/anchor shoulder and122 bounded verified pacing, including their eight-file composition on d682b1f. Preserve weak1175.34→2.93, mirrored depth concessions and1225.34→5.21; tackle-sensitive gains do not prove extra blocking. LG/Mike collection remains unresolved, and later exit trials are rejected. The new initial combination-approach/persistent helper-surface diagnosis is a separate next mechanism, not a ready patch or a reason to bypass useful LT work.Exact24-file125 freeze910c058 passes1980 TS/145 Python/typecheck/build; adopted via125 as70b4db6; actual/protected tree preservation verified; no new native campaign. [Current tasks](INTEGRATION.md#ready-blocked-experimental).
 
 2026-10-16 latest: independent de3de0c review ACCEPTS #110 acquired run-entry reasoning (d157356) and final #111 emitted-direction connection travel (bc02b22), plus their six-file composition on acceptedc3264b0. Exact #112 freeze df900af passes1906 TS/145 Python/typecheck/build and is adopted asd682b1f, actual tree equal publication/protected passing freeze. Strong achieved access needs both patches and small decision margins; combined weak contact is earlier/nearer LOS, fresh110 IZ gain4.35→3.67 remains adverse. Duo is unchanged only when adding111:110 advances SS contact3.45→3.25s, both censored3.50. Soft obstruction scoring is not a radius/World change or whole-route certificate. Old all-off6753 source stays distinct from literal accepted4658; inherited information/geometry limits remain. Rejected gradient, CLIMB_EXIT/departure and Physics hand-retention are separate. [Pinned review](reviews/pr110-111-independent-review.md).
 
@@ -418,7 +508,7 @@ allocation and versioned research-adapter migrations remain separate.
 <a id="GAME-003"></a>
 ### GAME-003 — Two-point participants lose completed energy writeback
 
-Independent4b2664d accepts121: copy actual participant body energy back by player identity after either try outcome, as ordinary scrimmage already does. Participants on both teams change; bench/recovery/score/ending remain. Three hook-only focused checks and two expected-red failures are preserved. This has no118/120 dependency; exact125 verification passes; guarded adoption pending. No fatigue retune or live game is needed for the local decision.
+Independent4b2664d accepts121: copy actual participant body energy back by player identity after either try outcome, as ordinary scrimmage already does. Participants on both teams change; bench/recovery/score/ending remain. Three hook-only focused checks and two expected-red failures are preserved. This has no118/120 dependency; exact125 verification passes; adopted via125 as70b4db6; actual/protected tree preservation verified. No fatigue retune or live game is needed for the local decision.
 
 ## Information and awareness
 
@@ -634,7 +724,7 @@ evidence. Do not adopt all patch physics or infer realistic endings from ledgers
 <a id="PHY-002"></a>
 ### PHY-002 — Timing, shared-foot composition and cost
 
-Latest independent4b2664d review accepts118 existing vector-brace accounting and120 yaw/completed-effort/history repairs; unchanged budgets/coefficients/capacities/defaults, no115 seam or experimental solver. Shared World statements compose exactly in either order. Ordinary aligned lean and gait fatigue proxy remain inherited, off-feet metabolic completeness/calibration remain unproved; corrected energy can affect later ticks. Saved native118 reference is source0a5e365a optional-undefined-force fallback, not relabeled literal accepted. Exact125 verification passes; guarded adoption pending. [Pinned scope and authority classification](reviews/pr118-120-121-independent-review.md).
+Latest independent4b2664d review accepts118 existing vector-brace accounting and120 yaw/completed-effort/history repairs; unchanged budgets/coefficients/capacities/defaults, no115 seam or experimental solver. Shared World statements compose exactly in either order. Ordinary aligned lean and gait fatigue proxy remain inherited, off-feet metabolic completeness/calibration remain unproved; corrected energy can affect later ticks. Saved native118 reference is source0a5e365a optional-undefined-force fallback, not relabeled literal accepted. Exact125 verification passes; adopted via125 as70b4db6; actual/protected tree preservation verified. [Pinned scope and authority classification](reviews/pr118-120-121-independent-review.md).
 
 [#3](https://github.com/tannerthardy/football-simulation-/pull/3) and
 [#7](https://github.com/tannerthardy/football-simulation-/pull/7) remain experimental.
