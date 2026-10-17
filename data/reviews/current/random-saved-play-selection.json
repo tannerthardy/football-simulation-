@@ -1,0 +1,217 @@
+{
+  "schema": "random-saved-play-audit-selection-v1",
+  "seed": "measurement/random-play-nitpick/2026-10-17/v1",
+  "algorithm": "Within each game, rank SHA256(UTF8(seed + LF + stable play ID)) ascending; take first six. No redraws. Outcome, call, gain, duration and prior flags are not inputs.",
+  "population": {
+    "G1": 135,
+    "G2": 140,
+    "G3": 117,
+    "G4": 139
+  },
+  "excluded": {
+    "nonfilmedOtherLogs": 179,
+    "twoUnfilmedPhysicalTries": 2,
+    "nullifiedFilmedScrimmages": 28
+  },
+  "acceptedAtReview": "0000e560e0dbe31905151465152d412ba838803d",
+  "queueAtReview": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "gameRuntime": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "runtimeSourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "existingAuditEvidence": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "indexSha256": "6dac3b2abe704012ef9536ef24534ac1e897edbb4b43ae16953ccb3d0acd7b8b",
+  "selected": [
+    {
+      "id": "G1-P075",
+      "selectionHash": "00d8cc5902b9c5bfae88e541e1b62a8b15f8aa4c8c63a62e1050e5661e5ac28b",
+      "nativeSha256": "bf2f12a2107cda37e398cc594dbff04632bc21222b0e9f6e9a2220706852cada",
+      "observationIndex": 55,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G1-P177",
+      "selectionHash": "01f46327841009458bc1500976b2621eb514dcb1a5142a0ded3e45f22acf14ae",
+      "nativeSha256": "96b14717fbc9de44c32dcb3d301fb18fae1582e864fe772a6865e52c15b540c3",
+      "observationIndex": 135,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G1-P180",
+      "selectionHash": "03f8811b8694c4f3b06f211adac853746a6ab06c65a7258600823d2cd20defbd",
+      "nativeSha256": "cb035b5877962d4120a2068ea990d2e5a59cf4191403b23a134214dc79af3a59",
+      "observationIndex": 136,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G1-P195",
+      "selectionHash": "04bfc2bd9e1f715c7d0205afcf324f5c9332bb67b6c365a8d48f1ce9b0c43d36",
+      "nativeSha256": "ec16101105ca0f623feb7868b29bd5425411a50a8bcdeef475a583fff13e2b24",
+      "observationIndex": 146,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G1-P140",
+      "selectionHash": "0529da5809f10ace780c2dc071546673fb3773b2976de6f69ab2d14e2ba11ed2",
+      "nativeSha256": "830c88d2d809a27de6ea1ea929e52865360f0df273aa6f8ba1687af290422eb2",
+      "observationIndex": 104,
+      "oldOrdinaryPanel": true,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G1-P127",
+      "selectionHash": "05466a24202f0f94c21dd06172312149459b85c10c1aaf97ef0b6256290fa1c5",
+      "nativeSha256": "2e13651db32a8352a918b7f7195bdeec1fb548031dd6faeed71f3a36917f9e0f",
+      "observationIndex": 95,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P142",
+      "selectionHash": "0044f67b5549162ad1b65050082f753717d688f71d18102e0d2a43f942d606e1",
+      "nativeSha256": "678792b8219ea5fd069a631c1e192cd4d51e87c44cfa3e52d0fbfbd036c3c607",
+      "observationIndex": 110,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P154",
+      "selectionHash": "01d576ad7a9716bb42376e1220d0bfa9676f32e0d28e50fb03154d6e1c9d33bb",
+      "nativeSha256": "b6af1ab5be83db546bfcc9baf32ae368717c80b22e8da73d377043a315911870",
+      "observationIndex": 122,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P002",
+      "selectionHash": "03c55c3c39f400b87896c3a0fdbfa6255322d9157ff70de73a87f43004844119",
+      "nativeSha256": "36b2aa1a7ca68d996f132c5bc8c2125da828204c77712f97db35749626d49ef8",
+      "observationIndex": 0,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P062",
+      "selectionHash": "0572e426bbe360ab6b9fa61ac903ef6909affe8946956da6d093677ca6889609",
+      "nativeSha256": "7ed3b00396748670ac3691d2c8d6c3e39e9891ec59ea3c2833ab75303e8ba27d",
+      "observationIndex": 46,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P122",
+      "selectionHash": "06159742ce6581010a6223e4f6ab5246115f82d362063d2d1c6ec624923e8a8a",
+      "nativeSha256": "7f1a78a10c601f7521a2595bdc4eb5e7934708dcb53313c0e2d1ea37fee31c55",
+      "observationIndex": 95,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G2-P024",
+      "selectionHash": "06dd20ff29aad53d3989e4946ed20b0b16a80a1a09a26e50d49cbd13801c2958",
+      "nativeSha256": "04c9150bf8c9e0ad196a41d099fdc314f1803e74fb2f1bad2e1f20a7b66c1f3b",
+      "observationIndex": 16,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P120",
+      "selectionHash": "01bb193304d2ead4ea3822828097e87bdc4bf4cceb16b60d4974d71c50dbad8d",
+      "nativeSha256": "4330ecdf13473eca896a3906afac2189a34202e7335daba8519746813e13c6b5",
+      "observationIndex": 95,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P079",
+      "selectionHash": "0551538ab9a7c5e68a006ccea48b3a23cc49a835a155dd106c92272f13df1e31",
+      "nativeSha256": "1f36e57fdc656d79a635781afd0bdba6e2055e4b85b8d10ea4263d7f6c7903d3",
+      "observationIndex": 65,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P035",
+      "selectionHash": "08b80c6056d6a71b50e367ec89c74dbbef593bcef0cb80ed88b56be7ca8b151f",
+      "nativeSha256": "3ae608ac9e76c1903f35321a8b4df55aeca57705ef402f49e0cd4823b79b6e14",
+      "observationIndex": 27,
+      "oldOrdinaryPanel": true,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P137",
+      "selectionHash": "097e4f4ca48d7bc505d29a93b6c4adde12d26c21ec657b97134eba35a21dae01",
+      "nativeSha256": "2a16371124eedee45d0a7b2cd45da65d454f7b26e4a683ef49f90aef7ae12a45",
+      "observationIndex": 109,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P012",
+      "selectionHash": "0c8e97e517f9bd67d3ce9e7f53741788400d4e1e4c3d2efd630fbae7978c41fd",
+      "nativeSha256": "34491505617e6710d39ccc1f9088fa2a1bec84bc772d53317b537dd7652e2d1c",
+      "observationIndex": 7,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G3-P123",
+      "selectionHash": "0f3be8a130d3a98e1a8108f4563014d82f6cedcbd1aa0491a9571b574add6ebc",
+      "nativeSha256": "0159ad8751fc9a24abe6b09b295c3421bcb44691b3217a3df9e37502bddfca5e",
+      "observationIndex": 98,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P015",
+      "selectionHash": "08bf6ada2303b58fcbe9d59d47616c43e6d2ff48bd92b5d800eccec5af4b45bf",
+      "nativeSha256": "b569635ac46d860a077255c3eb7fa0bbe00346b60a8153e0411768dc12c2cad6",
+      "observationIndex": 9,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P109",
+      "selectionHash": "0a825d05841a4d0fae15a86f19fc540cc1df071cfc02aa27a4de1788203b2df5",
+      "nativeSha256": "50a4e83408d8e724ac8dfb6a6117712e88151d86e90484c9b91f625232889f72",
+      "observationIndex": 76,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P042",
+      "selectionHash": "10955a86c077e7d43fac58b1a8a943d283c0a930c1556dfcc17be91eaac8b958",
+      "nativeSha256": "5048972f669f00da27717ec249a0362c3467f3e8585276de529fe5140bc2720a",
+      "observationIndex": 28,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P041",
+      "selectionHash": "12582cc4ebf74b778f98f56398c6ff0bdef413bf34e3e0c2433ed858a5dad79d",
+      "nativeSha256": "2f2b0b62d37029dc5617a4807779f2f7edb2cb5d327c76cd4c3b03d83305e138",
+      "observationIndex": 27,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P152",
+      "selectionHash": "12c7972348a699047fde0d822374ca339b4a77b4337fea9dac290a4060e081ba",
+      "nativeSha256": "f05942d8313613928c096e7793b14602cd90610ff187caffe43da78540d970a2",
+      "observationIndex": 108,
+      "oldOrdinaryPanel": true,
+      "oldTailPanel": false
+    },
+    {
+      "id": "G4-P066",
+      "selectionHash": "12e503ae2e9ed271f0e409363916682feefce5374b06e77d256bee895f89087a",
+      "nativeSha256": "41b1a4d9e0894ba186a480e1f03d355ee835be2f04b389039928bceba8a42877",
+      "observationIndex": 47,
+      "oldOrdinaryPanel": false,
+      "oldTailPanel": false
+    }
+  ]
+}

@@ -1,5 +1,15 @@
 # Current work ownership
 
+## Measurement random saved-play nitpick — 2026-10-17 UTC
+
+Measurement claims only `docs/reviews/random-saved-play-audit.md`,
+`data/reviews/current/random-saved-play-*.json` and the bounded saved-data reducer
+`scripts/diag/random-saved-play-audit.py` on `codex/random-play-nitpick`.
+Review 24 outcome-blind selected snaps from the existing four 70b4db6 games;
+accepted-at-review0000e560/queueaa9ed35. No new simulation, collector, roster,
+engine tuning or replacement dashboard. Preserve existing play IDs/issue links;
+report historical behavior and current source status separately.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
