@@ -1,5 +1,34 @@
 # Current work ownership
 
+## Free-runner pace behind moving blocks — 2026-10-16 America/Phoenix
+
+Run owns `codex/run-pace-gather` from freshly fetched accepted develop
+`d682b1f474cb6ba260a7b8b1119a62919c5a2159`, queue `bf493d8`.
+Root alone edits `spacing.ts:gatherForMotion` and one new pace contract test.
+First question: can a free runner use a gentler verified slowdown instead of
+the existing binary half-speed gather, retaining the same acquired picture,
+direction and physical clearance? Frozen weak1.75 shows original clearance
+−0.040yd, half +0.859 to LT, and an intermediate pace physically clears with
+0.89yd more short-horizon progress. Use bounded existing movement previews,
+not a new route planner or assumed monotonic clearance. Preserve genuine
+obstruction, trailing-conflict rejection and loaded-contact exclusions.
+No radial headway/loaded priority, runner read, assignments, release, physics,
+capacities, grip, active hands or flag/default edits. #119 read and #117 loaded
+footwork stay separate; test new pace alone before any explicit composition.
+Parallel readers diagnose weak second-level access and review gather/traffic
+contracts. Shared spacing boundary is notified to Do-It-All before edits;
+Integration owns final combined suite. Reuse saved accepted/native evidence.
+
+Candidate runtime/tests `13dfe18a8214879f24034e3c4732a844a2664cb4` is ready for
+independent review: 49 focused checks and typecheck pass. Exact source `96cff1c`
+stands alone on accepted develop; #117 is an explicitly separate interaction.
+The predeclared weak Under3 control retains its runner reads and first-level
+protection. Weak #117 LOS arrival improves 2.95→2.80s with no offensive impacts;
+Mike still wins. 10 native executions/5 situations, aggregate23.502s command cost
+including rejected checks. [Evidence and limitations](reviews/run-pace-gather/README.md).
+The independent LG/Mike departure remains unresolved; traversing its same escape
+waypoint faster failed to provide protection and is not part of this candidate.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).

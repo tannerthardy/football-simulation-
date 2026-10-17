@@ -1,0 +1,36 @@
+{
+  "accepted": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "question": "Does a bounded gentler verified pace preserve useful progress and all acquired teammate clearance compared with binary half-speed gathering?",
+  "controls": [
+    "existing Ace12 WZ strong Over3",
+    "existing Ace12 WZ weak Over3",
+    "existing Ace12 OZ strong Over3",
+    "saved useful Duo climb,3.50s censor",
+    "existing moving-obstruction/stop and rear-conflict physical tests"
+  ],
+  "conditionalTransfer": {
+    "id": "wz-weak-under3",
+    "formation": "ace_12",
+    "roster": "pair11",
+    "offenseSeed": 11,
+    "defenseSeed": 12,
+    "strength": 0.55,
+    "playSeed": 77,
+    "los": 40,
+    "ballY": 26.67,
+    "front": "base43/under",
+    "coverage": "cover3",
+    "runPolicy": {
+      "edge": "spill",
+      "linebacker": "stack"
+    },
+    "selectedBeforeCandidateResults": true,
+    "trigger": "only after correction passes local/current controls; tests changed front/traffic geometry, no replacement if adverse"
+  },
+  "separateCandidates": [
+    "#117 loaded footwork",
+    "#119 moving-blocker read",
+    "#116 runoff floor",
+    "loaded blocker priority"
+  ]
+}
