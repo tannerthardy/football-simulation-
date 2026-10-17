@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Catching: acquired quarter-flat force continuity — 2026-10-17
+
+Branch `codex/quarter-flat-force-support` starts at accepted/fetched
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30`, canonical queue `c933dbc`.
+Claim only `CoverageDefender.update`'s existing installed-support eligibility:
+retain the q_apex's force job during its already acquired `flat` phase, subject
+to current run belief, acquired back possession and throw-recognition priority.
+Direct force contracts and four frozen controls; reuse compatible #125 evidence.
+No change to run-fit allocation/execution, coverage objectives, movement,
+physics, capacities or helpers. All cushion variants stay in research HOLD
+`codex/quarter-flat-current` / #127; do not import that parent.
+
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
