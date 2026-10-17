@@ -1,0 +1,56 @@
+{
+  "inputs": [
+    {
+      "id": "counter-s3",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s3",
+      "concept": "power",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "pa_flood-s3",
+      "concept": "pa_flood",
+      "kind": "pass",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    }
+  ],
+  "stop": 2.8,
+  "strength": 0.55,
+  "los": 40,
+  "ballY": 26.666666666666668,
+  "firstDownX": 50,
+  "coverage": "cover3",
+  "personnel": "base43",
+  "operator": "scripts/diag/defense/flow-panel.ts"
+}

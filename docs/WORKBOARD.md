@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Second-level shallow-runner handover — 2026-10-17 UTC
+
+Do-It-All owns minimal extraction on codex/second-level-handover from accepted
+d682b1f474cb6ba260a7b8b1119a62919c5a2159: only executeRunFit's observed shallow
+runner flow/declaration handover and its focused test. Catching/Run notified on
+#100/#112 before implementation; assigned-side, deep mesh, negative/unknown
+possession, cutback/lag and earned blocks remain controls. The broader moving-fit
+tracker and failed unrestricted handover remain on codex/second-level-defense;
+no new motion memory, line-picture classifier, coverage priority, spacing,
+blocking, physics, capacity or flag changes in this portable candidate. #116 is
+still frozen/HOLD and unimported. Integration owns combined verification.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
