@@ -89,7 +89,9 @@ describe('independent measured force inputs', () => {
   it('shares an absolute arm budget across multiple simultaneous requests', () => {
     const a = body(0, { armForce: 200 }), b = body(.9), c = body(-.9);
     const w = new World([a, b, c]);
-    for (const target of [b, c]) w.joints.push({ kind: 'hands', a, b: target, extension: .9,
+    // Compress both working gaps: a neutral rest-length joint requests no
+    // force under the existing law, regardless of its capacity.
+    for (const target of [b, c]) w.joints.push({ kind: 'hands', a, b: target, extension: 1,
       push: 5000, hold: 0, steer: 0 });
     const free: Intent = { vel: { x: 0, y: 0 }, free: true };
     const r = w.step([free, free, free], .05);

@@ -48,7 +48,8 @@ export interface PhysicalProfile {
    * Omitted by roster derivation pending task-matched calibration. */
   loadedDriveForce?: number;
   /** Optional independently measured arm-force capacity, kg·yd/s², positive
-   * and numerically representable. Feeds shared active arm budgets AND existing structural grip
+   * and numerically representable. Feeds shared active arm budgets AND
+   * existing structural grip
    * limits, across blocking/tackling. Omitted uses the legacy mapping. */
   armForce?: number;
   /**

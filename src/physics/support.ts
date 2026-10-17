@@ -103,10 +103,10 @@ export const TURF_MU = 1.1;
 function measuredCapacity(value: number | undefined, fallback: number, name: string): number {
   if (value === undefined) return fallback;
   const square = value * value;
-  // Numerical headroom for existing squared shared budgets/structural grip
+  // Numerical headroom for existing shared budgets/structural grip
   // multiples, not an athlete-force cap. Reject, never clip a measurement.
   if (!Number.isFinite(value) || value <= 0 || !Number.isFinite(square)
-    || !Number.isFinite(1 / square) || value > Math.sqrt(Number.MAX_VALUE) / 16)
+    || !Number.isFinite(1 / square) || value > Math.cbrt(Number.MAX_VALUE) / 16)
     throw new RangeError(`${name} must be positive and numerically representable`);
   return value;
 }
