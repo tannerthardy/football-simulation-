@@ -1,0 +1,725 @@
+{
+  "acceptedBase": "0000e560e0dbe31905151465152d412ba838803d",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "source": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "node": "22.23.3",
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "nativeReconstruction": {
+    "initialRngMatches": true,
+    "firstRecordedDifference": {
+      "t": 3.6,
+      "actual": {
+        "t": 3.6,
+        "agents": [
+          57.2,
+          25.3,
+          -1.8,
+          63.4,
+          35.8,
+          3.9,
+          65.7,
+          27.7,
+          4,
+          62.1,
+          31.7,
+          2.8,
+          59.5,
+          22.6,
+          1.7,
+          65.1,
+          28.3,
+          -2,
+          63.3,
+          22.1,
+          -0.4,
+          70.7,
+          22.8,
+          0.8,
+          67.8,
+          42.2,
+          -0.4,
+          67.9,
+          16.7,
+          2.7,
+          63.7,
+          34.8,
+          3,
+          62.6,
+          35,
+          3.8,
+          59.3,
+          23.9,
+          4.7,
+          63.4,
+          24.5,
+          4.5,
+          61.4,
+          31.7,
+          6,
+          64.1,
+          25.5,
+          5.4,
+          64.8,
+          33.9,
+          4.5,
+          64.3,
+          27,
+          5.9,
+          67.2,
+          16.9,
+          5.8,
+          68.2,
+          41.9,
+          -3.7,
+          68.4,
+          35.8,
+          3.1,
+          71.1,
+          23.1,
+          3.9
+        ],
+        "ball": [
+          63.3,
+          22.1,
+          1.1
+        ],
+        "carrier": 6,
+        "carrierPosture": [
+          0,
+          -0.39
+        ]
+      },
+      "expected": {
+        "t": 3.6,
+        "agents": [
+          57.2,
+          25.3,
+          -1.8,
+          63.4,
+          35.8,
+          3.9,
+          65.7,
+          27.7,
+          4,
+          62.1,
+          31.7,
+          2.9,
+          59.5,
+          22.6,
+          1.7,
+          65.1,
+          28.3,
+          -2,
+          63.3,
+          22.1,
+          -0.4,
+          70.7,
+          22.8,
+          0.8,
+          67.8,
+          42.2,
+          -0.4,
+          67.9,
+          16.7,
+          2.7,
+          63.7,
+          34.8,
+          3,
+          62.6,
+          35,
+          3.8,
+          59.3,
+          23.9,
+          4.7,
+          63.4,
+          24.5,
+          4.5,
+          61.4,
+          31.7,
+          6,
+          64.1,
+          25.5,
+          5.4,
+          64.8,
+          33.9,
+          4.5,
+          64.3,
+          27,
+          5.9,
+          67.2,
+          16.9,
+          5.8,
+          68.2,
+          41.9,
+          -3.7,
+          68.4,
+          35.8,
+          3.1,
+          71.1,
+          23.1,
+          3.9
+        ],
+        "ball": [
+          63.3,
+          22.1,
+          1.1
+        ],
+        "carrier": 6,
+        "carrierPosture": [
+          0,
+          -0.39
+        ]
+      }
+    },
+    "qualification": "P015 incoming energies recovered by existing physical pre-snap constructor to recorded post-stage energies. Tiny residual differences remain: first rounded C facing3.60; Y contact1.45 versus recorded1.50, initial ending5.80 versus recorded5.75 approx. Do not call exact hidden-state replay. OpposingP164 matches saved recorded frames through3.50."
+  },
+  "P015": {
+    "terminal": 9.15,
+    "gain": 47.9,
+    "Ycontacts": [
+      [
+        1.45,
+        "SS",
+        4
+      ],
+      [
+        5.85,
+        "SS",
+        25
+      ],
+      [
+        6.3,
+        "SS",
+        27
+      ],
+      [
+        6.75,
+        "SS",
+        30
+      ],
+      [
+        7.2,
+        "SS",
+        33
+      ],
+      [
+        7.7,
+        "SS",
+        36
+      ],
+      [
+        8.2,
+        "SS",
+        39
+      ],
+      [
+        8.65,
+        "SS",
+        41
+      ],
+      [
+        9.1,
+        "SS",
+        43
+      ]
+    ],
+    "Yends": [
+      {
+        "t": 5.8,
+        "rep": 4,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 2.7729479592071016
+        }
+      },
+      {
+        "t": 6.25,
+        "rep": 25,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 5.635959855308627
+        }
+      },
+      {
+        "t": 6.7,
+        "rep": 27,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 8.726195414652906
+        }
+      },
+      {
+        "t": 7.15,
+        "rep": 30,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 12.002992849528027
+        }
+      },
+      {
+        "t": 7.65,
+        "rep": 33,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 15.625137691075366
+        }
+      },
+      {
+        "t": 8.15,
+        "rep": 36,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 19.10015160336603
+        }
+      },
+      {
+        "t": 8.6,
+        "rep": 39,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 22.001696930622202
+        }
+      },
+      {
+        "t": 9.05,
+        "rep": 41,
+        "reason": {
+          "reason": "runner passed defender",
+          "past": 24.71788397281911
+        }
+      }
+    ],
+    "availableTargetAfterRelease": [
+      {
+        "t": 5.85,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 6.3,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 6.75,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 7.2,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 7.7,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 8.2,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 8.65,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      },
+      {
+        "t": 9.1,
+        "a": "Y",
+        "method": "availableTarget",
+        "before": "SS",
+        "result": "SS",
+        "kind": "climb"
+      }
+    ]
+  },
+  "P164": {
+    "terminal": true,
+    "t": 3.55,
+    "outcome": "tackle",
+    "gain": 4.55,
+    "firstNativeDifference": null
+  },
+  "receipts": {
+    "native-baseline-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-shed-lifecycle",
+      "commit": "0000e560e0dbe31905151465152d412ba838803d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "validationSha256": "8c1b99238694f04f3a5d29b18337bb3f87861960bb7d8cec21730dcfd7e5dbd5",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T21:43:47.647Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/block-lifecycle/collect.ts",
+            "out/block-shed-lifecycle/native-baseline.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.982390768
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T21:43:50.631Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "energy-recovery-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-shed-lifecycle",
+      "commit": "0000e560e0dbe31905151465152d412ba838803d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "validationSha256": "af11e9705b77a97ea893e8f78036d017f35bdf3ed4ebc6ab9ca09d72d74c2770",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T21:45:25.231Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/block-lifecycle/restore-energy.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.311947792
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T21:45:25.545Z",
+      "inputsUnchanged": false,
+      "exitCode": 1
+    },
+    "frozen-energy-recovery-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-shed-lifecycle",
+      "commit": "0000e560e0dbe31905151465152d412ba838803d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "validationSha256": "ec7c8f0b95257249b564f69eb5480ec846c3c6ee865b694b1a5fb9b28d5dcec6",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T21:45:38.165Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/block-lifecycle/restore-energy.ts",
+            "out/block-shed-lifecycle/recovered-inputs.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.316533937
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T21:45:38.484Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "restored-baseline-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-shed-lifecycle",
+      "commit": "0000e560e0dbe31905151465152d412ba838803d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "validationSha256": "0af62c9e39a3326474455daa45d736bb955dbe2529ad9600aa8b8b9e49ff6a19",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T21:45:38.572Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/block-lifecycle/collect.ts",
+            "out/block-shed-lifecycle/restored-baseline.json.gz",
+            "--only=G1-P015"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.099136665
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T21:45:40.674Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "costQualification": "Preserves initial inexact-native pass and rejected builder input-drift receipt. Builder modified fixture by design; corrected version writes ignored output and is copied only after completion. No runtime source edits or full games."
+}

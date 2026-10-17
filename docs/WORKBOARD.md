@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Power blocking/shedding lifecycle investigation — 2026-10-16 America/Phoenix
+
+Run owns codex/block-shed-lifecycle from accepted0000e560e0dbe31905151465152d412ba838803d, queueaa9ed352. Start savedG1-P015, preserve useful sustained-block and real-shed opposing controls. Trace availableTarget/update/findWork and stepRunRep/runContactRead requests versus delivered contact/motion. Initial boundary is passive diagnostics and target/continuation policy; #126 approach/contact-surface correction remains separate on7f75b08, #136 exchange on97ba574. No solver, force/capacity/roster/grip/default or experimental-hand changes. Contact/fit owners retain their scopes; coordinate a demonstrated shared controller boundary before implementation. Long duration alone is not a defect; no duration cap, forced pancake/shed/penalty, private job/ball knowledge or automatic game campaign.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
