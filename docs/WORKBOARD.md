@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Catching: Quarters underneath distribution and installed support — 2026-10-17
+
+Start on accepted/fetched `d682b1f474cb6ba260a7b8b1119a62919c5a2159`,
+queue `bf493d881f423540962c6b1ad3b889fe2662e8c8`, isolated branch
+`codex/quarters-underneath-support`. Keep draft #124 frozen and independently
+reviewable. Claim coverage/{rules,defender}.ts, direct coverage/support tests,
+one bounded passive native diagnostic and evidence. Questions: does Quarters
+deliver its acquired shallow while #3 occupies the installed midpoint, and
+does an apex match erase its own installed force/inside support after acquired
+run evidence? Use source HNFL-078/196/312, actual consumed cues, requests and
+achieved movement. No invented teammate acknowledgments or private intentions;
+do not expand the inherited teammate picture shortcut. Run owns fit allocation
+and execution; preserve that algorithm, alley, vertical/PA and throw priorities.
+No physics, capacities, movement modifiers or broad suite/game campaign.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
