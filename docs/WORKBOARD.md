@@ -2,7 +2,7 @@
 
 ## Minimal cleared-kick candidate — 2026-10-17 UTC
 
-Checkpoint: runtime0e52b95/evidence97137c1, source5734bb3;34 focused/typecheck pass, four accepted-host controls retained with late K02 traffic cost explicit. Researchfd2f6fd holds the larger count/perimeter failures. Publishing is blocked by Git invalid-token errors and GitHub API401; command-scoped helper test failed, no stored settings changed. No remote PR or promotion claimed. Exact handoff and draft body are in docs/reviews/cleared-kick.
+Checkpoint: runtime0e52b95/evidence97137c1, source5734bb3;34 focused/typecheck pass, four accepted-host controls retained with late K02 traffic cost explicit. Researchfd2f6fd holds the larger count/perimeter failures. Credential interruption resolved by a later successful read-only check; no stored settings changed. Re-fetched accepted/queue pins match. Research932956b is published; narrow candidate publishing next, no merge/promotion claimed. Exact handoff and draft body are in docs/reviews/cleared-kick.
 
 Run owns `codex/counter-count-kick`, accepted base `0000e560e0dbe31905151465152d412ba838803d`, queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Final production scope is **cleared kick transition only**. Joint Counter counting is withdrawn from this candidate after the accepted-host strong control exposed delayed end contact and LG/RB impact; its source/tests/native failures remain at05da690 and research525fba0. No #140 repair, held99 perimeter installer, carrier/navigation, spacing, movement, capacities or Physics. Exact four-case kick-only evidence and focused contracts go to Integration; final combined suite stays with Integration.
 
