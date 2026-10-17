@@ -1,0 +1,76 @@
+// Optional passive runner copied into a source-isolated host's scripts directory.
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {gzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {reconstruct} from '../out/catch-opportunity-physics/reconstruct.js';
+import {ManCoverage,ZoneCoverage} from '../src/sim/behaviors/defense.js';
+import {RouteObservation} from '../src/sim/coverage-read.js';
+import {movementObjective} from '../src/sim/movement-objective.js';
+import {sourceVersion} from './source-version.js';
+
+const copy=(x:any)=>structuredClone(x),hash=(x:any)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+const [mode,...ids]=process.argv.slice(2);assert(['construct','run'].includes(mode));
+const prep=JSON.parse(readFileSync('preparation.json','utf8')),summaries:any[]=[];
+const horizons:Record<string,number>={'G1-P012':2.4,'G1-P027':3,'G1-P187':3,'G1-P192':5};
+for(const id of ids){
+ const began=performance.now();let r:any;
+ try{r=reconstruct(id);}catch(e){r={id,status:'HOLD',reason:String(e)};}
+ if(mode==='construct'||r.status!=='constructor-match'){
+  const {sim,setup,native,ob,meta,...row}=r;console.log(JSON.stringify(row));summaries.push(row);continue;
+ }
+ const {sim,native}=r,horizon=horizons[id]??6,ticks:any[]=[],reads:any[]=[];
+ let row:any,context:any=null;
+ const oldMan=ManCoverage.prototype.trackReceiver,oldZone=ZoneCoverage.prototype.update,oldRead=RouteObservation.prototype.read;
+ ManCoverage.prototype.trackReceiver=function(a:any,s:any){
+  const previous=context;context={a:a.idx,target:this.target.idx,kind:'man',owner:this};
+  try{const command=oldMan.call(this,a,s);row.techniques??=[];row.techniques.push({a:a.idx,target:this.target.idx,
+   technique:this.recordedTechnique(),protectDepth:!!this.opts.protectDepth,command:copy(command),objective:movementObjective(command)});return command;}
+  finally{context=previous;}
+ };
+ ZoneCoverage.prototype.update=function(a:any,s:any){
+  const previous=context;context={a:a.idx,kind:'zone',owner:this};
+  try{return oldZone.call(this,a,s);}finally{context=previous;}
+ };
+ RouteObservation.prototype.read=function(...args:any[]){
+  const result=oldRead.apply(this,args);
+  if(context){let target=context.target;
+   if(target===undefined)target=[...context.owner.observations].find(([,o]:any)=>o===this)?.[0].idx;
+   reads.push({t:sim.t,a:context.a,target,kind:context.kind,cue:copy(args[0]),seen:copy(result)});
+  }
+  return result;
+ };
+ const ident=(a:any)=>({i:a.idx,id:a.player.id,slot:a.slot,team:a.team,start:copy(a.body),runFit:copy(a.runFit),rule:a.behavior.rule??null});
+ const agents=sim.agents.map(ident);
+ const bodies=()=>sim.agents.map((a:any)=>({i:a.idx,pos:copy(a.pos),vel:copy(a.vel),facing:a.facing,
+  support:copy(a.body.support),energy:a.body.energy}));
+ const step=sim.world.step.bind(sim.world);
+ sim.world.step=(intents:any,dt:number)=>{
+  row.request=copy(sim.cmds);row.final=copy(intents);
+  row.jobs=sim.agents.map((a:any)=>({i:a.idx,kind:a.behavior.kind,job:a.behavior.job??null,target:a.behavior.target?.idx??null,
+   man:a.behavior.recordedMan?.()??a.behavior.recordedTechnique?.(),rule:a.behavior.recordedRule?.(sim.t)}));
+  const report=step(intents,dt);row.achieved=bodies();row.report=copy(report);return report;
+ };
+ try{
+  sim.event('snap',sim.slot('C')??sim.qb);
+  while(sim.phase==='live'&&sim.t<horizon){
+   if(performance.now()-began>5000)throw new Error('Five-second per-case budget exhausted');
+   row={t:sim.t,before:bodies(),ball:sim.ball.kind,carrier:sim.carrier?.idx??null};
+   const n=sim.events.length;sim.tick();row.events=copy(sim.events.slice(n));ticks.push(row);
+  }
+ }finally{ManCoverage.prototype.trackReceiver=oldMan;ZoneCoverage.prototype.update=oldZone;RouteObservation.prototype.read=oldRead;}
+ const censored=sim.phase==='live',result=censored?null:sim.buildResult(),cut=(xs:any[])=>xs.filter(x=>x.t<horizon-1e-8);
+ const parity={frames:JSON.stringify(sim.frames)===JSON.stringify(cut(native.replay.frames)),
+  events:JSON.stringify(sim.events)===JSON.stringify(cut(native.replay.events)),
+  telemetry:JSON.stringify(sim.trace.data.frames)===JSON.stringify(cut(native.replay.telemetry.frames)),
+  stats:result?JSON.stringify(result.stats)===JSON.stringify(native.stats):null};
+ const output={id,arm:prep.arm,source:sourceVersion(),preparation:prep,inputHash:hash(r.ob),nativeHash:hash(native),constructor:r.status,
+  horizon,censored,t:sim.t,seconds:(performance.now()-began)/1000,parity,agents,ticks,reads,events:sim.events,
+  frames:sim.frames,telemetry:sim.trace.data,result:result?{outcome:result.outcome,yards:result.yards,stats:result.stats,segments:result.segments}:null};
+ writeFileSync(`out/catch-opportunity-physics/${id}.json.gz`,gzipSync(JSON.stringify(output)));
+ const summary={id,arm:prep.arm,source:output.source,horizon,censored,seconds:output.seconds,parity,result:output.result};
+ summaries.push(summary);console.log(JSON.stringify(summary));
+ if(prep.arm==='base')assert(Object.values(parity).every(v=>v===null||v===true),'Passive baseline must match native saved history');
+}
+writeFileSync('out/catch-opportunity-physics/'+mode+'-summary.json',JSON.stringify(summaries,null,2)+'\n');
+if(summaries.some(q=>q.status==='HOLD'))process.exitCode=2;

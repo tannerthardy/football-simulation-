@@ -6,7 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
-import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
+import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -24,6 +24,7 @@ import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { DeepCoverage } from '../coverage-leverage.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -177,6 +178,8 @@ export interface ManOptions {
   lev?: 'inside' | 'outside' | 'head';
   trail?: boolean;
   overTop?: boolean;
+  /** Installed deep responsibility, distinct from an underneath top shoulder. */
+  protectDepth?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
 }
@@ -192,6 +195,7 @@ export class ManCoverage implements Behavior {
   private stemHeading: number | null = null;
   private stableSince = 0;
   private readonly observation = new RouteObservation();
+  private readonly depth = new DeepCoverage();
   private keyedFitRecorded = false;
 
   /** The technique actually in use, without updating receiver observation. */
@@ -269,7 +273,8 @@ export class ManCoverage implements Behavior {
       this.routeRead = false;
     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
     const delayScale = this.routeRead ? 0.65 : 1;
-    const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
+    const acquired = sim.see(a, R, delayScale);
+    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
@@ -318,14 +323,22 @@ export class ManCoverage implements Behavior {
       tx = seen.pos.x + top;
     }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
+    if (o.protectDepth) {
+      if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
+      tx = Math.min(tx, END_LINE_X - a.profile.radius);
+    }
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
-    if (!this.hipsOpen) {
-      // Backpedal facing the QB, keeping the cushion.
-      return track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
-    }
     const cs = 0.85 + 0.35 * a.r('manCoverage');
-    return track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') });
+    const command = this.hipsOpen
+      ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
+      : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+    if (!o.protectDepth) return command;
+    const base = o.overTop ? .8 + .15 * Math.max(0, vx)
+      : vx > 3 && deep > 3 ? cushion * .5 : cushion;
+    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
+    return selected;
   }
 }
 
@@ -355,6 +368,7 @@ export class ZoneCoverage implements Behavior {
   private readonly initialDepth: number;
   private turnedWith: Agent | null = null;
   private readonly observations = new Map<Agent, RouteObservation>();
+  private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
 
   constructor(
@@ -407,16 +421,17 @@ export class ZoneCoverage implements Behavior {
     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
 
     // Perceived routes in (or about to enter) this zone's lateral band.
-    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }> = [];
+    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       let observation = this.observations.get(r);
       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
-      const seen = observation.read(sim.see(a, r), sim.t, r.profile, a.profile.reactionTime,
+      const cue = sim.see(a, r);
+      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
       if (fut.y < ylo || fut.y > yhi) continue;
-      threats.push({ r, pos: seen.pos, vel: seen.vel, fut });
+      threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
 
     if (this.deep) {
@@ -479,7 +494,7 @@ export class ZoneCoverage implements Behavior {
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
       const developing = clamp((deepest.pos.x - sim.los) / 8, 0, 1);
       const workingCushion = Math.max(cushion, this.initialDepth * (1 - developing) + cushion * developing);
-      const tx = deepest.pos.x + workingCushion;
+      const tx = Math.min(END_LINE_X - a.profile.radius, deepest.pos.x + workingCushion);
       // Turn before the receiver consumes the cushion during the hip flip.
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
@@ -489,11 +504,16 @@ export class ZoneCoverage implements Behavior {
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.target = deepest.r;
-      return track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
       });
+      let depth = this.depthReads.get(deepest.r);
+      if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
+      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
+      return selected;
     }
 
     // Low red-zone Cover 2: the corner sinks under #1 with outside leverage

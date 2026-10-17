@@ -241,6 +241,8 @@ export type CoverageRole =
       trail?: boolean;
       /** Stay on top of the receiver (a deep player in a bracket). */
       overTop?: boolean;
+      /** Independently protect this receiver's vertical; no assumed deep helper. */
+      protectDepth?: boolean;
       /** May double a receiver another defender already has (bracket). */
       double?: boolean;
       /** Press regardless of the call's default technique. */

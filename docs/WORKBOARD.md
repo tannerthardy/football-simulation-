@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Pass/Catching: vertical roof and achievable turn budget — 2026-10-17 UTC
+
+Branch `codex/vertical-roof-budget`, new from accepted/fetched
+`0000e560e0dbe31905151465152d412ba838803d`; queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`;
+prior task HEAD `d50d11cb4a01eed99d78dcc189d6ae79d4476cf7` / diagnostic #139 stays separate.
+Own the installed deep coverage movement objective in `ManCoverage.trackReceiver`,
+`ZoneCoverage` deep movement, and the bounded duty handoff in `CoverageDefender.make`
+if required. Directly affected tests and an optional source-pinned native vertical/
+real-break diagnostic accompany the correction. First question: can an acquired
+vertical be carried with an achievable turn budget instead of spending depth then
+recovering late? Reuse #139/#129 evidence; compare multiple vertical duties and
+opposing plants/contests. No shared physics, capacities, roster, catching, helper
+availability, run-support or held #127 flat/wheel policy changes. Other existing
+controller corrections remain independent; Integration owns combined verification.
+The three solo #1 locks in Mable, Poach and Stubbie need the same explicit
+deep-duty contract; claim only their optional `CoverageRole.protectDepth`
+installation and forwarding in `assignBehaviors`, not a new route distribution.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check

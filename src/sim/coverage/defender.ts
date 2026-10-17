@@ -130,7 +130,8 @@ export class CoverageDefender implements Behavior {
       case 'man':
         if (this.sub instanceof ReadRelease && this.sub.target === d.r
           && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();
-        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
+        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign,
+          { ...d.opts, protectDepth: isDeepZone(this.zone) });
       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);
