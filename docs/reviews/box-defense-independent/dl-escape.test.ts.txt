@@ -1,0 +1,63 @@
+/** DL_ESCAPE (experimental, off): a defender who feels himself driven back
+ * works off the block to his installed shoulder with the physical shed. */
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { CENTER_Y } from '../src/core/field.js';
+import { Rng } from '../src/core/rng.js';
+import { G } from '../src/core/units.js';
+import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
+import { RUN_BY_ID } from '../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import type { PlaySim } from '../src/sim/playsim.js';
+
+const offense = generateTeam(new Rng(51), 'Escape offense', 'EO', { strength: .55 });
+const defense = generateTeam(new Rng(52), 'Escape defense', 'ED', { strength: .55 });
+const LOS = 40;
+
+async function rep(flag: string, drivenBack: boolean, load?: number, speed?: number) {
+  vi.stubEnv('DL_ESCAPE', flag);
+  vi.resetModules();
+  const { PlaySim: Sim } = await import('../src/sim/playsim.js');
+  const { updateEngagements } = await import('../src/sim/engagement.js');
+  const formation = FORMATION_BY_ID.ace_11;
+  const sim: PlaySim = new Sim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
+    offCall: { formation, kind: 'run', flip: false, run: RUN_BY_ID.iz_strong, label: 'escape' },
+    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'escape' },
+    los: LOS, ballY: CENTER_Y, firstDownX: 50, seed: 7, record: false });
+  for (const a of sim.agents) { a.body.pos = { x: 5 + a.idx, y: 2 }; a.body.vel = { x: 0, y: 0 }; }
+  const rt = sim.slot('RG')!, dt = sim.slot('DT_S')!;
+  rt.body.pos = { x: LOS - .3, y: CENTER_Y + 1.4 }; dt.body.pos = { x: LOS + .45, y: CENTER_Y + 1.5 };
+  sim.t = sim.world.time = 1.2;
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+  const e = sim.engage(rt, dt, 'run');
+  expect(e).toBeTruthy();
+  // Past his first available move, like any shed.
+  sim.t = sim.world.time = e!.nextMoveAt + .01;
+  const up = sim.attackDir('O');
+  // Felt through his own body: the blocker's load toward his backfield, and
+  // his own motion that way (or none).
+  dt.body.support!.felt = { x: up * (load ?? (drivenBack ? .6 : 0)) * dt.profile.massKg * G, y: 0 };
+  dt.body.vel = { x: up * (speed ?? (drivenBack ? .6 : 0)), y: 0 };
+  updateEngagements(sim);
+  return dt.tags.has('escape-drive');
+}
+
+afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+
+describe('DL_ESCAPE', () => {
+  it('is off by default', async () => {
+    expect(await rep('0', true)).toBe(false);
+  });
+  it('escapes only when he feels himself driven back', async () => {
+    expect(await rep('1', true)).toBe(true);
+    expect(await rep('1', false)).toBe(false);
+  });
+  it.each([
+    ['load without backward motion', .6, 0],
+    ['backward motion without load', 0, .6],
+    ['load toward his own advance', -.6, .6],
+    ['motion toward his own advance', .6, -.6],
+  ] as const)('retains ordinary work for %s', async (_name, load, speed) => {
+    expect(await rep('1', true, load, speed)).toBe(false);
+  });
+});

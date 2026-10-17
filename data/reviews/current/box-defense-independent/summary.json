@@ -1,0 +1,816 @@
+{
+  "accepted": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "queue": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "reviewedCandidate": "943f1d33c181325d9ba839da4a7b195d60c658b7",
+  "candidateReportSha256": "8e23247772598418809c692fdc52bfab9d255049081dc8ebca1baead073001e8",
+  "acceptedEngineSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "isolatedEscapeEngineSha256": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec",
+  "temporarySettings": "accepted 44 flags unchanged, plus DL_ESCAPE registered default 0; explicit 1 only in the two on-arm receipts; no other experimental policy",
+  "inputFactoryOrigin": "411639c75734e9f75d8313f6d769318e46c9d1e0:scripts/diag/stretch-access/inputs.ts; unchanged extraction of Claude50f6a08 factory",
+  "cases": [
+    {
+      "id": "wz-strong-over3",
+      "formation": "ace_12",
+      "concept": "wz",
+      "direction": "strong",
+      "look": "over3",
+      "rosterGenerationSeeds": [
+        11,
+        12
+      ],
+      "strength": 0.55,
+      "seed": 77,
+      "los": 40,
+      "ballY": 26.67,
+      "audibles": false,
+      "hurry": false,
+      "until": 20
+    },
+    {
+      "id": "wz-weak-over3",
+      "same": "wz-strong-over3",
+      "direction": "weak"
+    },
+    {
+      "id": "useful-climb-opponent",
+      "fixture": "test/fixtures/planned-climb-fit.json.gz",
+      "fixtureSha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+      "until": 3.5,
+      "explicitCensor": true
+    }
+  ],
+  "files": {
+    "scripts/diag/box-defense-review/first-difference.ts": "5290d5f9a9623139df30e76fca018ffa0437551440b8215b0b1587cb4e535a22",
+    "scripts/diag/box-defense-review/inputs.ts": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033",
+    "scripts/diag/box-defense-review/native.ts": "9d530fada0cff95f71ff576b4fdc307c7efc031383f27f1ee5890c6ebb1b7e8a",
+    "scripts/diag/box-defense-review/opening.ts": "13b67cbd6eed77b84f7b57b6fed0bd36803a632a2a8f30efced02f9dfb3c5089"
+  },
+  "cacheCompatibility": "cached accepted source bed3c36 and all 44 flags/World settings match develop d682b1f; same case factory, input fixture and Node22.23.3; raw physics observations reused. New command/source observations collected only where missing.",
+  "rows": [
+    {
+      "id": "wz-strong-over3",
+      "cachedAccepted": {
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 2.53,
+        "t": 4.15,
+        "maxima": {
+          "workResidual": 1.007638417149792e-11,
+          "armExcess": 2.1316282072803006e-14
+        },
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 4.15,
+            "impulse": 1336.749674775841
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 4.15,
+            "impulse": 2275.3506963504324
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 4.15,
+            "impulse": 3583.617661828196
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.25,
+            "impulse": 2527.776440009411
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.3,
+            "last": 4.15,
+            "impulse": 271.0700219227774
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 4.15,
+            "impulse": 2729.8071654596943
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.8,
+            "last": 3.45,
+            "impulse": 1513.811579590742
+          }
+        ],
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.83,
+            "y": 14.87
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "CB_S",
+        "offenseImpacts": 0
+      },
+      "isolatedEscape": {
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 1.39,
+        "t": 3.9,
+        "maxima": {
+          "workResidual": 1.2789769243681803e-11,
+          "armExcess": 2.842170943040401e-14
+        },
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.9,
+            "impulse": 1246.8882646383806
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.9,
+            "impulse": 2349.577681356705
+          },
+          {
+            "blocker": "H",
+            "defender": "DE_W",
+            "first": 0.55,
+            "last": 3.9,
+            "impulse": 3063.824061023668
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.6,
+            "last": 3.9,
+            "impulse": 2497.633321650613
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 1.35,
+            "last": 1.7,
+            "impulse": 134.69375894741253
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_M",
+            "first": 1.4,
+            "last": 3.9,
+            "impulse": 2371.97224466813
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_S",
+            "first": 1.8,
+            "last": 3.9,
+            "impulse": 2571.765086754407
+          }
+        ],
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.8,
+            "y": 15.48
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "CB_S",
+        "offenseImpacts": 0
+      },
+      "matchedPrefix": {
+        "identicalBodiesMindsRng": true,
+        "stateSha256Off": "f9d216f64ee0f05d6900273afd8731e1f57a3f526b47896e5ab263c89c823658",
+        "stateSha256On": "f9d216f64ee0f05d6900273afd8731e1f57a3f526b47896e5ab263c89c823658",
+        "identicalEndExecutionRng": true,
+        "firstChanges": [
+          {
+            "t": 0.95,
+            "blocker": "RG",
+            "defender": "DT_S",
+            "side": 1,
+            "ownFelt": {
+              "x": 1158.7036530521602,
+              "y": -22.383156030631856
+            },
+            "ownVelocity": {
+              "x": 0.9504412840884026,
+              "y": -1.145627954774787
+            },
+            "mass": 111.58372302000001,
+            "consumedAim": {
+              "x": 40.429736471295165,
+              "y": 24.438595086467906
+            },
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "lat": {
+              "x": -0.8741572761215376,
+              "y": -0.485642931178632
+            },
+            "offRequest": {
+              "vel": {
+                "x": -1.5,
+                "y": -0.16976726736129122
+              },
+              "facing": 2.5167433223091535,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.1548851909994768
+            },
+            "onRequest": {
+              "vel": {
+                "x": -4.529641695169797,
+                "y": -1.8300922656951988
+              },
+              "facing": 2.5167433223091535,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.1548851909994768
+            },
+            "offAchieved": {
+              "x": 0.9935656633293686,
+              "y": -1.048699546591643
+            },
+            "onAchieved": {
+              "x": 0.9958215435211338,
+              "y": -1.2337368503423662
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "wz-weak-over3",
+      "cachedAccepted": {
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 5.34,
+        "t": 4,
+        "maxima": {
+          "workResidual": 7.211564678755167e-12,
+          "armExcess": 0
+        },
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 3.45,
+            "impulse": 926.79885005709
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 4,
+            "impulse": 3318.6866614945857
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.85,
+            "impulse": 1614.7916940315563
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 4,
+            "impulse": 1350.2083774493994
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 3.65,
+            "impulse": 318.86191940837296
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 4,
+            "impulse": 2495.146500845828
+          }
+        ],
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.31,
+            "y": 34.31
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "LB_M",
+        "offenseImpacts": 0
+      },
+      "isolatedEscape": {
+        "terminal": true,
+        "ending": "tackle",
+        "gain": 5.88,
+        "t": 4.3,
+        "maxima": {
+          "workResidual": 1.3252954289555419e-11,
+          "armExcess": 7.105427357601002e-15
+        },
+        "loads": [
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.45,
+            "last": 1.6,
+            "impulse": 501.065570146929
+          },
+          {
+            "blocker": "RT",
+            "defender": "DT_S",
+            "first": 0.55,
+            "last": 4.05,
+            "impulse": 1959.2831686145364
+          },
+          {
+            "blocker": "C",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 3.5,
+            "impulse": 1569.3575737324754
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.6,
+            "last": 4.3,
+            "impulse": 1485.7285363954384
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.8,
+            "last": 1.1,
+            "impulse": 198.6133032993272
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_W",
+            "first": 1.65,
+            "last": 3.8,
+            "impulse": 312.5469431461266
+          },
+          {
+            "blocker": "RG",
+            "defender": "LB_S",
+            "first": 1.75,
+            "last": 4.3,
+            "impulse": 2772.2739371267744
+          }
+        ],
+        "firstContact": {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.57,
+            "y": 34.47
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "LB_M",
+        "offenseImpacts": 0
+      },
+      "matchedPrefix": {
+        "identicalBodiesMindsRng": true,
+        "stateSha256Off": "a2c6c6189e7b0302b50c4f79c8b53ce350c0c2576bed1212408358517106e559",
+        "stateSha256On": "a2c6c6189e7b0302b50c4f79c8b53ce350c0c2576bed1212408358517106e559",
+        "identicalEndExecutionRng": true,
+        "firstChanges": [
+          {
+            "t": 0.85,
+            "blocker": "Y",
+            "defender": "DE_S",
+            "side": 1,
+            "ownFelt": {
+              "x": 973.8077753149191,
+              "y": 43.02726127760592
+            },
+            "ownVelocity": {
+              "x": 1.0116902223612587,
+              "y": -1.0678947276608814
+            },
+            "mass": 106.59420695,
+            "consumedAim": {
+              "x": 40.94107332611481,
+              "y": 22.304291035643654
+            },
+            "fit": {
+              "gap": "D",
+              "side": -1,
+              "kind": "edge",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack",
+              "partner": "SS"
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "lat": {
+              "x": 0.8741572761215376,
+              "y": -0.485642931178632
+            },
+            "offRequest": {
+              "vel": {
+                "x": -1.5,
+                "y": 0.8462792857855058
+              },
+              "facing": 2.6849022656683856,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.0907478109192397
+            },
+            "onRequest": {
+              "vel": {
+                "x": 3.888629741288885,
+                "y": -2.846725199004069
+              },
+              "facing": 2.6849022656683856,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.0907478109192397
+            },
+            "offAchieved": {
+              "x": 0.9300641724457348,
+              "y": -1.016570930293432
+            },
+            "onAchieved": {
+              "x": 1.1477903168477568,
+              "y": -1.0234547299074215
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "useful-climb-opponent",
+      "cachedAccepted": {
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 7.250200440012122e-12,
+          "armExcess": 0
+        },
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 314.87946340932365
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 3.45,
+            "impulse": 1551.774840086061
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 2474.012020208735
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 3.5,
+            "impulse": 2123.0385231961914
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.4,
+            "impulse": 266.96584741534946
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.85,
+            "last": 3.5,
+            "impulse": 1317.0494043946012
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.5,
+            "impulse": 181.06033176675183
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.25,
+            "last": 3.5,
+            "impulse": 1209.1374029726346
+          }
+        ],
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "SS",
+        "offenseImpacts": 0
+      },
+      "isolatedEscape": {
+        "terminal": false,
+        "ending": "explicit-prefix-censor",
+        "gain": null,
+        "t": 3.5,
+        "maxima": {
+          "workResidual": 3.4567904094728874e-12,
+          "armExcess": 0
+        },
+        "loads": [
+          {
+            "blocker": "C",
+            "defender": "DT_S",
+            "first": 0.5,
+            "last": 1,
+            "impulse": 315.6638684274565
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "first": 0.5,
+            "last": 2.55,
+            "impulse": 1075.3093449565943
+          },
+          {
+            "blocker": "LG",
+            "defender": "DT_W",
+            "first": 0.55,
+            "last": 2.95,
+            "impulse": 2372.949684773243
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "first": 0.7,
+            "last": 3.5,
+            "impulse": 1981.5644617662429
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "first": 0.75,
+            "last": 0.85,
+            "impulse": 32.9341957188291
+          },
+          {
+            "blocker": "LT",
+            "defender": "DE_W",
+            "first": 0.85,
+            "last": 3.5,
+            "impulse": 281.4210416431444
+          },
+          {
+            "blocker": "RT",
+            "defender": "LB_M",
+            "first": 1.8,
+            "last": 3.5,
+            "impulse": 1110.1902487148625
+          },
+          {
+            "blocker": "H",
+            "defender": "NB",
+            "first": 1.85,
+            "last": 2.45,
+            "impulse": 86.86831097868097
+          },
+          {
+            "blocker": "C",
+            "defender": "LB_W",
+            "first": 2.05,
+            "last": 3.5,
+            "impulse": 1301.2343496539925
+          }
+        ],
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.83,
+            "y": 22.04
+          },
+          "note": "grasp"
+        },
+        "firstContactDefender": "SS",
+        "offenseImpacts": 0
+      },
+      "matchedPrefix": {
+        "identicalBodiesMindsRng": true,
+        "stateSha256Off": "c1ea78328ee26007006fff6dd213a80714ef3327bc3f8cdfdd6ef946e7c819a6",
+        "stateSha256On": "c1ea78328ee26007006fff6dd213a80714ef3327bc3f8cdfdd6ef946e7c819a6",
+        "identicalEndExecutionRng": true,
+        "firstChanges": [
+          {
+            "t": 0.85,
+            "blocker": "C",
+            "defender": "DT_S",
+            "side": 1,
+            "ownFelt": {
+              "x": 2580.238203663857,
+              "y": 730.9080891096772
+            },
+            "ownVelocity": {
+              "x": 0.7353946872301123,
+              "y": 0.11404580200388045
+            },
+            "mass": 146.96392788,
+            "consumedAim": {
+              "x": 35.50861308481124,
+              "y": 26.074419425862178
+            },
+            "fit": {
+              "gap": "A",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "lat": {
+              "x": 0,
+              "y": -1
+            },
+            "offRequest": {
+              "vel": {
+                "x": -1.5,
+                "y": -2.7660481891911566
+              },
+              "facing": 2.4743219938509537,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9827647653933369
+            },
+            "onRequest": {
+              "vel": {
+                "x": -0.6,
+                "y": -2.7660481891911566
+              },
+              "facing": 2.4743219938509537,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9827647653933369
+            },
+            "offAchieved": {
+              "x": 0.8688743018842648,
+              "y": 0.088911588349977
+            },
+            "onAchieved": {
+              "x": 0.8884557015279191,
+              "y": 0.07841351876342406
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "commands": [
+    {
+      "name": "first-off-receipt.json",
+      "seconds": 0.556033458,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "first-on-receipt.json",
+      "seconds": 0.58861641,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "focused-receipt.json",
+      "seconds": 1.734447471,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "native-receipt.json",
+      "seconds": 1.4315483530000002,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "opening-receipt.json",
+      "seconds": 0.505831379,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "trigger-receipt.json",
+      "seconds": 1.627209324,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    },
+    {
+      "name": "typecheck-receipt.json",
+      "seconds": 9.759639699,
+      "source": "24ed3f96c515b3a5b00f20d667065de5df820000f2de875363473245d5a525ec"
+    }
+  ],
+  "newCommandSeconds": 16.203326093999998,
+  "newNativeScope": "three candidate continuations (two terminal, one 3.50 prefix); two three-case first-divergence prefix collectors; one named OZ two-second opening. Zero games/panels/full suites.",
+  "artifacts": [
+    {
+      "path": "out/stretch-access/final-interaction.json.gz",
+      "sha256": "74e2e5558eb5f3d712524d0120f6fe8ac97b8d9819d7169506dc8885a77a826b",
+      "bytes": 280635,
+      "retained": "ignored local output; reproducible with committed scripts"
+    },
+    {
+      "path": "out/box-defense-review/native.json.gz",
+      "sha256": "5c9e2fefff4bca9931a2d9fccb5c220b77a07f25f1e7914d687423a04f7b7517",
+      "bytes": 458070,
+      "retained": "ignored local output; reproducible with committed scripts"
+    },
+    {
+      "path": "out/box-defense-review/first-off.json",
+      "sha256": "d3080d1f501814645a81a587a7caebae16af8472a20f6db1ab6b4f62cdf2e444",
+      "bytes": 337034,
+      "retained": "ignored local output; reproducible with committed scripts"
+    },
+    {
+      "path": "out/box-defense-review/first-on.json",
+      "sha256": "123a31cdabadb4218789c178f35aaf27a96c7f4c6577e4712ff94dafaec43965",
+      "bytes": 337061,
+      "retained": "ignored local output; reproducible with committed scripts"
+    }
+  ],
+  "publishedExtraction": {
+    "docs/reviews/box-defense-independent/dl-escape-only.patch": "ba1291f9379832655a8f4e105c4bea41b1e66e07ae463c43f41acc51e1289aba",
+    "docs/reviews/box-defense-independent/dl-escape.test.ts.txt": "9bba43a9f41dd4a99e5f2064f30ebf7b87671f08f8a9c698e55fe4b736969f72"
+  },
+  "finalReviewRuntime": "exact accepted bed3c36 source and all 44 settings restored; temporary extraction only archived"
+}

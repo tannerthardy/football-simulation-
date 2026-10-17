@@ -1,0 +1,39 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 0074124..1a7844d 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -10,6 +10,7 @@
+     "CF_FLOW": null,
+     "CLIMB_INTERCEPT": "1",
+     "CLIMB_PLAN": "1",
++    "DL_ESCAPE": "0",
+     "DL_FIGHT": "0",
+     "DL_FLOW": "1",
+     "DL_HANDS": "0",
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 7f880da..a3b5c6b 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -655,6 +655,7 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
+ /** A defender working off a run block: until when, and toward which side of
+  * the surface frame (the ball side when he decided). */
+ const runSheds = new WeakMap<Engagement, { until: number; side: number }>();
++const DL_ESCAPE = process.env.DL_ESCAPE === '1';
+ 
+ /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
+ const ANCHOR = process.env.RUN_ANCHOR !== '0';
+@@ -1008,6 +1009,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+       }
+     }
+   }
++  if (DL_ESCAPE && read.stack && !(runSheds.get(e)?.until! > t) && t >= e.nextMoveAt) {
++    const up = sim.attackDir(b.team), felt = d.body.support?.felt;
++    if (felt && felt.x * up > 0.25 * d.profile.massKg * G && d.vel.x * up > 0.15) {
++      runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: e.side });
++      e.nextMoveAt = t + d.mind.decisionInterval * 2;
++      d.tags.add('escape-drive');
++    }
++  }
+   const shed = runSheds.get(e);
+   const shedding = !!shed && t < shed.until;
+   // A blocker's hands and chest work in front of him: he loses the man when
