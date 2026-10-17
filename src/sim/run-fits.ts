@@ -11,6 +11,7 @@ import { chooseApproach } from './approach-control.js';
 import { CF_FLOW } from './counterfactual.js';
 import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
+import { handoffReach } from './ball-transfer.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -172,6 +173,10 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
   return null;
 }
 
+// A remembered contradiction belongs to this observer for this play. Losing
+// sight of the empty back later does not reinstall the expected exchange.
+const contradictedMesh = new WeakSet<Agent>();
+
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
@@ -180,10 +185,26 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
-  const premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
+  let premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
-  const seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  let seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  if (!keyed && premesh) {
+    const qb = sim.see(a, sim.qb);
+    // Snap possession is expected. An empty back already beyond the line
+    // and out of handoff reach contradicts that expectation; a personally
+    // acquired committed QB also retires it. Neither uses a failure clock.
+    const leftEmpty = seen.carrying === false && seen.pos.x > sim.los
+      && seen.pos.x - qb.pos.x > handoffReach(sim.qb, back!);
+    if (qb.carrying === true && (qb.pos.x > sim.los + 2 || leftEmpty) && !contradictedMesh.has(a)) {
+      contradictedMesh.add(a);
+      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'run-fit-mesh', chose: 'acquired-QB',
+        cue: leftEmpty ? 'Acquired empty back beyond LOS/out of handoff reach; QB carrying=true' : 'Acquired carrying QB beyond LOS+2',
+        options: ['expected-back', 'acquired-QB'],
+        detail: `Retire this observer's mesh expectation; QB picture age ${qb.age ?? 'unknown'}, back age ${seen.age ?? 'unknown'} s. Existing fit/shoulder retained.` });
+    }
+    if (contradictedMesh.has(a)) { premesh = false; seen = qb; }
+  }
   if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
   let gy = liveGapY(sim, a, job.gap, job.side);
