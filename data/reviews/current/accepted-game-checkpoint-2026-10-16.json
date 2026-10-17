@@ -1100,10 +1100,11 @@
   "retention": {
     "local": "/workspace/football-game-audit/out/accepted-game-checkpoint-2026-10-16",
     "archiveTag": "evidence-accepted-games-70b4db6-2026-10-16",
-    "kind": "Draft GitHub evidence release; not a build/reference promotion.",
-    "rawAndFullFilm": "Named archive assets outside source tree; archive hashes in game-checkpoint-artifacts.json.",
+    "kind": "Local verified archives; GitHub asset upload blocked HTTP401. No remote raw/film asset is currently published.",
+    "rawAndFullFilm": "Five named archives at /workspace/football-game-audit/out/accepted-game-checkpoint-assets; hashes in game-checkpoint-artifacts.json.",
     "redundantRecoveryPrefixes": "Both append-only prefixes and full raw gzip retained in named archives for exact independent verification.",
-    "noAutomaticExpiration": "Draft release retained until an explicit owner cleanup decision; local workspace lifetime is not guaranteed."
+    "noAutomaticExpiration": "Keep local data and archives until verified remote retention is established; local workspace lifetime is not guaranteed.",
+    "nextAction": "Upload preserved archives using an upload-capable GitHub session; do not recollect."
   },
   "limitations": [
     "Four frozen generated-roster games are diagnostic exposure, not a population estimate or untouched validation set.",

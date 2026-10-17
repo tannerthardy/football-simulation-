@@ -19,13 +19,13 @@ All four game attempts completed; no failed, retried, hard-timeout, unfinished-g
 
 The frozen collection budget was 60 seconds/game and 240 total launcher seconds, with 55 seconds soft collection time to reserve artifact writes. Actual native collection including full recording took 115.046 seconds; artifact serialization took 66.788 seconds; the whole batch took 185.123 seconds. The launcher confirms no input/source/tooling drift during collection. Append-only recovery prefixes and explicit interrupted-state handling were prepared before collection, but no failure path was exercised by these four games.
 
-[Compact exact receipt](../../data/reviews/current/accepted-game-checkpoint-2026-10-16.json) · [input/cohort manifest](../../data/reviews/current/accepted-game-audit-inputs.json) · [collector](../../scripts/accepted-game-audit.mjs) · [supervisor](../../scripts/accepted-game-batch.mjs) · [saved-data report](../../scripts/accepted-game-audit-report.mjs).
+[Complete play index CSV](../../data/reviews/current/accepted-game-play-index.csv) · [Compact exact receipt](../../data/reviews/current/accepted-game-checkpoint-2026-10-16.json) · [input/cohort manifest](../../data/reviews/current/accepted-game-audit-inputs.json) · [collector](../../scripts/accepted-game-audit.mjs) · [supervisor](../../scripts/accepted-game-batch.mjs) · [saved-data report](../../scripts/accepted-game-audit-report.mjs).
 
 ## First observed lead, with its limits
 
 The four cap cases share **under-center Outside Zone from I/Offset-I formations, sole QB snap possession, no exchange, and no carrier-contact/tackle event**. QB/RB remain in `qb-handoff`/`mesh`; sampled late QB requests become stationary. F approaches the exchange region, but the passive live observer reports no positive F–QB/RB body impulse before 2.5 seconds in these four snaps. Spacing/request interference is a hypothesis, not an observed physical collision. All four such I/Offset-I calls in this cohort cap. The nine other under-center Outside Zone calls use Ace variants and transfer successfully. This is a useful formation/phase clue, not proof that formation alone causes failure.
 
-It corroborates the existing [RUN-006 failed-exchange investigation](../ISSUES.md#RUN-006), not a newly created issue or a demonstrated regression from #125. Reuse #101's saved study and its existing controls; do not repeat that census. Same-game G3-P140 provides **nonmatched context**: same A3-QB1, Ace11 Outside Zone, handoff 1.55 seconds and tackle 3.4 seconds. Coverage, formation and prior state differ, so its outcome is not a counterfactual.
+It corroborates the existing [RUN-006 failed-exchange investigation](../ISSUES.md#RUN-006), not a newly created issue or a demonstrated regression from #125. Reuse #101's source-qualified witnesses and controls; its historical-source and cache-accounting limitations remain. Do not repeat that census. Same-game G3-P140 provides **nonmatched context**: same A3-QB1, Ace11 Outside Zone, handoff 1.55 seconds and tackle 3.4 seconds. Coverage, formation and prior state differ, so its outcome is not a counterfactual.
 
 **Run owns the next decision:** locate the first failed/recoverable exchange cue and compare requested paths with achieved reach. Distinguish initial disruption from the lack of a recovery/continuation after it. Flex helps only with an identified responsibility boundary; Physics helps only if requested and physically achievable motion fails. These recordings do not justify more contact capacity or a solver rewrite.
 
@@ -51,14 +51,14 @@ Every owner uses the same stable G1–G4/Pxxx IDs. Review assignment → acquire
 
 ## Retrieval and limits
 
-Local entry point: `out/accepted-game-checkpoint-2026-10-16/index.html`. It links four standalone full-telemetry films plus `report/play-index.{json,csv}` and `report/audit-panel.json`. Raw native results are `accepted/<fixture>/game.json.gz`. Large outputs stay outside git; named draft-release assets and hashes are recorded in [artifact retention](../../data/reviews/current/game-checkpoint-artifacts.json). Draft release tag: `evidence-accepted-games-70b4db6-2026-10-16`, an evidence attachment rather than a build/reference promotion.
+Local entry point: `out/accepted-game-checkpoint-2026-10-16/index.html`. It links four standalone full-telemetry films plus `report/play-index.{json,csv}` and `report/audit-panel.json`. Raw native results are `accepted/<fixture>/game.json.gz`. The published CSV preserves film paths relative to the saved `report/` directory. Large outputs stay outside git. All five local archives (about 309 MB) are verified, with hashes and retention in [the artifact record](../../data/reviews/current/game-checkpoint-artifacts.json). **Remote raw/film publication is blocked:** `uploads.github.com` returned HTTP401 “Bad credentials”, although repository/PR/metadata access works. Zero assets were uploaded; the empty draft release was removed. The films, raw data, prefixes and archives remain intact locally. An upload-capable owner can publish these exact archives under reserved tag `evidence-accepted-games-70b4db6-2026-10-16`; do not rerun games to solve an upload failure. Local workspace lifetime is not guaranteed.
 
 ```sh
+# Current local saved-data report; no engine execution.
+node scripts/accepted-game-audit-report.mjs out/accepted-game-checkpoint-2026-10-16
+# After verified remote upload, download the five archives and extract together:
 gh release download evidence-accepted-games-70b4db6-2026-10-16 \
   --repo tannerthardy/football-simulation- --dir out/game-checkpoint-download
-# Extract each named archive into one directory, then open index.html.
-# Reporting is offline; it does not run the engine.
-node scripts/accepted-game-audit-report.mjs out/accepted-game-checkpoint-2026-10-16
 ```
 
 Frame cadence is 0.1 seconds and positions are rounded to 0.1 yard. Full numeric telemetry is sampled/rounded; last-step contacts are not the complete force history. Facing is not gaze; final intents cannot reconstruct unrecorded stages. Two-point native film is absent in the current Game path. Four generated-roster games cannot establish population defect rates, and whole-game calls/condition/RNG diverge from historical builds. These are not paired historical patch comparisons. Native capped ends have unknown football outcomes.

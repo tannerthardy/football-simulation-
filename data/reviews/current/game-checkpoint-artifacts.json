@@ -1,15 +1,15 @@
 {
   "schema": "accepted-game-evidence-artifacts-v1",
-  "status": "Prepared and archive-verified; draft GitHub upload pending.",
+  "status": "Archive-verified locally; GitHub release-asset publication blocked by HTTP401 at uploads.github.com. No assets were uploaded.",
   "releaseTag": "evidence-accepted-games-70b4db6-2026-10-16",
   "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
   "repository": "tannerthardy/football-simulation-",
   "createdAt": "2026-10-17T03:25:53.152237+00:00",
   "kind": "draft evidence release; no engine/reference promotion",
-  "retention": "Retain named draft-release assets until explicit owner cleanup. Local workspace lifetime not guaranteed.",
-  "retrieval": "gh release download evidence-accepted-games-70b4db6-2026-10-16 --repo tannerthardy/football-simulation- --dir out/game-checkpoint-download",
+  "retention": "All five archives and their SHA256SUMS are preserved under /workspace/football-game-audit/out/accepted-game-checkpoint-assets. Raw/uncompressed files remain under out/accepted-game-checkpoint-2026-10-16. Local workspace lifetime is not guaranteed; remote upload is unresolved.",
+  "retrieval": "Local archives now; the named release download command becomes valid only after successful upload.",
   "extraction": "Extract all five archives into one directory, then open index.html. Raw data, full films, recovery prefixes, manifests, collector/report sources and shared panel are included.",
-  "totalArchiveBytes": 309367242,
+  "totalArchiveBytes": 309367846,
   "artifacts": [
     {
       "name": "accepted-games-G1-zone-reference.tar.gz",
@@ -37,9 +37,20 @@
     },
     {
       "name": "accepted-games-audit-packet.tar.gz",
-      "bytes": 448025,
-      "sha256": "47f4cde8a3fa38afc410e51910b92aef16e822398b474ca0b9e3dfe36dd26e0f",
-      "members": 25
+      "bytes": 448629,
+      "sha256": "d06bf2c711658dd9fe04fcae120e812bfbad7bd47528ad6ddbd54d47baf9db7c",
+      "members": 26
     }
-  ]
+  ],
+  "uploadFailure": {
+    "service": "uploads.github.com",
+    "httpStatus": 401,
+    "message": "Bad credentials",
+    "apiAccess": "Repository push, PR creation and release metadata work; release-asset upload rejects this environment credential.",
+    "attempts": "One batch upload plus one small SHA256SUMS diagnostic; no simulation rerun.",
+    "assetsUploaded": 0,
+    "emptyDraftRelease": "Created without assets; removed as empty task scaffolding.",
+    "nextAction": "Use existing local archives with an upload-capable GitHub session. Preserve data; do not rerun games."
+  },
+  "verification": "All archive paths/streams validated; per-game archives preserve exact frozen data. Audit packet refreshed only for truthful remote-upload status."
 }
