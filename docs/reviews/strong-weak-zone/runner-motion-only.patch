@@ -1,0 +1,197 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index 04cf8dc..5adaf02 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -63,7 +63,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
+ 
+ /** Read entries and routes from acquired bodies on both teams. A nominal
+  * block is neither an empty lane nor guaranteed future protection. */
+-interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
++interface LineBody { pos: Vec2; vel: Vec2; radius: number; team: 'O' | 'D' }
+ 
+ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+   if (!opts.run || !opts.aim) return null;
+@@ -93,7 +93,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   for (const { agent: o, seen: s, team } of pictures) {
+     if (s.pose === 'down') continue;
+     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
+-    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
++    bodies.push({ pos: s.pos, vel: s.vel, radius: o.profile.radius, team });
+   }
+   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
+   bodies.sort((p, q) => p.pos.y - q.pos.y);
+@@ -123,16 +123,41 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   let best: Vec2 | null = null, cost = Infinity;
+   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+   // Bodies on a segment block the run along it.
+-  const blockedBy = (from: Vec2, to: Vec2): number => {
++  const blockedBy = (from: Vec2, to: Vec2, start: number, duration: number): number => {
+     const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
+     let r = 0;
+     for (const b of bodies) {
+-      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
+-      // Include the endpoint: a route ending in a defender is still occupied.
+-      // At the start, only charge a body when the route approaches it; an
+-      // already touching runner must remain free to move away from that body.
+-      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
+-      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
++      let miss = Infinity;
++      // A blocker can move into a currently open route, or clear it before
++      // arrival. Use only his acquired velocity, with the same short horizon
++      // as the ordinary carrier assessment. The timed straight/dog-leg route
++      // remains an estimate, not a prediction of loaded contact or turning.
++      // Defender occupancy stays conservative; its separate threat estimate
++      // already accounts for acquired movement and physical reach.
++      const moving = b.team === 'O' && (b.vel.x !== 0 || b.vel.y !== 0);
++      if (!moving) {
++        const u = clamp(((b.pos.x-from.x)*sx+(b.pos.y-from.y)*sy)/l2, 0, 1);
++        if (u <= 0 && (b.pos.x-from.x)*sx+(b.pos.y-from.y)*sy <= 0) continue;
++        const miss = Math.hypot(from.x+u*sx-b.pos.x, from.y+u*sy-b.pos.y)-b.radius-a.profile.radius*.7;
++        if (miss < 0) r += 1.5+4*Math.min(1,-miss);
++        continue;
++      }
++      const split = clamp((.6 - start) / Math.max(1e-9, duration), 0, 1);
++      const fractions = split > 0 && split < 1 ? [0, split, 1] : [0, 1];
++      for (let i = 1; i < fractions.length; i++) {
++        const f0 = fractions[i-1], f1 = fractions[i];
++        const t0 = Math.min(.6, start + duration*f0);
++        const t1 = Math.min(.6, start + duration*f1);
++        const rx = from.x + sx*f0 - b.pos.x - b.vel.x*t0;
++        const ry = from.y + sy*f0 - b.pos.y - b.vel.y*t0;
++        const dx = sx*(f1-f0) - b.vel.x*(t1-t0);
++        const dy = sy*(f1-f0) - b.vel.y*(t1-t0);
++        const u = clamp(-(rx*dx+ry*dy) / Math.max(1e-12, dx*dx+dy*dy), 0, 1);
++        // Include the endpoint. An initially touching runner may still exit
++        // an acquired body rather than treating the contact as a closed lane.
++        if (f0 === 0 && u <= 0 && rx*dx+ry*dy >= 0) continue;
++        miss = Math.min(miss, Math.hypot(rx+u*dx, ry+u*dy)-b.radius-a.profile.radius*.7);
++      }
+       if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
+     }
+     return r;
+@@ -141,10 +166,12 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   for (const p of candidates) {
+     // Two ways to the entry: straight, or flatten behind the line first and
+     // then turn up (the cutback's dog-leg). Each has its own arrival time.
+-    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
++    const directTime = timeToReach(me, p, 0);
++    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p, 0, directTime), arrive: directTime, via: p }];
+     if (depth(a.pos) < -1.6) {
+       const w = { x: sim.los - 1.2 * dir, y: p.y };
+-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
++      const firstTime = timeToReach(me, w, 0), secondTime = Math.hypot(p.x - w.x, p.y - w.y) / cruise;
++      routes.push({ obstruct: blockedBy(a.pos, w, 0, firstTime) + blockedBy(w, p, firstTime, secondTime), arrive: firstTime + secondTime, via: w });
+     }
+     let risk = Infinity, via = p;
+     const beyond = { x: p.x + 2 * dir, y: p.y };
+diff --git a/test/carrier-moving-blocker.test.ts b/test/carrier-moving-blocker.test.ts
+new file mode 100644
+index 0000000..66c4d00
+--- /dev/null
++++ b/test/carrier-moving-blocker.test.ts
+@@ -0,0 +1,105 @@
++/** Acquired moving-blocker pictures through the actual possession controller.
++ * These held-body scenes test a route assessment, not a prescribed run ending.
++ * The runner keeps ordinary momentum and all production movement modifiers.
++ */
++import { describe, expect, it } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { BallCarrier } from '../src/sim/behaviors/carrier.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim } from '../src/sim/playsim.js';
++import { runReadObservers } from '../src/sim/run-read-observer.js';
++
++const offense = generateTeam(new Rng(31), 'Moving-block offense', 'MO', { strength: .55 });
++const defense = generateTeam(new Rng(32), 'Moving-block defense', 'MD', { strength: .55 });
++const LOS = 40;
++type Measurement = { entry: { x: number; y: number }; risk: number; score: number };
++
++function scene(side: -1 | 1, transverseVelocity: number, blockerOffset = .95) {
++  const formation = FORMATION_BY_ID.ace_11;
++  const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
++    offCall: { formation, kind: 'run', flip: false, run: RUN_BY_ID.iz_strong, label: 'moving-block picture' },
++    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over Cover 3' },
++    los: LOS, ballY: CENTER_Y, firstDownX: 50, seed: 5, record: false });
++  // Other bodies remain in the picture, outside the local route comparison.
++  for (const a of sim.agents) {
++    a.body.pos = { x: 80 + a.idx, y: 2 };
++    a.body.vel = { x: 0, y: 0 };
++  }
++  for (const [slot, y] of [['C', -4], ['LG', -2], ['RG', blockerOffset], ['LT', 3], ['RT', 5]] as const) {
++    sim.slot(slot)!.body.pos = { x: LOS - .5, y: CENTER_Y + side * y };
++  }
++  const back = sim.slot('RB')!, blocker = sim.slot('RG')!;
++  back.body.pos = { x: LOS - 1.6, y: CENTER_Y };
++  back.body.vel = { x: 3, y: 0 };
++  back.body.facing = 0;
++  blocker.body.vel = { x: 0, y: side * transverseVelocity };
++  const pictures = new Map(sim.agents.map(a => [a, {
++    pos: { ...a.pos }, vel: { ...a.vel }, stance: null, facing: a.facing, pose: 'up', age: .05,
++  } satisfies Perceived]));
++  // Fixed legitimate observations: later private-body changes are unavailable.
++  sim.see = (_observer, target) => structuredClone(pictures.get(target)!);
++  sim.ball = { kind: 'held', carrier: back } as never;
++  const opts = () => ({ aim: { x: LOS + .6, y: CENTER_Y }, aimUntil: 10,
++    run: { scheme: 'insideZone' as const, side } });
++  function choose() {
++    let candidates: Measurement[] = [], selected: { x: number; y: number } | null = null;
++    runReadObservers.set(sim, event => {
++      if (event.phase !== 'aim') return;
++      candidates = event.candidates as Measurement[];
++      selected = event.selected as { x: number; y: number };
++    });
++    const command = new BallCarrier(opts(), back).update(back, sim);
++    const direct = candidates.find(c => Math.abs(c.entry.x - (LOS + .5)) < 1e-8
++      && Math.abs(c.entry.y - CENTER_Y) < 1e-8)!;
++    expect(direct).toBeDefined();
++    expect(selected).not.toBeNull();
++    return { command, direct, selected, candidates };
++  }
++  return { sim, back, blocker, pictures, choose };
++}
++
++describe('moving teammates in the production crease assessment', () => {
++  it.each([-1, 1] as const)('distinguishes a blocker entering the route from one clearing it, mirror %s', side => {
++    const entering = scene(side, -2).choose(), clearing = scene(side, 2).choose();
++    // Identical positions and runner momentum; only acquired peer velocity differs.
++    // The current straight route is statically open in both pictures. The
++    // transverse block reaches it while the ordinary moving back approaches.
++    expect(entering.direct.risk).toBeGreaterThan(clearing.direct.risk + .5);
++    expect(clearing.direct.risk).toBe(0);
++    expect(entering.command.vel.x).toBeGreaterThan(0);
++    expect(clearing.command.vel.x).toBeGreaterThan(0);
++    expect(Math.hypot(entering.command.vel.x - clearing.command.vel.x,
++      entering.command.vel.y - clearing.command.vel.y)).toBeGreaterThan(.3);
++    // Demand a response to the moving obstacle, without prescribing an inside cut.
++    expect(Math.abs(entering.command.vel.y)).toBeGreaterThan(Math.abs(clearing.command.vel.y));
++  });
++
++  it.each([-1, 1] as const)('retains genuine static obstruction and a clear opposing route, mirror %s', side => {
++    const obstructed = scene(side, 0, 0).choose(), clear = scene(side, 0).choose();
++    expect(obstructed.direct.risk).toBeGreaterThan(1.5);
++    expect(clear.direct.risk).toBe(0);
++    expect(Math.abs(obstructed.command.vel.y)).toBeGreaterThan(.3);
++    expect(Math.abs(clear.command.vel.y)).toBeLessThan(.1);
++  });
++
++  it.each([-1, 1] as const)('uses the acquired motion despite private body and engagement changes, mirror %s', side => {
++    const s = scene(side, -2), before = s.choose();
++    const end = s.sim.slot('DE_S')!;
++    // Create an unobserved connection and motion after saving the picture.
++    end.body.pos = { x: s.blocker.pos.x + .8, y: s.blocker.pos.y };
++    const engagement = s.sim.engage(s.blocker, end, 'run');
++    expect(engagement).toBeTruthy();
++    engagement!.win = .99;
++    s.blocker.body.vel = { x: -4, y: side * 5 };
++    s.blocker.body.pos = { x: LOS + 5, y: CENTER_Y - side * 4 };
++    const after = s.choose();
++    expect(after.direct).toEqual(before.direct);
++    expect(after.selected).toEqual(before.selected);
++    expect(after.command).toEqual(before.command);
++  });
++});

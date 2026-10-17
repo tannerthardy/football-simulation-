@@ -1,5 +1,33 @@
 # Current work ownership
 
+## Strong/weak wide-zone technique study — 2026-10-16 America/Phoenix
+
+Run owns `codex/strong-weak-zone-study`, intentionally pinned research host
+`fae0a3585419704f385de02e6bfbf8b69ac4cfb1` (#117, unmerged). Keep #117 frozen
+for independent review and #116's runoff policy separate. Fresh fetch confirms
+accepted develop `d682b1f474cb6ba260a7b8b1119a62919c5a2159`, queue `bf493d8`;
+cached accepted and isolated-arm evidence retain their actual source hashes.
+First question: does the strong/weak disparity arise from different installed
+surface jobs, attainable contact technique, or later runner/traffic interaction?
+Read all-player saved traces before spending on new runs. Parallel readers own
+football references, installation/front geometry and acquired runner traffic;
+root alone may edit runtime after a specific error and shared ownership check.
+No physics, capacities, roster, release timer or strength-label multiplier.
+Initial scope is diagnostics/report; coordinate any spacing/carrier change with
+Do-It-All before editing. Integration owns final combined verification.
+
+Completed the role/source comparison and isolated `runReadAim` moving-teammate
+obstruction in runtime/testsb19f0ac, final tooling9dae9f2. Coordination notice on
+#116 names this exact function; no spacing/blocking/contact file edited. Candidate
+alone on accepted engine sourceb674258 improves strong-WZ achieved LOS3.10→2.60,
+weak histories unchanged; OZ7.14→4.85 exposes RG yielding while loaded at2.30,
+then DT access2.65. Composition with117 is explicit sourcece13b11, not promotion:
+weak2.93→2.85. **HOLD new read promotion** for that loaded-traffic priority review.
+39 focused checks/typecheck pass,54.217 command seconds including failures.
+No fresh front/panel/game/full suite; existing adverse interaction decides next.
+17,531-byte acquired RG decision replays exactly with zero World ticks.
+[Report, football sources, portable patch and owner witness](reviews/strong-weak-zone/README.md).
+
 ## Run zone anchoring/protection investigation — 2026-10-17
 
 Run owns `codex/zone-anchor-protection`: `stepRunRep` offensive stretch-contact

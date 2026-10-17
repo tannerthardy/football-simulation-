@@ -1,0 +1,888 @@
+{
+  "decision": "HOLD new motion-aware run-entry promotion for independent loaded-blocker/runner traffic review; #117 remains separate",
+  "acceptedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "queue": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "researchHost": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+  "runtimeTestsCommit": "b19f0ac0df31183eda9f1f9df959df6ad11f5506",
+  "finalToolingCommit": "9dae9f29fbd861a24243b9d4795b7651931b277e",
+  "sources": {
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "pr117": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+    "runnerOnly": "b674258c93d6a9e2fabdf86e6259af2fbb3919a60df61c2f6188c9646de1d7d7",
+    "runnerPlusPr117": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc"
+  },
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "allNewReceiptsSameSettings": true,
+  "input": {
+    "formation": "ace_12",
+    "qb": "under",
+    "personnel": "12",
+    "ends": "Y and H attached",
+    "front": "base43/over",
+    "coverage": "cover3",
+    "runPolicy": {
+      "edge": "box",
+      "linebacker": "stack"
+    },
+    "rosterSeeds": {
+      "offense": 11,
+      "defense": 12
+    },
+    "rosterStrength": 0.55,
+    "playSeed": 77,
+    "los": 40,
+    "ballY": 26.67,
+    "hurry": false,
+    "audibles": false,
+    "calls": [
+      "oz_strong",
+      "wz_strong",
+      "wz_weak"
+    ],
+    "initialWorldSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+    "duo": "saved planned-climb-fit setup, Ace11, LOS35, explicit3.50s censor"
+  },
+  "patchBoundary": [
+    "src/sim/behaviors/carrier.ts:runReadAim",
+    "test/carrier-moving-blocker.test.ts"
+  ],
+  "unchanged": [
+    "assignments",
+    "release",
+    "movement capacities",
+    "roster",
+    "physics/contact laws",
+    "spacing",
+    "keeper/helper controllers",
+    "RUN_CONTACT defaults",
+    "TE base"
+  ],
+  "validation": {
+    "uniqueFocusedPass": 39,
+    "newTests": 6,
+    "expectedRed": {
+      "failed": 2,
+      "passed": 4
+    },
+    "finalTypecheck": "pass",
+    "fullSuite": "not run; Integration owns it"
+  },
+  "newNative": {
+    "validExecutions": 10,
+    "rejectedObserverExecutions": 2,
+    "distinctSituations": 4,
+    "newFrontOrRosterCases": 0,
+    "games": 0,
+    "note": "Includes short prefix repeats only where missing actual cues/raw commands mattered; rejected wrapper omitted optional perception delayScale. Final wrapper forwards complete arguments and three passive prefix checks are exact."
+  },
+  "cost": {
+    "commandSeconds": 54.216736959,
+    "includesFailuresAndExpectedRed": true
+  },
+  "receipts": [
+    {
+      "path": "out/strong-weak-zone/final-focused-receipt.json",
+      "sha256": "823713441b2f49bbe5ffcf1eba712b435abc9cca24f7aad180ade0d2e04e4cd6",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/carrier-moving-blocker.test.ts",
+            "test/carrier-crease.test.ts",
+            "test/run-entry-opponent-information.test.ts",
+            "test/carrier-decision-cadence.test.ts",
+            "test/carrier-recovery-cue.test.ts",
+            "test/carrier-boundary.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.888212423
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/final-typecheck-receipt.json",
+      "sha256": "75e9e14505a740c77ed56badd1c50ce08eda5fa624fc379d3c3ea968df66cf43",
+      "commit": "b19f0ac0df31183eda9f1f9df959df6ad11f5506",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 9.425442913000001
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/final-typecheck-valid-receipt.json",
+      "sha256": "74cd06fdbcd681c3a5cec3a8ad515652a307f915fbc3065d8d446f49857f401a",
+      "commit": "9dae9f29fbd861a24243b9d4795b7651931b277e",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.072099229
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/frozen-new-receipt.json",
+      "sha256": "63f408bd7ed7fd14a7101bb005b7357be1d0bccc4d045eb70859229123560c17",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/frozen-entry.ts",
+            "out/strong-weak-zone/oz-runner-only-read.json.gz",
+            "out/strong-weak-zone/frozen-new.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.196073933
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/frozen-old-receipt.json",
+      "sha256": "0dbd1d197fdfc37cd758dc5913ff6111de0792c47a8fe2476d7061c324cb3b94",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/frozen-entry.ts",
+            "out/strong-weak-zone/oz-runner-only-read.json.gz",
+            "out/strong-weak-zone/frozen-old.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.19456734799999997
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/loaded-traffic-capture-receipt.json",
+      "sha256": "97adc962c57394b01b69098994f8f4cadfff0582bea946b4bd73b6767bae61e1",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "b674258c93d6a9e2fabdf86e6259af2fbb3919a60df61c2f6188c9646de1d7d7",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/loaded-traffic-capture.json.gz",
+            "--concept=oz",
+            "--direction=strong",
+            "--until=2.35",
+            "--traffic=RG@2.3",
+            "--cached=out/strong-weak-zone/runner-only-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.72556122
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/moving-blocker-green-receipt.json",
+      "sha256": "ed42a7a4c8061415f88b207941ce31cc4079b0213db852e3d172bbaaf43e9322",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "a2b96d555063f9b816a96b56f73c6413d49c4bdeda3e56ceaed9517bf32cf5c3",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/carrier-moving-blocker.test.ts",
+            "test/carrier-crease.test.ts",
+            "test/run-entry-opponent-information.test.ts",
+            "test/carrier-decision-cadence.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.694525629
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/moving-blocker-red-receipt.json",
+      "sha256": "eb33c47c8148ca9a68b486c5b59b4c2cd22f403f0ab8e7b3523a31f0079861d8",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/carrier-moving-blocker.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.6809248620000001
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/oz-runner-only-read-receipt.json",
+      "sha256": "42ba5474bd26b3f961206467f83a998bcc7c308cafcd8793628dd36259b4fd80",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "b674258c93d6a9e2fabdf86e6259af2fbb3919a60df61c2f6188c9646de1d7d7",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/oz-runner-only-read.json.gz",
+            "--concept=oz",
+            "--direction=strong",
+            "--until=2.8",
+            "--cached=out/strong-weak-zone/runner-only-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.822215423
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/portable-repro-fixed-receipt.json",
+      "sha256": "23e276d1da358d53df4a071e20ed9d38ddef9bcfbe9346898096bd60bb725557",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/loaded-traffic-repro.ts",
+            "data/reviews/current/strong-weak-zone/input-manifest-loaded-traffic.json",
+            "out/strong-weak-zone/portable-repro.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.194642026
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/portable-repro-receipt.json",
+      "sha256": "29177de2cf6cd7e5d16f46490ba3bc638596cdadf6fe4e0a5517039418d2611e",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/loaded-traffic-repro.ts",
+            "data/reviews/current/strong-weak-zone/input-manifest-loaded-traffic.json",
+            "out/strong-weak-zone/portable-repro.json"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.18203463499999997
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/read-baseline-diagnostic-receipt.json",
+      "sha256": "2a73daba578b769208d2ca3844308c2726affca704a0a4e97f9ffe580a5beb43",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/read-baseline-diagnostic.json.gz",
+            "--until=2.25",
+            "--cached=out/zone-anchor/combined-native.json.gz"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.780773438
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/read-baseline-receipt.json",
+      "sha256": "c6c5cd3cae52e733690a24ae005e83f58bfed1cb4dbea5e36b480d375411c034",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/read-baseline.json.gz",
+            "--until=2.25",
+            "--cached=out/zone-anchor/combined-native.json.gz"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.683092523
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/read-baseline-valid-receipt.json",
+      "sha256": "1598a2041188e4a7a7ef1c8bd5c3a287f27355d9a3b3839a6633eddda070f45e",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/read-baseline-valid.json.gz",
+            "--until=2.25",
+            "--cached=out/zone-anchor/combined-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.705363695
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/read-candidate-receipt.json",
+      "sha256": "66656d0e29fb60793a530da316d2fbad4f8f0a1edba3dcade8e3c1fb27e29490",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/read-candidate.json.gz",
+            "--until=2.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.636107141
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/runner-only-native-receipt.json",
+      "sha256": "40292c48bfd40c92720059d803d47c4a2cea3d0663e3dff407feae406fc0d28f",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "b674258c93d6a9e2fabdf86e6259af2fbb3919a60df61c2f6188c9646de1d7d7",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/strong-weak-zone/runner-only-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.927170802
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/stack-strong-receipt.json",
+      "sha256": "56737b6bb52d39594d4442fc9a6b242fa399c1fc6521bbf9e51b94c6c42332dd",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/stack-strong.json.gz",
+            "--direction=strong",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.8675347589999999
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/typecheck-fixed-receipt.json",
+      "sha256": "98a211863ad0c18f9b7027b68a42344e10d90acdc245bdb39d293d88db1629b7",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.294754411
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/typecheck-receipt.json",
+      "sha256": "c6e5dff6d0d25138cd581d6094fe8a140e119ddbac745e9b3aa8dd941ee8e76b",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 10.432867394999999
+        }
+      ],
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/strong-weak-zone/weak-candidate-full-receipt.json",
+      "sha256": "ac2049adcf12eb7c924cb8835850354079283f98ad8464a54ddbaabbc354ee78",
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/strong-weak-zone/weak-candidate-full.json.gz",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.8127731539999999
+        }
+      ],
+      "inputsUnchanged": true
+    }
+  ],
+  "outputs": [
+    {
+      "path": "out/strong-weak-zone/frozen-new.json",
+      "bytes": 4421,
+      "sha256": "3691de8683c7b5ab00d281e3183e82f013e407be84e81e05385bb2173981673f"
+    },
+    {
+      "path": "out/strong-weak-zone/frozen-old.json",
+      "bytes": 4591,
+      "sha256": "1ebd8b7176ac2e4c79694f8a282b3f7fd8ead8714de2295c1d85a5c0c8bc7367"
+    },
+    {
+      "path": "out/strong-weak-zone/loaded-traffic-capture.json.gz",
+      "bytes": 103725,
+      "sha256": "e323ef7c9ba4eb737aa6627eac27f780d5fc685cec31f509c9729d430dcbce93"
+    },
+    {
+      "path": "out/strong-weak-zone/oz-runner-only-read.json.gz",
+      "bytes": 118146,
+      "sha256": "9b97394fd2ae8ed9955a003456702d75a82b4236fffcb3108a75700447955ded"
+    },
+    {
+      "path": "out/strong-weak-zone/portable-repro.json",
+      "bytes": 493,
+      "sha256": "7f70d1fe70bc9e57bb1f45e6cd49aefe6ba509bc16a5dc7b9642ca144533293f"
+    },
+    {
+      "path": "out/strong-weak-zone/read-baseline-diagnostic.json.gz",
+      "bytes": 95773,
+      "sha256": "1051ab254095fc9c37e63f02326d753a8e6e017744ad7280c79843cb19c35dff"
+    },
+    {
+      "path": "out/strong-weak-zone/read-baseline-valid.json.gz",
+      "bytes": 95619,
+      "sha256": "e4be4a02888b9d7f0a845dcbd16508f0add8da97315628e6850d9d41d704b29c"
+    },
+    {
+      "path": "out/strong-weak-zone/read-candidate.json.gz",
+      "bytes": 97362,
+      "sha256": "40f516fb7a4780ed85119cb099d2c36193da08a2787e6320d85034d99f587c9f"
+    },
+    {
+      "path": "out/strong-weak-zone/runner-only-native.json.gz",
+      "bytes": 2367175,
+      "sha256": "602de89a0cb52bd30ec9b7836875ef7a52d2d50791a4ad8bc9bf392645da0c53"
+    },
+    {
+      "path": "out/strong-weak-zone/stack-strong.json.gz",
+      "bytes": 153713,
+      "sha256": "54f017575b5bffad3800c3ea8328ce739ca69e92b6c3c531a3ca11cdea2d0e17"
+    },
+    {
+      "path": "out/strong-weak-zone/weak-candidate-full.json.gz",
+      "bytes": 157904,
+      "sha256": "b81b6d7437a6eb4cd2715ef94cd3e5fb833f6df14e073f5e57bb1ecaf79e8547"
+    }
+  ],
+  "reused": [
+    {
+      "path": "out/zone-anchor/baseline.json.gz",
+      "bytes": 1235957,
+      "sha256": "c7eb4b882bd499593281c7e9dc769d9cc2b95c047877c704e24daaf5814a61fe"
+    },
+    {
+      "path": "out/zone-anchor/combined-native.json.gz",
+      "bytes": 2113432,
+      "sha256": "0cfbd16df56bcd3581eab4f521449c102a8f0f6d6b12bd2f002b1b6f4780b962"
+    },
+    {
+      "path": "out/stretch-access/final-interaction.json.gz",
+      "bytes": 280635,
+      "sha256": "74e2e5558eb5f3d712524d0120f6fe8ac97b8d9819d7169506dc8885a77a826b"
+    },
+    {
+      "path": "test/fixtures/planned-climb-fit.json.gz",
+      "bytes": 6019,
+      "sha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f"
+    }
+  ],
+  "arms": [
+    {
+      "path": "out/strong-weak-zone/runner-only-native.json.gz",
+      "source": "b674258c93d6a9e2fabdf86e6259af2fbb3919a60df61c2f6188c9646de1d7d7",
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "input": null,
+          "terminal": true,
+          "t": 5.65,
+          "gain": 4.85,
+          "ending": "tackle",
+          "cachedExact": null,
+          "maxima": {
+            "workResidual": 6.4783733932927134e-12,
+            "armImpulseExcess": 2.842170943040401e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "offensiveImpactTicks": 10,
+          "firstContactEvent": {
+            "t": 2.65,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 13,
+            "pos": {
+              "x": 41.27,
+              "y": 22.59
+            },
+            "note": "body collision"
+          }
+        },
+        {
+          "id": "wz-strong-over3",
+          "input": null,
+          "terminal": true,
+          "t": 4.15,
+          "gain": 5.12,
+          "ending": "tackle",
+          "cachedExact": null,
+          "maxima": {
+            "workResidual": 8.29913915367797e-12,
+            "armImpulseExcess": 2.842170943040401e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "offensiveImpactTicks": 4,
+          "firstContactEvent": {
+            "t": 3.25,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 43.18,
+              "y": 20.02
+            },
+            "note": "grasp"
+          }
+        },
+        {
+          "id": "wz-weak-over3",
+          "input": null,
+          "terminal": true,
+          "t": 4,
+          "gain": 5.34,
+          "ending": "tackle",
+          "cachedExact": null,
+          "maxima": {
+            "workResidual": 7.211564678755167e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "offensiveImpactTicks": 0,
+          "firstContactEvent": {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 41.31,
+              "y": 34.31
+            },
+            "note": "grasp"
+          }
+        },
+        {
+          "id": "useful-climb-opponent",
+          "input": null,
+          "terminal": false,
+          "t": 3.5,
+          "gain": null,
+          "ending": "explicit-prefix-censor",
+          "cachedExact": null,
+          "maxima": {
+            "workResidual": 6.714628852932947e-12,
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "offensiveImpactTicks": 0,
+          "firstContactEvent": {
+            "t": 3.25,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 39.76,
+              "y": 21.82
+            },
+            "note": "grasp"
+          }
+        }
+      ]
+    },
+    {
+      "path": "out/strong-weak-zone/stack-strong.json.gz",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "rows": [
+        {
+          "id": null,
+          "input": {
+            "concept": "wz",
+            "dir": "strong",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "terminal": true,
+          "t": 3.85,
+          "gain": 6.49,
+          "ending": "tackle",
+          "cachedExact": null,
+          "maxima": null,
+          "offensiveImpactTicks": 0,
+          "firstContactEvent": {
+            "t": 3.25,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 20,
+            "pos": {
+              "x": 44.31,
+              "y": 17.83
+            },
+            "note": "grasp"
+          }
+        }
+      ]
+    },
+    {
+      "path": "out/strong-weak-zone/weak-candidate-full.json.gz",
+      "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+      "rows": [
+        {
+          "id": null,
+          "input": {
+            "concept": "wz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "terminal": true,
+          "t": 3.85,
+          "gain": 2.85,
+          "ending": "tackle",
+          "cachedExact": null,
+          "maxima": null,
+          "offensiveImpactTicks": 0,
+          "firstContactEvent": {
+            "t": 3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.85,
+              "y": 35.06
+            },
+            "note": "grasp"
+          }
+        }
+      ]
+    }
+  ],
+  "adverse": {
+    "oz": "First raw RG request identical at controller2.30; spacing changes lateral work as RB approaches; DT contacts runner2.65. Entry-time decision defensible but loaded traffic compatibility unresolved. Do not declare safe priority bypass.",
+    "weakStack": "First gather avoided by wider read but later gathering remains; Mike now grasps3.00; result2.93->2.85. Not a rescue.",
+    "duo": "RB route changes from1.70; RT/Mike useful load remains; SS firstcontact3.25; endpoint+0.159yd at3.50 censor.",
+    "lateOffensiveImpacts": "OZ first4.05 afterFSbond3.70; WZstrong first3.90 afterSSbond3.25 andRBfall3.70. Keep physical risk visible."
+  },
+  "rejected": [
+    {
+      "receipt": "read-baseline-receipt.json",
+      "reason": "Observer dropped optional perception delay, lost full partial tape before parity guard. Never used as football evidence."
+    },
+    {
+      "receipt": "read-baseline-diagnostic-receipt.json",
+      "reason": "Same active observer defect, retained rejected tape. Fixed wrapper proves exact parity."
+    },
+    {
+      "receipt": "typecheck-receipt.json",
+      "reason": "Diagnostic raw command collection referenced private cmds without explicit diagnostic type view; fixed without runtime change."
+    },
+    {
+      "receipt": "final-typecheck-receipt.json",
+      "reason": "Portable Map lacked value type; type-only annotation fixes diagnostic, production unchanged."
+    },
+    {
+      "receipt": "portable-repro-receipt.json",
+      "reason": "Tried gzip on plain portable JSON; input loader fixed; no physical simulation."
+    }
+  ],
+  "limitations": [
+    "Single saved native input pair is not a success-rate or NFL calibration study.",
+    "Strong/weak surfaces are closed on both sides and front roles are asymmetric.",
+    "Timed route is an approximation, not an acceleration/turning/contact feasibility proof.",
+    "No #116 composition or shared-physics candidate is included.",
+    "Fresh transfer deliberately deferred until the named OZ interaction disposition."
+  ]
+}

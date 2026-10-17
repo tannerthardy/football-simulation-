@@ -1,0 +1,49 @@
+{
+  "sources": [
+    {
+      "id": "syed-shanahan-2023",
+      "author": "Shawn Syed",
+      "title": "Shanahan Schemes",
+      "date": "2023-07-05",
+      "url": "https://sumersports.com/the-zone/shanahan-schemes/",
+      "file": "/tmp/zorro-sumer.html",
+      "inspection": "Full public prose and Zorro/Wanda diagrams; embedded film was not played; secondary scheme analysis, not authenticated full installation.",
+      "bytes": 743099,
+      "sha256": "1ef719b2a94e591e7a2565ae857b214ad9a946cc82fae30886820d9b39f55fa4"
+    },
+    {
+      "id": "penree-zone-2012",
+      "author": "George Penree",
+      "title": "Pod Teaching the Inside and Outside Zone Schemes",
+      "date": "2012-03-11",
+      "url": "https://www.xandolabs.com/the-lab/position-groups/offensive-line/run-game-mechanics-offensive-line/pod-teaching-the-inside-and-outside-zone-schemes/",
+      "file": "/tmp/zorro-penree.html",
+      "inspection": "Public technique tables and coaching prose only; no member-only continuation or full clinic film.",
+      "bytes": 177232,
+      "sha256": "0f88209c2eb39601efd6e741280e38886d9bc0aebe5f0de3a97faef1f9dda73f"
+    },
+    {
+      "id": "kolste-shanahan-preview-2022",
+      "author": "Taylor Kolste (PDF metadata); Riley Kolste Football host",
+      "title": "Kyle Shanahan Wide Zone Study preview",
+      "date": "2022-01-18",
+      "url": "https://rileykolstefootball.com/wp-content/uploads/2022/01/shanahan-wide-zone-preview.pdf",
+      "file": "/tmp/shanahan-wide-zone-preview.pdf",
+      "inspection": "All eight preview pages extracted. Pages 2\u20133 compare front/surface checks; page 4 Box description. Secondary selected-film study; its sample gains do not establish causal superiority.",
+      "bytes": 583659,
+      "sha256": "d318f7f805d13eeceb1841fec24e94aa3a1d541a508b7c5c58c33916e74a3db7"
+    },
+    {
+      "id": "madrid-filmroom-2019",
+      "author": "Rich Madrid",
+      "title": "Kittle returned, and so did the running game",
+      "date": "2019-11-29",
+      "url": "https://www.ninersnation.com/2019/11/29/20981469/film-room-shanahan-opens-the-playbook-running-game-is-back-defense-stingy-at-all-levels",
+      "file": "/tmp/zorro-niners.html",
+      "inspection": "Public written film-room account read; did not independently play full clips.",
+      "bytes": 447903,
+      "sha256": "512a506a15507a08f3ba0a55d1e923444e01bd1bd8421c6f4bfbdbaf419990e3"
+    }
+  ],
+  "scope": "Football reference only; no engine edits or simulations; terms are installation-specific."
+}
