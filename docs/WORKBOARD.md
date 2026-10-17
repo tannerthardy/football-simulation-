@@ -27,6 +27,10 @@ weak2.93→2.85. **HOLD new read promotion** for that loaded-traffic priority re
 No fresh front/panel/game/full suite; existing adverse interaction decides next.
 17,531-byte acquired RG decision replays exactly with zero World ticks.
 [Report, football sources, portable patch and owner witness](reviews/strong-weak-zone/README.md).
+Published as [draft #119](https://github.com/tannerthardy/football-simulation-/pull/119),
+with [Integration handoff](https://github.com/tannerthardy/football-simulation-/pull/112#issuecomment-6227691535)
+and [Do-It-All boundary/witness handoff](https://github.com/tannerthardy/football-simulation-/pull/116#issuecomment-6227691787).
+No new runtime trial follows publication; the named compatibility review is next.
 
 ## Run zone anchoring/protection investigation — 2026-10-17
 
