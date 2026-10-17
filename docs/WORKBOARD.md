@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Physics: body mass and sustained run-block response — 2026-10-16
+
+Physics owns `codex/block-mass-response` from accepted #112 merge
+`d682b1f474cb6ba260a7b8b1119a62919c5a2159`. Bounded diagnostic scope:
+`scripts/diag/physics/block-mass-response.ts`, its input manifest and review.
+Separate mass/inertia, mass-linked strength/traction ceilings, prescribed
+requests and supported response; retain equal/near-equal line weights, a
+lighter tight-end-sized body and the user's extreme WR/DT contrast. Reuse #113's
+measurement qualifications. No controller ownership transfer, solver expansion,
+force/capacity/default change or broad game campaign. Correct a demonstrated
+accounting defect if found; new calibration/law candidates require separate review.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
