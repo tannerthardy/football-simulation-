@@ -92,9 +92,23 @@ no forced rebase or old-source relabeling. Integration extraction boundary relea
 
 ### Current checkpoint and audit priorities
 
-**#128-only verification pending; #126 holds itself.** Initial combined freeze7f98ad4 passes typecheck/build and2003 TS checks but fails one existing zone-reach planned-double exact-command contract. Python is explicitly skipped by fail-fast;219.553s. [Preserved failure, source-only diagnosis and hash correction](../data/reviews/current/zone-force-integration/initial-failure-disposition.json). Run/original nonauthor reviewer must adjudicate the old ordinary approach versus intended installed-half contract; no assertion was changed. #126's original branch and failed combined tree remain.
+**Verified #130 / #128-only; adoption pending:** exact freeze82fdc79,
+two reviewed protected files/one runtime file on accepted70b4db6. Source matches
+author5b710a1b exactly. **1988 TS/175 files,145 Python,typecheck/build pass**
+in212.180s, Node22.23.3,44 settings/components1/CF_FLOW unset, no drift/skips.
+[Final receipt and complete logs](../data/reviews/current/zone-force-integration/final-receipt.json).
+Contributor74 focused/typecheck and four native preservation controls reused;
+no new standalone native/panel/game campaign. No new fit allocation, movement,
+physical law/capacity/default or experimental activation. Native controls do not
+establish newly won stops; man-QB/premesh/fast#3/cushion failures stay open.
 
-Integration now extracts only #128@ec2a2e9: `coverage/defender.ts` and its direct force-support test, on accepted70b4db6. The independently reviewed source equals the author's exact5b710a1b digest; blocking.ts is restored to accepted source through a normal scope-reduction commit. [Current extraction](../data/reviews/current/zone-force-integration/extraction-audit.json). The different candidate needs its own one exact combined check; this is not an unchanged-suite rerun. No added native/panel/game campaign.
+**#126 holds itself:** initial combined7f98ad4 passes typecheck/build/2003 TS,
+but fails existing zone-reach double exact-command contract; Python skipped by
+fail-fast,219.553s. [Failure, source-only diagnosis and hash correction](../data/reviews/current/zone-force-integration/initial-failure-disposition.json).
+Run/original nonauthor must adjudicate the old ordinary request versus intended
+installed half; no assertion changed. Original reviewed code and failed freeze
+remain. Total integration command cost431.733s includes both different candidates;
+no unchanged verification is repeated for publication/merge.
 
 **Audit is evidence, not an engine candidate.** [#129 report](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md)
 stays pinned to measured70b4db6, even after later accepted fixes. Integration verified
@@ -111,7 +125,7 @@ No collector, full suite or game is run for audit/source-document publication.
 | Run | RUN-006 offensive failed-exchange continuation: `QBHandoff` in qb.ts and `RunnerToMesh` in assign.ts on `codex/run-failed-exchange`. | Four saved failed exchanges; G3-P140 is nonmatched success context. Acquired recovery/failure cue, real reach and normal mesh/PA. Independent implementation/review. |
 | Pass/Awareness/Catching | CTRL-001 acquired committed-QB pursuit in `ManCoverage.coverMan` and unkeyed premesh retirement; publish exact claim/pin/settings/observer initialization. | Six scramble witnesses plus ordinary/PA controls. Coordinate one composed native witness/control with Run before better-broken-play claims; neither implementation waits for the other. |
 | Physics + Catching | BALL-001 local relative endpoint query, jointly legal height/reach interval and closest legal opportunity. | Physics helper/tests; Catching tick-entry/end capture and eligibility/order/retry/difficulty. No earliest-reach semantic change, World rewrite or capability/default change. Native nominated INT invalidity remains unresolved. |
-| Flex / Do-It-All + Awareness/Pass | INFO-002/003 explicit acquired QB receiver estimate plus immutable installed expectation at evaluation and release, with observer/estimate cache key. | Ordinary teammate see() refresh and live converted routes are not legitimate acquisition/prior. Frozen-input hidden-state invariance plus anticipation/observed-change controls; other QB readers remain named debt. Separate from Run's exchange functions. |
+| Flex / Do-It-All + Awareness/Pass | INFO-002/003 explicit acquired QB receiver estimate plus immutable installed expectation: QBPass.evaluate/release and RouteRunner.predict, with observer/estimate cache key. | Ordinary teammate see() refresh and live converted routes are not legitimate acquisition/prior. Frozen-input hidden-state invariance plus anticipation/observed-change controls; other QB readers remain named debt. Separate from Run's exchange functions. |
 | Measurement + Integration | GAME-004 independent saved-result credit repairs and explicit safety goal-plane convention. | Existing fixtures/ordinary credits; no new games or silent historical rewrite. No ready patch is presumed. |
 
 [Consolidated owner coordination and exact contracts](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
@@ -669,6 +683,18 @@ needed for distribution. These remain8ca8dee observations, not current-build
 results; final intents cannot reconstruct discarded producer stages/every-tick RNG.
 
 <a id="ready-blocked-experimental"></a>
+## Current queue checkpoint
+
+| Disposition | Exact scope / owner | Next decision |
+| --- | --- | --- |
+| Verified; adoption pending | #128@ec2a2e9 via #130, passing82fdc79; Integration | Final unchanged-tree/ref/review checks, then routine adoption under standing authority. |
+| Held by exact contract failure | #126@b3de4f5; Run + original nonauthor reviewer | Adjudicate zone-reach planned-double ordinary command versus installed-half contract. Preserve failure; no automatic assertion relaxation. |
+| Held by adverse football evidence | #127@f6a3c86; Catching | Acquired-cue/own-preview feasible wheel-versus-swing objective, preserving successful swing; no broad approach promotion. |
+| Independent audit work, not ready patches | RUN-006/CTRL-001, INFO-002/003, BALL-001; owners above | Publish small reviewed scopes and compatible focused receipts. Joint native evidence gates broken-play claims, not independent implementation. |
+| Existing holds | Tooling101/106; reference108; optional115,116/119 and experiments | Existing owner repair/review decisions; no collector/game/suite while waiting. |
+
+Earlier delivered checkpoints below are preserved history; accepted pin/current queue above govern new work.
+
 
 **Current disposition:**117/122,123/124 and118/120/121 adopted as70b4db6 through125.106/101 tooling blocked with author/Measurement tasks,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source is70b4db6; all earlier code/evidence history remains.
 

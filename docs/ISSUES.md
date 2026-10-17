@@ -10,6 +10,8 @@ Older entries retain their dated integration history; consult the canonical
 The previous register header's `90edc525` was the accepted reference at its publication,
 not the current development instruction.
 
+Current runtime disposition: #128 acquired quarter-flat force-support correction is verified through #130, adoption pending; #126 held for exact zone-reach planned-double contract adjudication by Run/nonauthor reviewer; #127 broad approach trials remain held. [Full receipt, limits and preserved failure](../data/reviews/current/zone-force-integration/final-receipt.json). The70b4 audit remains measured historical evidence, not a later-source result.
+
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
 audit or a claim that every old research concern affects today's engine.
