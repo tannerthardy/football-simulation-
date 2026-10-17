@@ -788,12 +788,6 @@ export class PlaySim {
   finishCarry(kind: 'tackle' | 'oob' | 'slide', spot: Vec2): void {
     const c = this.carrier;
     if (!c) return;
-    if (c.team === 'O' && this.possession === 'O' && spot.x <= OWN_GOAL_X) {
-      this.scoreKind = 'safety';
-      this.event('safety', c);
-      this.whistle('safety', spot);
-      return;
-    }
     if (c.team === 'D' && this.possession === 'D' && spot.x >= OPP_GOAL_X) {
       this.event('touchback', c);
       this.whistle('touchback', spot);
@@ -801,6 +795,7 @@ export class PlaySim {
     }
     // Sack: QB tackled behind the LOS on a pass play before throwing.
     if (kind === 'tackle' && c === this.qb && this.isPass && this.throwAt < 0 && spot.x < this.los && !this.scrambled) {
+      this.stats.passer = c.player.id;
       this.stats.sacked = true;
       this.stats.sackedBy = this.bond?.tacklers.map((t) => t.player.id) ?? [];
       this.event('sack', this.bond?.tacklers[0] ?? null, c);
@@ -808,6 +803,14 @@ export class PlaySim {
       this.event('tackle', this.bond?.tacklers[0] ?? null, c);
     }
     if (this.bond) this.stats.tacklers = this.bond.tacklers.map((t) => t.player.id);
+    // A safety keeps the underlying sack/tackle attribution. The physical
+    // stop remains at spot; statistical yardage is bounded at the goal plane.
+    if (c.team === 'O' && this.possession === 'O' && spot.x <= OWN_GOAL_X) {
+      this.scoreKind = 'safety';
+      this.event('safety', c);
+      this.whistle('safety', spot);
+      return;
+    }
     this.whistle(kind, spot);
   }
 
@@ -833,6 +836,7 @@ export class PlaySim {
     let yards = turnover ? 0 : spot.x - this.los;
     if (this.outcome === 'incomplete') yards = 0;
     if (this.scoreKind === 'TD' && !turnover) yards = OPP_GOAL_X - this.los;
+    if (this.scoreKind === 'safety' && !turnover) yards = OWN_GOAL_X - this.los;
     const s = this.stats;
     const segs = this.segments;
     const offTD = this.scoreKind === 'TD' && !turnover;
