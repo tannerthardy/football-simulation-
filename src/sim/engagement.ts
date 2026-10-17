@@ -1084,6 +1084,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
     : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  const footwork = stretch ? b.behavior.contactFootwork?.(b, sim) : null;
+  if (footwork && Math.abs(footwork.y) > 1e-9) {
+    const side = Math.sign(footwork.y);
+    // Keep the computed depth connection. This is a world-playside step,
+    // not more diagonal drive into the defender or extra contact force.
+    blockVel = { ...blockVel, y: side * Math.max(blockVel.y * side, Math.min(mirror, Math.abs(footwork.y))) };
+  }
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the

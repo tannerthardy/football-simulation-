@@ -748,6 +748,16 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
+  contactFootwork(a: Agent, sim: PlaySim): Vec2 | null {
+    const e = a.engagement, read = this.zoneRead;
+    if (!this.zoneEligible(a, sim) || !e || !read || read.target !== e.defender.idx
+      || read.phase !== 'runoff') return null;
+    // Giving up the outside shoulder changes the fit, not the installed
+    // playside footwork. Continue that track without adding forward push.
+    // The contact controller and World still bound the step and its result.
+    return { x: 0, y: read.side * a.profile.vmax * .45 };
+  }
+
   contactMotion(a: Agent): Vec2 | null {
     const e = a.engagement, read = this.zoneRead;
     if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'

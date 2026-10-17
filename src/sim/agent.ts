@@ -30,6 +30,9 @@ export interface Behavior {
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent): Vec2 | null;
+  /** Own acquired footstep intention, never a peer's private instruction or
+   * promised achieved motion. Null retains the ordinary contact fit. */
+  contactFootwork?(a: Agent, sim: PlaySim): Vec2 | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';
