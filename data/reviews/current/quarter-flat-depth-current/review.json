@@ -1,0 +1,5844 @@
+{
+  "schema": "quarter-flat-research-hold-v1",
+  "status": "HOLD \u2014 do not integrate cushion/objective changes",
+  "accepted": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "researchCode": "2ba3871c6cfe8fb114b614167a5b3452914e89a6",
+  "sourceAccepted": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "sourceFinalHeld": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+  "arms": [
+    {
+      "name": "initial-fixed",
+      "raw": "candidate.json.gz",
+      "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+      "executed": 13,
+      "cases": [
+        {
+          "id": "QW",
+          "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "efa65deb9638b458fe4f265ec3c5cf93f970a904ebb1e0e977a3722e55dd41bb"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "slide",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "93734b5fa87455dc5e714718062264773f63937dcf64653d8f70b48a68397bdb"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.310100477620383,
+                "depth": 1.7969831641920138,
+                "velocity": {
+                  "x": -1.0654561067466328,
+                  "y": 6.420306967261392
+                },
+                "position": {
+                  "x": 43.21886970545616,
+                  "y": 39.81614162349551
+                }
+              },
+              "candidate": {
+                "gap": 4.941090912281507,
+                "depth": 3.9968486376207863,
+                "velocity": {
+                  "x": 0.878405988536087,
+                  "y": 6.312523682735774
+                },
+                "position": {
+                  "x": 45.41873517888493,
+                  "y": 39.690905147647854
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.5692989471016918,
+                "depth": -1.5449625990874836,
+                "velocity": {
+                  "x": 4.418203325320058,
+                  "y": 5.716710180312295
+                },
+                "position": {
+                  "x": 44.89882625305732,
+                  "y": 46.501586788781815
+                }
+              },
+              "candidate": {
+                "gap": 1.0479727746740861,
+                "depth": 0.9646998622267517,
+                "velocity": {
+                  "x": 3.5273981309369824,
+                  "y": 5.450543534525364
+                },
+                "position": {
+                  "x": 47.40683372951183,
+                  "y": 46.26263767491999
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QM",
+          "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "26bf1d7f65c1e6966d071abc4bfb310a777b8f322980868e1a2ea8306f64a563"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e12774175c0d01859f52d49c9fd2c320dbd0897481dfe8816ddcbb94d1a452e5"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.3811949149333653,
+                "depth": 1.8142681864242647,
+                "velocity": {
+                  "x": -1.1639278725459354,
+                  "y": -6.336841252184028
+                },
+                "position": {
+                  "x": 43.2361547276884,
+                  "y": 13.590560594965991
+                }
+              },
+              "candidate": {
+                "gap": 4.972846117536211,
+                "depth": 3.981349888833833,
+                "velocity": {
+                  "x": 0.886696604484419,
+                  "y": -6.23386235895123
+                },
+                "position": {
+                  "x": 45.40323643009797,
+                  "y": 13.716938540678399
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.6284436501105861,
+                "depth": -1.6071134254388184,
+                "velocity": {
+                  "x": 4.4950139231587976,
+                  "y": -5.822112744752527
+                },
+                "position": {
+                  "x": 44.835020441846225,
+                  "y": 6.9240118746430745
+                }
+              },
+              "candidate": {
+                "gap": 1.0472495558446087,
+                "depth": 0.9608943848620157,
+                "velocity": {
+                  "x": 3.542698394277527,
+                  "y": -5.670913818434602
+                },
+                "position": {
+                  "x": 47.40302825214706,
+                  "y": 7.077734112070845
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QF",
+          "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e2fa06d4fa1e2fa9c46d8fc950d22f2175f5a31232edd24fb20f9b838ab5a9a1"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "d8ca2faa5d98c569e04f0b4b645e8275b530c8015f4fa7e3f9baaa157d4c0427"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.6926947659160474,
+                "depth": 2.086634658224,
+                "velocity": {
+                  "x": -0.5208804680581078,
+                  "y": 4.937032398357857
+                },
+                "position": {
+                  "x": 45.2519386779779,
+                  "y": 38.017364103138235
+                }
+              },
+              "candidate": {
+                "gap": 4.33789681631031,
+                "depth": 3.2069619630834083,
+                "velocity": {
+                  "x": 0.06321947402645137,
+                  "y": 5.271142855043295
+                },
+                "position": {
+                  "x": 46.372265982837305,
+                  "y": 38.14290740220756
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.4270548320327614,
+                "depth": 1.204663501627543,
+                "velocity": {
+                  "x": -1.5458735437032243,
+                  "y": 6.735056540875054
+                },
+                "position": {
+                  "x": 44.571693984664186,
+                  "y": 44.32265209216908
+                }
+              },
+              "candidate": {
+                "gap": 3.748897432580723,
+                "depth": 2.3837833198302363,
+                "velocity": {
+                  "x": -1.7676418906540952,
+                  "y": 6.762756259514834
+                },
+                "position": {
+                  "x": 45.75081380286688,
+                  "y": 44.637591262935494
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PW",
+          "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              },
+              "candidate": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              },
+              "candidate": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QV",
+          "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              },
+              "candidate": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              },
+              "candidate": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QU",
+          "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              },
+              "candidate": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              },
+              "candidate": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "FRESH",
+          "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+          "defenderId": "HFD-S1",
+          "keyedReceiverId": "HFO-WR2",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6c468c1066a7656a42bb80a7c4da20963890764feb3e305e5fb72da92af47016"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "d011855f39045262e6a23d3a0928fc2d3aa08c585d8139e3cb3bdfb1d5947931"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.786808134347061,
+                "depth": 2.3619243309894387,
+                "velocity": {
+                  "x": -1.344271321032191,
+                  "y": 5.954528053083126
+                },
+                "position": {
+                  "x": 43.38602690339109,
+                  "y": 39.157985894982446
+                }
+              },
+              "candidate": {
+                "gap": 5.269966317422367,
+                "depth": 4.288170917447175,
+                "velocity": {
+                  "x": 0.7086504653713468,
+                  "y": 5.882114113062433
+                },
+                "position": {
+                  "x": 45.31227348984883,
+                  "y": 39.05456969406038
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3985705311507146,
+                "depth": -1.2623635457780082,
+                "velocity": {
+                  "x": 3.9046344254152965,
+                  "y": 6.1327147751614906
+                },
+                "position": {
+                  "x": 44.45214649925151,
+                  "y": 45.764413390766656
+                }
+              },
+              "candidate": {
+                "gap": 1.6345208171773398,
+                "depth": 1.4471590830750287,
+                "velocity": {
+                  "x": 3.531360722135302,
+                  "y": 6.023631808251781
+                },
+                "position": {
+                  "x": 47.16166912810455,
+                  "y": 45.60658037140028
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PA",
+          "inputSha256": "719ffd85ada958151624b5c3fc5fbb6a33dc519e204a4e1ff8f37629b9f539ac",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              },
+              "candidate": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              },
+              "candidate": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              },
+              "candidate": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              },
+              "candidate": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "OZ",
+          "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              },
+              "candidate": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              },
+              "candidate": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "EARLY-FLAT",
+          "inputSha256": "3ec17d02e0d584b651c8e4e8427c541e4aa7417246ff8890dfd7a7327f2f204b",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "34a22ae1b8d7477a20e8025a45110ad03fe225d7d6b9ee2cc57d03ad5070c9b3"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "3c41a9bb7e62a932328e45f6a8e5a18c60a48993d75f257c7439b5b1b48d11b6"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.7805530231982023,
+                "depth": 2.094460586186422,
+                "velocity": {
+                  "x": -0.7236680041516809,
+                  "y": 4.9721483247732206
+                },
+                "position": {
+                  "x": 45.27292437107361,
+                  "y": 37.911807104126744
+                }
+              },
+              "candidate": {
+                "gap": 4.298796786623788,
+                "depth": 3.0238271833462775,
+                "velocity": {
+                  "x": -0.27918512584732613,
+                  "y": 5.271297380445912
+                },
+                "position": {
+                  "x": 46.20229096823346,
+                  "y": 38.00365074628701
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.601416720211546,
+                "depth": -0.4271909429619285,
+                "velocity": {
+                  "x": -2.2293882304178,
+                  "y": 6.8789488211157375
+                },
+                "position": {
+                  "x": 42.91263838481741,
+                  "y": 43.60439080949094
+                }
+              },
+              "candidate": {
+                "gap": 3.2229481979094743,
+                "depth": 0.8765018749596081,
+                "velocity": {
+                  "x": -2.3671868158908143,
+                  "y": 7.105570438723346
+                },
+                "position": {
+                  "x": 44.21633120273895,
+                  "y": 44.078907851380315
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "LATE-OUT",
+          "inputSha256": "f2b5d5e529f1fb8df30d836128f211903d739b3da4dc6274f38185cbbc32dfea",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6dba3320f19beee1d9c6f91bea18ed5dbb6908f732b3019505500a27ee696448"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "80be643f93fe72ff8708cb4d280215a35b564af58504d396d15fbe80bb8ad556"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              },
+              "candidate": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.896355852182634,
+                "depth": 1.6625517328306785,
+                "velocity": {
+                  "x": -1.2458995861306816,
+                  "y": 4.353411281382988
+                },
+                "position": {
+                  "x": 48.26325576258224,
+                  "y": 36.97655433721923
+                }
+              },
+              "candidate": {
+                "gap": 3.116672635312609,
+                "depth": 2.0334464772137935,
+                "velocity": {
+                  "x": -0.593285442914175,
+                  "y": 4.435894100520975
+                },
+                "position": {
+                  "x": 48.634150506965355,
+                  "y": 36.986283760014416
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "TRANSFER",
+          "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+          "defenderId": "TFD-S1",
+          "keyedReceiverId": "TFO-WR6",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "482d371eb0937b5f66774bb90c6314d38393369c54bf509937f564a22d32800a"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "18a7961a5316a1482cf01b5a23638207748c85c6f8cfbb518c28d80ca78b8fa4"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.514205645675472,
+                "depth": 1.6360969363424758,
+                "velocity": {
+                  "x": -1.0509666050433104,
+                  "y": 5.8623629086594455
+                },
+                "position": {
+                  "x": 43.12172009228056,
+                  "y": 36.35445311742233
+                }
+              },
+              "candidate": {
+                "gap": 5.081467250921195,
+                "depth": 3.9104404648248448,
+                "velocity": {
+                  "x": 0.8800946552488292,
+                  "y": 5.698746652868133
+                },
+                "position": {
+                  "x": 45.39606362076293,
+                  "y": 36.21961027246057
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.169805364071426,
+                "depth": -1.9691901306162762,
+                "velocity": {
+                  "x": 4.028090338569001,
+                  "y": 5.811988629146662
+                },
+                "position": {
+                  "x": 44.48966934365631,
+                  "y": 42.69039700203273
+                }
+              },
+              "candidate": {
+                "gap": 1.2409087137582175,
+                "depth": 0.8469021553954335,
+                "velocity": {
+                  "x": 3.8192599641035465,
+                  "y": 6.287326989261841
+                },
+                "position": {
+                  "x": 47.30576162966802,
+                  "y": 42.69465083591771
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fixed-release",
+      "raw": "candidate-final.json.gz",
+      "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+      "executed": 14,
+      "cases": [
+        {
+          "id": "QW",
+          "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "efa65deb9638b458fe4f265ec3c5cf93f970a904ebb1e0e977a3722e55dd41bb"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "slide",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "93734b5fa87455dc5e714718062264773f63937dcf64653d8f70b48a68397bdb"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.310100477620383,
+                "depth": 1.7969831641920138,
+                "velocity": {
+                  "x": -1.0654561067466328,
+                  "y": 6.420306967261392
+                },
+                "position": {
+                  "x": 43.21886970545616,
+                  "y": 39.81614162349551
+                }
+              },
+              "candidate": {
+                "gap": 4.941090912281507,
+                "depth": 3.9968486376207863,
+                "velocity": {
+                  "x": 0.878405988536087,
+                  "y": 6.312523682735774
+                },
+                "position": {
+                  "x": 45.41873517888493,
+                  "y": 39.690905147647854
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.5692989471016918,
+                "depth": -1.5449625990874836,
+                "velocity": {
+                  "x": 4.418203325320058,
+                  "y": 5.716710180312295
+                },
+                "position": {
+                  "x": 44.89882625305732,
+                  "y": 46.501586788781815
+                }
+              },
+              "candidate": {
+                "gap": 1.0479727746740861,
+                "depth": 0.9646998622267517,
+                "velocity": {
+                  "x": 3.5273981309369824,
+                  "y": 5.450543534525364
+                },
+                "position": {
+                  "x": 47.40683372951183,
+                  "y": 46.26263767491999
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QM",
+          "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "26bf1d7f65c1e6966d071abc4bfb310a777b8f322980868e1a2ea8306f64a563"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e12774175c0d01859f52d49c9fd2c320dbd0897481dfe8816ddcbb94d1a452e5"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.3811949149333653,
+                "depth": 1.8142681864242647,
+                "velocity": {
+                  "x": -1.1639278725459354,
+                  "y": -6.336841252184028
+                },
+                "position": {
+                  "x": 43.2361547276884,
+                  "y": 13.590560594965991
+                }
+              },
+              "candidate": {
+                "gap": 4.972846117536211,
+                "depth": 3.981349888833833,
+                "velocity": {
+                  "x": 0.886696604484419,
+                  "y": -6.23386235895123
+                },
+                "position": {
+                  "x": 45.40323643009797,
+                  "y": 13.716938540678399
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.6284436501105861,
+                "depth": -1.6071134254388184,
+                "velocity": {
+                  "x": 4.4950139231587976,
+                  "y": -5.822112744752527
+                },
+                "position": {
+                  "x": 44.835020441846225,
+                  "y": 6.9240118746430745
+                }
+              },
+              "candidate": {
+                "gap": 1.0472495558446087,
+                "depth": 0.9608943848620157,
+                "velocity": {
+                  "x": 3.542698394277527,
+                  "y": -5.670913818434602
+                },
+                "position": {
+                  "x": 47.40302825214706,
+                  "y": 7.077734112070845
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QF",
+          "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e2fa06d4fa1e2fa9c46d8fc950d22f2175f5a31232edd24fb20f9b838ab5a9a1"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "d8ca2faa5d98c569e04f0b4b645e8275b530c8015f4fa7e3f9baaa157d4c0427"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.6926947659160474,
+                "depth": 2.086634658224,
+                "velocity": {
+                  "x": -0.5208804680581078,
+                  "y": 4.937032398357857
+                },
+                "position": {
+                  "x": 45.2519386779779,
+                  "y": 38.017364103138235
+                }
+              },
+              "candidate": {
+                "gap": 4.33789681631031,
+                "depth": 3.2069619630834083,
+                "velocity": {
+                  "x": 0.06321947402645137,
+                  "y": 5.271142855043295
+                },
+                "position": {
+                  "x": 46.372265982837305,
+                  "y": 38.14290740220756
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.4270548320327614,
+                "depth": 1.204663501627543,
+                "velocity": {
+                  "x": -1.5458735437032243,
+                  "y": 6.735056540875054
+                },
+                "position": {
+                  "x": 44.571693984664186,
+                  "y": 44.32265209216908
+                }
+              },
+              "candidate": {
+                "gap": 3.748897432580723,
+                "depth": 2.3837833198302363,
+                "velocity": {
+                  "x": -1.7676418906540952,
+                  "y": 6.762756259514834
+                },
+                "position": {
+                  "x": 45.75081380286688,
+                  "y": 44.637591262935494
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PW",
+          "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              },
+              "candidate": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              },
+              "candidate": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QV",
+          "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              },
+              "candidate": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              },
+              "candidate": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QU",
+          "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              },
+              "candidate": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              },
+              "candidate": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "FRESH",
+          "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+          "defenderId": "HFD-S1",
+          "keyedReceiverId": "HFO-WR2",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6c468c1066a7656a42bb80a7c4da20963890764feb3e305e5fb72da92af47016"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "d011855f39045262e6a23d3a0928fc2d3aa08c585d8139e3cb3bdfb1d5947931"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.786808134347061,
+                "depth": 2.3619243309894387,
+                "velocity": {
+                  "x": -1.344271321032191,
+                  "y": 5.954528053083126
+                },
+                "position": {
+                  "x": 43.38602690339109,
+                  "y": 39.157985894982446
+                }
+              },
+              "candidate": {
+                "gap": 5.269966317422367,
+                "depth": 4.288170917447175,
+                "velocity": {
+                  "x": 0.7086504653713468,
+                  "y": 5.882114113062433
+                },
+                "position": {
+                  "x": 45.31227348984883,
+                  "y": 39.05456969406038
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3985705311507146,
+                "depth": -1.2623635457780082,
+                "velocity": {
+                  "x": 3.9046344254152965,
+                  "y": 6.1327147751614906
+                },
+                "position": {
+                  "x": 44.45214649925151,
+                  "y": 45.764413390766656
+                }
+              },
+              "candidate": {
+                "gap": 1.6345208171773398,
+                "depth": 1.4471590830750287,
+                "velocity": {
+                  "x": 3.531360722135302,
+                  "y": 6.023631808251781
+                },
+                "position": {
+                  "x": 47.16166912810455,
+                  "y": 45.60658037140028
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PA",
+          "inputSha256": "719ffd85ada958151624b5c3fc5fbb6a33dc519e204a4e1ff8f37629b9f539ac",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              },
+              "candidate": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              },
+              "candidate": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              },
+              "candidate": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              },
+              "candidate": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "OZ",
+          "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              },
+              "candidate": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              },
+              "candidate": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "EARLY-FLAT",
+          "inputSha256": "3ec17d02e0d584b651c8e4e8427c541e4aa7417246ff8890dfd7a7327f2f204b",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "34a22ae1b8d7477a20e8025a45110ad03fe225d7d6b9ee2cc57d03ad5070c9b3"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "3c41a9bb7e62a932328e45f6a8e5a18c60a48993d75f257c7439b5b1b48d11b6"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.7805530231982023,
+                "depth": 2.094460586186422,
+                "velocity": {
+                  "x": -0.7236680041516809,
+                  "y": 4.9721483247732206
+                },
+                "position": {
+                  "x": 45.27292437107361,
+                  "y": 37.911807104126744
+                }
+              },
+              "candidate": {
+                "gap": 4.298796786623788,
+                "depth": 3.0238271833462775,
+                "velocity": {
+                  "x": -0.27918512584732613,
+                  "y": 5.271297380445912
+                },
+                "position": {
+                  "x": 46.20229096823346,
+                  "y": 38.00365074628701
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.601416720211546,
+                "depth": -0.4271909429619285,
+                "velocity": {
+                  "x": -2.2293882304178,
+                  "y": 6.8789488211157375
+                },
+                "position": {
+                  "x": 42.91263838481741,
+                  "y": 43.60439080949094
+                }
+              },
+              "candidate": {
+                "gap": 3.2229481979094743,
+                "depth": 0.8765018749596081,
+                "velocity": {
+                  "x": -2.3671868158908143,
+                  "y": 7.105570438723346
+                },
+                "position": {
+                  "x": 44.21633120273895,
+                  "y": 44.078907851380315
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "LATE-OUT",
+          "inputSha256": "f2b5d5e529f1fb8df30d836128f211903d739b3da4dc6274f38185cbbc32dfea",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6dba3320f19beee1d9c6f91bea18ed5dbb6908f732b3019505500a27ee696448"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "80be643f93fe72ff8708cb4d280215a35b564af58504d396d15fbe80bb8ad556"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              },
+              "candidate": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.896355852182634,
+                "depth": 1.6625517328306785,
+                "velocity": {
+                  "x": -1.2458995861306816,
+                  "y": 4.353411281382988
+                },
+                "position": {
+                  "x": 48.26325576258224,
+                  "y": 36.97655433721923
+                }
+              },
+              "candidate": {
+                "gap": 3.116672635312609,
+                "depth": 2.0334464772137935,
+                "velocity": {
+                  "x": -0.593285442914175,
+                  "y": 4.435894100520975
+                },
+                "position": {
+                  "x": 48.634150506965355,
+                  "y": 36.986283760014416
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "TRANSFER",
+          "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+          "defenderId": "TFD-S1",
+          "keyedReceiverId": "TFO-WR6",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "482d371eb0937b5f66774bb90c6314d38393369c54bf509937f564a22d32800a"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "18a7961a5316a1482cf01b5a23638207748c85c6f8cfbb518c28d80ca78b8fa4"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.514205645675472,
+                "depth": 1.6360969363424758,
+                "velocity": {
+                  "x": -1.0509666050433104,
+                  "y": 5.8623629086594455
+                },
+                "position": {
+                  "x": 43.12172009228056,
+                  "y": 36.35445311742233
+                }
+              },
+              "candidate": {
+                "gap": 5.081467250921195,
+                "depth": 3.9104404648248448,
+                "velocity": {
+                  "x": 0.8800946552488292,
+                  "y": 5.698746652868133
+                },
+                "position": {
+                  "x": 45.39606362076293,
+                  "y": 36.21961027246057
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.169805364071426,
+                "depth": -1.9691901306162762,
+                "velocity": {
+                  "x": 4.028090338569001,
+                  "y": 5.811988629146662
+                },
+                "position": {
+                  "x": 44.48966934365631,
+                  "y": 42.69039700203273
+                }
+              },
+              "candidate": {
+                "gap": 1.2409087137582175,
+                "depth": 0.8469021553954335,
+                "velocity": {
+                  "x": 3.8192599641035465,
+                  "y": 6.287326989261841
+                },
+                "position": {
+                  "x": 47.30576162966802,
+                  "y": 42.69465083591771
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "SLOT-SWING",
+          "inputSha256": "d75dffcb44b24c6da6bccd5ff51c0b41dc1f7c4c2dd9b8b2109ba2efc02cd9e2",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 0.5862276501511445,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 2.8,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 39.72,
+                "y": 45.21
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "d18ba9d5aeb433b147e7b8c451067d8564176b20e7f31f676732397920fe7f61"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 6.6144908445910175,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 3.15,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 40.53,
+                "y": 44.17
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "f22ec2b1933a7ab8acb6b83eb241b99e8e63525be2cb5c28c201d20da8b4d193"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 4.9086761011746445,
+                "depth": 3.4396030558364785,
+                "velocity": {
+                  "x": -2.4999238812074984,
+                  "y": 5.955257273339415
+                },
+                "position": {
+                  "x": 42.64292195538395,
+                  "y": 39.38062819769609
+                }
+              },
+              "candidate": {
+                "gap": 6.552272301468596,
+                "depth": 5.6284210363224645,
+                "velocity": {
+                  "x": -0.004500341334740476,
+                  "y": 6.033926749701189
+                },
+                "position": {
+                  "x": 44.83173993586993,
+                  "y": 39.52808938265732
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 0.4692172972925768,
+                "depth": 0.2660554767287735,
+                "velocity": {
+                  "x": -0.8161509902938975,
+                  "y": 4.59401059088365
+                },
+                "position": {
+                  "x": 40.073297952969504,
+                  "y": 45.279061705121244
+                }
+              },
+              "candidate": {
+                "gap": 2.3263548198303567,
+                "depth": 2.2229209304096287,
+                "velocity": {
+                  "x": -4.345481590826921,
+                  "y": 4.173165970727037
+                },
+                "position": {
+                  "x": 42.28311738163894,
+                  "y": 45.20068994341174
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "coherent-fixed",
+      "raw": "candidate-coherent.json.gz",
+      "source": "2c8f57f0093422d148642541eae8eb47f9804e623b74c7c02dde7e2eda198238",
+      "executed": 14,
+      "cases": [
+        {
+          "id": "QW",
+          "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "efa65deb9638b458fe4f265ec3c5cf93f970a904ebb1e0e977a3722e55dd41bb"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "slide",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "f2d168c12d422506aee4f1abac02fea7a0635f54ec34ce386c170fda0eaa03e8"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.310100477620383,
+                "depth": 1.7969831641920138,
+                "velocity": {
+                  "x": -1.0654561067466328,
+                  "y": 6.420306967261392
+                },
+                "position": {
+                  "x": 43.21886970545616,
+                  "y": 39.81614162349551
+                }
+              },
+              "candidate": {
+                "gap": 4.527574482890088,
+                "depth": 3.500291664951149,
+                "velocity": {
+                  "x": 0.014522658525324387,
+                  "y": 6.363555309853025
+                },
+                "position": {
+                  "x": 44.92217820621529,
+                  "y": 39.72426102557977
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.5692989471016918,
+                "depth": -1.5449625990874836,
+                "velocity": {
+                  "x": 4.418203325320058,
+                  "y": 5.716710180312295
+                },
+                "position": {
+                  "x": 44.89882625305732,
+                  "y": 46.501586788781815
+                }
+              },
+              "candidate": {
+                "gap": 0.6140697647868949,
+                "depth": -0.6115577577994458,
+                "velocity": {
+                  "x": 3.246706825423852,
+                  "y": 6.264427800076528
+                },
+                "position": {
+                  "x": 45.830576109485634,
+                  "y": 46.61654202384732
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QM",
+          "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "26bf1d7f65c1e6966d071abc4bfb310a777b8f322980868e1a2ea8306f64a563"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "fdbcaa8a543e433c7cbdb2359230f02218c2d11d6f23b88af8077d564e6e02a9"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.3811949149333653,
+                "depth": 1.8142681864242647,
+                "velocity": {
+                  "x": -1.1639278725459354,
+                  "y": -6.336841252184028
+                },
+                "position": {
+                  "x": 43.2361547276884,
+                  "y": 13.590560594965991
+                }
+              },
+              "candidate": {
+                "gap": 4.577207443411011,
+                "depth": 3.495625526258543,
+                "velocity": {
+                  "x": -0.00647709316315525,
+                  "y": -6.2844388713969535
+                },
+                "position": {
+                  "x": 44.91751206752268,
+                  "y": 13.692231946951617
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.6284436501105861,
+                "depth": -1.6071134254388184,
+                "velocity": {
+                  "x": 4.4950139231587976,
+                  "y": -5.822112744752527
+                },
+                "position": {
+                  "x": 44.835020441846225,
+                  "y": 6.9240118746430745
+                }
+              },
+              "candidate": {
+                "gap": 0.6628035224242397,
+                "depth": -0.6461928171444029,
+                "velocity": {
+                  "x": 3.2123412538395764,
+                  "y": -6.338042784571824
+                },
+                "position": {
+                  "x": 45.79594105014065,
+                  "y": 6.808760783019129
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QF",
+          "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e2fa06d4fa1e2fa9c46d8fc950d22f2175f5a31232edd24fb20f9b838ab5a9a1"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6554b8bca083dffb2b92109fd4a08b391cfe4b04e37f2924f4b979ea9165463e"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.6926947659160474,
+                "depth": 2.086634658224,
+                "velocity": {
+                  "x": -0.5208804680581078,
+                  "y": 4.937032398357857
+                },
+                "position": {
+                  "x": 45.2519386779779,
+                  "y": 38.017364103138235
+                }
+              },
+              "candidate": {
+                "gap": 3.708436085574742,
+                "depth": 2.3087358440529187,
+                "velocity": {
+                  "x": -0.10742708552466754,
+                  "y": 5.120041048477438
+                },
+                "position": {
+                  "x": 45.474039863806816,
+                  "y": 38.16188439866006
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.4270548320327614,
+                "depth": 1.204663501627543,
+                "velocity": {
+                  "x": -1.5458735437032243,
+                  "y": 6.735056540875054
+                },
+                "position": {
+                  "x": 44.571693984664186,
+                  "y": 44.32265209216908
+                }
+              },
+              "candidate": {
+                "gap": 3.541487280126716,
+                "depth": 1.9329163706563364,
+                "velocity": {
+                  "x": -1.2174808158011894,
+                  "y": 6.723131872841893
+                },
+                "position": {
+                  "x": 45.29994685369298,
+                  "y": 44.56351425194567
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PW",
+          "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              },
+              "candidate": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              },
+              "candidate": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QV",
+          "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              },
+              "candidate": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              },
+              "candidate": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QU",
+          "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              },
+              "candidate": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              },
+              "candidate": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "FRESH",
+          "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+          "defenderId": "HFD-S1",
+          "keyedReceiverId": "HFO-WR2",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6c468c1066a7656a42bb80a7c4da20963890764feb3e305e5fb72da92af47016"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "893c957fab680f75bbedd7792c8196f5b21a364ea9dea203119332754a407ef4"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.786808134347061,
+                "depth": 2.3619243309894387,
+                "velocity": {
+                  "x": -1.344271321032191,
+                  "y": 5.954528053083126
+                },
+                "position": {
+                  "x": 43.38602690339109,
+                  "y": 39.157985894982446
+                }
+              },
+              "candidate": {
+                "gap": 4.971228594660473,
+                "depth": 3.885961764093821,
+                "velocity": {
+                  "x": 0.01568285536700383,
+                  "y": 5.884071127363597
+                },
+                "position": {
+                  "x": 44.91006433649547,
+                  "y": 39.017533799368415
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.3985705311507146,
+                "depth": -1.2623635457780082,
+                "velocity": {
+                  "x": 3.9046344254152965,
+                  "y": 6.1327147751614906
+                },
+                "position": {
+                  "x": 44.45214649925151,
+                  "y": 45.764413390766656
+                }
+              },
+              "candidate": {
+                "gap": 0.6923027258801774,
+                "depth": -0.3251283102023663,
+                "velocity": {
+                  "x": 2.385758776545264,
+                  "y": 6.686522620117573
+                },
+                "position": {
+                  "x": 45.38938173482716,
+                  "y": 45.75523393941263
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PA",
+          "inputSha256": "719ffd85ada958151624b5c3fc5fbb6a33dc519e204a4e1ff8f37629b9f539ac",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              },
+              "candidate": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              },
+              "candidate": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              },
+              "candidate": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              },
+              "candidate": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "OZ",
+          "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              },
+              "candidate": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              },
+              "candidate": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "EARLY-FLAT",
+          "inputSha256": "3ec17d02e0d584b651c8e4e8427c541e4aa7417246ff8890dfd7a7327f2f204b",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "34a22ae1b8d7477a20e8025a45110ad03fe225d7d6b9ee2cc57d03ad5070c9b3"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "662f6ad54b58abf56fc26cae7445255f58d7129f2d5a010429ccdc013377e6ed"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.7805530231982023,
+                "depth": 2.094460586186422,
+                "velocity": {
+                  "x": -0.7236680041516809,
+                  "y": 4.9721483247732206
+                },
+                "position": {
+                  "x": 45.27292437107361,
+                  "y": 37.911807104126744
+                }
+              },
+              "candidate": {
+                "gap": 3.8121183191899926,
+                "depth": 2.2945792043495032,
+                "velocity": {
+                  "x": -0.36174518043617543,
+                  "y": 5.140451195256715
+                },
+                "position": {
+                  "x": 45.47304298923669,
+                  "y": 38.0149579493954
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.601416720211546,
+                "depth": -0.4271909429619285,
+                "velocity": {
+                  "x": -2.2293882304178,
+                  "y": 6.8789488211157375
+                },
+                "position": {
+                  "x": 42.91263838481741,
+                  "y": 43.60439080949094
+                }
+              },
+              "candidate": {
+                "gap": 2.9905475592385278,
+                "depth": 0.3867574390582078,
+                "velocity": {
+                  "x": -1.7194413689864496,
+                  "y": 7.3970237633436025
+                },
+                "position": {
+                  "x": 43.72658676683755,
+                  "y": 44.21494853598512
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "LATE-OUT",
+          "inputSha256": "f2b5d5e529f1fb8df30d836128f211903d739b3da4dc6274f38185cbbc32dfea",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6dba3320f19beee1d9c6f91bea18ed5dbb6908f732b3019505500a27ee696448"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e2e3d2528613001046f7cffc9ee4113193d2db58c879ffaa80b954fede566c0f"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              },
+              "candidate": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.896355852182634,
+                "depth": 1.6625517328306785,
+                "velocity": {
+                  "x": -1.2458995861306816,
+                  "y": 4.353411281382988
+                },
+                "position": {
+                  "x": 48.26325576258224,
+                  "y": 36.97655433721923
+                }
+              },
+              "candidate": {
+                "gap": 3.046200929836971,
+                "depth": 1.9216878342303687,
+                "velocity": {
+                  "x": -0.45418131120442023,
+                  "y": 4.423184526863353
+                },
+                "position": {
+                  "x": 48.52239186398193,
+                  "y": 36.98465171585708
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "TRANSFER",
+          "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+          "defenderId": "TFD-S1",
+          "keyedReceiverId": "TFO-WR6",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "482d371eb0937b5f66774bb90c6314d38393369c54bf509937f564a22d32800a"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cb416bb3ba4951662d860fde4862af58fc3ce013d92ef6120ba59503cd786b05"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.514205645675472,
+                "depth": 1.6360969363424758,
+                "velocity": {
+                  "x": -1.0509666050433104,
+                  "y": 5.8623629086594455
+                },
+                "position": {
+                  "x": 43.12172009228056,
+                  "y": 36.35445311742233
+                }
+              },
+              "candidate": {
+                "gap": 4.684151787650522,
+                "depth": 3.397762785496006,
+                "velocity": {
+                  "x": 0.026137919188198647,
+                  "y": 5.7710968732347245
+                },
+                "position": {
+                  "x": 44.88338594143409,
+                  "y": 36.24021194439891
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 2.169805364071426,
+                "depth": -1.9691901306162762,
+                "velocity": {
+                  "x": 4.028090338569001,
+                  "y": 5.811988629146662
+                },
+                "position": {
+                  "x": 44.48966934365631,
+                  "y": 42.69039700203273
+                }
+              },
+              "candidate": {
+                "gap": 1.1351421461773832,
+                "depth": -0.8314089279262546,
+                "velocity": {
+                  "x": 2.8434907996314767,
+                  "y": 6.415490025472962
+                },
+                "position": {
+                  "x": 45.62745054634633,
+                  "y": 42.82877366709316
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "SLOT-SWING",
+          "inputSha256": "d75dffcb44b24c6da6bccd5ff51c0b41dc1f7c4c2dd9b8b2109ba2efc02cd9e2",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 0.5862276501511445,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 2.8,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 39.72,
+                "y": 45.21
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "d18ba9d5aeb433b147e7b8c451067d8564176b20e7f31f676732397920fe7f61"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 6.55117883429422,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 3.15,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 40.53,
+                "y": 44.17
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "0691f34c0178d0993911564ed26bd8d4467657dbf44906535195d2d8246bd738"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 4.9086761011746445,
+                "depth": 3.4396030558364785,
+                "velocity": {
+                  "x": -2.4999238812074984,
+                  "y": 5.955257273339415
+                },
+                "position": {
+                  "x": 42.64292195538395,
+                  "y": 39.38062819769609
+                }
+              },
+              "candidate": {
+                "gap": 6.561332669841363,
+                "depth": 5.6382106395926215,
+                "velocity": {
+                  "x": -0.2918211922540185,
+                  "y": 6.038478851936813
+                },
+                "position": {
+                  "x": 44.84152953914009,
+                  "y": 39.526819976650785
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 0.4692172972925768,
+                "depth": 0.2660554767287735,
+                "velocity": {
+                  "x": -0.8161509902938975,
+                  "y": 4.59401059088365
+                },
+                "position": {
+                  "x": 40.073297952969504,
+                  "y": 45.279061705121244
+                }
+              },
+              "candidate": {
+                "gap": 2.167589116211905,
+                "depth": 2.0366761767288395,
+                "velocity": {
+                  "x": -4.3885300253616695,
+                  "y": 4.159289564700799
+                },
+                "position": {
+                  "x": 42.09687262795815,
+                  "y": 45.2566085717006
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "moving-cushion",
+      "raw": "moving-cushion-candidate.json.gz",
+      "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+      "executed": 14,
+      "cases": [
+        {
+          "id": "QW",
+          "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "efa65deb9638b458fe4f265ec3c5cf93f970a904ebb1e0e977a3722e55dd41bb"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "slide",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "646a29624c8895ddcde7c30e5178fe0741009e2aec6496f09ba066a24c5fcb97"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.310100477620383,
+                "depth": 1.7969831641920138,
+                "velocity": {
+                  "x": -1.0654561067466328,
+                  "y": 6.420306967261392
+                },
+                "position": {
+                  "x": 43.21886970545616,
+                  "y": 39.81614162349551
+                }
+              },
+              "candidate": {
+                "gap": 5.144068709795824,
+                "depth": 4.217006955520759,
+                "velocity": {
+                  "x": 1.1431801958011991,
+                  "y": 6.281067181859956
+                },
+                "position": {
+                  "x": 45.6388934967849,
+                  "y": 39.65010609525692
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 1.5692989471016918,
+                "depth": -1.5449625990874836,
+                "velocity": {
+                  "x": 4.418203325320058,
+                  "y": 5.716710180312295
+                },
+                "position": {
+                  "x": 44.89882625305732,
+                  "y": 46.501586788781815
+                }
+              },
+              "candidate": {
+                "gap": 1.7545842082375278,
+                "depth": 1.642020827463682,
+                "velocity": {
+                  "x": 3.098306082049746,
+                  "y": 4.5445490620332425
+                },
+                "position": {
+                  "x": 48.08415469474876,
+                  "y": 46.053697725817315
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QM",
+          "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "26bf1d7f65c1e6966d071abc4bfb310a777b8f322980868e1a2ea8306f64a563"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "372ef88b115d3876ca2ea705f6b7fdd528b4c5703aff3cf688aebd728ad0152f"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.3811949149333653,
+                "depth": 1.8142681864242647,
+                "velocity": {
+                  "x": -1.1639278725459354,
+                  "y": -6.336841252184028
+                },
+                "position": {
+                  "x": 43.2361547276884,
+                  "y": 13.590560594965991
+                }
+              },
+              "candidate": {
+                "gap": 5.154587666409783,
+                "depth": 4.203429457784949,
+                "velocity": {
+                  "x": 1.1453172169787849,
+                  "y": -6.218608903978446
+                },
+                "position": {
+                  "x": 45.625315999049086,
+                  "y": 13.720779397659605
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.6284436501105861,
+                "depth": -1.6071134254388184,
+                "velocity": {
+                  "x": 4.4950139231587976,
+                  "y": -5.822112744752527
+                },
+                "position": {
+                  "x": 44.835020441846225,
+                  "y": 6.9240118746430745
+                }
+              },
+              "candidate": {
+                "gap": 1.763537503643923,
+                "depth": 1.6344245731665623,
+                "velocity": {
+                  "x": 3.1655562820773695,
+                  "y": -4.602563815136248
+                },
+                "position": {
+                  "x": 48.076558440451606,
+                  "y": 7.323664564339316
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QF",
+          "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "e2fa06d4fa1e2fa9c46d8fc950d22f2175f5a31232edd24fb20f9b838ab5a9a1"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "0839337627eb04c37b62dd0f2f1736095c560212ddf848267f49226a6c739697"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.6926947659160474,
+                "depth": 2.086634658224,
+                "velocity": {
+                  "x": -0.5208804680581078,
+                  "y": 4.937032398357857
+                },
+                "position": {
+                  "x": 45.2519386779779,
+                  "y": 38.017364103138235
+                }
+              },
+              "candidate": {
+                "gap": 4.236136501641721,
+                "depth": 3.0605868187194574,
+                "velocity": {
+                  "x": 0.6587685009695184,
+                  "y": 5.1536371205247296
+                },
+                "position": {
+                  "x": 46.225890838473354,
+                  "y": 38.13522908122829
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.4270548320327614,
+                "depth": 1.204663501627543,
+                "velocity": {
+                  "x": -1.5458735437032243,
+                  "y": 6.735056540875054
+                },
+                "position": {
+                  "x": 44.571693984664186,
+                  "y": 44.32265209216908
+                }
+              },
+              "candidate": {
+                "gap": 4.270148780606711,
+                "depth": 3.0922971089002544,
+                "velocity": {
+                  "x": -0.9367161437042633,
+                  "y": 6.827181471829881
+                },
+                "position": {
+                  "x": 46.4593275919369,
+                  "y": 44.586195360541815
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PW",
+          "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "edce7a914413671d3dd18ebb9999aeab01dc70566eae24c3f8105e2916ff9e75"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              },
+              "candidate": {
+                "gap": 5.199623813308191,
+                "depth": 3.9533510739910156,
+                "velocity": {
+                  "x": 1.0409522654217318,
+                  "y": 5.668933572906596
+                },
+                "position": {
+                  "x": 45.366544783582434,
+                  "y": 39.21413375908837
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              },
+              "candidate": {
+                "gap": 3.2994705877137513,
+                "depth": 2.9287343131957115,
+                "velocity": {
+                  "x": 5.38398853769836,
+                  "y": 3.981849447183945
+                },
+                "position": {
+                  "x": 48.36830692195215,
+                  "y": 44.58646058561466
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QV",
+          "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": null,
+            "physicalSignature": "384769540b67e6b7ffdfd19fd4c89ce032341c38f114efe74034a0d8d318ba5d"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              },
+              "candidate": {
+                "gap": 0.9090873025384306,
+                "depth": 0.5731944251227716,
+                "velocity": {
+                  "x": 4.053817512246818,
+                  "y": -0.1430869216473638
+                },
+                "position": {
+                  "x": 48.617671258299545,
+                  "y": 34.09552423561783
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              },
+              "candidate": {
+                "gap": 0.9372410635651082,
+                "depth": -0.62627067237419,
+                "velocity": {
+                  "x": 5.124886027991297,
+                  "y": 3.130019836159819
+                },
+                "position": {
+                  "x": 53.161432619330135,
+                  "y": 35.48476508998389
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "QU",
+          "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.92206945799763,
+            "actualCatcher": "HFO-WR6",
+            "firstContact": {
+              "t": 4.05,
+              "type": "carrier_contact",
+              "a": 8,
+              "b": 18,
+              "pos": {
+                "x": 63.27,
+                "y": 39.5
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9438e8b7ac38ef2d13e0ad2e2defa59df286d8e7ec17f8a096769182f974de2e"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              },
+              "candidate": {
+                "gap": 3.302156825512987,
+                "depth": 3.1119576044630435,
+                "velocity": {
+                  "x": 1.8527947714429693,
+                  "y": -1.566308890696525
+                },
+                "position": {
+                  "x": 47.17112088672895,
+                  "y": 32.05238009160981
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              },
+              "candidate": {
+                "gap": 9.681268614483324,
+                "depth": 6.015476549153313,
+                "velocity": {
+                  "x": 4.673481712191217,
+                  "y": 3.118286401124468
+                },
+                "position": {
+                  "x": 50.5263711021467,
+                  "y": 33.09365511140271
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "FRESH",
+          "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+          "defenderId": "HFD-S1",
+          "keyedReceiverId": "HFO-WR2",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6c468c1066a7656a42bb80a7c4da20963890764feb3e305e5fb72da92af47016"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "ee1ad17c69c7b38e54fc86f2cf5dd9b5d870b3ba4523f6d9ff8b07392ff15655"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.786808134347061,
+                "depth": 2.3619243309894387,
+                "velocity": {
+                  "x": -1.344271321032191,
+                  "y": 5.954528053083126
+                },
+                "position": {
+                  "x": 43.38602690339109,
+                  "y": 39.157985894982446
+                }
+              },
+              "candidate": {
+                "gap": 5.446832067254591,
+                "depth": 4.48786483958385,
+                "velocity": {
+                  "x": 0.993146369568619,
+                  "y": 5.846839111259496
+                },
+                "position": {
+                  "x": 45.5119674119855,
+                  "y": 39.03133150692136
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3985705311507146,
+                "depth": -1.2623635457780082,
+                "velocity": {
+                  "x": 3.9046344254152965,
+                  "y": 6.1327147751614906
+                },
+                "position": {
+                  "x": 44.45214649925151,
+                  "y": 45.764413390766656
+                }
+              },
+              "candidate": {
+                "gap": 2.2109669949655184,
+                "depth": 2.027094474814973,
+                "velocity": {
+                  "x": 3.1004697724404227,
+                  "y": 5.563321680343137
+                },
+                "position": {
+                  "x": 47.74160451984449,
+                  "y": 45.48368270229363
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "PA",
+          "inputSha256": "719ffd85ada958151624b5c3fc5fbb6a33dc519e204a4e1ff8f37629b9f539ac",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "candidate": {
+            "status": "censored",
+            "terminal": false,
+            "outcome": null,
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "cd379a7ae23ceaf51cf485d0862c9edc96e2d67941e99cc75fcd6a9aab24bdf7"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              },
+              "candidate": {
+                "gap": 2.004078157032322,
+                "depth": 1.9019005634992823,
+                "velocity": {
+                  "x": 3.022032797433253,
+                  "y": -0.39185666265100744
+                },
+                "position": {
+                  "x": 48.38336301878394,
+                  "y": 34.1162463861
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              },
+              "candidate": {
+                "gap": 1.404358695066176,
+                "depth": 1.129171353357485,
+                "velocity": {
+                  "x": -2.8986428138113656,
+                  "y": -0.1871124317907194
+                },
+                "position": {
+                  "x": 48.41225500216838,
+                  "y": 33.10502615088199
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              },
+              "candidate": {
+                "gap": 1.3262763475524835,
+                "depth": 0.4434462584423571,
+                "velocity": {
+                  "x": -1.3819388087229665,
+                  "y": -3.7544485891337587
+                },
+                "position": {
+                  "x": 43.35982516259273,
+                  "y": 31.079243053430506
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              },
+              "candidate": {
+                "gap": 1.0921726835202499,
+                "depth": -0.9703327943105151,
+                "velocity": {
+                  "x": -2.0455844467767306,
+                  "y": -0.7591903529672772
+                },
+                "position": {
+                  "x": 41.9460459533112,
+                  "y": 28.625220766945617
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "OZ",
+          "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+          "defenderId": "UFD-S2",
+          "keyedReceiverId": "UFO-WR3",
+          "physicalIdentity": true,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              },
+              "candidate": {
+                "gap": 1.4551595432311686,
+                "depth": 0.5532855587783487,
+                "velocity": {
+                  "x": -1.2175774271108677,
+                  "y": -4.039563533436947
+                },
+                "position": {
+                  "x": 43.47970365106537,
+                  "y": 30.969376173002882
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              },
+              "candidate": {
+                "gap": 1.7490984829312963,
+                "depth": -0.46105172226289426,
+                "velocity": {
+                  "x": -2.2970627739871987,
+                  "y": -3.0395965891255172
+                },
+                "position": {
+                  "x": 42.46536618832345,
+                  "y": 27.039967702010102
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "EARLY-FLAT",
+          "inputSha256": "3ec17d02e0d584b651c8e4e8427c541e4aa7417246ff8890dfd7a7327f2f204b",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "34a22ae1b8d7477a20e8025a45110ad03fe225d7d6b9ee2cc57d03ad5070c9b3"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "oob",
+            "yac": 5.306833139365466,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 4,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 18,
+              "pos": {
+                "x": 47.2,
+                "y": 52.33
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "9704c18e22e4047bf4e76abb88c390c462bef4964fa0143c92a8e1a39a6f07a0"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.7805530231982023,
+                "depth": 2.094460586186422,
+                "velocity": {
+                  "x": -0.7236680041516809,
+                  "y": 4.9721483247732206
+                },
+                "position": {
+                  "x": 45.27292437107361,
+                  "y": 37.911807104126744
+                }
+              },
+              "candidate": {
+                "gap": 4.27010806119408,
+                "depth": 2.9657603990995014,
+                "velocity": {
+                  "x": 0.3336263861475264,
+                  "y": 5.142494648203036
+                },
+                "position": {
+                  "x": 46.14422418398669,
+                  "y": 37.9870105885517
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.601416720211546,
+                "depth": -0.4271909429619285,
+                "velocity": {
+                  "x": -2.2293882304178,
+                  "y": 6.8789488211157375
+                },
+                "position": {
+                  "x": 42.91263838481741,
+                  "y": 43.60439080949094
+                }
+              },
+              "candidate": {
+                "gap": 3.413919261016872,
+                "depth": 1.358272906702851,
+                "velocity": {
+                  "x": -2.0260327208126014,
+                  "y": 7.094721999851553
+                },
+                "position": {
+                  "x": 44.69810223448219,
+                  "y": 44.04829933829431
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "LATE-OUT",
+          "inputSha256": "f2b5d5e529f1fb8df30d836128f211903d739b3da4dc6274f38185cbbc32dfea",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "6dba3320f19beee1d9c6f91bea18ed5dbb6908f732b3019505500a27ee696448"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "80e280dd2f3cbad9c4dce6ee8defe4330950e5e676fae59a03329f66831cd10a"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              },
+              "candidate": {
+                "gap": 2.755059093377678,
+                "depth": 2.5799367919510487,
+                "velocity": {
+                  "x": 1.8017495509706498,
+                  "y": -0.05757052647772053
+                },
+                "position": {
+                  "x": 47.96251195052274,
+                  "y": 34.49002949958987
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.896355852182634,
+                "depth": 1.6625517328306785,
+                "velocity": {
+                  "x": -1.2458995861306816,
+                  "y": 4.353411281382988
+                },
+                "position": {
+                  "x": 48.26325576258224,
+                  "y": 36.97655433721923
+                }
+              },
+              "candidate": {
+                "gap": 2.9457347414201855,
+                "depth": 1.7699140769570931,
+                "velocity": {
+                  "x": -0.9581688224356073,
+                  "y": 4.420618892964682
+                },
+                "position": {
+                  "x": 48.370618106708655,
+                  "y": 36.99348935901252
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "TRANSFER",
+          "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+          "defenderId": "TFD-S1",
+          "keyedReceiverId": "TFO-WR6",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "482d371eb0937b5f66774bb90c6314d38393369c54bf509937f564a22d32800a"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "incomplete",
+            "yac": null,
+            "actualCatcher": null,
+            "firstContact": null,
+            "physicalSignature": "fd94edd142c19f2e5e6255b7753e3c0505af10bf4be8c78996e8cb38af66c2ff"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 3.514205645675472,
+                "depth": 1.6360969363424758,
+                "velocity": {
+                  "x": -1.0509666050433104,
+                  "y": 5.8623629086594455
+                },
+                "position": {
+                  "x": 43.12172009228056,
+                  "y": 36.35445311742233
+                }
+              },
+              "candidate": {
+                "gap": 5.23427781171503,
+                "depth": 4.099765217450084,
+                "velocity": {
+                  "x": 1.1020656239792197,
+                  "y": 5.683702707135865
+                },
+                "position": {
+                  "x": 45.58538837338817,
+                  "y": 36.21040525174029
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 2.169805364071426,
+                "depth": -1.9691901306162762,
+                "velocity": {
+                  "x": 4.028090338569001,
+                  "y": 5.811988629146662
+                },
+                "position": {
+                  "x": 44.48966934365631,
+                  "y": 42.69039700203273
+                }
+              },
+              "candidate": {
+                "gap": 1.515839226650922,
+                "depth": 1.1678446646048002,
+                "velocity": {
+                  "x": 3.711602513613855,
+                  "y": 5.827709951249977
+                },
+                "position": {
+                  "x": 47.626704138877386,
+                  "y": 42.63524113866111
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "SLOT-SWING",
+          "inputSha256": "d75dffcb44b24c6da6bccd5ff51c0b41dc1f7c4c2dd9b8b2109ba2efc02cd9e2",
+          "defenderId": "HFD-S2",
+          "keyedReceiverId": "HFO-WR3",
+          "physicalIdentity": false,
+          "accepted": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 0.5862276501511445,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 2.8,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 39.72,
+                "y": 45.21
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "d18ba9d5aeb433b147e7b8c451067d8564176b20e7f31f676732397920fe7f61"
+          },
+          "candidate": {
+            "status": "native",
+            "terminal": true,
+            "outcome": "tackle",
+            "yac": 12.991757594546996,
+            "actualCatcher": "HFO-WR3",
+            "firstContact": {
+              "t": 3.05,
+              "type": "carrier_contact",
+              "a": 10,
+              "b": 19,
+              "pos": {
+                "x": 40.27,
+                "y": 44.36
+              },
+              "note": "grasp"
+            },
+            "physicalSignature": "222c6d6ca4b7748b06bf9fd2248f452e0d19170f7334da9a151919be457aca7b"
+          },
+          "geometry": [
+            {
+              "controllerTime": 1.95,
+              "achievedTime": 2,
+              "receiverBodyIdentical": true,
+              "accepted": {
+                "gap": 4.9086761011746445,
+                "depth": 3.4396030558364785,
+                "velocity": {
+                  "x": -2.4999238812074984,
+                  "y": 5.955257273339415
+                },
+                "position": {
+                  "x": 42.64292195538395,
+                  "y": 39.38062819769609
+                }
+              },
+              "candidate": {
+                "gap": 6.101325193329926,
+                "depth": 5.066796308941797,
+                "velocity": {
+                  "x": -0.45398449948353714,
+                  "y": 6.027343650156635
+                },
+                "position": {
+                  "x": 44.270115208489266,
+                  "y": 39.483580817428425
+                }
+              }
+            },
+            {
+              "controllerTime": 2.95,
+              "achievedTime": 3,
+              "receiverBodyIdentical": false,
+              "accepted": {
+                "gap": 0.4692172972925768,
+                "depth": 0.2660554767287735,
+                "velocity": {
+                  "x": -0.8161509902938975,
+                  "y": 4.59401059088365
+                },
+                "position": {
+                  "x": 40.073297952969504,
+                  "y": 45.279061705121244
+                }
+              },
+              "candidate": {
+                "gap": 1.4428577847955524,
+                "depth": 1.2825241593402907,
+                "velocity": {
+                  "x": -4.263154097830077,
+                  "y": 3.7063574977287668
+                },
+                "position": {
+                  "x": 41.3427206105696,
+                  "y": 45.17576133542085
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "contactWitnesses": [
+    {
+      "arm": "accepted",
+      "raw": "slot-full-baseline.json.gz",
+      "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "physicalSignature": "d18ba9d5aeb433b147e7b8c451067d8564176b20e7f31f676732397920fe7f61",
+      "matchedStandardSamples": 17,
+      "recordingNeutral": true,
+      "identities": [
+        {
+          "idx": 10,
+          "id": "HFO-WR3",
+          "slot": "H"
+        },
+        {
+          "idx": 16,
+          "id": "HFD-LB2",
+          "slot": "LB_W"
+        },
+        {
+          "idx": 18,
+          "id": "HFD-CB2",
+          "slot": "CB_W"
+        },
+        {
+          "idx": 19,
+          "id": "HFD-S2",
+          "slot": "NB"
+        },
+        {
+          "idx": 20,
+          "id": "HFD-CB3",
+          "slot": "FS"
+        }
+      ],
+      "yac": 0.5862276501511445,
+      "events": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 10,
+          "pos": {
+            "x": 39.55,
+            "y": 44.48
+          }
+        },
+        {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 10,
+          "b": 19,
+          "pos": {
+            "x": 39.72,
+            "y": 45.21
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.8,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 10,
+          "pos": {
+            "x": 40.28,
+            "y": 44.56
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.35,
+          "type": "fall",
+          "a": 10,
+          "pos": {
+            "x": 39.89,
+            "y": 47.08
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.75,
+          "type": "tackle",
+          "a": 19,
+          "b": 10,
+          "pos": {
+            "x": 40.56,
+            "y": 48.13
+          }
+        }
+      ],
+      "firstGrasp": {
+        "time": 2.8,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 39.72,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.8788073675947801,
+              "legs": 0.46870636594721554,
+              "origin": "form+behind"
+            }
+          ]
+        }
+      },
+      "firstLoaded": {
+        "time": 2.85,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 39.75,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.8788073675947801,
+              "legs": 0.46870636594721554,
+              "force": 313.79570698677213,
+              "slipping": false,
+              "origin": "form+behind"
+            }
+          ]
+        },
+        "runner": {
+          "velocity": [
+            0.57,
+            2.91
+          ],
+          "energy": 0.97,
+          "posture": 0.32,
+          "balance": 1,
+          "state": "up",
+          "squeeze": 0,
+          "lean": [
+            103.45,
+            88.75
+          ],
+          "padHeight": 1.25,
+          "supportDeviation": [
+            0.06,
+            0.05
+          ]
+        }
+      }
+    },
+    {
+      "arm": "fixed",
+      "raw": "slot-full-candidate.json.gz",
+      "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+      "physicalSignature": "f22ec2b1933a7ab8acb6b83eb241b99e8e63525be2cb5c28c201d20da8b4d193",
+      "matchedStandardSamples": 21,
+      "recordingNeutral": true,
+      "identities": [
+        {
+          "idx": 10,
+          "id": "HFO-WR3",
+          "slot": "H"
+        },
+        {
+          "idx": 16,
+          "id": "HFD-LB2",
+          "slot": "LB_W"
+        },
+        {
+          "idx": 18,
+          "id": "HFD-CB2",
+          "slot": "CB_W"
+        },
+        {
+          "idx": 19,
+          "id": "HFD-S2",
+          "slot": "NB"
+        },
+        {
+          "idx": 20,
+          "id": "HFD-CB3",
+          "slot": "FS"
+        }
+      ],
+      "yac": 6.6144908445910175,
+      "events": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 10,
+          "pos": {
+            "x": 39.55,
+            "y": 44.48
+          }
+        },
+        {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 10,
+          "b": 19,
+          "pos": {
+            "x": 40.53,
+            "y": 44.17
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 3.15,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 10,
+          "pos": {
+            "x": 41.44,
+            "y": 45.89
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.2,
+          "type": "fall",
+          "a": 19,
+          "pos": {
+            "x": 41.23,
+            "y": 46.02
+          },
+          "note": "dive"
+        },
+        {
+          "t": 3.4,
+          "type": "broken_tackle",
+          "a": 10,
+          "b": 19,
+          "pos": {
+            "x": 41.16,
+            "y": 43.7
+          },
+          "note": "hold slipped"
+        },
+        {
+          "t": 4.15,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 10,
+          "pos": {
+            "x": 44.78,
+            "y": 42.29
+          },
+          "note": "initial"
+        },
+        {
+          "t": 4.15,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 10,
+          "pos": {
+            "x": 45.35,
+            "y": 40.75
+          },
+          "note": "assist"
+        },
+        {
+          "t": 4.2,
+          "type": "fall",
+          "a": 18,
+          "pos": {
+            "x": 44.7,
+            "y": 42.06
+          },
+          "note": "dive"
+        },
+        {
+          "t": 4.4,
+          "type": "fall",
+          "a": 10,
+          "pos": {
+            "x": 45.49,
+            "y": 39.38
+          },
+          "note": "legs"
+        },
+        {
+          "t": 4.8,
+          "type": "tackle",
+          "a": 18,
+          "b": 10,
+          "pos": {
+            "x": 44.39,
+            "y": 39.24
+          }
+        }
+      ],
+      "firstGrasp": {
+        "time": 3.15,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 40.53,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.16124959773484251,
+              "legs": 0.6476511659244099,
+              "origin": "lunge"
+            }
+          ]
+        }
+      },
+      "firstLoaded": {
+        "time": 3.2,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 40.67,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.16124959773484251,
+              "legs": 0.7017431511684975,
+              "force": 262.86100159924825,
+              "slipping": true,
+              "origin": "lunge"
+            }
+          ]
+        },
+        "runner": {
+          "velocity": [
+            3.01,
+            -2.15
+          ],
+          "energy": 0.97,
+          "posture": 0.32,
+          "balance": 1,
+          "state": "up",
+          "squeeze": 0,
+          "lean": [
+            -45.49,
+            -103.55
+          ],
+          "padHeight": 1.25,
+          "supportDeviation": [
+            -0.04,
+            -0.09
+          ]
+        }
+      }
+    },
+    {
+      "arm": "moving",
+      "raw": "slot-full-moving.json.gz",
+      "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+      "physicalSignature": "222c6d6ca4b7748b06bf9fd2248f452e0d19170f7334da9a151919be457aca7b",
+      "matchedStandardSamples": 24,
+      "recordingNeutral": true,
+      "identities": [
+        {
+          "idx": 10,
+          "id": "HFO-WR3",
+          "slot": "H"
+        },
+        {
+          "idx": 16,
+          "id": "HFD-LB2",
+          "slot": "LB_W"
+        },
+        {
+          "idx": 18,
+          "id": "HFD-CB2",
+          "slot": "CB_W"
+        },
+        {
+          "idx": 19,
+          "id": "HFD-S2",
+          "slot": "NB"
+        },
+        {
+          "idx": 20,
+          "id": "HFD-CB3",
+          "slot": "FS"
+        }
+      ],
+      "yac": 12.991757594546996,
+      "events": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 10,
+          "pos": {
+            "x": 39.55,
+            "y": 44.48
+          }
+        },
+        {
+          "t": 3.05,
+          "type": "carrier_contact",
+          "a": 10,
+          "b": 19,
+          "pos": {
+            "x": 40.27,
+            "y": 44.36
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 3.05,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 10,
+          "pos": {
+            "x": 40.93,
+            "y": 45.51
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.2,
+          "type": "broken_tackle",
+          "a": 10,
+          "b": 19,
+          "pos": {
+            "x": 40.53,
+            "y": 44.18
+          },
+          "note": "hold slipped"
+        },
+        {
+          "t": 4.15,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 10,
+          "pos": {
+            "x": 45.2,
+            "y": 40.63
+          },
+          "note": "initial"
+        },
+        {
+          "t": 4.5,
+          "type": "broken_tackle",
+          "a": 10,
+          "b": 20,
+          "pos": {
+            "x": 46.07,
+            "y": 39.05
+          },
+          "note": "hold slipped"
+        },
+        {
+          "t": 4.9,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 10,
+          "pos": {
+            "x": 48.28,
+            "y": 36.69
+          },
+          "note": "initial"
+        },
+        {
+          "t": 5.1,
+          "type": "fall",
+          "a": 10,
+          "pos": {
+            "x": 49.94,
+            "y": 36.85
+          },
+          "note": "legs"
+        },
+        {
+          "t": 5.5,
+          "type": "tackle",
+          "a": 16,
+          "b": 10,
+          "pos": {
+            "x": 51.84,
+            "y": 36.17
+          }
+        }
+      ],
+      "firstGrasp": {
+        "time": 3.05,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 40.27,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.32911848132305666,
+              "legs": 0.302189355223426,
+              "origin": "reach"
+            }
+          ]
+        }
+      },
+      "firstLoaded": {
+        "time": 3.1,
+        "tackle": {
+          "carrier": 10,
+          "stall": 0,
+          "progressX": 40.4,
+          "tacklers": [
+            {
+              "a": 19,
+              "grip": 0.32911848132305666,
+              "legs": 0.40931604176249375,
+              "force": 421.6056580560654,
+              "slipping": true,
+              "origin": "reach"
+            }
+          ]
+        },
+        "runner": {
+          "velocity": [
+            2.62,
+            -1.75
+          ],
+          "energy": 0.97,
+          "posture": 0.32,
+          "balance": 1,
+          "state": "up",
+          "squeeze": 0,
+          "lean": [
+            -72.11,
+            -161.32
+          ],
+          "padHeight": 1.25,
+          "supportDeviation": [
+            -0.03,
+            -0.07
+          ]
+        }
+      }
+    }
+  ],
+  "consumedCueDistinctionBeforeThrow": [
+    {
+      "time": 0.75,
+      "wheel": {
+        "pos": {
+          "x": 39.096857186243724,
+          "y": 36.50357160931999
+        },
+        "vel": {
+          "x": 0.635743301163101,
+          "y": 2.6489304213745726
+        },
+        "stance": null,
+        "facing": 1.1743156712055811,
+        "age": 0.2,
+        "pose": "up",
+        "carrying": false
+      },
+      "swing": {
+        "pos": {
+          "x": 38.710809037028845,
+          "y": 36.45587950625349
+        },
+        "vel": {
+          "x": -0.18398442447666521,
+          "y": 2.453125659578947
+        },
+        "stance": null,
+        "facing": 1.828510938694317,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "time": 1,
+      "wheel": {
+        "pos": {
+          "x": 39.33219625742278,
+          "y": 37.484151072823735
+        },
+        "vel": {
+          "x": 0.867889456111906,
+          "y": 3.6162060682650883
+        },
+        "stance": null,
+        "facing": 1.3079500941567976,
+        "age": 0.2,
+        "pose": "up",
+        "carrying": false
+      },
+      "swing": {
+        "pos": {
+          "x": 38.63521359580183,
+          "y": 37.463818723087336
+        },
+        "vel": {
+          "x": -0.26205884019573633,
+          "y": 3.4941178710316922
+        },
+        "stance": null,
+        "facing": 1.705300577326428,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "time": 1.25,
+      "wheel": {
+        "pos": {
+          "x": 39.6113478898707,
+          "y": 38.647282874290525
+        },
+        "vel": {
+          "x": 1.0568169603086814,
+          "y": 4.4034040004182256
+        },
+        "stance": null,
+        "facing": 1.3308957805671424,
+        "age": 0.2,
+        "pose": "up",
+        "carrying": false
+      },
+      "swing": {
+        "pos": {
+          "x": 38.54561002330831,
+          "y": 38.65853302199844
+        },
+        "vel": {
+          "x": -0.3255982167566546,
+          "y": 4.341309554505946
+        },
+        "stance": null,
+        "facing": 1.6563837355446749,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "time": 1.5,
+      "wheel": {
+        "pos": {
+          "x": 39.925686401662894,
+          "y": 39.95702667361037
+        },
+        "vel": {
+          "x": 1.2085441633001481,
+          "y": 5.035600680496354
+        },
+        "stance": null,
+        "facing": 1.3346072845534591,
+        "age": 0.2,
+        "pose": "up",
+        "carrying": false
+      },
+      "swing": {
+        "pos": {
+          "x": 38.445197838369324,
+          "y": 39.9973621551319
+        },
+        "vel": {
+          "x": -0.37534770676698304,
+          "y": 5.004636090461731
+        },
+        "stance": null,
+        "facing": 1.6474798860246804,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    }
+  ],
+  "tests": {
+    "heldFinalPassingUnique": 79,
+    "lastFinalGroup": "moving-cushion-final.json",
+    "compatibleTypecheck": "typecheck-moving-cushion.json; final later test change only strengthens an existing typed assertion",
+    "failedReceiptsPreserved": [
+      "behind-line-red.json",
+      "fixed-plane-red.json"
+    ],
+    "interpretation": "Passing correctness checks do not clear the football regression. Fixed-plane assertion changed after its model was rejected; final tests require a coherent moving objective, achieved cushion and information limits."
+  },
+  "cost": {
+    "currentSourceNativePlays": 72,
+    "earlierSourceNativePlays": 30,
+    "totalNewPlays": 102,
+    "evaluationGames": 0,
+    "recordedCurrentCommandSeconds": 89.669434,
+    "earlierSourceCommandSeconds": 46.010906534,
+    "receipts": [
+      {
+        "file": "baseline-receipt.json",
+        "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+        "commit": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+        "exitCode": 0,
+        "seconds": 4.676648704
+      },
+      {
+        "file": "behind-line-final.json",
+        "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 0,
+        "seconds": 2.527584172
+      },
+      {
+        "file": "behind-line-red.json",
+        "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 1,
+        "seconds": 1.5322898740000002
+      },
+      {
+        "file": "candidate-coherent-receipt.json",
+        "source": "2c8f57f0093422d148642541eae8eb47f9804e623b74c7c02dde7e2eda198238",
+        "commit": "958278d19ef193f721d9ea7ac170a263a4ddce4d",
+        "exitCode": 0,
+        "seconds": 4.698439506000001
+      },
+      {
+        "file": "candidate-final-receipt.json",
+        "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 0,
+        "seconds": 4.742464576
+      },
+      {
+        "file": "candidate-receipt.json",
+        "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 0,
+        "seconds": 4.621060392
+      },
+      {
+        "file": "fixed-plane-final.json",
+        "source": "2c8f57f0093422d148642541eae8eb47f9804e623b74c7c02dde7e2eda198238",
+        "commit": "958278d19ef193f721d9ea7ac170a263a4ddce4d",
+        "exitCode": 0,
+        "seconds": 2.381298611
+      },
+      {
+        "file": "fixed-plane-red.json",
+        "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 1,
+        "seconds": 1.7356314110000002
+      },
+      {
+        "file": "focused.json",
+        "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 0,
+        "seconds": 3.4549986589999997
+      },
+      {
+        "file": "moving-cushion-candidate-receipt.json",
+        "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+        "commit": "2ba3871c6cfe8fb114b614167a5b3452914e89a6",
+        "exitCode": 0,
+        "seconds": 4.7885118779999996
+      },
+      {
+        "file": "moving-cushion-final.json",
+        "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+        "commit": "2ba3871c6cfe8fb114b614167a5b3452914e89a6",
+        "exitCode": 0,
+        "seconds": 2.4281179870000003
+      },
+      {
+        "file": "moving-cushion-focused.json",
+        "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+        "commit": "ed0c5c6321e60c61fece66e8bb931f3457f1a39f",
+        "exitCode": 0,
+        "seconds": 2.540046334
+      },
+      {
+        "file": "slot-baseline-receipt.json",
+        "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 0,
+        "seconds": 0.671244371
+      },
+      {
+        "file": "slot-full-baseline-receipt.json",
+        "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 0,
+        "seconds": 0.7666411940000001
+      },
+      {
+        "file": "slot-full-candidate-receipt.json",
+        "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 0,
+        "seconds": 0.967789604
+      },
+      {
+        "file": "slot-full-moving-receipt.json",
+        "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+        "commit": "2ba3871c6cfe8fb114b614167a5b3452914e89a6",
+        "exitCode": 0,
+        "seconds": 1.225252344
+      },
+      {
+        "file": "slot-plan.json",
+        "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 0,
+        "seconds": 0.053238701000000006
+      },
+      {
+        "file": "typecheck-final.json",
+        "source": "f72ac7b29139f665640ef0fac3cadd9f411ad580b521aa68f1a3a5a0989e4551",
+        "commit": "5945ae71f65fe8e864f77521de6c7f80321d15f8",
+        "exitCode": 0,
+        "seconds": 11.192076947000002
+      },
+      {
+        "file": "typecheck-fixed-plane.json",
+        "source": "2c8f57f0093422d148642541eae8eb47f9804e623b74c7c02dde7e2eda198238",
+        "commit": "958278d19ef193f721d9ea7ac170a263a4ddce4d",
+        "exitCode": 0,
+        "seconds": 11.138656175999998
+      },
+      {
+        "file": "typecheck-moving-cushion.json",
+        "source": "ff9504ed96ddd4f8fadeb336e8eb15185c096bbc6529dec5243fa14bceb548a5",
+        "commit": "ed0c5c6321e60c61fece66e8bb931f3457f1a39f",
+        "exitCode": 0,
+        "seconds": 11.719838328
+      },
+      {
+        "file": "typecheck.json",
+        "source": "c6994b8488697568187d9b01cf28c0cd176a5b2e84b1736e79c69199c58b0d0c",
+        "commit": "18ed249172ec33b058f115763ed9f659ae3094fb",
+        "exitCode": 0,
+        "seconds": 11.807604231000001
+      }
+    ]
+  },
+  "decision": {
+    "stop": "No further cushion variants. Both families trade late/weak flat contact for wheel leverage; successful baseline rear wraps remain valid controls. This is not a general grip-law diagnosis.",
+    "separateFix": "Extract only acquired flat-phase force continuity on current accepted source; no new cushion/plane/velocity options should travel with it.",
+    "nextExperiment": "Offline consumed-cue/own-movement-preview feasibility at the first acquired hip/velocity difference (.75s already differs): can a legitimately informed controller preserve attainable wheel leverage without sacrificing the ordinary shallow wrap? No future route/catch and no additional perception queries."
+  },
+  "files": {
+    "src/sim/behaviors/defense.ts": "ce864fcb1feb18a33620b6c87bb1a5d3fa49d23f0a5cd117bb15f6f04a2555ea",
+    "src/sim/coverage/rules.ts": "6a45d6aa17c111786229ee4e0fe7c38ac4a49ba912a4cf9663bb15ec7665c6cc",
+    "src/sim/coverage/defender.ts": "7cc53b32917b4c8e255a99288759d7fc5870230bbc725dba43194bf1e5e5fa10",
+    "src/sim/types.ts": "2864de49b5dfe63ad049838e5621e3576d2dcad1295fd1422c2d3078222452bb",
+    "test/quarter-flat-depth-support.test.ts": "07b76ba455e3feec2e87a292824346e9bfe47b30cb0eeaec15b6dbba1909f824",
+    "scripts/diag/honest-quarter-flat.ts": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e"
+  },
+  "referenceProvenance13": {
+    "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+    "manifest": "dfefe5d9ff7c10793d43f2d994fb46004f1d93d68279af92d8ab6ca2985b2d9c",
+    "operator": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+    "node": "v22.23.3",
+    "lock": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "finalManifest14Sha256": "97d2423d051593361f37028b09997f2c11824bc21dbbefd8b21ee9ff3f76cefd"
+}

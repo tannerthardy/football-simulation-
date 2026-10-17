@@ -1,5 +1,29 @@
 # Current work ownership
 
+## Catching: current quarter-flat depth and force support — 2026-10-17
+
+Branch `codex/quarter-flat-current`, accepted/fetched
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30` (#125), canonical queue `c933dbc`.
+The accepted batch includes #124's independent duty correction; closed124 is
+incorporated, not rejected. Extract only the four controller/type files and one
+new contract file from research freeze0a566d2; code freeze `18ed249` preserves
+all accepted125 run/accounting work. Claim the quarter-flat own entry-depth
+objective and its acquired force-fit boundary, direct tests and bounded
+evidence. No fit allocation/execution, shared movement modifier, physics,
+capacity, helper/handoff policy or reference-import ancestry. Existing operator
+is copied unchanged for reproducibility; not an integration dependency.
+Re-establish thirteen frozen reference/candidate cases because125 changes
+execution; historical source26d8882 and the eleven-prefix handoff probe stay
+qualified at research branches `codex/quarter-flat-depth-support` and
+`codex/quarters-underneath-support`. No suite/game campaign or silent relabeling.
+
+**HOLD all approach/cushion variants.** Fixed-plane and existing moving-cushion
+arms improve wheel leverage but ordinary SLOT-SWING worsens0.586→6.614/12.992
+YAC through later weak contact and failed secondary hold.79 focused passes do
+not clear this football regression. [Causal report](reviews/quarter-flat-approach-hold.md).
+Stop variants; next is saved-cue/own-preview feasibility, with no future route.
+Separate only the flat-phase acquired force-continuity repair for promotion.
+
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
