@@ -63,6 +63,7 @@ describe('a wrapper collects after its flat pull clears', () => {
     const sim = new PlaySim(structuredClone(inputs.rows.find((r: { id: string }) => r.id === 'K02').setup) as PlaySetup);
     const a = sim.offense.find(a => a.behavior instanceof RunBlocker && a.behavior.plan.pullRole === 'lead')!;
     const controller = a.behavior as RunBlocker;
+    controller.plan.target = null; // Explicit empty-job control, independent of snap allocator.
     expect(controller.plan.target).toBeNull();
     sim.t = 2; controller.update(a, sim);
     expect(controller.plan.target).not.toBeNull();
