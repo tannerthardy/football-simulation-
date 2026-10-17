@@ -1,0 +1,212 @@
+{
+  "protocol": "catch-wrap-evidence-v1",
+  "accepted": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "source": "1b79ca653c71dd6f40cdd032037e658e38d616378581c545d4999765b43324a9",
+  "files": [
+    {
+      "path": "out/catch-opportunity-physics/reconstruct.ts",
+      "bytes": 4797,
+      "sha256": "997dd0ebb308bc0274e1e21a8a535d047de7fb6b684bae215b76afb5e478af18"
+    },
+    {
+      "path": "out/catch-opportunity-physics/capture.ts",
+      "bytes": 8313,
+      "sha256": "f1bd54bd0340ec712faa318b78cb63b56456f184a4df8b01b8db4b3a4964d0fa"
+    },
+    {
+      "path": "out/catch-opportunity-physics/capture-path.ts",
+      "bytes": 8243,
+      "sha256": "9299fb674f14517cf0dd7701585cbcf3d38f1be353510b0c3d81f2fa25f6847b"
+    },
+    {
+      "path": "out/catch-opportunity-physics/ledger.py",
+      "bytes": 4325,
+      "sha256": "13e6663f69cc3adb4b736c07b3c41bfe526bfae0e4826018968fc86e451f39a6"
+    },
+    {
+      "path": "out/catch-opportunity-physics/ledger-summary.json",
+      "bytes": 26360,
+      "sha256": "edc69384243ed6172fe8984096b24d82bcecd1654937a5499261ad2474d0af81"
+    },
+    {
+      "path": "out/catch-opportunity-physics/ledger-moments.csv",
+      "bytes": 46042,
+      "sha256": "6ded040c6071685a0a80cfad05719cfd16acfa90c6413c9d715fd259a7074a98"
+    },
+    {
+      "path": "out/catch-opportunity-physics/ledger-support.csv",
+      "bytes": 30974,
+      "sha256": "b635a31aafae6b38d0d2b1b9db080b33132a1da4e4230a1d4d4d16012d06a212"
+    },
+    {
+      "path": "out/catch-opportunity-physics/reconstruction-check.json",
+      "bytes": 3246,
+      "sha256": "d75b53b07980067d78df2bf3061252ec88985e98b1b50717122a573da804a327"
+    },
+    {
+      "path": "out/catch-opportunity-physics/capture-summary.json",
+      "bytes": 2971,
+      "sha256": "75557475021afb07b4ac68e0fcd3e06b498ab1537d7ff2ed6a663ebc4b92fb17"
+    },
+    {
+      "path": "out/catch-opportunity-physics/path-summary.json",
+      "bytes": 1367,
+      "sha256": "3abe484442d5b70ddafd606380f433425255a5982ba218d7f063fe01954c5535"
+    },
+    {
+      "path": "out/catch-opportunity-physics/packet/evidence/accepted-controller-game-inputs.json",
+      "bytes": 1046600,
+      "sha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b"
+    },
+    {
+      "path": "out/catch-opportunity-physics/audit/out/accepted-game-deep-audit-2026-10-16/index.json",
+      "bytes": 2028588,
+      "sha256": "6dac3b2abe704012ef9536ef24534ac1e897edbb4b43ae16953ccb3d0acd7b8b"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/records.json",
+      "bytes": 15587,
+      "sha256": "3b59bda06c352f5cbf54740f0c4b005e7011224484294c6887ff934c22fa87da"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G1-P167.json",
+      "bytes": 1904668,
+      "sha256": "2746329790701390cb7ceea70de807411380937459d1faac7cefd1dc30221af1"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G2-P107.json",
+      "bytes": 2374927,
+      "sha256": "7201697030018f6b0ce70591d3b9f22846ce8cf7c460e2919b69559772de37e1"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/zone-reference-meta.json",
+      "bytes": 209895,
+      "sha256": "2a5e5e705d118c5981522dbfcf5a4d9f4dd8da6eddc01b7baee90492a89ec268"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G3-P069.json",
+      "bytes": 3949064,
+      "sha256": "db86ec5a8a2c296c9f7144ace8168e707d7c50627042296ca0b054d614f0a7f3"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G1-P020.json",
+      "bytes": 2763431,
+      "sha256": "6a8fa1a66b389b1affbc7c0fa0b117037ef8946f198ee23f53909be3145ac373"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/spread-air-meta.json",
+      "bytes": 201295,
+      "sha256": "790583d8445e8e5b8a17cadeb13796599e95c3db8b1f3435e1e2a60180cb5c7f"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/power-zone-meta.json",
+      "bytes": 172359,
+      "sha256": "f131de47b47799a922fdc96c7434f76596cafdc73ced8dc4500f2dcca1befb6b"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G1-P130.json",
+      "bytes": 1449345,
+      "sha256": "c89dc9b632a6062976e68d4acbd4ae79e1db292ac745e934a76adf7920119a8a"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G2-P143.json",
+      "bytes": 1677987,
+      "sha256": "c50633b3a9afea25b34d9919df9e782b855feb5767a27cafbacece14fa0639bb"
+    },
+    {
+      "path": "out/catch-opportunity-physics/selected/G1-P036.json",
+      "bytes": 2408806,
+      "sha256": "cdbc4aab604e08d15d3a95c83a82a2be0493dd5af4e9d3d0726194721c338c7d"
+    },
+    {
+      "path": "out/catch-opportunity-physics/audit/out/accepted-game-deep-audit-2026-10-16/observations/zone-reference.json",
+      "bytes": 1099551,
+      "sha256": "1e3c404b6a0daf413cde753a803f050405b602c2b3b7fcff14cfc1d5978887b0"
+    },
+    {
+      "path": "out/catch-opportunity-physics/audit/out/accepted-game-deep-audit-2026-10-16/observations/spread-air.json",
+      "bytes": 1053769,
+      "sha256": "e68d8156d8303ac4a238d3e8146dc287ff3cf857f16a9fa07a04b1d6da3c6bf5"
+    },
+    {
+      "path": "out/catch-opportunity-physics/audit/out/accepted-game-deep-audit-2026-10-16/observations/power-zone.json",
+      "bytes": 942401,
+      "sha256": "805f3daa8f76b5c7f8990bca2bacfc5c16248a6b376a8a4e25d0907ee9a36945"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G1-P036-capture.json.gz",
+      "bytes": 444909,
+      "sha256": "4eeb48c9bc406adc58123d2ef492f52b108c5aaba068ea7e85ab13317ed0a1dd"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G1-P020-path-capture.json.gz",
+      "bytes": 57988,
+      "sha256": "b46426abe03cadaf85f1adce30c12700398a9ee239abc2e3a577682876451130"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G3-P069-capture.json.gz",
+      "bytes": 642122,
+      "sha256": "c5e0179a1de5dbe7c7e14eb7ffb32ba79144ab191e5cbefbd2a1c4639c41b677"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G1-P130-capture.json.gz",
+      "bytes": 940633,
+      "sha256": "128a55936c443f7cfe2db5f6518ba05896e7ee118776976ec285091cb60bd990"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G2-P143-capture.json.gz",
+      "bytes": 3438,
+      "sha256": "7401bbdca49bb2999f16581ce5db80d9fa990a2e2a418d4a51ee680cb1501d2e"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G1-P020-capture.json.gz",
+      "bytes": 3881,
+      "sha256": "2718e42fcb7baf9bccee5572cf52fbaea68b804d2b97173ac64d2bd59c6739cb"
+    },
+    {
+      "path": "out/catch-opportunity-physics/G2-P107-capture.json.gz",
+      "bytes": 4041,
+      "sha256": "d7c51166e41c78fb16364206fb4a6880f7cae006ac46a379a9c05e67dbd43111"
+    },
+    {
+      "path": "out/catch-opportunity-physics/typecheck.json",
+      "bytes": 2203,
+      "sha256": "d4d1f76da1f09246af4819fc059eac007f1ff9c9ca81d6974ffd8f4a0e5bdcac"
+    },
+    {
+      "path": "out/catch-opportunity-physics/reconstruction-check.receipt.json",
+      "bytes": 2242,
+      "sha256": "96c241d888785351e911bc37bbbb96ea952c167b0311b1ccd483b6dbce725f45"
+    },
+    {
+      "path": "out/catch-opportunity-physics/capture.receipt.json",
+      "bytes": 2221,
+      "sha256": "32f5b76058cabf58ff9fd91c1cd8d856527cd2f7cf1e31c0b2d9580598194c31"
+    },
+    {
+      "path": "out/catch-opportunity-physics/native-geometry-tests.json",
+      "bytes": 2292,
+      "sha256": "651a14396e06c264ed1be4557fabb12cac887773f681f46807bc9b92058d000e"
+    },
+    {
+      "path": "out/catch-opportunity-physics/path-capture.receipt.json",
+      "bytes": 2226,
+      "sha256": "81f99d4309271a43fa3d7ea46df537010455eb0ec7040da68a490032edf72208"
+    },
+    {
+      "path": "out/catch-opportunity-physics/geometry-tests.json",
+      "bytes": 2279,
+      "sha256": "ab82f7320522f4aafa5730ade872777280f9a1a3d05a8c40664b1d45d833ef4b"
+    },
+    {
+      "path": "out/catch-opportunity-physics/final-typecheck.json",
+      "bytes": 2216,
+      "sha256": "1022590f2ad2dcc76775ea15f1503917dc09ceb79529d92c949b04b9affd30b1"
+    },
+    {
+      "path": "out/catch-opportunity-physics/corrected-typecheck.json",
+      "bytes": 2216,
+      "sha256": "b992798cfd7430c6bbde96d0f37eb01ef8103c233899f594576d0f1ef898e18d"
+    }
+  ]
+}
