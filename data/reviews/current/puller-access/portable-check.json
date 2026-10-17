@@ -1,0 +1,59 @@
+{
+  "schema": "puller-portable-static-v1",
+  "records": [
+    {
+      "arm": "promotion",
+      "source": "e0d45bd932d6334485f0cbbc1b3ad0dc7a3fbecc24931fa52baec08077916330",
+      "patches": [
+        "docs/reviews/puller-access/promotion.patch"
+      ],
+      "appliesAndHashMatches": true
+    },
+    {
+      "arm": "perimeter",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "patches": [
+        "docs/reviews/puller-access/research/perimeter-installation.patch"
+      ],
+      "appliesAndHashMatches": true
+    },
+    {
+      "arm": "corner",
+      "source": "7531dbf94927ceb141a4629729462b314b24449d23afa4a664c485d934a243e4",
+      "patches": [
+        "docs/reviews/puller-access/research/perimeter-installation.patch",
+        "docs/reviews/puller-access/research/corner.patch"
+      ],
+      "appliesAndHashMatches": true
+    },
+    {
+      "arm": "wrapper",
+      "source": "4514ac567d2a40345d3246d2148c79c64da6b80068f3baca8e0057eb33e5fcd0",
+      "patches": [
+        "docs/reviews/puller-access/research/perimeter-installation.patch",
+        "docs/reviews/puller-access/research/early-collection.patch"
+      ],
+      "appliesAndHashMatches": true
+    },
+    {
+      "arm": "depth",
+      "source": "8ba067125804bfac4be1c73a5e33d96be46e19eace01bd8f103164b3b406705a",
+      "patches": [
+        "docs/reviews/puller-access/research/perimeter-installation.patch",
+        "docs/reviews/puller-access/research/shallower-track.patch"
+      ],
+      "appliesAndHashMatches": true
+    },
+    {
+      "arm": "allocation",
+      "source": "6d8fac67b82baf21a005675a5019e52b731962199f8790aff1263e9ffdd2baeb",
+      "patches": [
+        "docs/reviews/puller-access/research/allocation.patch"
+      ],
+      "appliesAndHashMatches": true
+    }
+  ],
+  "simulations": 0,
+  "elapsedSeconds": 0.13237462600227445,
+  "initialAttempt": "Absolute --directory rejected before application; relative repository-local path passed."
+}

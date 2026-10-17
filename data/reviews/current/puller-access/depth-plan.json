@@ -1,0 +1,7 @@
+{
+  "question": "Does the artificial second-puller depth consume the available collection window despite an unobstructed shared flat track?",
+  "case": "B01",
+  "opposing": "B02, declared weak direction before either depth result",
+  "isolated": "Only wrapper installed track depth: existing1.25yd rear clearance, no extra body-width stagger. Preserve bodies, spacing, contact, runner, LB controllers.",
+  "gate": "Reject new teammate impacts or unsafe first-level penetration; measure actual load and runner arrival, not gain."
+}

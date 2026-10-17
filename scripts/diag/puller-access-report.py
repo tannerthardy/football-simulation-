@@ -8,7 +8,7 @@ from pathlib import Path
 root = Path(sys.argv[1] if len(sys.argv) > 1 else 'out/puller-access')
 destination = Path(sys.argv[2] if len(sys.argv) > 2 else str(root / 'summary.json'))
 arms = ['baseline', 'corner', 'wrapper', 'b02-baseline', 'depth', 'k02-baseline',
-        'final-research', 'accepted-baseline', 'production', 'information']
+        'final-research', 'accepted-baseline', 'production', 'information', 'allocation']
 raw, reports = {}, {}
 
 def identity(a, b):
@@ -98,7 +98,7 @@ for left, right, ids in [
     ('baseline', 'accepted-baseline', ['K01']),
     ('k02-baseline', 'accepted-baseline', ['K02']),
     ('accepted-baseline', 'production', ['K01', 'K02']),
-    ('wrapper', 'production', ['K01']), ('final-research', 'production', ['K02']), ('accepted-baseline','information',['K01','K02'])]:
+    ('wrapper', 'production', ['K01']), ('final-research', 'production', ['K02']), ('accepted-baseline','information',['K01','K02']), ('information','allocation',['K01','K02'])]:
     for id in ids:
         a, b = raw[(left, id)], raw[(right, id)]
         comparisons.append({'left': left, 'right': right, 'id': id, 'exactBodyRequestRngEventIdentity': identity(a, b),
@@ -106,10 +106,14 @@ for left, right, ids in [
                             'gain': [a['gain'], b['gain']], 'firstContact': [a['firstContact'], b['firstContact']]})
 receipts = {}
 for p in sorted(root.glob('*.json')):
+    if p.name in ['report-console.json', 'summary.json']: continue
     d = json.loads(p.read_text())
     if 'commands' in d:
         receipts[p.name] = {'source': d['sourceSha256'], 'validation': d['validationSha256'],
                             'exitCode': d['exitCode'], 'inputsUnchanged': d['inputsUnchanged'], 'commands': d['commands']}
+for arm in reports:
+    reports[arm]['disposition'] = {'information':'PROPOSED information correction only', 'corner':'prototype-only lifecycle correction; no rescue', 'wrapper':'WITHDRAWN early collection; no useful load', 'production':'WITHDRAWN early collection; null-job regression', 'final-research':'WITHDRAWN early collection; null-job regression', 'depth':'REJECTED shallower track', 'allocation':'REJECTED naive wrapper reservation'}.get(arm,'comparison baseline')
+
 summary = {'schema': 'puller-access-v1', 'accepted': '0000e560e0dbe31905151465152d412ba838803d',
            'productionSource': reports['information']['receipt']['source'],
            'arms': reports, 'comparisons': comparisons, 'commands': receipts,

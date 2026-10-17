@@ -1,0 +1,11 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -525,7 +525,7 @@
+     const role=first?(reserved?'kick':'force'):'lead';
+     // The wrapper clears behind the first puller's body instead of asking
+     // two guards to occupy one depth. These are routes, not collision waivers.
+-    const depth=1.25+i*(a.profile.radius+ordered[0].profile.radius+.15);
++    const depth=1.25;
+     plans.set(a,{kind:'pull',pullRole:role,target,drive:first?norm({x:.3,y:ps}):up(0),
+       pullPath:[{x:sim.los-depth,y:a.pos.y},{x:sim.los-depth,y:edgeY-ps*.5},{x:sim.los+.5,y:edgeY}]});
+   }

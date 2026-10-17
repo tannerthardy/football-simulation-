@@ -1,0 +1,31 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -608,6 +608,11 @@
+       claimedDL.add(d);
+       plans.set(b,{kind:rel(b)<0?'cutoff':'down',target:d,drive:up(rel(b)<0 ? ps*.8 : -ps)});
+     }
++    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
++    // The installed Counter wrapper needs its second-level job before spare
++    // first-level helpers consume every backer as possible later work.
++    const wrapper = scheme === 'counter' && bst && pullers.has(bst) ? bst : null;
++    const wrapperBacker = wrapper ? lbNear(hole) : null;
+     for (const b of gapPending.filter((b)=>!plans.has(b))) {
+       const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0)
+         .sort((p, q) => Math.abs(plans.get(p)!.target!.pos.y - b.pos.y) - Math.abs(plans.get(q)!.target!.pos.y - b.pos.y));
+@@ -620,7 +625,6 @@
+     // End man on the line on the playside (kick-out target).
+     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
+     const trapTarget = trapReserved;
+-    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
+     const fb = sim.slot('F');
+     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+     // PULL_STEP (experimental, off): the pull step opens to the play side and
+@@ -636,7 +640,7 @@
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === wrapper ? wrapperBacker : lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },

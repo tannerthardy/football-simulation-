@@ -1,0 +1,125 @@
+{
+  "schema": "puller-access-manifest-v1",
+  "accepted": "0000e560e0dbe31905151465152d412ba838803d",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "testedCode": "89efb949ddeacd220acaf00a4749b160457d6bdf",
+  "source": "e0d45bd932d6334485f0cbbc1b3ad0dc7a3fbecc24931fa52baec08077916330",
+  "fixture": "test/fixtures/puller-access-inputs.json.gz",
+  "fixtureSha256": "4081acfa742735b595c8749e041db2878deb0e22986f0e8ac499f63fe16232c2",
+  "uncompressedManifestSha256": "1c75edc57071bed8d8baa2a468d15081859a8d0897b436da2b95eec4df0e1e74",
+  "rows": [
+    {
+      "id": "B01",
+      "call": "buck_sweep",
+      "form": "ace_12",
+      "inputSha256": "c3f3c33a98a28d1451adbffd8c1cf4f1883104f0734e53f3f639eace678d7570"
+    },
+    {
+      "id": "P01",
+      "call": "pin_pull",
+      "form": "ace_12",
+      "inputSha256": "a0562af89847fe7791aa17d569d05593633f5832c0118f73865d62e06fd9973f"
+    },
+    {
+      "id": "C01",
+      "call": "crack_toss",
+      "form": "ace_nasty_12",
+      "inputSha256": "e8287314ab58072f85dfc50e7c4b3baf4ad21e0fa04225cdb840b27e67bd54df"
+    },
+    {
+      "id": "K01",
+      "call": "counter",
+      "form": "ace_12",
+      "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+    },
+    {
+      "id": "P02",
+      "call": "pin_pull",
+      "form": "ace_12",
+      "inputSha256": "12d5692989410e0a268688a78b79f6d992b46e123c836609ea04440c1231282d"
+    },
+    {
+      "id": "C02",
+      "call": "crack_toss",
+      "form": "ace_nasty_12",
+      "inputSha256": "9a88b2df77daf96c591f718d91efa9c4f0a3eed2516176ed64f2187969f49f1c"
+    },
+    {
+      "id": "B02",
+      "call": "buck_sweep",
+      "form": "ace_12",
+      "inputSha256": "a36590d57a23144176b3560b3c86ac3d125d46bd262383f68bfbb416efd1eb63"
+    },
+    {
+      "id": "K02",
+      "call": "counter",
+      "form": "ace_12",
+      "inputSha256": "c1201086e05d69a14ae33413a5fed53840be414ca98cf32f74e22f818c4385b8"
+    }
+  ],
+  "settings": {
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "additionalExperimentalEnv": {
+      "PULL_PLAN": null,
+      "PULL_CUE": null,
+      "CF_FLOW": null,
+      "CLIMB_EXIT": null
+    }
+  },
+  "qualification": "B/P/C are held99 explicit prototypes. K01/K02 are accepted Counter calls. No historical4ded6b6/current-develop equivalence. Fixture gzip expands byte-for-byte to the full tested final input container; case setup hashes are unchanged. Native engine code/source-specific receipts define each arm; ordinary all22 observer histories initialize through PlaySim constructor and normal ticks, no reset or future-state injection."
+}

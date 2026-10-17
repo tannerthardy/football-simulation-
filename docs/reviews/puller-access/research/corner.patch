@@ -1,0 +1,32 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -810,6 +810,7 @@
+   /** The puller's last ordinary read, not the defender's current position. */
+   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
+   private pullCleared = false;
++  private pullCornerCleared = false;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+     flow: Vec2; backer: Perceived } | null = null;
+   /** A personally consumed near-gap emergency, held through the normal beat. */
+@@ -936,14 +937,19 @@
+           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
+           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
+           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
+-          if (this.pullCleared && (plan.pullRole==='force' ? this.pullIdx>=2&&atCorner : approachingDepth < sim.los || distance < 1.2))
++          // The outside gate is a completed route step, not a permanent
++          // constraint on the later acquired interception. Following support
++          // back inside must not restart a cleared pull behind the line.
++          if (plan.pullRole === 'force' && this.pullCleared && this.pullIdx >= 2 && atCorner)
++            this.pullCornerCleared = true;
++          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : approachingDepth < sim.los || distance < 1.2))
+             return this.attack(a, sim, read.target, read.seen);
+         }
+         // Clear the line before turning up; approach the corner under control
+         // so a heavy puller doesn't run through the waypoint and circle back.
+         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+         let path = read && this.pullCleared && plan.pullRole!=='force' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+-        if(plan.pullRole==='force'&&this.pullIdx>=2&&!atCorner)
++        if(plan.pullRole==='force'&&this.pullIdx>=2&&!this.pullCornerCleared&&!atCorner)
+           // Arrival steering stops short of its goal. Put the flat goal a
+           // body radius beyond the gate so that ordinary feet can cross it;
+           // commanding a stop exactly on the gate deadlocks just inside.

@@ -1,0 +1,63 @@
+import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { RunBlocker } from '../src/sim/behaviors/blocking.js';
+import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
+
+const inputs = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/puller-access-inputs.json.gz', import.meta.url))).toString());
+
+describe('a wrapper collects after its flat pull clears', () => {
+  function wrapper(obstructed = false, privateContact = false, mirror = false, unavailable = false) {
+    const sim = new PlaySim(structuredClone(inputs.rows.find((r: { id: string }) => r.id === 'K01').setup) as PlaySetup);
+    const a = sim.offense.find(a => a.behavior instanceof RunBlocker && a.behavior.plan.pullRole === 'lead')!;
+    const controller = a.behavior as RunBlocker;
+    if (mirror) {
+      const reflect = (y: number) => 2 * sim.ballY - y;
+      for (const body of sim.agents.map(p => p.body)) {
+        body.pos.y = reflect(body.pos.y); body.vel.y *= -1; body.facing *= -1;
+      }
+      for (const spot of Object.values(sim.offAlign.spots)) if (spot) spot.pos.y = reflect(spot.pos.y);
+      sim.offAlign.strongSign *= -1;
+      controller.plan.drive.y *= -1;
+      for (const point of controller.plan.pullPath!) point.y = reflect(point.y);
+    }
+    Object.defineProperty(a.mind, 'placementError', { get: () => 0 });
+    const flat = controller.plan.pullPath![1], side = mirror ? -1 : 1;
+    sim.t = 2;
+    a.body.pos = { x: flat.x - .5, y: flat.y };
+    a.body.vel = { x: 0, y: side * 2 };
+    Reflect.set(controller, 'pullIdx', 1);
+    const target = controller.plan.target!;
+    // The real hook must use this acquired picture, regardless of private contact.
+    const ordinarySee = sim.see.bind(sim);
+    sim.see = (observer, other, scale) => {
+      const original = ordinarySee(observer, other, scale);
+      const picture = mirror ? { ...original, pos: { x: original.pos.x, y: 2 * sim.ballY - original.pos.y }, vel: { x: original.vel.x, y: -original.vel.y }, facing: -original.facing } : original;
+      if (observer !== a) return picture;
+      if (other === target) return { ...picture, pos: { x: 42, y: flat.y + side * 2 }, vel: { x: 0, y: side * 2 }, pose: unavailable ? 'down' : 'up' };
+      if (obstructed && ['C', 'LG', 'RG', 'LT', 'Y', 'H'].includes(other.slot))
+        return { ...picture, pos: { ...picture.pos, x: 38 }, vel: { x: 0, y: 0 } };
+      return picture;
+    };
+    if (privateContact) target.engagement = { blocker: sim.slot('C')!, defender: target, helpers: [] } as unknown as NonNullable<typeof target.engagement>;
+    const before = structuredClone(a.body), rng = JSON.stringify(sim.rng);
+    const command = controller.update(a, sim);
+    expect(a.body).toEqual(before);
+    expect(JSON.stringify(sim.rng)).toBe(rng);
+    expect(a.engagement).toBeNull();
+    expect(sim.world.joints).toHaveLength(0);
+    return { command, target: controller.plan.target?.idx };
+  }
+  it.each([false, true])('collects after the flat pull, mirror=%s', mirror => {
+    expect(wrapper(false, false, mirror).command.facing).toBeDefined();
+  });
+  it.each([false, true])('keeps the route behind an obstructed wall, mirror=%s', mirror => {
+    expect(wrapper(true, false, mirror).command.facing).toBeUndefined();
+  });
+  it.each([false, true])('waits on an acquired unavailable target without claiming contact, mirror=%s', mirror => {
+    expect(wrapper(false, false, mirror, true).command.vel).toEqual({ x: 0, y: 0 });
+  });
+  it.each([false, true])('ignores private defender contact, mirror=%s', mirror => {
+    expect(wrapper(false, true, mirror)).toEqual(wrapper(false, false, mirror));
+  });
+});

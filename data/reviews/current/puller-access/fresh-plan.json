@@ -1,0 +1,9 @@
+{
+  "id": "K02",
+  "question": "Does acquired wrapper collection retain keeper work and avoid new traffic against a different accepted front?",
+  "declaredBeforeResults": true,
+  "sameAthletesSeed": true,
+  "front": "Under",
+  "compare": "accepted0000e56 + held99 dependency, then isolated final controller candidate",
+  "notGainTarget": true
+}

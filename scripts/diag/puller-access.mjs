@@ -9,7 +9,7 @@ import {PlaySim} from '../../src/sim/playsim.ts';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.ts';
 import {sourceVersion} from '../source-version.ts';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
-const [mode='plan',out='out/perimeter-runs',ids='K01,K02',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz']=process.argv.slice(2);
+const [mode='plan',out='out/puller-access',ids='K01,K02',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz']=process.argv.slice(2);
 if(mode==='plan'){ console.log(JSON.stringify({question:'Puller route progress and acquired collection; no snaps without explicit run mode',inputs:inputPath,simulatedSnaps:0}));process.exit(0); }
 assert.equal(mode,'run');const bytes=readFileSync(inputPath),manifest=JSON.parse(inputPath.endsWith('.gz')?gunzipSync(bytes):bytes),until=Number(untilText);
 assert(until>0&&until<=5);const selected=ids.split(',').map(id=>{const r=manifest.rows.find(r=>r.id===id);assert(r,`Missing frozen case ${id}`);return r;});
