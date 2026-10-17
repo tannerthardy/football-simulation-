@@ -17,6 +17,9 @@ describe('settled moment follows the attained brace direction', () => {
 
   it('preserves the saved accepted collinear execution exactly', () => {
     const saved = JSON.parse(readFileSync('test/fixtures/directional-brace-control.json', 'utf8'));
+    // JSON encodes the existing never-transitioned `since=-Infinity` as null.
+    // Restore that sentinel only; compare every finite body/state bit exactly.
+    for (const b of saved.after) if (b.support.since === null) b.support.since = -Infinity;
     const r = directionalBrace(saved.input);
     expect(r.after).toEqual(saved.after);
     expect(r.records).toEqual(saved.records);

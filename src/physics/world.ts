@@ -1312,10 +1312,23 @@ export class World {
       const feltMoment = Math.hypot(oldTip.x, oldTip.y) * this.mass[i] * this.sp[i].pitchRadiusSq / hc;
       const ankleMoment = plans[i].free || sup.state !== 'up' ? 0
         : this.mass[i] * G * baseRadiusAt(this.sp[i], sup.posture) * this.alpha[i];
-      const braced = Math.max(leanBrace, feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0);
+      const ankleBrace = feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0;
+      const braced = Math.max(leanBrace, ankleBrace);
       const tx = this.tipX[i] / h, ty = this.tipY[i] / h;
       this.tipX[i] -= oldTip.x * braced * h;
       this.tipY[i] -= oldTip.y * braced * h;
+      // A committed lean balances moments in its attained plane. It cannot
+      // also erase an independent transverse couple. Restore that component
+      // beyond the common bounded ankle response; do not add another budget.
+      // The cross-product form is exactly zero for collinear components,
+      // preserving the old arithmetic there without an angular tolerance.
+      const bx = this.braceX[i], by = this.braceY[i], brace2 = bx * bx + by * by;
+      const transverse = bx * oldTip.y - by * oldTip.x;
+      if (leanBrace > ankleBrace && brace2 > 0 && transverse !== 0) {
+        const restore = (leanBrace - ankleBrace) * transverse / brace2 * h;
+        this.tipX[i] -= by * restore;
+        this.tipY[i] += bx * restore;
+      }
       sup.feltTip = { x: oldTip.x + (tx - oldTip.x) * kf, y: oldTip.y + (ty - oldTip.y) * kf };
       sup.load = { x: lx, y: ly };
       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
