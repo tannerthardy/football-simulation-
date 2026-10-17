@@ -28,6 +28,9 @@ support bounded Integration review; no full suite or games by contributors.
 [Evidence, adverse outcomes, film and minimal extraction](reviews/zone-contact-execution/README.md).
 Final production extraction is engagement.ts and two new tests only. Spacing's
 weak-case traffic witness and OZ defensive-follow limitation stay separate.
+Newly published #116 adds a distinct runoff footstep floor in the same blockVel
+pipeline and remains held. Neither owner imports the other policy; Integration
+must adjudicate overlap before any combination. #117 supplies this candidate.
 
 ## Run independent open-field/box review — 2026-10-16
 

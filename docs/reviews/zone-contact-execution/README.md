@@ -59,6 +59,14 @@ remain different.
   saved protection. Integration's #112 boundary is released. Shared movement
   and physics owners' files are unchanged. Historical4ded6b6 stays untouched.
 
+Publication overlap: [#116](https://github.com/tannerthardy/football-simulation-/pull/116)
+appeared during this investigation and is explicitly held. It adds a new acquired
+runoff footstep floor before the anchor; this candidate corrects normal following
+and retains existing shoulder work during anchoring. Both affect `blockVel` in
+the same shared function. **Their combination has not been tested or reviewed.**
+Integration and that owner have the boundary/handoff; do not add #116's floor to
+this candidate or infer that either branch's evidence covers the combination.
+
 ## Each correction alone, then together
 
 Same generated bodies, inputs and seeds; all22 players and their ordinary
