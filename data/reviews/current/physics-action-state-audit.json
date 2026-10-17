@@ -1,0 +1,1373 @@
+{
+  "protocol": "physics-action-state-audit-v1",
+  "accepted": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "baselineSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "candidateSource": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "scope": "Production World action/state corrections; no solver/calibration activation or force/capacity/recovery change.",
+  "diveYawBaseline": {
+    "profile": {
+      "massKg": 100,
+      "radius": 0.3,
+      "reach": 1,
+      "heightYd": 2.05,
+      "vmax": 9,
+      "tau": 1.3,
+      "brake": 6,
+      "lateral": 6,
+      "turnRate": 8,
+      "backpedal": 0.6,
+      "shuffle": 0.55,
+      "maxCatchHeight": 3,
+      "reactReach": 2.6,
+      "reactionTime": 0.25,
+      "power": 100,
+      "balance": 0.5,
+      "bend": 0.5,
+      "stepSpeed": 3.4,
+      "getUp": 0.9
+    },
+    "dt": 0.05,
+    "rows": [
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": 2,
+        "transportError": -0.1,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.1,
+        "spin": 2,
+        "transportError": 0,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "ordinary",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.05,
+        "spin": 0,
+        "transportError": 0,
+        "yawImpulse": -4.5,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 9,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": -2,
+        "transportError": 0.1,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 9,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": -0.1,
+        "spin": -2,
+        "transportError": 0,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "ordinary",
+          "speed": 9,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": -0.05,
+        "spin": 0,
+        "transportError": 0,
+        "yawImpulse": 4.5,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 4,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": 2,
+        "transportError": -0.1,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 58.98575568678916,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 4,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.1,
+        "spin": 2,
+        "transportError": 0,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "ordinary",
+          "speed": 4,
+          "spin": 2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.05,
+        "spin": 0,
+        "transportError": 0,
+        "yawImpulse": -4.5,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 4,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": -2,
+        "transportError": 0.1,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 58.98575568678916,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 4,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": -0.1,
+        "spin": -2,
+        "transportError": 0,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "ordinary",
+          "speed": 4,
+          "spin": -2,
+          "partitions": 1,
+          "dt": 0.05
+        },
+        "angleAdvance": -0.05,
+        "spin": 0,
+        "transportError": 0,
+        "yawImpulse": 4.5,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 12,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": 2,
+        "transportError": -0.09999999999999999,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 12,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.09999999999999999,
+        "spin": 2,
+        "transportError": -6.938893903907228e-18,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 48,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": 2,
+        "transportError": -0.1000000000000001,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "free",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 48,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.1000000000000001,
+        "spin": 2,
+        "transportError": 1.0408340855860843e-16,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "ordinary",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 12,
+          "dt": 0.05
+        },
+        "angleAdvance": 0.02107924354869416,
+        "spin": -1.156830258052234,
+        "transportError": 8.036648603548802e-18,
+        "yawImpulse": -7.102868080617526,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "input": {
+          "mode": "dive",
+          "speed": 9,
+          "spin": 2,
+          "partitions": 12,
+          "angle": 0.7,
+          "dt": 0.05
+        },
+        "angleAdvance": 0,
+        "spin": 2,
+        "transportError": -0.09999999999999999,
+        "yawImpulse": 0,
+        "groundImpulse": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "diveYawCandidate": "test/dive-yaw.test.ts: acquired spin\u00d7elapsed asserted at 1/12/48 real subdivisions, signs/rotations, zero/positive launch; zero-launch agrees exactly with free motion.",
+  "effortMatched": [
+    {
+      "id": "ordinary-1",
+      "elapsed": 0.05,
+      "controllerPartitions": 1,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0.1,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0.00022988888888886283,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.00022988888888886283,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "lunge-1",
+      "elapsed": 0.05,
+      "controllerPartitions": 1,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "lunge": {
+            "x": 0.1,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0.0002250740740741275,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.00022748148148143965,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "ordinary-2",
+      "elapsed": 0.05,
+      "controllerPartitions": 2,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0.05,
+            "y": 0
+          }
+        },
+        {
+          "vel": {
+            "x": 0.1,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0.0002286574074074066,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.0002286574074074066,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "lunge-2",
+      "elapsed": 0.05,
+      "controllerPartitions": 2,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "lunge": {
+            "x": 0.05,
+            "y": 0
+          }
+        },
+        {
+          "vel": {
+            "x": 0.05,
+            "y": 0
+          },
+          "lunge": {
+            "x": 0.05,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0.00022504629629627182,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.000227453703703695,
+        "groundWork": 0.5,
+        "position": {
+          "x": 0.0025000000000000005,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "dive-1",
+      "elapsed": 0.05,
+      "controllerPartitions": 1,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "dive": {
+            "x": 1,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0,
+        "groundWork": 17.396596869707903,
+        "position": {
+          "x": 0.014746438921697292,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.5898575568678917,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.00031133866594590387,
+        "groundWork": 17.396596869707903,
+        "position": {
+          "x": 0.014746438921697292,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0.5898575568678917,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "passive-free-1",
+      "elapsed": 0.05,
+      "controllerPartitions": 1,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "free": true
+        }
+      ],
+      "baseline": {
+        "energySpent": 0,
+        "groundWork": 0,
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0,
+        "groundWork": 0,
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "idle-1",
+      "elapsed": 0.05,
+      "controllerPartitions": 1,
+      "initial": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.2,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "intents": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "baseline": {
+        "energySpent": 0.00022500000000003073,
+        "groundWork": 0,
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "candidate": {
+        "energySpent": 0.00022500000000003073,
+        "groundWork": 0,
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "fallCauseBaseline": {
+    "config": {
+      "protocol": "stale-fall-cause-v1",
+      "dt": 0.05,
+      "oldLegs": 2,
+      "maximumRecoveryTicks": 60,
+      "maximumHitTicks": 20,
+      "target": {
+        "mass": 90,
+        "x": 0,
+        "y": 0
+      },
+      "source": {
+        "mass": 100,
+        "x": -10,
+        "y": 0
+      },
+      "stimulus": {
+        "sourceOffsetX": -0.62,
+        "sourceVelocityX": 9
+      },
+      "note": "Diagnostic initial down state, old legs sum versus zero only. Natural down\u2192rising\u2192up recovery. Then identical explicitly prescribed incoming-body initial condition (existing hard-hit control), not a continuously simulated football approach."
+    },
+    "cases": [
+      {
+        "oldLegs": 0,
+        "recoveryTicks": 25,
+        "afterRecovery": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "final": {
+          "time": 1.3000000000000005,
+          "state": "falling",
+          "cause": "contact",
+          "causes": {
+            "contact": 1.1649293894962376,
+            "legs": 0,
+            "overspeed": 0
+          }
+        },
+        "contact": [
+          {
+            "i": 0,
+            "j": 1,
+            "impulse": 426.3157894736842,
+            "closing": 9
+          }
+        ]
+      },
+      {
+        "oldLegs": 2,
+        "recoveryTicks": 25,
+        "afterRecovery": {
+          "contact": 0,
+          "legs": 1.692963449781228,
+          "overspeed": 0
+        },
+        "final": {
+          "time": 1.3000000000000005,
+          "state": "falling",
+          "cause": "legs",
+          "causes": {
+            "contact": 1.1649293894962376,
+            "legs": 1.433062621147579,
+            "overspeed": 0
+          }
+        },
+        "contact": [
+          {
+            "i": 0,
+            "j": 1,
+            "impulse": 426.3157894736842,
+            "closing": 9
+          }
+        ]
+      }
+    ]
+  },
+  "fallCauseCandidate": "test/fall-cause-history.test.ts: both labels contact with exactly matched physical histories ignoring diagnostic metadata.",
+  "checks": {
+    "uniqueTests": 94,
+    "executions": 133,
+    "newTests": 14,
+    "fullSuite": false,
+    "games": 0,
+    "note": "Compatible earlier stage receipts reused; later telemetry change does not change earlier force or ordinary gait checks."
+  },
+  "limitations": [
+    "Fatigue remains an endpoint behavioral proxy for ordinary gait; action work alone uses an interval integral.",
+    "No claim of NFL calibration or game-level benefit; known angular-law, solver and dry-cap holds remain.",
+    "Diagnostic long-approach attempt also preserved under out/state-cause/longer-approach-*; stale sums reproduced but did not change its contact label."
+  ],
+  "receipts": [
+    {
+      "path": "out/physics-state-audit/dive-yaw-witness.launcher.json",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/physics-state-audit/dive-yaw-witness.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.35975503499999995
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/effort-witness.receipt.json",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/physics-state-audit/effort-witness.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.634142537
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/state-cause/receipt.json",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/state-cause/reproduce.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.31821949
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/dive-yaw-tests.receipt.json",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "sourceSha256": "459852ed0b7ea144a1dab41f9292e676919fc555246eb15920144e585e5e04fd",
+      "validationSha256": "d92c217d826f50cd606e90d3cfe7ce845a6ec5fc68c13982eb89936b4b553917",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/dive-yaw.test.ts",
+            "test/grasp-world.test.ts",
+            "test/tackle-support-choice.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.2197950680000003
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/action-effort-tests.receipt.json",
+      "commit": "db6a1764ddeb6916a86f63a80f305e7d21639478",
+      "sourceSha256": "f3bd52d3c977509e1d9842d18698ce943d1b1498db074286b8860eff915fc8dc",
+      "validationSha256": "6b2e69c48c4c6347aafb53ef471ccf9ac0a25a86e7f36e253cc8e3d76175d470",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/action-effort.test.ts",
+            "test/world-physics.test.ts",
+            "test/impact-timing.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.405703552
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/contact-controls.receipt.json",
+      "commit": "11ce3c7d1f08cc749a1ebd72b16d86b116e87431",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "0cd17a44bbbb02dc3991cf09fcdf3b495b93541ae648f9167c68c75bddd47169",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/tackle-support-choice.test.ts",
+            "test/held-recovery.test.ts",
+            "test/grasp-world.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.563832321
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/state-cause/focused-receipt.json",
+      "commit": "11ce3c7d1f08cc749a1ebd72b16d86b116e87431",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "0cd17a44bbbb02dc3991cf09fcdf3b495b93541ae648f9167c68c75bddd47169",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/fall-cause-history.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.597751066
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/action-effort-edges.receipt.json",
+      "commit": "8e604ee471748295e43b9c38a703eb7791d999a6",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "9a82620e9d2b0ff411ebaa562f3d0c8158f4579063bbb2c7a0d517b205803a5b",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/action-effort.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.718167699
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/effort-candidate.receipt.json",
+      "commit": "8e604ee471748295e43b9c38a703eb7791d999a6",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "9a82620e9d2b0ff411ebaa562f3d0c8158f4579063bbb2c7a0d517b205803a5b",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/physics-state-audit/effort-candidate.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.316716093
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/typecheck.receipt.json",
+      "commit": "11ce3c7d1f08cc749a1ebd72b16d86b116e87431",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "14c6efceab05cac5c95a014e670347f64e354ec2ab8707804949d3c08dfef814",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 12.928975843
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/physics-state-audit/final-typecheck.receipt.json",
+      "commit": "e797a52d3b97b40d75dec626089f8d97b4bdf8e6",
+      "sourceSha256": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "validationSha256": "9a82620e9d2b0ff411ebaa562f3d0c8158f4579063bbb2c7a0d517b205803a5b",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 14.912107754
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "path": "out/state-cause/longer-approach-receipt.json",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/state-cause/reproduce.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.423069824
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    }
+  ],
+  "launcherSeconds": 42.398236282,
+  "effortProfile": {
+    "massKg": 100,
+    "radius": 0.3,
+    "reach": 1,
+    "heightYd": 2.05,
+    "vmax": 9,
+    "tau": 1.3,
+    "brake": 6,
+    "lateral": 6,
+    "turnRate": 8,
+    "backpedal": 0.6,
+    "shuffle": 0.55,
+    "maxCatchHeight": 3,
+    "reactReach": 2.6,
+    "reactionTime": 0.25,
+    "power": 100,
+    "balance": 0.5
+  }
+}

@@ -13,6 +13,12 @@ No solver expansion or full-suite/game campaign. #118 remains independently
 reviewable; this branch does not import its directional-bracing correction.
 Game fatigue findings remain read-only leads until separately claimed;
 contributors do not edit the shared World solver.
+Completed candidate source `c9478f1`: three demonstrated action/diagnostic
+corrections,14 new tests,94 unique focused checks/133 executions and typecheck
+pass;42.398s total recorded command cost. Existing ordinary behavior/settings
+retained; no games/full suite or solver/calibration activation.
+[Evidence, boundaries and next decision](reviews/physics-action-state-audit.md).
+Integration review pending; #118 and Game two-point persistence stay separate.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
