@@ -21,6 +21,6 @@ export function makeSaved(c:any):PlaySim {
 }
 export function savedInputs(path='test/fixtures/failed-exchange-inputs.json.gz'){
  const data=JSON.parse(gunzipSync(readFileSync(path)).toString());
- for(const c of data.cases)c.players=data.players;
+ if(data.players)for(const c of data.cases)c.players=data.players;
  return data;
 }

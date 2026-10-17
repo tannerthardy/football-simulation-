@@ -1,0 +1,795 @@
+{
+  "acceptedBase": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "source": "ae46ac04e92c6bb90a71a70925f3042731e604ffe56bf7b2b8c54929e45e64ad",
+  "queue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "auditEvidence": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "auditSha256": "5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56",
+  "productionExtraction": [
+    "src/sim/behaviors/qb.ts",
+    "test/failed-exchange-continuation.test.ts"
+  ],
+  "files": {
+    "test/fixtures/failed-exchange-inputs.json.gz": {
+      "sha256": "4100fb1de29110aa5a5e0cfa89c2af7c7a85c582d93cb4cdcddc74f3c3469292",
+      "bytes": 59874
+    },
+    "test/fixtures/climb-access-inputs.json.gz": {
+      "sha256": "5c33225c785d34f6caceb6db0d95ca97e08474671187b505fac28ce785ee9a8c",
+      "bytes": 29579
+    },
+    "scripts/diag/run-exchange/climb-path.ts": {
+      "sha256": "4beb6216d2da24098e754044f4305432d75f8e793b9b0ace60ca2c91b6f2810f",
+      "bytes": 3822
+    },
+    "scripts/diag/run-exchange/continue.ts": {
+      "sha256": "5f03ff9038e9508b070e68127026686d3ca31c06bdf34f3eed9180a821c774bf",
+      "bytes": 1931
+    },
+    "scripts/diag/run-exchange/cues.ts": {
+      "sha256": "68103bb12cf5e331be2eb64e4e03dbb0393946b5a32cb94232f550e40b4c13d7",
+      "bytes": 2397
+    },
+    "scripts/diag/run-exchange/prefix.ts": {
+      "sha256": "d6806ea7a1856c487669c5cc13e1b3d64e562a5d8103e803ee8e2fc13334f6a2",
+      "bytes": 1225
+    },
+    "scripts/diag/run-exchange/saved.ts": {
+      "sha256": "78fcdb059ea0da95e08082ec73482e01dfd4c57a5c25bd5853408dc4691081d8",
+      "bytes": 1684
+    },
+    "scripts/diag/run-exchange/spacing-witness.ts": {
+      "sha256": "17aa42acfa5c245f8d99853c3ef17545ced98d322caa81707e4d6264c86b152a",
+      "bytes": 3254
+    },
+    "config/baseline.json": {
+      "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+      "bytes": 1971
+    },
+    "package-lock.json": {
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "bytes": 70134
+    }
+  },
+  "initialization": "Fresh PlaySim from frozen selected players, final installed calls, game/snap key and saved initial energy; legitimate prior scouting rebuilt from recorded prior calls. No body/controller checkpoint injection or observer reset. Both compared arms receive same construction. Four exchange/context rounded prefixes exactly match native; G3-P141 C .1yd from.80s is explicit reconstruction limit. Both climb prefixes match all saved rounded frames through3.50s.",
+  "exchangeCueQualification": "New deliberate read of installed exchange partner uses existing .05s teammate perception. Facing is not gaze; no general gaze/occlusion repair. The QB knows his own retained ball. Current contact legality stays separate and attempts a real reachable give first.",
+  "frozenClimbSpacing": {
+    "source": "ae46ac04e92c6bb90a71a70925f3042731e604ffe56bf7b2b8c54929e45e64ad",
+    "elapsedSeconds": 0.29929333299999994,
+    "qualification": "Frozen one-call peer omission identifies constraint; no production bypass or future-route proof. Other actors skipped only in this frozen call. Actual native prefix keptall22.",
+    "saved": {
+      "t": 2.35,
+      "body": {
+        "pos": {
+          "x": 14.719110605387666,
+          "y": 25.513250922151077
+        },
+        "vel": {
+          "x": 2.167809022927718,
+          "y": 0.819133560362536
+        },
+        "facing": 0.8091231961198229,
+        "energy": 0.9799035284911066,
+        "profile": {
+          "vmax": 7.364308374476758,
+          "tau": 1.2883419439683284,
+          "brake": 5.00861678004535,
+          "lateral": 4.911125850340137,
+          "turnRate": 6.102222222222222,
+          "backpedal": 0.543469387755102,
+          "shuffle": 0.5276000000000001,
+          "massKg": 139.70644996000001,
+          "heightYd": 2.0472222222222225,
+          "radius": 0.3563636363636363,
+          "reach": 1.015,
+          "maxCatchHeight": 3.316138888888889,
+          "reactReach": 2.945305555555556,
+          "reactionTime": 0.22195918367346945,
+          "power": 167.8045533142,
+          "balance": 0.45918367346938777,
+          "bend": 0.19450340136054417,
+          "stepSpeed": 2.609954648526077,
+          "getUp": 1.2203888888888887
+        },
+        "support": {
+          "xi": {
+            "x": 0.007049658535717072,
+            "y": 0.0018841606535335204
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19608516157953532,
+          "lean": {
+            "x": 11.993452878388165,
+            "y": 1.4104439777605238
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": -0.0009237045865303955,
+            "y": -0.000107269809059975
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.015245085611139401,
+          "out": 0,
+          "feltTip": {
+            "x": -2.4096957025729626e-06,
+            "y": -2.7983673754691077e-07
+          },
+          "causes": {
+            "contact": 0.005104630701216974,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 1.5208171767027325,
+            "y": 4.200858916306376
+          },
+          "tipAccel": {
+            "x": 5.716755325833848e-05,
+            "y": 6.643278522578655e-06
+          }
+        },
+        "spin": 2.7500124654653657,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 0.8418573299979322
+      },
+      "raw": {
+        "vel": {
+          "x": 3.4077083570421625,
+          "y": 3.913582955208538
+        },
+        "facing": 0.6036897336049576
+      },
+      "final": {
+        "vel": {
+          "x": 4.927976756756188,
+          "y": 2.5273090563435154
+        },
+        "facing": 0.6036897336049576
+      },
+      "actualAfter": {
+        "pos": {
+          "x": 14.82893510211541,
+          "y": 25.559460665094793
+        },
+        "vel": {
+          "x": 2.2251708461821105,
+          "y": 1.0292561573860781
+        },
+        "facing": 0.8858270492589867,
+        "energy": 0.9793590599380233,
+        "profile": {
+          "vmax": 7.364308374476758,
+          "tau": 1.2883419439683284,
+          "brake": 5.00861678004535,
+          "lateral": 4.911125850340137,
+          "turnRate": 6.102222222222222,
+          "backpedal": 0.543469387755102,
+          "shuffle": 0.5276000000000001,
+          "massKg": 139.70644996000001,
+          "heightYd": 2.0472222222222225,
+          "radius": 0.3563636363636363,
+          "reach": 1.015,
+          "maxCatchHeight": 3.316138888888889,
+          "reactReach": 2.945305555555556,
+          "reactionTime": 0.22195918367346945,
+          "power": 167.8045533142,
+          "balance": 0.45918367346938777,
+          "bend": 0.19450340136054417,
+          "stepSpeed": 2.609954648526077,
+          "getUp": 1.2203888888888887
+        },
+        "support": {
+          "xi": {
+            "x": 0.006030074277933943,
+            "y": 0.0016115811402144513
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19598070569822135,
+          "lean": {
+            "x": 8.593684509256455,
+            "y": 1.0106272718756564
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": -0.00026464579492271683,
+            "y": -3.073331485395952e-05
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.015245085611139401,
+          "out": 0,
+          "feltTip": {
+            "x": -6.903893777605398e-07,
+            "y": -8.0174567644896e-08
+          },
+          "causes": {
+            "contact": 0.004321518687030997,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 1.254269130979956,
+            "y": 4.201995531406208
+          },
+          "tipAccel": {
+            "x": 1.8098084558086785e-05,
+            "y": 2.1029933334990763e-06
+          }
+        },
+        "spin": 0.31814166010118683,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 0.5367462188868211
+      }
+    },
+    "peers": [
+      {
+        "idx": 0,
+        "slot": "QB",
+        "profile": {
+          "vmax": 9.115025089115042,
+          "tau": 1.287300825227686,
+          "brake": 6.20128117913832,
+          "lateral": 6.429051020408166,
+          "turnRate": 8.657777777777778,
+          "backpedal": 0.5346938775510205,
+          "shuffle": 0.5096,
+          "massKg": 99.79032140000001,
+          "heightYd": 2.075,
+          "radius": 0.27636363636363637,
+          "reach": 0.9913888888888889,
+          "maxCatchHeight": 3.495305555555556,
+          "reactReach": 3.0355833333333333,
+          "reactionTime": 0.21008163265306126,
+          "power": 71.45699800250001,
+          "balance": 0.2755102040816326,
+          "bend": 0.5477687074829933,
+          "stepSpeed": 3.5595283446712016,
+          "getUp": 0.9114444444444445
+        },
+        "picture": {
+          "pos": {
+            "x": 7.6601257304652295,
+            "y": 24.738584397633353
+          },
+          "vel": {
+            "x": -0.4294110971119494,
+            "y": -2.460100140681875
+          },
+          "stance": null,
+          "facing": -1.745811604811122,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 1,
+        "slot": "LT",
+        "profile": {
+          "vmax": 7.768482847543257,
+          "tau": 1.4415968591882835,
+          "brake": 4.79111111111111,
+          "lateral": 5.47698979591837,
+          "turnRate": 6.4444444444444455,
+          "backpedal": 0.6628571428571428,
+          "shuffle": 0.588,
+          "massKg": 144.69596603,
+          "heightYd": 2.1555555555555554,
+          "radius": 0.36636363636363634,
+          "reach": 1.0527777777777776,
+          "maxCatchHeight": 3.504666666666667,
+          "reactReach": 3.1060555555555553,
+          "reactionTime": 0.2564897959183674,
+          "power": 159.734011070975,
+          "balance": 0.5,
+          "bend": 0.18466666666666698,
+          "stepSpeed": 2.6495555555555557,
+          "getUp": 1.222111111111111
+        },
+        "picture": {
+          "pos": {
+            "x": 11.323960929378371,
+            "y": 31.866749031380778
+          },
+          "vel": {
+            "x": -1.4379136307008797,
+            "y": 0.8155403147504815
+          },
+          "stance": "low",
+          "facing": 1.9991699300430037,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 2,
+        "slot": "RT",
+        "profile": {
+          "vmax": 7.638621280831117,
+          "tau": 1.3723546603415155,
+          "brake": 5.06873015873016,
+          "lateral": 5.208312925170071,
+          "turnRate": 6.197777777777779,
+          "backpedal": 0.6302040816326531,
+          "shuffle": 0.5804,
+          "massKg": 139.25285759000002,
+          "heightYd": 2.175,
+          "radius": 0.35545454545454547,
+          "reach": 1.0575,
+          "maxCatchHeight": 3.506083333333333,
+          "reactReach": 3.12275,
+          "reactionTime": 0.28440816326530616,
+          "power": 161.27043951201074,
+          "balance": 0.6428571428571429,
+          "bend": 0.1559047619047622,
+          "stepSpeed": 2.7412698412698417,
+          "getUp": 1.214611111111111
+        },
+        "picture": {
+          "pos": {
+            "x": 11.31249547102127,
+            "y": 20.41585222751595
+          },
+          "vel": {
+            "x": -1.2567738168290932,
+            "y": -0.4815844917658909
+          },
+          "stance": "low",
+          "facing": -1.3878444439286495,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 4,
+        "slot": "LG",
+        "profile": {
+          "vmax": 7.639241026466799,
+          "tau": 1.38937706236012,
+          "brake": 5.6772222222222215,
+          "lateral": 5.229414965986395,
+          "turnRate": 6.828888888888889,
+          "backpedal": 0.5455102040816326,
+          "shuffle": 0.5328,
+          "massKg": 144.24237366,
+          "heightYd": 2.163888888888889,
+          "radius": 0.3654545454545455,
+          "reach": 1.0763888888888888,
+          "maxCatchHeight": 3.524638888888889,
+          "reactReach": 3.1204722222222228,
+          "reactionTime": 0.24265306122448982,
+          "power": 160.82288732612142,
+          "balance": 0.5,
+          "bend": 0.23199999999999982,
+          "stepSpeed": 2.8184444444444443,
+          "getUp": 1.179388888888889
+        },
+        "picture": {
+          "pos": {
+            "x": 13.224309002418176,
+            "y": 28.587673931564243
+          },
+          "vel": {
+            "x": 0.3475241701810848,
+            "y": 0.1040881819230235
+          },
+          "stance": "low",
+          "facing": 0.6637545367818807,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 5,
+        "slot": "RG",
+        "profile": {
+          "vmax": 7.384887900164484,
+          "tau": 1.457786021404414,
+          "brake": 5.1572789115646245,
+          "lateral": 5.268775510204084,
+          "turnRate": 6.366666666666666,
+          "backpedal": 0.5240816326530613,
+          "shuffle": 0.532,
+          "massKg": 144.24237366,
+          "heightYd": 2.1222222222222222,
+          "radius": 0.3654545454545455,
+          "reach": 1.0291666666666666,
+          "maxCatchHeight": 3.3670000000000004,
+          "reactReach": 3.0267222222222223,
+          "reactionTime": 0.28293877551020413,
+          "power": 165.45924933662144,
+          "balance": 0.5918367346938775,
+          "bend": 0.2103673469387754,
+          "stepSpeed": 2.7164353741496594,
+          "getUp": 1.2186666666666668
+        },
+        "picture": {
+          "pos": {
+            "x": 13.87980441760439,
+            "y": 24.15322989440612
+          },
+          "vel": {
+            "x": 0.818171606283111,
+            "y": -0.7204069479530947
+          },
+          "stance": "low",
+          "facing": -0.6456809819012133,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 6,
+        "slot": "RB",
+        "profile": {
+          "vmax": 9.608770220006077,
+          "tau": 1.1758382811182186,
+          "brake": 7.2107369614512455,
+          "lateral": 7.160251700680275,
+          "turnRate": 9.531111111111112,
+          "backpedal": 0.5357142857142858,
+          "shuffle": 0.5364000000000001,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9527777777777777,
+          "radius": 0.2590909090909091,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.481638888888889,
+          "reactReach": 2.928861111111111,
+          "reactionTime": 0.22538775510204084,
+          "power": 88.8276418062,
+          "balance": 0.6938775510204082,
+          "bend": 0.8561088435374152,
+          "stepSpeed": 4.152548752834467,
+          "getUp": 0.8164444444444444
+        },
+        "picture": {
+          "pos": {
+            "x": 13.371142272243034,
+            "y": 26.742411060641427
+          },
+          "vel": {
+            "x": 5.939624566807027,
+            "y": 0.253535794670677
+          },
+          "stance": null,
+          "facing": -0.040011574797057914,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        },
+        "called": null
+      },
+      {
+        "idx": 7,
+        "slot": "Y",
+        "profile": {
+          "vmax": 9.765704483483107,
+          "tau": 1.3210361351789028,
+          "brake": 7.20861678004535,
+          "lateral": 7.223744897959187,
+          "turnRate": 9.902222222222223,
+          "backpedal": 0.5387755102040817,
+          "shuffle": 0.5416000000000001,
+          "massKg": 88.90410452,
+          "heightYd": 1.9194444444444443,
+          "radius": 0.2545454545454545,
+          "reach": 0.9913888888888889,
+          "maxCatchHeight": 3.30175,
+          "reactReach": 2.8336944444444443,
+          "reactionTime": 0.2737551020408164,
+          "power": 71.6630585363,
+          "balance": 0.45918367346938777,
+          "bend": 0.893170068027211,
+          "stepSpeed": 4.13128798185941,
+          "getUp": 0.7840555555555555
+        },
+        "picture": {
+          "pos": {
+            "x": 13.120634096371646,
+            "y": 29.38842051887581
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": "low",
+          "facing": -0.9568855814819361,
+          "age": 0.05,
+          "pose": "down",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 8,
+        "slot": "X",
+        "profile": {
+          "vmax": 9.389236235851074,
+          "tau": 1.4171429605625332,
+          "brake": 6.464433106575963,
+          "lateral": 6.3892414965986415,
+          "turnRate": 8.382222222222223,
+          "backpedal": 0.5346938775510205,
+          "shuffle": 0.5232000000000001,
+          "massKg": 105.23342984,
+          "heightYd": 2.163888888888889,
+          "radius": 0.28727272727272724,
+          "reach": 1.0622222222222222,
+          "maxCatchHeight": 3.6001944444444454,
+          "reactReach": 3.148805555555556,
+          "reactionTime": 0.24828571428571433,
+          "power": 110.50047038454288,
+          "balance": 0.5816326530612245,
+          "bend": 0.498326530612245,
+          "stepSpeed": 3.636090702947846,
+          "getUp": 0.9442222222222222
+        },
+        "picture": {
+          "pos": {
+            "x": 15.947944559533896,
+            "y": 13.527653687883195
+          },
+          "vel": {
+            "x": 3.1141679539098547e-07,
+            "y": 4.082530663063739
+          },
+          "stance": "low",
+          "facing": 1.570909931864545,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 9,
+        "slot": "Z",
+        "profile": {
+          "vmax": 9.734213488860885,
+          "tau": 1.1116935911260626,
+          "brake": 7.096247165532879,
+          "lateral": 7.091557823129254,
+          "turnRate": 9.651111111111112,
+          "backpedal": 0.5326530612244899,
+          "shuffle": 0.5388000000000001,
+          "massKg": 92.53284348000001,
+          "heightYd": 2.066666666666667,
+          "radius": 0.26181818181818184,
+          "reach": 1.0480555555555555,
+          "maxCatchHeight": 3.6308888888888893,
+          "reactReach": 3.0795000000000003,
+          "reactionTime": 0.2869795918367347,
+          "power": 83.63835995365716,
+          "balance": 0.5204081632653061,
+          "bend": 0.7594149659863945,
+          "stepSpeed": 4.064467120181406,
+          "getUp": 0.8139444444444445
+        },
+        "picture": {
+          "pos": {
+            "x": 19.28082771587061,
+            "y": 43.46060476148725
+          },
+          "vel": {
+            "x": 0.1939641130925936,
+            "y": -2.2876238634438697
+          },
+          "stance": "low",
+          "facing": -1.5318311307278225,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      },
+      {
+        "idx": 10,
+        "slot": "H",
+        "profile": {
+          "vmax": 9.653744327074945,
+          "tau": 1.334693797099446,
+          "brake": 6.6337981859410435,
+          "lateral": 6.887908163265309,
+          "turnRate": 8.911111111111111,
+          "backpedal": 0.5377551020408163,
+          "shuffle": 0.532,
+          "massKg": 95.70799007000001,
+          "heightYd": 2.058333333333333,
+          "radius": 0.2681818181818182,
+          "reach": 1.038611111111111,
+          "maxCatchHeight": 3.4553611111111113,
+          "reactReach": 3.00675,
+          "reactionTime": 0.27448979591836736,
+          "power": 81.84986375272143,
+          "balance": 0.6530612244897959,
+          "bend": 0.6752789115646262,
+          "stepSpeed": 3.8967256235827663,
+          "getUp": 0.8792777777777777
+        },
+        "picture": {
+          "pos": {
+            "x": 16.730541889670082,
+            "y": 33.357132220968886
+          },
+          "vel": {
+            "x": 0.7362092974821559,
+            "y": -1.8111798037289173
+          },
+          "stance": "low",
+          "facing": -1.7794163301161514,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": null
+      }
+    ],
+    "rows": [
+      {
+        "omitted": null,
+        "command": {
+          "vel": {
+            "x": 4.927976756756188,
+            "y": 2.5273090563435154
+          },
+          "facing": 0.6036897336049576
+        }
+      },
+      {
+        "omitted": "RB",
+        "command": {
+          "vel": {
+            "x": 3.4077083570421625,
+            "y": 3.913582955208538
+          },
+          "facing": 0.6036897336049576
+        }
+      },
+      {
+        "omitted": "RG",
+        "command": {
+          "vel": {
+            "x": 4.927976756756188,
+            "y": 2.5273090563435154
+          },
+          "facing": 0.6036897336049576
+        }
+      },
+      {
+        "omitted": "LG",
+        "command": {
+          "vel": {
+            "x": 4.927976756756188,
+            "y": 2.5273090563435154
+          },
+          "facing": 0.6036897336049576
+        }
+      }
+    ],
+    "finalRequestOneStep": {
+      "predicted": {
+        "t": 0.05,
+        "pos": {
+          "x": 14.82893510211541,
+          "y": 25.559460665094793
+        },
+        "vel": {
+          "x": 2.2251708461821105,
+          "y": 1.0292561573860781
+        },
+        "support": "up"
+      },
+      "actual": {
+        "pos": {
+          "x": 14.82893510211541,
+          "y": 25.559460665094793
+        },
+        "vel": {
+          "x": 2.2251708461821105,
+          "y": 1.0292561573860781
+        }
+      },
+      "positionError": 0
+    }
+  },
+  "coordination": "Offensive fetchable handoff posted on129#issuecomment-6229753916. Defensive man candidate132 is separate; acquired unkeyed-premesh retirement exact pin is still needed before one composed broken-exchange evaluation. No better-ending claim yet.",
+  "knownLimits": [
+    "Initial spacing/request cause untouched;1.10s RB aim not proved wrong.",
+    "RB continues installed run-through decoy; no new RB blocking/nav policy.",
+    "Only observed closing-to-passed/separating failures covered; remote/stalled/downed no-approach failures require their own cue.",
+    "No force/capacity/default/solver change.",
+    "No causal historical failed-versus-P140 comparison.",
+    "Old and new C/RB contacts preserved; no collision-free full-play claim."
+  ]
+}
