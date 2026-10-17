@@ -53,6 +53,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Bounded #75 information correction accepted via #82; broader coverage open | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
+| [GAME-004](#GAME-004) | Defensive-TD takeaway, safety sack/loss and scramble-pressure credit | Saved result-accounting defects | Candidate; independent review pending | Measurement + Integration; three separate patches, no new game collection |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
 | [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
 | [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Risk-only accepted via #74; broader migration parked | Awareness + affected controller owner; after first reusable boundary passes |
@@ -419,6 +420,24 @@ allocation and versioned research-adapter migrations remain separate.
 ### GAME-003 — Two-point participants lose completed energy writeback
 
 Independent4b2664d accepts121: copy actual participant body energy back by player identity after either try outcome, as ordinary scrimmage already does. Participants on both teams change; bench/recovery/score/ending remain. Three hook-only focused checks and two expected-red failures are preserved. This has no118/120 dependency; exact125 verification passes; guarded adoption pending. No fatigue retune or live game is needed for the local decision.
+
+<a id="GAME-004"></a>
+### GAME-004 — Result branches lose existing credits
+
+Saved accepted70b4db6 G1-P156 loses the team giveaway on a defensive TD;
+G2-P140 loses underlying sack/tackle credit; eight pressured scrambles lose
+their existing player cue credit. Three independent candidate patches restore
+these at the result boundary. For the safety, credit is now explicitly to the
+own goal plane: **−5.00**, retaining physical x7.502919 and historical native
+−7.50. The five-yard loss is not inferred from the old physical gain.
+
+[Repair, focused controls and evidence meanings](reviews/game-result-accounting.md)
+preserves the [original Measurement appendix](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/measurement.md)
+and [current play index](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/data/reviews/current/accepted-game-play-index.csv).
+Index annotations are supplied as a delta against that exact index, preserving
+all original values/740 IDs; no duplicate dashboard or recollection. Status is
+**independent review pending**, not accepted runtime. Do not duplicate this
+GAME-004 anchor when composing the audit's pending #129 documentation.
 
 ## Information and awareness
 

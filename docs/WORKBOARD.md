@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Measurement: saved-game result accounting — 2026-10-16
+
+Own three independently reviewable fixes from the accepted70b4db6 deep audit:
+MEAS-DA-01 team takeaway before scoring returns (`Game.scrimmage`), MEAS-DA-02
+safety sack/tackle credit and explicit goal-plane yardage (`PlaySim.finishCarry`,
+`buildResult`, result field documentation), MEAS-DA-03 existing `hurriedBy`
+credit outside the scramble split (`Game.recordStats`). Focused saved-input
+tests only, existing play-index/issue links retained; no collector/game/roster
+sweep. Bound tests/fixtures and accounting review/receipt belong to this lane.
+No controller, physics, pressure recognition or YAC-runtime tuning. Integration
+retains independent review, exact batching and merge ownership.
+Completed candidate:48 unique focused checks and typecheck pass; failed initial
+typecheck retained. Three standalone patches apply independently. GAME-004 and
+the existing740-row index have explicit meaning/status handoff; no history rewrite.
+
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).

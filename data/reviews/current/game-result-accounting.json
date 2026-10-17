@@ -1,0 +1,689 @@
+{
+  "schema": "game-result-accounting-v1",
+  "status": "independent review pending",
+  "acceptedBase": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queueAtStart": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "queueAtHandoff": "9a70bb54889cbe3a451fced479bbc3ceb8bbb602",
+  "testedCommit": "0823700e314e0bca15662d7454d7d38c13a1f723",
+  "sourceSha256": "ccd642494c9d33c43bdfdf5f752927869c1ad93fa0ca6f4294d4c6a6dcdd1960",
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "auditEvidence": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "originalLogHashes": {
+    "G1-P127": "2e13651db32a8352a918b7f7195bdeec1fb548031dd6faeed71f3a36917f9e0f",
+    "G1-P137": "324c4e1a60745c24f7da681bde3c556c39cf791b89abcfae3da6a6ec45380fa7",
+    "G1-P141": "96e2732b513d287f5e0e5824affb0b6b13f5f4897bfab4d5df6d8e6744deab21",
+    "G1-P156": "434a4cec8bb37fc450b7531c97f21adc9fb9f007a14c601adfe09ad425ef0604",
+    "G1-P162": "c3f8569f46da93e67311c5490f10f31752c920a10b2ef0a8fe0c0030851bb0d2",
+    "G1-P187": "12adcd56773e96a641b7ae259a8159c6268a5f309e22fda500dc48bff71dfab2",
+    "G2-P024": "04c9150bf8c9e0ad196a41d099fdc314f1803e74fb2f1bad2e1f20a7b66c1f3b",
+    "G2-P038": "b1c616bf3edba3726b663754912b71c01f0508915f04554df53ec3fbb13c41be",
+    "G2-P063": "c3f16ec024c3b4d7e1a103a32a104f28619560d7cb931a5eb6411ff440545b8a",
+    "G2-P067": "2da5e5c01d9cf47f7ef5de5c8d0d68b8471911f910c3f25d7a22aa72e9a5b87d",
+    "G2-P083": "c44b39b0c0867b71f389ae1bfa4f64598603c1c557098a1ab74e29d08505f4c2",
+    "G2-P093": "5e1efe2980ac7729401df3ba7405e70a25d9f739e2fa5925ce9620bf6e463146",
+    "G2-P138": "277883b6a6c1eee8540f0e44e7796c73912af71025de08accd9a130821ff1629",
+    "G2-P140": "08819966314e634f40faab7aec85936cd715e2a6908ae1abbd47fda5daa3d893",
+    "G3-P003": "3bfd29d18717494ded99930864ed33648a7870f90b0e6dc0053dc656dd6c570f",
+    "G3-P032": "925623ff199ca63e6fe64ed88b59e010c66939ce65dec8cf7bc4cad20ca33df6",
+    "G3-P087": "90e6bf2d5c05d867f2f57518e6f9452905461c86eb34682384bfd607f997aa63",
+    "G3-P141": "afa6c846d3a163ebf01b7828e198882a8db913ce3c1d6ff73a3e98043b3ef90a",
+    "G3-P142": "787b03e7bceda5682c3c9c42fd3763ddbb7a49516fd0808a64d1f75574cd71e4",
+    "G3-P146": "eac73d154a281f3960bc894e6cf87c625d5f8899aa50356ad3d4108785044660",
+    "G3-P149": "0911dfb983d9113390ee4753f6b87feecd7c2c8780cb88dee83e6418a02a92d0",
+    "G4-P048": "95c42c6778bc9f159d270c5fc6241af41f3ddd672d806ea0bed15bf390ee0d8a",
+    "G4-P082": "52e0ba4bf0dd2a3408ed0f947a7d24be654ab6a8f9761e9e2c9e7c7fe7206fce",
+    "G4-P099": "c6c605c435ff1907bfd7b2866f33a73a1422b582638c8f83ee5b7ac84b5fa582",
+    "G4-P142": "df070358e17965a33399f43df6437b3c0396354d1123bc5b61e3a751f6c65d08",
+    "G4-P164": "da7c56de6cb06add9e436631514a5a8b13873221336653bc54b7749f87f4bded"
+  },
+  "frozenRosterInputSha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b",
+  "safetyConvention": {
+    "credit": "own goal plane",
+    "los": 15,
+    "ownGoalPlane": 10,
+    "physicalStopX": 7.502919246685144,
+    "historicalNativeLoss": -7.5,
+    "candidateCreditedLoss": -5,
+    "sackActor": "H2-EDGE4",
+    "passer": "A2-QB2",
+    "pressureInvented": false,
+    "statisticalGuide": "https://www.nflgsis.com/gsis/documentation/stadiumguides/guide_for_statisticians.pdf",
+    "officialOwn5SafetyControl": "https://static.www.nfl.com/image/upload/v1677630838/gamecenter/10012013-1208-10a5-8498-12f7f22e31e3.pdf#page=11"
+  },
+  "accountingProjections": {
+    "A1TeamTurnovers": {
+      "historical": 8,
+      "candidate": 9
+    },
+    "playerPressureCredits": {
+      "historical": 43,
+      "candidate": 51,
+      "cueCountUnchanged": 51,
+      "witnessIds": [
+        "G1-P127",
+        "G1-P162",
+        "G1-P187",
+        "G2-P083",
+        "G2-P138",
+        "G3-P032",
+        "G3-P142",
+        "G4-P082"
+      ]
+    },
+    "officialDropbacks": {
+      "attempts": 301,
+      "historicalSacks": 19,
+      "candidateSacksIncludingSafety": 20,
+      "scrambles": 19,
+      "total": 340
+    },
+    "G2AllTeamYards": {
+      "historicalBox": 918.42,
+      "historicalLog": 910.92,
+      "candidateBoxAndGoalPlaneAdjustedLog": 913.42,
+      "notANewGameRun": true
+    }
+  },
+  "endZoneCatches": [
+    {
+      "id": "G1-P137",
+      "receiver": "A1-WR5",
+      "physicalCatchX": 111.14455419484841,
+      "physicalSegmentEndX": 111.14455419484841,
+      "physicalCatchDepth": 6.780653048280982,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -1.1445541948484106,
+      "goalPlaneCreditedCatchDepth": 5.636098853432571,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    },
+    {
+      "id": "G2-P067",
+      "receiver": "H2-TE1",
+      "physicalCatchX": 110.2839869468685,
+      "physicalSegmentEndX": 110.2839869468685,
+      "physicalCatchDepth": 19.812484990647235,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -0.28398694686849524,
+      "goalPlaneCreditedCatchDepth": 19.52849804377874,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    },
+    {
+      "id": "G3-P149",
+      "receiver": "H3-WR1",
+      "physicalCatchX": 115.34282746200813,
+      "physicalSegmentEndX": 115.34282746200813,
+      "physicalCatchDepth": 9.655866711401686,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -5.342827462008131,
+      "goalPlaneCreditedCatchDepth": 4.3130392493935545,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    },
+    {
+      "id": "G4-P048",
+      "receiver": "H4-WR1",
+      "physicalCatchX": 117.45205771429599,
+      "physicalSegmentEndX": 117.45205771429599,
+      "physicalCatchDepth": 8.052057714295984,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -7.452057714295989,
+      "goalPlaneCreditedCatchDepth": 0.5999999999999943,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    },
+    {
+      "id": "G4-P099",
+      "receiver": "H4-WR2",
+      "physicalCatchX": 114.83255632450106,
+      "physicalSegmentEndX": 114.83255632450106,
+      "physicalCatchDepth": 15.132556324501053,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -4.832556324501056,
+      "goalPlaneCreditedCatchDepth": 10.299999999999997,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    },
+    {
+      "id": "G4-P164",
+      "receiver": "A4-WR2",
+      "physicalCatchX": 113.78499826688297,
+      "physicalSegmentEndX": 113.78499826688297,
+      "physicalCatchDepth": 7.184998266882971,
+      "physicalCatchToSegmentEndAdvance": 0.0,
+      "historicalNativeYac": -3.7849982668829654,
+      "goalPlaneCreditedCatchDepth": 3.4000000000000057,
+      "goalPlanePostCatchAdvance": 0,
+      "goalPlaneDecompositionStatus": "evidence-only; native YAC runtime unchanged"
+    }
+  ],
+  "firstContactToStop": {
+    "G3-P146": {
+      "firstContact": 4.05,
+      "stop": 12.75,
+      "elapsed": 8.7,
+      "initialHoldBreak": 4.5,
+      "laterWraps": [
+        12,
+        12.05
+      ],
+      "continuousHold": false
+    },
+    "G2-P063": {
+      "firstContact": 3.55,
+      "stop": 7.8,
+      "elapsed": 4.25,
+      "carrier": "H2-CB2",
+      "phase": "defensive interception return"
+    }
+  },
+  "censoredPrefixes": [
+    {
+      "id": "G3-P003",
+      "nativeAdministrativeYards": -4.3,
+      "footballTerminalGain": null,
+      "status": "25s unexchanged snap cap"
+    },
+    {
+      "id": "G3-P087",
+      "nativeAdministrativeYards": -4.33,
+      "footballTerminalGain": null,
+      "status": "25s unexchanged snap cap"
+    },
+    {
+      "id": "G3-P141",
+      "nativeAdministrativeYards": -4.46,
+      "footballTerminalGain": null,
+      "status": "25s unexchanged snap cap"
+    },
+    {
+      "id": "G4-P142",
+      "nativeAdministrativeYards": -4.3,
+      "footballTerminalGain": null,
+      "status": "25s unexchanged snap cap"
+    }
+  ],
+  "indexAnnotationCheck": {
+    "rows": 740,
+    "originalColumnsUnchanged": [
+      "id",
+      "gameId",
+      "index",
+      "quarter",
+      "clock",
+      "offense",
+      "down",
+      "distance",
+      "yardline",
+      "classification",
+      "calledKind",
+      "realizedKind",
+      "concept",
+      "formation",
+      "coverage",
+      "coverageFamily",
+      "front",
+      "outcome",
+      "nativeYards",
+      "yards",
+      "nativeYac",
+      "yac",
+      "censoredEnding",
+      "endpointKnown",
+      "duration",
+      "nullified",
+      "completed",
+      "attempted",
+      "sacked",
+      "scramble",
+      "intercepted",
+      "fumbleLost",
+      "playWideFirstCarrierContact",
+      "sameCarrierFirstContact",
+      "terminalStopTime",
+      "terminalStopType",
+      "contactToStop",
+      "contactIntervalStatus",
+      "teammateContacts",
+      "teammateImpulse",
+      "filmed",
+      "filmFrames",
+      "observationIndex",
+      "ordinaryEligible",
+      "ordinaryExclusions",
+      "filmPath"
+    ],
+    "annotations": {
+      "takeaway": 1,
+      "safety": 1,
+      "pressure": 8,
+      "endZoneCatch": 6,
+      "censored": 4,
+      "elapsed": 369
+    }
+  },
+  "independentPatchChecks": [
+    {
+      "patch": "data/reviews/current/game-result-accounting/01-takeaway.patch",
+      "appliesIndependentlyOnAcceptedWithSavedScaffold": true
+    },
+    {
+      "patch": "data/reviews/current/game-result-accounting/02-safety.patch",
+      "appliesIndependentlyOnAcceptedWithSavedScaffold": true
+    },
+    {
+      "patch": "data/reviews/current/game-result-accounting/03-scramble-pressure.patch",
+      "appliesIndependentlyOnAcceptedWithSavedScaffold": true
+    }
+  ],
+  "combinedPatchTreeMatchesProtectedSourceAndTests": true,
+  "protectedBlobs": {
+    "src/game/game.ts": "84ae8fbe8e5e088cc99a8a56c360d9222205a616",
+    "src/sim/playsim.ts": "268b107a36b3a6c3b98c2b6aec8d595c5f6ad5d6",
+    "src/sim/types.ts": "ff7638808cf115a9e9989451cb49f01fda9e8f57",
+    "test/game-takeaway-credit.test.ts": "a324001d3b1b3bef1f46fb432fd7dd230e9087b4",
+    "test/game-safety-credit.test.ts": "61b729837f6269e534ce30d8fb7ad73f125a530e",
+    "test/game-scramble-pressure-credit.test.ts": "c00ba2cde430cc1d4bbef09175ca1191f49a2784",
+    "test/helpers/saved-game-result-accounting.ts": "562a22260b73a5a8ce17c09c5ed6912286f630de",
+    "test/fixtures/saved-game-result-accounting.json": "4cc16beb76de646a719fbb0b599c6e8c2c986fa5"
+  },
+  "patches": {
+    "data/reviews/current/game-result-accounting/00-saved-fixtures.patch": {
+      "bytes": 205458,
+      "sha256": "135de1701cc10b5789d83f7ad40a90db2d46f1f31998ad24faacb6239633dad3"
+    },
+    "data/reviews/current/game-result-accounting/01-takeaway.patch": {
+      "bytes": 2825,
+      "sha256": "c72ea5a0243196aea1e32f1618f36527bb2580778bc374381169cf0c4dd59c23"
+    },
+    "data/reviews/current/game-result-accounting/02-safety.patch": {
+      "bytes": 7500,
+      "sha256": "0cc4aa9dd509740f488a3e6907a633d660630cf3d3ff5569031af860a6666e70"
+    },
+    "data/reviews/current/game-result-accounting/03-scramble-pressure.patch": {
+      "bytes": 2760,
+      "sha256": "5b9f15c81b15334ec96de9da242d866c43a3cd6a3b3e5205de8eebefb8d9dbfc"
+    },
+    "data/reviews/current/game-result-accounting/play-index-annotations.patch": {
+      "bytes": 484144,
+      "sha256": "1a02d904cb6b35f74de4ed56b19ec06d8a559e805829e430fba59ecd281ec6cb"
+    }
+  },
+  "receipts": {
+    "final-focused.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/game-result-accounting",
+      "commit": "0823700e314e0bca15662d7454d7d38c13a1f723",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ccd642494c9d33c43bdfdf5f752927869c1ad93fa0ca6f4294d4c6a6dcdd1960",
+      "validationSha256": "596a98de89d46352a9b32129b2ac4d1b350588bbad971e2b2d9e7aaa614bee65",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T04:37:12.660Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "--maxWorkers=1",
+            "test/game-takeaway-credit.test.ts",
+            "test/game-safety-credit.test.ts",
+            "test/game-scramble-pressure-credit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.086075017
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:37:14.749Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "focused.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/game-result-accounting",
+      "commit": "a4aeb71ca5ef5bff1925338ac208a0388276d491",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ccd642494c9d33c43bdfdf5f752927869c1ad93fa0ca6f4294d4c6a6dcdd1960",
+      "validationSha256": "58840de03a59857d596cc985fab8e5995572aceecc2f88b92971e0fcdaedb242",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T04:36:04.952Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "--maxWorkers=1",
+            "test/game-takeaway-credit.test.ts",
+            "test/game-safety-credit.test.ts",
+            "test/game-scramble-pressure-credit.test.ts",
+            "test/game-rules.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.206867675
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:36:07.162Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-final.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/game-result-accounting",
+      "commit": "0823700e314e0bca15662d7454d7d38c13a1f723",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ccd642494c9d33c43bdfdf5f752927869c1ad93fa0ca6f4294d4c6a6dcdd1960",
+      "validationSha256": "596a98de89d46352a9b32129b2ac4d1b350588bbad971e2b2d9e7aaa614bee65",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T04:37:56.558Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.800683077000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:38:06.362Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-initial-failed.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/game-result-accounting",
+      "commit": "a4aeb71ca5ef5bff1925338ac208a0388276d491",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ccd642494c9d33c43bdfdf5f752927869c1ad93fa0ca6f4294d4c6a6dcdd1960",
+      "validationSha256": "58840de03a59857d596cc985fab8e5995572aceecc2f88b92971e0fcdaedb242",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T04:36:27.793Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 9.058136054
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:36:36.854Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    }
+  },
+  "validationCounts": {
+    "uniqueFocusedChecks": 48,
+    "newContracts": 18,
+    "existingGameRuleControls": 30,
+    "assertionExecutionsIncludingNecessaryHarnessRetest": 66,
+    "newGameRuns": 0,
+    "newCollectedPlays": 0,
+    "newRosterSeeds": 0,
+    "newNflQueries": 0,
+    "fullSuiteRuns": 0
+  },
+  "checkCommandSecondsIncludingFailure": 23.151761823,
+  "costNote": "Initial Git ls-tree --long triggered lazy fetch of original artifact blobs (~309MB original game archives); stopped and cached saved evidence reused. 14.2MB deep-audit bundle hash verified; native trajectories not rerun."
+}
