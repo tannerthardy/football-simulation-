@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Bounded two-point effort persistence — 2026-10-17
+
+Physics review owns only `Game.twoPointTry` in `src/game/game.ts` and new
+`test/two-point-energy.test.ts` on `codex/two-point-effort`, isolated from exact
+accepted/fetched develop `d682b1f474cb6ba260a7b8b1119a62919c5a2159`.
+Question: does a completed two-point try persist both teams' participant energy
+with the same writeback semantics as ordinary scrimmage? Use hook-only public
+touchdown-to-try regressions and an ordinary-scrimmage opposing control, retaining
+existing recovery. No World, physical laws, fatigue/recovery tuning, defaults or
+other Game behavior is claimed. Parent physics-state work stays separate.
+Candidate complete for parent review: the one-line all-agent writeback matches
+scrimmage. Hook-only GOOD/FAILED tries reproduce two baseline failures; the
+ordinary control passes. Corrected focused test: 3/3 pass in 2.460 command seconds
+(red 2.564s, total 5.024s), Node22.23.3, unchanged 44 flags/components1,
+CF_FLOW unset; both receipts have unchanged inputs. Runtime source
+`a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354`;
+raw receipts/logs: ignored `out/two-point-energy/{red,green}.{json,log}`.
+Independent read-only review accepts exact line/test scope. No suite, game,
+typecheck, publication or promotion run; integration retains combined checks.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
