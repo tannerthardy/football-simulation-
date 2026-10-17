@@ -2,6 +2,13 @@
 
 ## Second-level run defense — 2026-10-17 UTC
 
+Status: research frozen/HOLD. Only the separately extracted shallow-runner
+handover at32120268d2ba8cef5622b6b0c5aedd9eb6c61b50 on
+codex/second-level-handover is recommended for independent review. Its report
+preserves this tracker's additional Counter misdirection, PA teammate bump,
+unrestricted away-side failure and typecheck failure. Shared edit boundary is
+released; no third tracker/avoidance variant or broad suite.
+
 Do-It-All owns a bounded investigation from accepted
 d682b1f474cb6ba260a7b8b1119a62919c5a2159 on codex/second-level-defense:
 executeRunFit acquired cue -> held insertion landmark -> request -> achieved
