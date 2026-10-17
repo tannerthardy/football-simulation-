@@ -103,5 +103,15 @@
     "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
     "sha256": "f0d37c09ee9edddca10dee2fcaabd86df2b09f63da17bead4352fd7afdd3811a",
     "patch": "surface-blocking.patch"
+  },
+  "entry-clearance-combined-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "17a41a25299ec9b3411eaf3e8c93c09aeecc81a6532834f4360c376563c88939",
+    "patch": "entry-clearance-combined-blocking.patch"
+  },
+  "entry-clearance-alone-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "d8320b9f2a069e604f0caaf421f9d8cefeb53cd56db17143a703e6ac3e651b81",
+    "patch": "entry-clearance-alone-blocking.patch"
   }
 }

@@ -354,6 +354,28 @@
       "until": 5,
       "diagnosticRoute": "native",
       "status": "held research; see README for per-arm decisions"
+    },
+    "entry-clearance": {
+      "sourceSha256": "0b02c441d0c1b95f5e3243df59060fbd2ae5b4e6b5521df2c1a70b61e44da4f1",
+      "blockingPatch": "sources/entry-clearance-combined-blocking.patch",
+      "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+      "inputManifest": "inputs/inputs-12.json.gz",
+      "inputManifestSha256": "ca3dda35ff5f9dfe16595084d4bb5d9f21d0ae72ab760e47c4a125871b47c026",
+      "collectorSha256": "1283a416dbb7f7c33b68fb283bb1319373a1eeda16190e50b8bb801484adc195",
+      "until": 5,
+      "diagnosticRoute": "native",
+      "status": "rejected as protection improvement: no second-puller backer load or body protection; retained first-puller work and adverse control"
+    },
+    "entry-clearance-alone": {
+      "sourceSha256": "12184ce0e5257cb0390cd6e65f5b4320231a236567368c6798e34c663921c142",
+      "blockingPatch": "sources/entry-clearance-alone-blocking.patch",
+      "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+      "inputManifest": "inputs/inputs-12.json.gz",
+      "inputManifestSha256": "ca3dda35ff5f9dfe16595084d4bb5d9f21d0ae72ab760e47c4a125871b47c026",
+      "collectorSha256": "1283a416dbb7f7c33b68fb283bb1319373a1eeda16190e50b8bb801484adc195",
+      "until": 5,
+      "diagnosticRoute": "native",
+      "status": "rejected as protection improvement: no second-puller backer load or body protection; retained first-puller work and adverse control"
     }
   }
 }
