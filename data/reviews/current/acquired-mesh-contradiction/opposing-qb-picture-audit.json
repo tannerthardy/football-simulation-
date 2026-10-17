@@ -1,0 +1,29 @@
+{
+  "schema": "acquired-qb-opposing-saved-picture-audit-v1",
+  "source": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "newEngineExecutions": 0,
+  "rows": [
+    {
+      "id": "G1-P027",
+      "rawSha256": "1fca46617c572eda70bc911c82fdf8d3d067541a5d669dfea6753b28c555b35d",
+      "sampledManQbPictures": 153,
+      "newGateEligiblePictures": [],
+      "outcomeContextOnly": "slide"
+    },
+    {
+      "id": "G2-P057",
+      "rawSha256": "33dad4a54237de85cc2e28750216ae69304e7e32c459402c35c8ccc545f54695",
+      "sampledManQbPictures": 159,
+      "newGateEligiblePictures": [],
+      "outcomeContextOnly": "incomplete"
+    },
+    {
+      "id": "G3-P073",
+      "rawSha256": "beb789bd8ecb4b3187e21e5aa25bdf31acc981c10aa0daa5a2b5cc1b4a0dd2e7",
+      "sampledManQbPictures": 260,
+      "newGateEligiblePictures": [],
+      "outcomeContextOnly": "incomplete"
+    }
+  ],
+  "limits": "Recorded0.1s requested-picture samples; not every controller tick, new acquisition or changed-game counterfactual."
+}

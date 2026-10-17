@@ -47,6 +47,10 @@ reconstructed as exact. The fixtures are not native resume checkpoints.
 pursuit and brake/redirect better toward the observed QB. Earned escape and turn
 cost remain; distant defenders cannot teleport. G1-P027 and PA G2-P057/G3-P073
 retain coverage, and recognized reachable flight keeps priority.
+An additional [saved-picture check](../../data/reviews/current/acquired-mesh-contradiction/opposing-qb-picture-audit.json)
+finds zero new-gate-eligible pictures among153/159/260 respectively recorded
+man/QB samples in those three controls. These are0.1s samples, not every
+controller tick or a new native counterfactual.
 
 #134 retires the wrong expected exchange. First-cue movement can remain exactly
 the same because the installed gap still controls the action. The returning
