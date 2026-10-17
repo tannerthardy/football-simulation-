@@ -1,0 +1,12 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -945,0 +946 @@
++      let loggedCorner: { y: number; clearance: number; side: number } | null = null;
+@@ -950,0 +952,4 @@
++          loggedCorner={y:s.pos.y,clearance:a.profile.radius+kick.profile.radius+.15,side};
++          // Continue the flat pull to the observed log's outside hip before
++          // turning up. A diagonal to the far waypoint cuts through the pair.
++          if(this.pullIdx<=1)plan.pullPath[1]={...plan.pullPath[1],y:plan.pullPath.at(-1)!.y};
+@@ -954,0 +960 @@
++        if(this.pullIdx===1&&loggedCorner&&(a.pos.y-loggedCorner.y)*loggedCorner.side<loggedCorner.clearance)break;
+# End of portable research patch.

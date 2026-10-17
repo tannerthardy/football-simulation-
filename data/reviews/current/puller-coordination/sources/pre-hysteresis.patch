@@ -1,0 +1,58 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -412,0 +413,2 @@
++  /** The called first puller and his original edge responsibility. */
++  pullSurface?: { blocker: Agent; defender: Agent };
+@@ -770,0 +773,8 @@
++  // A wrapper knows the installed first puller/end pair. Later route choices
++  // use his acquired bodies, never a teammate's private block-log decision.
++  for (const [a,plan] of plans) if(plan.kind==='pull'&&plan.pullRole==='lead') {
++    const first=[...plans].find(([b,p])=>b!==a&&p.kind==='pull'
++      &&(p.pullRole==='kick'||p.pullRole==='force')&&p.target);
++    if(first)plan.pullSurface={blocker:first[0],defender:first[1].target!};
++  }
++
+@@ -853,0 +864,2 @@
++  private pullRoute: Vec2[] | null = null;
++  private pullSurfaceRead: { nextRead:number; blocker:Perceived; defender:Perceived; log:boolean } | null = null;
+@@ -946,6 +958,11 @@
+-      if(plan.pullRole==='lead') {
+-        const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+-        if(kick) {
+-          const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+-          plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+-          a.tags.add('wrap-log');
++      this.pullRoute ??= plan.pullPath.map(p=>({...p}));
++      let surface: { y:number; clearance:number; side:number; log:boolean } | null = null;
++      if (plan.pullRole === 'lead' && plan.pullSurface && this.pullIdx > 0) {
++        const pair=plan.pullSurface;
++        if(!this.pullSurfaceRead||sim.t>=this.pullSurfaceRead.nextRead){
++          const blocker=structuredClone(sim.see(a,pair.blocker)),defender=structuredClone(sim.see(a,pair.defender));
++          const side=playSideSign(sim,sim.offCall.run!);
++          const reach=pair.blocker.profile.radius+pair.defender.profile.radius+pair.blocker.profile.reach;
++          const close=Math.hypot(blocker.pos.x-defender.pos.x,blocker.pos.y-defender.pos.y)<=reach;
++          this.pullSurfaceRead={blocker,defender,log:(close||this.pullSurfaceRead?.log===true)&&(defender.pos.y-blocker.pos.y)*side<-.25,
++            nextRead:sim.t+a.mind.decisionInterval};
+@@ -952,0 +970,16 @@
++        const read=this.pullSurfaceRead,side=playSideSign(sim,sim.offCall.run!);
++        const clearance=a.profile.radius+pair.blocker.profile.radius+.15;
++        const offset=Math.max(1.1,clearance+.15);
++        const y=read.blocker.pos.y+side*(read.log?offset:-offset);
++        // An uncontacted first puller cannot certify a corner boundary.
++        const close=Math.hypot(read.blocker.pos.x-read.defender.pos.x,read.blocker.pos.y-read.defender.pos.y)
++          <=pair.blocker.profile.radius+pair.defender.profile.radius+pair.blocker.profile.reach;
++        if(close||read.log)surface={y:read.blocker.pos.y,clearance,side,log:read.log};
++        // A crossing first puller is not yet the turn-up surface. Keep the
++        // installed flat track for a box; a personally acquired log extends it
++        // outside. Only the later turn-up point follows the loaded surface.
++        const exit=this.pullRoute.at(-1)!;
++        plan.pullPath[plan.pullPath.length-1]=read.log||this.pullIdx>=2
++          ? {x:Math.max(sim.los+.5,read.blocker.pos.x+.6),y} : {...exit};
++        if(this.pullIdx===1)plan.pullPath[1]={...this.pullRoute[1],y:read.log?y:this.pullRoute[1].y};
++        if(read.log)a.tags.add('wrap-log');
+@@ -954,0 +988,4 @@
++        if(this.pullIdx===1&&surface){
++          const lateral=(a.pos.y-surface.y)*surface.side;
++          if(surface.log?lateral<surface.clearance:lateral>-surface.clearance)break;
++        }
+# End of portable research patch.

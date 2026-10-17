@@ -1,0 +1,6 @@
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -305 +305 @@
+-      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'||b.behavior.plan.pullRole==='force'))} : undefined }, to);
++      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
+# End of rejected adapter patch.

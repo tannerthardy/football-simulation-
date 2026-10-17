@@ -9,6 +9,7 @@ import {PlaySim} from '../../src/sim/playsim.ts';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.ts';
 import {goTo} from '../../src/sim/behaviors/common.ts';
 import {sourceVersion} from '../source-version.ts';
+import {runReadObservers} from '../../src/sim/run-read-observer.ts';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
 const [mode='plan',out='out/puller-access',ids='K01,K02',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz',route='native']=process.argv.slice(2);
 if(mode==='plan'){ console.log(JSON.stringify({question:'Puller route progress and acquired collection; no snaps without explicit run mode',inputs:inputPath,simulatedSnaps:0}));process.exit(0); }
@@ -23,7 +24,8 @@ const rep=e=>({b:e.blocker.idx,d:e.defender.idx,helpers:e.helpers.map(a=>a.idx),
  hands:e.hands?{normal:e.hands.normalForce,tangent:e.hands.tangentForce,extension:e.hands.extension}:null});
 for(const input of selected){
  assert(performance.now()-started<30000);assert.equal(hash(input.setup),input.inputSha256);
- const sim=new PlaySim(structuredClone(input.setup)),frames=[],cues=[],calls=[];
+ const sim=new PlaySim(structuredClone(input.setup)),frames=[],cues=[],calls=[],runnerReads=[];
+ runReadObservers.set(sim,event=>{if(event.phase==='aim'||event.phase==='carrier-start')runnerReads.push(structuredClone(event));});
  assert(['native','inside','outside'].includes(route));
  const routeGoals=new Map();
  const initial=sim.agents.map(a=>({idx:a.idx,slot:a.slot,body:snapshot(a),plan:plan(a),runFit:a.runFit}));
@@ -63,7 +65,7 @@ for(const input of selected){
   phase:sim.phase,endTime:sim.t,censor:sim.phase==='live'?`live at${sim.t}`:'native ending',outcome:sim.phase==='live'?null:result.outcome,
   gain:sim.phase==='live'?null:result.offenseYards,firstContact:sim.events.find(e=>e.type==='carrier_contact')??null,
   installed:initial.filter(a=>a.plan).map(a=>({slot:a.slot,...a.plan})),events:sim.events};
- rows.push({...summary,initial,frames,cues,calls,result});console.log(JSON.stringify(summary));
+ rows.push({...summary,initial,frames,cues,calls,runnerReads,result});console.log(JSON.stringify(summary));
 }
 const profile=JSON.parse(readFileSync('config/baseline.json'));
 const receipt={diagnosticRoute:route,schema:'perimeter-native-v1',head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),source:sourceVersion(),node:process.version,

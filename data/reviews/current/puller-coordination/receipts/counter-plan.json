@@ -1,0 +1,10 @@
+{
+  "question": "Do joint immediate jobs and conditional future jobs produce useful Counter protection without sacrificing the guard edge/keeper or creating crossing climbers?",
+  "cases": [
+    "K01",
+    "K02"
+  ],
+  "opposing": "K03, strong direction declared before any new allocation outcome",
+  "change": "Only Counter second-level snap ledger; existing first-level ownership, physical law, routes, controller and LB reactions retained",
+  "notRequired": "A particular gain or every linebacker blocked"
+}

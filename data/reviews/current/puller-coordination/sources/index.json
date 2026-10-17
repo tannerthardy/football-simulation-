@@ -1,0 +1,107 @@
+{
+  "lead-forecast-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "f28eaec3e247f83acf31d336a124946804447da8381e5cbc88c48d67958a9e1d",
+    "patch": "lead-forecast-blocking.patch"
+  },
+  "final-prototype-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "278727143409a6769523276e2237f5b0071c5168a6448843944766a7026a08b4",
+    "patch": "final-prototype-blocking.patch"
+  },
+  "near-support-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "8d5cb71a089b0fdea4753ad6da08858feaffa5390fcafc204eac6114a5a57ece",
+    "patch": "near-support-blocking.patch"
+  },
+  "strike-route-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "a931eff45f31a4de930d5ed8dba280ac31463c8311c7d19d6b58d539cf8ebe84",
+    "patch": "strike-route-blocking.patch"
+  },
+  "rejected-early-surface": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "4f04501fefaa2d519663dbafbd9d593a379e29f82b935dda81c5b5f0e0b0b43b",
+    "patch": "rejected-early-surface.patch"
+  },
+  "joint-surface-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "4f04501fefaa2d519663dbafbd9d593a379e29f82b935dda81c5b5f0e0b0b43b",
+    "patch": "joint-surface-blocking.patch"
+  },
+  "phase-baseline-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "ed582effc6fcc144440b089a81e53d383066f932e56f7dc25dc00259baa33591",
+    "patch": "phase-baseline-blocking.patch"
+  },
+  "shoulder-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "87bf236f7e2e385499941c52654c8aa75d827d0ae72a11a714b794d5e0ec4109",
+    "patch": "shoulder-blocking.patch"
+  },
+  "perimeter-count-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "d487ced94a59dc45d48c7b8be9317b2f188c826163cdc1650df57f3539b23187",
+    "patch": "perimeter-count-blocking.patch"
+  },
+  "post-flat-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "4d751d6d9beac8bdd61f862f23eb9b87ad42ffb075531c7fc1cfcf15a725bc6a",
+    "patch": "post-flat-blocking.patch"
+  },
+  "force-forecast-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "f3b9710b8e634961c34e36e5355d10d43cb4a59304d663e773ce31e0e595ddbe",
+    "patch": "force-forecast-blocking.patch"
+  },
+  "log-route-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "b9f6f19c503ad055e5925901bb135a3137ab573c680349137a12f6fa95134d74",
+    "patch": "log-route-blocking.patch"
+  },
+  "pin-surface-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "b7c26909719107e1165b4d407f2b39df7199cbeb4c08388061b22ac42d02e939",
+    "patch": "pin-surface-blocking.patch"
+  },
+  "kick-transition-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "521e6ee4648509d2da3b97ed6a82c93c86a8f96a9e17b81820514d1239237e03",
+    "patch": "kick-transition-blocking.patch"
+  },
+  "opening-access-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "ba1ffa22a00e6c6a7ceb7c1b06c31b7cd692b18dfe55c0a8b251924ec41850aa",
+    "patch": "opening-access-blocking.patch"
+  },
+  "force-adapter-alone-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "f68654d85e3ff1547b40850135280f0c4124183fd424552f58bc3f2530d33127",
+    "patch": "force-adapter-alone-blocking.patch"
+  },
+  "joint-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "ed582effc6fcc144440b089a81e53d383066f932e56f7dc25dc00259baa33591",
+    "patch": "joint-blocking.patch"
+  },
+  "joint-log-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "caaa506d5a95121b1234d1679d6b0830fa50097e2b97e86114699de199bba3a2",
+    "patch": "joint-log-blocking.patch"
+  },
+  "candidate-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "b7c26909719107e1165b4d407f2b39df7199cbeb4c08388061b22ac42d02e939",
+    "patch": "candidate-blocking.patch"
+  },
+  "pre-hysteresis": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "f8409c67a573b5b2fa89c85e8ad9c9da9503c7b70af1ba2436796de11028b525",
+    "patch": "pre-hysteresis.patch"
+  },
+  "surface-blocking": {
+    "base": "bdb1216ba4e0daa0d16244ed439e348949a697f6",
+    "sha256": "f0d37c09ee9edddca10dee2fcaabd86df2b09f63da17bead4352fd7afdd3811a",
+    "patch": "surface-blocking.patch"
+  }
+}

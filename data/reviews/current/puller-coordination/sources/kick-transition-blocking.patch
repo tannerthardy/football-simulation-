@@ -1,0 +1,6 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -982 +982 @@
+-          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : plan.pullRole === 'lead' ? distance < 1.2 : approachingDepth < sim.los || distance < 1.2))
++          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : plan.pullRole === 'lead' ? distance < 1.2 : this.pullIdx >= 2 || approachingDepth < sim.los || distance < 1.2))
+# End of portable research patch.

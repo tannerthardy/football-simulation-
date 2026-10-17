@@ -1,0 +1,6 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -973,0 +974,2 @@
++          // Diagnostic only: stop pursuing the moving turn-up waypoint after the installed flat track.
++          if(plan.pullRole==='lead'&&this.pullCleared&&this.pullIdx>=2)return this.attack(a,sim,read.target,read.seen);
+# End of portable research patch.

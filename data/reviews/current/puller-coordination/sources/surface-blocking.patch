@@ -1,0 +1,107 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -412,0 +413,2 @@
++  /** The called first puller and his original edge responsibility. */
++  pullSurface?: { blocker: Agent; defender: Agent };
+@@ -446 +448 @@
+-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, origins?: ReadonlyMap<Agent, Vec2>): Map<Agent, Agent> {
++function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
+@@ -458,2 +460 @@
+-        const origin = origins?.get(b);
+-        const distance = origin ? Math.hypot(d.pos.x-origin.x,d.pos.y-origin.y) : Math.abs(d.pos.y - b.pos.y);
++        const distance = Math.abs(d.pos.y - b.pos.y);
+@@ -543,23 +543,0 @@
+-interface SecondLevelJob {
+-  blocker: Agent;
+-  origin: Vec2;
+-  conditional: boolean;
+-  assign: (target: Agent | null) => void;
+-}
+-
+-/** Immediate climb/wrap responsibilities share the count before a double's
+- * optional later job. Compare the installed entry points, not a puller's vacated
+- * stance. This assigns snap responsibilities; it does not forecast a block win. */
+-function assignSecondLevel(jobs: SecondLevelJob[], backers: Agent[], claimed: Set<Agent>): void {
+-  for (const conditional of [false, true]) {
+-    const group = jobs.filter(j => j.conditional === conditional);
+-    const origins = new Map(group.map(j => [j.blocker, j.origin]));
+-    const targets = zoneOwnership(group.map(j => j.blocker), backers.filter(d => !claimed.has(d)), Infinity, origins);
+-    for (const job of group) {
+-      const target = targets.get(job.blocker) ?? null;
+-      job.assign(target);
+-      if (target) claimed.add(target);
+-    }
+-  }
+-}
+-
+@@ -665 +642,0 @@
+-    const secondLevel: SecondLevelJob[] = [];
+@@ -719,12 +696,2 @@
+-        combo(b, partner, target, scheme === 'counter' ? null : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+-        if (scheme === 'counter') {
+-          const plan = plans.get(b)!;
+-          secondLevel.push({ blocker: b, conditional: true,
+-            origin: { x: target.pos.x-.35, y: target.pos.y+Math.sign(b.pos.y-partner.pos.y)*.55 },
+-            assign: d => { plan.climbTo=d; plan.combination!.backer=d; } });
+-        }
+-      } else {
+-        const plan: RunBlockPlan = { kind: 'climb', target: scheme === 'counter' ? null : lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) };
+-        plans.set(b,plan);
+-        if (scheme === 'counter') secondLevel.push({ blocker:b, origin:{...b.pos}, conditional:false, assign:d=>{plan.target=d;} });
+-      }
++        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
++      } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+@@ -751 +718 @@
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : scheme === 'counter' ? null : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
+@@ -759,6 +726 @@
+-      if(scheme==='counter'&&role==='lead'){
+-        const plan=plans.get(p)!;
+-        secondLevel.push({blocker:p,origin:{...path.at(-1)!},conditional:false,assign:d=>{plan.target=d;}});
+-      }
+-    }
+-    if (scheme === 'counter') assignSecondLevel(secondLevel,lb,claimedLB);
++    }
+@@ -768,0 +731,8 @@
++  }
++
++  // A wrapper knows the installed first puller/end pair. Later route choices
++  // use his acquired bodies, never a teammate's private block-log decision.
++  for (const [a,plan] of plans) if(plan.kind==='pull'&&plan.pullRole==='lead') {
++    const first=[...plans].find(([b,p])=>b!==a&&p.kind==='pull'
++      &&(p.pullRole==='kick'||p.pullRole==='force')&&p.target);
++    if(first)plan.pullSurface={blocker:first[0],defender:first[1].target!};
+@@ -853,0 +824 @@
++  private pullSurfaceRead: { nextRead:number; blocker:Perceived; defender:Perceived; log:boolean } | null = null;
+@@ -946,6 +917,10 @@
+-      if(plan.pullRole==='lead') {
+-        const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+-        if(kick) {
+-          const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+-          plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+-          a.tags.add('wrap-log');
++      let surface: { y:number; clearance:number; side:number; log:boolean } | null = null;
++      if (plan.pullRole === 'lead' && plan.pullSurface && this.pullIdx > 0) {
++        const pair=plan.pullSurface;
++        if(!this.pullSurfaceRead||sim.t>=this.pullSurfaceRead.nextRead){
++          const blocker=sim.see(a,pair.blocker),defender=sim.see(a,pair.defender);
++          const side=playSideSign(sim,sim.offCall.run!);
++          const reach=pair.blocker.profile.radius+pair.defender.profile.radius+pair.blocker.profile.reach;
++          const close=Math.hypot(blocker.pos.x-defender.pos.x,blocker.pos.y-defender.pos.y)<=reach;
++          this.pullSurfaceRead={blocker,defender,log:close&&(defender.pos.y-blocker.pos.y)*side<-.25,
++            nextRead:sim.t+a.mind.decisionInterval};
+@@ -952,0 +928,8 @@
++        const read=this.pullSurfaceRead,side=playSideSign(sim,sim.offCall.run!);
++        const clearance=a.profile.radius+pair.blocker.profile.radius+.15;
++        const offset=Math.max(1.1,clearance+.15);
++        const y=read.blocker.pos.y+side*(read.log?offset:-offset);
++        surface={y:read.blocker.pos.y,clearance,side,log:read.log};
++        plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,read.blocker.pos.x+.6),y};
++        if(this.pullIdx===1)plan.pullPath[1]={...plan.pullPath[1],y};
++        if(read.log)a.tags.add('wrap-log');
+@@ -954,0 +938,4 @@
++        if(this.pullIdx===1&&surface){
++          const lateral=(a.pos.y-surface.y)*surface.side;
++          if(surface.log?lateral<surface.clearance:lateral>-surface.clearance)break;
++        }
+# End of portable research patch.

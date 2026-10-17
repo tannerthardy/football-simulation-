@@ -1,0 +1,71 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -446 +446 @@
+-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, origins?: ReadonlyMap<Agent, Vec2>): Map<Agent, Agent> {
++function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
+@@ -458,2 +458 @@
+-        const origin = origins?.get(b);
+-        const distance = origin ? Math.hypot(d.pos.x-origin.x,d.pos.y-origin.y) : Math.abs(d.pos.y - b.pos.y);
++        const distance = Math.abs(d.pos.y - b.pos.y);
+@@ -543,23 +541,0 @@
+-interface SecondLevelJob {
+-  blocker: Agent;
+-  origin: Vec2;
+-  conditional: boolean;
+-  assign: (target: Agent | null) => void;
+-}
+-
+-/** Immediate climb/wrap responsibilities share the count before a double's
+- * optional later job. Compare the installed entry points, not a puller's vacated
+- * stance. This assigns snap responsibilities; it does not forecast a block win. */
+-function assignSecondLevel(jobs: SecondLevelJob[], backers: Agent[], claimed: Set<Agent>): void {
+-  for (const conditional of [false, true]) {
+-    const group = jobs.filter(j => j.conditional === conditional);
+-    const origins = new Map(group.map(j => [j.blocker, j.origin]));
+-    const targets = zoneOwnership(group.map(j => j.blocker), backers.filter(d => !claimed.has(d)), Infinity, origins);
+-    for (const job of group) {
+-      const target = targets.get(job.blocker) ?? null;
+-      job.assign(target);
+-      if (target) claimed.add(target);
+-    }
+-  }
+-}
+-
+@@ -665 +640,0 @@
+-    const secondLevel: SecondLevelJob[] = [];
+@@ -719,12 +694,2 @@
+-        combo(b, partner, target, scheme === 'counter' ? null : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+-        if (scheme === 'counter') {
+-          const plan = plans.get(b)!;
+-          secondLevel.push({ blocker: b, conditional: true,
+-            origin: { x: target.pos.x-.35, y: target.pos.y+Math.sign(b.pos.y-partner.pos.y)*.55 },
+-            assign: d => { plan.climbTo=d; plan.combination!.backer=d; } });
+-        }
+-      } else {
+-        const plan: RunBlockPlan = { kind: 'climb', target: scheme === 'counter' ? null : lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) };
+-        plans.set(b,plan);
+-        if (scheme === 'counter') secondLevel.push({ blocker:b, origin:{...b.pos}, conditional:false, assign:d=>{plan.target=d;} });
+-      }
++        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
++      } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+@@ -751 +716 @@
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : scheme === 'counter' ? null : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
+@@ -759,6 +724 @@
+-      if(scheme==='counter'&&role==='lead'){
+-        const plan=plans.get(p)!;
+-        secondLevel.push({blocker:p,origin:{...path.at(-1)!},conditional:false,assign:d=>{plan.target=d;}});
+-      }
+-    }
+-    if (scheme === 'counter') assignSecondLevel(secondLevel,lb,claimedLB);
++    }
+@@ -945,0 +906 @@
++      let loggedCorner: { y: number; clearance: number; side: number } | null = null;
+@@ -950,0 +912,4 @@
++          loggedCorner={y:s.pos.y,clearance:a.profile.radius+kick.profile.radius+.15,side};
++          // Continue the flat pull to the observed log's outside hip before
++          // turning up. A diagonal to the far waypoint cuts through the pair.
++          if(this.pullIdx<=1)plan.pullPath[1]={...plan.pullPath[1],y:plan.pullPath.at(-1)!.y};
+@@ -954,0 +920 @@
++        if(this.pullIdx===1&&loggedCorner&&(a.pos.y-loggedCorner.y)*loggedCorner.side<loggedCorner.clearance)break;
+# End of portable research patch.

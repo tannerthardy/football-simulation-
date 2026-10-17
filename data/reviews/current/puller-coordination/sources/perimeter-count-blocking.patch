@@ -1,0 +1,52 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -516,4 +515,0 @@
+-  const backer=(y:number)=>{
+-    const d=lb.filter(d=>!claimed.has(d)).sort((a,b)=>Math.abs(a.pos.y-y)-Math.abs(b.pos.y-y))[0]??null;
+-    if(d)claimed.add(d);return d;
+-  };
+@@ -522,2 +518 @@
+-  if(force)claimed.add(force);
+-  const ordered=[...pullers].sort((a,b)=>rel(b)-rel(a));
++  const jobs:SecondLevelJob[]=[], ordered=[...pullers].sort((a,b)=>rel(b)-rel(a));
+@@ -525,4 +520 @@
+-    const first=i===0&&!!force,target=first?force:backer(edgeY);
+-    const role=first?(reserved?'kick':'force'):'lead';
+-    // The wrapper clears behind the first puller's body instead of asking
+-    // two guards to occupy one depth. These are routes, not collision waivers.
++    const first=i===0,role=first?(reserved?'kick':'force'):'lead';
+@@ -530,10 +522,20 @@
+-    plans.set(a,{kind:'pull',pullRole:role,target,drive:first?norm({x:.3,y:ps}):up(0),
+-      pullPath:[{x:sim.los-depth,y:a.pos.y},{x:sim.los-depth,y:edgeY-ps*.5},{x:sim.los+.5,y:edgeY}]});
+-  }
+-  const free=line.filter(a=>!plans.has(a));
+-  // Allocate these together: an inside free blocker must not take an outer
+-  // TE's near backer and leave that TE crossing the first-level wall.
+-  for(const [a,d] of zoneOwnership(free,lb.filter(d=>!claimed.has(d)),4.5)){
+-    claimed.add(d);plans.set(a,{kind:'climb',target:d,drive:up(0)});
+-  }
+-  for(const a of free)if(!plans.has(a))plans.set(a,{kind:'climb',target:null,drive:up(0)});
++    const plan:RunBlockPlan={kind:'pull',pullRole:role,target:first&&reserved?reserved:null,drive:first?norm({x:.3,y:ps}):up(0),
++      pullPath:[{x:sim.los-depth,y:a.pos.y},{x:sim.los-depth,y:edgeY-ps*.5},{x:sim.los+.5,y:edgeY}]};
++    plans.set(a,plan);
++    if(!first||!reserved)jobs.push({blocker:a,origin:{...plan.pullPath![1]},conditional:false,assign:d=>{plan.target=d;}});
++  }
++  for(const a of line.filter(a=>!plans.has(a))){
++    const plan:RunBlockPlan={kind:'climb',target:null,drive:up(0)};plans.set(a,plan);
++    jobs.push({blocker:a,origin:{...a.pos},conditional:false,assign:d=>{plan.target=d;}});
++  }
++  // A first puller is not automatically entitled to skip every linebacker
++  // for deep support. Account for immediate climbs and corner work together
++  // from their installed entries. An inline TE can still own the near backer;
++  // only a genuinely spare first puller advances to the outside safety/DB.
++  assignSecondLevel(jobs,lb,claimed);
++  const first=ordered[0],firstPlan=first&&plans.get(first)!;
++  if(firstPlan&&firstPlan.pullRole==='force'&&!firstPlan.target){
++    const fallback=force&&!claimed.has(force)?force:db.filter(d=>!claimed.has(d)&&rel(d)>rel(outside)&&d.pos.x<sim.los+10)
++      .sort((a,b)=>Math.hypot(a.pos.x-sim.los,a.pos.y-edgeY)-Math.hypot(b.pos.x-sim.los,b.pos.y-edgeY))[0]??null;
++    firstPlan.target=fallback;if(fallback)claimed.add(fallback);
++  }
+@@ -982 +984 @@
+-          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : plan.pullRole === 'lead' ? distance < 1.2 : approachingDepth < sim.los || distance < 1.2))
++          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : plan.pullRole === 'lead' ? distance < 1.2 : this.pullIdx >= 2 || approachingDepth < sim.los || distance < 1.2))
+# End of portable research patch.
