@@ -1049,10 +1049,6 @@ export class Game {
       } else if (st.throwaway) {
         ql.att++;
       }
-      if (st.hurriedBy) {
-        const p = find(st.hurriedBy);
-        if (p) box.line(p, defTeam.abbr).pressures++;
-      }
     } else {
       const rusher = find(st.rusher) ?? (st.scramble ? sim.qb.player : undefined);
       if (rusher) {
@@ -1065,6 +1061,12 @@ export class Game {
         if (offTD) rl.rushTD++;
         if (yds >= 10) t.explosivePlays++;
       }
+    }
+    // Preserve the already-emitted pressure actor even when the QB later
+    // becomes a rusher. This credits the cue; it does not infer new pressure.
+    if (st.hurriedBy) {
+      const p = find(st.hurriedBy);
+      if (p) box.line(p, defTeam.abbr).pressures++;
     }
     // Tackles go to whoever made them: offensive players tackle returners.
     for (const id of st.tacklers) {
