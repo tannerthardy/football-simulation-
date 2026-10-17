@@ -748,13 +748,14 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
-  contactFootwork(a: Agent, sim: PlaySim): 'connect' | 'displace' | null {
+  contactFootwork(a: Agent, sim: PlaySim): Vec2 | null {
     const e = a.engagement, read = this.zoneRead;
-    if (!this.zoneEligible(a, sim) || !e || !read || read.target !== e.defender.idx) return null;
-    // The acquired runoff gives up the outside shoulder and works the man
-    // wide along the installed drive. Merely matching his motion cannot
-    // execute that displacement. Reach/seal still close their own fit.
-    return read.phase === 'runoff' ? 'displace' : 'connect';
+    if (!this.zoneEligible(a, sim) || !e || !read || read.target !== e.defender.idx
+      || read.phase !== 'runoff') return null;
+    // Giving up the outside shoulder changes the fit, not the installed
+    // playside footwork. Continue that track without adding forward push.
+    // The contact controller and World still bound the step and its result.
+    return { x: 0, y: read.side * a.profile.vmax * .45 };
   }
 
   contactMotion(a: Agent): Vec2 | null {

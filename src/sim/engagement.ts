@@ -1066,8 +1066,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const displace = stretch && b.behavior.contactFootwork?.(b, sim) === 'displace';
-  const forward = stretch && !displace ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
@@ -1085,6 +1084,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
     : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  const footwork = stretch ? b.behavior.contactFootwork?.(b, sim) : null;
+  if (footwork && Math.abs(footwork.y) > 1e-9) {
+    const side = Math.sign(footwork.y);
+    // Keep the computed depth connection. This is a world-playside step,
+    // not more diagonal drive into the defender or extra contact force.
+    blockVel = { ...blockVel, y: side * Math.max(blockVel.y * side, Math.min(mirror, Math.abs(footwork.y))) };
+  }
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the

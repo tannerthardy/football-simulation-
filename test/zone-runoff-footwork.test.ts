@@ -26,19 +26,20 @@ function fixture(side:number){
  return {...f,b,d,e,behavior,drive,read:()=>{const commands=contactCommands(f);return{commands,movement};}};
 }
 
-describe('an acquired runoff works to displace instead of only staying connected',()=>{
- it.each([-1,1])('uses the ordinary displacement step in the acquired diagonal frame, side=%s',side=>{
+describe('an acquired runoff continues the playside footwork',()=>{
+ it.each([-1,1])('advances laterally without adding depth push, side=%s',side=>{
   const f=fixture(side),old=fixture(side),before=structuredClone(f.sim.agents.map(a=>a.body));
   Object.assign(old.behavior,{contactFootwork:()=>null});
   const baseline=old.read(),hands=f.e.hands;
   const {commands,movement}=f.read();
   expect(movement.anchored).toBe(false);
-  expect(movement.forward).toBe(2.4);
+  expect(movement.forward).toBeCloseTo(baseline.movement.forward,12);
   const v=commands[f.b.idx].vel;
-  expect(v.x*f.drive.x+v.y*f.drive.y).toBeCloseTo(2.4,12);
+  expect(v.x).toBeCloseTo(baseline.commands[f.b.idx].vel.x,12);
+  expect(v.y*side).toBeGreaterThan(baseline.commands[f.b.idx].vel.y*side);
+  expect(v.y*side).toBeLessThanOrEqual(movement.mirror);
   expect(f.sim.agents.map(a=>a.body)).toEqual(before);
   expect(f.e.hands).toBe(hands);
-  expect(movement.forward).toBeGreaterThan(baseline.movement.forward);
   // Ordinary hand calculation can update its settings. The new feet goal
   // must leave those settings equal to the same-state legacy response.
   expect({extension:hands!.extension,push:hands!.push,hold:hands!.hold,steer:hands!.steer})
@@ -61,15 +62,16 @@ describe('an acquired runoff works to displace instead of only staying connected
 
  it('keeps an acquired mode until the existing read, without consulting hidden continuation',()=>{
   const f=fixture(-1),spy=vi.spyOn(f.sim,'see');
-  expect(f.behavior.contactFootwork(f.b,f.sim)).toBe('displace');
+  const held=f.behavior.contactFootwork(f.b,f.sim);
+  expect(held).toEqual({x:0,y:-f.b.profile.vmax*.45});
   f.d.body.vel={x:9,y:8};f.d.downUntil=f.sim.t+10;
-  expect(f.behavior.contactFootwork(f.b,f.sim)).toBe('displace');
+  expect(f.behavior.contactFootwork(f.b,f.sim)).toEqual(held);
   expect(spy).not.toHaveBeenCalled();
  });
 
  it.each(['reach','seal'] as const)('keeps the connection goal for held %s',phase=>{
   const f=fixture(-1);f.behavior.zoneRead!.phase=phase;
-  expect(f.behavior.contactFootwork(f.b,f.sim)).toBe('connect');
+  expect(f.behavior.contactFootwork(f.b,f.sim)).toBeNull();
  });
 
  it.each(['wrong-target','unreleased-combo','drive','other-joint'] as const)('rejects a stale or unsupported goal: %s',control=>{
