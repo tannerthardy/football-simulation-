@@ -1,0 +1,24 @@
+{
+  "schema": "zone-reference-followup-artifact-v1",
+  "kind": "Data-only saved-film follow-up, never an engine baseline",
+  "measuredEngine": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "currentAcceptedAtReview": "0000e560e0dbe31905151465152d412ba838803d",
+  "canonicalQueueAtReview": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "parentEvidence": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "evidenceTag": "evidence-zone-reference-70b4db6-followup-v1",
+  "newEngineExecutions": 0,
+  "newGameRuns": 0,
+  "newTestSuiteRuns": 0,
+  "originalEvidenceMoved": false,
+  "bundle": {
+    "file": "zone-reference-followup-v1.tar.gz",
+    "bytes": 6721526,
+    "sha256": "5adf0a5dfe6760d382ed3f0f44e5e9624ac1101e2f8dadd204c33f1347073b36",
+    "packedFiles": 210,
+    "jsonFilesChecked": 144,
+    "pythonFilesSyntaxChecked": 14,
+    "witnessClips": 20,
+    "manifestSha256": "27bfab76b916ba972cd5ee3c5109d45d092c85d18cc8cb890118cd3dce4bf9f5"
+  }
+}
