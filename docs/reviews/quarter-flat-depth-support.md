@@ -2,7 +2,7 @@
 
 2026-10-17 UTC. **Historical research checkpoint**, originally dependent on
 [#124](https://github.com/tannerthardy/football-simulation-/pull/124).
-Code freeze `0a566d21578df1e50ad98b2dba9ec6ea67fb8d6b`. Accepted develop remains
+Code freeze `0a566d21578df1e50ad98b2dba9ec6ea67fb8d6b`. Accepted at initial collection was
 `d682b1f474cb6ba260a7b8b1119a62919c5a2159` (published queue `bf493d8`).
 At collection, parent #124 was `9f2206a3fd22aab83b19a0431346c7569ed19f7b`,
 not accepted development. It supplied the flat relationship being refined.
