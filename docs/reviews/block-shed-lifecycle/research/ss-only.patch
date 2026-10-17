@@ -1,0 +1,11 @@
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -984,7 +984,7 @@
+     // A support player who has personally declared the carrying runner must
+     // work free toward him even when the block keeps him outside close range.
+     // First-level stack/shoulder and uncertain possession retain the old gate.
+-    const supportRunner = SHED_PHYSICAL && !read.stack && read.declared && read.threat.carrying === true;
++    const supportRunner = d.slot === 'SS' && SHED_PHYSICAL && !read.stack && read.declared && read.threat.carrying === true;
+     if (dc < 3.5 || supportRunner) {
+       // Shedding toward the ball is hard if the blocker has sealed you away from it.
+       const toBall = sub(read.threat.pos, d.pos);

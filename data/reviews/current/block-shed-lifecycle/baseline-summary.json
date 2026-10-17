@@ -171,7 +171,7 @@
         ]
       }
     },
-    "qualification": "P015 incoming energies recovered by existing physical pre-snap constructor to recorded post-stage energies. Tiny residual differences remain: first rounded C facing3.60; Y contact1.45 versus recorded1.50, initial ending5.80 versus recorded5.75 approx. Do not call exact hidden-state replay. OpposingP164 matches saved recorded frames through3.50."
+    "qualification": "P015 incoming energies recovered by existing physical staging to recorded post-staging initial energy. Recorded22-player body frames match through3.50; first difference C facing3.60, later selected XY differences remain. Physical contact event times exactly match original; nominal acquire tick1.45 produces contact event1.50 (not early reconstruction). Not exact hidden-state replay. P164 matches saved recorded frames through3.50."
   },
   "P015": {
     "terminal": 9.15,

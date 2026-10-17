@@ -1,0 +1,211 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 8ad94db..8535718 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -801,24 +801,35 @@ interface RunStackRead {
+   shoulder: number;
+   nextRead: number;
+   flow: number;
+-  aim?: Vec2;
+-  runner: boolean;
+   contacted: boolean;
+   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
+   hold?: { y: number; until: number };
+ }
+ const runStacks = new WeakMap<Engagement, RunStackRead>();
++const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean }>();
+
+ function runContactRead(sim: PlaySim, e: Engagement) {
+   const d = e.defender, b = e.blocker, job = d.runFit;
+-  const carrier = sim.carrier;
++  const back = sim.slot('RB');
++  let backPicture: ReturnType<PlaySim['see']> | null = null;
++  let acquired: { target: Agent; cue: ReturnType<PlaySim['see']> } | null = null;
++  if (job?.kind !== 'interior' && job?.kind !== 'edge') {
++    // Contact support looks into the installed backfield. A new work-off
++    // decision cannot learn a give/keep from the hidden live holder identity.
++    const qbPicture = sim.see(d, sim.qb);
++    backPicture = back ? sim.see(d, back) : null;
++    if (qbPicture.carrying === true && backPicture?.carrying !== true)
++      acquired = { target: sim.qb, cue: qbPicture };
++    else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
++      acquired = { target: back, cue: backPicture };
++  }
++  const carrier = acquired?.target ?? sim.carrier;
+   const enemy = carrier && carrier.team !== d.team ? carrier : null;
+-  const carrierCue = enemy ? sim.see(d, enemy) : null;
++  const carrierCue = acquired?.cue ?? (enemy ? sim.see(d, enemy) : null);
+   // Read through the mesh instead of working toward a stationary QB. This
+   // uses only the observed depth; a QB draw/scramble can declare at the surface.
+-  const back = sim.slot('RB');
+   const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
+-    ? sim.see(d, back) : carrierCue;
++    ? backPicture ?? sim.see(d, back) : carrierCue;
+   const advanced = !!(enemy && carrierCue &&
+     (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
+   const reading = d.recog?.read === 'run' || advanced;
+@@ -842,7 +853,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
+       stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
+         shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
+           : clamp(liveGapY(sim, d, job.gap, job.side) - local.y, -sep * .65, sep * .65),
+-        nextRead: -Infinity, flow: 0, runner: false, contacted: stack?.contacted ?? false };
++        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false };
+       runStacks.set(e, stack);
+     }
+     // Reaching is not touching. Only the first transmitted hand load installs
+@@ -871,17 +882,17 @@ function runContactRead(sim: PlaySim, e: Engagement) {
+   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
+   // The selected target mode belongs to the same held decision as its aim.
+   // A newly seen declaration cannot drop flow feedforward midway through it.
+-  if (stack && stack.aim !== aim) {
+-    stack.aim = aim;
+-    stack.runner = declared && (!edge || advanced);
+-  }
++  // Support contacts hold the selected target mode too. A safety's acquired
++  // runner aim must not keep being treated as an undeclared force landmark.
++  if (runTargets.get(e)?.aim !== aim)
++    runTargets.set(e, { aim, runner: declared && (!edge || advanced) });
+   // A close observed back can threaten a penetrating lineman deep behind
+   // the surface; shedding must not wait for the free-fit declaration depth.
+   // A standing deep QB is still a mesh key, not a run target. An observed
+   // advanced carrier supplies urgency even after an original pass read.
+   const threat = reading && carrierCue &&
+     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
+-  return { aim, reading, threat, declared: stack?.runner ?? false, stack };
++  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired };
+ }
+
+ /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
+@@ -982,7 +993,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   // standing at the mesh before the handoff.
+   if (read.threat && t >= e.nextMoveAt) {
+     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
+-    if (dc < 3.5) {
++    // A support player who has personally declared the carrying runner must
++    // work free toward him even when the block keeps him outside close range.
++    // First-level stack/shoulder and uncertain possession retain the old gate.
++    const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
++      && read.declared && read.threat.carrying === true;
++    if (dc < 3.5 || supportRunner) {
+       // Shedding toward the ball is hard if the blocker has sealed you away from it.
+       const toBall = sub(read.threat.pos, d.pos);
+       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
+diff --git a/test/support-work-off.test.ts b/test/support-work-off.test.ts
+new file mode 100644
+index 0000000..122c47d
+--- /dev/null
++++ b/test/support-work-off.test.ts
+@@ -0,0 +1,113 @@
++import {describe,expect,it} from 'vitest';
++import {contactCommands,contactFixture} from '../scripts/diag/run-contact-technique.js';
++import {CENTER_Y} from '../src/core/field.js';
++import type {Perceived} from '../src/sim/perception.js';
++
++/** Controller contract island; native Y/SS transfer is tested separately. */
++function scene(kind:'force'|'insert'|'interior'='force',side=1){
++ const f=contactFixture({type:'run',runBlock:60,passBlock:60,side,seed:11});
++ f.sim.t=1.5;f.engagement.nextMoveAt=0;f.defender.recog!.read='run';
++ f.defender.runFit={gap:'D',side,kind,edge:'box',technique:'attack',pace:'stack'};
++ f.sim.ball={kind:'held',carrier:f.sim.slot('RB')!};
++ let cue:Perceived={pos:{x:kind==='force'?43:39,y:CENTER_Y+side*6},vel:{x:3,y:0},
++  facing:0,stance:null,age:.25,pose:'up',carrying:true};
++ let qbCue:Perceived={pos:{x:35,y:CENTER_Y},vel:{x:0,y:0},facing:0,stance:null,age:.25,pose:'up',carrying:false};
++ const see=f.sim.see.bind(f.sim);
++ f.sim.see=(a,b,s=1)=>a===f.defender&&b.slot==='RB'?structuredClone(cue)
++  :a===f.defender&&b===f.sim.qb?structuredClone(qbCue):see(a,b,s);
++ return {...f,setCue:(delta:Partial<Perceived>)=>{cue={...cue,...delta};},
++  setQBCue:(delta:Partial<Perceived>)=>{qbCue={...qbCue,...delta};},
++  command:()=>contactCommands(f)[f.defender.idx]};
++}
++
++describe('support players work off toward a personally declared carrier',()=>{
++ it.each([['force',-1],['force',1],['insert',-1],['insert',1]] as const)(
++  '%s support can try beyond the old proximity trigger, side %s',(kind,side)=>{
++   const f=scene(kind,side),before=structuredClone([f.blocker.body,f.defender.body]);
++   const opposing=scene(kind,side);opposing.setCue({carrying:false});
++   const oldRequest=opposing.command();
++   const request=f.command();
++   expect(f.defender.tags.has('shed-attempt')).toBe(true);
++   expect(f.engagement.nextMoveAt).toBeGreaterThan(f.sim.t);
++   expect(Math.hypot(request.vel.x,request.vel.y)).toBeGreaterThan(Math.hypot(oldRequest.vel.x,oldRequest.vel.y));
++   expect(Math.hypot(request.vel.x,request.vel.y)).toBeLessThan(f.defender.profile.vmax);
++   expect([f.blocker.body,f.defender.body]).toEqual(before);
++   expect(f.defender.engagement).toBe(f.engagement);
++   expect(f.sim.events.some(e=>e.type==='shed')).toBe(false);
++  });
++
++ it('retains the force shoulder before the existing advanced-carrier boundary',()=>{
++  const f=scene();f.setCue({pos:{x:39,y:CENTER_Y+6}});f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++  expect(f.defender.tags.has('shed-attempt')).toBe(false);
++ });
++
++ it.each([undefined,false])('does not expand work-off from uncertain/negative possession %s',carrying=>{
++  const f=scene();f.setCue({carrying});f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++  expect(f.defender.tags.has('shed-attempt')).toBe(false);
++ });
++
++ it.each(['unsure','pass'] as const)('an unadvanced picture does not erase %s belief',read=>{
++  const f=scene('insert');f.defender.recog!.read=read;f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++ });
++
++ it('keeps first-level stack work until its existing close-threat trigger',()=>{
++  const f=scene('interior');f.command();expect(f.engagement.nextMoveAt).toBe(0);
++  expect(f.defender.engagement).toBe(f.engagement);
++ });
++
++ it('holds the target mode with the selected aim until the next ordinary read',()=>{
++  const f=scene();f.setCue({pos:{x:39,y:CENTER_Y+6}});f.command();
++  f.setCue({pos:{x:43,y:CENTER_Y+6}});f.sim.t+=.01;f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++  f.sim.t+=f.defender.mind.decisionInterval+.01;f.command();
++  expect(f.engagement.nextMoveAt).toBeGreaterThan(f.sim.t);
++ });
++
++ it('does not use a hidden change in carrier position or velocity with fixed acquired evidence',()=>{
++  const a=scene(),b=scene();b.sim.slot('RB')!.body.pos={x:95,y:5};
++  b.sim.slot('RB')!.body.vel={x:-8,y:4};
++  expect(a.command()).toEqual(b.command());
++  expect(a.engagement.nextMoveAt).toBe(b.engagement.nextMoveAt);
++  expect(a.sim.rng.nextU32()).toBe(b.sim.rng.nextU32());
++ });
++
++ it('retains the acquired back target when hidden possession changes without a new picture',()=>{
++  const a=scene(),b=scene();b.sim.ball={kind:'held',carrier:b.sim.qb};
++  expect(a.command()).toEqual(b.command());
++  expect(a.engagement.nextMoveAt).toBe(b.engagement.nextMoveAt);
++  expect(a.sim.rng.nextU32()).toBe(b.sim.rng.nextU32());
++ });
++
++ it('does not expand work-off from contradictory QB and back possession pictures',()=>{
++  const f=scene();f.setQBCue({carrying:true});f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++ });
++
++ it('retains an ordinary mesh or PA picture with a carrying QB deep and empty back',()=>{
++  const f=scene();f.setCue({carrying:false});f.setQBCue({carrying:true});f.command();
++  expect(f.engagement.nextMoveAt).toBe(0);
++  expect(f.defender.tags.has('shed-attempt')).toBe(false);
++ });
++
++ it('can work off toward a personally acquired advanced QB despite opposite hidden possession',()=>{
++  const f=scene();f.setCue({carrying:false});
++  f.setQBCue({carrying:true,pos:{x:43,y:CENTER_Y+6},vel:{x:3,y:0}});f.command();
++  expect(f.engagement.nextMoveAt).toBeGreaterThan(f.sim.t);
++  expect(f.defender.tags.has('shed-attempt')).toBe(true);
++ });
++
++ it('executes attempted work-off through unchanged arm/support/work budgets',()=>{
++  const f=scene(),intents=contactCommands(f);
++  expect(f.defender.tags.has('shed-attempt')).toBe(true);
++  const report=f.sim.world.step(intents,f.sim.dt);
++  expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  for(const a of [f.blocker,f.defender]){
++   expect(report.armImpulse[a.idx]-report.armImpulseLimit[a.idx]).toBeLessThan(1e-8);
++   expect(report.armWork[a.idx]-report.armWorkLimit[a.idx]).toBeLessThan(1e-8);
++   expect(report.supportMotorWork[a.idx]-report.supportMotorWorkLimit[a.idx]).toBeLessThan(1e-8);
++  }
++ });
++});

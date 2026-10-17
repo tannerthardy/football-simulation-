@@ -1,6 +1,6 @@
 {
   "acceptedBase": "0000e560e0dbe31905151465152d412ba838803d",
-  "source": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "source": "c69d105589c14f48bcd19029c916096d19c20c23d65527ff2250a4761a8705f4",
   "node": "22.23.3",
   "flags": {
     "ANCHOR_SPLIT": "1",
@@ -60,21 +60,22 @@
   },
   "inputs": [
     "G1-P015",
-    "G1-P164"
+    "G1-P164",
+    "G1-P021"
   ],
   "initialization": "Fresh full22 PlaySim, actual rosters/calls/snap keys/prior scouting. P015 incoming pre-stage energies recovered, never spectator/private state injection. See baseline-summary for recorded precision limit.",
   "files": {
     "test/fixtures/block-lifecycle-inputs.json.gz": {
-      "sha256": "1c5f6df048cd091f7a32f133c91d935c7bc6f07c76eaf77006e8e14ce03ebc90",
-      "bytes": 33493
+      "sha256": "824e42babdcfc614e1574df752740458e0647c991a28140e1cf3b0554b19de1e",
+      "bytes": 41779
     },
     "scripts/diag/block-lifecycle/saved.ts": {
       "sha256": "4c89fbdcd01de79c90bc91b91b1e31d3988590fc5d697e2fa348afc6eae70b75",
       "bytes": 1868
     },
     "scripts/diag/block-lifecycle/collect.ts": {
-      "sha256": "43c5e41a6eb87881636fb7fc50688df612d2dd96354f0b139fe3b6edf4716919",
-      "bytes": 5788
+      "sha256": "d470f2346802e820c3ef475a6067f7165195d657caf7e1f9ac26801c4af549f2",
+      "bytes": 5980
     },
     "scripts/diag/block-lifecycle/restore-energy.ts": {
       "sha256": "a951a6fb3b80a05541020c9ad519137c975b0c4c87dbe4d68a681f34dda1dc47",
@@ -83,6 +84,42 @@
     "package-lock.json": {
       "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
       "bytes": 70134
+    },
+    "test/support-work-off.test.ts": {
+      "sha256": "7c548368f4e9afcfe0bd579e4214e45e45926a0c7d93834989cd637d476e9d66",
+      "bytes": 5768
+    },
+    "src/sim/engagement.ts": {
+      "sha256": "755292ded61c96b12935d2777838b869eb122894690c49b73e24b535c39c8ce1",
+      "bytes": 67842
     }
-  }
+  },
+  "productionExtraction": [
+    "src/sim/engagement.ts:runContactRead/stepRunRep",
+    "test/support-work-off.test.ts"
+  ],
+  "transferSelection": 15,
+  "transferSelectionRule": "First subsequent Ace under-center outside/wide zone after observation11; chose observation15 before reading its ending. Maps to G1-P021, Ace11/oz_strong/wide9/cover6.",
+  "reconstruction": "Fresh22 PlaySim with actual input/history. Corrected P015 incoming pre-stage energies; recorded body frames match through3.50, first C facing difference3.60; nominal contact acquisition tick1.45 yields real event1.50. P164 and zone compatible recorded histories; see qualified baseline summary.",
+  "research": {
+    "pre-information": {
+      "path": "docs/reviews/block-shed-lifecycle/research/pre-information.patch",
+      "source": "fdd734aca76f37fb6958a0bede02540f70657be3dec98d46da1c9c849020f15c",
+      "base": "accepted0000e56",
+      "decision": "Rejected for private-holder/ambiguous-possession information leak; final c69 replaces it."
+    },
+    "ss-only": {
+      "path": "docs/reviews/block-shed-lifecycle/research/ss-only.patch",
+      "source": "b060e1e94ea69d6aa391e2d944bd81025a5f49bcd55b216ad3611996204c933d",
+      "base": "pre-information/fdd source",
+      "decision": "Diagnostic only; no useful timely SS rescue. Parked."
+    },
+    "ss-contact-frame": {
+      "path": "docs/reviews/block-shed-lifecycle/research/ss-contact-frame.patch",
+      "source": "2891f94202effb17fc42e86de09503e0f55a5b1dd03a50c3fdf378e28e8845cd",
+      "base": "pre-information/fdd source",
+      "decision": "Diagnostic only; no useful timely SS rescue. Parked."
+    }
+  },
+  "codeCommit": "87f7447d33cb0a6c6dc1fd4b229c2a3bded52502"
 }
