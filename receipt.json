@@ -1,0 +1,68 @@
+{
+  "schema": "accepted-game-evidence-root-v1",
+  "purpose": "Immutable data-only evidence. NEVER MERGE this orphan root into development ancestry.",
+  "branch": "codex/accepted-games-70b4db6-evidence-v1",
+  "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "sourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "sourcePR": "https://github.com/tannerthardy/football-simulation-/pull/129",
+  "sourceToolPublication": "f2f4da0b84a8776eb892bfadcd378e2101f14343",
+  "games": 4,
+  "seeds": [
+    701,
+    702,
+    703,
+    704
+  ],
+  "gameLauncherSeconds": 185.122596506,
+  "filmedScrimmages": 559,
+  "positionalFrames": 27784,
+  "telemetryFrames": 27784,
+  "physicalObservations": 561,
+  "logEntries": 740,
+  "cappedFootballEndings": [
+    "G3-P003",
+    "G3-P087",
+    "G3-P141",
+    "G4-P142"
+  ],
+  "ordinaryPanel": 48,
+  "separateTailPanel": 12,
+  "unfilmedTwoPointTries": 2,
+  "artifacts": [
+    {
+      "name": "accepted-games-G1-zone-reference.tar.gz",
+      "bytes": 79620439,
+      "sha256": "32f521bb60cb9a0a4b755b1cffc25898a0c44c409d717897c8aed46644d14c8e",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G2-spread-air.tar.gz",
+      "bytes": 72716894,
+      "sha256": "53e8e9e3358c04cd369578991dd1f6d68848ab64dc65940c6843901cf3694123",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G3-power-zone.tar.gz",
+      "bytes": 75519458,
+      "sha256": "949eca941632f77ce3aa479c876630cf11ee7ea1054cc84dac6f46205bbdc0ec",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G4-west-spread.tar.gz",
+      "bytes": 81062426,
+      "sha256": "55f0276df7fc9f2bd326c2245fa9c44c6da65b50c22e08a1b3ebc02135457166",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-audit-packet.tar.gz",
+      "bytes": 448580,
+      "sha256": "7d1c7cba970752b2176ff6ca38737a56180c50f1a2b339582464bd21ff967b16",
+      "members": 26
+    }
+  ],
+  "totalArchiveBytes": 309367797,
+  "archivePublicationOnly": true,
+  "simulationsRerun": 0,
+  "retention": "Retain branch and immutable commit until explicit owner cleanup; do not merge into simulator development ancestry.",
+  "recordingLimits": "0.1-second/0.1-yard positional frames; sampled/rounded full telemetry; unknown native cap endings; no population or paired-history attribution."
+}
