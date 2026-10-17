@@ -1,0 +1,17 @@
+{
+  "protocol": "block-protection-v1",
+  "question": "Do actual run-block pairs retain useful position between their defender and the ballcarrier at the carrier's observed arrival, separately from merely retaining an engagement?",
+  "acceptedInputEvidence": "f2cedaef5443ca02bb727e8c1bf9bc9167d19e92",
+  "physics": "Accepted default inputs and the separate directional-bracing candidate; actual engine source is recorded. No profile, request, controller, joint or World intervention by this collector.",
+  "pair11": {"offenseSeed":11,"defenseSeed":12,"strength":0.55,"formation":"ace_12","personnel":"base43","front":"over","coverage":"cover3","zoneStyle":"match","edge":"box","linebacker":"stack","playSeed":77,"los":40,"ballY":26.67,"firstDownX":50,"down":1,"audibles":false,"hurry":false},
+  "cases": [
+    {"id":"wz-strong-over3","kind":"pair11","direction":"strong","until":20},
+    {"id":"wz-weak-over3","kind":"pair11","direction":"weak","until":20},
+    {"id":"useful-climb-opponent","kind":"fixture","fixture":"test/fixtures/planned-climb-fit.json.gz","fixtureSha256":"59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f","until":3.5}
+  ],
+  "limits": {"caseWallSeconds":5,"totalWallSeconds":20},
+  "loadThreshold": 0.000001,
+  "arrival": "First sampled live crossing of the LOS, and separately of each pair's moving longitudinal midpoint, by an offensive ballcarrier other than the QB. Crossings are bracketed at controller ticks; no substep arrival time is inferred.",
+  "interposition": "Signed nominal blocker-radius minus perpendicular distance to the defender-to-actual-carrier segment, only when the blocker projects strictly inside that segment. This circular-profile proxy does not reconstruct squeeze-dependent collision support. Positive means geometric interception of that direct centerline, not certified approach protection or causal prevention of a tackle.",
+  "scope": "Observed executed paths only; no hypothetical alternate lanes, block-win threshold, NFL rate or causal counterfactual. Proximity/reach are explicitly separate from nonzero hand load, torso impulse and acquired tackle grip. A live prefix and a wall/error censor are retained explicitly."
+}
