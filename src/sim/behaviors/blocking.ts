@@ -1079,6 +1079,7 @@ export class RunBlocker implements Behavior {
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
+    const combinationFit = this.combinationFit(a, sim, target);
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
@@ -1109,7 +1110,7 @@ export class RunBlocker implements Behavior {
     // again, using the same bounded recovery as other first-level blocks.
     const fit = fitCandidate && (plan.kind !== 'drive' || lost);
     if (!lost && dd < contact) {
-      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? undefined);
+      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
       if (e) {
         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
         return stand();
@@ -1142,6 +1143,8 @@ export class RunBlocker implements Behavior {
     } else if (zone) {
       const side = zone.phase === 'runoff' ? -zone.side : zone.side;
       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
+    } else if (combinationFit) {
+      aim = { x: seen.pos.x + combinationFit.offset.x, y: seen.pos.y + combinationFit.offset.y };
     } else if (plan.kind === 'combo' && plan.combination) {
       const partner = plan.combination.members.find((b) => b !== a)!;
       const side = Math.sign(a.pos.y - partner.pos.y) || 1;
@@ -1193,6 +1196,27 @@ export class RunBlocker implements Behavior {
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
       !!zone || !!contactFit, zone ? 2.4 : 0) : original;
+  }
+
+  /** Neighboring zone halves share a depth normal, not the diagonal drive
+   * direction. The first member's own installed half is the desired angle.
+   * Pass this only at acquisition: existing hands retain their actual frame. */
+  private combinationFit(a: Agent, sim: PlaySim, target: Agent):
+    { offset: Vec2; surface: RunContactSurface } | null {
+    const combo = this.plan.combination, scheme = sim.offCall.run?.scheme;
+    if (!combo || combo.released || combo.defender !== target || !combo.members.includes(a)
+      || (scheme !== 'outsideZone' && scheme !== 'wideZone')) return null;
+    const partner = combo.members.find(member => member !== a)!;
+    const ownY = sim.offAlign.spots[a.slot]?.pos.y, partnerY = sim.offAlign.spots[partner.slot]?.pos.y;
+    if (ownY === undefined || partnerY === undefined || ownY === partnerY) return null;
+    const half = Math.sign(ownY - partnerY), direction = sim.attackDir(a.team);
+    // Bisect the two authored half-man landmarks (-.35, +/-.55). Their
+    // shared normal admits both halves; the angle keeps each member's job.
+    const axis = norm({ x: -.35 * direction, y: 0 });
+    const offset = { x: -.35 * direction, y: half * .55 }, lat = { x: -axis.y, y: axis.x };
+    const sealTarget = Math.atan2(-(offset.x * lat.x + offset.y * lat.y),
+      offset.x * axis.x + offset.y * axis.y) / (Math.PI / 2);
+    return { offset, surface: { axis, sealTarget } };
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {

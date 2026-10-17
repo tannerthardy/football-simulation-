@@ -101,7 +101,10 @@ export class CoverageDefender implements Behavior {
     // while the new man is a different receiver. Recheck belief and picture
     // each tick; recognized flight retains the ordinary ball priority.
     if (this.sub instanceof ManCoverage && believesRun(sim, a)
-      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
+      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley'
+        // The acquired Quarters flat match retains this same body's force
+        // duty (and any installed inside option); it does not create a fitter.
+        || (a.runFit?.kind === 'force' && this.rule === 'q_apex' && this.state.mode === 'flat'))
       && (sim.ball.kind !== 'air' || !sawThrow(a, sim, this.sub.target))) {
       for (const back of sim.offense) {
         if (!sim.offAlign.spots[back.slot]?.backfield
