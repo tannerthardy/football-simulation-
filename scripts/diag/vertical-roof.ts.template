@@ -19,7 +19,7 @@ for(const id of ids){
  if(mode==='construct'||r.status!=='constructor-match'){
   const {sim,setup,native,ob,meta,...row}=r;console.log(JSON.stringify(row));summaries.push(row);continue;
  }
- const {sim,native}=r,horizon=horizons[id]??6,ticks:any[]=[],reads:any[]=[];
+ const {sim,native}=r,horizon=prep.arm==='plant-aware'&&['G1-P185','G4-P156'].includes(id)?12:horizons[id]??6,ticks:any[]=[],reads:any[]=[];
  let row:any,context:any=null;
  const oldMan=ManCoverage.prototype.trackReceiver,oldZone=ZoneCoverage.prototype.update,oldRead=RouteObservation.prototype.read;
  ManCoverage.prototype.trackReceiver=function(a:any,s:any){

@@ -53,7 +53,7 @@ def prepare(arm):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--prepare', action='store_true')
-    p.add_argument('--arm', choices=['base', 'recovery-v1', 'final', 'candidate'], default='base')
+    p.add_argument('--arm', choices=['base', 'recovery-v1', 'final', 'candidate', 'plant-aware'], default='base')
     p.add_argument('--check', action='store_true')
     p.add_argument('--ids', nargs='+', required=True)
     args = p.parse_args()

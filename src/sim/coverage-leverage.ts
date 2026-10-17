@@ -20,7 +20,8 @@ export class DeepCoverage {
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
       this.acceleration = previous && dt > 0 && dt <= .3
-        ? clamp((cue.vel.x - previous.vx) / dt, 0, Math.max(0, (receiver.vmax - cue.vel.x) / receiver.tau)) : 0;
+        ? clamp((cue.vel.x - previous.vx) / dt, -receiver.brake,
+          Math.max(0, (receiver.vmax - cue.vel.x) / receiver.tau)) : 0;
       this.previous = { stamp, vx: cue.vel.x };
     }
     const s = a.body.support;
@@ -28,16 +29,19 @@ export class DeepCoverage {
       || (s && (s.state !== 'up' || s.foot || s.strike || Math.hypot(s.lean.x, s.lean.y) > 1e-6
         || Math.hypot(s.load.x, s.load.y) > 1e-6))) return original;
 
-    // A measured burst is a short expectation, not perpetual acceleration.
-    // Correct only the portion of the existing constant-velocity prediction
-    // supported by that quarter-second burst. A new plant immediately replaces it.
-    const age = clamp(cue.age ?? 0, 0, .4), burst = .25;
+    // A measured burst/plant is a short expectation, not a route commitment.
+    // RouteObservation already corrects stale braking; do not apply that age
+    // correction twice. Continue it briefly from the consumed picture, stopping
+    // at zero rather than inventing a reverse route. Positive burst prediction
+    // also supplies the missing correction to constant-velocity dead reckoning.
+    const age = this.acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);
+    const burst = this.acceleration < 0 ? Math.min(.25, seen.vel.x / -this.acceleration) : .25;
     const extra = (t: number) => {
       const h = Math.min(t, burst);
       return this.acceleration * (h * h * .5 + h * Math.max(0, t - burst));
     };
     const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);
-    const targetV = Math.min(receiver.vmax, seen.vel.x + this.acceleration * burst);
+    const targetV = clamp(seen.vel.x + this.acceleration * burst, 0, receiver.vmax);
     const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));
     const heading = Math.atan2(seen.vel.y, Math.max(.1, targetV));
     const tau = a.profile.tau / fatigueFactor(a.body.energy);

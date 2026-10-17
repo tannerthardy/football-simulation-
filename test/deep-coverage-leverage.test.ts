@@ -9,6 +9,10 @@ import { ManCoverage } from '../src/sim/behaviors/defense.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { readFileSync } from 'node:fs';
+import type { Agent } from '../src/sim/agent.js';
+import { DeepCoverage } from '../src/sim/coverage-leverage.js';
+import { track } from '../src/sim/behaviors/common.js';
 
 const offense = generateTeam(new Rng(31), 'Deep offense', 'DPO', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Deep defense', 'DPD', { strength: .55 });
@@ -39,6 +43,23 @@ function supplied(f: ReturnType<typeof stage>) {
 }
 
 describe('installed deep coverage uses acquired motion and achievable movement', () => {
+  it('starts real braking from the saved acquired P185 plant before the receiver fully stops', () => {
+    const fixture = JSON.parse(readFileSync(new URL('./fixtures/deep-coverage-plant.json', import.meta.url), 'utf8'));
+    const controller = new DeepCoverage();
+    let selected, body;
+    for (const snap of fixture.snapshots) {
+      body = structuredClone(snap.body);
+      const a = { body, profile: body.profile, pos: body.pos, vel: body.vel,
+        engagement: null, isDown: () => false } as unknown as Agent;
+      const original = track(a, snap.goal, snap.targetVelocity, fixture.tracking);
+      selected = controller.choose(a, snap.seen, snap.cue, fixture.receiverProfile,
+        .8 + .15 * snap.seen.vel.x, original, snap.t, 'center');
+    }
+    expect(selected!.vel.x).toBeLessThan(body.vel.x);
+    const before = body.vel.x, world = new World([body]);
+    world.step([selected!], .05);
+    expect(body.vel.x).toBeLessThan(before);
+  });
   it('holds a waiting receiver without spending the roof or acquiring hidden release', () => {
     const f = stage(), cue = supplied(f);
     f.sim.t = .4;
