@@ -1,0 +1,836 @@
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index 67af325..3d66e3a 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -19,6 +19,7 @@ import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.j
+ import type { PlaySim } from './playsim.js';
+ import { buildRunFits } from './run-fits.js';
+ import { CoverageDefender } from './coverage/defender.js';
++import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
+ 
+ const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
+ 
+@@ -69,6 +70,7 @@ export function assignBehaviors(sim: PlaySim): void {
+   if (call.kind === 'pass' && call.pass) {
+     const concept = call.pass;
+     const coord = new ProtectionCoordinator();
++    const receiverPriors = new Map<Agent, InstalledReceiverRoute>();
+     for (const a of sim.offense) if (isOL(a)) {
+       coord.add(a);
+       a.behavior = new PassProtector(coord);
+@@ -78,7 +80,16 @@ export function assignBehaviors(sim: PlaySim): void {
+       const ref = off.refOf[a.slot as keyof typeof off.refOf];
+       const spot = off.spots[a.slot];
+       const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+-      const mkRoute = (id: string, delay = 0) => () => new RouteRunner(a, sim, getRoute(id), outside, delay);
++      const mkRoute = (id: string, delay = 0, conditional = false) => {
++        const route = getRoute(id);
++        // Capture the installed call/alignment now, including deferred checkdowns.
++        // Neither live route progress nor the eventual protector release position
++        // becomes the QB's prior. Play-action activation is also conditional.
++        receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route,
++          conditional || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
++          a.profile, a.r('routeRunning')));
++        return () => new RouteRunner(a, sim, route, outside, delay);
++      };
+       if (ref === 'B' || ref === 'B2' || !ref) {
+         const assign = ref === 'B' ? concept.back : 'check';
+         if (assign === 'block') {
+@@ -86,9 +97,9 @@ export function assignBehaviors(sim: PlaySim): void {
+           a.behavior = new PassProtector(coord);
+         } else if (assign === 'check') {
+           coord.add(a);
+-          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown'), 1.0 + sim.rng.range(0, 0.3));
++          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.rng.range(0, 0.3));
+         } else {
+-          a.behavior = new RouteRunner(a, sim, getRoute(assign), outside, 0.1);
++          a.behavior = mkRoute(assign, 0.1)();
+         }
+         continue;
+       }
+@@ -100,7 +111,7 @@ export function assignBehaviors(sim: PlaySim): void {
+       const side = ref[0] === 'S' ? concept.strong : concept.weak;
+       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
+       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
+-      a.behavior = new RouteRunner(a, sim, getRoute(routeId), outside, spot?.inline ? 0.15 : 0);
++      a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
+     }
+     // Play action: the back sells the run through the mesh first.
+     const back = sim.slot('RB');
+@@ -108,7 +119,7 @@ export function assignBehaviors(sim: PlaySim): void {
+       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
+       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
+     }
+-    const qbb = new QBPass(qb, sim, concept);
++    const qbb = new QBPass(qb, sim, concept, receiverPriors);
+     qb.behavior = qbb;
+     qbb.init(sim);
+     return;
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 2a3e000..ac3894e 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -28,6 +28,7 @@ import { angleTo, goTo, stand } from './common.js';
+ import { RouteRunner } from './receiver.js';
+ import type { QBMind } from '../qbmind.js';
+ import type { ReplayTelemetryFrame } from '../types.js';
++import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+ 
+ const RELEASE_Z = 2.2;
+ const CATCH_Z = 1.3;
+@@ -82,6 +83,7 @@ export class QBPass implements Behavior {
+   /** Look-off: eyes on a decoy to move the safety before the first read. */
+   private lookOff: { until: number; decoy: Agent } | null = null;
+   private lookOffChecked = false;
++  private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
+ 
+   /** Existing private state only; never evaluates a fresh throw window. */
+   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
+@@ -95,6 +97,7 @@ export class QBPass implements Behavior {
+     a: Agent,
+     private readonly sim: PlaySim,
+     private readonly concept: PassConcept,
++    receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
+   ) {
+     const gun = sim.offCall.formation.qb !== 'under';
+     this.snapAt = gun ? 0.3 : 0.1;
+@@ -104,6 +107,7 @@ export class QBPass implements Behavior {
+     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
+     if (concept.family === 'playaction') this.fakeUntil = 0.7;
+     this.mind = sim.qbMind;
++    for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
+   }
+ 
+   /** Called after all behaviors are assigned (receivers exist). */
+@@ -182,7 +186,12 @@ export class QBPass implements Behavior {
+     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
+ 
+     // Eyes: what he looks at is what he sees; everything else is memory and belief.
+-    this.mind.observe(this.gazePoint(sim));
++    const gaze = this.gazePoint(sim);
++    this.mind.observe(gaze);
++    for (const [r, forecast] of this.receiverForecasts) {
++      const picture = this.mind.receiverLook(r, gaze);
++      if (picture) forecast.acquire(picture);
++    }
+     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
+ 
+     if (this.phase === 'snap') {
+@@ -311,12 +320,16 @@ export class QBPass implements Behavior {
+   }
+ 
+   private gazePoint(sim: PlaySim): Vec2 {
+-    if (this.lookOff && sim.t < this.lookOff.until) return this.lookOff.decoy.pos;
++    const heldPoint = (r: Agent): Vec2 => {
++      const forecast = this.receiverForecasts.get(r);
++      return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
++    };
++    if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
+     if (this.phase === 'windup' && this.pending) return this.pending.point;
+     const read = this.reads[this.readIdx];
+     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
+     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
+-    return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
++    return read ? heldPoint(read) : { x: sim.los + 10, y: sim.ballY };
+   }
+ 
+   private ready(r: Agent, sim: PlaySim): boolean {
+@@ -361,17 +374,19 @@ export class QBPass implements Behavior {
+ 
+   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
+     if (r.isDown(sim.t) || r.engagement) return null;
+-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
+     const wind = this.windup(a);
+     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
+-    const predict = (dt: number): Vec2 => (rr ? rr.predict(r, dt) : { x: r.pos.x + r.vel.x * dt, y: r.pos.y + r.vel.y * dt });
++    const forecast = this.receiverForecasts.get(r);
++    const current = forecast?.predict(sim.t, 0);
++    if (!forecast || !current) return null;
++    const predict = (dt: number): Vec2 => forecast.predict(sim.t, dt)!;
+     // Natural throw: the flight time real QBs use at this distance (2023
+     // tracking: ~0.6 s under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35,
+     // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
+     // a little sooner.
+     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
+     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
+-    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
++    let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
+     let T = Math.max(0.3, natural(range));
+     let Tmin = T;
+     let pt = predict(wind + T);
+@@ -487,10 +502,9 @@ export class QBPass implements Behavior {
+     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
+     // Re-aim at release with the latest prediction.
+     const r = ev.target;
+-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
+     let point = ev.point;
+-    if (rr) {
+-      const p = rr.predict(r, ev.T);
++    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
++    if (p) {
+       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
+     }
+     const dist = Math.hypot(point.x - from.x, point.y - from.y);
+diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
+index 89f1fbb..e760322 100644
+--- a/src/sim/behaviors/receiver.ts
++++ b/src/sim/behaviors/receiver.ts
+@@ -5,7 +5,7 @@
+  */
+ import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
+ import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
+-import { arriveVelocity, fatigueFactor, stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
++import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../../physics/kinematics.js';
+ import { timeToReach } from '../../physics/reach.js';
+ import { availability, supportParams } from '../../physics/support.js';
+ import type { HandJoint } from '../../physics/world.js';
+@@ -14,10 +14,7 @@ import type { Agent, Behavior } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { angleTo, goTo, runThrough, stand } from './common.js';
+ 
+-interface PathPoint {
+-  p: Vec2;
+-  s: number;
+-}
++import { routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
+ 
+ /** A palm contact, not an outcome of a once-per-snap skill contest. The
+  * torso is still a compact body: the small hand slide below is the part of
+@@ -58,8 +55,7 @@ export class RouteRunner implements Behavior {
+     private readonly startDelay = 0,
+   ) {
+     this.start = { ...a.pos };
+-    const base: Record<string, number> = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
+-    this.effort = clamp((base[route.family] ?? 0.85) + 0.04 * (a.r('routeRunning') - 0.5), 0.7, 0.98);
++    this.effort = routeEffort(route.family, a.r('routeRunning'));
+     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
+     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
+     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
+@@ -77,35 +73,7 @@ export class RouteRunner implements Behavior {
+   }
+ 
+   private buildPath(start: Vec2, pts: RoutePoint[], extend: boolean): PathPoint[] {
+-    const sim = this.sim;
+-    // Nothing runs out the back of the end zone.
+-    const endX = OPP_GOAL_X + 8.5;
+-    const out: PathPoint[] = pts.map((rp) => ({
+-      p: { x: Math.min(endX, sim.los + rp.d), y: clamp(start.y + rp.l * this.outside, 1.2, FIELD_WIDTH - 1.2) },
+-      s: rp.s ?? 1,
+-    }));
+-    if (extend && out.length >= 1) {
+-      const last = out[out.length - 1].p;
+-      const prev = out.length >= 2 ? out[out.length - 2].p : start;
+-      const d = norm(sub(last, prev));
+-      // Receivers working toward the sideline turn upfield a few yards inside
+-      // it, leaving room to round the corner at speed and stay inbounds.
+-      const lo = 5;
+-      const hi = FIELD_WIDTH - 5;
+-      // Extend along the final leg; if that runs into the sideline, turn upfield there.
+-      let k = 40;
+-      if (d.y < -1e-6) k = Math.min(k, (last.y - lo) / -d.y);
+-      if (d.y > 1e-6) k = Math.min(k, (hi - last.y) / d.y);
+-      const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
+-      if (k < 39) {
+-        // Flat routes turn up a few yards and then work back to the QB; other
+-        // routes turn upfield and keep running.
+-        const up = this.route.family === 'flat' ? 5 : 40;
+-        out.push({ p: edge, s: 0.75 });
+-        out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: this.route.family === 'flat' ? 0.6 : 1 });
+-      } else out.push({ p: edge, s: 1 });
+-    }
+-    return out;
++    return routePath(start, this.sim.los, this.outside, pts, extend, this.route.family);
+   }
+ 
+   update(a: Agent, sim: PlaySim): MoveCommand {
+@@ -153,32 +121,9 @@ export class RouteRunner implements Behavior {
+     return cmd;
+   }
+ 
+-  /** Waypoint following for a body (the real receiver or a ghost used for prediction). */
++  /** The same waypoint controller is used by the explicitly seeded QB forecast. */
+   private steer(body: Body, st: { idx: number }, rr: number, cutSkill: number): MoveCommand | null {
+-    for (let guard = 0; guard < 6; guard++) {
+-      if (st.idx >= this.path.length) return null;
+-      const tgt = this.path[st.idx];
+-      const next = this.path[st.idx + 1];
+-      const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
+-      if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) {
+-        st.idx++;
+-        continue;
+-      }
+-      const isLast = st.idx === this.path.length - 1;
+-      const vtop = body.profile.vmax * this.effort;
+-      let through = isLast && this.route.end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
+-      if (next) {
+-        // Physically sensible speed for the upcoming turn.
+-        const ax = tgt.p.x - body.pos.x;
+-        const ay = tgt.p.y - body.pos.y;
+-        const bx = next.p.x - tgt.p.x;
+-        const by = next.p.y - tgt.p.y;
+-        const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
+-        through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
+-      }
+-      return { vel: arriveVelocity(body, tgt.p, vtop, through), cutSkill };
+-    }
+-    return null;
++    return steerRoute(body, st, this.path, this.route.end, this.effort, rr, cutSkill);
+   }
+ 
+   private drill: { at: number; spot: Vec2 } | null = null;
+@@ -334,53 +279,6 @@ export class RouteRunner implements Behavior {
+       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
+   }
+ 
+-  private ghost: { t: number; pts: Vec2[] } | null = null;
+-
+-  /**
+-   * Where the receiver will be `tAhead` seconds from now if he stays on his
+-   * route: a ghost copy of his body runs the route through the same physics.
+-   */
+-  predict(a: Agent, tAhead: number): Vec2 {
+-    const sim = this.sim;
+-    if (!this.ghost || this.ghost.t !== sim.t) {
+-      const body: Body = { pos: { ...a.pos }, vel: { ...a.vel }, facing: a.body.facing, energy: a.body.energy, profile: a.profile, sprintLoad: a.body.sprintLoad };
+-      const st = { idx: this.idx };
+-      const rr = a.r('routeRunning');
+-      const cutSkill = 0.8 + 0.4 * rr;
+-      const pts: Vec2[] = [{ ...body.pos }];
+-      const settledSpot = this.path[this.path.length - 1]?.p ?? a.pos;
+-      let done = this.settled;
+-      const delay = Math.max(0, this.startDelay - sim.t);
+-      for (let i = 0; i < 70; i++) {
+-        const tt = i * sim.dt;
+-        let cmd: MoveCommand | null;
+-        if (tt < delay) cmd = { vel: { x: 0, y: 0 } };
+-        else if (done) cmd = this.route.end === 'continue' ? { vel: body.vel } : { vel: arriveVelocity(body, settledSpot, body.profile.vmax * 0.6, 0) };
+-        else {
+-          cmd = this.steer(body, st, rr, cutSkill);
+-          if (!cmd) {
+-            done = true;
+-            cmd = this.route.end === 'continue' ? { vel: body.vel } : { vel: { x: 0, y: 0 } };
+-          }
+-        }
+-        stepBody(body, cmd, sim.dt);
+-        pts.push({ ...body.pos });
+-      }
+-      this.ghost = { t: sim.t, pts };
+-    }
+-    const pts = this.ghost.pts;
+-    const f = Math.max(0, tAhead) / sim.dt;
+-    const i = Math.min(pts.length - 2, Math.floor(f));
+-    const w = Math.min(1, f - i);
+-    return { x: pts[i].x + (pts[i + 1].x - pts[i].x) * w, y: pts[i].y + (pts[i + 1].y - pts[i].y) * w };
+-  }
+-}
+-
+-function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
+-  // Past the waypoint along the segment toward the next one.
+-  const sx = next.x - wp.x;
+-  const sy = next.y - wp.y;
+-  return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
+ }
+ 
+ /** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */
+diff --git a/src/sim/qbmind.ts b/src/sim/qbmind.ts
+index c278a7e..3d6de99 100644
+--- a/src/sim/qbmind.ts
++++ b/src/sim/qbmind.ts
+@@ -31,6 +31,7 @@
+  * are as noisy as the rest of his picture.
+  */
+ import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
++import type { ReceiverPicture } from './receiver-forecast.js';
+ import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
+ import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
+ import { PRESSURE_BY_ID } from '../playbook/defense.js';
+@@ -408,6 +409,24 @@ export class QBMind {
+     }
+   }
+ 
++  /** Separate receiver acquisition; ordinary teammate see() is not a QB look.
++   * Reuses the existing visual sectors/latency without touching defender gates.
++   * No near-pocket automatic acquisition: that exception is defender feel. */
++  receiverLook(target: Agent, gaze: Vec2): ReceiverPicture | null {
++    const sim = this.sim, qb = this.qb;
++    const delay = (scale: number) => qb.mind.observationDelay(qb.profile.reactionTime * scale);
++    const clear = sim.perception.perceive(target.idx, delay(1));
++    const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
++    const ang = Math.abs(angleDiff(Math.atan2(clear.pos.y - qb.pos.y, clear.pos.x - qb.pos.x), dir));
++    const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
++      : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
++    if (!seen) return null;
++    sim.trace.observe(qb, target, seen, sim.t);
++    const age = seen.age ?? 0;
++    return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
++      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
++  }
++
+   /** Where the QB thinks a defender is (and how he's moving). */
+   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
+     const sim = this.sim;
+diff --git a/src/sim/receiver-forecast.ts b/src/sim/receiver-forecast.ts
+new file mode 100644
+index 0000000..ccb51ed
+--- /dev/null
++++ b/src/sim/receiver-forecast.ts
+@@ -0,0 +1,136 @@
++/** QB-local receiver estimate. Installed expectation is not measured progress. */
++import { clamp, type Vec2 } from '../core/vec.js';
++import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
++import type { PhysicalProfile } from '../players/physical.js';
++import type { RouteDef, RouteEnd } from '../playbook/types.js';
++import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
++
++export interface InstalledReceiverRoute {
++  readonly start: Readonly<Vec2>;
++  readonly path: readonly PathPoint[];
++  readonly end: RouteEnd;
++  /** Null: protection/fake must release first; activation is not known. */
++  readonly startDelay: number | null;
++  readonly profile: Readonly<PhysicalProfile>;
++  readonly routeRunning: number;
++  readonly effort: number;
++}
++
++/** Called at installation from the call and snap alignment, never RouteRunner. */
++export function installReceiverRoute(start: Vec2, los: number, outside: number, route: RouteDef,
++  startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
++  const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
++  return Object.freeze({ start: Object.freeze({ ...start }),
++    path: Object.freeze(path.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s }))),
++    end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
++    effort: routeEffort(route.family, routeRunning) });
++}
++
++export interface ReceiverPicture {
++  /** Raw sampled position, not the buffer's dead-reckoned position. */
++  readonly pos: Readonly<Vec2>;
++  readonly vel: Readonly<Vec2>;
++  readonly facing: number;
++  readonly sampledAt: number;
++  readonly acquiredAt: number;
++}
++
++export interface ReceiverEstimate {
++  readonly source: 'installed' | 'acquired';
++  readonly sampledAt: number;
++  readonly acquiredAt: number | null;
++  /** Inferred target waypoint; null means progress cannot be identified. */
++  readonly progress: number | null;
++  readonly motion: 'installed-route' | 'observed-motion';
++}
++
++/** Each instance belongs to one observer/receiver pair. No shared tick cache. */
++export class ReceiverForecast {
++  private picture: ReceiverPicture | null = null;
++  private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate } | null = null;
++
++  constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
++
++  acquire(p: ReceiverPicture): void {
++    if (this.picture && p.sampledAt < this.picture.sampledAt) return;
++    this.picture = Object.freeze({ ...p, pos: Object.freeze({ ...p.pos }), vel: Object.freeze({ ...p.vel }) });
++  }
++
++  get estimate(): ReceiverEstimate | null { return this.build()?.estimate ?? null; }
++
++  /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
++  predict(now: number, ahead: number): Vec2 | null {
++    const c = this.build();
++    if (!c) return null;
++    const f = Math.max(0, now + Math.max(0, ahead) - c.estimate.sampledAt) / this.dt;
++    this.extend(c, Math.ceil(f));
++    const i = Math.min(c.pts.length - 2, Math.floor(f)), w = Math.min(1, f - i);
++    return { x: c.pts[i].x + (c.pts[i + 1].x - c.pts[i].x) * w,
++      y: c.pts[i].y + (c.pts[i + 1].y - c.pts[i].y) * w };
++  }
++
++  private build(): NonNullable<ReceiverForecast['cache']> | null {
++    if (this.cache?.observer === this.observer && this.cache.picture === this.picture) return this.cache;
++    const p = this.picture, prior = this.prior;
++    if (!p && prior.startDelay === null) return null; // Unknown release is not stationary motion.
++    const progress = p ? inferProgress(p, prior) : null;
++    const estimate: ReceiverEstimate = Object.freeze({ source: p ? 'acquired' : 'installed',
++      sampledAt: p?.sampledAt ?? 0, acquiredAt: p?.acquiredAt ?? null, progress,
++      motion: !p || progress !== null ? 'installed-route' : 'observed-motion' });
++    this.cache = { observer: this.observer, picture: p, pts: [], estimate };
++    return this.cache;
++  }
++
++  private extend(c: NonNullable<ReceiverForecast['cache']>, steps: number): void {
++    if (c.pts.length > steps) return;
++    const p = c.picture, prior = this.prior;
++    // Nominal fresh capacity is a model prior, not unseen current fatigue/support.
++    const body: Body = { pos: { ...(p?.pos ?? prior.start) }, vel: { ...(p?.vel ?? { x: 0, y: 0 }) },
++      facing: p?.facing ?? 0, energy: 1, sprintLoad: 0, profile: prior.profile };
++    const st = { idx: c.estimate.progress ?? 0 };
++    const cutSkill = 0.8 + 0.4 * prior.routeRunning;
++    const pts: Vec2[] = [{ ...body.pos }];
++    let done = false;
++    // Rebuild only when a longer horizon is requested, preserving exact prefixes.
++    for (let i = 0; i < Math.max(70, steps + 1); i++) {
++      let cmd: MoveCommand | null;
++      if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
++      else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
++        && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
++      else if (done) cmd = prior.end === 'continue' ? { vel: body.vel }
++        : { vel: arriveVelocity(body, prior.path[prior.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
++      else {
++        cmd = steerRoute(body, st, prior.path, prior.end, prior.effort, prior.routeRunning, cutSkill);
++        if (!cmd) { done = true; cmd = { vel: prior.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
++      }
++      stepBody(body, cmd, this.dt);
++      pts.push({ ...body.pos });
++    }
++    c.pts = pts;
++  }
++}
++
++/** Geometric inference from the sampled picture; never the runner's private idx.
++ * Ambiguous/contradicted progress falls back to the measured motion. The body
++ * radius supplies a route-centre tolerance, not a collision-clearance promise. */
++function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute): number | null {
++  // Seeing a back at his installed starting spot does not reveal a private
++  // protection/fake release. A departure can later supply progress evidence.
++  if (prior.startDelay === null && Math.hypot(p.pos.x - prior.start.x, p.pos.y - prior.start.y) <= prior.profile.radius) return null;
++  let prev = prior.start;
++  const candidates: { idx: number; error: number }[] = [];
++  for (let idx = 0; idx < prior.path.length; idx++) {
++    const next = prior.path[idx].p;
++    const dx = next.x - prev.x, dy = next.y - prev.y, len2 = dx * dx + dy * dy;
++    const u = len2 ? clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1) : 0;
++    const error = Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy);
++    // Motion perpendicular/opposed to this segment is evidence of a different action.
++    if (error <= prior.profile.radius && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
++      candidates.push({ idx, error });
++    }
++    prev = next;
++  }
++  candidates.sort((a, b) => a.error - b.error);
++  if (!candidates.length || (candidates.length > 1 && Math.abs(candidates[0].error - candidates[1].error) < 1e-6)) return null;
++  return candidates[0].idx;
++}
+diff --git a/src/sim/route-motion.ts b/src/sim/route-motion.ts
+new file mode 100644
+index 0000000..4683cc8
+--- /dev/null
++++ b/src/sim/route-motion.ts
+@@ -0,0 +1,62 @@
++/** Shared route geometry/control. No agent, perception or live route state. */
++import { FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
++import { clamp, norm, sub, type Vec2 } from '../core/vec.js';
++import { arriveVelocity, type Body, type MoveCommand } from '../physics/kinematics.js';
++import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
++
++export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number }
++
++export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
++  extend: boolean, family: RouteDef['family']): PathPoint[] {
++  const endX = OPP_GOAL_X + 8.5;
++  const out: PathPoint[] = pts.map(rp => ({
++    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1,
++  }));
++  if (extend && out.length >= 1) {
++    const last = out[out.length - 1].p;
++    const prev = out.length >= 2 ? out[out.length - 2].p : start;
++    const d = norm(sub(last, prev));
++    const lo = 5, hi = FIELD_WIDTH - 5;
++    let k = 40;
++    if (d.y < -1e-6) k = Math.min(k, (last.y - lo) / -d.y);
++    if (d.y > 1e-6) k = Math.min(k, (hi - last.y) / d.y);
++    const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
++    if (k < 39) {
++      const up = family === 'flat' ? 5 : 40;
++      out.push({ p: edge, s: 0.75 });
++      out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: family === 'flat' ? 0.6 : 1 });
++    } else out.push({ p: edge, s: 1 });
++  }
++  return out;
++}
++
++export function routeEffort(family: RouteDef['family'], rr: number): number {
++  const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
++  return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
++}
++
++export function steerRoute(body: Body, st: { idx: number }, path: readonly PathPoint[], end: RouteEnd,
++  effort: number, rr: number, cutSkill: number): MoveCommand | null {
++  for (let guard = 0; guard < 6; guard++) {
++    if (st.idx >= path.length) return null;
++    const tgt = path[st.idx], next = path[st.idx + 1];
++    const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
++    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; continue; }
++    const isLast = st.idx === path.length - 1;
++    const vtop = body.profile.vmax * effort;
++    let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
++    if (next) {
++      const ax = tgt.p.x - body.pos.x, ay = tgt.p.y - body.pos.y;
++      const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y;
++      const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
++      through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
++    }
++    return { vel: arriveVelocity(body, tgt.p, vtop, through), cutSkill };
++  }
++  return null;
++}
++
++function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
++  const sx = next.x - wp.x, sy = next.y - wp.y;
++  return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
++}
+diff --git a/test/qb-receiver-consumer.test.ts b/test/qb-receiver-consumer.test.ts
+new file mode 100644
+index 0000000..b72047a
+--- /dev/null
++++ b/test/qb-receiver-consumer.test.ts
+@@ -0,0 +1,77 @@
++import { describe, expect, it, vi } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { QBPass } from '../src/sim/behaviors/qb.js';
++import { RouteRunner } from '../src/sim/behaviors/receiver.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++// These two consumer regressions also run, unchanged, on accepted develop.
++const home = generateTeam(new Rng(91), 'Forecast offense', 'FOF');
++const away = generateTeam(new Rng(92), 'Forecast defense', 'FDF');
++function fixture() {
++  const sim = new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 45,
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.slant_flat, label: 'slant' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
++      pressure: null, zoneStyle: 'match', label: 'Over Cover 3' },
++    los: 40, ballY: 26, firstDownX: 50, audibles: false });
++  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
++  sim.t = .2;
++  const qb = sim.qb.behavior as QBPass;
++  qb.update(sim.qb, sim); // Ordinary quick-game look acquires the delayed receiver picture.
++  const r = sim.agents[qb.recordedState().read!];
++  expect(r.behavior).toBeInstanceOf(RouteRunner);
++  // Private entry points isolate forecast consumers from unrelated live eligibility,
++  // protection and progression gates. Those gates are not claimed invariant.
++  const consumer = qb as unknown as {
++    evaluate: (a: typeof sim.qb, s: PlaySim, r: typeof sim.qb, urgency: number) => {
++      target: typeof sim.qb; point: { x: number; y: number; z: number }; T: number; P: number; value: number;
++    };
++    release: (a: typeof sim.qb, s: PlaySim, ev: ReturnType<typeof consumer.evaluate>) => void;
++  };
++  return { sim, qb, r, consumer };
++}
++
++function unseenChange(f: ReturnType<typeof fixture>) {
++  const r = f.r, rr = r.behavior as RouteRunner;
++  r.body.pos = { x: r.pos.x + 9, y: r.pos.y + 5 };
++  r.body.vel = { x: -3, y: -5 };
++  r.body.facing = 2.4; r.body.energy = .12; r.body.sprintLoad = 8;
++  rr.idx = rr.path.length - 1; rr.settled = true;
++  rr.path = [{ p: { x: 85, y: 46 }, s: .1 }];
++}
++
++function result(ev: ReturnType<ReturnType<typeof fixture>['consumer']['evaluate']>) {
++  return { point: ev.point, T: ev.T, P: ev.P, value: ev.value };
++}
++
++describe('QB forecast-consumer acquired-information boundary', () => {
++  it('evaluation is unchanged under unseen receiver body/path/progress divergence with the acquired inputs held', () => {
++    const held = fixture(), hidden = fixture();
++    unseenChange(hidden);
++    for (const t of [.2, .4, .6]) {
++      held.sim.t = hidden.sim.t = t; // The same acquired picture ages in both arms.
++      const a = held.consumer.evaluate(held.sim.qb, held.sim, held.r, .2);
++      const b = hidden.consumer.evaluate(hidden.sim.qb, hidden.sim, hidden.r, .2);
++      expect(a).not.toBeNull(); expect(b).not.toBeNull();
++      expect(result(b)).toEqual(result(a));
++    }
++  });
++
++  it('release aim AND launch are unchanged under the same unseen divergence', () => {
++    const held = fixture(), hidden = fixture();
++    const a = held.consumer.evaluate(held.sim.qb, held.sim, held.r, .2);
++    const b = hidden.consumer.evaluate(hidden.sim.qb, hidden.sim, hidden.r, .2);
++    unseenChange(hidden);
++    // A later release must not get a false pass from RouteRunner's old same-tick cache.
++    held.sim.t = hidden.sim.t = .25;
++    const throwA = vi.spyOn(held.sim, 'throwBall').mockImplementation(() => {});
++    const throwB = vi.spyOn(hidden.sim, 'throwBall').mockImplementation(() => {});
++    held.consumer.release(held.sim.qb, held.sim, a);
++    hidden.consumer.release(hidden.sim.qb, hidden.sim, b);
++    expect(throwA).toHaveBeenCalledOnce(); expect(throwB).toHaveBeenCalledOnce();
++    expect(throwB.mock.calls[0].slice(2)).toEqual(throwA.mock.calls[0].slice(2));
++  });
++});
+diff --git a/test/qb-receiver-forecast.test.ts b/test/qb-receiver-forecast.test.ts
+new file mode 100644
+index 0000000..178b99b
+--- /dev/null
++++ b/test/qb-receiver-forecast.test.ts
+@@ -0,0 +1,166 @@
++import { describe, expect, it, vi } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { getRoute } from '../src/playbook/routes.js';
++import type { RouteDef } from '../src/playbook/types.js';
++import { QBPass } from '../src/sim/behaviors/qb.js';
++import { RouteRunner } from '../src/sim/behaviors/receiver.js';
++import { ReceiverForecast, installReceiverRoute } from '../src/sim/receiver-forecast.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++const home = generateTeam(new Rng(91), 'Estimate offense', 'EOF');
++const away = generateTeam(new Rng(92), 'Estimate defense', 'EDF');
++function fixture() {
++  const sim = new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 45,
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.slant_flat, label: 'slant' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
++      pressure: null, zoneStyle: 'match', label: 'Over Cover 3' },
++    los: 40, ballY: 26, firstDownX: 50, audibles: false });
++  return { sim, qb: sim.qb.behavior as QBPass, r: sim.slot('X')! };
++}
++function snapshot(f: ReturnType<typeof fixture>, pos: { x: number; y: number }, vel = { x: 0, y: 0 }) {
++  f.r.body.pos = { ...pos }; f.r.body.vel = { ...vel }; f.r.body.facing = Math.atan2(vel.y, vel.x);
++  for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents);
++}
++
++describe('QB receiver acquired picture and immutable installation', () => {
++  it('uses the installed definition, deep copies it, and never adopts a converted live path', () => {
++    const f = fixture();
++    const route: RouteDef = { ...getRoute('out'), points: getRoute('out').points.map(p => ({ ...p })) };
++    const prior = installReceiverRoute(f.r.pos, f.sim.los, 1, route, 0, f.r.profile, f.r.r('routeRunning'));
++    const forecast = new ReceiverForecast(f.sim.qb, prior, f.sim.dt);
++    const expected = forecast.predict(.2, 1.5);
++    route.points[0].d += 30;
++    const rr = f.r.behavior as RouteRunner;
++    rr.path[0] = { p: { x: 90, y: 3 }, s: .1 }; rr.idx = 4; rr.settled = true;
++    f.r.body.energy = .1; f.r.body.vel = { x: -7, y: 2 };
++    expect(Object.isFrozen(prior.path[0].p)).toBe(true);
++    expect(forecast.predict(.2, 1.5)).toEqual(expected);
++    expect(forecast.estimate?.progress).toBeNull(); // Installed expectation is not acquired progress.
++  });
++
++  it('does not reinterpret an unobserved conditional release as stationary motion', () => {
++    const f = fixture();
++    const prior = installReceiverRoute(f.r.pos, 40, 1, getRoute('checkdown'), null, f.r.profile, f.r.r('routeRunning'));
++    const forecast = new ReceiverForecast(f.sim.qb, prior, f.sim.dt);
++    expect(forecast.predict(1, 1)).toBeNull(); expect(forecast.estimate).toBeNull();
++    forecast.acquire({ pos: prior.start, vel: { x: 0, y: 0 }, facing: 0, sampledAt: .8, acquiredAt: 1 });
++    expect(forecast.estimate).toMatchObject({ progress: null, motion: 'observed-motion' });
++  });
++
++  it('gates receiver acquisition by the delayed look, bypasses automatic teammate refresh, and preserves timestamps without RNG', () => {
++    const f = fixture(); snapshot(f, { x: 48, y: 45 }, { x: 3, y: 0 }); f.sim.t = .4;
++    const rng = { ...f.sim.rng };
++    const see = vi.spyOn(f.sim, 'see');
++    expect(f.sim.qbMind.receiverLook(f.r, { x: 60, y: 6 })).toBeNull();
++    // Hidden current position enters the look, but the delayed position remains outside.
++    f.r.body.pos = { x: 48, y: 6 };
++    expect(f.sim.qbMind.receiverLook(f.r, { x: 60, y: 6 })).toBeNull();
++    const p = f.sim.qbMind.receiverLook(f.r, { x: 48, y: 45 })!;
++    expect(p.pos).toEqual({ x: 48, y: 45 });
++    expect(p.acquiredAt).toBe(.4); expect(p.sampledAt).toBeLessThan(.35);
++    expect(see).not.toHaveBeenCalled(); expect({ ...f.sim.rng }).toEqual(rng);
++  });
++
++  it('keeps observer/estimate caches separate and changes only on a new picture', () => {
++    const f = fixture(), start = { x: 40, y: 18 };
++    const prior = installReceiverRoute(start, 40, 1, getRoute('go'), 0, f.r.profile, f.r.r('routeRunning'));
++    const a = new ReceiverForecast({}, prior, .05), b = new ReceiverForecast({}, prior, .05);
++    a.acquire({ pos: { x: 44, y: 18 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: .6, acquiredAt: .8 });
++    b.acquire({ pos: { x: 44, y: 21 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .6, acquiredAt: .8 });
++    const first = a.predict(.8, .5);
++    expect(b.predict(.8, .5)).not.toEqual(first);
++    expect(a.predict(.8, .5)).toEqual(first);
++    a.acquire({ pos: { x: 44, y: 21 }, vel: { x: 0, y: 4 }, facing: Math.PI / 2, sampledAt: .7, acquiredAt: .8 });
++    expect(a.predict(.8, .5)).not.toEqual(first);
++    expect(a.estimate).toMatchObject({ progress: null, motion: 'observed-motion', sampledAt: .7 });
++  });
++
++  it('keeps geometrically ambiguous progress unknown rather than guessing a private waypoint', () => {
++    const f = fixture();
++    const route: RouteDef = { id: 'overlap-control', family: 'cross', depth: 10, end: 'settle',
++      points: [{ d: 10, l: 0 }, { d: 0, l: 0 }, { d: 10, l: 0 }] };
++    const forecast = new ReceiverForecast(f.sim.qb,
++      installReceiverRoute({ x: 40, y: 18 }, 40, 1, route, 0, f.r.profile, f.r.r('routeRunning')), .05);
++    forecast.acquire({ pos: { x: 45, y: 18 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: .6, acquiredAt: .8 });
++    expect(forecast.estimate).toMatchObject({ progress: null, motion: 'observed-motion' });
++  });
++
++  it('retains anticipatory route bending before the receiver reaches the installed break', () => {
++    const f = fixture(), start = { x: 40, y: 18 };
++    const prior = installReceiverRoute(start, 40, 1, getRoute('out'), 0, f.r.profile, f.r.r('routeRunning'));
++    const forecast = new ReceiverForecast(f.sim.qb, prior, .05);
++    forecast.acquire({ pos: { x: 43, y: 18 }, vel: { x: 5, y: 0 }, facing: 0, sampledAt: .6, acquiredAt: .8 });
++    expect(forecast.estimate?.progress).toBe(0);
++    expect(forecast.predict(.8, 1.5)!.y).toBeGreaterThan(19);
++    // Current linear extrapolation would still be at y18.
++  });
++
++  it('uses a newly visible deviation without copying the receiver conversion/path', () => {
++    const f = fixture(), start = { x: 40, y: 18 };
++    const forecast = new ReceiverForecast(f.sim.qb,
++      installReceiverRoute(start, 40, 1, getRoute('go'), 0, f.r.profile, f.r.r('routeRunning')), .05);
++    snapshot(f, { x: 45, y: 18 }, { x: 5, y: 0 }); f.sim.t = .8;
++    forecast.acquire(f.sim.qbMind.receiverLook(f.r, { x: 48, y: 20 })!);
++    const stem = forecast.predict(.8, .7)!;
++    // QB still holds the old picture while the receiver actually cuts.
++    f.r.body.pos = { x: 45, y: 20 }; f.r.body.vel = { x: 0, y: 5 };
++    expect(forecast.predict(.8, .7)).toEqual(stem);
++    snapshot(f, { x: 45, y: 20 }, { x: 0, y: 5 }); f.sim.t = .9;
++    forecast.acquire(f.sim.qbMind.receiverLook(f.r, { x: 48, y: 20 })!);
++    expect(forecast.estimate).toMatchObject({ progress: null, motion: 'observed-motion' });
++    expect(forecast.predict(.9, .7)!.y).toBeGreaterThan(stem.y + 3);
++  });
++
++  it('feeds a newly acquired deviation through both production forecast consumers', () => {
++    const f = fixture();
++    const forecasts = Reflect.get(f.qb, 'receiverForecasts') as Map<typeof f.r, ReceiverForecast>;
++    const forecast = forecasts.get(f.r)!;
++    const start = forecast.prior.start;
++    snapshot(f, { x: start.x + 3, y: start.y }, { x: 5, y: 0 }); f.sim.t = .8;
++    const gaze = { x: start.x + 10, y: start.y };
++    forecast.acquire(f.sim.qbMind.receiverLook(f.r, gaze)!);
++    f.sim.t = .9;
++    const evaluate = Reflect.get(f.qb, 'evaluate').bind(f.qb);
++    const release = Reflect.get(f.qb, 'release').bind(f.qb);
++    const ev = evaluate(f.sim.qb, f.sim, f.r, .2);
++    const thrown = vi.spyOn(f.sim, 'throwBall').mockImplementation(() => {});
++    release(f.sim.qb, f.sim, ev);
++    const heldAim = thrown.mock.calls[0][3];
++    snapshot(f, { x: start.x + 3, y: start.y + 2 }, { x: 0, y: 5 });
++    // Body changes alone do not refresh this receiver estimate.
++    expect(evaluate(f.sim.qb, f.sim, f.r, .2).point).toEqual(ev.point);
++    forecast.acquire(f.sim.qbMind.receiverLook(f.r, gaze)!);
++    expect(evaluate(f.sim.qb, f.sim, f.r, .2).point).not.toEqual(ev.point);
++    release(f.sim.qb, f.sim, ev); // The same pending throw re-aims from the new look.
++    expect(thrown.mock.calls[1][3]).not.toEqual(heldAim);
++  });
++
++  it('can start an anticipatory throw before the installed break using the ordinary QB decision hook', () => {
++    // Controlled open-window fixture, not evidence of live-play benefit.
++    const concept = { ...PASS_BY_ID.curl_flat, strong: { 1: 'out', 2: 'out' }, weak: { 1: 'out', 2: 'out' }, back: 'block' };
++    const sim = new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 45,
++      offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: concept, label: 'out control' },
++      defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
++        pressure: null, label: 'open-window control' }, los: 40, ballY: 26, firstDownX: 50, audibles: false });
++    const qb = sim.qb.behavior as QBPass;
++    const r = sim.agents[qb.recordedState().read!], rr = r.behavior as RouteRunner;
++    sim.t = rr.breakTime - .15 * sim.qb.r('anticipation');
++    sim.qb.body.pos = { x: sim.los - 7.3, y: sim.ballY };
++    r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6, y: 0 };
++    for (const d of sim.defense) { d.body.pos = { x: 15, y: 26 }; d.body.vel = { x: 0, y: 0 }; }
++    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
++    sim.qbMind.observe({ x: 15, y: 26 }); // Acquire the deliberately empty window honestly.
++    const ownState = qb as unknown as { phase: string; setAt: number; readStart: number; lookOffChecked: boolean };
++    ownState.phase = 'set'; ownState.setAt = sim.t; ownState.readStart = sim.t; ownState.lookOffChecked = true;
++    qb.update(sim.qb, sim);
++    const state = qb.recordedState();
++    expect(sim.t).toBeLessThan(rr.breakTime);
++    expect(state.phase).toBe('windup');
++    expect(state.pending?.target).toBe(r.idx);
++    expect(Math.abs(state.pending!.point[1] - r.pos.y)).toBeGreaterThan(1);
++  });
++});

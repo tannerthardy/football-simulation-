@@ -1,0 +1,241 @@
+{
+  "question": "Do frozen legitimate installed/acquired receiver inputs isolate QB forecast consumers from unseen receiver body/path/progress at evaluation and later release?",
+  "code": "0bed61d74f2e0d375a9a08239a4f4c1100855eab",
+  "initialImplementation": "5e15381af4b2ab0b9eb65c0ad3f97cdd5b7b12ca",
+  "base": "0000e560e0dbe31905151465152d412ba838803d",
+  "testedBase": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "node": "22.23.3",
+  "protected": [
+    {
+      "path": "src/sim/assign.ts",
+      "testedBlob": "3d66e3a28710358a07b9c7b417bafa0db9fadd51",
+      "portableBlob": "3d66e3a28710358a07b9c7b417bafa0db9fadd51"
+    },
+    {
+      "path": "src/sim/behaviors/qb.ts",
+      "testedBlob": "ac3894e2c226eea4e36cfd33918b9b618a306cb8",
+      "portableBlob": "ac3894e2c226eea4e36cfd33918b9b618a306cb8"
+    },
+    {
+      "path": "src/sim/behaviors/receiver.ts",
+      "testedBlob": "e760322d58db83ed72ce96b5c6ce2a7782b35b09",
+      "portableBlob": "e760322d58db83ed72ce96b5c6ce2a7782b35b09"
+    },
+    {
+      "path": "src/sim/qbmind.ts",
+      "testedBlob": "3d6de99899e618b29640def4a0e698890eaf21b7",
+      "portableBlob": "3d6de99899e618b29640def4a0e698890eaf21b7"
+    },
+    {
+      "path": "src/sim/receiver-forecast.ts",
+      "testedBlob": "ccb51ed281bef18c9e43f934dbca24ad3920239d",
+      "portableBlob": "ccb51ed281bef18c9e43f934dbca24ad3920239d"
+    },
+    {
+      "path": "src/sim/route-motion.ts",
+      "testedBlob": "4683cc81147d0e78150f528563d9f72103660140",
+      "portableBlob": "4683cc81147d0e78150f528563d9f72103660140"
+    },
+    {
+      "path": "test/qb-receiver-consumer.test.ts",
+      "testedBlob": "b72047a92b0652a1014d5ff598058cd061fb2a45",
+      "portableBlob": "b72047a92b0652a1014d5ff598058cd061fb2a45"
+    },
+    {
+      "path": "test/qb-receiver-forecast.test.ts",
+      "testedBlob": "178b99bac3cae34a9f3b4e3f7865f7bce43df331",
+      "portableBlob": "178b99bac3cae34a9f3b4e3f7865f7bce43df331"
+    }
+  ],
+  "source": "bbb59c82260e3c4bcd28ebe6ee33da6827602440cdba0c833a1865d02fa577d8",
+  "validation": "e1953155dba44dfebff64a20d2df8c4bee9c13fb2380732921c1a988ea2edfe9",
+  "evidence": {
+    "before": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2,
+      "aimDisplacementYd": {
+        "evaluation": 3.8675455030571753,
+        "release": 5.41824070741382
+      }
+    },
+    "after": {
+      "total": 31,
+      "passed": 31,
+      "failed": 0,
+      "aimDisplacementYd": {
+        "evaluation": 0,
+        "release": 0
+      },
+      "typecheck": "pass"
+    },
+    "initialBefore": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "limitation": "Same-tick receiver cache masked release; corrected control advances release time .20 -> .25 while acquisition remains frozen. Initial evidence retained; no assertion weakened."
+    }
+  },
+  "compatibility": {
+    "changedAcceptedRuntime": [
+      "src/sim/coverage/defender.ts:CoverageDefender.update (force-support condition only)"
+    ],
+    "proof": "The four focused files call QBPass.update/QBMind directly, never PlaySim.tick/run or CoverageDefender.update. All eight protected runtime/test blobs are identical to tested5e15381; dependencies/config/physics and runtime imports other than the unexecuted coverage method are unchanged. Final typecheck ran before reconciliation; accepted #130 typecheck covers the unrelated accepted delta. Exact combined verification belongs to Integration.",
+    "freshPortableSimulationRuns": 0
+  },
+  "costs": {
+    "measuredCommandWallSeconds": 31.302401207009098,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "baseline:run",
+          "--",
+          "--candidate",
+          "--",
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/qb-receiver-consumer.test.ts",
+          "test/qb-receiver-forecast.test.ts",
+          "test/qb-memory-awareness.test.ts",
+          "test/pass-installation.test.ts",
+          "--maxWorkers=1",
+          "--reporter=json",
+          "--outputFile=out/qb-receiver-forecast/first.json"
+        ],
+        "wallSeconds": 3.0075798130128533,
+        "userSeconds": 3.383689,
+        "systemSeconds": 0.665165,
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "baseline:run",
+          "--",
+          "--candidate",
+          "--",
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/qb-receiver-consumer.test.ts",
+          "--maxWorkers=1",
+          "--reporter=json",
+          "--outputFile=out/qb-receiver-forecast/before.json"
+        ],
+        "wallSeconds": 1.870509159984067,
+        "userSeconds": 2.073505,
+        "systemSeconds": 0.341618,
+        "exitCode": 1
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "baseline:run",
+          "--",
+          "--candidate",
+          "--",
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/qb-receiver-consumer.test.ts",
+          "test/qb-receiver-forecast.test.ts",
+          "--maxWorkers=1",
+          "--reporter=json",
+          "--outputFile=out/qb-receiver-forecast/second.json"
+        ],
+        "wallSeconds": 2.1931600740063004,
+        "userSeconds": 2.417378,
+        "systemSeconds": 0.44564099999999995,
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "baseline:run",
+          "--",
+          "--candidate",
+          "--",
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/qb-receiver-consumer.test.ts",
+          "--maxWorkers=1",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile=out/qb-receiver-forecast/before-release.json"
+        ],
+        "wallSeconds": 1.9110489730082918,
+        "userSeconds": 2.103809,
+        "systemSeconds": 0.383961,
+        "exitCode": 1
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "baseline:run",
+          "--",
+          "--candidate",
+          "--",
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/qb-receiver-consumer.test.ts",
+          "test/qb-receiver-forecast.test.ts",
+          "test/qb-memory-awareness.test.ts",
+          "test/pass-installation.test.ts",
+          "--maxWorkers=1",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile=out/qb-receiver-forecast/final.json"
+        ],
+        "wallSeconds": 5.301706879021367,
+        "userSeconds": 5.481838,
+        "systemSeconds": 1.204102,
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "wallSeconds": 17.018396307976218,
+        "userSeconds": 32.400598,
+        "systemSeconds": 1.140725,
+        "exitCode": 0
+      }
+    ],
+    "unmeasured": [
+      "One initial pre-test npm run typecheck passed before cost instrumentation.",
+      "A failed /usr/bin/time invocation exited127 without launching tests.",
+      "Source inspection, artifact construction, Git/network/coordination time excluded from validation-command cost."
+    ]
+  },
+  "recommendation": "Advance the narrow information repair for independent Pass/Awareness review and Integration combined verification. No whole-QB decision invariance, live-play benefit or current-motion certainty is claimed.",
+  "remainingDebt": [
+    "live receiver eligibility and behavior readiness",
+    "live matchup/range reads in read ordering and decoy selection",
+    "live receiver facing target in pocketMove / play-action mesh",
+    "private defender engagement/down/condition in protection/window and live scramble reads",
+    "unobserved option conversion is unknown; only installed base route or acquired-motion forecast",
+    "nominal condition / no-contact point forecast does not certify exact route phase, current velocity or future clearance"
+  ]
+}

@@ -1,0 +1,102 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate -- npx vitest run --project core test/qb-receiver-consumer.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/qb-receiver-forecast/before-release.json
+
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941
+Running npx vitest run --project core test/qb-receiver-consumer.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/qb-receiver-forecast/before-release.json
+
+ RUN  v3.2.4 /workspace/qb-receiver-before
+
+ ❯ |core| test/qb-receiver-consumer.test.ts (2 tests | 2 failed) 46ms
+   × QB forecast-consumer acquired-information boundary > evaluation is unchanged under unseen receiver body/path/progress divergence with the acquired inputs held 32ms
+     → expected { point: { …(3) }, …(3) } to deeply equal { point: { …(3) }, …(3) }
+   × QB forecast-consumer acquired-information boundary > release aim AND launch are unchanged under the same unseen divergence 13ms
+     → expected [ …(3) ] to deeply equal [ Array(3) ]
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  04:44:13
+   Duration  986ms (transform 584ms, setup 0ms, collect 757ms, tests 46ms, environment 0ms, prepare 55ms)
+
+JSON report written to /workspace/qb-receiver-before/out/qb-receiver-forecast/before-release.json
+Validation receipt: out/baseline/run-1792212253375-115780.json; exit 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/qb-receiver-consumer.test.ts > QB forecast-consumer acquired-information boundary > evaluation is unchanged under unseen receiver body/path/progress divergence with the acquired inputs held
+AssertionError: expected { point: { …(3) }, …(3) } to deeply equal { point: { …(3) }, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "P": 0.7665523129595039,
+-   "T": 0.753435347863726,
++   "P": 0.21624828737975438,
++   "T": 0.8169759623425065,
+    "point": {
+-     "x": 41.07638349750446,
+-     "y": 8,
++     "x": 44.9371664897145,
++     "y": 8.228610816190889,
+      "z": 1.3,
+    },
+-   "value": 5.341475948630065,
++   "value": -11.511142848114268,
+  }
+
+ ❯ test/qb-receiver-consumer.test.ts:59:25
+     57|       const b = hidden.consumer.evaluate(hidden.sim.qb, hidden.sim, hi…
+     58|       expect(a).not.toBeNull(); expect(b).not.toBeNull();
+     59|       expect(result(b)).toEqual(result(a));
+       |                         ^
+     60|     }
+     61|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |core| test/qb-receiver-consumer.test.ts > QB forecast-consumer acquired-information boundary > release aim AND launch are unchanged under the same unseen divergence
+AssertionError: expected [ …(3) ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "x": 6.527852019713353,
+-     "y": -23.569295215446342,
+-     "z": 2.9847995955878006,
++     "x": 13.598720718631755,
++     "y": -21.71392252166208,
++     "z": 2.986069934867488,
+    },
+    {
+-     "x": 40.384927428457026,
+-     "y": 8,
++     "x": 45.625554031982574,
++     "y": 9.375923386637673,
+      "z": 1.3,
+    },
+    1.011236258852724,
+  ]
+
+ ❯ test/qb-receiver-consumer.test.ts:75:43
+     73|     hidden.consumer.release(hidden.sim.qb, hidden.sim, b);
+     74|     expect(throwA).toHaveBeenCalledOnce(); expect(throwB).toHaveBeenCa…
+     75|     expect(throwB.mock.calls[0].slice(2)).toEqual(throwA.mock.calls[0]…
+       |                                           ^
+     76|   });
+     77| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
