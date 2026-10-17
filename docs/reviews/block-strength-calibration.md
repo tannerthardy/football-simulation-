@@ -76,6 +76,28 @@ independent raw capacities merely because both report Newtons.
 
 ## Required calibration experiment
 
+### Subsequent concrete mechanical witness
+
+At diagnostic commit `074097822c7dc3029bd55f755a3a3c0adf5fee7e`, the same
+unchanged runtime reproduces a directional support inconsistency. Three bounded
+World strike contacts supply a forward net load plus equal/opposite transverse
+forces at two heights. The latter have zero net transverse impulse and an
+independent400kg·yd²/s² couple. An achieved forward lean causes the scalar
+bracing code to cancel389.825 of that sideways moment, although the stated
+ankle allowance is236.667. Without forward load/lean, cancellation respects that
+same236.667 allowance. Rotation/reflection reproduce it; planar momentum/work
+close. The checkpoint intentionally supplies established felt load/moment to
+isolate the first response; it is not a newly acquired NFL contact.
+
+This is a specific reason to correct **directional moment cancellation**, not
+mass or strength coefficients. A separately reviewable minimal correction will
+preserve aligned bracing and apply the existing bounded ankle response to the
+transverse component. The script is
+`scripts/diag/physics/directional-brace.ts`; its source, prepared bodies,
+requests and actual incoming/canceled moment are reproducible without the
+optional force interface. Capacity calibration and generic missing COP/lean
+geometry remain separate.
+
 The next numerical proposal needs one task-matched external force/anchor record,
 not more game averages. Save body mass, stance/actual lean, shoulder/hand height,
 foot support and traction, ramp/duration, direction and apparatus compliance.
