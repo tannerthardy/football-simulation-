@@ -695,7 +695,6 @@ export class Game {
     }
     if (r.turnover) {
       const yl = r.outcome === 'touchback' ? 20 : 110 - r.endX;
-      this.box.team(offTeam.abbr).turnovers++;
       this.changePossession(yl, s.ballY);
       this.recoverAll(r.duration + 40);
       return;
@@ -993,6 +992,10 @@ export class Game {
     const abbrOf = (id: string) => (agentOf(id)?.team === 'O' ? offTeam.abbr : defTeam.abbr);
     const t = box.team(offTeam.abbr);
     t.plays++;
+    // Official takeaway credit also applies when a defensive score ends the
+    // play before the ordinary change-of-possession branch. Nullified plays
+    // never reach recordStats.
+    if (r.turnover) t.turnovers++;
     // Rush and reception credit runs to the fumble spot when the ball was lost.
     const yds = r.offenseYards;
     const offTD = r.score?.kind === 'TD' && r.score.team === 'O';
