@@ -1,0 +1,45 @@
+{
+  "schema": "accepted-game-evidence-artifacts-v1",
+  "status": "Prepared and archive-verified; draft GitHub upload pending.",
+  "releaseTag": "evidence-accepted-games-70b4db6-2026-10-16",
+  "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "repository": "tannerthardy/football-simulation-",
+  "createdAt": "2026-10-17T03:25:53.152237+00:00",
+  "kind": "draft evidence release; no engine/reference promotion",
+  "retention": "Retain named draft-release assets until explicit owner cleanup. Local workspace lifetime not guaranteed.",
+  "retrieval": "gh release download evidence-accepted-games-70b4db6-2026-10-16 --repo tannerthardy/football-simulation- --dir out/game-checkpoint-download",
+  "extraction": "Extract all five archives into one directory, then open index.html. Raw data, full films, recovery prefixes, manifests, collector/report sources and shared panel are included.",
+  "totalArchiveBytes": 309367242,
+  "artifacts": [
+    {
+      "name": "accepted-games-G1-zone-reference.tar.gz",
+      "bytes": 79620439,
+      "sha256": "32f521bb60cb9a0a4b755b1cffc25898a0c44c409d717897c8aed46644d14c8e",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G2-spread-air.tar.gz",
+      "bytes": 72716894,
+      "sha256": "53e8e9e3358c04cd369578991dd1f6d68848ab64dc65940c6843901cf3694123",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G3-power-zone.tar.gz",
+      "bytes": 75519458,
+      "sha256": "949eca941632f77ce3aa479c876630cf11ee7ea1054cc84dac6f46205bbdc0ec",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-G4-west-spread.tar.gz",
+      "bytes": 81062426,
+      "sha256": "55f0276df7fc9f2bd326c2245fa9c44c6da65b50c22e08a1b3ebc02135457166",
+      "members": 7
+    },
+    {
+      "name": "accepted-games-audit-packet.tar.gz",
+      "bytes": 448025,
+      "sha256": "47f4cde8a3fa38afc410e51910b92aef16e822398b474ca0b9e3dfe36dd26e0f",
+      "members": 25
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "accepted-game-audit-inputs-v1",
+  "preparedBeforeOutcomes": true,
+  "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sources": {
+    "accepted": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941"
+  },
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "strength": 0.55,
+  "fixtures": [
+    {
+      "id": "zone-reference",
+      "rosterSeeds": [
+        31,
+        32
+      ],
+      "seed": 701,
+      "home": [
+        "wide-zone",
+        "4-3"
+      ],
+      "away": [
+        "west-coast",
+        "nickel-heavy"
+      ],
+      "scope": "Known Ace roster seeds; normal full-game coaching and fatigue.",
+      "teamsSha256": "88bcfcb03db4c2e68cb8a09943f60e65ce46982a0bb999906f631ff1c18733a1"
+    },
+    {
+      "id": "spread-air",
+      "rosterSeeds": [
+        27101,
+        27102
+      ],
+      "seed": 702,
+      "home": [
+        "spread",
+        "3-4"
+      ],
+      "away": [
+        "air-raid",
+        "nickel-heavy"
+      ],
+      "scope": "Fresh spread and pass-heavy offenses.",
+      "teamsSha256": "bbb46bb6b4af3eeb0ebcbf97c032b887e710744284daaf0c595b1148a22f8eac"
+    },
+    {
+      "id": "power-zone",
+      "rosterSeeds": [
+        28101,
+        28102
+      ],
+      "seed": 703,
+      "home": [
+        "power",
+        "4-3"
+      ],
+      "away": [
+        "wide-zone",
+        "3-4"
+      ],
+      "scope": "Fresh power and wide-zone with odd/even defenses.",
+      "teamsSha256": "feef8f7128b4acb1f56a0084904b34a5eec9bf87a61af4062d2ba0995916c351"
+    },
+    {
+      "id": "west-spread",
+      "rosterSeeds": [
+        29101,
+        29102
+      ],
+      "seed": 704,
+      "home": [
+        "west-coast",
+        "nickel-heavy"
+      ],
+      "away": [
+        "spread",
+        "4-3"
+      ],
+      "scope": "Fresh short passing and spread offenses.",
+      "teamsSha256": "65fc74c2c6464d822ef4b10c11fae7907443017dda3f477cd4afb1ccce4d41ad"
+    }
+  ],
+  "budget": {
+    "gamesPerArm": 4,
+    "totalGames": 4,
+    "maxGameSeconds": 60,
+    "maxCombinedGameSeconds": 240,
+    "maxCollectionSeconds": 55,
+    "maxGameSteps": 600
+  },
+  "settings": {
+    "record": true,
+    "recordLevel": "full",
+    "handContact": "center",
+    "rules": "unchanged regular season, including native overtime",
+    "evaluationArm": "accepted only; no baseline or experimental rerun"
+  },
+  "question": "Across four frozen game inputs, where do individual snaps show convincing or broken assignment, movement, blocking, coverage, pursuit and tackling? Identify repeated mechanisms before proposing fixes; aggregate stats are context, not tuning targets.",
+  "provenance": {
+    "authorizedBy": "User: Run the games. Lets get some data back, and then prepare a very deep audit.",
+    "acceptedQueue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+    "frozenInputPath": "data/reviews/current/accepted-controller-game-inputs.json",
+    "frozenInputSha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b",
+    "collectorAncestor": "4ae667e29b3ce085f43c5cb911b294349cda2b8f:scripts/experimental-games.mjs",
+    "collectorAncestorSha256": "93d35fc550f8fa47c5d7ef6c0c6d538ecab1648311b8e1a2fc551d531d47d22a",
+    "priorEngineVerification": {
+      "freeze": "910c058",
+      "typescriptPassed": 1980,
+      "pythonPassed": 145,
+      "typecheck": "pass",
+      "build": "pass",
+      "seconds": 219.521,
+      "validationSha256": "dfbff86ef7dbaaf59d308a90383bde5a6d32381c1b2e1fc64079978713a5474e",
+      "repeat": false
+    },
+    "telemetryParityEvidence": "test/replay-telemetry.test.ts accepted full-suite receipt; full recording preserves results/bodies/RNG",
+    "recordingLimits": [
+      "0.1-second frame cadence; positions rounded to0.1yard",
+      "Full contacts sampled last-step, not all physical impulses",
+      "Native two-point conversions omit recording options; observer only unless explicitly captured",
+      "Game histories are not paired counterfactuals to old builds"
+    ]
+  },
+  "frozenInputPath": "data/reviews/current/accepted-controller-game-inputs.json",
+  "frozenInputSha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b"
+}
