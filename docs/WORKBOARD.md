@@ -1,8 +1,8 @@
 # Current work ownership
 
-## Minimal Counter count/kick candidate — 2026-10-17 UTC
+## Minimal cleared-kick candidate — 2026-10-17 UTC
 
-Run owns `codex/counter-count-kick`, based directly on accepted `0000e560e0dbe31905151465152d412ba838803d`, fetched queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Boundary: `blocking.ts` Counter installation ledger and cleared kick transition; two focused tests and frozen inputs/collector. No #140 repair or held99 perimeter installer, carrier/navigation, spacing, movement, capacities or Physics. Research checkpoint `525fba0` on `codex/puller-coordination` remains separate with its failed wrapper arcs and perimeter adverse controls. Integration owns the final combined suite. Exact accepted-host Counter and one Power opposing control are being recorded before handoff.
+Run owns `codex/counter-count-kick`, accepted base `0000e560e0dbe31905151465152d412ba838803d`, queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Final production scope is **cleared kick transition only**. Joint Counter counting is withdrawn from this candidate after the accepted-host strong control exposed delayed end contact and LG/RB impact; its source/tests/native failures remain at05da690 and research525fba0. No #140 repair, held99 perimeter installer, carrier/navigation, spacing, movement, capacities or Physics. Exact four-case kick-only evidence and focused contracts go to Integration; final combined suite stays with Integration.
 
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 

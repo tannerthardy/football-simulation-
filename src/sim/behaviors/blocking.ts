@@ -442,7 +442,7 @@ export function playSideSign(sim: PlaySim, concept: RunConcept): number {
  * At most seven inline blockers: a small mask search avoids a greedy tackle
  * stealing a shaded guard's man and leaving the wide end without an owner.
  */
-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, origins?: ReadonlyMap<Agent, Vec2>): Map<Agent, Agent> {
+function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
   type Choice = { missed: number; distance: number; targets: Map<Agent, Agent> };
   let choices = new Map<number, Choice>([[0, { missed: 0, distance: 0, targets: new Map() }]]);
   const better = (a: Choice, b?: Choice) => !b || a.missed < b.missed || (a.missed === b.missed && a.distance < b.distance);
@@ -454,8 +454,7 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, origins
       for (let i = 0; i < line.length; i++) {
         if (mask & (1 << i)) continue;
         const b = line[i];
-        const origin = origins?.get(b);
-        const distance = origin ? Math.hypot(d.pos.x-origin.x,d.pos.y-origin.y) : Math.abs(d.pos.y - b.pos.y);
+        const distance = Math.abs(d.pos.y - b.pos.y);
         if (distance >= (reachLimit ?? (i === 0 || i === line.length - 1 ? 4.5 : 2.2))) continue;
         const targets = new Map(choice.targets);
         targets.set(b, d);
@@ -467,29 +466,6 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, origins
   let best: Choice | undefined;
   for (const choice of choices.values()) if (better(choice, best)) best = choice;
   return best?.targets ?? new Map();
-}
-
-interface SecondLevelJob {
-  blocker: Agent;
-  origin: Vec2;
-  conditional: boolean;
-  assign: (target: Agent | null) => void;
-}
-
-/** Immediate climb/wrap responsibilities share the count before a double's
- * optional later job. Compare the installed entry points, not a puller's vacated
- * stance. This assigns snap responsibilities; it does not forecast a block win. */
-function assignSecondLevel(jobs: SecondLevelJob[], backers: Agent[], claimed: Set<Agent>): void {
-  for (const conditional of [false, true]) {
-    const group = jobs.filter(j => j.conditional === conditional);
-    const origins = new Map(group.map(j => [j.blocker, j.origin]));
-    const targets = zoneOwnership(group.map(j => j.blocker), backers.filter(d => !claimed.has(d)), Infinity, origins);
-    for (const job of group) {
-      const target = targets.get(job.blocker) ?? null;
-      job.assign(target);
-      if (target) claimed.add(target);
-    }
-  }
 }
 
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
@@ -585,7 +561,6 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     if (concept.pullers.includes('BSG') && bsg) pullers.add(bsg);
     if (concept.pullers.includes('BST') && bst) pullers.add(bst);
 
-    const secondLevel: SecondLevelJob[] = [];
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
     const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
@@ -639,18 +614,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const partner = partners[0];
       const target = partner ? plans.get(partner)!.target : null;
       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
-        combo(b, partner, target, scheme === 'counter' ? null : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
-        if (scheme === 'counter') {
-          const plan = plans.get(b)!;
-          secondLevel.push({ blocker: b, conditional: true,
-            origin: { x: target.pos.x-.35, y: target.pos.y+Math.sign(b.pos.y-partner.pos.y)*.55 },
-            assign: d => { plan.climbTo=d; plan.combination!.backer=d; } });
-        }
-      } else {
-        const plan: RunBlockPlan = { kind: 'climb', target: scheme === 'counter' ? null : lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) };
-        plans.set(b,plan);
-        if (scheme === 'counter') secondLevel.push({ blocker:b, origin:{...b.pos}, conditional:false, assign:d=>{plan.target=d;} });
-      }
+        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+      } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
     }
     // End man on the line on the playside (kick-out target).
     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
@@ -671,7 +636,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (scheme === 'trap') role = 'trap';
       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
       else role = fbIsBack ? 'lead' : 'kick';
-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : scheme === 'counter' ? null : lbNear(hole);
+      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
@@ -679,12 +644,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
-      if(scheme==='counter'&&role==='lead'){
-        const plan=plans.get(p)!;
-        secondLevel.push({blocker:p,origin:{...path.at(-1)!},conditional:false,assign:d=>{plan.target=d;}});
-      }
     }
-    if (scheme === 'counter') assignSecondLevel(secondLevel,lb,claimedLB);
     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
       plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
       claimedDL.add(emlos);
