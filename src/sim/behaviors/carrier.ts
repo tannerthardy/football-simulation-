@@ -63,7 +63,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
-interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+interface LineBody { pos: Vec2; vel: Vec2; radius: number; team: 'O' | 'D' }
 
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
@@ -93,7 +93,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const { agent: o, seen: s, team } of pictures) {
     if (s.pose === 'down') continue;
     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
-    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+    bodies.push({ pos: s.pos, vel: s.vel, radius: o.profile.radius, team });
   }
   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
   bodies.sort((p, q) => p.pos.y - q.pos.y);
@@ -123,16 +123,41 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   let best: Vec2 | null = null, cost = Infinity;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   // Bodies on a segment block the run along it.
-  const blockedBy = (from: Vec2, to: Vec2): number => {
+  const blockedBy = (from: Vec2, to: Vec2, start: number, duration: number): number => {
     const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
     let r = 0;
     for (const b of bodies) {
-      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
-      // Include the endpoint: a route ending in a defender is still occupied.
-      // At the start, only charge a body when the route approaches it; an
-      // already touching runner must remain free to move away from that body.
-      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
-      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      let miss = Infinity;
+      // A blocker can move into a currently open route, or clear it before
+      // arrival. Use only his acquired velocity, with the same short horizon
+      // as the ordinary carrier assessment. The timed straight/dog-leg route
+      // remains an estimate, not a prediction of loaded contact or turning.
+      // Defender occupancy stays conservative; its separate threat estimate
+      // already accounts for acquired movement and physical reach.
+      const moving = b.team === 'O' && (b.vel.x !== 0 || b.vel.y !== 0);
+      if (!moving) {
+        const u = clamp(((b.pos.x-from.x)*sx+(b.pos.y-from.y)*sy)/l2, 0, 1);
+        if (u <= 0 && (b.pos.x-from.x)*sx+(b.pos.y-from.y)*sy <= 0) continue;
+        const miss = Math.hypot(from.x+u*sx-b.pos.x, from.y+u*sy-b.pos.y)-b.radius-a.profile.radius*.7;
+        if (miss < 0) r += 1.5+4*Math.min(1,-miss);
+        continue;
+      }
+      const split = clamp((.6 - start) / Math.max(1e-9, duration), 0, 1);
+      const fractions = split > 0 && split < 1 ? [0, split, 1] : [0, 1];
+      for (let i = 1; i < fractions.length; i++) {
+        const f0 = fractions[i-1], f1 = fractions[i];
+        const t0 = Math.min(.6, start + duration*f0);
+        const t1 = Math.min(.6, start + duration*f1);
+        const rx = from.x + sx*f0 - b.pos.x - b.vel.x*t0;
+        const ry = from.y + sy*f0 - b.pos.y - b.vel.y*t0;
+        const dx = sx*(f1-f0) - b.vel.x*(t1-t0);
+        const dy = sy*(f1-f0) - b.vel.y*(t1-t0);
+        const u = clamp(-(rx*dx+ry*dy) / Math.max(1e-12, dx*dx+dy*dy), 0, 1);
+        // Include the endpoint. An initially touching runner may still exit
+        // an acquired body rather than treating the contact as a closed lane.
+        if (f0 === 0 && u <= 0 && rx*dx+ry*dy >= 0) continue;
+        miss = Math.min(miss, Math.hypot(rx+u*dx, ry+u*dy)-b.radius-a.profile.radius*.7);
+      }
       if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
     }
     return r;
@@ -141,10 +166,12 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const p of candidates) {
     // Two ways to the entry: straight, or flatten behind the line first and
     // then turn up (the cutback's dog-leg). Each has its own arrival time.
-    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    const directTime = timeToReach(me, p, 0);
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p, 0, directTime), arrive: directTime, via: p }];
     if (depth(a.pos) < -1.6) {
       const w = { x: sim.los - 1.2 * dir, y: p.y };
-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+      const firstTime = timeToReach(me, w, 0), secondTime = Math.hypot(p.x - w.x, p.y - w.y) / cruise;
+      routes.push({ obstruct: blockedBy(a.pos, w, 0, firstTime) + blockedBy(w, p, firstTime, secondTime), arrive: firstTime + secondTime, via: w });
     }
     let risk = Infinity, via = p;
     const beyond = { x: p.x + 2 * dir, y: p.y };
