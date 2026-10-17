@@ -46,7 +46,7 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
-## Current integration preparation — independently reviewed maintenance
+## Verified #125 maintenance candidate — guarded adoption pending
 
 Accepted develop remains `d682b1f474cb6ba260a7b8b1119a62919c5a2159` until adoption.
 Integration owns `codex/reviewed-maintenance-integration` from that pin plus queue
@@ -65,9 +65,11 @@ bf493d8. Seven narrow corrections have independent ACCEPT dispositions:
 Twenty-four protected files, seven runtime files; all unshared blobs equal their
 author pins, shared World equals the independently checked118/120 composition.
 No diagnostic ancestry or held experiments imported. Component checks and native
-receipts are reused with their actual source/retention limits. Integration freezes
-and runs the required full verification once on this exact candidate, with the
-same44 settings/components1/CF_FLOW unset. No additional native, panel or game job.
+receipts are reused with their actual source/retention limits. Exact freeze910c058 passes **1980 TS/174 files, 145 Python, typecheck/build**
+in219.521 command seconds, Node22.23.3, same44 settings/components1/CF_FLOW unset.
+No skipped phase/input drift; one exact combined run, no unchanged publication rerun.
+[Final receipt and complete raw log](../data/reviews/current/reviewed-maintenance-integration/final-receipt.json).
+[Guarded adoption PR #125](https://github.com/tannerthardy/football-simulation-/pull/125). No additional native, panel or game job.
 [Intake and preserved risks](../data/reviews/current/reviewed-maintenance-integration/intake.json),
 [exact extraction audit](../data/reviews/current/reviewed-maintenance-integration/extraction-audit.json),
 [copyable agent tasks and posted assignments](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
@@ -570,7 +572,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 <a id="ready-blocked-experimental"></a>
 
-**Current intake:**117/122,123/124 and118/120/121 independently accepted for one exact combined verification;106/101 tooling blocked,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source remainsd682b1f until adoption.
+**Current intake:**117/122,123/124 and118/120/121 independently accepted and verified together in125; guarded adoption pending.106/101 tooling blocked,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source remainsd682b1f until adoption.
 
 
 **Delivered via #112:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate adopted asd682b1f after its exact passing verification. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
