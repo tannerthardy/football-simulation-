@@ -1,0 +1,23 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {previewFreeMovement} from '../../src/physics/movement-preview.js';
+const saved=JSON.parse(gunzipSync(readFileSync('out/zone-combo-surface/strong-motion.json.gz')).toString()).rows[0].traffic[0];
+const body=saved.actor.body,raw=saved.raw,speed=Math.hypot(raw.vel.x,raw.vel.y);
+if(body.support.since===null)body.support.since=-Infinity;
+const rows=[.5,.75,.875,.9375,1].map(scale=>{
+ const command={...raw,vel:{x:raw.vel.x*scale,y:raw.vel.y*scale}};
+ const path=previewFreeMovement(body,command,saved.t,12);
+ const gaps=saved.peers.map((p:any)=>{
+  const seen=p.picture,touch=.9*(body.profile.radius+p.profile.radius);
+  let px=body.pos.x-seen.pos.x,py=body.pos.y-seen.pos.y,min=Math.hypot(px,py)-touch;
+  for(const q of path){const rx=q.pos.x-seen.pos.x-seen.vel.x*q.t,ry=q.pos.y-seen.pos.y-seen.vel.y*q.t;
+   const ex=rx-px,ey=ry-py,u=Math.max(0,Math.min(1,-(px*ex+py*ey)/Math.max(1e-12,ex*ex+ey*ey)));
+   min=Math.min(min,Math.hypot(px+u*ex,py+u*ey)-touch);px=rx;py=ry;}
+  return{slot:p.slot,min};
+ });
+ const end=path.at(-1)!;
+ return{scale,up:path.every(s=>s.support==='up'),binding:gaps.sort((a:any,b:any)=>a.min-b.min)[0],
+  progress:((end.pos.x-body.pos.x)*raw.vel.x+(end.pos.y-body.pos.y)*raw.vel.y)/speed};
+});
+const result={qualification:'same-body held-command free preview vs all10 acquired peers, not future contact guarantee',t:saved.t,raw,chosen:saved.chosen,rows};
+writeFileSync('out/zone-combo-surface/traffic.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

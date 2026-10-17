@@ -1,0 +1,47 @@
+/** Diagnostic only: record one native whiff variate, or exchange that one
+ * variate reciprocally between the two saved builds. Never change production
+ * probability, bodies, capabilities, other draws or subsequent controllers. */
+import {readFileSync,writeFileSync} from 'node:fs';
+import {gzipSync,gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {makeSim,rosters} from '../../scripts/diag/box-defense-review/inputs.js';
+import {sourceVersion} from '../../scripts/source-version.js';
+const label=process.argv[2],output=process.argv[3],value=process.argv[4];
+if(!label||!output)throw Error('label/outputrequired');
+const override=value===undefined?null:Number(value);
+if(override!==null&&(!Number.isFinite(override)||override<0||override>=1))throw Error('invalidvariate');
+const sim=makeSim({concept:'oz',dir:'weak',look:'over3',roster:'pair11',seed:77,formation:'ace_12'},rosters());
+const edge=sim.slot('DE_W')!,carrier=sim.slot('RB')!,chance=sim.rng.chance.bind(sim.rng),draws:any[]=[],frames:any[]=[];
+sim.rng.chance=(p:number)=>{
+ if(!draws.length&&sim.t===2.5&&p>.05&&edge.nextTackleAt===sim.t+.5&&new Error().stack?.includes('attempt')){
+  const native=sim.rng.next(),used=override??native;
+  draws.push({t:sim.t,probability:p,native,used,miss:used<p,
+   geometry:structuredClone({edge:edge.body,runner:carrier.body,LT:sim.slot('LT')!.body,
+    engagement:edge.engagement?{blocker:edge.engagement.blocker.slot,win:edge.engagement.win,
+      control:edge.engagement.control,force:Math.hypot(edge.engagement.hands?.normalForce??0,edge.engagement.hands?.tangentForce??0)}:null})});
+  return used<p;
+ }
+ return chance(p);
+};
+const start=performance.now();let maximumResidual=0;
+while(sim.phase==='live'&&sim.t<20){
+ if(performance.now()-start>10000)throw Error('wallbudget');sim.tick();
+ maximumResidual=Math.max(maximumResidual,Math.abs(sim.lastStep!.work.residual));
+ frames.push({t:sim.t,bodies:sim.agents.map(a=>({slot:a.slot,pos:{...a.pos},vel:{...a.vel},facing:a.facing})),
+  loads:sim.engagements.flatMap(e=>[[e.blocker,e.hands]as const,...(e.helperHands?.entries()??[])].map(([a,h])=>({blocker:a.slot,defender:e.defender.slot,force:Math.hypot(h?.normalForce??0,h?.tangentForce??0)}))),
+  impacts:sim.lastStep!.contacts.filter(c=>c.impulse>0&&sim.agents[c.i].team==='O'&&sim.agents[c.j].team==='O').map(c=>({a:sim.agents[c.i].slot,b:sim.agents[c.j].slot,impulse:c.impulse}))});
+}
+let exact:boolean|null=null;
+if(override===null){
+ const expected=JSON.parse(gunzipSync(readFileSync(`out/zone-combo-surface/ozweak-${label}.json.gz`)).toString()).rows[0];
+ exact=frames.length===expected.frames.length&&frames.every((f,i)=>f.bodies.every((a,j)=>
+ ['slot','pos','vel','facing'].every(k=>JSON.stringify(a[k as keyof typeof a])===JSON.stringify(expected.frames[i].bodies[j][k]))));
+ if(!exact)throw Error('passiveobserverchangednative');
+}
+if(draws.length!==1)throw Error('expectedoneidentifiedDEWwhiffdraw');
+const data={label,source:sourceVersion(),override,qualification:override===null?'native passive observation':'one reciprocally exchanged miss variate; diagnostic only, not production outcome evidence',
+ scriptSha256:createHash('sha256').update(readFileSync('out/zone-combo-surface/edge-execution.ts')).digest('hex'),
+ elapsedSeconds:(performance.now()-start)/1000,exact,draws,gain:sim.buildResult().offenseYards,t:sim.t,terminal:sim.phase!=='live',maximumResidual,frames,events:sim.events};
+writeFileSync(output,gzipSync(JSON.stringify(data)));
+console.log(JSON.stringify({label,override,source:data.source,gain:data.gain,t:data.t,exact,maximumResidual,
+ draws:draws.map(({geometry,...d})=>d),contacts:sim.events.filter(e=>['carrier_contact','tackle','missed_tackle'].includes(e.type)),impacts:frames.filter(f=>f.impacts.length).map(f=>({t:f.t,impacts:f.impacts}))}));

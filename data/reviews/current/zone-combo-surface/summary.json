@@ -1,0 +1,3178 @@
+{
+  "acceptedCommit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "codeCommit": "45106c1b3c0f30cc35bed722931207cbaf9d676d",
+  "sources": {
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "surface": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+    "surface117": "bb2d3d99581eb482e4f450188c90189c71db0a305b0eb5fdfd62c991887517e6",
+    "surface122": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+    "prior117122": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+    "cohort": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e"
+  },
+  "decision": "Independent support for narrow technique-contract correction only with exact reviewed #117+#122 cohort; Integration final verification pending. No standalone promotion or weak-zone rescue claim.",
+  "tests": {
+    "standaloneUniquePass": 130,
+    "standaloneTypecheck": "pass",
+    "cohortPass": 68,
+    "cohortRepeated": 48,
+    "cohort117Additional": 20,
+    "oldSourceFinalExpectedFail": 10,
+    "oldSourceFinalControlsPass": 6,
+    "fullSuite": "Not run here; Integration owns combined verification"
+  },
+  "costSeconds": {
+    "nativeCommands": 12.758434766,
+    "nativeCommandsCount": 15,
+    "focusedAndTypecheck": 19.156026357,
+    "redAndRejectedFixtures": 5.157295295,
+    "frozenTrafficPreview": 0.201443993,
+    "allMeasuredCommands": 37.273200411,
+    "chartCommand": 1.696298038,
+    "chartRendererInternal": 0.505772191,
+    "totalIncludingChart": 38.969498449,
+    "qualification": "Command child elapsed times, not full chat wall clock. Includes repeated checks, failed/fixture reds and passive native captures. Cached prior work excluded."
+  },
+  "measurements": {
+    "weakAt2s": {
+      "priorKeeper": "C",
+      "newKeeper": "LG",
+      "priorKeeperForce": 598,
+      "newKeeperForce": 649,
+      "DTPlaysideDeltaYards": 1.064,
+      "DTUpfieldDeltaYards": -0.87,
+      "extraProtectionClaim": false
+    },
+    "weakFirstMikeGraspSeconds": {
+      "prior117122": 3.1,
+      "cohort": 3.0
+    },
+    "strongRGAt2s": {
+      "playsideDeltaYards": 0.796,
+      "upfieldDeltaYards": -2.132
+    },
+    "standaloneAdverse": {
+      "strongWZ": -0.27,
+      "freshWeakOZ": 1.15
+    },
+    "weakSecondLevel": "C climb does not protect Mike through arrival; first-level coherent work does not establish additional protection."
+  },
+  "outputs": [
+    {
+      "file": "out/zone-combo-surface/cohort-ozstrong.json.gz",
+      "sha256": "99bdecfa193c6cc05c15e808b1ac67ef0201a6d9ee8f4904c3b7e579bd5aa232",
+      "bytes": 598553,
+      "source": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "collectorSeconds": 0.6735227399999999,
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4.4,
+          "gain": 7.11,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.73070496506989e-12,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.5,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 18,
+              "pos": {
+                "x": 44.93,
+                "y": 17.93
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 4.35,
+              "type": "tackle",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 47.36,
+                "y": 17.01
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 88
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/cohort-ozweak.json.gz",
+      "sha256": "4a1cc60a6a31ab0e8bb5297e0561e56ed4cae2d314c10e0564723f64ab8967a3",
+      "bytes": 157296,
+      "source": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "collectorSeconds": 0.603738845,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.85,
+          "gain": 3.31,
+          "ending": "tackle",
+          "cachedExact": null,
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.95,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.02,
+                "y": 35.27
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.8,
+              "type": "tackle",
+              "a": 19,
+              "b": 6,
+              "pos": {
+                "x": 43.52,
+                "y": 39.08
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 77
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/cohort-strong.json.gz",
+      "sha256": "9fa87e15671ea866eb925cf6f82a216bb47ecc50684490e7f248e86ff039d16c",
+      "bytes": 516266,
+      "source": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "collectorSeconds": 0.546502567,
+      "rows": [
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4,
+          "gain": 7.23,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.975842208907125e-12,
+            "armImpulseExcess": 2.842170943040401e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.2,
+              "type": "missed_tackle",
+              "a": 21,
+              "b": 6,
+              "pos": {
+                "x": 42.87,
+                "y": 15.99
+              },
+              "note": "dive"
+            },
+            {
+              "t": 3.3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 20,
+              "pos": {
+                "x": 44.67,
+                "y": 17.65
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.95,
+              "type": "tackle",
+              "a": 20,
+              "b": 6,
+              "pos": {
+                "x": 47.37,
+                "y": 16.43
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 80
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/cohort-weak.json.gz",
+      "sha256": "ecdf51ad50c46fadec6cf5d10b437429ceefbab22d9be7042dc603f57201f8c9",
+      "bytes": 471538,
+      "source": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "collectorSeconds": 0.599366632,
+      "rows": [
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.6,
+          "gain": 3.11,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 1.0928147275990341e-11,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.16,
+                "y": 35.4
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.55,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 42.69,
+                "y": 37.22
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 72
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/edge-baseline-native.json.gz",
+      "sha256": "ec4a9091bf9951683ad0163ca8bfcf2aac5444dba25e037620fa9a03f6382987",
+      "bytes": 90481,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "collectorSeconds": 0.49901917700000004,
+      "passiveExecution": {
+        "exact": true,
+        "override": null,
+        "gain": 5.59,
+        "t": 3.9,
+        "terminal": true,
+        "maximumResidual": 1.254818471352337e-11
+      }
+    },
+    {
+      "file": "out/zone-combo-surface/edge-candidate-native.json.gz",
+      "sha256": "309c0cf7f0e7d9da0e03a3debdf30a25539c18e1869f93fc40366265a2f76a77",
+      "bytes": 76580,
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "collectorSeconds": 0.404802325,
+      "passiveExecution": {
+        "exact": true,
+        "override": null,
+        "gain": 1.15,
+        "t": 3.3,
+        "terminal": true,
+        "maximumResidual": 7.098321930243401e-12
+      }
+    },
+    {
+      "file": "out/zone-combo-surface/ozweak-baseline.json.gz",
+      "sha256": "7ac6d4298cd885eeadf65f6aaf9bd819f3ce64b93fc59b452eecfaca433997d8",
+      "bytes": 158225,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "collectorSeconds": 0.610004764,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.9,
+          "gain": 5.59,
+          "ending": "tackle",
+          "cachedExact": null,
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.5,
+              "type": "missed_tackle",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 40.68,
+                "y": 32.73
+              }
+            },
+            {
+              "t": 2.9,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.79,
+                "y": 34.61
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.85,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 45.09,
+                "y": 36.62
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 78
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/ozweak-candidate.json.gz",
+      "sha256": "85c2edbe5bfa2bb37231b5a6ee2312a46af33937010169d50d48344f7daacda0",
+      "bytes": 136130,
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "collectorSeconds": 0.43715267500000005,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.3,
+          "gain": 1.15,
+          "ending": "tackle",
+          "cachedExact": null,
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.5,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 11,
+              "pos": {
+                "x": 39.83,
+                "y": 33.11
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.25,
+              "type": "tackle",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 41.59,
+                "y": 34.24
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 66
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/ozweak-pace.json.gz",
+      "sha256": "d255173d9ded6b9f265358d0755f41a468a83f17381b418d1ce005fec01604f9",
+      "bytes": 136126,
+      "source": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "collectorSeconds": 0.521068844,
+      "rows": [
+        {
+          "input": {
+            "concept": "oz",
+            "dir": "weak",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.3,
+          "gain": 1.15,
+          "ending": "tackle",
+          "cachedExact": null,
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.5,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 11,
+              "pos": {
+                "x": 39.83,
+                "y": 33.11
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.25,
+              "type": "tackle",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 41.59,
+                "y": 34.24
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 66
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/strong-motion.json.gz",
+      "sha256": "81c48299196523301ac4eb28fbd286bb40130b645280f8b5818c72e65be80495",
+      "bytes": 98827,
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "collectorSeconds": 0.368118222,
+      "rows": [
+        {
+          "input": {
+            "concept": "wz",
+            "dir": "strong",
+            "look": "over3",
+            "roster": "pair11",
+            "seed": 77,
+            "formation": "ace_12"
+          },
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": false,
+          "error": null,
+          "t": 2.25,
+          "gain": null,
+          "ending": "explicit-prefix-censor",
+          "cachedExact": true,
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 45
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/strong-only.json.gz",
+      "sha256": "9419df1cf16ca46961c41086b338395b64fe93eb575ef787ba8834c592f5a0b9",
+      "bytes": 453314,
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "collectorSeconds": 0.538692834,
+      "rows": [
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.5,
+          "gain": -0.27,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 8.251177519014163e-12,
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 2.45,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 12,
+              "pos": {
+                "x": 38.88,
+                "y": 20.24
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.45,
+              "type": "tackle",
+              "a": 12,
+              "b": 6,
+              "pos": {
+                "x": 39.87,
+                "y": 19.31
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 70
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/strong-pace.json.gz",
+      "sha256": "498d3792c2e9bc8fd35790e4015a38847c16487dc34a207ce8f52333a3a584dc",
+      "bytes": 562343,
+      "source": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "collectorSeconds": 0.5903022619999999,
+      "rows": [
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4.15,
+          "gain": 3.83,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 8.859357691903824e-12,
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 24.43
+              }
+            },
+            {
+              "t": 3.35,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 18,
+              "pos": {
+                "x": 41.88,
+                "y": 16.21
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 4.1,
+              "type": "tackle",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 42.71,
+                "y": 14.54
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 83
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/weak-117.json.gz",
+      "sha256": "73376a5e5df9a6679d1c309712e7727a5da9cf73f37237749be9236d3ac61158",
+      "bytes": 554700,
+      "source": "bb2d3d99581eb482e4f450188c90189c71db0a305b0eb5fdfd62c991887517e6",
+      "collectorSeconds": 0.5745018740000001,
+      "rows": [
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 4.15,
+          "gain": 2.75,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 1.1330492100114498e-11,
+            "armImpulseExcess": 3.552713678800501e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 40.38,
+                "y": 34.29
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 4.1,
+              "type": "tackle",
+              "a": 19,
+              "b": 6,
+              "pos": {
+                "x": 43.17,
+                "y": 39.67
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 83
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/weak-only.json.gz",
+      "sha256": "15e3cfec6f6ed8424638a512c76c5d124624ff0f7849533f0683a70179d05564",
+      "bytes": 459152,
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "collectorSeconds": 0.5238477720000001,
+      "rows": [
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.55,
+          "gain": 4.34,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 7.1591621519928594e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.45,
+              "type": "missed_tackle",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 40.54,
+                "y": 32.7
+              }
+            },
+            {
+              "t": 2.85,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.57,
+                "y": 34.47
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.5,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 44.21,
+                "y": 35.89
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 71
+        }
+      ]
+    },
+    {
+      "file": "out/zone-combo-surface/weak-pace.json.gz",
+      "sha256": "d5759cbcf5cb1b9896363cbd0c084ea418cd50e88a7bc50ea0b1182fc692719a",
+      "bytes": 459147,
+      "source": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "collectorSeconds": 0.534049338,
+      "rows": [
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "terminal": true,
+          "error": null,
+          "t": 3.55,
+          "gain": 4.34,
+          "ending": "tackle",
+          "maxima": {
+            "workResidual": 8.021139308311831e-12,
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          },
+          "selectedEvents": [
+            {
+              "t": 1.55,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.34,
+                "y": 28.91
+              }
+            },
+            {
+              "t": 2.45,
+              "type": "missed_tackle",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 40.54,
+                "y": 32.7
+              }
+            },
+            {
+              "t": 2.85,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 15,
+              "pos": {
+                "x": 41.57,
+                "y": 34.47
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.5,
+              "type": "tackle",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 44.21,
+                "y": 35.89
+              }
+            }
+          ],
+          "offensiveTeammateImpactCount": 0,
+          "frameCount": 71
+        }
+      ]
+    }
+  ],
+  "reusedBaselines": [
+    {
+      "file": "out/stretch-access/final-interaction.json.gz",
+      "sha256": "74e2e5558eb5f3d712524d0120f6fe8ac97b8d9819d7169506dc8885a77a826b",
+      "bytes": 280635,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "qualification": "Reused compatible saved native evidence; not rerun or charged this pass",
+      "rows": [
+        {
+          "id": "wz-strong-over3",
+          "gain": 2.53,
+          "t": 4.15,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-weak-over3",
+          "gain": 5.34,
+          "t": 4,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "useful-climb-opponent",
+          "gain": null,
+          "t": 3.5,
+          "terminal": false,
+          "ending": "explicit-prefix-censor"
+        }
+      ]
+    },
+    {
+      "file": "out/weak-departure/baseline.json.gz",
+      "sha256": "a3edd70cdbd6e06b8913abd3c4f0ef1d28923d94ff4e0732509ce81cdd3cc951",
+      "bytes": 322114,
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "qualification": "Reused compatible saved native evidence; not rerun or charged this pass",
+      "rows": [
+        {
+          "gain": 5.34,
+          "t": 4,
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "file": "out/zone-anchor/combined-native.json.gz",
+      "sha256": "0cfbd16df56bcd3581eab4f521449c102a8f0f6d6b12bd2f002b1b6f4780b962",
+      "bytes": 2113432,
+      "source": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+      "qualification": "Reused compatible saved native evidence; not rerun or charged this pass",
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 8.66,
+          "t": 4.05,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 6.86,
+          "t": 4.05,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 2.93,
+          "t": 4.25,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "useful-climb-opponent",
+          "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+          "gain": null,
+          "t": 3.5,
+          "terminal": false,
+          "ending": "explicit-prefix-censor"
+        }
+      ]
+    },
+    {
+      "file": "out/run-pace-gather/contact-composed.json.gz",
+      "sha256": "b0dc0dbf84ae1ac3d5fac4473dd003f1b23a11731db01721273032218aeba818",
+      "bytes": 2007275,
+      "source": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+      "qualification": "Reused compatible saved native evidence; not rerun or charged this pass",
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 7.99,
+          "t": 3.9,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 6.68,
+          "t": 3.9,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 3.08,
+          "t": 3.8,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "useful-climb-opponent",
+          "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+          "gain": null,
+          "t": 3.5,
+          "terminal": false,
+          "ending": "explicit-prefix-censor"
+        }
+      ]
+    },
+    {
+      "file": "out/run-pace-gather/native-only.json.gz",
+      "sha256": "2b4269ad4356517f132378c8793232e3f526342be5ed1c924bf764fdc73e7793",
+      "bytes": 2102173,
+      "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+      "qualification": "Reused compatible saved native evidence; not rerun or charged this pass",
+      "rows": [
+        {
+          "id": "oz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 7.84,
+          "t": 3.85,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-strong-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 7.59,
+          "t": 4.7,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "wz-weak-over3",
+          "initialSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+          "gain": 5.21,
+          "t": 3.8,
+          "terminal": true,
+          "ending": "tackle"
+        },
+        {
+          "id": "useful-climb-opponent",
+          "initialSha256": "3d09536cb19c92e6b2f9aa7771d3bb9eb296329de673e535120a1193fb4482a5",
+          "gain": null,
+          "t": 3.5,
+          "terminal": false,
+          "ending": "explicit-prefix-censor"
+        }
+      ]
+    }
+  ],
+  "receipts": {
+    "cohort-focused-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "45106c1b3c0f30cc35bed722931207cbaf9d676d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "validationSha256": "0d083f75e4abb04d520525890168f5d312c13545eb0ba40ea0b09cbd3b91d37a",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:07:48.196Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "test/helper-fit.test.ts",
+            "test/combo-attention.test.ts",
+            "test/stretch-anchor-footwork.test.ts",
+            "test/stretch-normal-follow.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.732988713
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:07:51.932Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "cohort-ozstrong-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:05:47.383Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/cohort-ozstrong.json.gz",
+            "--only=oz-strong-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.022751418
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:05:48.408Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "cohort-ozweak-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:05:48.869Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/cohort-ozweak.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9063392680000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:05:49.778Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "cohort-strong-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:05:44.329Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/cohort-strong.json.gz",
+            "--only=wz-strong-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.88212722
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:05:45.213Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "cohort-weak-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:05:45.817Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/cohort-weak.json.gz",
+            "--only=wz-weak-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9849805380000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:05:46.807Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "contracts-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:58:28.363Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/inline-zone-keeper.test.ts",
+            "test/combo-transfer.test.ts",
+            "test/combo-attention.test.ts",
+            "test/combo-strike-access.test.ts",
+            "test/zone-helper-check.test.ts",
+            "test/run-combo-retarget.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.8534225730000005
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:58:32.218Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "edge-baseline-native-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T02:03:59.645Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/zone-combo-surface/edge-execution.ts",
+            "baseline",
+            "out/zone-combo-surface/edge-baseline-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.786483391
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:04:00.434Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "edge-candidate-native-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T02:03:58.524Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/zone-combo-surface/edge-execution.ts",
+            "candidate",
+            "out/zone-combo-surface/edge-candidate-native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7046089600000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:03:59.231Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "frame-only-red-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "b443526064e624bf335e791cba61cb239097b60dbf0418d29f29cd20cc173df3",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T01:55:16.546Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.751843709
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:55:18.301Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "local-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:56:21.555Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "test/helper-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.7323168839999998
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:56:23.290Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "ozweak-baseline-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T02:01:17.159Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/ozweak-baseline.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9387587709999999
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:01:18.101Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "ozweak-candidate-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T02:01:18.530Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/ozweak-candidate.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.695341535
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:01:19.228Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "ozweak-pace-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:02:30.500Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/ozweak-pace.json.gz",
+            "--concept=oz",
+            "--direction=weak",
+            "--until=20"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7984478369999999
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:02:31.300Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "red-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T01:55:54.997Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.5110879769999999
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:55:56.511Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "rejected-zero-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "a04665c809078d7e31f96e7b82fa19c7de8d952c2f540a236ebb0079d7725ba2",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-17T01:55:04.562Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/zone-combo-surface.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.894363609
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:55:06.458Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "strong-motion-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:59:19.217Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/runner-motion.ts",
+            "out/zone-combo-surface/strong-motion.json.gz",
+            "--direction=strong",
+            "--until=2.25",
+            "--traffic=RB@2.05",
+            "--cached=out/zone-combo-surface/strong-only.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.683907826
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:59:19.903Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "strong-only-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:57:08.738Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/strong-only.json.gz",
+            "--only=wz-strong-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.820543077
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:57:09.561Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "strong-pace-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:00:16.062Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/strong-pace.json.gz",
+            "--only=wz-strong-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.917345617
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:00:16.987Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "traffic-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:59:54.077Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/zone-combo-surface/traffic.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.201443993
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:59:54.281Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:58:37.993Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.837298186999998
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:58:47.834Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "weak-117-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "bb2d3d99581eb482e4f450188c90189c71db0a305b0eb5fdfd62c991887517e6",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts"
+      ],
+      "startedAt": "2026-10-17T01:57:07.382Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/weak-117.json.gz",
+            "--only=wz-weak-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.914680496
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:57:08.300Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "weak-only-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "startedAt": "2026-10-17T01:56:27.684Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/weak-only.json.gz",
+            "--only=wz-weak-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.8669178750000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T01:56:28.553Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "weak-pace-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/zone-combo-surface",
+      "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+      "validationSha256": "379a9fb7105bb901ad191f842e2bc2d9d7d61beb40d7c19cb74b1fd14366b213",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-17T02:01:15.879Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/box-defense-review/protection.ts",
+            "out/zone-combo-surface/weak-pace.json.gz",
+            "--only=wz-weak-over3"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.835200937
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T02:01:16.717Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  }
+}

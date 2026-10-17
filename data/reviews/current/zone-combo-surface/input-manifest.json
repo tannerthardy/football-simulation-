@@ -1,0 +1,3409 @@
+{
+  "purpose": "Narrow initial stretch-combination approach/contact consistency; conditional #117+#122 cohort review, no baseline promotion",
+  "acceptedCommit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "codeCommit": "45106c1b3c0f30cc35bed722931207cbaf9d676d",
+  "historicalComparisonRetained": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "parents": {
+    "117": {
+      "commit": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "runtimeFile": "src/sim/engagement.ts"
+    },
+    "122": {
+      "commit": "cf827df7b59f133d25eea91052aa3c243899f8f8",
+      "runtimeFile": "src/sim/spacing.ts"
+    }
+  },
+  "sources": {
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "surface": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+    "surface117": "bb2d3d99581eb482e4f450188c90189c71db0a305b0eb5fdfd62c991887517e6",
+    "surface122": "a1d5192407ab466b757ebfcdc91fd13a692146b92031b08bdaa70b59fead5996",
+    "prior117122": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+    "cohort": "0ac630a214a03fc9a96077e2c0d9e8dbab918b35d7f9356ff98cf30293907f0e"
+  },
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "files": {
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "config/baseline.json": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+    "scripts/diag/box-defense-review/inputs.ts": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033",
+    "scripts/diag/box-defense-review/protection.ts": "3ca3c886577c41ba18fcf087e10ecbc53d7a67462c8438a71b517e6ec2c572d0",
+    "scripts/diag/box-defense-review/runner-motion.ts": "bd8073d782dbdf86fead1b741becca15bfe796b3ac02f3f85fda853d5ce91af5",
+    "src/sim/behaviors/blocking.ts": "0576e2a4a174505492c186e20ac575e4b0a057a3ea5f6a5665f31fb20793ee00",
+    "test/zone-combo-surface.test.ts": "4ce75546d64fbc0de2961eb2800e09b16ccbfd7b7f3e06a494a14a93633ce4e3",
+    "docs/reviews/zone-combo-surface/promotion.patch": "9e17b31f2e8f9b515725624f211753d5b9825d85dd132fc7105deb384d187d28"
+  },
+  "common": {
+    "offenseTeamSeed": 11,
+    "defenseTeamSeed": 12,
+    "strength": 0.55,
+    "roster": "pair11",
+    "playSeed": 77,
+    "formation": "ace_12",
+    "formationFlip": false,
+    "los": 40,
+    "ballY": 26.67,
+    "firstDownX": 50,
+    "down": 1,
+    "audibles": false,
+    "hurry": false,
+    "look": {
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover3",
+      "zoneStyle": "match",
+      "runPolicy": {
+        "edge": "box",
+        "linebacker": "stack"
+      },
+      "pressure": null
+    }
+  },
+  "cases": [
+    {
+      "concept": "wz",
+      "direction": "strong",
+      "id": "wz-strong-over3",
+      "freshPreselected": false
+    },
+    {
+      "concept": "wz",
+      "direction": "weak",
+      "id": "wz-weak-over3",
+      "freshPreselected": false
+    },
+    {
+      "concept": "oz",
+      "direction": "strong",
+      "id": "oz-strong-over3",
+      "freshPreselected": false
+    },
+    {
+      "concept": "oz",
+      "direction": "weak",
+      "id": "oz-weak-over3",
+      "freshPreselected": true
+    }
+  ],
+  "initialization": "Fresh ordinary makeSim/PlaySim constructor for every native arm. No restored/cleared observer history, injected observations, frozen player futures, controller overrides or execution overrides. Seed, all22 players and normal reactions retained. Traffic observer records production-consumed pictures; calledMotion age compensation duplicates production preprocessing only for evidence.",
+  "initialBodiesAndProfiles": [
+    {
+      "slot": "QB",
+      "body": {
+        "pos": {
+          "x": 38.4,
+          "y": 26.67
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 8.986505550964667,
+          "tau": 1.356315575447923,
+          "brake": 6.499603174603173,
+          "lateral": 6.449367346938778,
+          "turnRate": 8.775555555555556,
+          "backpedal": 0.5438775510204082,
+          "shuffle": 0.5084000000000001,
+          "massKg": 101.60469088,
+          "heightYd": 2.1527777777777777,
+          "radius": 0.27999999999999997,
+          "reach": 1.03625,
+          "maxCatchHeight": 3.554305555555556,
+          "reactReach": 3.122361111111111,
+          "reactionTime": 0.22171428571428572,
+          "power": 68.40172939600001,
+          "balance": 0.35714285714285715,
+          "bend": 0.5247619047619048,
+          "stepSpeed": 3.640730158730159,
+          "getUp": 0.9053888888888889
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 8.986505550964667,
+        "tau": 1.356315575447923,
+        "brake": 6.499603174603173,
+        "lateral": 6.449367346938778,
+        "turnRate": 8.775555555555556,
+        "backpedal": 0.5438775510204082,
+        "shuffle": 0.5084000000000001,
+        "massKg": 101.60469088,
+        "heightYd": 2.1527777777777777,
+        "radius": 0.27999999999999997,
+        "reach": 1.03625,
+        "maxCatchHeight": 3.554305555555556,
+        "reactReach": 3.122361111111111,
+        "reactionTime": 0.22171428571428572,
+        "power": 68.40172939600001,
+        "balance": 0.35714285714285715,
+        "bend": 0.5247619047619048,
+        "stepSpeed": 3.640730158730159,
+        "getUp": 0.9053888888888889
+      }
+    },
+    {
+      "slot": "LT",
+      "body": {
+        "pos": {
+          "x": 39.45,
+          "y": 29.270000000000003
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.5376752026848655,
+          "tau": 1.368954653469823,
+          "brake": 5.054761904761904,
+          "lateral": 5.278989795918368,
+          "turnRate": 6.173333333333334,
+          "backpedal": 0.6434693877551021,
+          "shuffle": 0.5808,
+          "massKg": 142.88159655,
+          "heightYd": 2.1694444444444443,
+          "radius": 0.36272727272727273,
+          "reach": 1.0244444444444443,
+          "maxCatchHeight": 3.5764722222222227,
+          "reactReach": 3.144527777777778,
+          "reactionTime": 0.2375102040816327,
+          "power": 169.300112157,
+          "balance": 0.7142857142857143,
+          "bend": 0.17085714285714299,
+          "stepSpeed": 2.7412380952380953,
+          "getUp": 1.2293333333333334
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.5376752026848655,
+        "tau": 1.368954653469823,
+        "brake": 5.054761904761904,
+        "lateral": 5.278989795918368,
+        "turnRate": 6.173333333333334,
+        "backpedal": 0.6434693877551021,
+        "shuffle": 0.5808,
+        "massKg": 142.88159655,
+        "heightYd": 2.1694444444444443,
+        "radius": 0.36272727272727273,
+        "reach": 1.0244444444444443,
+        "maxCatchHeight": 3.5764722222222227,
+        "reactReach": 3.144527777777778,
+        "reactionTime": 0.2375102040816327,
+        "power": 169.300112157,
+        "balance": 0.7142857142857143,
+        "bend": 0.17085714285714299,
+        "stepSpeed": 2.7412380952380953,
+        "getUp": 1.2293333333333334
+      }
+    },
+    {
+      "slot": "RT",
+      "body": {
+        "pos": {
+          "x": 39.45,
+          "y": 24.07
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.632431434379886,
+          "tau": 1.176459425685191,
+          "brake": 4.797346938775511,
+          "lateral": 4.872139455782314,
+          "turnRate": 5.720000000000001,
+          "backpedal": 0.6373469387755102,
+          "shuffle": 0.5744,
+          "massKg": 145.60315077,
+          "heightYd": 2.177777777777778,
+          "radius": 0.36818181818181817,
+          "reach": 1.0693055555555557,
+          "maxCatchHeight": 3.6142222222222227,
+          "reactReach": 3.1656111111111116,
+          "reactionTime": 0.22967346938775512,
+          "power": 160.66861963538574,
+          "balance": 0.6020408163265306,
+          "bend": 0.06907482993197277,
+          "stepSpeed": 2.528557823129252,
+          "getUp": 1.2686666666666666
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.632431434379886,
+        "tau": 1.176459425685191,
+        "brake": 4.797346938775511,
+        "lateral": 4.872139455782314,
+        "turnRate": 5.720000000000001,
+        "backpedal": 0.6373469387755102,
+        "shuffle": 0.5744,
+        "massKg": 145.60315077,
+        "heightYd": 2.177777777777778,
+        "radius": 0.36818181818181817,
+        "reach": 1.0693055555555557,
+        "maxCatchHeight": 3.6142222222222227,
+        "reactReach": 3.1656111111111116,
+        "reactionTime": 0.22967346938775512,
+        "power": 160.66861963538574,
+        "balance": 0.6020408163265306,
+        "bend": 0.06907482993197277,
+        "stepSpeed": 2.528557823129252,
+        "getUp": 1.2686666666666666
+      }
+    },
+    {
+      "slot": "C",
+      "body": {
+        "pos": {
+          "x": 39.45,
+          "y": 26.67
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.436889583005135,
+          "tau": 1.3541784586880024,
+          "brake": 5.074965986394556,
+          "lateral": 4.922761904761907,
+          "turnRate": 5.793333333333335,
+          "backpedal": 0.5322448979591837,
+          "shuffle": 0.5232000000000001,
+          "massKg": 143.33518892,
+          "heightYd": 2.088888888888889,
+          "radius": 0.36363636363636365,
+          "reach": 1.0315277777777778,
+          "maxCatchHeight": 3.467111111111111,
+          "reactReach": 3.0365555555555557,
+          "reactionTime": 0.248530612244898,
+          "power": 163.65075804345716,
+          "balance": 0.7448979591836735,
+          "bend": 0.1716462585034015,
+          "stepSpeed": 2.666938775510204,
+          "getUp": 1.253
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.436889583005135,
+        "tau": 1.3541784586880024,
+        "brake": 5.074965986394556,
+        "lateral": 4.922761904761907,
+        "turnRate": 5.793333333333335,
+        "backpedal": 0.5322448979591837,
+        "shuffle": 0.5232000000000001,
+        "massKg": 143.33518892,
+        "heightYd": 2.088888888888889,
+        "radius": 0.36363636363636365,
+        "reach": 1.0315277777777778,
+        "maxCatchHeight": 3.467111111111111,
+        "reactReach": 3.0365555555555557,
+        "reactionTime": 0.248530612244898,
+        "power": 163.65075804345716,
+        "balance": 0.7448979591836735,
+        "bend": 0.1716462585034015,
+        "stepSpeed": 2.666938775510204,
+        "getUp": 1.253
+      }
+    },
+    {
+      "slot": "LG",
+      "body": {
+        "pos": {
+          "x": 39.45,
+          "y": 27.970000000000002
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.685621731390056,
+          "tau": 1.4414970671656224,
+          "brake": 5.058378684807255,
+          "lateral": 5.082860544217689,
+          "turnRate": 6.035555555555555,
+          "backpedal": 0.633265306122449,
+          "shuffle": 0.5776,
+          "massKg": 146.96392788,
+          "heightYd": 2.161111111111111,
+          "radius": 0.3709090909090909,
+          "reach": 1.055138888888889,
+          "maxCatchHeight": 3.3987222222222226,
+          "reactReach": 3.0709444444444447,
+          "reactionTime": 0.2511020408163266,
+          "power": 179.7158889504,
+          "balance": 0.673469387755102,
+          "bend": 0.14536054421768707,
+          "stepSpeed": 2.651192743764172,
+          "getUp": 1.2502222222222223
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.685621731390056,
+        "tau": 1.4414970671656224,
+        "brake": 5.058378684807255,
+        "lateral": 5.082860544217689,
+        "turnRate": 6.035555555555555,
+        "backpedal": 0.633265306122449,
+        "shuffle": 0.5776,
+        "massKg": 146.96392788,
+        "heightYd": 2.161111111111111,
+        "radius": 0.3709090909090909,
+        "reach": 1.055138888888889,
+        "maxCatchHeight": 3.3987222222222226,
+        "reactReach": 3.0709444444444447,
+        "reactionTime": 0.2511020408163266,
+        "power": 179.7158889504,
+        "balance": 0.673469387755102,
+        "bend": 0.14536054421768707,
+        "stepSpeed": 2.651192743764172,
+        "getUp": 1.2502222222222223
+      }
+    },
+    {
+      "slot": "RG",
+      "body": {
+        "pos": {
+          "x": 39.45,
+          "y": 25.37
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.544736256738903,
+          "tau": 1.3702370465878275,
+          "brake": 5.330759637188208,
+          "lateral": 5.603639455782315,
+          "turnRate": 6.9222222222222225,
+          "backpedal": 0.5322448979591837,
+          "shuffle": 0.54,
+          "massKg": 142.42800418000002,
+          "heightYd": 2.1055555555555556,
+          "radius": 0.3618181818181818,
+          "reach": 1.0669444444444445,
+          "maxCatchHeight": 3.4381666666666666,
+          "reactReach": 3.039555555555556,
+          "reactionTime": 0.2624897959183674,
+          "power": 162.65859416148572,
+          "balance": 0.5306122448979592,
+          "bend": 0.30012244897959206,
+          "stepSpeed": 2.8434784580498866,
+          "getUp": 1.1757222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.544736256738903,
+        "tau": 1.3702370465878275,
+        "brake": 5.330759637188208,
+        "lateral": 5.603639455782315,
+        "turnRate": 6.9222222222222225,
+        "backpedal": 0.5322448979591837,
+        "shuffle": 0.54,
+        "massKg": 142.42800418000002,
+        "heightYd": 2.1055555555555556,
+        "radius": 0.3618181818181818,
+        "reach": 1.0669444444444445,
+        "maxCatchHeight": 3.4381666666666666,
+        "reactReach": 3.039555555555556,
+        "reactionTime": 0.2624897959183674,
+        "power": 162.65859416148572,
+        "balance": 0.5306122448979592,
+        "bend": 0.30012244897959206,
+        "stepSpeed": 2.8434784580498866,
+        "getUp": 1.1757222222222221
+      }
+    },
+    {
+      "slot": "RB",
+      "body": {
+        "pos": {
+          "x": 33.2,
+          "y": 26.67
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.421439519892484,
+          "tau": 1.2406440920400506,
+          "brake": 6.289954648526076,
+          "lateral": 6.732486394557825,
+          "turnRate": 8.257777777777779,
+          "backpedal": 0.5346938775510205,
+          "shuffle": 0.5256000000000001,
+          "massKg": 105.23342984,
+          "heightYd": 1.9666666666666666,
+          "radius": 0.28727272727272724,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.386777777777778,
+          "reactReach": 2.9048333333333334,
+          "reactionTime": 0.24338775510204086,
+          "power": 114.46283116117144,
+          "balance": 0.826530612244898,
+          "bend": 0.672639455782313,
+          "stepSpeed": 3.725473922902494,
+          "getUp": 0.9586111111111112
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.421439519892484,
+        "tau": 1.2406440920400506,
+        "brake": 6.289954648526076,
+        "lateral": 6.732486394557825,
+        "turnRate": 8.257777777777779,
+        "backpedal": 0.5346938775510205,
+        "shuffle": 0.5256000000000001,
+        "massKg": 105.23342984,
+        "heightYd": 1.9666666666666666,
+        "radius": 0.28727272727272724,
+        "reach": 0.9795833333333333,
+        "maxCatchHeight": 3.386777777777778,
+        "reactReach": 2.9048333333333334,
+        "reactionTime": 0.24338775510204086,
+        "power": 114.46283116117144,
+        "balance": 0.826530612244898,
+        "bend": 0.672639455782313,
+        "stepSpeed": 3.725473922902494,
+        "getUp": 0.9586111111111112
+      }
+    },
+    {
+      "slot": "Y",
+      "body": {
+        "pos": {
+          "x": 39.4,
+          "y": 22.770000000000003
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 8.75548679553021,
+          "tau": 1.2844970679640877,
+          "brake": 5.902959183673468,
+          "lateral": 6.269812925170071,
+          "turnRate": 8.4,
+          "backpedal": 0.536734693877551,
+          "shuffle": 0.528,
+          "massKg": 119.74838568000001,
+          "heightYd": 2.158333333333333,
+          "radius": 0.31636363636363635,
+          "reach": 1.0244444444444443,
+          "maxCatchHeight": 3.619472222222223,
+          "reactReach": 3.151416666666667,
+          "reactionTime": 0.26457142857142857,
+          "power": 121.81954398334287,
+          "balance": 0.19387755102040816,
+          "bend": 0.4314421768707484,
+          "stepSpeed": 3.253659863945578,
+          "getUp": 0.9976666666666666
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 8.75548679553021,
+        "tau": 1.2844970679640877,
+        "brake": 5.902959183673468,
+        "lateral": 6.269812925170071,
+        "turnRate": 8.4,
+        "backpedal": 0.536734693877551,
+        "shuffle": 0.528,
+        "massKg": 119.74838568000001,
+        "heightYd": 2.158333333333333,
+        "radius": 0.31636363636363635,
+        "reach": 1.0244444444444443,
+        "maxCatchHeight": 3.619472222222223,
+        "reactReach": 3.151416666666667,
+        "reactionTime": 0.26457142857142857,
+        "power": 121.81954398334287,
+        "balance": 0.19387755102040816,
+        "bend": 0.4314421768707484,
+        "stepSpeed": 3.253659863945578,
+        "getUp": 0.9976666666666666
+      }
+    },
+    {
+      "slot": "X",
+      "body": {
+        "pos": {
+          "x": 38.8,
+          "y": 44.67
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.85561463137126,
+          "tau": 1.1589568005525621,
+          "brake": 7.031020408163265,
+          "lateral": 7.258802721088438,
+          "turnRate": 9.540000000000001,
+          "backpedal": 0.5316326530612245,
+          "shuffle": 0.5388000000000001,
+          "massKg": 78.92507238,
+          "heightYd": 2.0416666666666665,
+          "radius": 0.23454545454545453,
+          "reach": 1.0220833333333335,
+          "maxCatchHeight": 3.524305555555556,
+          "reactReach": 3.0187500000000003,
+          "reactionTime": 0.27302040816326534,
+          "power": 58.50925008578572,
+          "balance": 0.6530612244897959,
+          "bend": 0.787278911564626,
+          "stepSpeed": 4.225170068027211,
+          "getUp": 0.7786666666666666
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.85561463137126,
+        "tau": 1.1589568005525621,
+        "brake": 7.031020408163265,
+        "lateral": 7.258802721088438,
+        "turnRate": 9.540000000000001,
+        "backpedal": 0.5316326530612245,
+        "shuffle": 0.5388000000000001,
+        "massKg": 78.92507238,
+        "heightYd": 2.0416666666666665,
+        "radius": 0.23454545454545453,
+        "reach": 1.0220833333333335,
+        "maxCatchHeight": 3.524305555555556,
+        "reactReach": 3.0187500000000003,
+        "reactionTime": 0.27302040816326534,
+        "power": 58.50925008578572,
+        "balance": 0.6530612244897959,
+        "bend": 0.787278911564626,
+        "stepSpeed": 4.225170068027211,
+        "getUp": 0.7786666666666666
+      }
+    },
+    {
+      "slot": "Z",
+      "body": {
+        "pos": {
+          "x": 38.8,
+          "y": 8.670000000000002
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.74767768512139,
+          "tau": 1.0276545974720142,
+          "brake": 7.327721088435374,
+          "lateral": 7.173272108843539,
+          "turnRate": 9.993333333333336,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.5412,
+          "massKg": 75.74992579,
+          "heightYd": 1.9083333333333334,
+          "radius": 0.22818181818181818,
+          "reach": 0.9654166666666667,
+          "maxCatchHeight": 3.5203055555555562,
+          "reactReach": 2.906416666666667,
+          "reactionTime": 0.2479183673469388,
+          "power": 57.013413533371434,
+          "balance": 0.40816326530612246,
+          "bend": 0.9042993197278913,
+          "stepSpeed": 4.250897959183673,
+          "getUp": 0.732
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.74767768512139,
+        "tau": 1.0276545974720142,
+        "brake": 7.327721088435374,
+        "lateral": 7.173272108843539,
+        "turnRate": 9.993333333333336,
+        "backpedal": 0.5275510204081633,
+        "shuffle": 0.5412,
+        "massKg": 75.74992579,
+        "heightYd": 1.9083333333333334,
+        "radius": 0.22818181818181818,
+        "reach": 0.9654166666666667,
+        "maxCatchHeight": 3.5203055555555562,
+        "reactReach": 2.906416666666667,
+        "reactionTime": 0.2479183673469388,
+        "power": 57.013413533371434,
+        "balance": 0.40816326530612246,
+        "bend": 0.9042993197278913,
+        "stepSpeed": 4.250897959183673,
+        "getUp": 0.732
+      }
+    },
+    {
+      "slot": "H",
+      "body": {
+        "pos": {
+          "x": 39.4,
+          "y": 30.57
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.055265422916397,
+          "tau": 1.4446410819119608,
+          "brake": 5.950102040816325,
+          "lateral": 6.054826530612246,
+          "turnRate": 8.12,
+          "backpedal": 0.5306122448979592,
+          "shuffle": 0.5224000000000001,
+          "massKg": 114.30527724000001,
+          "heightYd": 2.1555555555555554,
+          "radius": 0.3054545454545454,
+          "reach": 1.0456944444444445,
+          "maxCatchHeight": 3.6068888888888893,
+          "reactReach": 3.144388888888889,
+          "reactionTime": 0.24522448979591838,
+          "power": 118.1368367883,
+          "balance": 0.2653061224489796,
+          "bend": 0.401061224489796,
+          "stepSpeed": 3.2791836734693875,
+          "getUp": 0.996
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.055265422916397,
+        "tau": 1.4446410819119608,
+        "brake": 5.950102040816325,
+        "lateral": 6.054826530612246,
+        "turnRate": 8.12,
+        "backpedal": 0.5306122448979592,
+        "shuffle": 0.5224000000000001,
+        "massKg": 114.30527724000001,
+        "heightYd": 2.1555555555555554,
+        "radius": 0.3054545454545454,
+        "reach": 1.0456944444444445,
+        "maxCatchHeight": 3.6068888888888893,
+        "reactReach": 3.144388888888889,
+        "reactionTime": 0.24522448979591838,
+        "power": 118.1368367883,
+        "balance": 0.2653061224489796,
+        "bend": 0.401061224489796,
+        "stepSpeed": 3.2791836734693875,
+        "getUp": 0.996
+      }
+    },
+    {
+      "slot": "DE_W",
+      "body": {
+        "pos": {
+          "x": 40.9,
+          "y": 29.827887199739646
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 8.751297318123504,
+          "tau": 1.3169837630933316,
+          "brake": 6.334977324263037,
+          "lateral": 6.646880952380954,
+          "turnRate": 8.52888888888889,
+          "backpedal": 0.5306122448979592,
+          "shuffle": 0.5288,
+          "massKg": 122.4699399,
+          "heightYd": 2.1055555555555556,
+          "radius": 0.3218181818181818,
+          "reach": 1.0575,
+          "maxCatchHeight": 3.653722222222222,
+          "reactReach": 3.120388888888889,
+          "reactionTime": 0.20016326530612247,
+          "power": 127.2125258379643,
+          "balance": 0.6632653061224489,
+          "bend": 0.5833197278911565,
+          "stepSpeed": 3.5517369614512466,
+          "getUp": 0.9965555555555556
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 8.751297318123504,
+        "tau": 1.3169837630933316,
+        "brake": 6.334977324263037,
+        "lateral": 6.646880952380954,
+        "turnRate": 8.52888888888889,
+        "backpedal": 0.5306122448979592,
+        "shuffle": 0.5288,
+        "massKg": 122.4699399,
+        "heightYd": 2.1055555555555556,
+        "radius": 0.3218181818181818,
+        "reach": 1.0575,
+        "maxCatchHeight": 3.653722222222222,
+        "reactReach": 3.120388888888889,
+        "reactionTime": 0.20016326530612247,
+        "power": 127.2125258379643,
+        "balance": 0.6632653061224489,
+        "bend": 0.5833197278911565,
+        "stepSpeed": 3.5517369614512466,
+        "getUp": 0.9965555555555556
+      }
+    },
+    {
+      "slot": "DE_S",
+      "body": {
+        "pos": {
+          "x": 40.9,
+          "y": 22.88902408006201
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.366052294487933,
+          "tau": 1.4961841132086267,
+          "brake": 6.394965986394558,
+          "lateral": 6.295629251700682,
+          "turnRate": 8.733333333333334,
+          "backpedal": 0.613265306122449,
+          "shuffle": 0.588,
+          "massKg": 106.59420695,
+          "heightYd": 2.033333333333333,
+          "radius": 0.29,
+          "reach": 1.0008333333333332,
+          "maxCatchHeight": 3.466555555555556,
+          "reactReach": 2.990166666666667,
+          "reactionTime": 0.1798367346938776,
+          "power": 110.70569778950001,
+          "balance": 0.24489795918367346,
+          "bend": 0.5816462585034016,
+          "stepSpeed": 3.516938775510204,
+          "getUp": 0.9249999999999999
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.366052294487933,
+        "tau": 1.4961841132086267,
+        "brake": 6.394965986394558,
+        "lateral": 6.295629251700682,
+        "turnRate": 8.733333333333334,
+        "backpedal": 0.613265306122449,
+        "shuffle": 0.588,
+        "massKg": 106.59420695,
+        "heightYd": 2.033333333333333,
+        "radius": 0.29,
+        "reach": 1.0008333333333332,
+        "maxCatchHeight": 3.466555555555556,
+        "reactReach": 2.990166666666667,
+        "reactionTime": 0.1798367346938776,
+        "power": 110.70569778950001,
+        "balance": 0.24489795918367346,
+        "bend": 0.5816462585034016,
+        "stepSpeed": 3.516938775510204,
+        "getUp": 0.9249999999999999
+      }
+    },
+    {
+      "slot": "DT_S",
+      "body": {
+        "pos": {
+          "x": 40.9,
+          "y": 24.5586719051196
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.234613007624645,
+          "tau": 1.204330666233334,
+          "brake": 7.048106575963718,
+          "lateral": 7.362778911564627,
+          "turnRate": 9.782222222222224,
+          "backpedal": 0.5316326530612245,
+          "shuffle": 0.5432,
+          "massKg": 111.58372302000001,
+          "heightYd": 2.1055555555555556,
+          "radius": 0.3,
+          "reach": 1.03625,
+          "maxCatchHeight": 3.6426111111111115,
+          "reactReach": 3.1162222222222224,
+          "reactionTime": 0.23432653061224493,
+          "power": 102.019403904,
+          "balance": 0.6326530612244898,
+          "bend": 0.7771972789115648,
+          "stepSpeed": 3.9840362811791383,
+          "getUp": 0.8718888888888889
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.234613007624645,
+        "tau": 1.204330666233334,
+        "brake": 7.048106575963718,
+        "lateral": 7.362778911564627,
+        "turnRate": 9.782222222222224,
+        "backpedal": 0.5316326530612245,
+        "shuffle": 0.5432,
+        "massKg": 111.58372302000001,
+        "heightYd": 2.1055555555555556,
+        "radius": 0.3,
+        "reach": 1.03625,
+        "maxCatchHeight": 3.6426111111111115,
+        "reactReach": 3.1162222222222224,
+        "reactionTime": 0.23432653061224493,
+        "power": 102.019403904,
+        "balance": 0.6326530612244898,
+        "bend": 0.7771972789115648,
+        "stepSpeed": 3.9840362811791383,
+        "getUp": 0.8718888888888889
+      }
+    },
+    {
+      "slot": "DT_W",
+      "body": {
+        "pos": {
+          "x": 40.9,
+          "y": 27.446327261177426
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 7.715312232980866,
+          "tau": 1.31194014483815,
+          "brake": 5.574705215419502,
+          "lateral": 5.619465986394561,
+          "turnRate": 6.995555555555557,
+          "backpedal": 0.5357142857142858,
+          "shuffle": 0.5088,
+          "massKg": 148.77829736,
+          "heightYd": 2.091666666666667,
+          "radius": 0.3745454545454545,
+          "reach": 1.0291666666666666,
+          "maxCatchHeight": 3.4130277777777778,
+          "reactReach": 3.0185833333333334,
+          "reactionTime": 0.22722448979591836,
+          "power": 181.86628706368575,
+          "balance": 0.6224489795918368,
+          "bend": 0.3384897959183676,
+          "stepSpeed": 2.87524716553288,
+          "getUp": 1.1885555555555554
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.7,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 7.715312232980866,
+        "tau": 1.31194014483815,
+        "brake": 5.574705215419502,
+        "lateral": 5.619465986394561,
+        "turnRate": 6.995555555555557,
+        "backpedal": 0.5357142857142858,
+        "shuffle": 0.5088,
+        "massKg": 148.77829736,
+        "heightYd": 2.091666666666667,
+        "radius": 0.3745454545454545,
+        "reach": 1.0291666666666666,
+        "maxCatchHeight": 3.4130277777777778,
+        "reactReach": 3.0185833333333334,
+        "reactionTime": 0.22722448979591836,
+        "power": 181.86628706368575,
+        "balance": 0.6224489795918368,
+        "bend": 0.3384897959183676,
+        "stepSpeed": 2.87524716553288,
+        "getUp": 1.1885555555555554
+      }
+    },
+    {
+      "slot": "LB_M",
+      "body": {
+        "pos": {
+          "x": 45,
+          "y": 25.92999244499661
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.284378203558154,
+          "tau": 1.247818699986675,
+          "brake": 6.319886621315192,
+          "lateral": 6.228469387755102,
+          "turnRate": 8.544444444444444,
+          "backpedal": 0.6234693877551021,
+          "shuffle": 0.586,
+          "massKg": 103.87265273,
+          "heightYd": 2.0277777777777777,
+          "radius": 0.28454545454545455,
+          "reach": 1.0268055555555555,
+          "maxCatchHeight": 3.5236111111111112,
+          "reactReach": 3.0069444444444446,
+          "reactionTime": 0.20200000000000004,
+          "power": 107.33860757109287,
+          "balance": 0.3163265306122449,
+          "bend": 0.5699319727891157,
+          "stepSpeed": 3.529351473922902,
+          "getUp": 0.9296111111111112
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.284378203558154,
+        "tau": 1.247818699986675,
+        "brake": 6.319886621315192,
+        "lateral": 6.228469387755102,
+        "turnRate": 8.544444444444444,
+        "backpedal": 0.6234693877551021,
+        "shuffle": 0.586,
+        "massKg": 103.87265273,
+        "heightYd": 2.0277777777777777,
+        "radius": 0.28454545454545455,
+        "reach": 1.0268055555555555,
+        "maxCatchHeight": 3.5236111111111112,
+        "reactReach": 3.0069444444444446,
+        "reactionTime": 0.20200000000000004,
+        "power": 107.33860757109287,
+        "balance": 0.3163265306122449,
+        "bend": 0.5699319727891157,
+        "stepSpeed": 3.529351473922902,
+        "getUp": 0.9296111111111112
+      }
+    },
+    {
+      "slot": "LB_W",
+      "body": {
+        "pos": {
+          "x": 44.6,
+          "y": 28.675502446498623
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.268659211640907,
+          "tau": 1.2952502079053059,
+          "brake": 6.253038548752834,
+          "lateral": 6.239431972789117,
+          "turnRate": 8.72888888888889,
+          "backpedal": 0.5857142857142857,
+          "shuffle": 0.5888,
+          "massKg": 103.87265273,
+          "heightYd": 1.9888888888888887,
+          "radius": 0.28454545454545455,
+          "reach": 0.9913888888888889,
+          "maxCatchHeight": 3.376333333333333,
+          "reactReach": 2.919388888888889,
+          "reactionTime": 0.2299183673469388,
+          "power": 103.96804598250715,
+          "balance": 0.12244897959183673,
+          "bend": 0.5891564625850343,
+          "stepSpeed": 3.46124716553288,
+          "getUp": 0.9175555555555555
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.268659211640907,
+        "tau": 1.2952502079053059,
+        "brake": 6.253038548752834,
+        "lateral": 6.239431972789117,
+        "turnRate": 8.72888888888889,
+        "backpedal": 0.5857142857142857,
+        "shuffle": 0.5888,
+        "massKg": 103.87265273,
+        "heightYd": 1.9888888888888887,
+        "radius": 0.28454545454545455,
+        "reach": 0.9913888888888889,
+        "maxCatchHeight": 3.376333333333333,
+        "reactReach": 2.919388888888889,
+        "reactionTime": 0.2299183673469388,
+        "power": 103.96804598250715,
+        "balance": 0.12244897959183673,
+        "bend": 0.5891564625850343,
+        "stepSpeed": 3.46124716553288,
+        "getUp": 0.9175555555555555
+      }
+    },
+    {
+      "slot": "LB_S",
+      "body": {
+        "pos": {
+          "x": 44.1,
+          "y": 23.312900751928456
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.172289080720192,
+          "tau": 1.2423379632388303,
+          "brake": 6.364410430839002,
+          "lateral": 6.467027210884355,
+          "turnRate": 8.891111111111112,
+          "backpedal": 0.5959183673469387,
+          "shuffle": 0.5916,
+          "massKg": 104.77983747,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.2863636363636364,
+          "reach": 1.0102777777777778,
+          "maxCatchHeight": 3.5250833333333333,
+          "reactReach": 3.0098055555555554,
+          "reactionTime": 0.24142857142857146,
+          "power": 109.44681696547501,
+          "balance": 0.24489795918367346,
+          "bend": 0.6103129251700684,
+          "stepSpeed": 3.5671609977324263,
+          "getUp": 0.9104444444444444
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.172289080720192,
+        "tau": 1.2423379632388303,
+        "brake": 6.364410430839002,
+        "lateral": 6.467027210884355,
+        "turnRate": 8.891111111111112,
+        "backpedal": 0.5959183673469387,
+        "shuffle": 0.5916,
+        "massKg": 104.77983747,
+        "heightYd": 2.0305555555555554,
+        "radius": 0.2863636363636364,
+        "reach": 1.0102777777777778,
+        "maxCatchHeight": 3.5250833333333333,
+        "reactReach": 3.0098055555555554,
+        "reactionTime": 0.24142857142857146,
+        "power": 109.44681696547501,
+        "balance": 0.24489795918367346,
+        "bend": 0.6103129251700684,
+        "stepSpeed": 3.5671609977324263,
+        "getUp": 0.9104444444444444
+      }
+    },
+    {
+      "slot": "CB_S",
+      "body": {
+        "pos": {
+          "x": 47,
+          "y": 8.009517533310294
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.982793133365343,
+          "tau": 1.1152381732093612,
+          "brake": 7.162471655328797,
+          "lateral": 7.179557823129253,
+          "turnRate": 10.211111111111112,
+          "backpedal": 0.753673469387755,
+          "shuffle": 0.646,
+          "massKg": 87.54332741,
+          "heightYd": 1.9166666666666667,
+          "radius": 0.25181818181818183,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.4780555555555557,
+          "reactReach": 2.8975,
+          "reactionTime": 0.2229387755102041,
+          "power": 74.38502932072143,
+          "balance": 0.20408163265306123,
+          "bend": 0.8941496598639455,
+          "stepSpeed": 4.072671201814058,
+          "getUp": 0.7589444444444445
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.982793133365343,
+        "tau": 1.1152381732093612,
+        "brake": 7.162471655328797,
+        "lateral": 7.179557823129253,
+        "turnRate": 10.211111111111112,
+        "backpedal": 0.753673469387755,
+        "shuffle": 0.646,
+        "massKg": 87.54332741,
+        "heightYd": 1.9166666666666667,
+        "radius": 0.25181818181818183,
+        "reach": 0.9795833333333333,
+        "maxCatchHeight": 3.4780555555555557,
+        "reactReach": 2.8975,
+        "reactionTime": 0.2229387755102041,
+        "power": 74.38502932072143,
+        "balance": 0.20408163265306123,
+        "bend": 0.8941496598639455,
+        "stepSpeed": 4.072671201814058,
+        "getUp": 0.7589444444444445
+      }
+    },
+    {
+      "slot": "CB_W",
+      "body": {
+        "pos": {
+          "x": 47,
+          "y": 45.80537706127412
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.925365455047869,
+          "tau": 1.257778799566081,
+          "brake": 6.795306122448979,
+          "lateral": 6.679993197278914,
+          "turnRate": 9.340000000000002,
+          "backpedal": 0.7526530612244897,
+          "shuffle": 0.6348,
+          "massKg": 84.36818082,
+          "heightYd": 1.9666666666666666,
+          "radius": 0.24545454545454545,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4267777777777777,
+          "reactReach": 2.9198333333333335,
+          "reactionTime": 0.21804081632653063,
+          "power": 68.03260703367857,
+          "balance": 0.29591836734693877,
+          "bend": 0.7365170068027215,
+          "stepSpeed": 3.9162176870748304,
+          "getUp": 0.8083333333333332
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.925365455047869,
+        "tau": 1.257778799566081,
+        "brake": 6.795306122448979,
+        "lateral": 6.679993197278914,
+        "turnRate": 9.340000000000002,
+        "backpedal": 0.7526530612244897,
+        "shuffle": 0.6348,
+        "massKg": 84.36818082,
+        "heightYd": 1.9666666666666666,
+        "radius": 0.24545454545454545,
+        "reach": 0.9677777777777777,
+        "maxCatchHeight": 3.4267777777777777,
+        "reactReach": 2.9198333333333335,
+        "reactionTime": 0.21804081632653063,
+        "power": 68.03260703367857,
+        "balance": 0.29591836734693877,
+        "bend": 0.7365170068027215,
+        "stepSpeed": 3.9162176870748304,
+        "getUp": 0.8083333333333332
+      }
+    },
+    {
+      "slot": "FS",
+      "body": {
+        "pos": {
+          "x": 53,
+          "y": 26.657299639041955
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727087194589172,
+          "tau": 1.3095992097244147,
+          "brake": 6.557097505668932,
+          "lateral": 7.035285714285715,
+          "turnRate": 9.397777777777778,
+          "backpedal": 0.7075510204081633,
+          "shuffle": 0.6204,
+          "massKg": 88.90410452,
+          "heightYd": 2.0055555555555555,
+          "radius": 0.2545454545454545,
+          "reach": 1.0031944444444445,
+          "maxCatchHeight": 3.4673888888888893,
+          "reactReach": 2.9673888888888893,
+          "reactionTime": 0.18400000000000002,
+          "power": 81.3245760173,
+          "balance": 0.3979591836734694,
+          "bend": 0.7422585034013603,
+          "stepSpeed": 3.9249977324263035,
+          "getUp": 0.8264444444444445
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 9.727087194589172,
+        "tau": 1.3095992097244147,
+        "brake": 6.557097505668932,
+        "lateral": 7.035285714285715,
+        "turnRate": 9.397777777777778,
+        "backpedal": 0.7075510204081633,
+        "shuffle": 0.6204,
+        "massKg": 88.90410452,
+        "heightYd": 2.0055555555555555,
+        "radius": 0.2545454545454545,
+        "reach": 1.0031944444444445,
+        "maxCatchHeight": 3.4673888888888893,
+        "reactReach": 2.9673888888888893,
+        "reactionTime": 0.18400000000000002,
+        "power": 81.3245760173,
+        "balance": 0.3979591836734694,
+        "bend": 0.7422585034013603,
+        "stepSpeed": 3.9249977324263035,
+        "getUp": 0.8264444444444445
+      }
+    },
+    {
+      "slot": "SS",
+      "body": {
+        "pos": {
+          "x": 47.5,
+          "y": 20.000540025358855
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 10.091618999054921,
+          "tau": 1.2810882034180946,
+          "brake": 6.791689342403629,
+          "lateral": 6.583687074829933,
+          "turnRate": 9.197777777777778,
+          "backpedal": 0.7393877551020408,
+          "shuffle": 0.6324,
+          "massKg": 89.81128926000001,
+          "heightYd": 1.9888888888888887,
+          "radius": 0.25636363636363635,
+          "reach": 0.9843055555555555,
+          "maxCatchHeight": 3.454111111111111,
+          "reactReach": 2.9485555555555556,
+          "reactionTime": 0.22502040816326532,
+          "power": 83.13042906912858,
+          "balance": 0.336734693877551,
+          "bend": 0.7053469387755105,
+          "stepSpeed": 3.85692970521542,
+          "getUp": 0.8352777777777777
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "profile": {
+        "vmax": 10.091618999054921,
+        "tau": 1.2810882034180946,
+        "brake": 6.791689342403629,
+        "lateral": 6.583687074829933,
+        "turnRate": 9.197777777777778,
+        "backpedal": 0.7393877551020408,
+        "shuffle": 0.6324,
+        "massKg": 89.81128926000001,
+        "heightYd": 1.9888888888888887,
+        "radius": 0.25636363636363635,
+        "reach": 0.9843055555555555,
+        "maxCatchHeight": 3.454111111111111,
+        "reactReach": 2.9485555555555556,
+        "reactionTime": 0.22502040816326532,
+        "power": 83.13042906912858,
+        "balance": 0.336734693877551,
+        "bend": 0.7053469387755105,
+        "stepSpeed": 3.85692970521542,
+        "getUp": 0.8352777777777777
+      }
+    }
+  ],
+  "initialBodiesAndProfilesSha256": "32ee9eb481089bb67aa8fcc194ec70a20077155068ccb3cdca29ace53382c6ce",
+  "initialHashQualification": "This hashes identical bodies/profiles, not the different concept/assignments. Full call input above and factory hash are required.",
+  "frozenStrongTraffic": {
+    "qualification": "Actor plus all10 acquired teammate pictures consumed by actual spacing at2.05; constant-velocity peer free-preview is diagnostic, not future contact guarantee. No continuation override. support.since null represents original -Infinity in serialized body.",
+    "state": {
+      "t": 2.05,
+      "actor": {
+        "idx": 6,
+        "slot": "RB",
+        "team": "O",
+        "player": {
+          "id": "pair11O-RB1",
+          "firstName": "Reggie",
+          "lastName": "Sanders",
+          "jersey": 39,
+          "position": "RB",
+          "age": 23,
+          "experience": 1,
+          "measurables": {
+            "heightIn": 70.8,
+            "weightLb": 232,
+            "armIn": 30.9,
+            "handIn": 9.8,
+            "forty": 4.52,
+            "tenSplit": 1.54,
+            "shuttle": 4.41,
+            "threeCone": 7.16,
+            "vertical": 34.7,
+            "broad": 113,
+            "bench": 28
+          },
+          "ratings": {
+            "strength": 73,
+            "stamina": 81,
+            "balance": 82,
+            "toughness": 62,
+            "throwPower": 38,
+            "accShort": 21,
+            "accMid": 24,
+            "accDeep": 27,
+            "release": 31,
+            "throwOnRun": 34,
+            "touch": 53,
+            "pocketPresence": 31,
+            "vision": 85,
+            "elusiveness": 86,
+            "breakTackle": 99,
+            "ballSecurity": 84,
+            "patience": 85,
+            "routeRunning": 73,
+            "releaseVsPress": 25,
+            "hands": 67,
+            "contestedCatch": 31,
+            "ballTracking": 80,
+            "passBlock": 75,
+            "runBlock": 23,
+            "handTechnique": 29,
+            "leadBlock": 42,
+            "passRushPower": 26,
+            "passRushFinesse": 29,
+            "blockShedding": 15,
+            "tackling": 35,
+            "hitPower": 26,
+            "pursuit": 45,
+            "manCoverage": 31,
+            "zoneCoverage": 35,
+            "press": 38,
+            "ballSkills": 37,
+            "kickPower": 42,
+            "kickAccuracy": 36,
+            "puntPower": 41,
+            "puntAccuracy": 24,
+            "awareness": 63,
+            "playRecognition": 66,
+            "decisionMaking": 58,
+            "composure": 81,
+            "discipline": 63,
+            "anticipation": 47,
+            "consistency": 63,
+            "workRate": 73
+          },
+          "familiarity": {
+            "FB": 0.55,
+            "WR": 0.4
+          },
+          "archetype": "Power Back"
+        },
+        "profile": {
+          "vmax": 9.421439519892484,
+          "tau": 1.2406440920400506,
+          "brake": 6.289954648526076,
+          "lateral": 6.732486394557825,
+          "turnRate": 8.257777777777779,
+          "backpedal": 0.5346938775510205,
+          "shuffle": 0.5256000000000001,
+          "massKg": 105.23342984,
+          "heightYd": 1.9666666666666666,
+          "radius": 0.28727272727272724,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.386777777777778,
+          "reactReach": 2.9048333333333334,
+          "reactionTime": 0.24338775510204086,
+          "power": 114.46283116117144,
+          "balance": 0.826530612244898,
+          "bend": 0.672639455782313,
+          "stepSpeed": 3.725473922902494,
+          "getUp": 0.9586111111111112
+        },
+        "body": {
+          "pos": {
+            "x": 37.650888262726745,
+            "y": 21.757476311459982
+          },
+          "vel": {
+            "x": 2.831026209650627,
+            "y": -4.126063578055639
+          },
+          "facing": -1.1912639532607294,
+          "energy": 0.9813286661505048,
+          "profile": {
+            "vmax": 9.421439519892484,
+            "tau": 1.2406440920400506,
+            "brake": 6.289954648526076,
+            "lateral": 6.732486394557825,
+            "turnRate": 8.257777777777779,
+            "backpedal": 0.5346938775510205,
+            "shuffle": 0.5256000000000001,
+            "massKg": 105.23342984,
+            "heightYd": 1.9666666666666666,
+            "radius": 0.28727272727272724,
+            "reach": 0.9795833333333333,
+            "maxCatchHeight": 3.386777777777778,
+            "reactReach": 2.9048333333333334,
+            "reactionTime": 0.24338775510204086,
+            "power": 114.46283116117144,
+            "balance": 0.826530612244898,
+            "bend": 0.672639455782313,
+            "stepSpeed": 3.725473922902494,
+            "getUp": 0.9586111111111112
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19637322782152342,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -4.211417770915846,
+              "y": -4.643440358900193
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -4.892167516983932,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -1.1951561744522663
+        },
+        "engaged": false
+      },
+      "raw": {
+        "vel": {
+          "x": 2.1220013877313053,
+          "y": -5.701472541784397
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "chosen": {
+        "vel": {
+          "x": 1.0610006938656527,
+          "y": -2.8507362708921984
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "peers": [
+        {
+          "slot": "QB",
+          "idx": 0,
+          "team": "O",
+          "profile": {
+            "vmax": 8.986505550964667,
+            "tau": 1.356315575447923,
+            "brake": 6.499603174603173,
+            "lateral": 6.449367346938778,
+            "turnRate": 8.775555555555556,
+            "backpedal": 0.5438775510204082,
+            "shuffle": 0.5084000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 2.1527777777777777,
+            "radius": 0.27999999999999997,
+            "reach": 1.03625,
+            "maxCatchHeight": 3.554305555555556,
+            "reactReach": 3.122361111111111,
+            "reactionTime": 0.22171428571428572,
+            "power": 68.40172939600001,
+            "balance": 0.35714285714285715,
+            "bend": 0.5247619047619048,
+            "stepSpeed": 3.640730158730159,
+            "getUp": 0.9053888888888889
+          },
+          "picture": {
+            "pos": {
+              "x": 35.752256938702835,
+              "y": 22.947977734340228
+            },
+            "vel": {
+              "x": -1.3945776965581114,
+              "y": -2.9574630774785033
+            },
+            "stance": null,
+            "facing": -2.1226897092891828,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "LT",
+          "idx": 1,
+          "team": "O",
+          "profile": {
+            "vmax": 7.5376752026848655,
+            "tau": 1.368954653469823,
+            "brake": 5.054761904761904,
+            "lateral": 5.278989795918368,
+            "turnRate": 6.173333333333334,
+            "backpedal": 0.6434693877551021,
+            "shuffle": 0.5808,
+            "massKg": 142.88159655,
+            "heightYd": 2.1694444444444443,
+            "radius": 0.36272727272727273,
+            "reach": 1.0244444444444443,
+            "maxCatchHeight": 3.5764722222222227,
+            "reactReach": 3.144527777777778,
+            "reactionTime": 0.2375102040816327,
+            "power": 169.300112157,
+            "balance": 0.7142857142857143,
+            "bend": 0.17085714285714299,
+            "stepSpeed": 2.7412380952380953,
+            "getUp": 1.2293333333333334
+          },
+          "picture": {
+            "pos": {
+              "x": 39.80844272522589,
+              "y": 30.718176202516165
+            },
+            "vel": {
+              "x": -1.7717525232376807,
+              "y": 1.387226111113164
+            },
+            "stance": "low",
+            "facing": 1.1957976908468964,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "RT",
+          "idx": 2,
+          "team": "O",
+          "profile": {
+            "vmax": 7.632431434379886,
+            "tau": 1.176459425685191,
+            "brake": 4.797346938775511,
+            "lateral": 4.872139455782314,
+            "turnRate": 5.720000000000001,
+            "backpedal": 0.6373469387755102,
+            "shuffle": 0.5744,
+            "massKg": 145.60315077,
+            "heightYd": 2.177777777777778,
+            "radius": 0.36818181818181817,
+            "reach": 1.0693055555555557,
+            "maxCatchHeight": 3.6142222222222227,
+            "reactReach": 3.1656111111111116,
+            "reactionTime": 0.22967346938775512,
+            "power": 160.66861963538574,
+            "balance": 0.6020408163265306,
+            "bend": 0.06907482993197277,
+            "stepSpeed": 2.528557823129252,
+            "getUp": 1.2686666666666666
+          },
+          "picture": {
+            "pos": {
+              "x": 41.00386731720432,
+              "y": 22.253011044353016
+            },
+            "vel": {
+              "x": 0.5214176314338429,
+              "y": -0.9201145950688832
+            },
+            "stance": "low",
+            "facing": -0.19208562004950383,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "C",
+          "idx": 3,
+          "team": "O",
+          "profile": {
+            "vmax": 7.436889583005135,
+            "tau": 1.3541784586880024,
+            "brake": 5.074965986394556,
+            "lateral": 4.922761904761907,
+            "turnRate": 5.793333333333335,
+            "backpedal": 0.5322448979591837,
+            "shuffle": 0.5232000000000001,
+            "massKg": 143.33518892,
+            "heightYd": 2.088888888888889,
+            "radius": 0.36363636363636365,
+            "reach": 1.0315277777777778,
+            "maxCatchHeight": 3.467111111111111,
+            "reactReach": 3.0365555555555557,
+            "reactionTime": 0.248530612244898,
+            "power": 163.65075804345716,
+            "balance": 0.7448979591836735,
+            "bend": 0.1716462585034015,
+            "stepSpeed": 2.666938775510204,
+            "getUp": 1.253
+          },
+          "picture": {
+            "pos": {
+              "x": 43.29552206143731,
+              "y": 24.203019254754793
+            },
+            "vel": {
+              "x": 1.2932086124091058,
+              "y": -2.617297654667853
+            },
+            "stance": "low",
+            "facing": -1.8896352978402418,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "LG",
+          "idx": 4,
+          "team": "O",
+          "profile": {
+            "vmax": 7.685621731390056,
+            "tau": 1.4414970671656224,
+            "brake": 5.058378684807255,
+            "lateral": 5.082860544217689,
+            "turnRate": 6.035555555555555,
+            "backpedal": 0.633265306122449,
+            "shuffle": 0.5776,
+            "massKg": 146.96392788,
+            "heightYd": 2.161111111111111,
+            "radius": 0.3709090909090909,
+            "reach": 1.055138888888889,
+            "maxCatchHeight": 3.3987222222222226,
+            "reactReach": 3.0709444444444447,
+            "reactionTime": 0.2511020408163266,
+            "power": 179.7158889504,
+            "balance": 0.673469387755102,
+            "bend": 0.14536054421768707,
+            "stepSpeed": 2.651192743764172,
+            "getUp": 1.2502222222222223
+          },
+          "picture": {
+            "pos": {
+              "x": 39.53043360003266,
+              "y": 26.210655517591654
+            },
+            "vel": {
+              "x": -0.020483721563205076,
+              "y": -0.7418297580663054
+            },
+            "stance": "low",
+            "facing": -0.7030231565682041,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "RG",
+          "idx": 5,
+          "team": "O",
+          "profile": {
+            "vmax": 7.544736256738903,
+            "tau": 1.3702370465878275,
+            "brake": 5.330759637188208,
+            "lateral": 5.603639455782315,
+            "turnRate": 6.9222222222222225,
+            "backpedal": 0.5322448979591837,
+            "shuffle": 0.54,
+            "massKg": 142.42800418000002,
+            "heightYd": 2.1055555555555556,
+            "radius": 0.3618181818181818,
+            "reach": 1.0669444444444445,
+            "maxCatchHeight": 3.4381666666666666,
+            "reactReach": 3.039555555555556,
+            "reactionTime": 0.2624897959183674,
+            "power": 162.65859416148572,
+            "balance": 0.5306122448979592,
+            "bend": 0.30012244897959206,
+            "stepSpeed": 2.8434784580498866,
+            "getUp": 1.1757222222222221
+          },
+          "picture": {
+            "pos": {
+              "x": 40.11692196131991,
+              "y": 23.84030450399829
+            },
+            "vel": {
+              "x": 0.35342025181501385,
+              "y": -1.6765868892120392
+            },
+            "stance": "low",
+            "facing": -0.5745094486583955,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "Y",
+          "idx": 7,
+          "team": "O",
+          "profile": {
+            "vmax": 8.75548679553021,
+            "tau": 1.2844970679640877,
+            "brake": 5.902959183673468,
+            "lateral": 6.269812925170071,
+            "turnRate": 8.4,
+            "backpedal": 0.536734693877551,
+            "shuffle": 0.528,
+            "massKg": 119.74838568000001,
+            "heightYd": 2.158333333333333,
+            "radius": 0.31636363636363635,
+            "reach": 1.0244444444444443,
+            "maxCatchHeight": 3.619472222222223,
+            "reactReach": 3.151416666666667,
+            "reactionTime": 0.26457142857142857,
+            "power": 121.81954398334287,
+            "balance": 0.19387755102040816,
+            "bend": 0.4314421768707484,
+            "stepSpeed": 3.253659863945578,
+            "getUp": 0.9976666666666666
+          },
+          "picture": {
+            "pos": {
+              "x": 39.825095749092,
+              "y": 19.81961482840686
+            },
+            "vel": {
+              "x": -0.8266830786517805,
+              "y": -1.7214522454885688
+            },
+            "stance": "low",
+            "facing": 1.5130839934910312,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "X",
+          "idx": 8,
+          "team": "O",
+          "profile": {
+            "vmax": 9.85561463137126,
+            "tau": 1.1589568005525621,
+            "brake": 7.031020408163265,
+            "lateral": 7.258802721088438,
+            "turnRate": 9.540000000000001,
+            "backpedal": 0.5316326530612245,
+            "shuffle": 0.5388000000000001,
+            "massKg": 78.92507238,
+            "heightYd": 2.0416666666666665,
+            "radius": 0.23454545454545453,
+            "reach": 1.0220833333333335,
+            "maxCatchHeight": 3.524305555555556,
+            "reactReach": 3.0187500000000003,
+            "reactionTime": 0.27302040816326534,
+            "power": 58.50925008578572,
+            "balance": 0.6530612244897959,
+            "bend": 0.787278911564626,
+            "stepSpeed": 4.225170068027211,
+            "getUp": 0.7786666666666666
+          },
+          "picture": {
+            "pos": {
+              "x": 46.05786355469699,
+              "y": 42.74722945741065
+            },
+            "vel": {
+              "x": 2.6255099253194087,
+              "y": -4.01664363924579
+            },
+            "stance": "low",
+            "facing": -1.2378270143819252,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "Z",
+          "idx": 9,
+          "team": "O",
+          "profile": {
+            "vmax": 9.74767768512139,
+            "tau": 1.0276545974720142,
+            "brake": 7.327721088435374,
+            "lateral": 7.173272108843539,
+            "turnRate": 9.993333333333336,
+            "backpedal": 0.5275510204081633,
+            "shuffle": 0.5412,
+            "massKg": 75.74992579,
+            "heightYd": 1.9083333333333334,
+            "radius": 0.22818181818181818,
+            "reach": 0.9654166666666667,
+            "maxCatchHeight": 3.5203055555555562,
+            "reactReach": 2.906416666666667,
+            "reactionTime": 0.2479183673469388,
+            "power": 57.013413533371434,
+            "balance": 0.40816326530612246,
+            "bend": 0.9042993197278913,
+            "stepSpeed": 4.250897959183673,
+            "getUp": 0.732
+          },
+          "picture": {
+            "pos": {
+              "x": 46.07595862893311,
+              "y": 10.506655060109336
+            },
+            "vel": {
+              "x": 1.8363237152504501,
+              "y": 3.1257471794872713
+            },
+            "stance": "low",
+            "facing": 1.6469247051006404,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        },
+        {
+          "slot": "H",
+          "idx": 10,
+          "team": "O",
+          "profile": {
+            "vmax": 9.055265422916397,
+            "tau": 1.4446410819119608,
+            "brake": 5.950102040816325,
+            "lateral": 6.054826530612246,
+            "turnRate": 8.12,
+            "backpedal": 0.5306122448979592,
+            "shuffle": 0.5224000000000001,
+            "massKg": 114.30527724000001,
+            "heightYd": 2.1555555555555554,
+            "radius": 0.3054545454545454,
+            "reach": 1.0456944444444445,
+            "maxCatchHeight": 3.6068888888888893,
+            "reactReach": 3.144388888888889,
+            "reactionTime": 0.24522448979591838,
+            "power": 118.1368367883,
+            "balance": 0.2653061224489796,
+            "bend": 0.401061224489796,
+            "stepSpeed": 3.2791836734693875,
+            "getUp": 0.996
+          },
+          "picture": {
+            "pos": {
+              "x": 39.66472607240367,
+              "y": 32.130404851267116
+            },
+            "vel": {
+              "x": -0.6117808123446307,
+              "y": 1.6533144646178763
+            },
+            "stance": "low",
+            "facing": -0.7770465305478976,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false
+          },
+          "called": null
+        }
+      ]
+    },
+    "preview": {
+      "qualification": "same-body held-command free preview vs all10 acquired peers, not future contact guarantee",
+      "t": 2.05,
+      "raw": {
+        "vel": {
+          "x": 2.1220013877313053,
+          "y": -5.701472541784397
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "chosen": {
+        "vel": {
+          "x": 1.0610006938656527,
+          "y": -2.8507362708921984
+        },
+        "cutSkill": 1.1535714285714285,
+        "squeeze": 0
+      },
+      "rows": [
+        {
+          "scale": 0.5,
+          "up": true,
+          "binding": {
+            "slot": "Y",
+            "min": 0.7335144883431429
+          },
+          "progress": 2.1357227753267374
+        },
+        {
+          "scale": 0.75,
+          "up": true,
+          "binding": {
+            "slot": "Y",
+            "min": 0.19509142251719191
+          },
+          "progress": 2.764751853329248
+        },
+        {
+          "scale": 0.875,
+          "up": true,
+          "binding": {
+            "slot": "Y",
+            "min": -0.011446498887954015
+          },
+          "progress": 3.0504389971884267
+        },
+        {
+          "scale": 0.9375,
+          "up": true,
+          "binding": {
+            "slot": "Y",
+            "min": -0.03986282252385631
+          },
+          "progress": 3.0984685688156617
+        },
+        {
+          "scale": 1,
+          "up": true,
+          "binding": {
+            "slot": "Y",
+            "min": -0.06576296733926612
+          },
+          "progress": 3.146526597455532
+        }
+      ]
+    }
+  },
+  "nativeEdgeExecution": {
+    "baseline": {
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "override": null,
+      "qualification": "native passive observation",
+      "scriptSha256": "bb7548c7afac7f7bdee9417f2fc0d9b3c1ba225c3d38a9df64cc8623b661cd38",
+      "exact": true,
+      "draws": [
+        {
+          "t": 2.5,
+          "probability": 0.3406499354903611,
+          "native": 0.33420500555075705,
+          "used": 0.33420500555075705,
+          "miss": true,
+          "geometry": {
+            "edge": {
+              "pos": {
+                "x": 40.67530464062691,
+                "y": 32.72500815254773
+              },
+              "vel": {
+                "x": 0.4039954226166776,
+                "y": 1.5938352578286483
+              },
+              "facing": 4.225661981448173,
+              "energy": 0.9615968862263369,
+              "profile": {
+                "vmax": 8.751297318123504,
+                "tau": 1.3169837630933316,
+                "brake": 6.334977324263037,
+                "lateral": 6.646880952380954,
+                "turnRate": 8.52888888888889,
+                "backpedal": 0.5306122448979592,
+                "shuffle": 0.5288,
+                "massKg": 122.4699399,
+                "heightYd": 2.1055555555555556,
+                "radius": 0.3218181818181818,
+                "reach": 1.0575,
+                "maxCatchHeight": 3.653722222222222,
+                "reactReach": 3.120388888888889,
+                "reactionTime": 0.20016326530612247,
+                "power": 127.2125258379643,
+                "balance": 0.6632653061224489,
+                "bend": 0.5833197278911565,
+                "stepSpeed": 3.5517369614512466,
+                "getUp": 0.9965555555555556
+              },
+              "support": {
+                "xi": {
+                  "x": -0.006731811511495572,
+                  "y": 0.007002680370200561
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8425013712264223,
+                "lean": {
+                  "x": -415.7313023244605,
+                  "y": -1543.6629785281489
+                },
+                "load": {
+                  "x": 497.3390056018734,
+                  "y": 1282.597295932391
+                },
+                "felt": {
+                  "x": 418.3013489017585,
+                  "y": 1315.9940853599983
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.24282427010206284,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.6597112763957327,
+                  "y": 2.0753466982709194
+                },
+                "causes": {
+                  "contact": 0.012411862386912572,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -0.8945173057928502,
+                  "y": 0.6031680459909424
+                },
+                "tipAccel": {
+                  "x": 0.09610630532150435,
+                  "y": -0.035700046185274836
+                }
+              },
+              "spin": -0.0034949283868811604,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -2.1496271613596667
+            },
+            "runner": {
+              "pos": {
+                "x": 39.82516748864146,
+                "y": 33.10823719378785
+              },
+              "vel": {
+                "x": 4.5722607964345485,
+                "y": 3.806168217574104
+              },
+              "facing": 0.6942154096742953,
+              "energy": 0.9750532809155432,
+              "profile": {
+                "vmax": 9.421439519892484,
+                "tau": 1.2406440920400506,
+                "brake": 6.289954648526076,
+                "lateral": 6.732486394557825,
+                "turnRate": 8.257777777777779,
+                "backpedal": 0.5346938775510205,
+                "shuffle": 0.5256000000000001,
+                "massKg": 105.23342984,
+                "heightYd": 1.9666666666666666,
+                "radius": 0.28727272727272724,
+                "reach": 0.9795833333333333,
+                "maxCatchHeight": 3.386777777777778,
+                "reactReach": 2.9048333333333334,
+                "reactionTime": 0.24338775510204086,
+                "power": 114.46283116117144,
+                "balance": 0.826530612244898,
+                "bend": 0.672639455782313,
+                "stepSpeed": 3.725473922902494,
+                "getUp": 0.9586111111111112
+              },
+              "support": {
+                "xi": {
+                  "x": 0,
+                  "y": 0
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.19517604393214028,
+                "lean": {
+                  "x": 0,
+                  "y": 0
+                },
+                "load": {
+                  "x": 0,
+                  "y": 0
+                },
+                "felt": {
+                  "x": 0,
+                  "y": 0
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0,
+                "out": 0,
+                "feltTip": {
+                  "x": 0,
+                  "y": 0
+                },
+                "causes": {
+                  "contact": 0,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 2.2691475726918062,
+                  "y": 1.88894680513448
+                },
+                "tipAccel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "spin": 0.0006127305421443898,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 0.6942154096742952
+            },
+            "LT": {
+              "pos": {
+                "x": 40.387425869218035,
+                "y": 32.181353443712766
+              },
+              "vel": {
+                "x": 0.4013226356606063,
+                "y": 1.5952504509368288
+              },
+              "facing": 1.0840486831518983,
+              "energy": 0.9499440773687177,
+              "profile": {
+                "vmax": 7.5376752026848655,
+                "tau": 1.368954653469823,
+                "brake": 5.054761904761904,
+                "lateral": 5.278989795918368,
+                "turnRate": 6.173333333333334,
+                "backpedal": 0.6434693877551021,
+                "shuffle": 0.5808,
+                "massKg": 142.88159655,
+                "heightYd": 2.1694444444444443,
+                "radius": 0.36272727272727273,
+                "reach": 1.0244444444444443,
+                "maxCatchHeight": 3.5764722222222227,
+                "reactReach": 3.144527777777778,
+                "reactionTime": 0.2375102040816327,
+                "power": 169.300112157,
+                "balance": 0.7142857142857143,
+                "bend": 0.17085714285714299,
+                "stepSpeed": 2.7412380952380953,
+                "getUp": 1.2293333333333334
+              },
+              "support": {
+                "xi": {
+                  "x": -4.5160624012846456e-05,
+                  "y": 0.0014726579230593605
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8403908988256502,
+                "lean": {
+                  "x": 406.16997148919734,
+                  "y": 1241.8079885043533
+                },
+                "load": {
+                  "x": -497.3390056018734,
+                  "y": -1282.597295932391
+                },
+                "felt": {
+                  "x": -418.3013489017585,
+                  "y": -1315.9940853599983
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.05485443908065468,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.09632278836494852,
+                  "y": 0.3030753626519171
+                },
+                "causes": {
+                  "contact": 0.002003311534556827,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -0.9114031558875162,
+                  "y": 0.6127199826963821
+                },
+                "tipAccel": {
+                  "x": 0.01393651998234333,
+                  "y": -0.005562629231712256
+                }
+              },
+              "spin": -0.0061634000063134214,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 1.3061606184586274
+            },
+            "engagement": {
+              "blocker": "LT",
+              "win": 0.6900850988969672,
+              "control": -0.2553493901273785,
+              "force": 580.9658241247507
+            }
+          }
+        }
+      ],
+      "gain": 5.59,
+      "t": 3.9,
+      "terminal": true,
+      "maximumResidual": 1.254818471352337e-11
+    },
+    "candidate": {
+      "source": "ff45493f3f44b5f49fc3f9c71e676739ab4b9fcda9d6fe97a3292e15450c153a",
+      "override": null,
+      "qualification": "native passive observation",
+      "scriptSha256": "bb7548c7afac7f7bdee9417f2fc0d9b3c1ba225c3d38a9df64cc8623b661cd38",
+      "exact": true,
+      "draws": [
+        {
+          "t": 2.5,
+          "probability": 0.31949283099818515,
+          "native": 0.7129098437726498,
+          "used": 0.7129098437726498,
+          "miss": false,
+          "geometry": {
+            "edge": {
+              "pos": {
+                "x": 40.625829872483166,
+                "y": 32.762619398570834
+              },
+              "vel": {
+                "x": 0.2047575187556644,
+                "y": 1.8396739913092188
+              },
+              "facing": 4.269791037828815,
+              "energy": 0.9616405410013222,
+              "profile": {
+                "vmax": 8.751297318123504,
+                "tau": 1.3169837630933316,
+                "brake": 6.334977324263037,
+                "lateral": 6.646880952380954,
+                "turnRate": 8.52888888888889,
+                "backpedal": 0.5306122448979592,
+                "shuffle": 0.5288,
+                "massKg": 122.4699399,
+                "heightYd": 2.1055555555555556,
+                "radius": 0.3218181818181818,
+                "reach": 1.0575,
+                "maxCatchHeight": 3.653722222222222,
+                "reactReach": 3.120388888888889,
+                "reactionTime": 0.20016326530612247,
+                "power": 127.2125258379643,
+                "balance": 0.6632653061224489,
+                "bend": 0.5833197278911565,
+                "stepSpeed": 3.5517369614512466,
+                "getUp": 0.9965555555555556
+              },
+              "support": {
+                "xi": {
+                  "x": 0.0013000371112717602,
+                  "y": 0.0030208017071655497
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8425008044738782,
+                "lean": {
+                  "x": -914.6163805507822,
+                  "y": -1282.1587571864188
+                },
+                "load": {
+                  "x": 1028.5687448729968,
+                  "y": 970.0231268937789
+                },
+                "felt": {
+                  "x": 1004.60334213231,
+                  "y": 1001.9348296610792
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.24282427010206284,
+                "out": 0,
+                "feltTip": {
+                  "x": 1.5843172700540045,
+                  "y": 1.580060169292367
+                },
+                "causes": {
+                  "contact": 0.013067087116068757,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -0.2497484875382027,
+                  "y": 1.2448824188036176
+                },
+                "tipAccel": {
+                  "x": 0.09152978952894543,
+                  "y": -0.06901200967778565
+                }
+              },
+              "spin": 0.2242713264080137,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -3.5494032038064316
+            },
+            "runner": {
+              "pos": {
+                "x": 39.82516748864146,
+                "y": 33.10823719378785
+              },
+              "vel": {
+                "x": 4.5722607964345485,
+                "y": 3.806168217574104
+              },
+              "facing": 0.6942154096742953,
+              "energy": 0.9750532809155432,
+              "profile": {
+                "vmax": 9.421439519892484,
+                "tau": 1.2406440920400506,
+                "brake": 6.289954648526076,
+                "lateral": 6.732486394557825,
+                "turnRate": 8.257777777777779,
+                "backpedal": 0.5346938775510205,
+                "shuffle": 0.5256000000000001,
+                "massKg": 105.23342984,
+                "heightYd": 1.9666666666666666,
+                "radius": 0.28727272727272724,
+                "reach": 0.9795833333333333,
+                "maxCatchHeight": 3.386777777777778,
+                "reactReach": 2.9048333333333334,
+                "reactionTime": 0.24338775510204086,
+                "power": 114.46283116117144,
+                "balance": 0.826530612244898,
+                "bend": 0.672639455782313,
+                "stepSpeed": 3.725473922902494,
+                "getUp": 0.9586111111111112
+              },
+              "support": {
+                "xi": {
+                  "x": 0,
+                  "y": 0
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.19517604393214028,
+                "lean": {
+                  "x": 0,
+                  "y": 0
+                },
+                "load": {
+                  "x": 0,
+                  "y": 0
+                },
+                "felt": {
+                  "x": 0,
+                  "y": 0
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0,
+                "out": 0,
+                "feltTip": {
+                  "x": 0,
+                  "y": 0
+                },
+                "causes": {
+                  "contact": 0,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 2.2691475726918062,
+                  "y": 1.88894680513448
+                },
+                "tipAccel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "spin": 0.0006127305421443898,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 0.6942154096742952
+            },
+            "LT": {
+              "pos": {
+                "x": 40.37132772103337,
+                "y": 32.202523634120745
+              },
+              "vel": {
+                "x": 0.41263195809076575,
+                "y": 1.7448334117747057
+              },
+              "facing": 1.1280963053229587,
+              "energy": 0.9498051570394924,
+              "profile": {
+                "vmax": 7.5376752026848655,
+                "tau": 1.368954653469823,
+                "brake": 5.054761904761904,
+                "lateral": 5.278989795918368,
+                "turnRate": 6.173333333333334,
+                "backpedal": 0.6434693877551021,
+                "shuffle": 0.5808,
+                "massKg": 142.88159655,
+                "heightYd": 2.1694444444444443,
+                "radius": 0.36272727272727273,
+                "reach": 1.0244444444444443,
+                "maxCatchHeight": 3.5764722222222227,
+                "reactReach": 3.144527777777778,
+                "reactionTime": 0.2375102040816327,
+                "power": 169.300112157,
+                "balance": 0.7142857142857143,
+                "bend": 0.17085714285714299,
+                "stepSpeed": 2.7412380952380953,
+                "getUp": 1.2293333333333334
+              },
+              "support": {
+                "xi": {
+                  "x": 0.0012028122517373746,
+                  "y": 0.0008545434609139316
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8403713979427875,
+                "lean": {
+                  "x": 789.0241696251079,
+                  "y": 1065.0376382641773
+                },
+                "load": {
+                  "x": -1028.5687448729968,
+                  "y": -970.0231268937789
+                },
+                "felt": {
+                  "x": -1004.60334213231,
+                  "y": -1001.9348296610792
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.05485443908065468,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.2313930781691517,
+                  "y": 0.2307924765230697
+                },
+                "causes": {
+                  "contact": 0.0021025555782276653,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 0.5160664475443796,
+                  "y": 0.9556602864606626
+                },
+                "tipAccel": {
+                  "x": 0.013156947607540983,
+                  "y": -0.0103577077394692
+                }
+              },
+              "spin": 0.2354239937988353,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 1.312657213090432
+            },
+            "engagement": {
+              "blocker": "LT",
+              "win": 0.7179660649307842,
+              "control": -0.26453376477351553,
+              "force": 594.7711258600576
+            }
+          }
+        }
+      ],
+      "gain": 1.15,
+      "t": 3.3,
+      "terminal": true,
+      "maximumResidual": 7.098321930243401e-12
+    }
+  },
+  "edgeQualification": "Only passive native capture was executed. Both all22 body histories match saved original continuation exactly. Old uniform also grasps at candidate probability; changed execution draw schedule alone cannot explain adverse result.",
+  "productionExtraction": [
+    "src/sim/behaviors/blocking.ts",
+    "test/zone-combo-surface.test.ts"
+  ],
+  "promotion": "Conditional exact #117+#122 cohort review only; independent review supports contract repair, second-level protection remains unfinished. Integration owns assembly/full verification."
+}
