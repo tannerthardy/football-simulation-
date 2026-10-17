@@ -1,0 +1,407 @@
+{
+  "schema": "accepted-game-deep-audit-v1",
+  "publishedAtUtc": "2026-10-17T04:21:31Z",
+  "acceptedEngine": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "acceptedQueue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "runtimeSourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "originalEvidenceCommit": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "sourcePr": "https://github.com/tannerthardy/football-simulation-/pull/129",
+  "report": "docs/reviews/accepted-game-deep-audit-2026-10-16/README.md",
+  "ownerPrompts": "docs/reviews/accepted-game-deep-audit-2026-10-16/agent-handoffs.md",
+  "auditExecution": {
+    "parallelDomainReviewers": 6,
+    "newEngineExecutions": 0,
+    "newGames": 0,
+    "newTestSuiteRuns": 0,
+    "productionChanges": false,
+    "flagChanges": false,
+    "newBaseline": false,
+    "allFramesVisuallyWatched": false,
+    "method": "Complete saved-data inventory and domain screens; shared fixed numeric event/request/body panels; selected source-qualified mechanism traces; independent reviews"
+  },
+  "coverage": {
+    "nativeLogs": 740,
+    "physicalObservations": 561,
+    "filmedPhysicalScrimmages": 559,
+    "pairedFrames": 27784,
+    "actorFrameSamples": 611248,
+    "nonnullifiedFilmedPhysicalScrimmages": 531,
+    "nullifiedFilmedPhysicalScrimmages": 28,
+    "unfilmedKneelLogs": 13,
+    "otherNonFilmNonTryLogsIncludingKneels": 179,
+    "unfilmedTries": 2,
+    "allCalledRuns": 193,
+    "officialCalledRuns": 191,
+    "allCalledDropbacks": 366,
+    "officialCalledDropbacks": 340,
+    "ordinaryIds": [
+      "G1-P181",
+      "G1-P167",
+      "G1-P140",
+      "G1-P018",
+      "G1-P130",
+      "G1-P003",
+      "G1-P098",
+      "G1-P027",
+      "G1-P185",
+      "G1-P192",
+      "G1-P141",
+      "G1-P137",
+      "G2-P070",
+      "G2-P144",
+      "G2-P099",
+      "G2-P096",
+      "G2-P020",
+      "G2-P125",
+      "G2-P057",
+      "G2-P097",
+      "G2-P038",
+      "G2-P120",
+      "G2-P093",
+      "G2-P143",
+      "G3-P049",
+      "G3-P004",
+      "G3-P053",
+      "G3-P025",
+      "G3-P035",
+      "G3-P028",
+      "G3-P065",
+      "G3-P073",
+      "G3-P089",
+      "G3-P104",
+      "G3-P017",
+      "G3-P059",
+      "G4-P014",
+      "G4-P146",
+      "G4-P081",
+      "G4-P142",
+      "G4-P176",
+      "G4-P088",
+      "G4-P152",
+      "G4-P113",
+      "G4-P059",
+      "G4-P185",
+      "G4-P023",
+      "G4-P137"
+    ],
+    "tailIds": [
+      "G2-P029",
+      "G1-P060",
+      "G4-P024",
+      "G3-P008",
+      "G4-P189",
+      "G1-P134",
+      "G2-P089",
+      "G4-P116",
+      "G3-P087",
+      "G1-P036",
+      "G3-P146",
+      "G2-P063"
+    ],
+    "cappedUnknownIds": [
+      "G3-P003",
+      "G3-P087",
+      "G3-P141",
+      "G4-P142"
+    ],
+    "allInterceptionsReviewed": 34,
+    "allCreditedSackChainsReviewed": 19,
+    "qbBallCompactTraceReceipts": 84
+  },
+  "recommendedActivePriorities": [
+    {
+      "priority": 1,
+      "theme": "Broken-play continuity",
+      "owners": [
+        "Run offensive recovery",
+        "Pass/Awareness defensive acquired-QB gates"
+      ],
+      "implementationDependencies": [],
+      "reviewDependency": "Joint broken-exchange football evaluation before claiming composed improvement"
+    },
+    {
+      "priority": 2,
+      "theme": "QB receiver-forecast information boundary",
+      "owner": "Flex with Awareness/Pass",
+      "actualMissingBoundary": "Legitimate observer-owned receiver acquisition plus immutable installed prior",
+      "invarianceScope": "Repaired forecast consumer, not all QB decisions"
+    },
+    {
+      "priority": 3,
+      "theme": "Same-time catch-opportunity query",
+      "owners": [
+        "Physics geometry",
+        "Catching caller/semantics"
+      ],
+      "actualRemainingEvidence": "Pure relative-query contracts and exact native opportunity inputs if effect/order needs adjudication",
+      "worldRewriteRequired": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "RUN-006",
+      "evidenceClass": "Observed continuation failure / source-supported mechanism",
+      "finding": "Four retained-QB failed exchanges cap without useful offensive recovery",
+      "witnesses": [
+        "G3-P003",
+        "G3-P087",
+        "G3-P141",
+        "G4-P142"
+      ],
+      "owner": "Run",
+      "nextDecision": "First personally available failed/recoverable exchange cue; preserve real reach and normal mesh",
+      "appendix": "run.md"
+    },
+    {
+      "id": "CTRL-001",
+      "evidenceClass": "Source-confirmed routing gap; counterfactual outcome unknown",
+      "finding": "Man coverage rejects acquired committed-QB pursuit; unkeyed premesh expectation persists after failed exchange",
+      "witnesses": [
+        "G1-P086",
+        "G1-P127",
+        "G2-P174",
+        "G3-P093",
+        "G4-P173",
+        "G4-P177"
+      ],
+      "owner": "Pass/Awareness with Run/Flex",
+      "nextDecision": "Local acquired-evidence gates; independent implementations with joint broken-play evaluation",
+      "appendix": "cross-system.md"
+    },
+    {
+      "id": "INFO-002/INFO-003",
+      "evidenceClass": "Confirmed existing information debt; outcome contribution unmeasured",
+      "finding": "QB evaluation/release receiver forecast clones unseen live body/private route progress",
+      "witnesses": [],
+      "owner": "Flex with Awareness/Pass",
+      "nextDecision": "Legitimate QB receiver acquisition plus immutable installed prior; forecast-consumer hidden-state invariance",
+      "appendix": "qb-ball.md"
+    },
+    {
+      "id": "BALL-001",
+      "evidenceClass": "Confirmed structural query defect; native incidence unresolved",
+      "finding": "Final-player-position versus full-ball-chord timing can admit false catch opportunity",
+      "witnesses": [
+        "G1-P020",
+        "G2-P124",
+        "G2-P150"
+      ],
+      "owner": "Physics + Catching",
+      "nextDecision": "Same-time linear relative query, joint height/reach, preserved eligibility/retry/difficulty/order; exact native inputs if needed",
+      "appendix": "physics.md"
+    },
+    {
+      "id": "COV-004",
+      "evidenceClass": "Confirmed predicate mismatch",
+      "finding": "Shallow cut admits planar distance below9yd but retains only lateral distance below8yd",
+      "witnesses": [
+        "G3-P008",
+        "G3-P104"
+      ],
+      "owner": "Pass",
+      "nextDecision": "Coherent existing predicate with legitimate carry/exit controls",
+      "appendix": "pass-awareness.md"
+    },
+    {
+      "id": "COV-005",
+      "evidenceClass": "Observed responsibility question; feasible handover unresolved",
+      "finding": "Trips fast3 flat remains open while wall/roof duties persist",
+      "witnesses": [
+        "G2-P180",
+        "G4-P184"
+      ],
+      "owner": "Pass",
+      "nextDecision": "Installed low-route owner and achievable acquired takeover, preserve high/low tradeoff",
+      "appendix": "pass-awareness.md"
+    },
+    {
+      "id": "RUN-007",
+      "evidenceClass": "Observed access limitation; losing request stage unresolved",
+      "finding": "Attainable climb forecast does not always produce collection before runner contact",
+      "witnesses": [
+        "G2-P099",
+        "G3-P004",
+        "G3-P053",
+        "G1-P164"
+      ],
+      "owner": "Run",
+      "nextDecision": "Forecast-to-final-request-to-achieved-path attribution, no stronger contact or globally earlier releases",
+      "appendix": "run.md"
+    },
+    {
+      "id": "RUN-counter-access",
+      "evidenceClass": "Conditional lead, not25 defects",
+      "finding": "No sampled wrapper engagement before first carrier contact in25 Counter calls; upstream edge often ends opportunity",
+      "witnesses": [
+        "G1-P003",
+        "G1-P134",
+        "G4-P189",
+        "G2-P011"
+      ],
+      "owner": "Run, deferred",
+      "nextDecision": "One reachable wrong job or upstream kick request before intervention",
+      "appendix": "run.md"
+    },
+    {
+      "id": "PHY-lower-wrap",
+      "evidenceClass": "Observed calibration question; no new law defect established",
+      "finding": "Rapid falls can coincide with strong real impacts and lower-wrap load",
+      "witnesses": [
+        "G1-P167",
+        "G1-P036",
+        "G1-P130",
+        "G3-P069"
+      ],
+      "owner": "Physics, follow-up",
+      "nextDecision": "Complete short moment/support/recovery ledger versus valid impact and slower rear-wrap controls",
+      "appendix": "physics.md"
+    },
+    {
+      "id": "GAME-004",
+      "evidenceClass": "Three source-qualified accounting defects",
+      "finding": "DefensiveTD loses team turnover; safety loses sack/tackle with unresolved yardage convention; eight pressure scrambles lose player pressure credit",
+      "witnesses": [
+        "G1-P156",
+        "G2-P140",
+        "G2-P138"
+      ],
+      "owner": "Measurement + Integration",
+      "nextDecision": "Separate result branches and explicit safety goal-plane statistical convention",
+      "appendix": "measurement.md"
+    },
+    {
+      "id": "MEAS-interpretation",
+      "evidenceClass": "Measurement conventions",
+      "finding": "Six endzone TD catches have negative goal-plane YAC; contact-to-stop clocks can include free running; caps unknown",
+      "witnesses": [
+        "G4-P048",
+        "G3-P146",
+        "G2-P063"
+      ],
+      "owner": "Measurement",
+      "nextDecision": "Separate physical versus credited advancement, elapsed versus continuous bond, known versus censored endings",
+      "appendix": "measurement.md"
+    }
+  ],
+  "independentReviews": [
+    "measurement/central-nonauthor-review.md",
+    "cross-system/nonauthor-owner-split-review.md",
+    "physics/catch-geometry-review.md"
+  ],
+  "existingQueueAtReview": {
+    "126": {
+      "head": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "scope": "zone-combo surface; independent ready correction, not in measured cohort"
+    },
+    "128": {
+      "head": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "scope": "quarter-flat force duty; independent ready correction, not CTRL001 or Fast3 takeover"
+    },
+    "127": "held; not promoted by audit"
+  },
+  "artifact": {
+    "commit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "tag": "evidence-accepted-games-70b4db6-deep-audit-v1",
+    "browse": "https://github.com/tannerthardy/football-simulation-/tree/23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "archive": {
+      "file": "accepted-games-deep-audit-v1.tar.gz",
+      "bytes": 14192453,
+      "sha256": "5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56",
+      "packedFiles": 400,
+      "jsonChecked": 317,
+      "witnessClips": 16,
+      "manifestSha256": "ba5f71a9c8f08710e1e3fd85570d3c099060e1934bf7790955d5951ede7f17b7",
+      "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/23d5f6d4f7e88fdd3225a49cc74ae5582a52522e/accepted-games-deep-audit-v1.tar.gz"
+    },
+    "originalTreeEntriesPreserved": 8,
+    "publicationFiles": [
+      {
+        "path": "accepted-games-deep-audit-v1.tar.gz",
+        "bytes": 14192453,
+        "sha256": "5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56"
+      },
+      {
+        "path": "audit-receipt.json",
+        "bytes": 945,
+        "sha256": "8c4126a6af6c2d1b38d73940d8b8947e130131b3c238065b5623fe6ed589c484"
+      },
+      {
+        "path": "AUDIT.md",
+        "bytes": 1701,
+        "sha256": "9f7eaef1ab4a5c88fd4c676989af1ad565349ef7ae1a6a535656ab4e83d3a281"
+      },
+      {
+        "path": "audit-figures/catch-time-counterexample.png",
+        "bytes": 106970,
+        "sha256": "60b5a5163472f96e19c7d539a45bfdeb3b7a10975b772b6251b549df3c4851a9"
+      },
+      {
+        "path": "audit-figures/exchange-context.png",
+        "bytes": 156094,
+        "sha256": "8b680de9a254aa730925fd64597494b4c83ad69a12c15689200b8a164f165bff"
+      },
+      {
+        "path": "audit-figures/scramble-continuity.png",
+        "bytes": 98805,
+        "sha256": "a025a7f6658994b895490c3a8e6915592459f98859319ed4d9f15f9b9cfb0e8e"
+      },
+      {
+        "path": "AUDIT-SHA256SUMS",
+        "bytes": 577,
+        "sha256": "3b3927e37f8fb4f382d327a9730dcc8e477909cbae622b03f5498610397905a7"
+      }
+    ],
+    "remoteVerification": {
+      "atUtc": "2026-10-17T04:20:44Z",
+      "method": "Separate authenticated Git fetch with fetch/transfer fsckObjects; read back every newly published file and compare size/SHA256",
+      "newFilesVerified": [
+        {
+          "path": "accepted-games-deep-audit-v1.tar.gz",
+          "bytes": 14192453,
+          "sha256": "5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56"
+        },
+        {
+          "path": "audit-receipt.json",
+          "bytes": 945,
+          "sha256": "8c4126a6af6c2d1b38d73940d8b8947e130131b3c238065b5623fe6ed589c484"
+        },
+        {
+          "path": "AUDIT.md",
+          "bytes": 1701,
+          "sha256": "9f7eaef1ab4a5c88fd4c676989af1ad565349ef7ae1a6a535656ab4e83d3a281"
+        },
+        {
+          "path": "audit-figures/catch-time-counterexample.png",
+          "bytes": 106970,
+          "sha256": "60b5a5163472f96e19c7d539a45bfdeb3b7a10975b772b6251b549df3c4851a9"
+        },
+        {
+          "path": "audit-figures/exchange-context.png",
+          "bytes": 156094,
+          "sha256": "8b680de9a254aa730925fd64597494b4c83ad69a12c15689200b8a164f165bff"
+        },
+        {
+          "path": "audit-figures/scramble-continuity.png",
+          "bytes": 98805,
+          "sha256": "a025a7f6658994b895490c3a8e6915592459f98859319ed4d9f15f9b9cfb0e8e"
+        },
+        {
+          "path": "AUDIT-SHA256SUMS",
+          "bytes": 577,
+          "sha256": "3b3927e37f8fb4f382d327a9730dcc8e477909cbae622b03f5498610397905a7"
+        }
+      ],
+      "engineReferenceUnchanged": true,
+      "originalEvidenceBranchUnchanged": true,
+      "originalEightFileTreeEntriesUnchanged": true,
+      "originalEightFilesPreviouslyIndependentlyVerified": true
+    }
+  },
+  "limits": [
+    "Four generated-roster games do not estimate population defect rates or controlled historical effects",
+    "0.1s/0.1yd rounded films omit exact catch-query/substep force states",
+    "Facing is not gaze; final intents omit some producers; last-step impulses are not complete ledgers",
+    "Safety yardage convention and native invalidity of catch sensitivity cases remain unresolved",
+    "No direct NFL/BDB comparison; no solver/default/experimental feature promotion"
+  ]
+}

@@ -1,5 +1,7 @@
 # Accepted-game checkpoint and deep-audit handoff
 
+**Subsequent review: [the complete six-owner saved-data audit](accepted-game-deep-audit-2026-10-16/README.md) is now published with domain appendices, owner prompts, analysis scripts and16selected native witness/control clips.** The collection/handoff paragraphs below retain their original checkpoint scope. No additional simulations were needed for the audit.
+
 **Four games ran once on accepted `70b4db6a3ef53acc1a0e90cd055f1087205daa30`; all completed in 185.123 seconds.** The user explicitly called this checkpoint. This is new observation data and preparation for a deeper football audit, not that completed audit, a new baseline or evidence that individual patches improved game statistics.
 
 The post-merge queue `c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b` establishes accepted #125; checkout STATUS/INTEGRATION sections are premerge snapshots. Runtime source is `9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941`. Node 22.23.3, 44 accepted settings/components=1/CF_FLOW unset; fixed 424-player inputs, native calls/rules/condition. No source, tests, capabilities, defaults, ratings, rosters or accepted reference changed. Existing #125 verification and recording-parity evidence were reused; no shared-suite repeat.
