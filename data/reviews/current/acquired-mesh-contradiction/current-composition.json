@@ -1,0 +1,40 @@
+{
+  "schema": "defensive-continuation-current-composition-v1",
+  "accepted": "0000e560e0dbe31905151465152d412ba838803d",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "adoption": "https://github.com/tannerthardy/football-simulation-/pull/130#issuecomment-6229797813",
+  "newEngineExecutions": 0,
+  "newTests": 0,
+  "candidates": [
+    {
+      "pr": 132,
+      "code": "85127819f88d6a475479689916dd01b527e41e41",
+      "minimalFiles": [
+        "src/sim/behaviors/defense.ts",
+        "test/acquired-qb-continuation.test.ts",
+        "test/fixtures/acquired-qb-scenes.json.gz"
+      ],
+      "appliesCleanly": true,
+      "compositionTree": "eb6a35a526d163ec038b3061921e2071b703b7fd",
+      "compositionSource": "8fa710f47829a4ccdad23223dd86b98be4a32522f0bed9c8bf10e4f0f585225b",
+      "acceptedConsumerBlobUnchanged": true
+    },
+    {
+      "pr": 134,
+      "code": "e98a5d2b8e302b7a9bf7398cda7cd2fb60dc4a70",
+      "minimalFiles": [
+        "src/sim/run-fits.ts",
+        "test/acquired-mesh-contradiction.test.ts",
+        "test/fixtures/acquired-mesh-scenes.json.gz"
+      ],
+      "appliesCleanly": true,
+      "compositionTree": "731fe44e5017aafd7eaf150fe41f6ef05372d635",
+      "compositionSource": "a0ccf5d7fcbda4ad4052bca786725680837b00d1285ff7432f9bcf78505b6a41",
+      "acceptedConsumerBlobUnchanged": true
+    }
+  ],
+  "limits": "Index application/hash compatibility only; no combined execution or new native outcomes. Integration owns independent contract review and full verification.",
+  "acceptedSource": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "combinedUnverifiedTree": "2cf14ee36fe49afff408ec5ba840efab17cd2da6",
+  "combinedUnverifiedSource": "d85275a3e9afb1722ceba0eb0af336519198f173a5d37256c4375466cc2cd7cf"
+}
