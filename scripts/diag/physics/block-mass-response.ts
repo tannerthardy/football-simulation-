@@ -31,16 +31,28 @@ function profile(weight: number, strength: number, mode = 'linked') {
   // confound mass with radius, sprint, recovery speed and selection.
   p.massKg = lbToKg(weight);
   if (mode === 'linked') p.power *= weight / cfg.referenceWeightLb;
+  if (mode === 'fixed-ceiling') p.power = lbToKg(cfg.referenceWeightLb) * 1.1;
   return p;
 }
 const snapshot = (a: any) => ({ pos: { ...a.pos }, vel: { ...a.vel }, spin: a.body.spin ?? 0,
   energy: a.body.energy, state: a.body.support.state, xi: { ...a.body.support.xi } });
 
 function run(scene: any) {
-  const f = contactFixture(cfg.fixture), { sim, blocker: b, defender: d, engagement: e } = f;
+  const f = contactFixture(cfg.fixture), { sim, defender: d } = f;
+  const b = scene.profiles === 'roster-te-dt' ? sim.slot('Y')! : f.blocker;
+  let e = f.engagement;
   const sign = scene.mirror ? -1 : 1, heading = scene.mirror ? Math.PI : 0;
-  Object.assign(b.profile, profile(scene.blockerLb, scene.blockerStrength ?? cfg.fixedStrength, scene.mode));
-  Object.assign(d.profile, profile(scene.defenderLb, scene.defenderStrength ?? cfg.fixedStrength, scene.mode));
+  if (scene.profiles === 'roster-te-dt') {
+    sim.disengage(e);
+    b.body.pos = { x: 40, y: 26 };
+    d.body.pos = { x: 40 + b.profile.radius + d.profile.radius + .1, y: 26 };
+    b.body.facing = 0; d.body.facing = Math.PI;
+    e = sim.engage(b, d, 'run', { x: 1, y: 0 })!;
+    assert(e);
+  } else {
+    Object.assign(b.profile, profile(scene.blockerLb, scene.blockerStrength ?? cfg.fixedStrength, scene.mode));
+    Object.assign(d.profile, profile(scene.defenderLb, scene.defenderStrength ?? cfg.fixedStrength, scene.mode));
+  }
   for (const a of [b, d]) {
     a.body.support = newSupport(.7); a.body.energy = 1;
     a.body.vel = { x: 0, y: 0 }; a.body.spin = 0;
@@ -104,8 +116,8 @@ function run(scene: any) {
     if (scene.request === 'anchor') vx = 0;
     if (scene.request === 'cross') { vx = -.5; vy = 2.5; }
     const commands: Intent[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
-    commands[b.idx] = { vel: { x: sign * 3, y: 0 }, facing: heading, posture: .7, push: 1 };
-    commands[d.idx] = { vel: { x: sign * vx, y: vy }, facing: scene.mirror ? 0 : Math.PI, posture: .7, push: 1 };
+    commands[b.idx] = { vel: { x: sign * 3, y: 0 }, facing: heading, posture: scene.blockerPosture ?? .7, push: 1 };
+    commands[d.idx] = { vel: { x: sign * vx, y: vy }, facing: scene.mirror ? 0 : Math.PI, posture: scene.defenderPosture ?? .7, push: 1 };
     return commands;
   };
   const inputHash = hash({ scene, profiles, initial, commands: requests(), hands: {

@@ -15,6 +15,8 @@
     {"id":"plus15-square", "blockerLb":345, "defenderLb":300, "mode":"linked", "request":"square"},
     {"id":"minus5-square", "blockerLb":285, "defenderLb":300, "mode":"linked", "request":"square"},
     {"id":"fixed-power-plus15", "blockerLb":345, "defenderLb":300, "mode":"fixed-power", "request":"square"},
+    {"id":"equal-force-reference", "blockerLb":300, "defenderLb":300, "mode":"fixed-ceiling", "request":"square"},
+    {"id":"equal-force-plus15", "blockerLb":345, "defenderLb":300, "mode":"fixed-ceiling", "request":"square"},
     {"id":"strong-light", "blockerLb":285, "defenderLb":300, "mode":"linked", "request":"square", "blockerStrength":95, "defenderStrength":60},
     {"id":"weak-heavy", "blockerLb":315, "defenderLb":300, "mode":"linked", "request":"square", "blockerStrength":60, "defenderStrength":95},
     {"id":"plus15-anchor", "blockerLb":345, "defenderLb":300, "mode":"linked", "request":"anchor"},
@@ -24,10 +26,12 @@
     {"id":"te-sized-cross", "blockerLb":250, "defenderLb":330, "mode":"linked", "request":"cross"},
     {"id":"wr-sized-square", "blockerLb":190, "defenderLb":330, "mode":"linked", "request":"square"},
     {"id":"extreme-wr-square", "blockerLb":130, "defenderLb":350, "mode":"linked", "request":"square"},
+    {"id":"roster-te-dt-square", "profiles":"roster-te-dt", "request":"square"},
+    {"id":"roster-te-dt-low-pads", "profiles":"roster-te-dt", "request":"square", "blockerPosture":0.95, "defenderPosture":0.35},
     {"id":"plus15-square-fine", "blockerLb":345, "defenderLb":300, "mode":"linked", "request":"square", "substeps":48},
     {"id":"equal-square-mirror", "blockerLb":300, "defenderLb":300, "mode":"linked", "request":"square", "mirror":true}
   ],
   "scope": "Controlled body-size analogues with common geometry and movement capabilities, not complete positional rosters or football win rates. Actual World and engagement lifetime, prescribed equal/opposing or named alternative requests, fixed hand control. Altered fixture profiles are diagnostic inputs only.",
   "checks": {"momentum":1e-8,"work":1e-8,"armBudget":1e-8},
-  "budget": "16 short mechanical reps, one opposing request/size control per named risk, one mirror and one refinement. No games/full suite, no solver or production capacity changes."
+  "budget": "20 short mechanical reps: equal absolute force isolates the remaining strength confound, roster TE/DT pad-height controls check transfer beyond weight-only analogues, plus one mirror and one refinement. No games/full suite, no solver or production capacity changes."
 }
