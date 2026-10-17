@@ -1,0 +1,18 @@
+{
+  "candidate.patch": "a8dc87c791ad67665d619fb104aebdc9c499494faea50f475b4841e95e7b9c9f",
+  "corrected-focused.json": "a80d22802a118cc45bf2be6646d195b09d5a34ad39c9ac2f48c4a67fceb51755",
+  "corrected-focused.log": "cb0d5783fb1da84c456c2020e56f1439017d6182619cdaf7a0cdfca7d39a61eb",
+  "final-scenes.json": "51b2f55d776a4792e062dff9a7985d2386192e3d7a431e848b10207b2e4dec20",
+  "final-scenes.log": "76028da6637ac60c839c4c392e0248504f76842cbf1232a49755b9ab308e2a11",
+  "focused.json": "cbfef51623c61f1ba5dc41604a31710f84a48ea51e2db851ccec65a1adffce98",
+  "focused.log": "d83c002fd957e0a29eb632ed81d36873217d92c1717a67f756a5117abd229241",
+  "metrics.json": "07b67868c9cd6119a06d6f8aa48cf299af2864ee7d1df440ebdeeedbdcb763b1",
+  "prepare-fixtures.py": "9caa7dd1de35325842609b465ae640f1fecd8941885a8b579a2da978aaf06108",
+  "red.json": "e3602aedc0379cf225046eebed2ff33e356372bcf428d70b572841010b83dde8",
+  "red.log": "3cd023039f8298ab649503191815b6be51c087102d6892265d0e9c76c43a3586",
+  "review.json": "91701b156a9294f7e6e56e581b9b6e0a8aeb5e48c468b2bc6a590841622bc825",
+  "typecheck-final.json": "beb11cd3561e9c899a1f455717af1425888b4cd8771ec1426db9327d4383d29c",
+  "typecheck-final.log": "b29d8df0d0799acac7c1fd331ecebe46884c4aee9a9e2743bf70ac0f1b0ce274",
+  "typecheck.json": "c6e9f926749fe096e346655dfe91568219d60f5f7f1cc1c2653203cda19f8a98",
+  "typecheck.log": "167c2bf41c7265cf7c90a0599eb7058c17475f9ece3d9f2922ffe12446ca2f90"
+}

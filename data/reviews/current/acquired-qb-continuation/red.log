@@ -1,0 +1,167 @@
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941
+Running npx vitest run test/acquired-qb-continuation.test.ts
+
+ RUN  v3.2.4 /workspace/football-yac-angle
+
+ ❯ |core| test/acquired-qb-continuation.test.ts (13 tests | 6 failed) 184ms
+   × man coverage accepts a personally acquired committed QB run > 'G4-P177' accepts pursuit despite retained pass belief 55ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+   × man coverage accepts a personally acquired committed QB run > 'G1-P086' accepts pursuit despite retained pass belief 8ms
+     → expected { …(3), …(1) } to deeply equal { vel: { …(2) }, …(4) }
+   × man coverage accepts a personally acquired committed QB run > 'G1-P127' accepts pursuit despite retained pass belief 7ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(4) }
+   × man coverage accepts a personally acquired committed QB run > 'G2-P174' accepts pursuit despite retained pass belief 10ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+   × man coverage accepts a personally acquired committed QB run > 'G3-P093' accepts pursuit despite retained pass belief 6ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+   × man coverage accepts a personally acquired committed QB run > 'G4-P173' accepts pursuit despite retained pass belief 39ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+   ✓ man coverage accepts a personally acquired committed QB run > 'G1-P027' retains ordinary/PA receiver responsibility 4ms
+   ✓ man coverage accepts a personally acquired committed QB run > 'G2-P057' retains ordinary/PA receiver responsibility 9ms
+   ✓ man coverage accepts a personally acquired committed QB run > 'G3-P073' retains ordinary/PA receiver responsibility 6ms
+   ✓ man coverage accepts a personally acquired committed QB run > needs acquired possession as well as commitment, and cancels when that evidence changes 16ms
+   ✓ man coverage accepts a personally acquired committed QB run > ignores hidden QB motion, possession, scramble/handoff flags and private call while reality advances 11ms
+   ✓ man coverage accepts a personally acquired committed QB run > does not treat initial snap possession or elapsed time as a committed run 8ms
+   ✓ man coverage accepts a personally acquired committed QB run > keeps a recognized reachable ball contest ahead of a stale QB carrying picture 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P177' accepts pursuit despite retained pass belief
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G2-P174' accepts pursuit despite retained pass belief
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G3-P093' accepts pursuit despite retained pass belief
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P173' accepts pursuit despite retained pass belief
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": undefined,
+-   "effort": 1,
++   "cutSkill": 1.0035714285714286,
+    "facing": undefined,
+    "vel": {
+-     "x": -2.334446029607328,
+-     "y": 8.765786519190351,
++     "x": 7.689280151260645,
++     "y": 3.617609857804743,
++   },
++   Symbol(own movement objective): {
++     "kind": "moving",
++     "point": {
++       "x": 37.793898735378285,
++       "y": 27.397028925133775,
++     },
++     "velocity": {
++       "x": 6.072991787231013,
++       "y": -0.10232669360758888,
++     },
+    },
+  }
+
+ ❯ test/acquired-qb-continuation.test.ts:58:21
+     56|     expect(cue.carrying).toBe(true); expect(cue.pos.x).toBeGreaterThan…
+     57|     const before = { ...f.a.vel }, command = f.update();
+     58|     expect(command).toEqual(chase(expected.sim, expected.a, expected.s…
+       |                     ^
+     59|     const old = covering.behavior.trackReceiver(covering.a, covering.s…
+     60|     expect(radial(command.vel, f)).toBeGreaterThan(radial(old.vel, cov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P086' accepts pursuit despite retained pass belief
+AssertionError: expected { …(3), …(1) } to deeply equal { vel: { …(2) }, …(4) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": 1.1285714285714286,
+-   "facing": 2.6675803864575274,
+-   "posture": 0.5989795918367347,
+-   "push": undefined,
++   "cutSkill": 1.032142857142857,
++   "facing": undefined,
+    "vel": {
+-     "x": -1.7416393810829758,
+-     "y": 1.1476500754371588,
++     "x": 7.65808640167392,
++     "y": -4.708166099153356,
++   },
++   Symbol(own movement objective): {
++     "kind": "moving",
++     "point": {
++       "x": 66.67149056882366,
++       "y": 1.1652688772314435,
++     },
++     "velocity": {
++       "x": 7.7571787002794705,
++       "y": -2.047187976696448,
++     },
+    },
+  }
+
+ ❯ test/acquired-qb-continuation.test.ts:58:21
+     56|     expect(cue.carrying).toBe(true); expect(cue.pos.x).toBeGreaterThan…
+     57|     const before = { ...f.a.vel }, command = f.update();
+     58|     expect(command).toEqual(chase(expected.sim, expected.a, expected.s…
+       |                     ^
+     59|     const old = covering.behavior.trackReceiver(covering.a, covering.s…
+     60|     expect(radial(command.vel, f)).toBeGreaterThan(radial(old.vel, cov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |core| test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P127' accepts pursuit despite retained pass belief
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(4) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": 1.1285714285714286,
+-   "facing": -2.675626656161574,
+-   "posture": 0.5989795918367347,
+-   "push": undefined,
++   "cutSkill": 1.032142857142857,
++   "facing": undefined,
+    "vel": {
+-     "x": -1.7220119773766573,
+-     "y": -1.1908774626047742,
++     "x": 7.899765512948575,
++     "y": 4.290317027114459,
++   },
++   Symbol(own movement objective): {
++     "kind": "moving",
++     "point": {
++       "x": 72.76254682602062,
++       "y": 48.883029915358804,
++     },
++     "velocity": {
++       "x": 7.733274957788238,
++       "y": 2.649992156072412,
++     },
+    },
+  }
+
+ ❯ test/acquired-qb-continuation.test.ts:58:21
+     56|     expect(cue.carrying).toBe(true); expect(cue.pos.x).toBeGreaterThan…
+     57|     const before = { ...f.a.vel }, command = f.update();
+     58|     expect(command).toEqual(chase(expected.sim, expected.a, expected.s…
+       |                     ^
+     59|     const old = covering.behavior.trackReceiver(covering.a, covering.s…
+     60|     expect(radial(command.vel, f)).toBeGreaterThan(radial(old.vel, cov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 7 passed (13)
+   Start at  04:35:43
+   Duration  1.28s (transform 671ms, setup 0ms, collect 851ms, tests 184ms, environment 0ms, prepare 63ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/acquired-qb-contract/red.json; exit 1

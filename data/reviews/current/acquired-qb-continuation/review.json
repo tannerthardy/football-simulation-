@@ -1,0 +1,198 @@
+{
+  "schema": "acquired-qb-continuation-v1",
+  "base": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "code": "85127819f88d6a475479689916dd01b527e41e41",
+  "source": "58d6ad87a858eafe2acf62d451f9287ad6fc8fddd281caaf6989cde62f0e3418",
+  "status": "ready-for-independent-review",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "newNativeSnaps": 0,
+  "newGames": 0,
+  "nativeCounterfactualOutcomes": 0,
+  "savedCases": [
+    {
+      "id": "G4-P177",
+      "strong": true,
+      "t": 5.7,
+      "actor": 15,
+      "rawSha256": "a450447e15189c89048ba49a699dfee53da62fa1c2c37d868bfe6328db810848",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 9.02,
+        "duration": 6.7
+      }
+    },
+    {
+      "id": "G1-P086",
+      "strong": true,
+      "t": 5.6,
+      "actor": 15,
+      "rawSha256": "4d13620967f723ca641f94ba0098b4ab14394ad959f91aca09f95af303a7ef87",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 20.69,
+        "duration": 7.95
+      }
+    },
+    {
+      "id": "G1-P127",
+      "strong": true,
+      "t": 5.4,
+      "actor": 15,
+      "rawSha256": "2e13651db32a8352a918b7f7195bdeec1fb548031dd6faeed71f3a36917f9e0f",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 27.86,
+        "duration": 8.7
+      }
+    },
+    {
+      "id": "G2-P174",
+      "strong": true,
+      "t": 5.6,
+      "actor": 17,
+      "rawSha256": "fc7783f1df67f5972e68e3d10edf2f112f7983a245d29a7a10a89a9fcb75fda9",
+      "terminalContextOnly": {
+        "outcome": "touchdown",
+        "yards": 15.2,
+        "duration": 7.2
+      }
+    },
+    {
+      "id": "G3-P093",
+      "strong": true,
+      "t": 5.9,
+      "actor": 20,
+      "rawSha256": "a192625bd5ec57d8b8fb9f28dabb6c01979f9633ddf8aa1113baa8f1d0166fb5",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 2.22,
+        "duration": 6
+      }
+    },
+    {
+      "id": "G4-P173",
+      "strong": true,
+      "t": 5.7,
+      "actor": 15,
+      "rawSha256": "5413b96625edb15cf13f41f43c209562aded4b8f08fbfdc6ad9a47cc8f96f7bf",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 11.07,
+        "duration": 7.55
+      }
+    },
+    {
+      "id": "G1-P027",
+      "strong": false,
+      "t": 0.6,
+      "actor": 17,
+      "rawSha256": "1fca46617c572eda70bc911c82fdf8d3d067541a5d669dfea6753b28c555b35d",
+      "terminalContextOnly": {
+        "outcome": "slide",
+        "yards": 2.41,
+        "duration": 5.7
+      }
+    },
+    {
+      "id": "G2-P057",
+      "strong": false,
+      "t": 0.6,
+      "actor": 15,
+      "rawSha256": "33dad4a54237de85cc2e28750216ae69304e7e32c459402c35c8ccc545f54695",
+      "terminalContextOnly": {
+        "outcome": "incomplete",
+        "yards": 0,
+        "duration": 3.3
+      }
+    },
+    {
+      "id": "G3-P073",
+      "strong": false,
+      "t": 0.6,
+      "actor": 15,
+      "rawSha256": "beb789bd8ecb4b3187e21e5aa25bdf31acc981c10aa0daa5a2b5cc1b4a0dd2e7",
+      "terminalContextOnly": {
+        "outcome": "incomplete",
+        "yards": 0,
+        "duration": 5.1
+      }
+    }
+  ],
+  "checks": {
+    "unchangedRed": "6 failed / 7 passed",
+    "candidate": "74 pass; 13 final-scene passes plus compatible61 unchanged checks",
+    "typecheck": "pass; first failed fixture typecheck retained",
+    "correctedPlacementFailure": "An initial patch matched Blitzer instead of coverMan;6 failed/68passed; moved before publication."
+  },
+  "commandSeconds": 31.330352186,
+  "evidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "audit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "restoredArchiveHashes": {
+    "accepted-games-G1-zone-reference.tar.gz": "32f521bb60cb9a0a4b755b1cffc25898a0c44c409d717897c8aed46644d14c8e",
+    "accepted-games-G2-spread-air.tar.gz": "53e8e9e3358c04cd369578991dd1f6d68848ab64dc65940c6843901cf3694123",
+    "accepted-games-G3-power-zone.tar.gz": "949eca941632f77ce3aa479c876630cf11ee7ea1054cc84dac6f46205bbdc0ec",
+    "accepted-games-G4-west-spread.tar.gz": "55f0276df7fc9f2bd326c2245fa9c44c6da65b50c22e08a1b3ebc02135457166"
+  },
+  "limits": "Saved rounded scenes, own recorded technique flags and consumed pictures; local controller/one-body replay, not full runtime checkpoint or changed-game outcome.",
+  "coordination": {
+    "run": "https://github.com/tannerthardy/football-simulation-/pull/126#issuecomment-6229661691",
+    "physics": "https://github.com/tannerthardy/football-simulation-/pull/114#issuecomment-6229662000",
+    "force128": "independently ACCEPTED by Integration,6229698539; separate combined verification"
+  }
+}

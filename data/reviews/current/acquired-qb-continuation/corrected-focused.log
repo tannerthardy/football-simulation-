@@ -1,0 +1,39 @@
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 58d6ad87a858eafe2acf62d451f9287ad6fc8fddd281caaf6989cde62f0e3418
+Running npx vitest run test/acquired-qb-continuation.test.ts test/man-throw-recognition.test.ts test/back-man-run-fit.test.ts test/coverage-run-support.test.ts
+
+ RUN  v3.2.4 /workspace/football-yac-angle
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P177' accepts pursuit despite retained pass belief
+{"id":"G4-P177","t":5.7,"actor":"LB_M","cueAge":0.35,"requested":{"x":-2.334446029607328,"y":8.765786519190351},"coveringRequest":{"x":7.689280151260645,"y":3.617609857804743},"before":{"x":-1.89,"y":1.15},"achieved":{"x":-1.8785164489152975,"y":1.4313289319446243},"coveringAchieved":{"x":-1.5865046405526309,"y":1.2281800019359246}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P086' accepts pursuit despite retained pass belief
+{"id":"G1-P086","t":5.6,"actor":"LB_M","cueAge":0.15,"requested":{"x":-1.7416393810829758,"y":1.1476500754371588},"coveringRequest":{"x":7.65808640167392,"y":-4.708166099153356},"before":{"x":6.42,"y":-4.74},"achieved":{"x":6.15790266491727,"y":-4.5509280105846885},"coveringAchieved":{"x":6.46827330257107,"y":-4.737622843994287}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P127' accepts pursuit despite retained pass belief
+{"id":"G1-P127","t":5.4,"actor":"LB_M","cueAge":0.15,"requested":{"x":-1.7220119773766573,"y":-1.1908774626047742},"coveringRequest":{"x":7.899765512948575,"y":4.290317027114459},"before":{"x":6.31,"y":5.77},"achieved":{"x":6.065717846165145,"y":5.558294870085469},"coveringAchieved":{"x":6.437306801980106,"y":5.64830064811309}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G2-P174' accepts pursuit despite retained pass belief
+{"id":"G2-P174","t":5.6,"actor":"CB_S","cueAge":0.35,"requested":{"x":-1.3983485674236824,"y":8.501905940910705},"coveringRequest":{"x":1.4802040816326278,"y":-3.387755102040814},"before":{"x":0.71,"y":-3.34},"achieved":{"x":0.6503976959798582,"y":-3.011640237619066},"coveringAchieved":{"x":1.0679585918809005,"y":-3.273511299675316}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G3-P093' accepts pursuit despite retained pass belief
+{"id":"G3-P093","t":5.9,"actor":"FS","cueAge":0.4,"requested":{"x":-6.992915530374002,"y":-4.384390604240234},"coveringRequest":{"x":10.023062817324238,"y":0.0250607739945981},"before":{"x":5.52,"y":0.16},"achieved":{"x":5.209874898480727,"y":0.0660116664587344},"coveringAchieved":{"x":5.708020111200851,"y":0.1543285046004813}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P173' accepts pursuit despite retained pass belief
+{"id":"G4-P173","t":5.7,"actor":"LB_M","cueAge":0.4,"requested":{"x":2.0392831565616274,"y":-7.713841595658058},"coveringRequest":{"x":4.063851236151891,"y":7.72581867774614},"before":{"x":1.11,"y":8.25},"achieved":{"x":1.11357869088025,"y":7.895361889881276},"coveringAchieved":{"x":1.433952561645116,"y":8.192512378405393}}
+
+ ✓ |core| test/acquired-qb-continuation.test.ts (13 tests) 172ms
+ ✓ |core| test/back-man-run-fit.test.ts (38 tests) 560ms
+ ✓ |core| test/coverage-run-support.test.ts (15 tests) 670ms
+ ✓ |core| test/man-throw-recognition.test.ts (8 tests) 156ms
+
+ Test Files  4 passed (4)
+      Tests  74 passed (74)
+   Start at  04:36:20
+   Duration  1.76s (transform 1.03s, setup 0ms, collect 2.53s, tests 1.56s, environment 1ms, prepare 311ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/acquired-qb-contract/corrected-focused.json; exit 0
