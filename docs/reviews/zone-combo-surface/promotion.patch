@@ -31,7 +31,7 @@ index b312fcf..9bf5270 100644
 @@ -1195,6 +1198,27 @@ export class RunBlocker implements Behavior {
        !!zone || !!contactFit, zone ? 2.4 : 0) : original;
    }
- 
+
 +  /** Neighboring zone halves share a depth normal, not the diagonal drive
 +   * direction. The first member's own installed half is the desired angle.
 +   * Pass this only at acquisition: existing hands retain their actual frame. */
@@ -237,7 +237,7 @@ index 02a22de..47636ea 100644
 @@ -101,7 +101,7 @@ describe('the narrow zone acquisition controller preserves other installed jobs'
      expect(advance(f.blocker.body, command)).toEqual(advance(f.blocker.body, expected));
    });
- 
+
 -  it('preserves the shared surface of a live planned double', () => {
 +  it('uses its installed half without a solo-zone read or releasing an unjoined double', () => {
      const f = fixture(), helper = f.sim.slot('LG')!;
@@ -273,5 +273,5 @@ index 02a22de..47636ea 100644
 +    expect(f.blocker.engagement).toBeNull();
 +    expect(helper.engagement).toBeNull();
    });
- 
+
    it('leaves a body with a foreign physical hand constraint under its existing controller', () => {

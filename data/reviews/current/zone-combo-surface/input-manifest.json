@@ -3417,5 +3417,10 @@
     "typecheck": "pass",
     "inputsUnchanged": true,
     "qualification": "Original acceptedCommit/codeCommit fields describe preserved historical diagnosis. This current pin supersedes only the adoption target, not old evidence provenance."
+  },
+  "existingContractAdjudication": {
+    "testSha256": "ea2b4e0ac7f8c81771b004238fbc372b965a5ac5066b0cdb000710b138976b57",
+    "promotionPatchSha256": "463fca3f230799c6cc42cf6ce019a87889ab7456ccd4567f9bf10f950d24cddf",
+    "qualification": "Original files hashes retain original historical publication; these hashes identify current3file extraction."
   }
 }
