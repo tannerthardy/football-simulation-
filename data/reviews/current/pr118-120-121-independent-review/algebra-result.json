@@ -1,0 +1,14 @@
+{
+  "protocol": "directional-cancellation-algebra-v1",
+  "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+  "node": "v22.23.3",
+  "sourceBlockSha256": "2072693f06e30896d4f859aca965df117f3b334331ce8bc880cd419360017a12",
+  "scriptSha256": "0f41bf46be4bfe9c497b8a54fd0bd820aca52b1af6497de7776d341493a09226",
+  "cases": 510,
+  "exactCollinear": 246,
+  "maxError": 5.551115123125783e-17,
+  "elapsedSeconds": 0.015574516000000004,
+  "engineSteps": 0,
+  "result": "PASS",
+  "limits": "Fixed-state algebra only; unequal World trajectories remain outside this check."
+}

@@ -46,6 +46,60 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
+## Current integration preparation — independently reviewed maintenance
+
+Accepted develop remains `d682b1f474cb6ba260a7b8b1119a62919c5a2159` until adoption.
+Integration owns `codex/reviewed-maintenance-integration` from that pin plus queue
+bf493d8. Seven narrow corrections have independent ACCEPT dispositions:
+
+| Scope | Exact reviewed publication | Independent lane / remaining integration gate |
+| --- | --- | --- |
+| #117 normal following/anchored shoulder | fae0a358 | Run-controller review9ea0782; depth/weak-traffic costs retained. |
+| #122 verified gentler gathering | cf827df7 | Same independent lane accepts117/122 composition; five-file scope only. |
+| #123 shallow observed-runner insertion | 5da02125 | Defensive reviewd01d020; broader Counter/PA tracker remains held. |
+| #124 Quarters flat/wheel duty | 9f2206a3 | Same defensive lane accepts duty with disclosed top-depth cost; not full wheel technique. |
+| #118 transverse support accounting | 3b426fb1 | Mechanical review4b2664d: existing-budget repair, no new law/capacity/default. |
+| #120 dive/effort/fall-history accounting | 35f87c90 | Same mechanical lane; inherited fatigue proxy/calibration limits remain. |
+| #121 two-point energy writeback | 1dc41611 | Independent routine bookkeeping, no118/120 dependency. |
+
+Twenty-four protected files, seven runtime files; all unshared blobs equal their
+author pins, shared World equals the independently checked118/120 composition.
+No diagnostic ancestry or held experiments imported. Component checks and native
+receipts are reused with their actual source/retention limits. Integration freezes
+and runs the required full verification once on this exact candidate, with the
+same44 settings/components1/CF_FLOW unset. No additional native, panel or game job.
+[Intake and preserved risks](../data/reviews/current/reviewed-maintenance-integration/intake.json),
+[exact extraction audit](../data/reviews/current/reviewed-maintenance-integration/extraction-audit.json),
+[copyable agent tasks and posted assignments](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
+
+**Independent tasks are work, not self-approval.** Four nonauthor reviewers handled
+run controllers, defense contracts, mechanics/accounting and tooling. Source and
+saved evidence come first; small extra checks name a decision. No duplicate shared
+suite or requirement to verify every old PR again. Original owners keep progressing
+and reconcile accepted changes only at clean checkpoints. Readiness labels request
+review; exact verification/adoption remain Integration's responsibility.
+
+**Separate tasks/holds:**
+
+- **#106 → Catching repair, Measurement review:** resumed failed/wall-censored
+  caches can overwrite the prior index, losing attempted/censored/failure counts
+  and relabeling them skipped. Independent zero-engine reproducer confirms it.
+  Preserve the blocked index or retain its row/accounting; keep no automatic retry.
+  [Pinned HOLD and smallest repair](https://github.com/tannerthardy/football-simulation-/pull/106#issuecomment-6228234519).
+  No3198-case campaign. PA identity mapping is offline compatibility work.
+- **#101 → Run repair, Measurement review:** existing wall-censor/partial-exception
+  trace HOLD remains unchanged. Supply tiny stub controls; no1848-study recollection.
+- **#108 → nonauthor reference reviewer:** source/hash/OCR/provenance/link and
+  interpretation labels only; exact teaching images outrank OCR. Documentation
+  lane does not hold runtime. [Task](https://github.com/tannerthardy/football-simulation-/pull/108#issuecomment-6228199773).
+- **#115** optional capacity seam/calibration stays separately held; **#116/#119**
+  remain author-HOLD for depth/traffic and runner/loaded-RG costs. #113/#114 research,
+  broader tracker, departure/CLIMB_EXIT, initial helper-surface diagnosis and
+  experimental Physics remain separate. Do not merge experiments to simplify refs.
+
+Existing measurement checkpoint carries forward; no new panel, game or baseline
+recollection merely to validate this intake. Four-game context remains a CEO call.
+
 <a id="accepted-development"></a>
 ## Accepted development reference
 
@@ -515,6 +569,9 @@ needed for distribution. These remain8ca8dee observations, not current-build
 results; final intents cannot reconstruct discarded producer stages/every-tick RNG.
 
 <a id="ready-blocked-experimental"></a>
+
+**Current intake:**117/122,123/124 and118/120/121 independently accepted for one exact combined verification;106/101 tooling blocked,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source remainsd682b1f until adoption.
+
 
 **Delivered via #112:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate adopted asd682b1f after its exact passing verification. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.
 

@@ -132,6 +132,8 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 <a id="COV-003"></a>
 ### COV-003 — Run support through coverage reassignment
 
+Latest defensive reviewd01d020 accepts123 shallow positive-observed-possession/assigned-side handover and124 narrow Quarters flat/wheel duty with Palms distinct.2.8s123 prefixes prove closing, not a tackle; broader tracker/Counter/PA bump remain held.124 retains early flat-cushion/top-depth cost and changed target/censored limits; no complete top-down coverage or populationYAC claim. Exact minimal six-file pair has no108 import dependency; combined shared verification pending. [Pinned review](reviews/independent-defense-123-124.md).
+
 2026-10-16 update: Do-It-All accepts exact #97/#100 release-read/provisional-block composition and separate #95 acquired rat duty at ba399712 on3723204. Integration has reconciled the shared entry producer once;20 existing overlap checks and exact #107 freeze90240f5 pass:1,890 TS/145 Python/typecheck/build. Adopted via107 asc3264b0; actual tree equals publication/protected passing freeze, no unchanged rerun. Drive high/low losses, exposed seam, changed targets/RNG and rat collision/fall/lost availability remain accepted local costs, not proof of overall coverage/tackling improvement. [Current scope](INTEGRATION.md#ready-blocked-experimental). The earlier review-request paragraph below describes the prior stage.
 
 Current review queue: #97 provisional block key and #100 release cushion/seam
@@ -253,6 +255,8 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
+
+Latest independent review9ea0782 accepts117 normal following/anchor shoulder and122 bounded verified pacing, including their eight-file composition on d682b1f. Preserve weak1175.34→2.93, mirrored depth concessions and1225.34→5.21; tackle-sensitive gains do not prove extra blocking. LG/Mike collection remains unresolved, and later exit trials are rejected. The new initial combination-approach/persistent helper-surface diagnosis is a separate next mechanism, not a ready patch or a reason to bypass useful LT work.24-file shared candidate verification is pending; no new native campaign. [Current tasks](INTEGRATION.md#ready-blocked-experimental).
 
 2026-10-16 latest: independent de3de0c review ACCEPTS #110 acquired run-entry reasoning (d157356) and final #111 emitted-direction connection travel (bc02b22), plus their six-file composition on acceptedc3264b0. Exact #112 freeze df900af passes1906 TS/145 Python/typecheck/build and is adopted asd682b1f, actual tree equal publication/protected passing freeze. Strong achieved access needs both patches and small decision margins; combined weak contact is earlier/nearer LOS, fresh110 IZ gain4.35→3.67 remains adverse. Duo is unchanged only when adding111:110 advances SS contact3.45→3.25s, both censored3.50. Soft obstruction scoring is not a radius/World change or whole-route certificate. Old all-off6753 source stays distinct from literal accepted4658; inherited information/geometry limits remain. Rejected gradient, CLIMB_EXIT/departure and Physics hand-retention are separate. [Pinned review](reviews/pr110-111-independent-review.md).
 
@@ -410,6 +414,11 @@ depth. QB and receiver boxes already have distinct actual-recipient semantics.
 No historical recording, comparison table, physical transfer or fumble is
 invented. **Accepted bounded correction via merged #63.** More complex possession
 allocation and versioned research-adapter migrations remain separate.
+
+<a id="GAME-003"></a>
+### GAME-003 — Two-point participants lose completed energy writeback
+
+Independent4b2664d accepts121: copy actual participant body energy back by player identity after either try outcome, as ordinary scrimmage already does. Participants on both teams change; bench/recovery/score/ending remain. Three hook-only focused checks and two expected-red failures are preserved. This has no118/120 dependency; exact shared verification pending. No fatigue retune or live game is needed for the local decision.
 
 ## Information and awareness
 
@@ -625,6 +634,8 @@ evidence. Do not adopt all patch physics or infer realistic endings from ledgers
 <a id="PHY-002"></a>
 ### PHY-002 — Timing, shared-foot composition and cost
 
+Latest independent4b2664d review accepts118 existing vector-brace accounting and120 yaw/completed-effort/history repairs; unchanged budgets/coefficients/capacities/defaults, no115 seam or experimental solver. Shared World statements compose exactly in either order. Ordinary aligned lean and gait fatigue proxy remain inherited, off-feet metabolic completeness/calibration remain unproved; corrected energy can affect later ticks. Saved native118 reference is source0a5e365a optional-undefined-force fallback, not relabeled literal accepted. Exact shared verification pending. [Pinned scope and authority classification](reviews/pr118-120-121-independent-review.md).
+
 [#3](https://github.com/tannerthardy/football-simulation-/pull/3) and
 [#7](https://github.com/tannerthardy/football-simulation-/pull/7) remain experimental.
 Whole-World refinement became too expensive; local numerical experiments
@@ -679,6 +690,8 @@ decision or execution failure; do not collect a new catch/roster campaign by def
 <a id="MODEL-001"></a>
 <a id="DATA-001"></a>
 ### MODEL-001 / DATA-001 — Detail must earn its cost
+
+Current tooling tasks:106 independent682f47c HOLD reproduces resumed failed/wall-cache index loss with zero engine steps. Catching fixes retained attempted/censor/error/skipped accounting, then Measurement reviews a tiny stub.101 remains separately held for original wall-censor/partial-exception trace loss; Run repairs without recollecting1848 cases. SharedPA identity mapping is offline compatibility, not a duplicate campaign. [Tasks and exact pins](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
 
 Bodies are planar with height/posture reductions. Detailed airborne contact,
 hurdles, independent limbs and ball exposure are limited; richer soles/gait
