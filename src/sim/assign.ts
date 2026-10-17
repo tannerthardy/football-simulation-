@@ -169,18 +169,12 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
       aimY = by + ps * 8;
       break;
   }
-  const perimeter = concept.scheme === 'buckSweep' || concept.scheme === 'pinPull' || concept.scheme === 'crackToss';
-  if (perimeter) {
-    const surface = sim.offense.filter(a => isOL(a) || sim.offAlign.spots[a.slot]?.inline);
-    const edge = Math.max(...surface.map(a => (a.pos.y-by)*ps+a.profile.radius));
-    aimY = by + ps * (edge+1.2);
-  }
   const aim = { x: los + 0.6, y: aimY };
   let qb: Vec2;
   let rb: Vec2;
   let time = concept.meshTime;
   let pitch = 0;
-  if (concept.scheme === 'toss' || concept.scheme === 'crackToss') {
+  if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };
     pitch = 5;
@@ -188,7 +182,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   } else if (concept.scheme === 'draw') {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
-  } else if (qbType === 'under' && STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' || concept.scheme === 'pinPull' || concept.scheme === 'buckSweep')) {
+  } else if (qbType === 'under' && STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone')) {
     // Stretch from under center: the QB opens and gets depth to put the ball
     // on the back's track outside the tackle's stance, so the back takes it
     // already running wide (STRETCH_MESH=0 restores the inside mesh).
@@ -205,7 +199,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
   }
-  return { qb, rb, aim, time, pitch, ride: STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' || concept.scheme === 'buckSweep' || concept.scheme === 'pinPull') };
+  return { qb, rb, aim, time, pitch, ride: STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') };
 }
 
 /**
@@ -302,7 +296,7 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   })() : undefined;
   to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
     run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
-      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'||b.behavior.plan.pullRole==='force'))} : undefined }, to);
+      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
 }
 
 export function onThrow(sim: PlaySim): void {

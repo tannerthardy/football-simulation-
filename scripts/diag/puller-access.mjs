@@ -2,34 +2,15 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import {gzipSync} from 'node:zlib';
+import {gzipSync,gunzipSync} from 'node:zlib';
 import {execFileSync} from 'node:child_process';
-import {Rng} from '../../src/core/rng.ts';
-import {generateTeam,pickOffense,pickDefense} from '../../src/league/team.ts';
-import {FORMATION_BY_ID} from '../../src/playbook/formations.ts';
-import {RUN_BY_ID} from '../../src/playbook/concepts.ts';
-import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../src/playbook/defense.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.ts';
 import {sourceVersion} from '../source-version.ts';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
-const [mode='plan',out='out/perimeter-runs',ids='B01,P01,C01',untilText='5',inputPath='data/reviews/current/perimeter-runs/inputs.json']=process.argv.slice(2);
-if(mode==='plan'){
- const offense=generateTeam(new Rng(11),'O','O',{strength:.55}),defense=generateTeam(new Rng(12),'D','D',{strength:.55});
- const rows=[['B01','buck_sweep','ace_12'],['P01','pin_pull','ace_12'],['C01','crack_toss','ace_nasty_12']].map(([id,call,form])=>{
-  const formation=FORMATION_BY_ID[form],run=RUN_BY_ID[call];
-  const setup={offense:pickOffense(offense,formation.personnel),defense:pickDefense(defense,'base43'),
-   offCall:{formation,flip:false,kind:'run',run,label:`${formation.name} · ${run.name}`},
-   defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over Cover3'},
-   los:40,ballY:26.67,firstDownX:50,seed:77,audibles:false,record:true,recordEvery:1,recordLevel:'full'};
-  return {id,call,form,setup,inputSha256:hash(setup)};
- });
- mkdirSync(inputPath.slice(0,inputPath.lastIndexOf('/')),{recursive:true});
- writeFileSync(inputPath,JSON.stringify({schema:'perimeter-run-inputs-v1',accepted:'bb6d4c73948d53ba841dd9338dd240146c739f8c',
-  question:'Distinct pin/pull/crack jobs, physically earned exchange/load/protection, native defensive responses. One fixed existing team pair; no games.',rows},null,2)+'\n');
- console.log(JSON.stringify({cases:rows.map(r=>({id:r.id,inputSha256:r.inputSha256})),simulatedSnaps:0}));process.exit(0);
-}
-assert.equal(mode,'run');const bytes=readFileSync(inputPath),manifest=JSON.parse(bytes),until=Number(untilText);
+const [mode='plan',out='out/perimeter-runs',ids='B01,P01,C01',untilText='5',inputPath='test/fixtures/puller-access-inputs.json.gz']=process.argv.slice(2);
+if(mode==='plan'){ console.log(JSON.stringify({question:'Puller route progress and acquired collection; no snaps without explicit run mode',inputs:inputPath,simulatedSnaps:0}));process.exit(0); }
+assert.equal(mode,'run');const bytes=readFileSync(inputPath),manifest=JSON.parse(inputPath.endsWith('.gz')?gunzipSync(bytes):bytes),until=Number(untilText);
 assert(until>0&&until<=5);const selected=ids.split(',').map(id=>{const r=manifest.rows.find(r=>r.id===id);assert(r,`Missing frozen case ${id}`);return r;});
 assert(selected.length<=6);const rows=[],started=performance.now();
 const snapshot=a=>structuredClone(a.body);
