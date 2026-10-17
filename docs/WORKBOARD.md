@@ -12,6 +12,12 @@ Do not change classifying policy, combo/release/approach, protection, defensive
 coverage, physics or ratings. Preserve actual inline/pull/lead/slice ownership;
 depth bucket alone is not ownership. RB outcome cost remains unproved. #135 QB
 forecast is frozen separately; no historical experimental stack is imported.
+Eligibility-only `1cce408` passes14 focused checks. After the same74-case
+assignment-only panel exposed11 collective allocation alternatives, scope was
+coordinated again (#126 comment6241819701); joint receiver-mask allocation
+`dc679b8` passes17 focused checks/typecheck. All exported nonreceiver ledgers stay
+identical; individual longer jobs and the remaining order inversion are retained.
+No new engine ticks or games. Integration owns independent/combined acceptance.
 
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 

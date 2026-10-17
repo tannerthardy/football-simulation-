@@ -1,0 +1,29 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate -- npx vitest run --project core test/receiver-run-eligibility.test.ts test/stalk-ledger.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/receiver-run-assignments/joint-green.json
+
+Profile candidate: run-game-2026-10-13, commit 1cce4086494f8531b207d9090dc5ab0dfd8db3c1, source 3b9c401bb7fd70af4bb46d507f1507f276133683c03f9d7896be6c2a1b90db17
+Running npx vitest run --project core test/receiver-run-eligibility.test.ts test/stalk-ledger.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/receiver-run-assignments/joint-green.json
+
+ RUN  v3.2.4 /workspace/receiver-run-assignments
+
+ ✓ |core| test/receiver-run-eligibility.test.ts (9 tests) 44ms
+ ✓ |core| test/stalk-ledger.test.ts (8 tests) 34ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  21:56:22
+   Duration  1.28s (transform 555ms, setup 0ms, collect 860ms, tests 78ms, environment 0ms, prepare 112ms)
+
+JSON report written to /workspace/receiver-run-assignments/out/receiver-run-assignments/joint-green.json
+Validation receipt: out/baseline/run-1792274181830-118892.json; exit 0
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

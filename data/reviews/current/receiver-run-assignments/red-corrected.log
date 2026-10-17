@@ -1,0 +1,52 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate -- npx vitest run --project core test/receiver-run-eligibility.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/receiver-run-assignments/red-corrected.json
+
+Profile candidate: run-game-2026-10-13, commit 0000e560e0dbe31905151465152d412ba838803d, source 5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482
+Running npx vitest run --project core test/receiver-run-eligibility.test.ts --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/receiver-run-assignments/red-corrected.json
+
+ RUN  v3.2.4 /workspace/receiver-run-assignments
+
+ ❯ |core| test/receiver-run-eligibility.test.ts (6 tests | 2 failed) 52ms
+   × receiver run candidates follow actual installed ownership > keeps the nearby unowned press threats eligible in saved G1-P018 geometry (mirror=false) 29ms
+     → expected [ …(4) ] to include Agent{ idx: 17, team: 'D', …(20) }
+   × receiver run candidates follow actual installed ownership > keeps the nearby unowned press threats eligible in saved G1-P018 geometry (mirror=true) 10ms
+     → expected [ …(4) ] to include Agent{ idx: 17, team: 'D', …(20) }
+   ✓ receiver run candidates follow actual installed ownership > does not let receivers steal a real inline down threat or an installed combo backer 3ms
+   ✓ receiver run candidates follow actual installed ownership > keeps the counter reserved pull/kick targets out of receiver work 4ms
+   ✓ receiver run candidates follow actual installed ownership > keeps the trap reserved pull/kick targets out of receiver work 2ms
+   ✓ receiver run candidates follow actual installed ownership > keeps the power reserved pull/kick targets out of receiver work 2ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  21:53:09
+   Duration  973ms (transform 581ms, setup 0ms, collect 744ms, tests 52ms, environment 0ms, prepare 49ms)
+
+JSON report written to /workspace/receiver-run-assignments/out/receiver-run-assignments/red-corrected.json
+Validation receipt: out/baseline/run-1792273988788-118251.json; exit 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/receiver-run-eligibility.test.ts > receiver run candidates follow actual installed ownership > keeps the nearby unowned press threats eligible in saved G1-P018 geometry (mirror=false)
+ FAIL  |core| test/receiver-run-eligibility.test.ts > receiver run candidates follow actual installed ownership > keeps the nearby unowned press threats eligible in saved G1-P018 geometry (mirror=true)
+AssertionError: expected [ …(4) ] to include Agent{ idx: 17, team: 'D', …(20) }
+ ❯ test/receiver-run-eligibility.test.ts:30:39
+     28|     const sim = fixture(mirror), plans = planRunBlocking(sim, RUN_BY_I…
+     29|     const stalks = [...plans.values()].filter(p => p.kind === 'stalk');
+     30|     expect(stalks.map(p => p.target)).toContain(sim.slot('CB_S'));
+       |                                       ^
+     31|     expect(stalks.map(p => p.target)).toContain(sim.slot('NB'));
+     32|     expect(new Set(stalks.map(p => p.target)).size).toBe(stalks.length…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

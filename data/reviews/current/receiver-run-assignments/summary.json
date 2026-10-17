@@ -1,0 +1,455 @@
+{
+  "schema": "receiver-run-assignment-review-v1",
+  "code": "dc679b83fe93732d275a82f611234393cf874750",
+  "eligibilityOnly": "1cce4086494f8531b207d9090dc5ab0dfd8db3c1",
+  "base": "0000e560e0dbe31905151465152d412ba838803d",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "question": "Do receivers lose available shallow threats through depth-only exclusion, and does greedy closest-pair allocation miss a collectively shorter installation?",
+  "evidence": {
+    "cases": 74,
+    "constructedCatalogCases": 72,
+    "savedGeometryCases": 2,
+    "formations": 18,
+    "concepts": 14,
+    "fronts": 6,
+    "coverages": 5,
+    "rosterPairs": 1,
+    "engineTicks": 0,
+    "games": 0,
+    "initialMissingNearbyCases": 15,
+    "afterEligibilityMissingNearbyCases": 0,
+    "afterJointMissingNearbyCases": 0,
+    "nonreceiverExportedLedgersExactlyUnchanged": 74,
+    "eligibilityChangedCases": 15,
+    "jointChangesBeyondEligibility": 11,
+    "finalChangedCases": 21,
+    "lateralOrderInversionCases": {
+      "before": 14,
+      "eligibility": 11,
+      "joint": 1
+    },
+    "finalTests": {
+      "passed": 17,
+      "failed": 0,
+      "typecheck": "pass"
+    },
+    "initialEligibilityTests": {
+      "passed": 14,
+      "failed": 0
+    },
+    "correctedRed": {
+      "passed": 4,
+      "failed": 2
+    },
+    "jointRed": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 8
+    }
+  },
+  "limitations": [
+    "Assignment-only evidence: no achieved blocks, load, collision or RB-yardage improvement is established.",
+    "The saved film first RB contact is DE_S after an initial real RT block; that assignment is preserved.",
+    "Minimum total travel redistributes individual costs; full list retained. No largest assigned distance increased relative to eligibility-only in this panel, but that is not a runtime guarantee.",
+    "Lateral-order inversion is an endpoint-order screen, not a path intersection/impassability proof. One remains.",
+    "Counter versus odd front still calls for receiver blocks on unowned DT/end threats; call feasibility and block access require separate reacting evidence.",
+    "Initial fixture mixed metadata flip with canonical offensive coordinates: failed receipt retained. Corrected canonical installation exactly reproduces nine original target identities before patch.",
+    "Existing dynamic stalk controller live target reads are recorded STALK-001 debt, untouched by this installation repair."
+  ],
+  "individualLongerAssignments": [
+    {
+      "case": "gun_trips_11/counter/odd/cover3/false",
+      "actor": "Y",
+      "beforeTarget": "DE_S",
+      "afterTarget": "DT_S",
+      "beforeDistance": 2.339755108347244,
+      "afterDistance": 3.259646298955297
+    },
+    {
+      "case": "gun_trips_11/counter/odd/cover3/true",
+      "actor": "Y",
+      "beforeTarget": "DE_S",
+      "afterTarget": "DT_S",
+      "beforeDistance": 2.4348520841816215,
+      "afterDistance": 2.683668532074716
+    },
+    {
+      "case": "gun_bunch_11/duo/tite/cover4/false",
+      "actor": "Y",
+      "beforeTarget": "CB_S",
+      "afterTarget": "LB_M",
+      "beforeDistance": 6.644459712698325,
+      "afterDistance": 7.589256350672246
+    },
+    {
+      "case": "gun_bunch_11/duo/tite/cover4/false",
+      "actor": "H",
+      "beforeTarget": "LB_M",
+      "afterTarget": "LB_W",
+      "beforeDistance": 7.753997402771553,
+      "afterDistance": 10.213544654383556
+    },
+    {
+      "case": "gun_bunch_11/duo/tite/cover4/true",
+      "actor": "Y",
+      "beforeTarget": "CB_S",
+      "afterTarget": "LB_M",
+      "beforeDistance": 6.630251162718014,
+      "afterDistance": 7.621625273136183
+    },
+    {
+      "case": "gun_bunch_11/duo/tite/cover4/true",
+      "actor": "H",
+      "beforeTarget": "LB_M",
+      "afterTarget": "LB_W",
+      "beforeDistance": 7.778271532811077,
+      "afterDistance": 10.638431481750322
+    },
+    {
+      "case": "gun_bunch_11/power/over/cover0/false",
+      "actor": "Y",
+      "beforeTarget": "NB",
+      "afterTarget": "SS",
+      "beforeDistance": 1.8611292212791506,
+      "afterDistance": 5.047757377938921
+    },
+    {
+      "case": "gun_bunch_11/power/over/cover0/false",
+      "actor": "H",
+      "beforeTarget": "SS",
+      "afterTarget": "LB_M",
+      "beforeDistance": 5.951129893004927,
+      "afterDistance": 8.841199689873482
+    },
+    {
+      "case": "gun_bunch_11/power/over/cover0/true",
+      "actor": "H",
+      "beforeTarget": "SS",
+      "afterTarget": "LB_M",
+      "beforeDistance": 5.932651537438573,
+      "afterDistance": 8.869000609093913
+    },
+    {
+      "case": "gun_trips_10/iz_strong/tite/cover4/false",
+      "actor": "Y",
+      "beforeTarget": "LB_M",
+      "afterTarget": "LB_W",
+      "beforeDistance": 6.702865161642304,
+      "afterDistance": 9.098533542133096
+    },
+    {
+      "case": "gun_trips_10/iz_strong/tite/cover4/true",
+      "actor": "Y",
+      "beforeTarget": "LB_M",
+      "afterTarget": "LB_W",
+      "beforeDistance": 6.7252085755885025,
+      "afterDistance": 9.5236261046758
+    },
+    {
+      "case": "gun_trips_10/power/over/cover0/false",
+      "actor": "Y",
+      "beforeTarget": "SS",
+      "afterTarget": "LB_M",
+      "beforeDistance": 5.257941327498517,
+      "afterDistance": 7.755896957102325
+    },
+    {
+      "case": "gun_trips_10/power/over/cover0/true",
+      "actor": "Y",
+      "beforeTarget": "SS",
+      "afterTarget": "LB_M",
+      "beforeDistance": 5.237017688023624,
+      "afterDistance": 7.782627715054739
+    },
+    {
+      "case": "G1-P018-rounded/false",
+      "actor": "H",
+      "beforeTarget": "NB",
+      "afterTarget": "SS",
+      "beforeDistance": 3.1575306807693906,
+      "afterDistance": 5.941380311005178
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/receiver-run-assignments.ts",
+        "out/receiver-run-assignments/before-corrected.json"
+      ],
+      "wallSeconds": 0.7890564830158837,
+      "userSeconds": 0.9521419999999999,
+      "systemSeconds": 0.20340799999999998,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/receiver-run-assignments.ts",
+        "out/receiver-run-assignments/before-panel.json"
+      ],
+      "wallSeconds": 0.9433525589993224,
+      "userSeconds": 1.163129,
+      "systemSeconds": 0.229677,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/receiver-run-assignments.ts",
+        "out/receiver-run-assignments/candidate-panel.json"
+      ],
+      "wallSeconds": 0.7817156729870476,
+      "userSeconds": 1.013996,
+      "systemSeconds": 0.153412,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "npx",
+        "vitest",
+        "run",
+        "--project",
+        "core",
+        "test/receiver-run-eligibility.test.ts",
+        "test/stalk-ledger.test.ts",
+        "--maxWorkers=1",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=out/receiver-run-assignments/green.json"
+      ],
+      "wallSeconds": 2.215822354017291,
+      "userSeconds": 2.35996,
+      "systemSeconds": 0.5237809999999999,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "npx",
+        "vitest",
+        "run",
+        "--project",
+        "core",
+        "test/receiver-run-eligibility.test.ts",
+        "test/stalk-ledger.test.ts",
+        "--maxWorkers=1",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=out/receiver-run-assignments/joint-green.json"
+      ],
+      "wallSeconds": 2.159649462031666,
+      "userSeconds": 2.487343,
+      "systemSeconds": 0.39336099999999996,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/receiver-run-assignments.ts",
+        "out/receiver-run-assignments/joint-panel.json"
+      ],
+      "wallSeconds": 0.7218633680022322,
+      "userSeconds": 0.8904139999999999,
+      "systemSeconds": 0.221778,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "npx",
+        "vitest",
+        "run",
+        "--project",
+        "core",
+        "test/receiver-run-eligibility.test.ts",
+        "-t",
+        "allocates the bunch together",
+        "--maxWorkers=1",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=out/receiver-run-assignments/joint-red.json"
+      ],
+      "wallSeconds": 1.9033575949724764,
+      "exitCode": 1
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "npx",
+        "vitest",
+        "run",
+        "--project",
+        "core",
+        "test/receiver-run-eligibility.test.ts",
+        "--maxWorkers=1",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=out/receiver-run-assignments/red-corrected.json"
+      ],
+      "wallSeconds": 1.9442624720395543,
+      "userSeconds": 2.121474,
+      "systemSeconds": 0.391531,
+      "exitCode": 1
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "baseline:run",
+        "--",
+        "--candidate",
+        "--",
+        "npx",
+        "vitest",
+        "run",
+        "--project",
+        "core",
+        "test/receiver-run-eligibility.test.ts",
+        "--maxWorkers=1",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=out/receiver-run-assignments/red.json"
+      ],
+      "wallSeconds": 2.006171567016281,
+      "userSeconds": 2.212281,
+      "systemSeconds": 0.38934499999999994,
+      "exitCode": 1
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "wallSeconds": 8.669692114985082,
+      "userSeconds": 17.383421000000002,
+      "systemSeconds": 0.661704,
+      "exitCode": 0
+    }
+  ],
+  "measuredValidationCommandWallSeconds": 22.134943648066837,
+  "manifest": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/receiver-run-assignments",
+    "commit": "dc679b83fe93732d275a82f611234393cf874750",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "3b9c401bb7fd70af4bb46d507f1507f276133683c03f9d7896be6c2a1b90db17",
+    "validationSha256": "96cd57975183c86467369065f374fe8bec74aac9d280d3b509d0f18e3e448ce8",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": []
+  },
+  "recommendation": "Advance eligibility-only repair independently. Also request Run review of the joint same-metric allocation with its preserved individual costs; Integration owns combined verification/adoption. No physics, private defensive assignment, perception expansion or approach policy changes."
+}
