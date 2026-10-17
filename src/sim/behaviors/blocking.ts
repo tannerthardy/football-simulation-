@@ -677,13 +677,31 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
   const stalkTargets = new Map<Agent, Agent | null>();
   if (STALK_CLAIM) {
-    // Receivers share one ledger: closest unclaimed pairs first, skipping
-    // backers a lineman or lead already owns. Only a receiver left with
-    // nobody unclaimed helps on the nearest man.
+    // Allocate the available work together. Greedy closest pairs can consume
+    // a bunch receiver's only local fit even when that teammate has another
+    // equally close target. At most five receivers: a small receiver-mask
+    // search fills the most distinct jobs, then minimizes initial travel.
+    // This is an installed assignment, not a guarantee of later block access.
     const open = stalkPool.filter(d => !reserved.has(d));
-    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
-    const taken = new Set<Agent>();
-    for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
+    type Choice = { cost: number; targets: Map<Agent, Agent> };
+    let choices = new Map<number, Choice>([[0, { cost: 0, targets: new Map() }]]);
+    for (const d of open) {
+      const next = new Map(choices);
+      for (const [mask, c] of choices) for (let i = 0; i < stalkers.length; i++) {
+        if (mask & (1 << i)) continue;
+        const a = stalkers[i], key = mask | (1 << i), cost = c.cost + near(a, d);
+        const old = next.get(key);
+        if (!old || cost < old.cost) {
+          const targets = new Map(c.targets); targets.set(a, d);
+          next.set(key, { cost, targets });
+        }
+      }
+      choices = next;
+    }
+    let best = choices.get(0)!;
+    for (const c of choices.values()) if (c.targets.size > best.targets.size
+      || (c.targets.size === best.targets.size && c.cost < best.cost)) best = c;
+    for (const [a, d] of best.targets) stalkTargets.set(a, d);
   }
   for (const a of stalkers) {
     // Stalk the defensive back over him.

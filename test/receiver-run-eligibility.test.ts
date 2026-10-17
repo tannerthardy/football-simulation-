@@ -41,6 +41,33 @@ describe('receiver run candidates follow actual installed ownership', () => {
     for (const slot of ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M']) expect(targets).not.toContain(sim.slot(slot));
   });
 
+  it('allocates the bunch together rather than giving its shared nearest corner to the first receiver', () => {
+    const unmirrored = fixture(), mirrored = fixture(true);
+    const a = planRunBlocking(unmirrored, RUN_BY_ID.oz_strong), b = planRunBlocking(mirrored, RUN_BY_ID.oz_strong);
+    // Y can take NB just as locally; Z has a much better CB_S fit than SS.
+    // This explicit alternative is .897yd less aggregate travel than the
+    // saved greedy result, without changing available bodies or core work.
+    for (const [sim, plans] of [[unmirrored, a], [mirrored, b]] as const) {
+      expect(plans.get(sim.slot('Y')!)?.target).toBe(sim.slot('NB'));
+      expect(plans.get(sim.slot('Z')!)?.target).toBe(sim.slot('CB_S'));
+      expect(plans.get(sim.slot('H')!)?.target).toBe(sim.slot('SS'));
+    }
+  });
+
+  it.each([['i_pro_21', 'power', 'lead'], ['gun_wing_12', 'split_zone', 'pull']])(
+    'preserves %s %s ownership while filling receiver work', (formation, run, expectedKind) => {
+      const f = FORMATION_BY_ID[formation];
+      const sim = new PlaySim({ offense: pickOffense(offense, f.personnel), defense: pickDefense(defense, 'nickel'),
+        offCall: { formation: f, flip: false, kind: 'run', run: RUN_BY_ID[run], label: run },
+        defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1,
+          pressure: null, label: 'control' }, los: 40, ballY: 26.67, firstDownX: 50, seed: 3, audibles: false });
+      const plans = planRunBlocking(sim, RUN_BY_ID[run]);
+      const core = [...plans.values()].filter(p => p.kind !== 'stalk');
+      expect(core.some(p => p.kind === expectedKind && p.target)).toBe(true);
+      const reserved = new Set(core.flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
+      for (const p of plans.values()) if (p.kind === 'stalk') expect(reserved.has(p.target)).toBe(false);
+    });
+
   it.each(['counter', 'trap', 'power'])('keeps the %s reserved pull/kick targets out of receiver work', run => {
     const sim = fixture(), plans = planRunBlocking(sim, RUN_BY_ID[run]);
     const core = [...plans.values()].filter(p => p.kind !== 'stalk');
