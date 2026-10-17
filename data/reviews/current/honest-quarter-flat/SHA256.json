@@ -1,0 +1,17 @@
+{
+  "approach.png": "86586e71edaa9e95d49ebed5bc9ab9c07facde449d3c55434fd9f82e2c5824e9",
+  "baseline-receipt.json": "1ca89748e83140cb8b3c2a57bb041f336e52bb52854bfb6d78218d0a80e6833c",
+  "baseline.json.gz": "9c466191e1defbb63a97a85bbc9be45b5ac3d3b0ca16ad97945ccd39a16046dd",
+  "candidate-receipt.json": "8a126e80d965fb79202597387dfbb0a99dc7d90de6aa8e786c3fde30c11f7c47",
+  "candidate.json.gz": "e9f890f405c07955e07cb306be4e7794fbdc2852c4f4d7f16502fe5a6c0db936",
+  "candidate.patch": "3996709c39906e23e085fcbc4b760765e6eabb3fbfa48ec9e79e6e6978c9b849",
+  "focused-final.json": "e3de4e93eda161154ea879a377b746cf8fe83c4cec1513ca8aa2f1214f909e7d",
+  "focused-initial.json": "86a2b370768fbc832a6b0d10c4eaf86b1f350d844eda9e300fef0ed6d6396f26",
+  "installed-call-opposing-control.json": "dae655c2de4715db5db87aa12b3a86a15c0636afab308701f975c62a0d74eff2",
+  "observer-proof.json": "46c2e982c6314e5591d69fcd36180aa7ed12857e14712d3decaf04e3b7d622ac",
+  "observer-receipt.json": "10792d7a99278d848ccc1ac9c05d5d6e883cc61852322876c3727f63953a32ce",
+  "red.json": "0ede3c137ada49829e2236b18dd80ec2229ba1bdd0ac6687f1fd1634be39b270",
+  "review.json": "7a9a712f5b678a611668cc6138c2c523c4e68e959370a6f73f8f4076cc926281",
+  "typecheck.json": "e009392f30618a88cc4cf0f63895596a1ad8716fbb764e4583469b8cc890c218",
+  "under-fixture-corrected.json": "cb1e230b03c914427604038fa41f304dd235143436cfa7dda16e7a1402fa941b"
+}

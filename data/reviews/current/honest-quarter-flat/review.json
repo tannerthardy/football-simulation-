@@ -1,0 +1,4788 @@
+{
+  "schema": "honest-quarter-flat-review-v1",
+  "date": "2026-10-16 America/Phoenix",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "acceptedQueue": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "candidateCodeCommit": "43593eed5db501889d41bfa093a8be1772317205",
+  "referenceImport": "5cade6a5e05bc6ff4232623b22be565ec462c15c",
+  "sourceSha256": {
+    "baseline": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "candidate": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a"
+  },
+  "referenceImages": [
+    {
+      "id": "HNFL-051",
+      "title": "READ\" CONCEPT",
+      "image": "images/coverage/hnfl-051-read-concept.jpeg",
+      "sha256": "f170bf940f59e2047bfeee7150cc7dc15da74b132fef8cc5c56c00cb1f93b273",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HAXGzZ1XIAAGP1j.jpeg",
+          "sha256": "f170bf940f59e2047bfeee7150cc7dc15da74b132fef8cc5c56c00cb1f93b273",
+          "bytes": 305740
+        }
+      ]
+    },
+    {
+      "id": "HNFL-053",
+      "title": "Box vs bunch",
+      "image": "images/coverage/hnfl-053-box-vs-bunch.jpeg",
+      "sha256": "a2874c6dddf3ea7325b164969aaf11875e013babeca10dbb67ff716d95a91ed4",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HAXGzZ5WkAAKu_D.jpeg",
+          "sha256": "a2874c6dddf3ea7325b164969aaf11875e013babeca10dbb67ff716d95a91ed4",
+          "bytes": 389846
+        }
+      ]
+    },
+    {
+      "id": "HNFL-077",
+      "title": "Inside quarter \u2014 safety quarters technique",
+      "image": "images/coverage/hnfl-077-inside-quarter-safety-quarters-technique.jpeg",
+      "sha256": "7beb1006951d92577d19f5bac677f83100c9d1cf5d2c95b38d28772694c8f2f7",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HCXgds_XYAAgWb2.jpeg",
+          "sha256": "7beb1006951d92577d19f5bac677f83100c9d1cf5d2c95b38d28772694c8f2f7",
+          "bytes": 287121
+        }
+      ]
+    },
+    {
+      "id": "HNFL-078",
+      "title": "Quarter flat \u2014 match, reroute and deliver",
+      "image": "images/coverage/hnfl-078-quarter-flat-match-reroute-and-deliver.jpeg",
+      "sha256": "60f44217f65ea00473640ce0eef72f97fb36f5ef429e78745159b97202c2b4f9",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HCXgdtGXcAAXnX9.jpeg",
+          "sha256": "60f44217f65ea00473640ce0eef72f97fb36f5ef429e78745159b97202c2b4f9",
+          "bytes": 262312
+        }
+      ]
+    },
+    {
+      "id": "HNFL-079",
+      "title": "Quarter \u2014 corner quarters technique",
+      "image": "images/coverage/hnfl-079-quarter-corner-quarters-technique.jpeg",
+      "sha256": "de62022d3f451733e9ebd60261db43efdbc5ca88b667dff0818c687c2ab5c333",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HCXgdtwaAAAZrBv.jpeg",
+          "sha256": "de62022d3f451733e9ebd60261db43efdbc5ca88b667dff0818c687c2ab5c333",
+          "bytes": 203513
+        }
+      ]
+    },
+    {
+      "id": "HNFL-091",
+      "title": "Clue third \u2014 deep-third technique reading 2 to 1",
+      "image": "images/coverage/hnfl-091-clue-third-deep-third-technique-reading-2-to-1.jpeg",
+      "sha256": "aee2ac638b3f8d957561c1c07306f0018879fc777d57cf47f379fd2c98871a33",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HDLNukoWMAAUHog.jpeg",
+          "sha256": "aee2ac638b3f8d957561c1c07306f0018879fc777d57cf47f379fd2c98871a33",
+          "bytes": 273038
+        }
+      ]
+    },
+    {
+      "id": "HNFL-099",
+      "title": "Half techniques \u2014 Squat reads and reactions",
+      "image": "images/coverage/hnfl-099-half-techniques-squat-reads-and-reactions.jpeg",
+      "sha256": "e4ede0dd0f71ba8c4aed940a9ad2004af04bc1deb7166859d37b41befa82d869",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HE1rG4FW4AEhLqs.jpeg",
+          "sha256": "e4ede0dd0f71ba8c4aed940a9ad2004af04bc1deb7166859d37b41befa82d869",
+          "bytes": 449624
+        }
+      ]
+    },
+    {
+      "id": "HNFL-114",
+      "title": "Screw \u2014 quarters response to play fake",
+      "image": "images/coverage/hnfl-114-screw-quarters-response-to-play-fake.jpeg",
+      "sha256": "c12b969cbf1e068e310b92f21c0af4a4bc23dfb57acc92fb301ed8eb0c244a0c",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HH7PJwWWIAYdxNC.jpeg",
+          "sha256": "c12b969cbf1e068e310b92f21c0af4a4bc23dfb57acc92fb301ed8eb0c244a0c",
+          "bytes": 112961
+        }
+      ]
+    },
+    {
+      "id": "HNFL-196",
+      "title": "Quads route pickups \u2014 matching common concepts",
+      "image": "images/coverage/hnfl-196-quads-route-pickups-matching-common-concepts.jpeg",
+      "sha256": "981f85248320c68efb5c9a99dc6e382cbcbf9d8b40da933a7f32392fffbdd354",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HP2TAkZWUAAaSfP.jpeg",
+          "sha256": "981f85248320c68efb5c9a99dc6e382cbcbf9d8b40da933a7f32392fffbdd354",
+          "bytes": 476124
+        }
+      ]
+    },
+    {
+      "id": "HNFL-270",
+      "title": "Split-safety tool \u2014 Stubbie",
+      "image": "images/coverage/hnfl-270-split-safety-tool-stubbie.jpeg",
+      "sha256": "761dc57740159e49ba065a51d6f5104807a355c9c9aa46bb6030e54881b28717",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HQTbfM8WsAAjO36.jpeg",
+          "sha256": "761dc57740159e49ba065a51d6f5104807a355c9c9aa46bb6030e54881b28717",
+          "bytes": 261602
+        }
+      ]
+    },
+    {
+      "id": "HNFL-312",
+      "title": "Quarter-flat reads and reactions",
+      "image": "images/coverage/hnfl-312-quarter-flat-reads-and-reactions.jpeg",
+      "sha256": "067bbecf87bca3196e04b58afaeee97ff3a356175f879ad3413e39ed44b46568",
+      "originals": [
+        {
+          "batch": "honest-nfl-2026-10-16",
+          "path": "HonestNFL/HSJtlooWMAYJRZI.jpeg",
+          "sha256": "067bbecf87bca3196e04b58afaeee97ff3a356175f879ad3413e39ed44b46568",
+          "bytes": 211406
+        }
+      ]
+    }
+  ],
+  "fileSha256": {
+    "src/sim/coverage/rules.ts": "abdb69b54f990db10b636be95622968a2551b97616a3c54c88796409b7c75220",
+    "test/quarters-flat-wheel.test.ts": "63066b13403629f4d0ed69d16097397bdb5db14d95fb9ac0482bae6b8f07d8eb",
+    "test/release-cushion.test.ts": "468eaf269fbfecff44104727c6a9469141948956a50f5091bcaa5f83154c7549",
+    "test/match-block-release.test.ts": "669a865b4122c98cc49a861d038a1e0b0f45d7063faefe1dbe148ee902916668",
+    "scripts/diag/honest-quarter-flat.ts": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+    "test/fixtures/quarters-flat-wheel.json.gz": "388c4953843182b201de29a96cde16a8695969ed1ef49e857e936f9be7327e0f",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/baseline.mjs": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37",
+    "config/baseline.json": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "data/reviews/current/honest-quarter-flat/candidate.patch": "3996709c39906e23e085fcbc4b760765e6eabb3fbfa48ec9e79e6e6978c9b849"
+  },
+  "manifestObjectSha256": "bdc9adcff337d8a7fc873ce979c3afc52c7c4bc74b123e797fd88cc4ca26214d",
+  "comparisonEnvironment": {
+    "baseline": {
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "manifest": "bdc9adcff337d8a7fc873ce979c3afc52c7c4bc74b123e797fd88cc4ca26214d",
+      "operator": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+      "node": "v22.23.3",
+      "lock": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      }
+    },
+    "candidate": {
+      "source": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+      "manifest": "bdc9adcff337d8a7fc873ce979c3afc52c7c4bc74b123e797fd88cc4ca26214d",
+      "operator": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+      "node": "v22.23.3",
+      "lock": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "id": "QW",
+      "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "baseline": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "slide",
+        "gain": 5.13,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 111,
+        "elapsedMs": 545.6746810000001,
+        "physicalSignature": "acd4867975d2e7ab46b72adc56ca2c12c16d8d01d020b06d05db23c3ec98e5e2",
+        "importantEvents": [
+          {
+            "t": 2.8,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 5.55,
+            "type": "slide",
+            "a": 0,
+            "pos": {
+              "x": 45.13,
+              "y": 28.8
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 82,
+        "elapsedMs": 404.76976199999996,
+        "physicalSignature": "2f9bcee8d831e974c1609b7b951200ea2de433168a8757e3c4adc803bf270cd6",
+        "importantEvents": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 4.05,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "firstSampledRequestDivergence": {
+        "controllerTime": 0.75,
+        "achievedInterval": [
+          0.75,
+          0.8
+        ],
+        "entryBodyIdentical": true,
+        "consumedReleaseReadIdentical": true,
+        "queriedPictureValuesIdentical": true,
+        "queryCounts": [
+          4,
+          6
+        ],
+        "cue": {
+          "pos": {
+            "x": 39.096857186243724,
+            "y": 36.50357160931999
+          },
+          "vel": {
+            "x": 0.635743301163101,
+            "y": 2.6489304213745726
+          },
+          "stance": null,
+          "facing": 1.1743156712055811,
+          "age": 0.2,
+          "pose": "up",
+          "carrying": false
+        },
+        "read": [
+          {
+            "target": 10,
+            "slot": "H",
+            "position": {
+              "x": 39.1324688261501,
+              "y": 36.49192766532774
+            },
+            "velocity": {
+              "x": 1.051997626146151,
+              "y": 2.512827673526438
+            },
+            "depth": -0.8675311738498976,
+            "outward": 1.2252609986610707,
+            "release": "flat",
+            "first": "flat",
+            "since": 0.75,
+            "climbed": false
+          }
+        ],
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 44.93127893415538,
+            "y": 34.74973362152302
+          },
+          "vel": {
+            "x": 0.13341033147714554,
+            "y": 1.3929449852017821
+          },
+          "support": "up"
+        },
+        "baselineJob": "zone:curl_flat_w",
+        "candidateJob": "man:H",
+        "baselineRequest": {
+          "vel": {
+            "x": -1.8311415789488703,
+            "y": 8.410763448073995
+          },
+          "facing": -2.4754346323819334
+        },
+        "candidateRequest": {
+          "vel": {
+            "x": -5.049770652479477,
+            "y": 5.753736249534143
+          },
+          "facing": 3.141592653589793
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 6.013521348435761,
+            "depthLeverage": 5.5473588948660435,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.89537098790638,
+                "y": 35.228574930193915
+              },
+              "vel": {
+                "x": -0.07442525253374503,
+                "y": 2.408258827611599
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.34801209304034,
+                "y": 37.55005038766557
+              },
+              "vel": {
+                "x": 1.0220792304363375,
+                "y": 4.258663461234011
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "final": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 5.928118733259063,
+            "depthLeverage": 5.457011731685149,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.80502382472549,
+                "y": 35.234102487589304
+              },
+              "vel": {
+                "x": -1.1548675414374465,
+                "y": 2.4281833175658156
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.34801209304034,
+                "y": 37.55005038766557
+              },
+              "vel": {
+                "x": 1.0220792304363375,
+                "y": 4.258663461234011
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -4.6718830694403435,
+                "y": 7.508963674233371
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": -4.6718830694403435,
+                "y": 7.508963674233371
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.195897698293657,
+            "depthLeverage": 3.9446582423182903,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.366544783582434,
+                "y": 39.21413375908837
+              },
+              "vel": {
+                "x": 1.0409522654217318,
+                "y": 5.668933572906596
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.42188654126414,
+                "y": 42.59600073495299
+              },
+              "vel": {
+                "x": 4.324404567983018,
+                "y": 4.7995617190511375
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "final": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.310100477620383,
+            "depthLeverage": 1.7969831641920138,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.21886970545616,
+                "y": 39.81614162349551
+              },
+              "vel": {
+                "x": -1.0654561067466328,
+                "y": 6.420306967261392
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.42188654126414,
+                "y": 42.59600073495299
+              },
+              "vel": {
+                "x": 4.324404567983018,
+                "y": 4.7995617190511375
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.2493484548612677,
+                "y": 9.420620550249927
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 2.2493484548612677,
+                "y": 9.420620550249927
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.408237213693562,
+            "depthLeverage": 3.1517499741485295,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.720505185402246,
+                "y": 40.70500286216994
+              },
+              "vel": {
+                "x": 1.8103425530555548,
+                "y": 6.21754339380405
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.568755211253716,
+                "y": 43.78705208835818
+              },
+              "vel": {
+                "x": 4.681994310086073,
+                "y": 4.840213347426995
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.716932852994928,
+                "y": 9.263394601673397
+              },
+              "facing": 0.8140080749376652
+            },
+            "final": {
+              "vel": {
+                "x": 2.716932852994928,
+                "y": 9.263394601673397
+              },
+              "facing": 0.8140080749376652
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 2.351868767672672,
+            "depthLeverage": 0.5253760881423872,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.0941312993961,
+                "y": 41.49461524814592
+              },
+              "vel": {
+                "x": 0.15661917838664574,
+                "y": 6.934296528799152
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.568755211253716,
+                "y": 43.78705208835818
+              },
+              "vel": {
+                "x": 4.681994310086073,
+                "y": 4.840213347426995
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.638801328640107,
+                "y": 8.20636125237678
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 5.638801328640107,
+                "y": 8.20636125237678
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": false,
+          "baseline": {
+            "gap": 1.4998432067335745,
+            "depthLeverage": -0.03635522797691948,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 46.40577863930816,
+                "y": 45.172626294781296
+              },
+              "vel": {
+                "x": -0.4515206954560536,
+                "y": 4.452057970278938
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 46.44213386728508,
+                "y": 46.67202882318506
+              },
+              "vel": {
+                "x": 6.337884961954813,
+                "y": 2.1813395106321827
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -5.408155079031512,
+                "y": -6.901672669085691
+              },
+              "effort": 0.8806122448979592
+            },
+            "final": {
+              "vel": {
+                "x": -5.408155079031512,
+                "y": -6.901672669085691
+              },
+              "effort": 0.8806122448979592
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 1.5692989471016918,
+            "depthLeverage": -1.5449625990874836,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.89882625305732,
+                "y": 46.501586788781815
+              },
+              "vel": {
+                "x": 4.418203325320058,
+                "y": 5.716710180312295
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 46.443788852144806,
+                "y": 46.776886176349834
+              },
+              "vel": {
+                "x": 6.3510644290225065,
+                "y": 2.7666943419219314
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 8.536203499868535,
+                "y": 1.6668532482780904
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 8.536203499868535,
+                "y": 1.6668532482780904
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": false,
+          "baseline": {
+            "gap": 5.813496725728371,
+            "depthLeverage": -5.780508143040784,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.921029458464666,
+                "y": 46.469931685182324
+              },
+              "vel": {
+                "x": -0.4694435468875489,
+                "y": -0.9633766818858198
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 51.70153760150545,
+                "y": 47.088373103825745
+              },
+              "vel": {
+                "x": 7.363213657450591,
+                "y": -0.08370749745098242
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.6247030086164724,
+                "y": -8.745911795866927
+              },
+              "effort": 0.8806122448979592
+            },
+            "final": {
+              "vel": {
+                "x": 0.6247030086164724,
+                "y": -8.745911795866927
+              },
+              "effort": 0.8806122448979592
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 2.6789258167477183,
+            "depthLeverage": -2.5044769951226797,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 49.285697841904515,
+                "y": 49.675147329685906
+              },
+              "vel": {
+                "x": 7.1183875070202784,
+                "y": 3.118756907877186
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 51.790174837027195,
+                "y": 48.72423276331377
+              },
+              "vel": {
+                "x": 7.449157453048024,
+                "y": 2.209925345743288
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.908701096199266,
+                "y": 0.7819027777344152
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 9.908701096199266,
+                "y": 0.7819027777344152
+              }
+            },
+            "ball": "air"
+          }
+        }
+      ]
+    },
+    {
+      "id": "QM",
+      "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "baseline": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 325.87601099999995,
+        "physicalSignature": "28f531b1073b9b9d46913afb486dcd1154f65d72f35a115367dbe3a7669ba9e0",
+        "importantEvents": [
+          {
+            "t": 3.15,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 447.02360899999996,
+        "physicalSignature": "ccebde2ef1e359f3421d7d9befad30ad7d3f3e527e9a19bec490c37be5aba624",
+        "importantEvents": [
+          {
+            "t": 3.15,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          }
+        ]
+      },
+      "firstSampledRequestDivergence": {
+        "controllerTime": 0.75,
+        "achievedInterval": [
+          0.75,
+          0.8
+        ],
+        "entryBodyIdentical": true,
+        "consumedReleaseReadIdentical": true,
+        "queriedPictureValuesIdentical": true,
+        "queryCounts": [
+          4,
+          6
+        ],
+        "cue": {
+          "pos": {
+            "x": 39.09685718624339,
+            "y": 16.829761724013263
+          },
+          "vel": {
+            "x": 0.6357433011615304,
+            "y": -2.6489304213749496
+          },
+          "stance": null,
+          "facing": -1.1743156712055811,
+          "age": 0.2,
+          "pose": "up",
+          "carrying": false
+        },
+        "read": [
+          {
+            "target": 10,
+            "slot": "H",
+            "position": {
+              "x": 39.132469625976654,
+              "y": 16.84140592952504
+            },
+            "velocity": {
+              "x": 1.0519976261461512,
+              "y": -2.5128276735264383
+            },
+            "depth": -0.867530374023346,
+            "outward": 1.2252607371416318,
+            "release": "flat",
+            "first": "flat",
+            "since": 0.75,
+            "climbed": false
+          }
+        ],
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 44.913401806687304,
+            "y": 18.49465799667175
+          },
+          "vel": {
+            "x": 0.2568966204319052,
+            "y": -1.206100474104994
+          },
+          "support": "up"
+        },
+        "baselineJob": "zone:curl_flat_w",
+        "candidateJob": "man:H",
+        "baselineRequest": {
+          "vel": {
+            "x": -1.8527753948920473,
+            "y": -8.357550818187445
+          },
+          "facing": 2.4692633803589445
+        },
+        "candidateRequest": {
+          "vel": {
+            "x": -5.082285315651181,
+            "y": -5.642478303506067
+          },
+          "facing": 3.141592653589793
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.992923818521425,
+            "depthLeverage": 5.546502457009396,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.8945145500497,
+                "y": 18.05296274444779
+              },
+              "vel": {
+                "x": 0.04140956020241954,
+                "y": -2.278051200287652
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.3480120930403,
+                "y": 15.78328294566776
+              },
+              "vel": {
+                "x": 1.0220792304486797,
+                "y": -4.258663461231048
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -0.17385579293932807,
+                "y": -8.588077664921986
+              },
+              "facing": 2.46537582351411
+            },
+            "final": {
+              "vel": {
+                "x": -0.17385579293932807,
+                "y": -8.588077664921986
+              },
+              "facing": 2.46537582351411
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 5.921933546647359,
+            "depthLeverage": 5.469679045482337,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.81769113852264,
+                "y": 18.05306444843819
+              },
+              "vel": {
+                "x": -1.0262324034085495,
+                "y": -2.288213015776342
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.3480120930403,
+                "y": 15.78328294566776
+              },
+              "vel": {
+                "x": 1.0220792304486797,
+                "y": -4.258663461231048
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -4.705359874921728,
+                "y": -7.452740694708549
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": -4.705359874921728,
+                "y": -7.452740694708549
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.171294153858517,
+            "depthLeverage": 3.850640181695937,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.27252672296007,
+                "y": 14.189122484343866
+              },
+              "vel": {
+                "x": -0.20552070362057195,
+                "y": -5.4160718499141405
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.421886541264136,
+                "y": 10.737332598380359
+              },
+              "vel": {
+                "x": 4.324404567983014,
+                "y": -4.799561719051143
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -4.462970783114393,
+                "y": -7.7347989673509465
+              },
+              "facing": -0.9178810690084136
+            },
+            "final": {
+              "vel": {
+                "x": -4.462970783114393,
+                "y": -7.7347989673509465
+              },
+              "facing": -0.9178810690084136
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.3811949149333653,
+            "depthLeverage": 1.8142681864242647,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.2361547276884,
+                "y": 13.590560594965991
+              },
+              "vel": {
+                "x": -1.1639278725459354,
+                "y": -6.336841252184028
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.421886541264136,
+                "y": 10.737332598380359
+              },
+              "vel": {
+                "x": 4.324404567983014,
+                "y": -4.799561719051143
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.228960640001869,
+                "y": -9.487663826282722
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 2.228960640001869,
+                "y": -9.487663826282722
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.155492715880009,
+            "depthLeverage": 2.6447995628187684,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.21355477407248,
+                "y": 12.751457524721022
+              },
+              "vel": {
+                "x": 0.047485575117515444,
+                "y": -6.126539109737919
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.56875521125371,
+                "y": 9.54628124497517
+              },
+              "vel": {
+                "x": 4.681994310086063,
+                "y": -4.840213347427006
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.7113535837307183,
+                "y": -9.307898983860724
+              },
+              "facing": -0.8140080749376657
+            },
+            "final": {
+              "vel": {
+                "x": 2.7113535837307183,
+                "y": -9.307898983860724
+              },
+              "facing": -0.8140080749376657
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 2.4395331109101153,
+            "depthLeverage": 0.5186501036168281,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.08740531487054,
+                "y": 11.930043789618624
+              },
+              "vel": {
+                "x": 0.06175564433581954,
+                "y": -6.874400188639886
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.56875521125371,
+                "y": 9.54628124497517
+              },
+              "vel": {
+                "x": 4.681994310086063,
+                "y": -4.840213347427006
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.570106459023656,
+                "y": -8.253142399324474
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 5.570106459023656,
+                "y": -8.253142399324474
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 2.603440005989467,
+            "depthLeverage": -1.5757863007083373,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.86634756657671,
+                "y": 8.733693807381405
+              },
+              "vel": {
+                "x": -0.6886835291449317,
+                "y": -3.1723274786171576
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 46.442133867285044,
+                "y": 6.661304510148288
+              },
+              "vel": {
+                "x": 6.337884961954776,
+                "y": -2.181339510632201
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.8402505210438767,
+                "y": 0.40371388178018064
+              },
+              "facing": 2.195107985397134
+            },
+            "final": {
+              "vel": {
+                "x": 0.8402505210438767,
+                "y": 0.40371388178018064
+              },
+              "facing": 2.195107985397134
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 1.6284436501105861,
+            "depthLeverage": -1.6071134254388184,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.835020441846225,
+                "y": 6.9240118746430745
+              },
+              "vel": {
+                "x": 4.4950139231587976,
+                "y": -5.822112744752527
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 46.442133867285044,
+                "y": 6.661304510148288
+              },
+              "vel": {
+                "x": 6.337884961954776,
+                "y": -2.181339510632201
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.748351583134214,
+                "y": -2.0273349106620375
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 9.748351583134214,
+                "y": -2.0273349106620375
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 7.57103418132668,
+            "depthLeverage": -7.321464560814192,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.38007304069121,
+                "y": 8.172838664357364
+              },
+              "vel": {
+                "x": -0.6723428549685904,
+                "y": 1.7607957524206397
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 51.7015376015054,
+                "y": 6.244960229507593
+              },
+              "vel": {
+                "x": 7.363213657450577,
+                "y": 0.08370749745098158
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.8404593714550883,
+                "y": 8.727820749476473
+              },
+              "effort": 0.8806122448979592
+            },
+            "final": {
+              "vel": {
+                "x": 0.8404593714550883,
+                "y": 8.727820749476473
+              },
+              "effort": 0.8806122448979592
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.2984434335460677,
+            "depthLeverage": -2.294868529532174,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 49.406669071973226,
+                "y": 3.8757182586515113
+              },
+              "vel": {
+                "x": 7.390973510733326,
+                "y": -2.2279275264308493
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 51.7015376015054,
+                "y": 6.244960229507593
+              },
+              "vel": {
+                "x": 7.363213657450577,
+                "y": 0.08370749745098158
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.785893559418433,
+                "y": 1.8375888201981472
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": 9.785893559418433,
+                "y": 1.8375888201981472
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        }
+      ]
+    },
+    {
+      "id": "QF",
+      "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "baseline": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 91,
+        "elapsedMs": 273.1383579999999,
+        "physicalSignature": "e24d96abdf23c9c4fb5957ffd912cb8f3f4ae8ae671bf00d4877756930064ca4",
+        "importantEvents": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.7,
+            "type": "pbu",
+            "a": 19,
+            "b": 10,
+            "pos": {
+              "x": 43.7,
+              "y": 47.98
+            }
+          },
+          {
+            "t": 4.5,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 83,
+        "elapsedMs": 196.13808300000005,
+        "physicalSignature": "36b404319a8bd0cf918f32ecf8bf8d6b5357d09aadcb00657c1c8990bc9ba05f",
+        "importantEvents": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.35,
+            "type": "pbu",
+            "a": 19,
+            "b": 10,
+            "pos": {
+              "x": 43.85,
+              "y": 46.68
+            }
+          },
+          {
+            "t": 4.1,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "firstSampledRequestDivergence": {
+        "controllerTime": 1,
+        "achievedInterval": [
+          1,
+          1.05
+        ],
+        "entryBodyIdentical": true,
+        "consumedReleaseReadIdentical": true,
+        "queriedPictureValuesIdentical": true,
+        "queryCounts": [
+          4,
+          6
+        ],
+        "cue": {
+          "pos": {
+            "x": 40.61378589416048,
+            "y": 36.61021177344558
+          },
+          "vel": {
+            "x": 2.927886529335272,
+            "y": 2.1688048365115495
+          },
+          "stance": null,
+          "facing": 0.6436236523463261,
+          "age": 0.2,
+          "pose": "up",
+          "carrying": false
+        },
+        "read": [
+          {
+            "target": 10,
+            "slot": "H",
+            "position": {
+              "x": 40.61265445390086,
+              "y": 36.61172955738565
+            },
+            "velocity": {
+              "x": 2.9146574121864837,
+              "y": 2.186551192431867
+            },
+            "depth": 0.6126544539008592,
+            "outward": 1.3450628907189852,
+            "release": "flat",
+            "first": "flat",
+            "since": 1,
+            "climbed": false
+          }
+        ],
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 45.40024359198931,
+            "y": 34.95635852915232
+          },
+          "vel": {
+            "x": 1.2997027188592292,
+            "y": 1.474905154921388
+          },
+          "support": "up"
+        },
+        "baselineJob": "zone:curl_flat_w",
+        "candidateJob": "man:H",
+        "baselineRequest": {
+          "vel": {
+            "x": -5.882576481738358,
+            "y": 3.288655213670805
+          },
+          "facing": -2.504545849676346
+        },
+        "candidateRequest": {
+          "vel": {
+            "x": -2.765339365033111,
+            "y": 3.714302312642545
+          },
+          "facing": 3.141592653589793
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.032757016356081,
+            "depthLeverage": 4.741546984866503,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.40024359198931,
+                "y": 34.95635852915232
+              },
+              "vel": {
+                "x": 1.2997027188592292,
+                "y": 1.474905154921388
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 40.658696607122806,
+                "y": 36.64347896823921
+              },
+              "vel": {
+                "x": 3.354497412013914,
+                "y": 2.484812897774264
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 3.5088406556810985,
+                "y": 3.6458905034167093
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 3.5088406556810985,
+                "y": 3.6458905034167093
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 5.032757016356081,
+            "depthLeverage": 4.741546984866503,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.40024359198931,
+                "y": 34.95635852915232
+              },
+              "vel": {
+                "x": 1.2997027188592292,
+                "y": 1.474905154921388
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 40.658696607122806,
+                "y": 36.64347896823921
+              },
+              "vel": {
+                "x": 3.354497412013914,
+                "y": 2.484812897774264
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 3.5088406556810985,
+                "y": 3.6458905034167093
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 3.5088406556810985,
+                "y": 3.6458905034167093
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 3.663363194736295,
+            "depthLeverage": 1.0686627982932606,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.23396681804716,
+                "y": 37.559968671135366
+              },
+              "vel": {
+                "x": -1.7617793809412672,
+                "y": 4.364981581087357
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.1653040197539,
+                "y": 41.06399345987367
+              },
+              "vel": {
+                "x": 0.5326374310573871,
+                "y": 6.274283208625063
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.39483461114851237,
+                "y": 9.949098002242396
+              },
+              "facing": 1.4507905368541958
+            },
+            "final": {
+              "vel": {
+                "x": 0.39483461114851237,
+                "y": 9.949098002242396
+              },
+              "facing": 1.4507905368541958
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.6926947659160474,
+            "depthLeverage": 2.086634658224,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.2519386779779,
+                "y": 38.017364103138235
+              },
+              "vel": {
+                "x": -0.5208804680581078,
+                "y": 4.937032398357857
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.1653040197539,
+                "y": 41.06399345987367
+              },
+              "vel": {
+                "x": 0.5326374310573871,
+                "y": 6.274283208625063
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -1.1769001828307888,
+                "y": 9.887130594264306
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": -1.1769001828307888,
+                "y": 9.887130594264306
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 3.937114903425311,
+            "depthLeverage": 0.5894162871856281,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.844052758846686,
+                "y": 38.78653304866507
+              },
+              "vel": {
+                "x": -1.371368603027833,
+                "y": 5.4128188123847325
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.25463647166106,
+                "y": 42.6792778647523
+              },
+              "vel": {
+                "x": 0.3540588398893356,
+                "y": 6.621397782385523
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.3214293746088858,
+                "y": 9.951657171327607
+              },
+              "facing": 1.519966765158032
+            },
+            "final": {
+              "vel": {
+                "x": 0.3214293746088858,
+                "y": 9.951657171327607
+              },
+              "facing": 1.519966765158032
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.7904367306947684,
+            "depthLeverage": 1.8442210110583446,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.0988574827194,
+                "y": 39.36774355694708
+              },
+              "vel": {
+                "x": -0.7498360305377363,
+                "y": 5.827739139291445
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.25463647166106,
+                "y": 42.6792778647523
+              },
+              "vel": {
+                "x": 0.3540588398893356,
+                "y": 6.621397782385523
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -1.458876781712563,
+                "y": 9.751426994321477
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "final": {
+              "vel": {
+                "x": -1.458876781712563,
+                "y": 9.751426994321477
+              },
+              "cutSkill": 1.0785714285714285
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": false,
+          "baseline": {
+            "gap": 4.488341248820838,
+            "depthLeverage": -1.157598489044311,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 42.4825402170775,
+                "y": 43.16299176272519
+              },
+              "vel": {
+                "x": -0.5381837384634287,
+                "y": 6.593767517564073
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.64013870612181,
+                "y": 47.49948492010812
+              },
+              "vel": {
+                "x": 1.1056264419512787,
+                "y": 4.953592366389989
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.5308793770894513,
+                "y": 7.435839106732397
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 2.5308793770894513,
+                "y": 7.435839106732397
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 3.4270548320327614,
+            "depthLeverage": 1.204663501627543,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.571693984664186,
+                "y": 44.32265209216908
+              },
+              "vel": {
+                "x": -1.5458735437032243,
+                "y": 6.735056540875054
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.36703048303664,
+                "y": 47.53099912290088
+              },
+              "vel": {
+                "x": -0.43442191186316637,
+                "y": 5.0211294864060205
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -3.988270667984342,
+                "y": 6.181907871350776
+              }
+            },
+            "final": {
+              "vel": {
+                "x": -3.988270667984342,
+                "y": 6.181907871350776
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": false,
+          "baseline": {
+            "gap": 1.9554401810141828,
+            "depthLeverage": -1.1682480478349504,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.70010730316909,
+                "y": 47.97960462973819
+              },
+              "vel": {
+                "x": 3.2374417488330796,
+                "y": 5.382662458666854
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.86835535100404,
+                "y": 49.54770628468745
+              },
+              "vel": {
+                "x": 1.5767805141069333,
+                "y": 0.41315497805465196
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.5605628344686577,
+                "y": 0.8900607140779355
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 2.5605628344686577,
+                "y": 0.8900607140779355
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 1.5869538684423832,
+            "depthLeverage": -0.03991059276544462,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 43.03688909890023,
+                "y": 48.480359513938104
+              },
+              "vel": {
+                "x": -3.1898476465611654,
+                "y": 4.549276745130612
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 43.07679969166568,
+                "y": 50.066811443606746
+              },
+              "vel": {
+                "x": -1.6873129195413663,
+                "y": 2.890965591488518
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -3.4935443707815437,
+                "y": 4.067977767180603
+              }
+            },
+            "final": {
+              "vel": {
+                "x": -3.4935443707815437,
+                "y": 4.067977767180603
+              }
+            },
+            "ball": "air"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PW",
+      "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "baseline": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 326.8958049999999,
+        "physicalSignature": "6f16a70113c7c17c421bb9edbcdcfbac46669d422ac7d07178090a05981df656",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.05,
+            "type": "pbu",
+            "a": 20,
+            "b": 8,
+            "pos": {
+              "x": 54.93,
+              "y": 40.85
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 54.83,
+              "y": 41.71
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 298.47313499999996,
+        "physicalSignature": "6f16a70113c7c17c421bb9edbcdcfbac46669d422ac7d07178090a05981df656",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.05,
+            "type": "pbu",
+            "a": 20,
+            "b": 8,
+            "pos": {
+              "x": 54.93,
+              "y": 40.85
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 54.83,
+              "y": 41.71
+            }
+          }
+        ]
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 6.013521348435761,
+            "depthLeverage": 5.5473588948660435,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.89537098790638,
+                "y": 35.228574930193915
+              },
+              "vel": {
+                "x": -0.07442525253374503,
+                "y": 2.408258827611599
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.34801209304034,
+                "y": 37.55005038766557
+              },
+              "vel": {
+                "x": 1.0220792304363375,
+                "y": 4.258663461234011
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "final": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 6.013521348435761,
+            "depthLeverage": 5.5473588948660435,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 44.89537098790638,
+                "y": 35.228574930193915
+              },
+              "vel": {
+                "x": -0.07442525253374503,
+                "y": 2.408258827611599
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 39.34801209304034,
+                "y": 37.55005038766557
+              },
+              "vel": {
+                "x": 1.0220792304363375,
+                "y": 4.258663461234011
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "final": {
+              "vel": {
+                "x": -0.14617736977117213,
+                "y": 8.622305679117927
+              },
+              "facing": -2.4687300291483747
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.199623813308191,
+            "depthLeverage": 3.9533510739910156,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.366544783582434,
+                "y": 39.21413375908837
+              },
+              "vel": {
+                "x": 1.0409522654217318,
+                "y": 5.668933572906596
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.41319370959142,
+                "y": 42.59157407472619
+              },
+              "vel": {
+                "x": 3.976691301074045,
+                "y": 4.622495309978994
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "final": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 5.199623813308191,
+            "depthLeverage": 3.9533510739910156,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.366544783582434,
+                "y": 39.21413375908837
+              },
+              "vel": {
+                "x": 1.0409522654217318,
+                "y": 5.668933572906596
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.41319370959142,
+                "y": 42.59157407472619
+              },
+              "vel": {
+                "x": 3.976691301074045,
+                "y": 4.622495309978994
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "final": {
+              "vel": {
+                "x": 2.2413628189549435,
+                "y": 9.701378156849197
+              },
+              "facing": 0.9178810690084125
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.423561269577353,
+            "depthLeverage": 3.3357378855568953,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.71381877713664,
+                "y": 40.70670649730041
+              },
+              "vel": {
+                "x": 1.5428862224311821,
+                "y": 6.285688799022997
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.37808089157974,
+                "y": 43.61200287883624
+              },
+              "vel": {
+                "x": 3.8295633169135455,
+                "y": 3.906891245643905
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.185098896303712,
+                "y": 9.263394601673397
+              },
+              "facing": 0.814008074937665
+            },
+            "final": {
+              "vel": {
+                "x": 2.185098896303712,
+                "y": 9.263394601673397
+              },
+              "facing": 0.814008074937665
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 4.423561269577353,
+            "depthLeverage": 3.3357378855568953,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.71381877713664,
+                "y": 40.70670649730041
+              },
+              "vel": {
+                "x": 1.5428862224311821,
+                "y": 6.285688799022997
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 42.37808089157974,
+                "y": 43.61200287883624
+              },
+              "vel": {
+                "x": 3.8295633169135455,
+                "y": 3.906891245643905
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.185098896303712,
+                "y": 9.263394601673397
+              },
+              "facing": 0.814008074937665
+            },
+            "final": {
+              "vel": {
+                "x": 2.185098896303712,
+                "y": 9.263394601673397
+              },
+              "facing": 0.814008074937665
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 3.2994705877137513,
+            "depthLeverage": 2.9287343131957115,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 48.36830692195215,
+                "y": 44.58646058561466
+              },
+              "vel": {
+                "x": 5.38398853769836,
+                "y": 3.981849447183945
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 45.439572608756436,
+                "y": 46.10600705805246
+              },
+              "vel": {
+                "x": 4.776922709393943,
+                "y": 1.728589297957014
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.955186140739034,
+                "y": 0.18631782421940354
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 9.955186140739034,
+                "y": 0.18631782421940354
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 3.2994705877137513,
+            "depthLeverage": 2.9287343131957115,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 48.36830692195215,
+                "y": 44.58646058561466
+              },
+              "vel": {
+                "x": 5.38398853769836,
+                "y": 3.981849447183945
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 45.439572608756436,
+                "y": 46.10600705805246
+              },
+              "vel": {
+                "x": 4.776922709393943,
+                "y": 1.728589297957014
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.955186140739034,
+                "y": 0.18631782421940354
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 9.955186140739034,
+                "y": 0.18631782421940354
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.025567046958005,
+            "depthLeverage": 4.025209134854002,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 52.57265968942502,
+                "y": 46.286966460238624
+              },
+              "vel": {
+                "x": 4.013716045216659,
+                "y": 0.6480919898325949
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 48.54745055457102,
+                "y": 46.340645788122764
+              },
+              "vel": {
+                "x": 4.394842556692653,
+                "y": -1.2561389358706783
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -5.521978357082223,
+                "y": -4.252831208010008
+              }
+            },
+            "final": {
+              "vel": {
+                "x": -5.521978357082223,
+                "y": -4.252831208010008
+              }
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 4.025567046958005,
+            "depthLeverage": 4.025209134854002,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 52.57265968942502,
+                "y": 46.286966460238624
+              },
+              "vel": {
+                "x": 4.013716045216659,
+                "y": 0.6480919898325949
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 48.54745055457102,
+                "y": 46.340645788122764
+              },
+              "vel": {
+                "x": 4.394842556692653,
+                "y": -1.2561389358706783
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -5.521978357082223,
+                "y": -4.252831208010008
+              }
+            },
+            "final": {
+              "vel": {
+                "x": -5.521978357082223,
+                "y": -4.252831208010008
+              }
+            },
+            "ball": "held"
+          }
+        }
+      ]
+    },
+    {
+      "id": "QV",
+      "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "baseline": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 244.16629999999986,
+        "physicalSignature": "c26e2a2aa1a417b41d8980aaabeb5b820f40838a54caafb8c6046a940d929cfe",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": null,
+        "steps": 120,
+        "elapsedMs": 263.6802459999999,
+        "physicalSignature": "c26e2a2aa1a417b41d8980aaabeb5b820f40838a54caafb8c6046a940d929cfe",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          }
+        ]
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.147048887061643,
+            "depthLeverage": 4.095605472446088,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.6412629836427,
+                "y": 34.40428616381955
+              },
+              "vel": {
+                "x": 1.9712825490916792,
+                "y": -0.24812907248178587
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.54565751119661,
+                "y": 35.05546224273282
+              },
+              "vel": {
+                "x": 5.120805859306679,
+                "y": -0.3939081449008513
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.148679682463001,
+                "y": -0.3826942086924093
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 5.148679682463001,
+                "y": -0.3826942086924093
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 4.147048887061643,
+            "depthLeverage": 4.095605472446088,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.6412629836427,
+                "y": 34.40428616381955
+              },
+              "vel": {
+                "x": 1.9712825490916792,
+                "y": -0.24812907248178587
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 41.54565751119661,
+                "y": 35.05546224273282
+              },
+              "vel": {
+                "x": 5.120805859306679,
+                "y": -0.3939081449008513
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.148679682463001,
+                "y": -0.3826942086924093
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 5.148679682463001,
+                "y": -0.3826942086924093
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 0.9090873025384306,
+            "depthLeverage": 0.5731944251227716,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 48.617671258299545,
+                "y": 34.09552423561783
+              },
+              "vel": {
+                "x": 4.053817512246818,
+                "y": -0.1430869216473638
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 48.04447683317677,
+                "y": 34.80113593807519
+              },
+              "vel": {
+                "x": 7.16354213685097,
+                "y": -0.1254053277207126
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.98052902146625,
+                "y": -0.2812262103937544
+              },
+              "facing": -2.713605035351339
+            },
+            "final": {
+              "vel": {
+                "x": 7.98052902146625,
+                "y": -0.2812262103937544
+              },
+              "facing": -2.713605035351339
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 0.9090873025384306,
+            "depthLeverage": 0.5731944251227716,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 48.617671258299545,
+                "y": 34.09552423561783
+              },
+              "vel": {
+                "x": 4.053817512246818,
+                "y": -0.1430869216473638
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 48.04447683317677,
+                "y": 34.80113593807519
+              },
+              "vel": {
+                "x": 7.16354213685097,
+                "y": -0.1254053277207126
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.98052902146625,
+                "y": -0.2812262103937544
+              },
+              "facing": -2.713605035351339
+            },
+            "final": {
+              "vel": {
+                "x": 7.98052902146625,
+                "y": -0.2812262103937544
+              },
+              "facing": -2.713605035351339
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 0.6507274203793055,
+            "depthLeverage": 0.05644006671523982,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 49.690559879809726,
+                "y": 34.12503249702044
+              },
+              "vel": {
+                "x": 4.481983299348903,
+                "y": 0.7459612515471225
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 49.634119813094486,
+                "y": 34.77330766583588
+              },
+              "vel": {
+                "x": 5.55360592693897,
+                "y": -0.0972209176579214
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.850249198645224,
+                "y": 6.124870035156209
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 7.850249198645224,
+                "y": 6.124870035156209
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 0.6507274203793055,
+            "depthLeverage": 0.05644006671523982,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 49.690559879809726,
+                "y": 34.12503249702044
+              },
+              "vel": {
+                "x": 4.481983299348903,
+                "y": 0.7459612515471225
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 49.634119813094486,
+                "y": 34.77330766583588
+              },
+              "vel": {
+                "x": 5.55360592693897,
+                "y": -0.0972209176579214
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.850249198645224,
+                "y": 6.124870035156209
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 7.850249198645224,
+                "y": 6.124870035156209
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 0.9372410635651082,
+            "depthLeverage": -0.62627067237419,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 53.161432619330135,
+                "y": 35.48476508998389
+              },
+              "vel": {
+                "x": 5.124886027991297,
+                "y": 3.130019836159819
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 53.787703291704325,
+                "y": 34.78748045932247
+              },
+              "vel": {
+                "x": 5.466818489615677,
+                "y": -0.10881823378957385
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 6.099783573227629,
+                "y": 6.980293814761178
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 6.099783573227629,
+                "y": 6.980293814761178
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 0.9372410635651082,
+            "depthLeverage": -0.62627067237419,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 53.161432619330135,
+                "y": 35.48476508998389
+              },
+              "vel": {
+                "x": 5.124886027991297,
+                "y": 3.130019836159819
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 53.787703291704325,
+                "y": 34.78748045932247
+              },
+              "vel": {
+                "x": 5.466818489615677,
+                "y": -0.10881823378957385
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 6.099783573227629,
+                "y": 6.980293814761178
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 6.099783573227629,
+                "y": 6.980293814761178
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 3.2334322565947775,
+            "depthLeverage": -0.36693914413896067,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 57.16250766388223,
+                "y": 38.41445788808065
+              },
+              "vel": {
+                "x": 6.3586678491791755,
+                "y": 3.3248715653295395
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 57.52944680802119,
+                "y": 35.20191375258832
+              },
+              "vel": {
+                "x": 3.9953389497158964,
+                "y": 2.164177164093544
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.937193401086445,
+                "y": -0.62660413164012
+              },
+              "effort": 1
+            },
+            "final": {
+              "vel": {
+                "x": 9.937193401086445,
+                "y": -0.62660413164012
+              },
+              "effort": 1
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.2334322565947775,
+            "depthLeverage": -0.36693914413896067,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 57.16250766388223,
+                "y": 38.41445788808065
+              },
+              "vel": {
+                "x": 6.3586678491791755,
+                "y": 3.3248715653295395
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 57.52944680802119,
+                "y": 35.20191375258832
+              },
+              "vel": {
+                "x": 3.9953389497158964,
+                "y": 2.164177164093544
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.937193401086445,
+                "y": -0.62660413164012
+              },
+              "effort": 1
+            },
+            "final": {
+              "vel": {
+                "x": 9.937193401086445,
+                "y": -0.62660413164012
+              },
+              "effort": 1
+            },
+            "ball": "held"
+          }
+        }
+      ]
+    },
+    {
+      "id": "QU",
+      "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+      "defenderId": "HFD-S2",
+      "designatedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "baseline": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 31.43,
+        "yac": 12.922406286772961,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": {
+          "t": 4.05,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 18,
+          "pos": {
+            "x": 63.27,
+            "y": 39.5
+          },
+          "note": "grasp"
+        },
+        "steps": 108,
+        "elapsedMs": 341.1292229999999,
+        "physicalSignature": "a2763727b81c7848f6886cbc4719eb842aae16d3f1c7de6eebd7c1f95f21457a",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          },
+          {
+            "t": 5.35,
+            "type": "tackle",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 71.68,
+              "y": 35.43
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 31.43,
+        "yac": 12.922406286772961,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": {
+          "t": 4.05,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 18,
+          "pos": {
+            "x": 63.27,
+            "y": 39.5
+          },
+          "note": "grasp"
+        },
+        "steps": 108,
+        "elapsedMs": 300.83839699999976,
+        "physicalSignature": "a2763727b81c7848f6886cbc4719eb842aae16d3f1c7de6eebd7c1f95f21457a",
+        "importantEvents": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          },
+          {
+            "t": 5.35,
+            "type": "tackle",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 71.68,
+              "y": 35.43
+            }
+          }
+        ]
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.652065707217625,
+            "depthLeverage": 4.651049484767498,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.42691160750005,
+                "y": 34.10140122724818
+              },
+              "vel": {
+                "x": 1.504691189265053,
+                "y": -0.84995994326767
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 40.775862122732555,
+                "y": 34.19863308681187
+              },
+              "vel": {
+                "x": 3.526298008320347,
+                "y": -1.9061070316200392
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 3.715816605856345,
+                "y": -2.551598811946362
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 3.715816605856345,
+                "y": -2.551598811946362
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 4.652065707217625,
+            "depthLeverage": 4.651049484767498,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 45.42691160750005,
+                "y": 34.10140122724818
+              },
+              "vel": {
+                "x": 1.504691189265053,
+                "y": -0.84995994326767
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 40.775862122732555,
+                "y": 34.19863308681187
+              },
+              "vel": {
+                "x": 3.526298008320347,
+                "y": -1.9061070316200392
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 3.715816605856345,
+                "y": -2.551598811946362
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": 3.715816605856345,
+                "y": -2.551598811946362
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 3.302156825512987,
+            "depthLeverage": 3.1119576044630435,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 47.17112088672895,
+                "y": 32.05238009160981
+              },
+              "vel": {
+                "x": 1.8527947714429693,
+                "y": -1.566308890696525
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.05916328226591,
+                "y": 30.94786229261034
+              },
+              "vel": {
+                "x": 1.9454994973046065,
+                "y": -5.2877459188028
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.419675557970625,
+                "y": 6.988666168842882
+              },
+              "facing": -2.790997352752794
+            },
+            "final": {
+              "vel": {
+                "x": 5.419675557970625,
+                "y": 6.988666168842882
+              },
+              "facing": -2.790997352752794
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 3.302156825512987,
+            "depthLeverage": 3.1119576044630435,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 47.17112088672895,
+                "y": 32.05238009160981
+              },
+              "vel": {
+                "x": 1.8527947714429693,
+                "y": -1.566308890696525
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.05916328226591,
+                "y": 30.94786229261034
+              },
+              "vel": {
+                "x": 1.9454994973046065,
+                "y": -5.2877459188028
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.419675557970625,
+                "y": 6.988666168842882
+              },
+              "facing": -2.790997352752794
+            },
+            "final": {
+              "vel": {
+                "x": 5.419675557970625,
+                "y": 6.988666168842882
+              },
+              "facing": -2.790997352752794
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.038080306783342,
+            "depthLeverage": 3.355382377538831,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 47.718011980532154,
+                "y": 31.85351595011796
+              },
+              "vel": {
+                "x": 2.5763305902821867,
+                "y": -0.0595113440450325
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.36262960299332,
+                "y": 29.606851385806387
+              },
+              "vel": {
+                "x": 0.48245997707012506,
+                "y": -5.43897896333037
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.612018884478556,
+                "y": 6.418536743738891
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 7.612018884478556,
+                "y": 6.418536743738891
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 4.038080306783342,
+            "depthLeverage": 3.355382377538831,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 47.718011980532154,
+                "y": 31.85351595011796
+              },
+              "vel": {
+                "x": 2.5763305902821867,
+                "y": -0.0595113440450325
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.36262960299332,
+                "y": 29.606851385806387
+              },
+              "vel": {
+                "x": 0.48245997707012506,
+                "y": -5.43897896333037
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 7.612018884478556,
+                "y": 6.418536743738891
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 7.612018884478556,
+                "y": 6.418536743738891
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 9.681268614483324,
+            "depthLeverage": 6.015476549153313,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 50.5263711021467,
+                "y": 33.09365511140271
+              },
+              "vel": {
+                "x": 4.673481712191217,
+                "y": 3.118286401124468
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.510894552993385,
+                "y": 25.50807643391433
+              },
+              "vel": {
+                "x": 0.18773217250350713,
+                "y": -5.466246208216729
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 6.809524782481618,
+                "y": 7.264352528970018
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 6.809524782481618,
+                "y": 7.264352528970018
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 9.681268614483324,
+            "depthLeverage": 6.015476549153313,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 50.5263711021467,
+                "y": 33.09365511140271
+              },
+              "vel": {
+                "x": 4.673481712191217,
+                "y": 3.118286401124468
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.510894552993385,
+                "y": 25.50807643391433
+              },
+              "vel": {
+                "x": 0.18773217250350713,
+                "y": -5.466246208216729
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 6.809524782481618,
+                "y": 7.264352528970018
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 6.809524782481618,
+                "y": 7.264352528970018
+              }
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 16.846377854326875,
+            "depthLeverage": 9.808388442566553,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 54.65729558465157,
+                "y": 35.71820152364054
+              },
+              "vel": {
+                "x": 6.596318866548077,
+                "y": 3.15478436324453
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.84890714208502,
+                "y": 22.021633962003722
+              },
+              "vel": {
+                "x": 1.0959531144295531,
+                "y": -2.7549838109503155
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.902060334715754,
+                "y": 1.0438613682062012
+              },
+              "effort": 1
+            },
+            "final": {
+              "vel": {
+                "x": 9.902060334715754,
+                "y": 1.0438613682062012
+              },
+              "effort": 1
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 16.846377854326875,
+            "depthLeverage": 9.808388442566553,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S2",
+              "slot": "NB",
+              "pos": {
+                "x": 54.65729558465157,
+                "y": 35.71820152364054
+              },
+              "vel": {
+                "x": 6.596318866548077,
+                "y": 3.15478436324453
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR3",
+              "slot": "H",
+              "pos": {
+                "x": 44.84890714208502,
+                "y": 22.021633962003722
+              },
+              "vel": {
+                "x": 1.0959531144295531,
+                "y": -2.7549838109503155
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.902060334715754,
+                "y": 1.0438613682062012
+              },
+              "effort": 1
+            },
+            "final": {
+              "vel": {
+                "x": 9.902060334715754,
+                "y": 1.0438613682062012
+              },
+              "effort": 1
+            },
+            "ball": "held"
+          }
+        }
+      ]
+    },
+    {
+      "id": "FRESH",
+      "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+      "defenderId": "HFD-S1",
+      "designatedReceiverId": "HFO-WR2",
+      "physicalIdentity": false,
+      "baseline": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 97,
+        "elapsedMs": 243.10834300000033,
+        "physicalSignature": "8f1c74a71ee1347fda4a3c76ca8afb97ba21ba8882576e4380f44d5923f9a0de",
+        "importantEvents": [
+          {
+            "t": 2.8,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "pbu",
+            "a": 16,
+            "b": 7,
+            "pos": {
+              "x": 53.68,
+              "y": 25.38
+            }
+          },
+          {
+            "t": 4.8,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "steps": 97,
+        "elapsedMs": 242.9077440000001,
+        "physicalSignature": "cb22d7cda52d679ef0968db701ab6a95f1309beae33068e8c68902be01cd2bea",
+        "importantEvents": [
+          {
+            "t": 2.8,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "pbu",
+            "a": 16,
+            "b": 7,
+            "pos": {
+              "x": 53.68,
+              "y": 25.38
+            }
+          },
+          {
+            "t": 4.8,
+            "type": "incomplete"
+          }
+        ]
+      },
+      "firstSampledRequestDivergence": {
+        "controllerTime": 0.85,
+        "achievedInterval": [
+          0.85,
+          0.9
+        ],
+        "entryBodyIdentical": true,
+        "consumedReleaseReadIdentical": true,
+        "queriedPictureValuesIdentical": true,
+        "queryCounts": [
+          4,
+          6
+        ],
+        "cue": {
+          "pos": {
+            "x": 39.13498559593325,
+            "y": 36.66243998277067
+          },
+          "vel": {
+            "x": 0.6168820021669053,
+            "y": 2.570341674597287
+          },
+          "stance": null,
+          "facing": 1.2844386855866645,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "read": [
+          {
+            "target": 10,
+            "slot": "H",
+            "position": {
+              "x": 39.14514515075942,
+              "y": 36.65972697085323
+            },
+            "velocity": {
+              "x": 0.7466355049021002,
+              "y": 2.5356922430745854
+            },
+            "depth": -0.8548548492405814,
+            "outward": 1.3930603041865623,
+            "release": "flat",
+            "first": "flat",
+            "since": 0.85,
+            "climbed": false
+          }
+        ],
+        "before": {
+          "index": 19,
+          "id": "HFD-S1",
+          "slot": "NB",
+          "pos": {
+            "x": 44.9146267635594,
+            "y": 34.889759112476774
+          },
+          "vel": {
+            "x": 0.28809779807646213,
+            "y": 1.2897047171269438
+          },
+          "support": "up"
+        },
+        "baselineJob": "zone:curl_flat_w",
+        "candidateJob": "man:H",
+        "baselineRequest": {
+          "vel": {
+            "x": -1.6016497229505993,
+            "y": 6.582055506456657
+          },
+          "facing": -2.472206665757638
+        },
+        "candidateRequest": {
+          "vel": {
+            "x": -5.199576136351833,
+            "y": 5.6834307447911785
+          },
+          "facing": 3.141592653589793
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 0.95,
+          "achievedInterval": [
+            0.95,
+            1
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 6.019651075841994,
+            "depthLeverage": 5.6067100218660215,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 44.90068027043683,
+                "y": 35.133757187815014
+              },
+              "vel": {
+                "x": -0.520928756029125,
+                "y": 1.8924773862022692
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 39.29397024857081,
+                "y": 37.32487603570821
+              },
+              "vel": {
+                "x": 0.9341090893771162,
+                "y": 3.8921211868850514
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -1.9361115930684547,
+                "y": 7.978348731322293
+              },
+              "facing": -2.471514824960281
+            },
+            "final": {
+              "vel": {
+                "x": -1.9361115930684547,
+                "y": 7.978348731322293
+              },
+              "facing": -2.471514824960281
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 6.018494040196808,
+            "depthLeverage": 5.6050195306959125,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 44.89898977926672,
+                "y": 35.13261086643651
+              },
+              "vel": {
+                "x": -0.4739007477493413,
+                "y": 1.9576195704557193
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 39.29397024857081,
+                "y": 37.32487603570821
+              },
+              "vel": {
+                "x": 0.9341090893771162,
+                "y": 3.8921211868850514
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -5.153646531051534,
+                "y": 6.522613431976474
+              },
+              "facing": 3.141592653589793
+            },
+            "final": {
+              "vel": {
+                "x": -5.153646531051534,
+                "y": 6.522613431976474
+              },
+              "facing": 3.141592653589793
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 1.95,
+          "achievedInterval": [
+            1.95,
+            2
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.242883428967108,
+            "depthLeverage": 4.032092482618857,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 45.05619505502051,
+                "y": 38.766795576305896
+              },
+              "vel": {
+                "x": 0.6699013028357521,
+                "y": 5.43110071935656
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 41.02410257240165,
+                "y": 42.11792327625205
+              },
+              "vel": {
+                "x": 3.758562829528232,
+                "y": 4.787828028806986
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 1.8056859427147527,
+                "y": 9.541660020144498
+              },
+              "facing": 1.013686139047426
+            },
+            "final": {
+              "vel": {
+                "x": 1.8056859427147527,
+                "y": 9.541660020144498
+              },
+              "facing": 1.013686139047426
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 3.786808134347061,
+            "depthLeverage": 2.3619243309894387,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 43.38602690339109,
+                "y": 39.157985894982446
+              },
+              "vel": {
+                "x": -1.344271321032191,
+                "y": 5.954528053083126
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 41.02410257240165,
+                "y": 42.11792327625205
+              },
+              "vel": {
+                "x": 3.758562829528232,
+                "y": 4.787828028806986
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 0.5568522610225308,
+                "y": 9.17911212445609
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "final": {
+              "vel": {
+                "x": 0.5568522610225308,
+                "y": 9.17911212445609
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.2,
+          "achievedInterval": [
+            2.2,
+            2.25
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 4.444931205873279,
+            "depthLeverage": 3.2225839111270886,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 45.306011284513346,
+                "y": 40.20875341116216
+              },
+              "vel": {
+                "x": 1.3569939681690586,
+                "y": 6.062772127520829
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 42.08342737338626,
+                "y": 43.27018548793455
+              },
+              "vel": {
+                "x": 4.449220193406416,
+                "y": 4.633821661676412
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 2.526295234065595,
+                "y": 9.3766523905965
+              },
+              "facing": 0.8334298090864882
+            },
+            "final": {
+              "vel": {
+                "x": 2.526295234065595,
+                "y": 9.3766523905965
+              },
+              "facing": 0.8334298090864882
+            },
+            "ball": "held"
+          },
+          "candidate": {
+            "gap": 2.749764053124095,
+            "depthLeverage": 1.0699388499007938,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 43.15336622328705,
+                "y": 40.73711754464396
+              },
+              "vel": {
+                "x": -0.4212253266319733,
+                "y": 6.629820173253463
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 42.08342737338626,
+                "y": 43.27018548793455
+              },
+              "vel": {
+                "x": 4.449220193406416,
+                "y": 4.633821661676412
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 3.548665826272196,
+                "y": 8.703192232654889
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "final": {
+              "vel": {
+                "x": 3.548665826272196,
+                "y": 8.703192232654889
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "ball": "held"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "achievedInterval": [
+            2.95,
+            3
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 2.062155936206898,
+            "depthLeverage": -0.6153219256193339,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 45.09918811941019,
+                "y": 44.39822755104482
+              },
+              "vel": {
+                "x": -1.4351680810180913,
+                "y": 3.86194707579448
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 45.71451004502952,
+                "y": 46.36644147058849
+              },
+              "vel": {
+                "x": 5.361583042240347,
+                "y": 2.4463072559345713
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": -0.7797868898852296,
+                "y": 0.467194706284078
+              },
+              "facing": -2.211658659807177
+            },
+            "final": {
+              "vel": {
+                "x": -0.7797868898852296,
+                "y": 0.467194706284078
+              },
+              "facing": -2.211658659807177
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 1.3985705311507146,
+            "depthLeverage": -1.2623635457780082,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 44.45214649925151,
+                "y": 45.764413390766656
+              },
+              "vel": {
+                "x": 3.9046344254152965,
+                "y": 6.1327147751614906
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 45.71451004502952,
+                "y": 46.36644147058849
+              },
+              "vel": {
+                "x": 5.361583042240347,
+                "y": 2.4463072559345713
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 9.261407092223463,
+                "y": 2.9206362895531
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "final": {
+              "vel": {
+                "x": 9.261407092223463,
+                "y": 2.9206362895531
+              },
+              "cutSkill": 1.0464285714285713
+            },
+            "ball": "air"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "achievedInterval": [
+            3.7,
+            3.75
+          ],
+          "receiverBodyIdentical": true,
+          "baseline": {
+            "gap": 5.146799606105383,
+            "depthLeverage": -4.9637406837433815,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 44.829865187433455,
+                "y": 45.49378459590763
+              },
+              "vel": {
+                "x": 0.911846124307688,
+                "y": -0.876595180304123
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 49.79360587117684,
+                "y": 46.85423474565855
+              },
+              "vel": {
+                "x": 5.466394137358592,
+                "y": -0.01584702998906561
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 5.471560427957775,
+                "y": -8.022830183105468
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 5.471560427957775,
+                "y": -8.022830183105468
+              }
+            },
+            "ball": "air"
+          },
+          "candidate": {
+            "gap": 2.785600038076332,
+            "depthLeverage": -1.9996508847678882,
+            "defender": {
+              "index": 19,
+              "id": "HFD-S1",
+              "slot": "NB",
+              "pos": {
+                "x": 47.79395498640895,
+                "y": 48.79355522231471
+              },
+              "vel": {
+                "x": 4.408767522885414,
+                "y": 1.617943409196915
+              },
+              "support": "up"
+            },
+            "receiver": {
+              "index": 10,
+              "id": "HFO-WR2",
+              "slot": "H",
+              "pos": {
+                "x": 49.79360587117684,
+                "y": 46.85423474565855
+              },
+              "vel": {
+                "x": 5.466394137358592,
+                "y": -0.01584702998906561
+              },
+              "support": "up"
+            },
+            "raw": {
+              "vel": {
+                "x": 4.147205155564273,
+                "y": -8.78091493304671
+              }
+            },
+            "final": {
+              "vel": {
+                "x": 4.147205155564273,
+                "y": -8.78091493304671
+              }
+            },
+            "ball": "air"
+          }
+        }
+      ]
+    }
+  ],
+  "newNativeWork": {
+    "baseline": {
+      "plays": 7,
+      "ticks": 767,
+      "livePrefixes": 3,
+      "completed": 4,
+      "simulationMs": 2299.9887209999997
+    },
+    "candidate": {
+      "plays": 7,
+      "ticks": 730,
+      "livePrefixes": 3,
+      "completed": 4,
+      "simulationMs": 2153.8309759999997
+    },
+    "observerPlainReplay": {
+      "plays": 1,
+      "proof": "observer-proof.json"
+    }
+  },
+  "focusedEvidence": {
+    "finalPassingUniqueTests": 88,
+    "reuse": "65 unaffected passes from focused-final.json plus all 10 in under-fixture-corrected.json and 13 strengthened installed-call controls in installed-call-opposing-control.json. The earlier aggregate has three genuine fixture failures, not a passing aggregate receipt.",
+    "perFile": {
+      "quarters-flat-wheel": 13,
+      "release-cushion": 20,
+      "match-block-release": 10,
+      "seam-delivery": 19,
+      "coverage-run-support": 15,
+      "coverage-rules": 11
+    },
+    "typecheck": "Pass, typecheck.json; subsequent changes affect test stimuli only (contact depth and hidden corner timing). Runtime and interfaces unchanged.",
+    "preservedFailures": {
+      "red.json": "Baseline: seven expected new-duty failures / five passes, before one additional opposing control.",
+      "focused-initial.json": "Candidate: 75 passes / one obsolete flat-zone expectation failure.",
+      "focused-final.json": "85 passes / three newly expanded under cues that actually showed line blocking. Corrected stimulus beyond line contact; production showsBlock unchanged."
+    },
+    "allRecordedCommandSeconds": 31.148614803
+  },
+  "verdict": {
+    "supported": "Corrects Quarters flat/wheel ownership distinct from Palms; suitable for independent responsibility review.",
+    "adverse": "Existing over-top man objective compresses flat cushion; QW and FRESH trail the wheel earlier. This is retained as a technique limitation, not declared improved leverage.",
+    "notEstablished": [
+      "Full wheel technique with preserved top leverage",
+      "Lower completed-catch YAC",
+      "Universal scheme/awareness correctness",
+      "Whole-engine integration readiness"
+    ],
+    "nextDecision": "Independent review of the narrow duty and disclosed depth cost. Do not fold final-numbering, arrival or physics tuning into this candidate."
+  },
+  "runtimeCommit": "a14dd2f14843bd7d42410c76f29a25e717fcd953"
+}
