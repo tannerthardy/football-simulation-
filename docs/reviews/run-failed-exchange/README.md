@@ -19,6 +19,23 @@ relabel this evidence.
 [Exact settings/inputs](../../../data/reviews/current/run-failed-exchange/input-manifest.json)
 and [receipts/outcomes](../../../data/reviews/current/run-failed-exchange/summary.json).
 
+## Current accepted-source checkpoint
+
+Accepted develop advanced to **0000e560e0dbe31905151465152d412ba838803d**
+through #130's #128-only adoption; canonical queueaa9ed35 confirms it.
+Reconciled at **79f46985c46685411d5149cef65376b8ebc03f05**; candidate source
+**97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e**.
+Only QBHandoff differs from that accepted runtime. #126 remains separately held
+for its adjudicated test-contract correction; it is not imported here.
+
+A bounded two-input refresh checks the composed witness P087 and success context
+P140 against the accepted coverage-wrapper change. Both complete22-player
+prefixes, requests and events are **exactly identical** to the earlier candidate:
+keep1.80 and successful transfer1.55 respectively. Old full ending/climb traces
+keep their old source labels. Compatible27focused/typecheck receipts are reused:
+the QB/controller/test blobs and their APIs are unchanged; Integration owns the
+exact combined full check.
+
 ## Personally available cue and responsibility
 
 QB knows he still holds the snap. Within the existing exchange window, he
@@ -165,3 +182,5 @@ Recommend independent review of the narrow offensive contract. Complete one
 shared composed witness/control after defensive retirement is published, then
 assess overall football improvement. Keep P099's earlier-position/runner-traffic
 limitation as the next blocking-access question.
+
+Latest RUN-006 measured command total: **46.339s**. #126's separate1.697s assertion review is not charged here.

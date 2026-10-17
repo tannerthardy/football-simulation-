@@ -995,7 +995,7 @@
     "runnerFirstMikeContact": 2.85,
     "conclusion": "RB traffic is the binding acquired teammate constraint in the frozen first changed call. Omitting RG or LG does not restore raw; omitting RB does. This is diagnostic, not a production bypass. No emitted-motion defect established; first free forecast itself is later than actual runner contact."
   },
-  "knownCostSeconds": 45.145876506,
+  "knownCostSeconds": 46.338647017,
   "costQualification": "Sum recorded command child elapsed times, including reds and failed/repeated typechecks. Original game185.123s, saved-file retrieval/extraction and historical receipts excluded. No new games or full suite. Final receipt updates cost if needed.",
   "receipts": {
     "climb-path-receipt.json": {
@@ -2061,6 +2061,96 @@
       "finishedAt": "2026-10-17T04:38:53.786Z",
       "inputsUnchanged": true,
       "exitCode": 1
+    },
+    "current-cues-receipt.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/run-failed-exchange",
+      "commit": "79f46985c46685411d5149cef65376b8ebc03f05",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+      "validationSha256": "afa29dc5a98812a6f52504d569f66ad0486c1bc9794e39c613507bdc71efedb4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "scripts/diag/run-exchange/cues.ts"
+      ],
+      "startedAt": "2026-10-17T04:52:54.943Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-exchange/cues.ts",
+            "out/run-failed-exchange/current-cues.json.gz",
+            "--only=G3-P087,G3-P140"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.1927705110000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:52:56.139Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
     }
   },
   "outputs": [
@@ -2094,5 +2184,112 @@
       "sha256": "79a2d735fa3cb3acbb19435c2c59eab62b4af3eeac685402f80e7f7548d7c9da",
       "bytes": 18114
     }
-  ]
+  ],
+  "currentCheckpoint": {
+    "acceptedCommit": "0000e560e0dbe31905151465152d412ba838803d",
+    "queue": "aa9ed35",
+    "codeCommit": "79f46985c46685411d5149cef65376b8ebc03f05",
+    "source": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+    "receipt": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/run-failed-exchange",
+      "commit": "79f46985c46685411d5149cef65376b8ebc03f05",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+      "validationSha256": "afa29dc5a98812a6f52504d569f66ad0486c1bc9794e39c613507bdc71efedb4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "scripts/diag/run-exchange/cues.ts"
+      ],
+      "startedAt": "2026-10-17T04:52:54.943Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-exchange/cues.ts",
+            "out/run-failed-exchange/current-cues.json.gz",
+            "--only=G3-P087,G3-P140"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.1927705110000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T04:52:56.139Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "exactPriorCandidatePrefixes": {
+      "G3-P087": {
+        "frames": true,
+        "events": true
+      },
+      "G3-P140": {
+        "frames": true,
+        "events": true
+      }
+    },
+    "qualification": "After accepted128-only adoption. QBHandoff/test blobs unchanged; new accepted coverage wrapper preserved. Onlytwo previously selected inputs refreshed because coverage change could affect normal reaction. Compatible27focused/typecheck receipts reused; Integration exactcombinedverificationpending."
+  }
 }

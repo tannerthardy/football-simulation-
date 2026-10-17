@@ -791,5 +791,31 @@
     "No force/capacity/default/solver change.",
     "No causal historical failed-versus-P140 comparison.",
     "Old and new C/RB contacts preserved; no collision-free full-play claim."
-  ]
+  ],
+  "currentCheckpoint": {
+    "acceptedCommit": "0000e560e0dbe31905151465152d412ba838803d",
+    "queue": "aa9ed35",
+    "codeCommit": "79f46985c46685411d5149cef65376b8ebc03f05",
+    "source": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+    "exactPriorCandidatePrefixes": {
+      "G3-P087": {
+        "frames": true,
+        "events": true
+      },
+      "G3-P140": {
+        "frames": true,
+        "events": true
+      }
+    },
+    "qualification": "After accepted128-only adoption. QBHandoff/test blobs unchanged; new accepted coverage wrapper preserved. Onlytwo previously selected inputs refreshed because coverage change could affect normal reaction. Compatible27focused/typecheck receipts reused; Integration exactcombinedverificationpending."
+  },
+  "currentPatchSha256": "10eff9bc0182a579e72828a82f554c53c6477693beb6e76168d79ae474a37c63",
+  "currentDiagnosticFileHashes": {
+    "scripts/diag/run-exchange/saved.ts": "78fcdb059ea0da95e08082ec73482e01dfd4c57a5c25bd5853408dc4691081d8",
+    "scripts/diag/run-exchange/spacing-witness.ts": "17aa42acfa5c245f8d99853c3ef17545ced98d322caa81707e4d6264c86b152a",
+    "scripts/diag/run-exchange/prefix.ts": "d6806ea7a1856c487669c5cc13e1b3d64e562a5d8103e803ee8e2fc13334f6a2",
+    "scripts/diag/run-exchange/cues.ts": "66ba3c64d25151622e9512fd6cb28a2b95f1e95054358b1b852666acb95adf07",
+    "scripts/diag/run-exchange/continue.ts": "5f03ff9038e9508b070e68127026686d3ca31c06bdf34f3eed9180a821c774bf",
+    "scripts/diag/run-exchange/climb-path.ts": "4beb6216d2da24098e754044f4305432d75f8e793b9b0ace60ca2c91b6f2810f"
+  }
 }

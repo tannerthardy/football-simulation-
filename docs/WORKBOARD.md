@@ -19,6 +19,19 @@ After exchange, inspect G2-P099 versus G1-P164 forecast→emitted path→access;
 consult Physics only on an achievable emitted request that demonstrably fails.
 No games/census/roster panel; use saved inputs and directly affected controls.
 
+RUN-006 result: QBHandoff-only19line keep; RunnerToMesh/assign.ts reservation
+released unchanged.27 unique focused checks/typecheck, before-keep all22 prefixes
+unchanged; P140 handoff1.55 preserved. First keeps1.80–1.85. Portable inputs and
+legitimate observer/scouting initialization published. Composed evaluation waits
+for exact unkeyed defensive-retirement pin; #132 man-only is not that pin.
+After128-only adoption, reconciled0000e56 at79f4698, source97c574e; two selected
+prefixes/events exactly unchanged. Physics/capacities/spacing/timing untouched.
+P099/P164 trace is complete diagnosis: first request loss2.35 is acquired RB
+traffic, not RG/LG. Frozencall reproduces exact redirect; final-request one-step
+motion error0. Initial forecast's3.10 meeting is later than2.85 runner contact.
+No new collection variant or Physics ask. Next blocking question is earlier
+position/timely access preserving runner lane. [Evidence](reviews/run-failed-exchange/README.md).
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check

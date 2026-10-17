@@ -5,7 +5,8 @@ import {makeSaved,savedInputs} from './saved.js';
 import {sourceVersion} from '../../source-version.js';
 import {handoffReach} from '../../../src/sim/ball-transfer.js';
 const start=performance.now(),rows=[];
-for(const c of savedInputs().cases){
+const only=process.argv.find(v=>v.startsWith('--only='))?.slice(7).split(',');
+for(const c of savedInputs().cases.filter((c:any)=>!only||only.includes(c.id))){
  const sim=makeSaved(c),qb=sim.qb,rb=sim.slot('RB')!,hand=qb.behavior as any,rows0:any[]=[];
  const update=hand.update.bind(hand);let closing=false;
  hand.update=(a:any,s:any)=>{
