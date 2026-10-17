@@ -236,15 +236,19 @@ export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Ve
   return { x: (at * tx - an * ty) * s, y: (at * ty + an * tx) * s };
 }
 
-/** Metabolic cost of a step: base, mechanical work, speed, and isometric pushing. */
-export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number): void {
+/** Metabolic proxy: base, planned work, speed, and isometric pushing.
+ * additionalWork is delivered positive action work per kg (yd²/s²), already
+ * integrated over the active interval; it must be charged only once. velocity
+ * may be the last active velocity when later passive motion ends the tick. */
+export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number, additionalWork = 0, velocity = body.vel): void {
   const p = body.profile;
-  const nspeed = Math.hypot(body.vel.x, body.vel.y);
+  const nspeed = Math.hypot(velocity.x, velocity.y);
   const frac = nspeed / p.vmax;
   body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
-  const work = Math.max(0, accel.x * body.vel.x + accel.y * body.vel.y) / (p.vmax * (p.vmax / p.tau));
+  const work = Math.max(0, accel.x * velocity.x + accel.y * velocity.y) / (p.vmax * (p.vmax / p.tau));
   const speedCost = (nspeed / p.vmax) ** 2;
-  body.energy = clamp(body.energy - (0.0045 + 0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt, 0, 1);
+  const cost = (0.0045 + 0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt;
+  body.energy = clamp(body.energy - (cost + 0.03 * additionalWork / (p.vmax * (p.vmax / p.tau))), 0, 1);
 }
 
 export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
