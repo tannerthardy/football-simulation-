@@ -597,6 +597,7 @@ export class QBPass implements Behavior {
 export class QBHandoff implements Behavior {
   readonly kind = 'qb-handoff';
   private handed = false;
+  private exchangeClosing = false;
   constructor(
     private readonly mesh: Vec2,
     private readonly meshTime: number,
@@ -626,6 +627,24 @@ export class QBHandoff implements Behavior {
       if (d <= handoffReach(a, rb)) {
         this.handed = sim.handoff(a, rb);
         return stand();
+      }
+      if (this.pitchRange <= handoffReach(a, rb)) {
+        const seen = sim.see(a, rb), dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+        const radial = dx * (seen.vel.x - a.vel.x) + dy * (seen.vel.y - a.vel.y);
+        if (radial < 0) this.exchangeClosing = true;
+        const speed = Math.hypot(seen.vel.x, seen.vel.y), reach = handoffReach(a, rb);
+        // A delayed picture of the back has passed the mesh and our closest
+        // approach, outside reach and separating. Continuing this give would
+        // require a new recovery route, not the installed run-through track.
+        // Secure the ball and carry; do not chase him or extend transfer reach.
+        const pastMesh = (seen.pos.x - this.mesh.x) * seen.vel.x + (seen.pos.y - this.mesh.y) * seen.vel.y;
+        if (this.exchangeClosing && Math.hypot(dx, dy) > reach && radial > 0
+          && dx * seen.vel.x + dy * seen.vel.y > 0 && pastMesh > reach * speed) {
+          a.behavior = new BallCarrier({ qb: true }, a);
+          sim.stats.rusher = a.player.id;
+          sim.event('read', a, rb, 'exchange passed outside reach; secure and carry');
+          return a.behavior.update(a, sim);
+        }
       }
     }
     if (sim.t < 0.05) return stand();
