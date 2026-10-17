@@ -159,7 +159,31 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
   const slower=forecast(slowed);
   if(slower.every(sample=>sample.support==='up')
-    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
+    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0)){
+    // Half speed is a verified fallback, not the only available pace. Keep
+    // more of the requested motion when the same acquired picture and actual
+    // free-movement law support it. Each trial must clear every peer; no
+    // monotonic clearance or optimal-speed claim is needed for this bounded
+    // search. Keep the fallback when a trial loses clearance or progress.
+    let chosen=slowed,lower=.5,upper=1;
+    const progress=(path:readonly MovementSample[])=>{
+      const end=path[path.length-1];
+      return(end.pos.x-a.pos.x)*original.vel.x+(end.pos.y-a.pos.y)*original.vel.y;
+    };
+    let achieved=progress(slower);
+    for(let k=0;k<3;k++){
+      const scale=(lower+upper)/2;
+      const command:Intent={...original,vel:{x:original.vel.x*scale,y:original.vel.y*scale}};
+      const path=forecast(command);
+      if(path.every(sample=>sample.support==='up')
+        &&peers.every(peer=>sweptClearance(a,path,peer)>=0)){
+        lower=scale;
+        const next=progress(path);
+        if(next>=achieved){chosen=command;achieved=next;}
+      }else upper=scale;
+    }
+    return chosen;
+  }
   const gather:Intent={...original,vel:{x:0,y:0}};
   const gathered=forecast(gather);
   if(gathered.some(sample=>sample.support!=='up'))return original;
