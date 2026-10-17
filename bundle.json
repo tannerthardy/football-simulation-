@@ -1,0 +1,8 @@
+{
+  "purpose": "data-only flex diagnostic evidence; do not merge",
+  "base": "0000e560e0dbe31905151465152d412ba838803d",
+  "file": "evidence.tar.gz",
+  "bytes": 14721296,
+  "sha256": "5a3b4e36c3468589446b30afbb220d8ace3a0d6475dec3e30a533424e407040a",
+  "manifestSha256": "75a508003a7be44ae468030e5110d65cd8b4147ebc198b46d49072680e8490eb"
+}
