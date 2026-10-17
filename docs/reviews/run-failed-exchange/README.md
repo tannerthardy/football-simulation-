@@ -4,8 +4,9 @@ The candidate repairs a demonstrated offensive continuation failure. After an
 observed approach passes outside real exchange reach and separates, QB stops
 waiting at the old mesh and uses the existing carrier controller.
 **QBHandoff is the only production change.** Initial spacing, RunnerToMesh,
-real transfer reach, ordinary cadence and PA remain unchanged. This does not
-certify a better broken-play ending before defensive continuation is composed.
+real transfer reach, ordinary cadence and PA remain unchanged. The coordinated
+native witness/control now completes with the independently owned defensive
+continuation; it does not certify general broken-play or tackling realism.
 
 Investigation base: accepted70b4db6a3ef53acc1a0e90cd055f1087205daa30,
 queuec933dbc, source9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941.
@@ -34,7 +35,8 @@ prefixes, requests and events are **exactly identical** to the earlier candidate
 keep1.80 and successful transfer1.55 respectively. Old full ending/climb traces
 keep their old source labels. Compatible27focused/typecheck receipts are reused:
 the QB/controller/test blobs and their APIs are unchanged; Integration owns the
-exact combined full check.
+exact combined full check. Final collector typecheck also passes on current
+source97c574e after the combined runtime files are restored.
 
 ## Personally available cue and responsibility
 
@@ -115,12 +117,51 @@ picture still near mesh, prewindow approach, reachable transfer despite stale
 observation, toss and hidden live-state invariance through QBHandoff. QBPass and
 PA wrapper are unchanged.
 
-Run/Pass implement independently. Preferred combined input: **P087**, with P140
-opposing context. Defensive man PR132 does not include proposed unkeyed-premesh
-retirement. Its exact remaining code/settings/initialization pin is still needed
-for one shared composed evaluation. A man-only composition must not be called
-a repair of both defensive gates. Fetchable offensive input/coordination are
-posted on129. Integration owns final combined verification.
+Run/Pass implement independently. The coordinated native check uses **P087**,
+with P140 opposing context, on accepted0000e56 plus this offensive change and:
+
+- PR132 head1106866a1704c299e892a6e2ce6b5c7e11bd0ca0: defense.ts only.
+- PR134 headf012a8698d12e39daf755a0051f872d010abe3bf: run-fits.ts only.
+
+Test host323d352eae2d88dec1dd688044933957c3a6d0a0, composed engine
+**a7fdbb3aa22a51c2a7c4ffe5d2703739ed34b2b3c71424032c8f21759d24d9ec**.
+All44 accepted settings and World defaults stay unchanged. Both fresh native
+observers start normally, including empty observer-local mesh memory; legitimate
+scouting is rebuilt from prior calls. Only actually consumed pictures are copied
+by the passive diagnostic. No supplied private failure state or future path.
+The defensive files are restored afterward and **are not part of Run's patch**.
+
+P087 keeps at1.80. First retirement is DE_W2.85, from an acquired carrying QB at
+x40.903 and empty RB at45.000 (LOS45); their picture age is.30s. That retirement
+initially leaves the emitted request unchanged. At2.90, additional defenders
+consume the contradiction; LB_W, CB_S, CB_W and FS first change their requests.
+For example, CB_S requests(-4.257,-.308) instead of(-1.393,4.831)yd/s. Its next
+achieved state at2.95 moves accordingly, with finite braking/turning. The entire
+22-player body/request prefix is identical through the preceding2.85 tick.
+The first changed behavior is the acquired fit correction, before new contact;
+later execution draws and contact histories are allowed to diverge.
+
+SS grasps4.65 instead of4.85. The play exits out of bounds6.60, terminal6.65,
+gain5.47; offense-only had a leg fall/tackle, terminal5.75/gain6.54. Neither
+ending is required. This is natural continuation, not evidence that the new
+ending is more NFL-like. A changed C/RB contact remains (36.29kg·yd/s in the
+4.20 tick), and **new LT/RB contact86.07kg·yd/s in the4.65 tick** is visible.
+No corresponding LT/RB fall is recorded. This cost is retained for review;
+it is not repaired by removing spacing or increasing force. Maximum work
+residual1.542e-11; arm/support budget excess0 in this combined witness.
+
+P140 preserves all22 body histories, requests and events **exactly through its
+ordinary ending**: handoff1.55, tackle3.40, terminal3.45. No mesh retirement or
+keep occurs. Its man coverage is a negative control; P087 is Cover3 and does
+not establish a positive native #132 man response. #132's existing focused
+positive witnesses remain separately sourced.
+
+The P087 offense-only ending is reused from sourceae46; accepted128-only affects
+the Quarters wrapper, which this Cover3 input never executes. The refreshed
+current-source prefix confirms compatibility. P140 comparison uses current97c
+source. This is one combined witness/control, not a four-arm efficacy screen.
+[Compact consumed-cue/request/achieved-step evidence](../../../data/reviews/current/run-failed-exchange/composed/summary.json).
+Coordination is published on129/134; Integration owns final combined verification.
 
 [Portable two-file patch](promotion.patch) · [reproduction](reproduce.md).
 
@@ -172,15 +213,15 @@ Manifest contains the portable exact frozen spacing witness and qualifications.
 ## Costs and next decision
 
 All passing/failed/repeated commands retain source/validation/settings receipts.
-At report preparation command runtime was45.146s; subsequent current-base/review
-receipts are recorded separately. Retrieval/extraction and original185.123s games
-are excluded. Native work stayed on five exchange/context inputs, one extended
-witness, the two requested climb inputs and one short prefix naming the spacing
-peer. No broad census, roster panel, new game or full suite.
+RUN-006 measured command total is **57.571s**, including1.678s for the two native
+combined plays and9.554s for the new collector typecheck. Retrieval/extraction,
+original185.123s games and #126's separate1.697s assertion review are excluded.
+No broad census, roster panel, new game or full suite. Integration owns the
+preserved full verification on its exact accepted combined candidate.
 
-Recommend independent review of the narrow offensive contract. Complete one
-shared composed witness/control after defensive retirement is published, then
-assess overall football improvement. Keep P099's earlier-position/runner-traffic
-limitation as the next blocking-access question.
-
-Latest RUN-006 measured command total: **46.339s**. #126's separate1.697s assertion review is not charged here.
+**Recommend independent review and minimal promotion of this offensive contract.**
+It fixes a demonstrated waiting failure without changing the initial mesh or
+forcing possession. Combined evidence completes the broken play and preserves
+ordinary success; changed traffic/ending remain visible limitations. Keep
+P099's earlier-position/runner-traffic limitation as the next blocking-access
+question. Do not revive the late-QB chase or tune to either gain.

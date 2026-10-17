@@ -84,8 +84,8 @@
       "bytes": 1931
     },
     "scripts/diag/run-exchange/cues.ts": {
-      "sha256": "68103bb12cf5e331be2eb64e4e03dbb0393946b5a32cb94232f550e40b4c13d7",
-      "bytes": 2397
+      "sha256": "66ba3c64d25151622e9512fd6cb28a2b95f1e95054358b1b852666acb95adf07",
+      "bytes": 2520
     },
     "scripts/diag/run-exchange/prefix.ts": {
       "sha256": "d6806ea7a1856c487669c5cc13e1b3d64e562a5d8103e803ee8e2fc13334f6a2",
@@ -106,6 +106,10 @@
     "package-lock.json": {
       "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
       "bytes": 70134
+    },
+    "scripts/diag/run-exchange/composed.ts": {
+      "sha256": "91f060b574be9b7318c4ca5f6561c176bb8a1cff123ed9fc8acd21304aa8f9d2",
+      "bytes": 3196
     }
   },
   "initialization": "Fresh PlaySim from frozen selected players, final installed calls, game/snap key and saved initial energy; legitimate prior scouting rebuilt from recorded prior calls. No body/controller checkpoint injection or observer reset. Both compared arms receive same construction. Four exchange/context rounded prefixes exactly match native; G3-P141 C .1yd from.80s is explicit reconstruction limit. Both climb prefixes match all saved rounded frames through3.50s.",
@@ -817,5 +821,34 @@
     "scripts/diag/run-exchange/cues.ts": "66ba3c64d25151622e9512fd6cb28a2b95f1e95054358b1b852666acb95adf07",
     "scripts/diag/run-exchange/continue.ts": "5f03ff9038e9508b070e68127026686d3ca31c06bdf34f3eed9180a821c774bf",
     "scripts/diag/run-exchange/climb-path.ts": "4beb6216d2da24098e754044f4305432d75f8e793b9b0ace60ca2c91b6f2810f"
+  },
+  "combinedEvaluation": {
+    "hostCommit": "323d352eae2d88dec1dd688044933957c3a6d0a0",
+    "acceptedBase": "0000e560e0dbe31905151465152d412ba838803d",
+    "source": "a7fdbb3aa22a51c2a7c4ffe5d2703739ed34b2b3c71424032c8f21759d24d9ec",
+    "offensiveSource": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+    "defensiveInputs": {
+      "132": {
+        "head": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+        "file": "src/sim/behaviors/defense.ts"
+      },
+      "134": {
+        "head": "f012a8698d12e39daf755a0051f872d010abe3bf",
+        "file": "src/sim/run-fits.ts"
+      }
+    },
+    "runtimeComposition": "Accepted0000e56 + QBHandoff candidate + exact two defensive runtime blobs, temporarily copied then restored. No defensive code imported into independent Run candidate.",
+    "initialization": "Fresh native all-player reconstruction; observer memory starts empty and only actual see calls are copied. Tick startT emits the request whose achieved state is at t.",
+    "armQualification": "Combined versus compatible saved offense-only sourceae46 for P087 and current-source97c prefix for P140. Accepted128-only changes Quarters wrapper; P087 Cover3 never executes it; all22/request history equal until2.90. This is one native combined witness/control, not a four-arm efficacy experiment. No native man-positive witness is claimed; P140 exercises man negative control.",
+    "measurement": {
+      "file": "scripts/diag/run-exchange/composed.ts",
+      "sha256": "91f060b574be9b7318c4ca5f6561c176bb8a1cff123ed9fc8acd21304aa8f9d2"
+    },
+    "rawOutput": {
+      "path": "out/run-failed-exchange/composed.json.gz",
+      "bytes": 431414,
+      "sha256": "6ba5443c3a093a3c7f8e57c6f5971da5120963a7db5b814e62b09923a545fcb7",
+      "reproducibleFromCommittedInputs": true
+    }
   }
 }

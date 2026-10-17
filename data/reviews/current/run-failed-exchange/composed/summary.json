@@ -1,0 +1,1946 @@
+{
+  "hostCommit": "323d352eae2d88dec1dd688044933957c3a6d0a0",
+  "acceptedBase": "0000e560e0dbe31905151465152d412ba838803d",
+  "source": "a7fdbb3aa22a51c2a7c4ffe5d2703739ed34b2b3c71424032c8f21759d24d9ec",
+  "offensiveSource": "97c574e1c255201b1f60b3117a624ca2a0ef2e9213e3197cf2bf2b1f8c155c4e",
+  "defensiveInputs": {
+    "132": {
+      "head": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "file": "src/sim/behaviors/defense.ts"
+    },
+    "134": {
+      "head": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "file": "src/sim/run-fits.ts"
+    }
+  },
+  "runtimeComposition": "Accepted0000e56 + QBHandoff candidate + exact two defensive runtime blobs, temporarily copied then restored. No defensive code imported into independent Run candidate.",
+  "initialization": "Fresh native all-player reconstruction; observer memory starts empty and only actual see calls are copied. Tick startT emits the request whose achieved state is at t.",
+  "armQualification": "Combined versus compatible saved offense-only sourceae46 for P087 and current-source97c prefix for P140. Accepted128-only changes Quarters wrapper; P087 Cover3 never executes it; all22/request history equal until2.90. This is one native combined witness/control, not a four-arm efficacy experiment. No native man-positive witness is claimed; P140 exercises man negative control.",
+  "measurement": {
+    "file": "scripts/diag/run-exchange/composed.ts",
+    "sha256": "91f060b574be9b7318c4ca5f6561c176bb8a1cff123ed9fc8acd21304aa8f9d2"
+  },
+  "rawOutput": {
+    "path": "out/run-failed-exchange/composed.json.gz",
+    "bytes": 431414,
+    "sha256": "6ba5443c3a093a3c7f8e57c6f5971da5120963a7db5b814e62b09923a545fcb7",
+    "reproducibleFromCommittedInputs": true
+  },
+  "rows": [
+    {
+      "id": "G3-P087",
+      "los": 45,
+      "slots": [
+        "QB",
+        "LT",
+        "RT",
+        "C",
+        "LG",
+        "RG",
+        "RB",
+        "Y",
+        "X",
+        "Z",
+        "F",
+        "DE_W",
+        "DE_S",
+        "DT_S",
+        "DT_W",
+        "LB_M",
+        "LB_W",
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "FS",
+        "SS"
+      ],
+      "elapsedSeconds": 0.9171295119999999,
+      "terminal": true,
+      "t": 6.65,
+      "outcome": "oob",
+      "gain": 5.47,
+      "maxResidual": 1.5418777365994174e-11,
+      "maxArmExcess": 0,
+      "maxSupportExcess": 0,
+      "handoffAt": -1,
+      "events": [
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 49.91,
+            "y": 24.55
+          },
+          "note": "run; pPass=0.22 focus=0.94 urgency=0.68"
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 49.59,
+            "y": 27.96
+          },
+          "note": "run; pPass=0.27 focus=1.00 urgency=0.61"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 45.85,
+            "y": 23.69
+          },
+          "note": "run; pPass=0.20 focus=0.93 urgency=0.73"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 45.98,
+            "y": 21.9
+          },
+          "note": "run; pPass=0.22 focus=0.96 urgency=0.81"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 58.07,
+            "y": 26.77
+          },
+          "note": "run; pPass=0.25 focus=0.91 urgency=0.83"
+        },
+        {
+          "t": 0.4,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 52.46,
+            "y": 19.68
+          },
+          "note": "run; pPass=0.25 focus=0.90 urgency=0.70"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 45.87,
+            "y": 28.55
+          },
+          "note": "run; pPass=0.25 focus=0.83 urgency=0.78"
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 44.66477404058458,
+            "y": 23.894590020204458
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 45.77,
+            "y": 31.59
+          },
+          "note": "run; pPass=0.31 focus=0.97 urgency=0.74"
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 3,
+          "b": 13,
+          "pos": {
+            "x": 44.65006529494448,
+            "y": 26.244027948282785
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 7,
+          "b": 17,
+          "pos": {
+            "x": 45.04986322438726,
+            "y": 21.99486001593698
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.55,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 45.62,
+            "y": 26.03
+          },
+          "note": "run; pPass=0.21 focus=0.61 urgency=0.72"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 52.5,
+            "y": 8.16
+          },
+          "note": "run; pPass=0.20 focus=0.96 urgency=0.83"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 52.47,
+            "y": 45.37
+          },
+          "note": "run; pPass=0.20 focus=0.95 urgency=0.77"
+        },
+        {
+          "t": 1.8,
+          "type": "read",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 41.89,
+            "y": 24.97
+          },
+          "note": "exchange passed outside reach; secure and carry"
+        },
+        {
+          "t": 2.15,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 44.307037395938764,
+            "y": 24.673773468837666
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.65,
+          "type": "block_contact",
+          "a": 10,
+          "b": 16,
+          "pos": {
+            "x": 45.86236623206898,
+            "y": 20.90136813883552
+          },
+          "note": "run"
+        },
+        {
+          "t": 4.55,
+          "type": "block_contact",
+          "a": 5,
+          "b": 12,
+          "pos": {
+            "x": 45.09635921910964,
+            "y": 16.902129129226466
+          },
+          "note": "run"
+        },
+        {
+          "t": 4.65,
+          "type": "carrier_contact",
+          "a": 0,
+          "b": 21,
+          "pos": {
+            "x": 46.65,
+            "y": 9.16
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 4.65,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 0,
+          "pos": {
+            "x": 47.58,
+            "y": 10.1
+          },
+          "note": "initial"
+        },
+        {
+          "t": 5.35,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 45.723746419034434,
+            "y": 17.549555973522278
+          },
+          "note": "run"
+        },
+        {
+          "t": 5.8,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 46.20892578452053,
+            "y": 16.55564825594118
+          },
+          "note": "run"
+        },
+        {
+          "t": 5.95,
+          "type": "block_contact",
+          "a": 5,
+          "b": 12,
+          "pos": {
+            "x": 44.512500720661016,
+            "y": 12.441330110484925
+          },
+          "note": "run"
+        },
+        {
+          "t": 6.25,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 46.750910833849304,
+            "y": 15.597653555573128
+          },
+          "note": "run"
+        },
+        {
+          "t": 6.45,
+          "type": "block_contact",
+          "a": 5,
+          "b": 12,
+          "pos": {
+            "x": 45.436786806157365,
+            "y": 11.550257276071722
+          },
+          "note": "run"
+        },
+        {
+          "t": 6.6,
+          "type": "out_of_bounds",
+          "a": 0,
+          "pos": {
+            "x": 50.41,
+            "y": -0.04
+          }
+        }
+      ],
+      "beforeDefensiveChangeExactlyEqualFrames": 58,
+      "firstChangedEmittedRequestAndExecution": {
+        "requestT": 2.9,
+        "achievedStateLabel": 2.95,
+        "changes": [
+          {
+            "slot": "LB_W",
+            "before": {
+              "pos": {
+                "x": 46.48156477185614,
+                "y": 22.204978212188877
+              },
+              "vel": {
+                "x": 0.19443038475881366,
+                "y": -0.45748523804942337
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": 1.8865324469907543,
+                  "y": -2.5959395033864734
+                },
+                "facing": 3.141592653589793
+              }
+            },
+            "combined": {
+              "pos": {
+                "x": 46.48154246420334,
+                "y": 22.204960686778726
+              },
+              "vel": {
+                "x": 0.19353807864681213,
+                "y": -0.45818625445544264
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": 1.8533315710686038,
+                  "y": -2.5861160988286196
+                },
+                "facing": 3.141592653589793
+              }
+            }
+          },
+          {
+            "slot": "CB_S",
+            "before": {
+              "pos": {
+                "x": 50.965509208129454,
+                "y": 14.773993376689326
+              },
+              "vel": {
+                "x": -1.2057255426726086,
+                "y": 4.192610499591411
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -1.3932768934674986,
+                  "y": 4.831208234884356
+                },
+                "facing": 3.141592653589793
+              }
+            },
+            "combined": {
+              "pos": {
+                "x": 50.96058662957818,
+                "y": 14.766433010099401
+              },
+              "vel": {
+                "x": -1.402628684723357,
+                "y": 3.8901958359944433
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -4.256749361122679,
+                  "y": -0.307966609250375
+                },
+                "facing": 3.141592653589793
+              }
+            }
+          },
+          {
+            "slot": "CB_W",
+            "before": {
+              "pos": {
+                "x": 52.01936580327761,
+                "y": 35.66964639073742
+              },
+              "vel": {
+                "x": -0.64042856220898,
+                "y": -5.694902079067376
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.717259114407112,
+                  "y": -6.378748362474744
+                },
+                "facing": 3.141592653589793
+              }
+            },
+            "combined": {
+              "pos": {
+                "x": 52.02647862621363,
+                "y": 35.66884726068857
+              },
+              "vel": {
+                "x": -0.35591564476813925,
+                "y": -5.726867281021189
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.3786192523584603,
+                  "y": -6.407771747707452
+                },
+                "facing": 3.141592653589793
+              }
+            }
+          },
+          {
+            "slot": "FS",
+            "before": {
+              "pos": {
+                "x": 53.192064363602405,
+                "y": 22.773445849358353
+              },
+              "vel": {
+                "x": -0.4264218086367464,
+                "y": -1.3216827046230877
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.4264218086367464,
+                  "y": -1.3216827046230877
+                },
+                "facing": 3.141592653589793
+              }
+            },
+            "combined": {
+              "pos": {
+                "x": 53.197755211399944,
+                "y": 22.764489172744508
+              },
+              "vel": {
+                "x": -0.1987878967350317,
+                "y": -1.6799497691769258
+              },
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.4264218086367464,
+                  "y": -5.199874085152568
+                },
+                "facing": 3.141592653589793
+              }
+            }
+          }
+        ]
+      },
+      "allComparableFramesExactlyEqual": false,
+      "eventsExactlyEqual": false,
+      "retirements": [
+        {
+          "decision": {
+            "t": 2.85,
+            "a": 11,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.30000000000000004, back age 0.30000000000000004 s. Existing fit/shoulder retained."
+          },
+          "slot": "DE_W",
+          "consumedPictures": [
+            {
+              "t": 2.85,
+              "a": 11,
+              "b": 0,
+              "slot": "DE_W",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 40.90298090277028,
+                  "y": 20.873150366032213
+                },
+                "vel": {
+                  "x": -0.21862641520636716,
+                  "y": -4.882582601458659
+                },
+                "stance": null,
+                "facing": -1.325565332531753,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.85,
+              "a": 11,
+              "b": 6,
+              "slot": "DE_W",
+              "target": "RB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.000448786973294,
+                  "y": 21.545408881092317
+                },
+                "vel": {
+                  "x": 2.4151602670431354,
+                  "y": -1.4138231293203096
+                },
+                "stance": null,
+                "facing": -0.529611425184083,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.85,
+            "stateLabel": 2.9,
+            "body": {
+              "slot": "DE_W",
+              "pos": {
+                "x": 45.66123972768057,
+                "y": 26.45667859067237
+              },
+              "vel": {
+                "x": 1.7068306885038265,
+                "y": -2.806503376372502
+              },
+              "facing": 3.1415929336990973,
+              "kind": "rush",
+              "intent": {
+                "vel": {
+                  "x": 1.8192663616995899,
+                  "y": -2.988724977887849
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 15,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "LB_M",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 15,
+              "b": 0,
+              "slot": "LB_M",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.01185419800661,
+                  "y": 20.57063291926383
+                },
+                "vel": {
+                  "x": 0.18954186696558922,
+                  "y": -5.070203645352824
+                },
+                "stance": null,
+                "facing": -0.9441674716772825,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 15,
+              "b": 6,
+              "slot": "LB_M",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.06296852635629,
+                  "y": 21.479298554921368
+                },
+                "vel": {
+                  "x": 2.2158940342149274,
+                  "y": -1.4023779087069677
+                },
+                "stance": null,
+                "facing": -0.5642402621271418,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "LB_M",
+              "pos": {
+                "x": 46.31501773491932,
+                "y": 21.44764248759546
+              },
+              "vel": {
+                "x": 0.9352776407002411,
+                "y": -1.325941726166441
+              },
+              "facing": 3.141657628754405,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": 0.699956920264917,
+                  "y": -0.8084471556950964
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 16,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "LB_W",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 16,
+              "b": 0,
+              "slot": "LB_W",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.01185419800661,
+                  "y": 20.57063291926383
+                },
+                "vel": {
+                  "x": 0.18954186696558922,
+                  "y": -5.070203645352824
+                },
+                "stance": null,
+                "facing": -0.9441674716772825,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 16,
+              "b": 6,
+              "slot": "LB_W",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.06296852635629,
+                  "y": 21.479298554921368
+                },
+                "vel": {
+                  "x": 2.2158940342149274,
+                  "y": -1.4023779087069677
+                },
+                "stance": null,
+                "facing": -0.5642402621271418,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "LB_W",
+              "pos": {
+                "x": 46.48154246420334,
+                "y": 22.204960686778726
+              },
+              "vel": {
+                "x": 0.19353807864681213,
+                "y": -0.45818625445544264
+              },
+              "facing": 3.141592653589793,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": 1.8533315710686038,
+                  "y": -2.5861160988286196
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 18,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "CB_S",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 18,
+              "b": 0,
+              "slot": "CB_S",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.01185419800661,
+                  "y": 20.57063291926383
+                },
+                "vel": {
+                  "x": 0.18954186696558922,
+                  "y": -5.070203645352824
+                },
+                "stance": null,
+                "facing": -0.9441674716772825,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 18,
+              "b": 6,
+              "slot": "CB_S",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.06296852635629,
+                  "y": 21.479298554921368
+                },
+                "vel": {
+                  "x": 2.2158940342149274,
+                  "y": -1.4023779087069677
+                },
+                "stance": null,
+                "facing": -0.5642402621271418,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "CB_S",
+              "pos": {
+                "x": 50.96058662957818,
+                "y": 14.766433010099401
+              },
+              "vel": {
+                "x": -1.402628684723357,
+                "y": 3.8901958359944433
+              },
+              "facing": 3.141592235567109,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -4.256749361122679,
+                  "y": -0.307966609250375
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 19,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "CB_W",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 19,
+              "b": 0,
+              "slot": "CB_W",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.01185419800661,
+                  "y": 20.57063291926383
+                },
+                "vel": {
+                  "x": 0.18954186696558922,
+                  "y": -5.070203645352824
+                },
+                "stance": null,
+                "facing": -0.9441674716772825,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 19,
+              "b": 6,
+              "slot": "CB_W",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.06296852635629,
+                  "y": 21.479298554921368
+                },
+                "vel": {
+                  "x": 2.2158940342149274,
+                  "y": -1.4023779087069677
+                },
+                "stance": null,
+                "facing": -0.5642402621271418,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "CB_W",
+              "pos": {
+                "x": 52.02647862621363,
+                "y": 35.66884726068857
+              },
+              "vel": {
+                "x": -0.35591564476813925,
+                "y": -5.726867281021189
+              },
+              "facing": 3.141593181066562,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.3786192523584603,
+                  "y": -6.407771747707452
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 20,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.2, back age 0.2 s. Existing fit/shoulder retained."
+          },
+          "slot": "FS",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 20,
+              "b": 0,
+              "slot": "FS",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.06832184459674,
+                  "y": 20.55925914175309
+                },
+                "vel": {
+                  "x": 0.44050918514395576,
+                  "y": -5.120753767622769
+                },
+                "stance": null,
+                "facing": -0.7084065720713064,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 20,
+              "b": 6,
+              "slot": "FS",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.05351538596227,
+                  "y": 21.515257047284443
+                },
+                "vel": {
+                  "x": 2.173880076908131,
+                  "y": -1.2425623870932883
+                },
+                "stance": null,
+                "facing": -0.5192662684749525,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "FS",
+              "pos": {
+                "x": 53.197755211399944,
+                "y": 22.764489172744508
+              },
+              "vel": {
+                "x": -0.1987878967350317,
+                "y": -1.6799497691769258
+              },
+              "facing": 3.1415926536213856,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": -0.4264218086367464,
+                  "y": -5.199874085152568
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 2.9,
+            "a": 21,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "SS",
+          "consumedPictures": [
+            {
+              "t": 2.9,
+              "a": 21,
+              "b": 0,
+              "slot": "SS",
+              "target": "QB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 41.01185419800661,
+                  "y": 20.57063291926383
+                },
+                "vel": {
+                  "x": 0.18954186696558922,
+                  "y": -5.070203645352824
+                },
+                "stance": null,
+                "facing": -0.9441674716772825,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 2.9,
+              "a": 21,
+              "b": 6,
+              "slot": "SS",
+              "target": "RB",
+              "kind": "zone",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.06296852635629,
+                  "y": 21.479298554921368
+                },
+                "vel": {
+                  "x": 2.2158940342149274,
+                  "y": -1.4023779087069677
+                },
+                "stance": null,
+                "facing": -0.5642402621271418,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 2.9,
+            "stateLabel": 2.95,
+            "body": {
+              "slot": "SS",
+              "pos": {
+                "x": 49.016829507528264,
+                "y": 16.70975375529617
+              },
+              "vel": {
+                "x": 0.15281006351336662,
+                "y": -3.5329126125270327
+              },
+              "facing": 3.1415927549175784,
+              "kind": "zone",
+              "intent": {
+                "vel": {
+                  "x": 0.21147193920658588,
+                  "y": -4.7431477992966435
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 3.45,
+            "a": 17,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "LB_S",
+          "consumedPictures": [
+            {
+              "t": 3.45,
+              "a": 17,
+              "b": 0,
+              "slot": "LB_S",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 42.37874048358464,
+                  "y": 17.527827414401376
+                },
+                "vel": {
+                  "x": 2.508156124441088,
+                  "y": -5.536918101784633
+                },
+                "stance": null,
+                "facing": -0.781805174640835,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 3.45,
+              "a": 17,
+              "b": 6,
+              "slot": "LB_S",
+              "target": "RB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.28931546430539,
+                  "y": 19.992059163254506
+                },
+                "vel": {
+                  "x": 0.029181537908154448,
+                  "y": -2.756407231373884
+                },
+                "stance": null,
+                "facing": -1.4422076801790364,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 3.45,
+            "stateLabel": 3.5,
+            "body": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 42.364331232440485,
+                "y": 13.865943060274578
+              },
+              "vel": {
+                "x": -1.3615670192147036,
+                "y": -3.1933417373446424
+              },
+              "facing": 4.992820963167101,
+              "kind": "rush",
+              "intent": {
+                "vel": {
+                  "x": 3.7377841764142854,
+                  "y": 4.582936344974964
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 3.9,
+            "a": 12,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired empty back beyond LOS/out of handoff reach; QB carrying=true",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.25, back age 0.25 s. Existing fit/shoulder retained."
+          },
+          "slot": "DE_S",
+          "consumedPictures": [
+            {
+              "t": 3.9,
+              "a": 12,
+              "b": 0,
+              "slot": "DE_S",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 43.812702147782005,
+                  "y": 14.715486754110806
+                },
+                "vel": {
+                  "x": 3.088818372736476,
+                  "y": -6.2181334047334476
+                },
+                "stance": null,
+                "facing": -1.0997888611106301,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 3.9,
+              "a": 12,
+              "b": 6,
+              "slot": "DE_S",
+              "target": "RB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 45.29128748111341,
+                  "y": 19.972201327975846
+                },
+                "vel": {
+                  "x": 0.4222448994776738,
+                  "y": -0.2609228456249808
+                },
+                "stance": null,
+                "facing": -2.273702233003371,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 3.9,
+            "stateLabel": 3.95,
+            "body": {
+              "slot": "DE_S",
+              "pos": {
+                "x": 44.01971511822058,
+                "y": 18.05954165127251
+              },
+              "vel": {
+                "x": -1.1710237780802308,
+                "y": -2.132761718997944
+              },
+              "facing": -0.6351332855907238,
+              "kind": "rush",
+              "intent": {
+                "vel": {
+                  "x": 3.1876285980310772,
+                  "y": 0.9035890506970271
+                },
+                "facing": 3.141592653589793
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 4.85,
+            "a": 13,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired carrying QB beyond LOS+2",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.35000000000000003, back age 0.35000000000000003 s. Existing fit/shoulder retained."
+          },
+          "slot": "DT_S",
+          "consumedPictures": [
+            {
+              "t": 4.85,
+              "a": 13,
+              "b": 0,
+              "slot": "DT_S",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.125001896600025,
+                  "y": 8.082973817803023
+                },
+                "vel": {
+                  "x": 3.4660200623535475,
+                  "y": -7.139033422998144
+                },
+                "stance": null,
+                "facing": -1.0539969998737104,
+                "age": 0.35000000000000003,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.85,
+              "a": 13,
+              "b": 6,
+              "slot": "DT_S",
+              "target": "RB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 44.81239141084142,
+                  "y": 19.467544470218527
+                },
+                "vel": {
+                  "x": -0.8305719927400222,
+                  "y": -0.31271171496542965
+                },
+                "stance": null,
+                "facing": -1.7002389466158445,
+                "age": 0.35000000000000003,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.85,
+              "a": 13,
+              "b": 0,
+              "slot": "DT_S",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.16451284313091,
+                  "y": 8.075545656026913
+                },
+                "vel": {
+                  "x": 3.5974774845440836,
+                  "y": -7.16374661967466
+                },
+                "stance": null,
+                "facing": -0.7304758549825847,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.85,
+              "a": 13,
+              "b": 0,
+              "slot": "DT_S",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.060771871694556,
+                  "y": 8.090400575808587
+                },
+                "vel": {
+                  "x": 3.3066063190330013,
+                  "y": -7.120007809980735
+                },
+                "stance": null,
+                "facing": -1.4648795938526034,
+                "age": 0.45,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 4.85,
+            "stateLabel": 4.9,
+            "body": {
+              "slot": "DT_S",
+              "pos": {
+                "x": 44.48223045675348,
+                "y": 18.83044851616147
+              },
+              "vel": {
+                "x": 1.7285551958774388,
+                "y": -1.7406342625187896
+              },
+              "facing": 6.275874477139801,
+              "kind": "rush",
+              "intent": {
+                "vel": {
+                  "x": 4.835568948541986,
+                  "y": -5.982681912551542
+                },
+                "effort": 1
+              },
+              "support": "up"
+            }
+          }
+        },
+        {
+          "decision": {
+            "t": 5.05,
+            "a": 14,
+            "kind": "run-fit-mesh",
+            "chose": "acquired-QB",
+            "cue": "Acquired carrying QB beyond LOS+2",
+            "options": [
+              "expected-back",
+              "acquired-QB"
+            ],
+            "detail": "Retire this observer's mesh expectation; QB picture age 0.30000000000000004, back age 0.30000000000000004 s. Existing fit/shoulder retained."
+          },
+          "slot": "DT_W",
+          "consumedPictures": [
+            {
+              "t": 5.05,
+              "a": 14,
+              "b": 0,
+              "slot": "DT_W",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.964508492084775,
+                  "y": 6.935002594009889
+                },
+                "vel": {
+                  "x": 3.7474561954806695,
+                  "y": -6.324793186471376
+                },
+                "stance": null,
+                "facing": -0.5433746509492,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 5.05,
+              "a": 14,
+              "b": 6,
+              "slot": "DT_W",
+              "target": "RB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 44.66805397770618,
+                  "y": 19.206519811719097
+                },
+                "vel": {
+                  "x": -0.6897316638939909,
+                  "y": -0.9546125776780396
+                },
+                "stance": null,
+                "facing": -3.3547528114200085,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 5.05,
+              "a": 14,
+              "b": 0,
+              "slot": "DT_W",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.741093086286504,
+                  "y": 7.135592353212775
+                },
+                "vel": {
+                  "x": 2.8499328459232833,
+                  "y": -5.5470789314015
+                },
+                "stance": null,
+                "facing": -0.687192019262394,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 5.05,
+              "a": 14,
+              "b": 0,
+              "slot": "DT_W",
+              "target": "QB",
+              "kind": "rush",
+              "belief": "run",
+              "picture": {
+                "pos": {
+                  "x": 47.97737338549334,
+                  "y": 6.694735499691157
+                },
+                "vel": {
+                  "x": 3.817159944434931,
+                  "y": -7.041536813558949
+                },
+                "stance": null,
+                "facing": -0.6525940853416661,
+                "age": 0.4,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "achievedStep": {
+            "requestT": 5.05,
+            "stateLabel": 5.1,
+            "body": {
+              "slot": "DT_W",
+              "pos": {
+                "x": 45.42858008675572,
+                "y": 19.33799712327337
+              },
+              "vel": {
+                "x": 0.767314571749593,
+                "y": -2.2027559334425355
+              },
+              "facing": 4.888049676280585,
+              "kind": "rush",
+              "intent": {
+                "vel": {
+                  "x": 2.811844097680827,
+                  "y": -6.03943645135533
+                },
+                "effort": 0.886734693877551
+              },
+              "support": "up"
+            }
+          }
+        }
+      ],
+      "runnerTraffic": [
+        {
+          "requestT": 4.2,
+          "stateLabel": 4.25,
+          "impacts": [
+            {
+              "a": "C",
+              "b": "RB",
+              "impulse": 36.29132099216169
+            }
+          ]
+        },
+        {
+          "requestT": 4.65,
+          "stateLabel": 4.7,
+          "impacts": [
+            {
+              "a": "LT",
+              "b": "RB",
+              "impulse": 86.06863391064331
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G3-P140",
+      "los": 45,
+      "slots": [
+        "QB",
+        "LT",
+        "RT",
+        "C",
+        "LG",
+        "RG",
+        "RB",
+        "Y",
+        "X",
+        "Z",
+        "H",
+        "DE_W",
+        "DE_S",
+        "DT_S",
+        "DT_W",
+        "LB_M",
+        "LB_W",
+        "CB_S",
+        "CB_W",
+        "NB",
+        "FS",
+        "SS"
+      ],
+      "elapsedSeconds": 0.3684662900000001,
+      "terminal": true,
+      "t": 3.45,
+      "outcome": "tackle",
+      "gain": 1.53,
+      "maxResidual": 4.441114143105551e-12,
+      "maxArmExcess": 0,
+      "maxSupportExcess": 0,
+      "handoffAt": 1.55,
+      "events": [
+        {
+          "t": 0.45,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 44.99277231834123,
+            "y": 22.467921837080908
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 45.85,
+            "y": 22.79
+          },
+          "note": "run; pPass=0.26 focus=0.93 urgency=0.69"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 45.77,
+            "y": 27.28
+          },
+          "note": "run; pPass=0.32 focus=0.87 urgency=0.73"
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 44.63124798710266,
+            "y": 27.596508152865752
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 44.682364019056486,
+            "y": 24.9186411139971
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.55,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 49.95,
+            "y": 27.32
+          },
+          "note": "run; pPass=0.31 focus=0.95 urgency=0.72"
+        },
+        {
+          "t": 0.6,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 45.74,
+            "y": 24.81
+          },
+          "note": "run; pPass=0.25 focus=0.75 urgency=0.73"
+        },
+        {
+          "t": 0.6,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 49.09,
+            "y": 34.45
+          },
+          "note": "run; pPass=0.32 focus=0.90 urgency=0.66"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 46.39,
+            "y": 23.44
+          },
+          "note": "run; pPass=0.27 focus=0.94 urgency=0.76"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 58.32,
+            "y": 26.57
+          },
+          "note": "run; pPass=0.32 focus=1.00 urgency=0.77"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 45.28,
+            "y": 30.31
+          },
+          "note": "run; pPass=0.32 focus=0.86 urgency=0.80"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 49.3,
+            "y": 25.98
+          },
+          "note": "run; pPass=0.29 focus=0.99 urgency=0.67"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 46.29,
+            "y": 9.42
+          },
+          "note": "run; pPass=0.26 focus=0.78 urgency=0.79"
+        },
+        {
+          "t": 0.75,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 46.29,
+            "y": 43.81
+          },
+          "note": "run; pPass=0.28 focus=0.98 urgency=0.74"
+        },
+        {
+          "t": 1.45,
+          "type": "block_contact",
+          "a": 2,
+          "b": 19,
+          "pos": {
+            "x": 45.81706475259624,
+            "y": 22.64456689735855
+          },
+          "note": "run"
+        },
+        {
+          "t": 1.5,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 45.56,
+            "y": 25.04
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 1.55,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 41.45,
+            "y": 24.41
+          }
+        },
+        {
+          "t": 2.5,
+          "type": "block_contact",
+          "a": 10,
+          "b": 21,
+          "pos": {
+            "x": 47.38619244682678,
+            "y": 31.463276411596386
+          },
+          "note": "run"
+        },
+        {
+          "t": 2.55,
+          "type": "missed_tackle",
+          "a": 12,
+          "b": 6,
+          "pos": {
+            "x": 43.98,
+            "y": 19.28
+          }
+        },
+        {
+          "t": 2.6,
+          "type": "fall",
+          "a": 12,
+          "pos": {
+            "x": 44.01,
+            "y": 19.24
+          },
+          "note": "dive"
+        },
+        {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 45.99,
+            "y": 20.26
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 16,
+          "b": 6,
+          "pos": {
+            "x": 46.81,
+            "y": 20.6
+          },
+          "note": "initial"
+        },
+        {
+          "t": 2.8,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 46.32,
+            "y": 21.19
+          },
+          "note": "assist"
+        },
+        {
+          "t": 3,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 46.4,
+            "y": 19.62
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.25,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 43.81952488195222,
+            "y": 22.427561051375655
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.2,
+          "type": "fall",
+          "a": 15,
+          "pos": {
+            "x": 46.61,
+            "y": 19.73
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.4,
+          "type": "tackle",
+          "a": 16,
+          "b": 6,
+          "pos": {
+            "x": 46.95,
+            "y": 18.71
+          }
+        }
+      ],
+      "beforeDefensiveChangeExactlyEqualFrames": 69,
+      "firstChangedEmittedRequestAndExecution": null,
+      "allComparableFramesExactlyEqual": true,
+      "eventsExactlyEqual": true,
+      "retirements": [],
+      "runnerTraffic": []
+    }
+  ],
+  "decision": "Combined evidence supports completion of an acquired-cue continuation without a forced exchange and preserves successful ordinary mesh. Recommend independent offensive review; Integration owns exact combined verification. Changed SS contact/ending and late LT/RB collision remain adverse/uncertified evidence, not a gain target or a new solver finding."
+}
