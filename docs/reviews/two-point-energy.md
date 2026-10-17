@@ -18,8 +18,8 @@ Tests and root/independent read-only review support this bounded correction.
 
 Node22.23.3,44 flags/components1, CF_FLOW unset. Candidate source
 `a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354`.
-[Original failing receipt](../../data/reviews/current/two-point-energy/red.json)
-(2.564385s) and [passing receipt](../../data/reviews/current/two-point-energy/green.json)
+[Original failing receipt](../../data/reviews/current/two-point-energy.json)
+(2.564385s) and [passing receipt](../../data/reviews/current/two-point-energy.json)
 (2.459667s), total5.024052s; both preserve unchanged inputs.
 Reproduce with the baseline runner and `npx vitest run --project core
 test/two-point-energy.test.ts`. No full suite, game, typecheck or broader fatigue
