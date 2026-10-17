@@ -199,7 +199,7 @@ in its parent history is separate, not a dependency. **Resolved gap-identity sco
 <a id="RUN-006"></a>
 ### RUN-006 — Riding departure starts before the mesh window
 
-Current-source checkpoint on accepted70b4db6 corroborates the unresolved exchange/continuation class: G3-P003/P087/P141 and G4-P142 are under-center I/Offset-I Outside Zone, QB retains the snap through25-second caps without exchange or carrier contact. This does not establish the same initial F-crossing cause or a new regression. Run reuses#101 evidence and traces the earliest cue/request/reach plus failed-exchange continuation; no new census or physics capacity change. [Exact cohort and audit handoff](reviews/accepted-game-checkpoint-2026-10-16.md).
+Current-source checkpoint on accepted70b4db6 corroborates the unresolved exchange/continuation class: G3-P003/P087/P141 and G4-P142 are under-center I/Offset-I Outside Zone, QB retains the snap through25-second caps without exchange or carrier contact. This does not establish the same initial F-crossing cause or a new regression. Run reuses#101 evidence and traces the earliest cue/request/reach plus failed-exchange continuation; no new census or physics capacity change. [Exact cohort and audit handoff](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-checkpoint-2026-10-16.md).
 
 New diagnosis #101 on acceptedbb6d4c7: I21/Wide9 F crosses the exchange, QB/RB
 lose physical reach and remain stranded through two20s live censors. Run owns
