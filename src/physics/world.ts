@@ -1367,6 +1367,13 @@ export class World {
         sup.accel = { x: acc.x + ((bs[i].vel.x - this.v0x[i]) / h - acc.x) * k,
           y: acc.y + ((bs[i].vel.y - this.v0y[i]) / h - acc.y) * k };
         sup.tipAccel = { x: tip.x + (this.tipX[i] / h - tip.x) * k, y: tip.y + (this.tipY[i] / h - tip.y) * k };
+        // Diagnostic source history is recent even while he is off his feet.
+        // Preserve its existing memory instead of freezing an old trip until
+        // the next unrelated fall after he gets up.
+        if (sup.causes) {
+          const decay = Math.exp(-h / .3);
+          sup.causes.contact *= decay; sup.causes.legs *= decay; sup.causes.overspeed *= decay;
+        }
       }
     }
     // Consume this interval's achieved recovery before retiring a hold that

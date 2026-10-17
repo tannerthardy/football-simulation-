@@ -5,13 +5,14 @@
 Physics owns a bounded independent branch `codex/physics-state-audit` from
 accepted `d682b1f474cb6ba260a7b8b1119a62919c5a2159` (queue `bf493d8`).
 Scope: `World.feet` dive yaw transport, `World.step` action-effort lifetime,
-and directly affected mechanical tests. First reproduce existing-spin dive
+off-feet diagnostic cause decay, and directly affected mechanical tests.
+First reproduce existing-spin dive
 transport and launch/lunge energy accounting with passive/ordinary controls.
 Preserve ordinary gait, capacities, recovery laws and experimental settings.
 No solver expansion or full-suite/game campaign. #118 remains independently
 reviewable; this branch does not import its directional-bracing correction.
-State-reset and game fatigue findings are read-only leads until separately
-claimed; contributors do not edit the shared World solver.
+Game fatigue findings remain read-only leads until separately claimed;
+contributors do not edit the shared World solver.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
