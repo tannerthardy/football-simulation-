@@ -119,7 +119,7 @@ describe('installed release reads preserve cushion without claiming a declared r
     expect(outRequest.vel.y * outside.out).toBeGreaterThan(0);
   });
 
-  it.each(readRules)('%s returns to its installed zone after acquired under, flat or blocking evidence', rule => {
+  it.each(readRules)('%s takes its installed responsibility after acquired under, flat or blocking evidence', rule => {
     for (const declaration of ['under', 'flat', 'block'] as const) {
       const f = stage(rule);
       f.update();
@@ -129,8 +129,15 @@ describe('installed release reads preserve cushion without claiming a declared r
           vel: { x: 1, y: (declaration === 'flat' ? f.out : -f.out) * 5 } });
       f.update(.6); f.update(.8);
       expect(f.behavior.recordedRule(.8).reads.find(rd => rd.target === f.r.idx)?.release).toBe(declaration);
-      expect(f.behavior.job.startsWith('zone:')).toBe(true);
-      expect(f.behavior.recordedMan()).toBeUndefined();
+      if (rule === 'q_apex' && declaration === 'flat') {
+        // Quarter-flat matches this route; Palms' corner-owned flat is a
+        // separate installed relationship, checked in quarters-flat-wheel.
+        expect(f.behavior.job).toBe(`man:${f.r.slot}`);
+        expect(f.behavior.recordedMan()?.overTop).toBe(true);
+      } else {
+        expect(f.behavior.job.startsWith('zone:')).toBe(true);
+        expect(f.behavior.recordedMan()).toBeUndefined();
+      }
     }
   });
 
