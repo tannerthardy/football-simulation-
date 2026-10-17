@@ -92,6 +92,8 @@ The newer [four-game checkpoint and audit handoff](../docs/reviews/accepted-game
 
 **[Complete six-owner deep audit](../docs/reviews/accepted-game-deep-audit-2026-10-16/README.md):** complete inventory/domain screens, the fixed48ordinary/12tail detailed review, source-qualified findings, known limits and paste-ready next assignments. Its separate audit bundle adds reproducible offline analyses and16standalone witness/control films; the original game archives are unchanged. [Compact receipt and retrieval](reviews/current/accepted-game-deep-audit-2026-10-16.json). No new engine run or suite was used for this review.
 
+[Zone-reference clip follow-up](../docs/reviews/zone-reference-followup-2026-10-16.md) adds receiver assignment/access, sustained blocks, vertical roofs and collection-stage diagnosis, with20standalone films and its own small evidence bundle. [Exact receipt](reviews/current/zone-reference-followup-2026-10-16.json). It reuses the original raw games and preserves all earlier evidence.
+
 The current random play audit is [here](reviews/current/random-play-review.json).
 It uses saved native light frames and records what was observable, not invented
 mental states. Small reference extracts remain under `data/reviews/`; the old

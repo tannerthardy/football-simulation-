@@ -1,0 +1,230 @@
+{
+  "schema": "zone-reference-clip-followup-v1",
+  "clientReviewDate": "2026-10-16 America/Phoenix",
+  "measuredEngine": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "runtimeSourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "acceptedAtReview": "0000e560e0dbe31905151465152d412ba838803d",
+  "queueAtReview": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "currentSourceQualification": "128only coverage-force delta via130; no current-build game outcome claim;126/127held",
+  "originalEvidence": "b9b9c17597970ddc87aa4a4e271fc4cfeef71909",
+  "sourcePr": "https://github.com/tannerthardy/football-simulation-/pull/129",
+  "report": "docs/reviews/zone-reference-followup-2026-10-16.md",
+  "coverage": {
+    "game": "G1 zone-reference",
+    "seed": 701,
+    "logs": 199,
+    "filmed": 147,
+    "frames": 7212,
+    "officialPhysicalScrimmages": 135,
+    "runs": 50,
+    "dropbacks": 97,
+    "officialDropbacks": 85,
+    "nullifiedDropbacks": 12,
+    "officialAttempts": 72,
+    "officialTargetedThrows": 71,
+    "officialCompletions": 38,
+    "initialReceiverRollStagesSourceInferred": 58,
+    "initialFailedReceiverChains": 22,
+    "silentDifficultFailureChains": 17,
+    "fourVertsAllIds": [
+      "G1-P012",
+      "G1-P027",
+      "G1-P043",
+      "G1-P049",
+      "G1-P105",
+      "G1-P187"
+    ],
+    "fourVertsNullified": [
+      "G1-P012",
+      "G1-P105"
+    ],
+    "witnessFilms": 20
+  },
+  "auditExecution": {
+    "specialistLanes": 5,
+    "independentReviewerLanes": 1,
+    "newEngineExecutions": 0,
+    "newGames": 0,
+    "newTestSuiteRuns": 0,
+    "productionEdits": false,
+    "mergeOrBaselineChange": false
+  },
+  "findings": [
+    {
+      "topic": "Receiver perimeter candidate pool",
+      "evidenceClass": "Source-supported installation defect",
+      "witnesses": [
+        "G1-P018",
+        "G1-P046",
+        "G1-P173"
+      ],
+      "observed": "Shallow unowned perimeter CB/NB classifieddl and omitted from receiver candidate pool; remote assignments result",
+      "remainingDecision": "Admit local perimeter responsibilities while preserving front claims/useful inserts; RB-clog yardage unproved",
+      "owner": "Run"
+    },
+    {
+      "topic": "Stranded cutoff track/recovery",
+      "evidenceClass": "Repeated source branch conflict; preferred alternative unresolved",
+      "witnesses": [
+        "G1-P021",
+        "G1-P032",
+        "G1-P081",
+        "G1-P124"
+      ],
+      "observed": "ZoneFlow playside floor precedes ordinary attack/lost-shoulder recovery despite opposite acquired picture",
+      "remainingDecision": "When should the acquired cutoff geometry retire track? No reachable unowned alternate job proved",
+      "owner": "Run with Flex"
+    },
+    {
+      "topic": "Late combo access",
+      "evidenceClass": "Observed limitation; general path cause unproved",
+      "witnesses": [
+        "G1-P030",
+        "G1-P175",
+        "G1-P002",
+        "G1-P164"
+      ],
+      "observed": "Delayed helper joins; naive center-ray obstruction also flags successful joins",
+      "remainingDecision": "Exact first-strike/request-stage provenance; resolve126contract, preserve security",
+      "owner": "Run + Integration"
+    },
+    {
+      "topic": "Power block retention/lifecycle",
+      "evidenceClass": "Observed long rep plus source-supported release/rejoin cycle",
+      "witnesses": [
+        "G1-P015",
+        "G1-P173"
+      ],
+      "observed": "Initial1.50\u20135.70sampled span; eight fresh later loaded contacts after observed-runner release; no full work-off in43samples",
+      "remainingDecision": "Retire obsolete block purpose while preserving real cutback; acquired work-off urgency versus3.5yd gate; no proved invalid reach/holding",
+      "owner": "Run/contact controller with Physics"
+    },
+    {
+      "topic": "C3 outside roof before release",
+      "evidenceClass": "Repeated source-supported coverage objective error",
+      "witnesses": [
+        "G1-P012",
+        "G1-P027"
+      ],
+      "observed": "Three corners on two calls request\u2248\u22128x at.20 while consumed receiver stationary/release none; 8+yd roof lost",
+      "remainingDecision": "Preserve undeclared roof/turn budget versus hitch/comeback/close-arrival controls; Quarters separate",
+      "owner": "Pass/Awareness"
+    },
+    {
+      "topic": "Failed collection implies deflection",
+      "evidenceClass": "Confirmed source conflation; invalid native-touch incidence unknown",
+      "witnesses": [
+        "G1-P020",
+        "G1-P098",
+        "G1-P136",
+        "G1-P064"
+      ],
+      "observed": "22initial receiver failure chains;17silenthard fail all become deflections without separate executed touch result",
+      "remainingDecision": "Shared exactP020 first receiver +later defender queries; preserve valid high catches/PBU/untouched miss; no ratings tuning",
+      "owner": "Catching + Physics"
+    }
+  ],
+  "laneReports": [
+    {
+      "lane": "receiver-routes",
+      "report": "receiver-routes/report.md",
+      "sha256": "acfcd060929284c2ef1fc89b1cd4412288cf135dc98fac90a6151f66103704ce"
+    },
+    {
+      "lane": "block-access",
+      "report": "block-access/report.md",
+      "sha256": "6fa8997861c159eb6f3d56ada2dbea8e0dd0ed25f7968c92a139de35764767fa"
+    },
+    {
+      "lane": "block-retention",
+      "report": "block-retention/report.md",
+      "sha256": "3451f3710f4eee0f3ef779971aceba562571dfe2b0ecfd893cdb2a071779407f"
+    },
+    {
+      "lane": "vertical-coverage",
+      "report": "vertical-coverage/report.md",
+      "sha256": "cfbac3a7e599bae0fd89f8844a5b030d61d0eb7a70ff96995e26a9781a3febdc"
+    },
+    {
+      "lane": "catch-execution",
+      "report": "catch-execution/report.md",
+      "sha256": "4bf9485abd6f0a29bfa73c3b5a84d081c4405ab224c823be757765efc43ea9fb"
+    }
+  ],
+  "independentReview": "measurement/review.md",
+  "checks": {
+    "independentCountAndWitnessChecksPassed": 20,
+    "jsonFilesParsed": 144,
+    "pythonSyntaxFilesParsed": 14,
+    "embeddedWitnessPayloadsChecked": 20
+  },
+  "artifact": {
+    "commit": "0b43b456290fc6eed90d2560ab0e2e4817c41416",
+    "tag": "evidence-zone-reference-70b4db6-followup-v1",
+    "browse": "https://github.com/tannerthardy/football-simulation-/tree/0b43b456290fc6eed90d2560ab0e2e4817c41416",
+    "bundle": {
+      "file": "zone-reference-followup-v1.tar.gz",
+      "bytes": 6721526,
+      "sha256": "5adf0a5dfe6760d382ed3f0f44e5e9624ac1101e2f8dadd204c33f1347073b36",
+      "packedFiles": 210,
+      "jsonFilesChecked": 144,
+      "pythonFilesSyntaxChecked": 14,
+      "witnessClips": 20,
+      "manifestSha256": "27bfab76b916ba972cd5ee3c5109d45d092c85d18cc8cb890118cd3dce4bf9f5",
+      "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/0b43b456290fc6eed90d2560ab0e2e4817c41416/zone-reference-followup-v1.tar.gz"
+    },
+    "previousTreeEntriesPreserved": 15,
+    "newFiles": [
+      {
+        "path": "zone-reference-followup-v1.tar.gz",
+        "bytes": 6721526,
+        "sha256": "5adf0a5dfe6760d382ed3f0f44e5e9624ac1101e2f8dadd204c33f1347073b36"
+      },
+      {
+        "path": "zone-reference-receipt.json",
+        "bytes": 1008,
+        "sha256": "59bea750f3e92b60b7182df6671e92a7ec99607b20805dc0a06a55adf1344d07"
+      },
+      {
+        "path": "ZONE-REFERENCE.md",
+        "bytes": 1335,
+        "sha256": "a8b006b49bf36f02aad53d27e8c4274509d4dd127c0f3adeec28950bf56f02d8"
+      },
+      {
+        "path": "zone-reference-figures/bunch-assignments.png",
+        "bytes": 151908,
+        "sha256": "a6022ac38e60473db9a7b1a2cdf5206da13444dbf4cb0f9d8866b252e360276b"
+      },
+      {
+        "path": "zone-reference-figures/power-block-lifecycle.png",
+        "bytes": 111864,
+        "sha256": "9b1ebdbe25b42fcb9c992574aa9a68cfa6cc406be87a748fde075facd522f9e6"
+      },
+      {
+        "path": "zone-reference-figures/stranded-tackle.png",
+        "bytes": 101572,
+        "sha256": "64aad22e1e1f7bfa6194a1c921038fbba4a2427b6c612ddbeae19a1657d06519"
+      },
+      {
+        "path": "ZONE-REFERENCE-SHA256SUMS",
+        "bytes": 613,
+        "sha256": "525062429aa0001f1d41fc448d02442df1350e3df8e4e5e6beb886f2f4b9e099"
+      }
+    ],
+    "remoteVerification": {
+      "atUtc": "2026-10-17T05:01:02Z",
+      "method": "Separate authenticated Git fetch with fetch/transfer fsckObjects; size/SHA256 readback for every newly published file",
+      "filesVerified": 7,
+      "originalEvidenceBranchUnchanged": true,
+      "priorEvidenceTagUnchanged": true,
+      "currentDevelopObserved": "0000e560e0dbe31905151465152d412ba838803d"
+    }
+  },
+  "limits": [
+    "58 is inferred receiver possession-roll-stage exposure, not every catch envelope or an NFL drop denominator",
+    "Exact touch, opportunity/RNG, hand identity and some premodifier states unrecorded",
+    "0.1s/0.1yd rounded films and sampled contacts do not prove complete forces or continuous joints",
+    "No provedP018physicalRBclog cost or general quicker combo route",
+    "Unchanged source scope does not imply later whole-game outcome parity"
+  ]
+}

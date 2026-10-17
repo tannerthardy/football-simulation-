@@ -80,6 +80,14 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 ## Accepted70b4 saved-cohort additions
 
+The [subsequent zone-reference clip review](reviews/zone-reference-followup-2026-10-16.md)
+adds exact receiver-pool, zone-track/recovery, long-block lifecycle, C3 roof and
+failed-collection/touch witnesses, with owner boundaries and opposing controls.
+It is measured70b4 evidence, qualified against accepted0000e560/#128;126remains
+contract-held. Slow combo access and physical RB obstruction remain separately
+unproved causal hypotheses. Use this follow-up with RUN-007, INFO-003, BALL-001
+and the retained contact/coverage entries; it creates no second issue tracker.
+
 These rows extend this register, not a separate backlog. [Coverage, evidence and
 owner prompts](reviews/accepted-game-deep-audit-2026-10-16/README.md) distinguish
 source-confirmed defects from hypotheses. Screening counts are not defect rates.

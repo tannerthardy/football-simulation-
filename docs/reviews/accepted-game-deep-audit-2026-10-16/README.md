@@ -1,5 +1,7 @@
 # Accepted-game deep audit: make the snap continue coherently
 
+**Subsequent user-led clip review: [zone-reference follow-up](../zone-reference-followup-2026-10-16.md)** traces receiver assignment holes, stranded zone tracks, late combos, the long Power block, Four Verticals roofs and failed collections. It also records accepted0000e560/#128 and the new126contract hold; the queue paragraph below retains the earlier audit snapshot.
+
 **The next improvements should repair specific responsibility and information boundaries, plus a local catch-geometry error. This cohort does not justify a new physics engine, stronger defenders or tuning toward lower scores.** Six parallel reviewers screened the complete saved dataset, reviewed the same ordinary/tail panels and followed consequential mechanisms into the accepted source. No new games, engine execution or tests were used in this audit.
 
 The most important football pattern is that an installed expectation can outlive the evidence that should retire it. A missed exchange leaves both sides following the expected mesh; a man defender can observe a committed QB run but reject the pursuit request. The opposite information problem also exists: the QB's receiver forecast starts from private live state rather than his acquired picture. These are distinct local contracts, not evidence that we need a universal coordinator.

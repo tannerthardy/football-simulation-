@@ -1,5 +1,7 @@
 # Owner instructions after the saved-game audit
 
+Read the [subsequent zone-reference clip findings and revised next boundaries](../zone-reference-followup-2026-10-16.md#what-changes-in-the-next-assignments) before selecting the next task. They make the receiver candidate-pool and C3 roof defects concrete, qualify zone recovery/combo/retention questions, and share one P020 catch trace. Current accepted0000e560 adopts128only;126is now contract-held. The instructions below retain the prior broad-audit proposals, not simultaneous mandatory projects.
+
 These are next bounded assignments, not permission to implement every appendix suggestion. Start from the accepted `develop` pin in the current integration queue, record it and reconcile the saved 70b4 witnesses before claiming transfer. Claim exact functions in WORKBOARD. No additional agent is needed for this wave.
 
 Common policy: make individual snaps convincing. Judge assignment → acquired cue → request → achieved action → next responsibility; yardage and scores alone do not adjudicate a fix. Preserve legitimate offense and defense wins. Publish focused evidence to the existing candidate/`integration-ready` queue; Integration independently reviews and batches compatible ready changes, then owns one exact combined check. No contributor full-suite/game repeat, per-patch CEO approval or unrelated experimental ancestry. Add evidence only for a named unresolved decision. Failed contracts and adverse outcomes stay visible.
