@@ -1,0 +1,10 @@
+{
+  "purpose": "Data-only run movement audit; do not merge",
+  "file": "evidence.tar.gz",
+  "bytes": 28252330,
+  "sha256": "692831945dd8ee7b3aa72995f58365a92de1736c749b8170d8e7956df659e86c",
+  "manifestSha256": "cca3b984164a7d144d4c53cada1970b89f7a150dc26770a6e133b10a781f53bf",
+  "physicalFiles": 174,
+  "nativeSource": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+  "accepted": "0000e560e0dbe31905151465152d412ba838803d"
+}
