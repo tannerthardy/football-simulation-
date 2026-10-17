@@ -76,6 +76,30 @@ describe('installed deep coverage uses acquired motion and achievable movement',
     expect(cue.queries()).toBe(legacyCue.queries());
   });
 
+  it('expires plant extrapolation when the same acquired image ages, then answers a fresh contrary picture', () => {
+    const f = JSON.parse(readFileSync(new URL('./fixtures/deep-coverage-plant.json', import.meta.url), 'utf8'));
+    const controller = new DeepCoverage();
+    const actor = (snap: typeof f) => {
+      const body = structuredClone(snap.body);
+      return { body, profile: body.profile, pos: body.pos, vel: body.vel,
+        engagement: null, isDown: () => false } as unknown as Agent;
+    };
+    for (const snap of f.snapshots) {
+      const a = actor(snap), command = track(a, snap.goal, snap.targetVelocity, f.tracking);
+      controller.choose(a, snap.seen, snap.cue, f.receiverProfile, .8 + .15 * snap.seen.vel.x, command, snap.t, 'center');
+    }
+    const last = f.snapshots.at(-1), a = actor(last);
+    const original = track(a, last.goal, last.targetVelocity, f.tracking);
+    const stale = { ...last.cue, age: last.cue.age + 1 };
+    const expected = new DeepCoverage().choose(a, last.seen, stale, f.receiverProfile,
+      .8 + .15 * last.seen.vel.x, original, last.t + 1, 'center');
+    expect(controller.choose(a, last.seen, stale, f.receiverProfile,
+      .8 + .15 * last.seen.vel.x, original, last.t + 1, 'center')).toEqual(expected);
+    const fresh = { ...last.seen, age: .15, vel: { x: 6, y: 0 } };
+    const response = controller.choose(a, fresh, fresh, f.receiverProfile, 1.7, original, last.t + 1.05, 'center');
+    expect(response.vel.x).toBeGreaterThan(expected.vel.x);
+  });
+
   it('does not let hidden route/body changes or advancing reality snapshots improve the acquired picture', () => {
     const one = stage(), two = stage(), a = supplied(one), b = supplied(two);
     const start = { ...one.r.pos };

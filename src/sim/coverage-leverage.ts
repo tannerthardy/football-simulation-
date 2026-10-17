@@ -34,14 +34,17 @@ export class DeepCoverage {
     // correction twice. Continue it briefly from the consumed picture, stopping
     // at zero rather than inventing a reverse route. Positive burst prediction
     // also supplies the missing correction to constant-velocity dead reckoning.
-    const age = this.acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);
-    const burst = this.acceleration < 0 ? Math.min(.25, seen.vel.x / -this.acceleration) : .25;
+    // Re-querying an aging picture cannot renew its transient plant/burst.
+    // Use the same .4 s image-age bound as RouteObservation's correction.
+    const acceleration = (cue.age ?? 0) > .4 ? 0 : this.acceleration;
+    const age = acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);
+    const burst = acceleration < 0 ? Math.min(.25, seen.vel.x / -acceleration) : .25;
     const extra = (t: number) => {
       const h = Math.min(t, burst);
-      return this.acceleration * (h * h * .5 + h * Math.max(0, t - burst));
+      return acceleration * (h * h * .5 + h * Math.max(0, t - burst));
     };
     const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);
-    const targetV = clamp(seen.vel.x + this.acceleration * burst, 0, receiver.vmax);
+    const targetV = clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);
     const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));
     const heading = Math.atan2(seen.vel.y, Math.max(.1, targetV));
     const tau = a.profile.tau / fatigueFactor(a.body.energy);
