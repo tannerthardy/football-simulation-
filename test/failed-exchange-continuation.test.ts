@@ -21,7 +21,7 @@ function setup(pitch=0){
  // The private live back remains outside real transfer reach in cue controls.
  rb.body.pos={x:20,y:20};rb.body.vel={x:0,y:0};
  qb.behavior=new QBHandoff(mesh,1.15,rb,pitch);
- let picture:Perceived={pos:{x:mesh.x-2,y:mesh.y+1},vel:{x:3,y:0},facing:0,age:.05,pose:'up',carrying:false};
+ let picture:Perceived={pos:{x:mesh.x-2,y:mesh.y+1},vel:{x:3,y:0},facing:0,stance:null,age:.05,pose:'up',carrying:false};
  const see=sim.see.bind(sim);vi.spyOn(sim,'see').mockImplementation((a,b,s)=>a===qb&&b===rb?structuredClone(picture):see(a,b,s));
  const read=(t:number,pos={x:mesh.x+2,y:mesh.y+1},vel={x:3,y:0})=>{
   picture={...picture,pos,vel};sim.t=t;return qb.behavior.update(qb,sim);

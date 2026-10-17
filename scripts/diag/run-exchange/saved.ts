@@ -19,4 +19,8 @@ export function makeSaved(c:any):PlaySim {
   energy:new Map(o.initialPlayers.map((a:any)=>[a.id,a.energy])),scouting,coverageScouting:coverage,
   hurry,down:s.down,audibles:true,record:true,recordLevel:'full'});
 }
-export const savedInputs=()=>JSON.parse(gunzipSync(readFileSync('out/run-failed-exchange/inputs.json.gz')).toString());
+export function savedInputs(path='test/fixtures/failed-exchange-inputs.json.gz'){
+ const data=JSON.parse(gunzipSync(readFileSync(path)).toString());
+ for(const c of data.cases)c.players=data.players;
+ return data;
+}
