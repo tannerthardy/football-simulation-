@@ -1,0 +1,321 @@
+{
+  "schema": "pr106-independent-tooling-review-v1",
+  "decision": "HOLD",
+  "reviewBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "fetchedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "queuePin": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "acceptedSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "authorHead": "706a10cc22e87a5fced54641f00a5db2df249b4b",
+  "testedTooling": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+  "historicalReference": {
+    "commit": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+    "source": "cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318"
+  },
+  "scope": {
+    "authorChangedFiles": [
+      "README.md",
+      "config/pass-game-suite-v1.json.gz",
+      "data/reviews/current/pass-game-suite-validation.json",
+      "docs/PASS_GAME_SUITE.md",
+      "docs/WORKBOARD.md",
+      "package.json",
+      "scripts/diag/pass-game-suite.ts",
+      "scripts/diag/pass-suite-cases.ts",
+      "scripts/diag/pass-suite-measure.ts",
+      "scripts/diag/pass-suite-report.ts",
+      "test/pass-game-suite.test.ts"
+    ],
+    "authorFileSha256": {
+      "README.md": "820528f427ccec4ed1fe39197077643360fbc31c869b81aa84cfeae69600fcf6",
+      "config/pass-game-suite-v1.json.gz": "daad3f8ecd3cbacc4d082e1b464690247005aaaa037f4e7b4fab1364fd07aad0",
+      "data/reviews/current/pass-game-suite-validation.json": "cef98d28855db9d9993df2ca552c7ec46bba84ccadf1b1035c5c468f160f5af5",
+      "docs/PASS_GAME_SUITE.md": "cbef076d188a3aabd8f0042ad472464ad81b70beec012fef9b2fa076b797602a",
+      "docs/WORKBOARD.md": "ff61b7fb8ddc1a33fb2cf8977759a1f69579d5601d18e01d2a2725c21295c018",
+      "package.json": "c7bf782a87176c1d46e045cee28aedd37317da586a897033278b8904239d39fe",
+      "scripts/diag/pass-game-suite.ts": "daad8814a2e36b2f09a3b9e5271c505c78510bb5ff1d24e593230d84a247534f",
+      "scripts/diag/pass-suite-cases.ts": "6209b9a0afc61ac1896b26067fdd507ddefb1cff40be161934d597d71d0e1bc0",
+      "scripts/diag/pass-suite-measure.ts": "e0d5e51dac34ff711f727936318cb29ffea405af2270de440ab6aaa40280781c",
+      "scripts/diag/pass-suite-report.ts": "e956b1fb16f68ff9de6971ccf8ace0ca948e1dea0beb68fa8f9491b44bb52aa1",
+      "test/pass-game-suite.test.ts": "f49e017ee4aee39cb4eeaeeab80b0596e1bbf6f17a8c5c0e2ad737a5aec3fb31"
+    },
+    "testedToPublicationToolingSourceConfigTestDiff": [],
+    "authorRuntimeSettingsLauncherHelperDiff": [],
+    "currentRuntimeChangedSinceHistoricalHost": [
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/behaviors/carrier.ts",
+      "src/sim/behaviors/defense.ts",
+      "src/sim/contact-motion.ts",
+      "src/sim/coverage/defender.ts",
+      "src/sim/coverage/rules.ts",
+      "src/sim/coverage/techniques.ts",
+      "src/sim/engagement.ts"
+    ]
+  },
+  "finding": {
+    "priority": "P2",
+    "files": [
+      "scripts/diag/pass-game-suite.ts:40",
+      "scripts/diag/pass-game-suite.ts:84",
+      "scripts/diag/pass-game-suite.ts:90",
+      "scripts/diag/pass-game-suite.ts:104",
+      "scripts/diag/pass-game-suite.ts:111"
+    ],
+    "title": "Rejected failed/censored cache overwrites the prior index and relabels attempted work skipped",
+    "reproducer": "tools/review/pr106-failure-paths.cjs",
+    "result": "data/reviews/current/pr106-independent-tooling/failure-paths.json",
+    "minimumAuthorRepair": "Reject unsafe reuse before replacing the existing blocked index, or carry the intact blocked row and prior attempt/censor/failure accounting into the new index; keep no retry and skipped tail limited to untouched inputs."
+  },
+  "compatibleReuse": {
+    "focusedTests": {
+      "passed": 13,
+      "file": "test/pass-game-suite.test.ts",
+      "buildIncludingTypecheck": "pass",
+      "fullTypeScriptPythonIntegrationSuiteRun": false
+    },
+    "launcherReceipts": {
+      "focused": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/pass-game-suite.test.ts",
+              "--maxWorkers=1"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 13.827932259999999
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      "build": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 15.617618573
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      "native": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/pass-game-suite.ts",
+              "run",
+              "config/pass-game-suite-v1.json.gz",
+              "out/pass-suite-validation-v3/reference",
+              "--checkpoint",
+              "Verify bounded opening/recent cue retention across the existing 18-input validation selection; compare physical signatures with prior collector",
+              "--cases",
+              "P-9ab57f45c80e4bbe4bb5,P-9166e11cb7773ae6f7af,P-7ff449408937328213da,P-4c33a9840474c8b87a6f,P-047b3a04fefa56d9f99d,P-b656c59cd6adde9f48ad,P-a6b9c9f863d7b3627d17,P-c8e644756ccba6ba3e75,P-a2e7a54161a396408086,P-e0ec6ac78cf84b9b0ef9,P-6e6407c11e985688b1a9,P-8e8bc21fc625d2c96354,P-83c2e7630cef256a0201,P-fe75e38f942330672df1,P-1c7ffcf0f15c9d76f370,P-80764c48c2baf04fd620,P-3b45f88ad51d0276d37d,P-4f7b4bb6cdc37007bfb4"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 9.720457688
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      "resume": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/pass-game-suite.ts",
+              "run",
+              "config/pass-game-suite-v1.json.gz",
+              "out/pass-suite-validation-v3/reference",
+              "--checkpoint",
+              "Verify exact-cache reuse and compatible same-source comparison with zero additional native steps",
+              "--cases",
+              "P-9ab57f45c80e4bbe4bb5,P-9166e11cb7773ae6f7af,P-7ff449408937328213da,P-4c33a9840474c8b87a6f,P-047b3a04fefa56d9f99d,P-b656c59cd6adde9f48ad,P-a6b9c9f863d7b3627d17,P-c8e644756ccba6ba3e75,P-a2e7a54161a396408086,P-e0ec6ac78cf84b9b0ef9,P-6e6407c11e985688b1a9,P-8e8bc21fc625d2c96354,P-83c2e7630cef256a0201,P-fe75e38f942330672df1,P-1c7ffcf0f15c9d76f370,P-80764c48c2baf04fd620,P-3b45f88ad51d0276d37d,P-4f7b4bb6cdc37007bfb4"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.281864655
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      "comparison": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/pass-game-suite.ts",
+              "run",
+              "config/pass-game-suite-v1.json.gz",
+              "out/pass-suite-validation-v3/comparison",
+              "--checkpoint",
+              "Verify exact-cache reuse and compatible same-source comparison with zero additional native steps",
+              "--cases",
+              "P-9ab57f45c80e4bbe4bb5,P-9166e11cb7773ae6f7af,P-7ff449408937328213da,P-4c33a9840474c8b87a6f,P-047b3a04fefa56d9f99d,P-b656c59cd6adde9f48ad,P-a6b9c9f863d7b3627d17,P-c8e644756ccba6ba3e75,P-a2e7a54161a396408086,P-e0ec6ac78cf84b9b0ef9,P-6e6407c11e985688b1a9,P-8e8bc21fc625d2c96354,P-83c2e7630cef256a0201,P-fe75e38f942330672df1,P-1c7ffcf0f15c9d76f370,P-80764c48c2baf04fd620,P-3b45f88ad51d0276d37d,P-4f7b4bb6cdc37007bfb4",
+              "--compare",
+              "out/pass-suite-validation-v3/reference/native-index.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.1674731620000003
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      "report": {
+        "commit": "3d01f26c5f4e435590eec144573d2beeae9a4d2e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/pass-game-suite.ts",
+              "report",
+              "out/pass-suite-validation-v3/comparison/index.json",
+              "out/pass-suite-validation-v3/offline-report",
+              "out/pass-suite-validation-v3/reference/native-index.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.2886876
+          }
+        ],
+        "inputsUnchanged": true
+      }
+    },
+    "nativeValidation": {
+      "source": "cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318",
+      "cases": 18,
+      "steps": 1605,
+      "statusCounts": {
+        "native": 18
+      },
+      "runtime": {
+        "wallMs": 7222.897302,
+        "newCases": 18,
+        "cachedCases": 0,
+        "newSimulationMs": 6552.254668999999,
+        "cachedOriginalSimulationMs": 0,
+        "newSteps": 1605
+      }
+    },
+    "cueRetention": {
+      "priorTestedCommit": "0948e858e407100f5c38624742f1d7af3d87c013",
+      "priorCollectorSha256": "61837bc5d3e3e3e56f39577e550f3afe21521b4904d48ef184cd91ce14043286",
+      "matchedSameInputPhysicalSignatures": 18,
+      "mismatches": 0,
+      "reason": "First-only cap exhausted before late catches. Preserve opening 600 plus latest 1200 cues without new sightings or RNG.",
+      "emptyQuickOutsWitness": {
+        "case": "P-4c33a9840474c8b87a6f",
+        "catchAt": 3.5,
+        "duration": 6.65,
+        "lastStoredCueBefore": 2.5,
+        "lastStoredCueAfter": 6.55
+      },
+      "priorRuntime": {
+        "wallMs": 4909.224177,
+        "newCases": 18,
+        "cachedCases": 0,
+        "newSimulationMs": 4446.955973000001,
+        "cachedOriginalSimulationMs": 0,
+        "newSteps": 1605
+      },
+      "compatibility": "Physical/state check only across different collector hashes. New operator cache keys deliberately reject the older observation payload."
+    },
+    "zeroStepChecks": {
+      "resume": {
+        "wallMs": 282.20438699999977,
+        "newCases": 0,
+        "cachedCases": 18,
+        "newSimulationMs": 0,
+        "cachedOriginalSimulationMs": 6552.254668999999,
+        "newSteps": 0
+      },
+      "sameSourceComparison": {
+        "wallMs": 278.380864,
+        "newCases": 0,
+        "cachedCases": 18,
+        "newSimulationMs": 0,
+        "cachedOriginalSimulationMs": 6552.254668999999,
+        "newSteps": 0
+      },
+      "comparisonRows": 18,
+      "changedPhysicalRows": 0,
+      "offlineReportSimulatedSnaps": 0,
+      "dashboardJavaScriptParse": "pass"
+    },
+    "qualification": "18 old/new collector signature matches validate the bounded cue retention change on historical cda44ed, not full-play observer-off parity. Observer-off/on/full-record equality in the focused test is one selected 0.5s prefix. Full raw caches are not in the committed receipt and were not independently rehashed."
+  },
+  "contracts": {
+    "zeroSnapDefault": "plan path never calls measure; explicit refresh only rebuilds frozen inputs",
+    "execution": "run/inspect require nonempty checkpoint; 20 sim seconds, 5000ms/case and1800000ms collection budget; cooperative checks between native ticks",
+    "identityKeys": [
+      "source",
+      "manifest/full frozen input hash",
+      "operator and four collector files plus source-helper hashes",
+      "Node",
+      "platform/arch",
+      "dependency lock",
+      "declared flags",
+      "declared World defaults",
+      "native routes"
+    ],
+    "currentHostRequirement": "Extract tooling files only; preserve historical3723204/cda44ed manifest and receipts. Currentbed3c candidate requires a genuine compatible historicalreference index via --compare; no relabel, regenerated baseline or automatic campaign. Existing APIs/input builders used by this tool are unchanged between the hosts.",
+    "denominators": "Native completed outcomes for terminal gain; clean terminal YAC excludes timeout/censor/error/penalty/fumble/returns; release uses recorded throws. Catches and throws may exist on censored prefixes; no-post-catch-contact is descriptive, not tackle failure. No population inference.",
+    "html": "Pinned report function passes JS parse and script delimiter escaping in zero-engine stub; DOM uses textContent. No browser visual claim.",
+    "numericalFailure": "Live tick/observer exceptions are caught and partial row returned before stop; constructor and final serialization are outside that try. The reproduced throw test is a stub of an escaping measurement error, not a new native numerical failure."
+  },
+  "sharedPA": {
+    "registryCommit": "ed2fed9e204c0e916ea8f788afadb4805016ff05",
+    "registryPath": "data/reviews/current/run-suite-workflow/shared-pa-registry.json.gz",
+    "registryFileSha256": "dcdfb122dd202cd489ff5e73d3c422343399038acf1fc0624796f34c33103eea",
+    "canonicalCases": 432,
+    "canonicalPairs": 216,
+    "passExposures": 216,
+    "passPairs": 108,
+    "exactStoredInputHashIntersection": 0,
+    "interpretation": "No stored hash overlap; roster/seed/identity schemes differ and hash schemas are operator-specific. Count mismatch is not an additional blocker. Reconcile with an offline full-input identity mapping and shared receipt references before allocating PA checkpoint work. Preserve complementary historical exposures; do not launch a second campaign or reuse mismatched payloads."
+  },
+  "pr101": {
+    "reviewComment": "https://github.com/tannerthardy/football-simulation-/pull/101#issuecomment-6220802845",
+    "currentHead": "ed2fed9e204c0e916ea8f788afadb4805016ff05",
+    "operatorChangedSinceReviewed4d224": false,
+    "comparison": "PR106 initial wall/failed rows are inserted before stop, unlike101. PR106 same-output rejection still loses index accounting. No101 repair/import/clearance."
+  },
+  "cost": {
+    "newNativePlays": 0,
+    "newGames": 0,
+    "newBroadCampaigns": 0,
+    "repeatedFocusedOrBuildChecks": 0,
+    "fullIntegrationChecks": 0,
+    "stubEngineImports": 0,
+    "stubHostNode": "v24.19.0",
+    "stubCommandWallSeconds": 0.231304846,
+    "initialHarnessFailureWallSeconds": 0.193444959,
+    "initialHarnessFailure": "Missing stub manifest.routes caused preflight failure before any measure call; corrected test fixture only.",
+    "sourceReadsAndPublicationExcluded": true
+  },
+  "nextDecision": "Author makes bounded index-preservation/accounting fix and returns pinned zero-engine regression evidence. Integration reviews the tooling extraction separately from runtime batch. No new3198 native run or repeated shared suite required."
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "pr106-stubbed-failure-review-v1",
+  "pin": "706a10cc22e87a5fced54641f00a5db2df249b4b",
+  "engineImports": 0,
+  "nativePlays": 0,
+  "decision": "HOLD",
+  "sourceSha256": "daad8814a2e36b2f09a3b9e5271c505c78510bb5ff1d24e593230d84a247534f",
+  "firstWall": {
+    "status": "blocked",
+    "newCases": 1,
+    "cachedCases": 0,
+    "rows": 1,
+    "failed": 0,
+    "censored": 1,
+    "skipped": [
+      "case2",
+      "case3"
+    ],
+    "failure": {
+      "case": "case1",
+      "status": "censored-wall",
+      "error": null
+    },
+    "measureCalls": 1
+  },
+  "resumedWall": {
+    "status": "blocked",
+    "newCases": 0,
+    "cachedCases": 0,
+    "rows": 0,
+    "failed": 0,
+    "censored": 0,
+    "skipped": [
+      "case1",
+      "case2",
+      "case3"
+    ],
+    "failure": {
+      "case": "case1",
+      "error": "Failed/wall-censored cache requires a new explicit checkpoint/output: case1"
+    },
+    "measureCalls": 1,
+    "partialCacheStillPresent": true,
+    "publishedIndexRows": 0
+  },
+  "firstFailed": {
+    "status": "blocked",
+    "newCases": 1,
+    "cachedCases": 0,
+    "rows": 1,
+    "failed": 1,
+    "censored": 0,
+    "skipped": [
+      "case2",
+      "case3"
+    ],
+    "failure": {
+      "case": "case1",
+      "status": "failed",
+      "error": "injected numerical failure"
+    },
+    "measureCalls": 2
+  },
+  "resumedFailed": {
+    "status": "blocked",
+    "newCases": 0,
+    "cachedCases": 0,
+    "rows": 0,
+    "failed": 0,
+    "censored": 0,
+    "skipped": [
+      "case1",
+      "case2",
+      "case3"
+    ],
+    "failure": {
+      "case": "case1",
+      "error": "Failed/wall-censored cache requires a new explicit checkpoint/output: case1"
+    },
+    "measureCalls": 2
+  },
+  "uncaughtMeasure": {
+    "status": "blocked",
+    "newCases": 0,
+    "cachedCases": 0,
+    "rows": 0,
+    "failed": 0,
+    "censored": 0,
+    "skipped": [
+      "case1",
+      "case2",
+      "case3"
+    ],
+    "failure": {
+      "case": "case1",
+      "error": "Error: injected constructor/finalization exception"
+    },
+    "measureCalls": 3
+  },
+  "html": {
+    "scriptParse": "pass",
+    "delimiterEscaping": "pass"
+  },
+  "limits": "Stubbed orchestration only; no claim of new native evidence or actual constructor failure frequency."
+}
