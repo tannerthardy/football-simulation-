@@ -15,6 +15,8 @@ capacity, shared movement, playbook expansion or broad automatic campaign.
 Code freeze `43593ee`: acquired #2 flat/wheel continuity, with installed
 Palms corner ownership preserved. One runtime file / three contract files;
 optional seven-input native reproducer. [Teaching audit and handoff](reviews/honest-nfl-coverage-teaching.md).
+[Draft #124](https://github.com/tannerthardy/football-simulation-/pull/124) is the
+fetchable independent-review candidate; no adoption or combined verification.
 88 unique focused passes via compatible receipts, typecheck, seven native pairs
 and one neutral-observer replay. Preserve early downhill/depth regression and
 unfinished outcomes; not a completed YAC or full wheel-technique fix. Ready for
