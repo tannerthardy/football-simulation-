@@ -328,15 +328,21 @@ export class ManCoverage implements Behavior {
     // hip. Keep the depth already earned while widening; a newly acquired
     // upfield path can consume it. An acquired runner needs closing even
     // behind the line; hidden possession cannot release this plane early.
-    if (this.flatDepth !== undefined && seen.carrying !== true) tx = Math.max(tx, this.flatDepth);
+    let targetVelocity = seen.vel;
+    if (this.flatDepth !== undefined && seen.carrying !== true && tx <= this.flatDepth) {
+      tx = this.flatDepth;
+      // Depth is fixed while width follows the acquired receiver. Giving
+      // this plane the receiver's x velocity would invent forward drift.
+      targetVelocity = { x: 0, y: seen.vel.y };
+    }
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     if (!this.hipsOpen) {
       // Backpedal facing the QB, keeping the cushion.
-      return track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+      return track(a, tgt, { x: Math.max(0, targetVelocity.x), y: targetVelocity.y }, { facing: Math.PI, gain: 1.6 });
     }
     const cs = 0.85 + 0.35 * a.r('manCoverage');
-    return track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') });
+    return track(a, tgt, targetVelocity, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') });
   }
 }
 

@@ -36,16 +36,17 @@ describe('quarter-flat widens from above and retains installed support',()=>{
   it.each([false,true])('keeps achieved depth while widening with an acquired flat, mirror=%s',flip=>{
     const f=stage(flip),world=new World([f.a.body]);f.flat();
     const entry=f.a.pos.x;
-    for(let k=0;k<8;k++) {
+    for(let k=0;k<16;k++) {
       f.picture(f.r,{pos:{x:41+.05*k,y:f.startY+f.out*(2+.25*k)},vel:{x:1,y:f.out*5}});
       const report=world.step([f.update(.7+.05*k)],.05);
       expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
     }
     expect(f.a.pos.x).toBeGreaterThanOrEqual(entry-.02);
+    expect(f.a.pos.x).toBeLessThanOrEqual(entry+.02);
     expect(f.a.vel.y*f.out).toBeGreaterThan(0);
     expect(f.b.recordedMan()?.flatDepth).toBe(entry);
     f.picture(f.r,{pos:{x:47,y:f.startY+f.out*5},vel:{x:7,y:0}});
-    f.update(1.2);const wheel=f.update(1.4);
+    f.update(1.6);const wheel=f.update(1.8);
     expect(wheel.vel.x).toBeGreaterThan(0);
     expect(f.b.job).toBe(`man:${f.r.slot}`);
     expect(f.b.recordedMan()?.flatDepth).toBe(entry);
