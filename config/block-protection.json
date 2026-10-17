@@ -7,7 +7,8 @@
   "cases": [
     {"id":"wz-strong-over3","kind":"pair11","direction":"strong","until":20},
     {"id":"wz-weak-over3","kind":"pair11","direction":"weak","until":20},
-    {"id":"useful-climb-opponent","kind":"fixture","fixture":"test/fixtures/planned-climb-fit.json.gz","fixtureSha256":"59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f","until":3.5}
+    {"id":"useful-climb-opponent","kind":"fixture","fixture":"test/fixtures/planned-climb-fit.json.gz","fixtureSha256":"59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f","until":3.5},
+    {"id":"wz-strong-over3-fresh78","kind":"pair11","direction":"strong","seed":78,"fresh":true,"until":20}
   ],
   "limits": {"caseWallSeconds":5,"totalWallSeconds":20},
   "loadThreshold": 0.000001,

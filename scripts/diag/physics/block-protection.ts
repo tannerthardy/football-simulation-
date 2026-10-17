@@ -51,7 +51,7 @@ function makeSim(c: any): { sim: PlaySim; setupHash: string; fixtureHash?: strin
     defCall: { personnel: 'base43' as const, front: FRONT_BY_ID[p.front], coverage: COVERAGE_BY_ID[p.coverage],
       pressure: null, zoneStyle: 'match' as const, runPolicy: { edge: 'box' as const, linebacker: 'stack' as const }, label: 'over3' },
     los: p.los, ballY: p.ballY, firstDownX: p.firstDownX, down: p.down,
-    seed: p.playSeed, audibles: false, hurry: false, record: false,
+    seed: c.seed ?? p.playSeed, audibles: false, hurry: false, record: false,
   };
   return { sim: new PlaySim(setup), setupHash: hash(setup) };
 }
@@ -77,7 +77,10 @@ function geometry(b: Agent, d: Agent, r: Agent, attack: number, los: number) {
 
 type Pair = { blocker: Agent; defender: Agent; firstSeen: number; helper: boolean };
 const rows: any[] = [];
-for (const c of cfg.cases) {
+const selectedCases = process.argv.includes('--fresh-only') ? cfg.cases.filter((c: any) => c.fresh)
+  : cfg.cases.filter((c: any) => !c.fresh);
+assert(selectedCases.length > 0, 'No selected inputs');
+for (const c of selectedCases) {
   const begin = performance.now(), { sim, setupHash, fixtureHash } = makeSim(c);
   const initial = structuredClone(sim.agents.map(a => ({ ...identity(a), profile: a.profile, body: a.body })));
   const initialProfilesAndBodiesSha256 = hash(initial);
