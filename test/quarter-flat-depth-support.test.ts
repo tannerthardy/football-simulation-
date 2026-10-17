@@ -64,6 +64,24 @@ describe('quarter-flat widens from above and retains installed support',()=>{
     expect(b.b.recordedMan()?.flatDepth).toBe(45);
   });
 
+  it('closes on an acquired carrying receiver behind the line without requiring hidden confirmation',()=>{
+    const f=stage();f.flat();
+    f.picture(f.r,{pos:{x:39,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},carrying:true});
+    // Reality still holds the ball with QB: the defender acts on his picture.
+    const command=f.update(.7);
+    expect(command.vel.x).toBeLessThan(0);
+    new World([f.a.body]).step([command],.05);
+    expect(f.a.pos.x).toBeLessThan(45);
+  });
+
+  it('does not release prethrow depth for a hidden catch behind the line',()=>{
+    const a=stage(),b=stage();a.flat();b.flat();
+    for(const f of [a,b])f.picture(f.r,{pos:{x:39,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},carrying:null});
+    b.sim.ball={kind:'held',carrier:b.r};b.sim.catchAt=.5;
+    expect(b.update(.7)).toEqual(a.update(.7));
+    expect(b.update(.75).vel.x).toBeGreaterThanOrEqual(0);
+  });
+
   it.each(['S','W'] as const)('preserves the installed %s-side force, including its inside option',side=>{
     for(const outside of [false,true]) {
       const f=stage(false,side),control=stage(false,side);f.flat();control.flat();

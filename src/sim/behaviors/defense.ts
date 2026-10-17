@@ -178,7 +178,7 @@ export interface ManOptions {
   trail?: boolean;
   overTop?: boolean;
   /** Quarter-flat widens from its entry depth until the acquired route
-   * climbs above it or recognized flight transfers control to the ball. */
+   * climbs above it, carrying is acquired or recognized flight takes priority. */
   topDownFlat?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
@@ -326,8 +326,9 @@ export class ManCoverage implements Behavior {
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
     // The quarter-flat player's width is not a race to the receiver's low
     // hip. Keep the depth already earned while widening; a newly acquired
-    // upfield path can consume it. No future wheel or persistence timer.
-    if (this.flatDepth !== undefined) tx = Math.max(tx, this.flatDepth);
+    // upfield path can consume it. An acquired runner needs closing even
+    // behind the line; hidden possession cannot release this plane early.
+    if (this.flatDepth !== undefined && seen.carrying !== true) tx = Math.max(tx, this.flatDepth);
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     if (!this.hipsOpen) {
