@@ -1,5 +1,27 @@
 # Current work ownership
 
+## Catching: HonestNFL coverage teaching audit / original #2 flat ownership — 2026-10-16
+
+User asks to apply the supplied scheme teaching collection. Start on accepted
+`d682b1f474cb6ba260a7b8b1119a62919c5a2159` (queue `bf493d8`), not reference
+import ancestry. Review PR108 at `5cade6a5` as source material; original images
+outrank OCR/navigation. Claim coverage rules and directly affected contracts,
+bounded passive witnesses and teaching-to-engine review documentation. First
+question: does Quarters' apex abandon an acquired flat/wheel obligation by
+terminally zoning off? Preserve #97/#100/#95, run/throw priorities, valid seam
+delivery, legitimate offensive wins and all accepted #112 work. No physics,
+capacity, shared movement, playbook expansion or broad automatic campaign.
+
+Code freeze `43593ee`: acquired #2 flat/wheel continuity, with installed
+Palms corner ownership preserved. One runtime file / three contract files;
+optional seven-input native reproducer. [Teaching audit and handoff](reviews/honest-nfl-coverage-teaching.md).
+88 unique focused passes via compatible receipts, typecheck, seven native pairs
+and one neutral-observer replay. Preserve early downhill/depth regression and
+unfinished outcomes; not a completed YAC or full wheel-technique fix. Ready for
+independent responsibility review; no self-approval/integration. Next scheme
+questions: final #2/#3 distribution and earned shallow/seam delivery. No broad
+campaign or additional approach variant.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
