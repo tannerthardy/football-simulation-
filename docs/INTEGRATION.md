@@ -92,15 +92,9 @@ no forced rebase or old-source relabeling. Integration extraction boundary relea
 
 ### Current checkpoint and audit priorities
 
-**Review ACCEPT, exact combined verification pending:** #126@b3de4f5 and
-#128@ec2a2e9. Extract only four exact files into
-`codex/zone-force-integration` from accepted70b4db6 plus current queue metadata.
-Integration claims assembly/verification only: `blocking.ts`, `coverage/defender.ts`
-and the two new direct contract tests. Authors retain their separate checkouts.
-[Independent decisions, exact pins, compatible receipts and adverse evidence](../data/reviews/current/zone-force-integration/intake.json).
-#126's #117/#122 dependencies are already accepted. #128 has no held #127 dependency.
-The runtime files are disjoint; shared movement/fit/contact implementations stay accepted.
-One exact combined check is planned, with no duplicated focused/native/panel/game run.
+**#128-only verification pending; #126 holds itself.** Initial combined freeze7f98ad4 passes typecheck/build and2003 TS checks but fails one existing zone-reach planned-double exact-command contract. Python is explicitly skipped by fail-fast;219.553s. [Preserved failure, source-only diagnosis and hash correction](../data/reviews/current/zone-force-integration/initial-failure-disposition.json). Run/original nonauthor reviewer must adjudicate the old ordinary approach versus intended installed-half contract; no assertion was changed. #126's original branch and failed combined tree remain.
+
+Integration now extracts only #128@ec2a2e9: `coverage/defender.ts` and its direct force-support test, on accepted70b4db6. The independently reviewed source equals the author's exact5b710a1b digest; blocking.ts is restored to accepted source through a normal scope-reduction commit. [Current extraction](../data/reviews/current/zone-force-integration/extraction-audit.json). The different candidate needs its own one exact combined check; this is not an unchanged-suite rerun. No added native/panel/game campaign.
 
 **Audit is evidence, not an engine candidate.** [#129 report](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md)
 stays pinned to measured70b4db6, even after later accepted fixes. Integration verified

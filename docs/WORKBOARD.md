@@ -5,8 +5,7 @@
 Integration claims only minimal four-file assembly and one exact combined check
 in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
 `blocking.ts`, `coverage/defender.ts`, zone-combo-surface and quarter-flat-force-support tests.
-Both independent dispositions support exact verification; no shared implementation
-file overlap. Contributors do not repeat the suite or change their frozen submissions.
+Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration now verifies #128-only exact two-file scope; contributors do not repeat the suite.
 #127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
 [Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
 
