@@ -22,7 +22,7 @@ for (let k = 0; k < loaded.steps.length; k++) {
   if ([9, 19, 39].includes(k)) {
     const opposed = loaded.steps[k].after[1];
     samples.push({ elapsed: (k + 1) * .05, freeAdvance: first.pos.x - body.pos.x,
-      blockedAdvance: first.pos.x - opposed.pos.x, delayedDistance: body.pos.x - opposed.pos.x,
+      blockedAdvance: first.pos.x - opposed.pos.x, delayedDistance: opposed.pos.x - body.pos.x,
       freeSpeed: -body.vel.x, blockedSpeed: -opposed.vel.x });
   }
 }

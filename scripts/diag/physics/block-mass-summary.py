@@ -35,8 +35,11 @@ refinement = {'defenderDisplacementDifference': abs(fine['summary']['defenderDri
               'meaning': 'Self-refinement of this drill, not independent force-law validation.'}
 
 checks = []
-for filename in ['preliminary/panel.receipt.json', 'panel.receipt.json', 'typecheck.receipt.json']:
+for filename in ['preliminary/panel.receipt.json', 'panel.receipt.json', 'typecheck.receipt.json',
+                 'preliminary/delay.receipt.json', 'delay.receipt.json', 'typecheck-final.receipt.json']:
     p = ROOT / filename
+    if not p.exists():
+        continue
     r = json.loads(p.read_text())
     checks.append({'path': str(p), 'sha256': sha(p), **r})
 
@@ -46,6 +49,8 @@ result = {'protocol': 'block-mass-response-evidence-v1', 'sourceSha256': raw['so
           'input': {'path': raw['input'], 'sha256': raw['inputSha256']},
           'collectorSha256': raw['collectorSha256'], 'reducerSha256': sha(__file__),
           'strengthChart': raw['strengthChart'], 'runs': runs, 'refinement': refinement,
+          'delayControl': json.loads((ROOT / 'delay-control.json').read_text()),
+          'delayCollectorSha256': sha('scripts/diag/physics/block-mass-delay-control.ts'),
           'internalSeconds': raw['elapsedSeconds'], 'receipts': checks,
           'totalCommandSeconds': sum(c['elapsedSeconds'] for r in checks for c in r['commands']),
           'limits': ['Open-loop two-active-body contact drills in the existing 22-body fixture; no runner protection or win-rate claim.',
