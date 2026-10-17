@@ -81,16 +81,18 @@ describe('quarter-flat widens from above and retains installed support',()=>{
   });
 
   it('closes on an acquired carrying receiver behind the line without requiring hidden confirmation',()=>{
-    const f=stage();f.flat();
+    const f=stage(),unknown=stage();f.flat();unknown.flat();
     f.picture(f.r,{pos:{x:39,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},carrying:true});
+    unknown.picture(unknown.r,{pos:{x:39,y:unknown.startY+unknown.out*3},vel:{x:1,y:unknown.out*5},carrying:null});
     // Reality still holds the ball with QB: the defender acts on his picture.
     const command=f.update(.7);
     expect(command.vel.x).toBeLessThan(0);
+    expect(command.vel.x).toBeLessThan(unknown.update(.7).vel.x);
     new World([f.a.body]).step([command],.05);
     expect(f.a.pos.x).toBeLessThan(45);
   });
 
-  it('does not release prethrow depth for a hidden catch behind the line',()=>{
+  it('does not release prethrow cushion for a hidden catch behind the line',()=>{
     const a=stage(),b=stage();a.flat();b.flat();
     for(const f of [a,b])f.picture(f.r,{pos:{x:39,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},carrying:null});
     b.sim.ball={kind:'held',carrier:b.r};b.sim.catchAt=.5;
