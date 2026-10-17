@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Same-time catch geometry / lower-wrap ledger — 2026-10-16 America/Phoenix
+
+Physics starts `codex/catch-opportunity-physics` from accepted/fetched
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30`, queue `c933dbc3`.
+Own only `src/physics/catch-opportunity.ts`, its pure geometry tests and
+diagnostic evidence. Catching retains `catching.ts`/PlaySim caller ownership:
+eligibility, capability mapping, retry, order and difficulty are unchanged.
+Select closest simultaneous opportunity on a common legal height interval;
+earliest reach is a separate choice. Coordinate through audit #129. Exact
+native capture, if decision-relevant, is limited to G1-P020/G2-P107/G2-P143.
+Then retain one complete short force/moment/recovery ledger for G1-P167/P036
+versus G1-P130/G3-P069. No World behavior, capacity, recovery/LEG_BRACE or solver
+changes; existing angular-law/support-history research remains separate.
+
 ## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
