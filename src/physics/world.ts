@@ -355,6 +355,14 @@ interface Plan {
   dive: Vec2 | null;
   /** 0–1 share of full leg drive behind a dive. */
   launch: number;
+  /** Active-foot exposure and delivered action work for this controller tick. */
+  activeTime: number;
+  activeSteps: number;
+  hadPassive: boolean;
+  actionWork: number;
+  activeNow: boolean;
+  effortVx: number;
+  effortVy: number;
 }
 
 export class World {
@@ -593,14 +601,17 @@ export class World {
       for (let s = 0; s < steps; s++) this.substep(island, intents, plans, h, dt - s * h, report, pairs, true);
     } else if (this.substeps) report.substeps = this.substeps;
     this.time = t0 + dt;
-    // Metabolic cost once per tick on the planned effort (as stepBody).
+    // Charge completed effort once, even if its action ended in a fall.
+    // Ordinary gait retains its controller-rate proxy; passive motion is free.
     for (let i = 0; i < n; i++) {
       const b = bs[i], plan = plans[i];
-      if (plan.free || plan.dive || b.support!.state !== 'up') continue;
-      const steps = near[i] ? report.substeps : 1;
-      const divisor = this.impactTiming === 'local-sweep' ? dt : steps;
+      if (!plan.activeSteps) continue;
+      // Keep a fully active tick's exact dt instead of summation roundoff.
+      const activeTime = plan.hadPassive ? plan.activeTime : dt;
+      const divisor = this.impactTiming === 'local-sweep' ? activeTime : plan.activeSteps;
       const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
-      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
+      const velocity = plan.hadPassive ? { x: plan.effortVx, y: plan.effortVy } : b.vel;
+      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), activeTime, plan.actionWork, velocity);
     }
     report.contacts = [...pairs.values()];
     this.pending = [];
@@ -930,7 +941,8 @@ export class World {
 
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
     const sup = b.support!;
-    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0 };
+    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0,
+      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 };
     if (sup.state !== 'up' || intent.free) return none;
     if (intent.dive && Math.hypot(intent.dive.x, intent.dive.y) > 1e-9) {
       const l = Math.hypot(intent.dive.x, intent.dive.y);
@@ -949,7 +961,7 @@ export class World {
     if (this.handContact === 'center') b.facing = facing;
     const acc = locomotionAccel(b, cmd, dt, a);
     b.facing = saved;
-    return { ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1, free: false, dive: null, launch: 0 };
+    return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
   }
 
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
@@ -1361,6 +1373,10 @@ export class World {
     // just broke. Deleting its motor first would erase a transmitted load
     // from balance while retaining that same impulse in velocity and work.
     this.syncHeldSupport();
+    for (const i of ids) if (plans[i].activeNow) {
+      // Later passive sliding must not determine active sprint/work exposure.
+      plans[i].effortVx = bs[i].vel.x; plans[i].effortVy = bs[i].vel.y;
+    }
     this.time += h;
   }
 
@@ -1375,6 +1391,10 @@ export class World {
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
     let fx = 0, fy = 0;
+    let actionX = 0, actionY = 0;
+    plan.activeNow = sup.state === 'up' && !plan.free;
+    if (plan.activeNow) { plan.activeTime += h; plan.activeSteps++; }
+    else plan.hadPassive = true;
     if (sup.state === 'up') {
       if (plan.free) {
         this.alpha[i] = 1; this.cut[i] = 1;
@@ -1384,6 +1404,7 @@ export class World {
         // contact subdivision. He leaves his feet at the end of that plant.
         const launch = Math.min(sp.traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
+        actionX = fx; actionY = fy;
         // Launch supplies translation, not a torque that arrests acquired spin.
         b.facing += (b.spin ?? 0) * h;
         if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
@@ -1410,6 +1431,7 @@ export class World {
           const disc = lu * lu - (lx * lx + ly * ly) + capT * capT;
           const f = Math.min(disc > 0 ? Math.max(0, -lu + Math.sqrt(disc)) : 0, m * need / h);
           lx += ux * f; ly += uy * f;
+          actionX = ux * f; actionY = uy * f;
           const left = need - f * h / m;
           sup.strike = f > 0 && left > 1e-3 ? { x: ux * left, y: uy * left } : undefined;
         }
@@ -1488,7 +1510,10 @@ export class World {
           const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
           const scale = qa > 1e-12 ? clamp((-qb + Math.sqrt(Math.max(0, qb * qb - qa * qc))) / qa, 0, 1) : 0;
           px *= scale; py *= scale;
-          if (qc > 0) { const r = cap / Math.max(1e-9, Math.hypot(lx, ly)); lx *= r; ly *= r; }
+          if (qc > 0) {
+            const r = cap / Math.max(1e-9, Math.hypot(lx, ly));
+            lx *= r; ly *= r; actionX *= r; actionY *= r;
+          }
         }
         fx += lx + px; fy += ly + py;
         this.braceX[i] = px; this.braceY[i] = py;
@@ -1551,6 +1576,16 @@ export class World {
     const v0x = b.vel.x, v0y = b.vel.y;
     b.vel.x = v0x + fx / m * h;
     b.vel.y = v0y + fy / m * h;
+    if (actionX !== 0 || actionY !== 0) {
+      // Action power is linear during this constant ground-force piece.
+      // Split its positive part at a reversal; contact/fall work is excluded.
+      const p0 = (actionX * v0x + actionY * v0y) / m;
+      const p1 = (actionX * b.vel.x + actionY * b.vel.y) / m;
+      const positive = Math.max(p0, p1, 0);
+      plan.actionWork += p0 * p1 < 0
+        ? .5 * h * positive * positive / Math.abs(p1 - p0)
+        : .5 * h * (Math.max(0, p0) + Math.max(0, p1));
+    }
     this.amx[i] = fx / m; this.amy[i] = fy / m;
     const gi = report.groundImpulse[i];
     gi.x += fx * h; gi.y += fy * h;
