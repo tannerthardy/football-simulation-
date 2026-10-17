@@ -230,3 +230,48 @@ index 0000000..863463c
 +    expect(bodies(f)).toEqual(before);
 +  });
 +});
+diff --git a/test/zone-reach.test.ts b/test/zone-reach.test.ts
+index 02a22de..47636ea 100644
+--- a/test/zone-reach.test.ts
++++ b/test/zone-reach.test.ts
+@@ -101,7 +101,7 @@ describe('the narrow zone acquisition controller preserves other installed jobs'
+     expect(advance(f.blocker.body, command)).toEqual(advance(f.blocker.body, expected));
+   });
+ 
+-  it('preserves the shared surface of a live planned double', () => {
++  it('uses its installed half without a solo-zone read or releasing an unjoined double', () => {
+     const f = fixture(), helper = f.sim.slot('LG')!;
+     helper.body.pos = { x: 40, y: CENTER_Y + .6 };
+     const combination: Combination = { members: [f.blocker, helper], defender: f.defender,
+@@ -109,13 +109,30 @@ describe('the narrow zone acquisition controller preserves other installed jobs'
+     f.behavior.plan.combination = combination;
+     helper.behavior = new RunBlocker({ kind: 'combo', target: f.defender, drive: { ...f.stretch }, combination });
+     f.observe();
+-    const expected = ordinary(f, false);
++    const seen = f.sim.see(f.blocker, f.defender);
++    // This fixture has not acquired hands. C owns the lower installed half,
++    // while the pair's displacement intention still points playside.
++    expect(Math.sign(f.sim.offAlign.spots.C.pos.y - f.sim.offAlign.spots.LG.pos.y)).toBe(-1);
++    const error = f.blocker.mind.placementError * (1 - .5 * f.blocker.r('runBlock'));
++    const expected = { ...runThrough(f.blocker, { x: seen.pos.x - .35,
++      y: clamp(seen.pos.y - .55 + error, .5, FIELD_WIDTH - .5) }), posture: .7 };
++    const bodies = structuredClone(f.sim.agents.map(a => a.body));
+     const command = f.behavior.update(f.blocker, f.sim) as Intent;
+     expect(read(f.blocker) == null).toBe(true);
+     expect(f.behavior.plan.combination).toBe(combination);
+     expect(combination.released).toBe(false);
+     expect(f.behavior.plan.drive).toEqual(f.stretch);
++    expect(f.behavior.plan.target).toBe(f.defender);
++    expect((helper.behavior as RunBlocker).plan.combination).toBe(combination);
++    expect((helper.behavior as RunBlocker).plan.target).toBe(f.defender);
++    expect((helper.behavior as RunBlocker).plan.drive).toEqual(f.stretch);
+     expect(command).toEqual(expected);
++    expect(command.vel.y).toBeLessThan(0);
++    expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
++    expect(f.sim.world.joints).toEqual([]);
++    expect(f.sim.engagements).toEqual([]);
++    expect(f.blocker.engagement).toBeNull();
++    expect(helper.engagement).toBeNull();
+   });
+ 
+   it('leaves a body with a foreign physical hand constraint under its existing controller', () => {

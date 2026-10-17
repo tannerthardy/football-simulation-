@@ -36,7 +36,7 @@ old/new sources and adverse outcomes: [review](reviews/zone-combo-surface/README
 Keep116/119 and physics experiments separate; next blocker is useful second-level
 access from the coherent new keeper/climber sequence, not another blind exit tweak.
 
-## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
+Existing-contract checkpoint: #130 found one old zone-reach exact-command assertion.\nOriginal nonauthor reviewer approves strict installed-half replacement and exact\nedited diff;46focusedpass, same runtime4dbe220, no new native/fullsuite. Minimal\nextraction now includes zone-reach.test.ts. Integration owns final verification.\n\n## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
 
 Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
 

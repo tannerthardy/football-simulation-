@@ -11,6 +11,29 @@ Weak WZ now produces sustained lateral first-level work from the combination.
 It still fails to collect Mike before the runner arrives. That remaining miss
 is explicit; final gain is not the adoption criterion.
 
+## Existing-contract adjudication after Integration's #130 check
+
+The combined check passed typecheck/build and2003 TS checks, then failed one
+existing exact-command assertion in zone-reach; Python was skipped by fail-fast.
+That failed receipt remains with Integration. It is not represented as a pass.
+
+The fixture is a planned **unjoined** C/LG double, not an acquired surface.
+Its old expectation forced C onto the solo reach's positive-y half even though
+C's installed neighboring half is negative-y. The original nonauthor reviewer
+[adjudicates that old expectation](contract-adjudication.md) as superseded by
+the already reviewed installation. The exact assertion now uses the declared
+negative-y landmark through public runThrough, with unchanged error/clamp/posture.
+Strict equality, both drives/targets, combination identity/release and unchanged
+bodies/joints/engagements are retained. Other-job, foreign-hand and acquired-frame
+controls are untouched. The reviewer separately APPROVED the exact edited diff.
+
+**46 focused checks pass** on unchanged runtime source4dbe220. No runtime,
+default, force or release change accompanies this test-contract repair. No new
+native/game/full-suite run; Integration owns remaining combined verification.
+Minimal extraction is now **three files**, adding zone-reach.test.ts to the
+original controller/new-test pair. Original two-file publication remains in
+b3de4f5; the current promotion.patch contains the complete reviewed scope.
+
 ## Current accepted-build check
 
 Integration accepted #125 during this investigation. The branch preserves the
@@ -67,7 +90,7 @@ production's 3.12 yd.
 - Node 22.23.3, accepted 44 flags, `RUN_CONTACT_COMPONENTS=1`, `CF_FLOW` unset.
 - Physics, World defaults, capabilities, roster and experimental policies unchanged.
 
-The portable production scope is `RunBlocker.attack`, one private
+The original portable production scope is `RunBlocker.attack`, one private
 `combinationFit` helper in `src/sim/behaviors/blocking.ts`, and
 `test/zone-combo-surface.test.ts`. Diagnostic collectors are evidence tooling.
 No helper-fit/security rule, assignment, release cue/timer, runner read, spacing
@@ -202,4 +225,4 @@ Preserve the initial-frame contract, visible depth tradeoffs, keeper/climber seq
 the still-unprotected Mike route as the next bounded diagnostic; do not infer a
 need for more force, another release timer or a universal weak-side bonus.
 
-[Portable two-file extraction](promotion.patch) · [Reproduction instructions](reproduce/README.md).
+[Current three-file extraction](promotion.patch) · [Reproduction instructions](reproduce/README.md).

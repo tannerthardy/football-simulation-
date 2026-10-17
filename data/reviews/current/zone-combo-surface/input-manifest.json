@@ -3403,7 +3403,8 @@
   "edgeQualification": "Only passive native capture was executed. Both all22 body histories match saved original continuation exactly. Old uniform also grasps at candidate probability; changed execution draw schedule alone cannot explain adverse result.",
   "productionExtraction": [
     "src/sim/behaviors/blocking.ts",
-    "test/zone-combo-surface.test.ts"
+    "test/zone-combo-surface.test.ts",
+    "test/zone-reach.test.ts"
   ],
   "promotion": "Submit minimal2file patch on accepted70b4db6 with existing117/122 alreadyincorporated. Integrationowns final exactcombinedverification; no standalone claim againstoldd682b1f.",
   "currentProductionTransfer": {
