@@ -1,0 +1,3554 @@
+{
+  "measurementVersion": "zone-footwork-v1",
+  "notes": [
+    "Every native arm is censored at 3s: no final gain, touchdown or post-whistle claim.",
+    "Width is displacement from the individual snap position toward the called playside; Duo uses the same fixed negative-Y reporting direction only for identity.",
+    "Requested velocity is not achieved velocity. Feet, contact, balance and shared capacities remain physical.",
+    "Hand loads are actual last-substep force samples at 20Hz. SampledOwnedSoloLoad is a rectangular integral proxy (force times .05s), not the exact World impulse or a shedding measurement.",
+    "Only solo reps with a hand joint whose actor is the named blocker enter owned-load totals. Defender-owned, helper and unknown-actor hands are excluded.",
+    "Native tapes do not snapshot RNG: do not attribute later coupled force/outcome differences to a single request without a matched-state control.",
+    "NFL audit f8dbdcb is hypothesis guidance, not physics calibration; no new NFL scan/download or NFL-like certification.",
+    "Detailed generated tapes stay in ignored out/. Operators, exact inputs, hashes and bounded summaries are published."
+  ],
+  "comparisons": [
+    {
+      "id": "oz-strong",
+      "beforeSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "afterSource": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "exactAllSavedFrames": false,
+      "firstDivergence": {
+        "postStepTime": 0.75,
+        "commandTime": 0.7,
+        "allBodiesBeforeEqual": true,
+        "changedCommands": [
+          {
+            "slot": "LG",
+            "before": {
+              "vel": {
+                "x": 0.36276713303747576,
+                "y": -0.706608699431653
+              },
+              "facing": -0.3203336718810247,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9938084772370487
+            },
+            "after": {
+              "vel": {
+                "x": 0.36276713303747576,
+                "y": -2.618229672629352
+              },
+              "facing": -0.3203336718810247,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9938084772370487
+            }
+          }
+        ]
+      },
+      "before": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "oz",
+          "dir": "strong",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 6.511235994821618e-12,
+        "maxArmLimitExcess": 2.1316282072803006e-14,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 41.00277770212765,
+              "y": 30.07054252444068,
+              "playsideWidth": -0.8005425244406759,
+              "achievedVy": 0.8662428605466133,
+              "requestedVelocity": {
+                "x": -0.46534874379019536,
+                "y": 2.730255287705282
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.91388027552788,
+              "y": 31.43199079183787,
+              "playsideWidth": -2.161990791837866,
+              "achievedVy": 1.7961630671747513,
+              "requestedVelocity": {
+                "x": 1.0509359776083445,
+                "y": 3.544332433859781
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.46320437293268,
+              "y": 26.224690749085436,
+              "playsideWidth": 1.7453092509145662,
+              "achievedVy": -0.7565036527081296,
+              "requestedVelocity": {
+                "x": 0.21918349706076226,
+                "y": -2.618229672629352
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 676.9073017566351,
+                  "tangent": 361.49547261793674,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 39.82762967325215,
+              "y": 25.160959358067082,
+              "playsideWidth": 2.8090406419329206,
+              "achievedVy": -2.276447699508987,
+              "requestedVelocity": {
+                "x": 1.6144147055911497,
+                "y": -2.6697570498934695
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 0,
+                  "tangent": 373.1986414863245,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 1480.4672880909588,
+              "absoluteTangent": 861.338649981892
+            }
+          },
+          "C": {
+            "2": {
+              "x": 43.196707572281014,
+              "y": 24.387839393618737,
+              "playsideWidth": 2.2821606063812645,
+              "achievedVy": -1.9162852843220597,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 1027.2097245369284,
+                  "tangent": 676.7912260001897,
+                  "hold": 217.88281689349236
+                }
+              ]
+            },
+            "3": {
+              "x": 44.352550012457,
+              "y": 22.04277016189832,
+              "playsideWidth": 4.62722983810168,
+              "achievedVy": -2.512719961579784,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 0,
+                  "tangent": 733.9118549411883,
+                  "hold": 254.22926417540057
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 33,
+              "normal": 914.0112949214943,
+              "absoluteTangent": 1118.1906897481554
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 40.815583508646405,
+              "y": 24.013784156665285,
+              "playsideWidth": 1.3562158433347165,
+              "achievedVy": -0.7067994105780866,
+              "requestedVelocity": {
+                "x": 0.703770314899803,
+                "y": -0.7489321580951279
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 928.4292939537983,
+                  "tangent": 282.0448382202844,
+                  "hold": 180.9646392769106
+                }
+              ]
+            },
+            "3": {
+              "x": 41.54787866601902,
+              "y": 22.62000494113184,
+              "playsideWidth": 2.749995058868162,
+              "achievedVy": -2.1731259729006354,
+              "requestedVelocity": {
+                "x": 0.7199115583637236,
+                "y": -2.589040855447925
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 878.975085094407,
+                  "tangent": 552.5282938745469,
+                  "hold": 161.94378971560607
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 44,
+              "normal": 1809.2033488074,
+              "absoluteTangent": 877.8624343014438
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 40.99585742278687,
+              "y": 22.38361060094613,
+              "playsideWidth": 1.6863893990538692,
+              "achievedVy": -0.7380637483897097,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -1.3425794090227212
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1026.3677270215185,
+                  "tangent": -428.87541537077004,
+                  "hold": 220.78797295296428
+                }
+              ]
+            },
+            "3": {
+              "x": 42.501473344318995,
+              "y": 21.588855116261264,
+              "playsideWidth": 2.481144883738736,
+              "achievedVy": -1.3984171937972183,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -2.40679239323181
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1061.4327212898131,
+                  "tangent": 526.7695461863497,
+                  "hold": 292.0261556711531
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 26,
+              "normal": 1300.3254533355137,
+              "absoluteTangent": 643.399210028744
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.831980433985066,
+              "y": 19.844934402825075,
+              "playsideWidth": 2.925065597174928,
+              "achievedVy": -2.420827981330392,
+              "requestedVelocity": {
+                "x": -1,
+                "y": -2.9176812868911925
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.467594885469104,
+              "y": 19.85048764621026,
+              "playsideWidth": 2.9195123537897416,
+              "achievedVy": 1.3319665421392024,
+              "requestedVelocity": {
+                "x": -5.195112293078925,
+                "y": 7.047649061141176
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.48779791628077,
+              "y": 31.320945296071525,
+              "playsideWidth": -0.7509452960715244,
+              "achievedVy": 1.3710999374454547,
+              "requestedVelocity": {
+                "x": 4.805321387255037,
+                "y": 1.1249680799078143
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.87169120861959,
+              "y": 33.30441255517362,
+              "playsideWidth": -2.73441255517362,
+              "achievedVy": 2.4180055087025094,
+              "requestedVelocity": {
+                "x": 5.033549584504917,
+                "y": 1.332448259225887
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.8632921427574,
+              "y": 22.595802552893037,
+              "playsideWidth": 4.074197447106965,
+              "achievedVy": -1.8904204623382523,
+              "requestedVelocity": {
+                "x": 4.317692110157141,
+                "y": -1.9204936310706395
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.98854745061821,
+              "y": 20.86340144358419,
+              "playsideWidth": 5.8065985564158105,
+              "achievedVy": -2.1555851528031322,
+              "requestedVelocity": {
+                "x": 8.722902333759519,
+                "y": -3.5601260515162463
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "oz",
+          "dir": "strong",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 8.598011191907062e-12,
+        "maxArmLimitExcess": 2.1316282072803006e-14,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 41.00277770212765,
+              "y": 30.07054252444068,
+              "playsideWidth": -0.8005425244406759,
+              "achievedVy": 0.8662428605466133,
+              "requestedVelocity": {
+                "x": -0.46534874379019536,
+                "y": 2.730255287705282
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.91388034868635,
+              "y": 31.43199084709964,
+              "playsideWidth": -2.161990847099638,
+              "achievedVy": 1.7961634331390601,
+              "requestedVelocity": {
+                "x": 1.0509352505749574,
+                "y": 3.5443388244328355
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.07523231656549,
+              "y": 26.18735481331687,
+              "playsideWidth": 1.7826451866831334,
+              "achievedVy": -0.937694623754243,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -0.7025899429055688
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 676.9073017566351,
+                  "tangent": 361.49547261793674,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 39.26420074076874,
+              "y": 25.084240489349448,
+              "playsideWidth": 2.885759510650555,
+              "achievedVy": -2.0521350881216724,
+              "requestedVelocity": {
+                "x": 1.6144147055911497,
+                "y": -2.618229672629352
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 0,
+                  "tangent": 368.4134193225612,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 1440.9121589155384,
+              "absoluteTangent": 843.082174502943
+            }
+          },
+          "C": {
+            "2": {
+              "x": 43.19670756797651,
+              "y": 24.3878391619645,
+              "playsideWidth": 2.2821608380355016,
+              "achievedVy": -1.9162855569301995,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 1027.2097245369284,
+                  "tangent": 676.7912260001897,
+                  "hold": 217.88281689349236
+                }
+              ]
+            },
+            "3": {
+              "x": 44.30988155911873,
+              "y": 21.963619476589173,
+              "playsideWidth": 4.706380523410829,
+              "achievedVy": -2.520740113165059,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": -239.9770642923997,
+                  "tangent": 120.89976171296442,
+                  "hold": 239.97706429239975
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 33,
+              "normal": 832.8763204072794,
+              "absoluteTangent": 1085.5468747559173
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 40.73772163956824,
+              "y": 23.303117970386637,
+              "playsideWidth": 2.066882029613364,
+              "achievedVy": -2.074920749714345,
+              "requestedVelocity": {
+                "x": 0.8960573030116112,
+                "y": -2.676281568362218
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 928.4292939537983,
+                  "tangent": -468.89918393974204,
+                  "hold": 180.9646392769106
+                }
+              ]
+            },
+            "3": {
+              "x": 41.743386731010126,
+              "y": 21.148749005606962,
+              "playsideWidth": 4.2212509943930385,
+              "achievedVy": -2.5485016349033605,
+              "requestedVelocity": {
+                "x": 1.3728428207236496,
+                "y": -2.676281568362218
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 821.7843805014047,
+                  "tangent": 504.13615921892955,
+                  "hold": 139.94736487214368
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 44,
+              "normal": 1920.4500285128545,
+              "absoluteTangent": 1026.0168639400988
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 41.15841267644795,
+              "y": 22.26606462003361,
+              "playsideWidth": 1.80393537996639,
+              "achievedVy": -1.2759362410284771,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -2.40679239323181
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1026.3677270215185,
+                  "tangent": -192.73719187655396,
+                  "hold": 220.78797295296428
+                }
+              ]
+            },
+            "3": {
+              "x": 42.89367666878603,
+              "y": 20.555902278291228,
+              "playsideWidth": 3.5140977217087723,
+              "achievedVy": -2.166080037739537,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -2.40679239323181
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1056.4856324567234,
+                  "tangent": 217.1266229296727,
+                  "hold": 323.0849981027222
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 26,
+              "normal": 1120.031608690276,
+              "absoluteTangent": 695.8277194787297
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.831980433985066,
+              "y": 19.844934402825075,
+              "playsideWidth": 2.925065597174928,
+              "achievedVy": -2.420827981330392,
+              "requestedVelocity": {
+                "x": -1,
+                "y": -2.9176812868911925
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.456643678348705,
+              "y": 19.87711781064638,
+              "playsideWidth": 2.8928821893536245,
+              "achievedVy": 1.3319550612881832,
+              "requestedVelocity": {
+                "x": -0.3849390718315357,
+                "y": 2.323292366076066
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.48779791628077,
+              "y": 31.320945296071525,
+              "playsideWidth": -0.7509452960715244,
+              "achievedVy": 1.3710999374454547,
+              "requestedVelocity": {
+                "x": 4.805321387255037,
+                "y": 1.1249680799078143
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.86360748065041,
+              "y": 33.309358397626276,
+              "playsideWidth": -2.739358397626276,
+              "achievedVy": 2.5080652697705257,
+              "requestedVelocity": {
+                "x": 5.033549584504917,
+                "y": 1.332448259225887
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.869574432308,
+              "y": 22.602385496288573,
+              "playsideWidth": 4.067614503711429,
+              "achievedVy": -1.6271027265168239,
+              "requestedVelocity": {
+                "x": 5.73398462778389,
+                "y": -2.03251059593623
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.942828031953916,
+              "y": 20.52176842660148,
+              "playsideWidth": 6.148231573398522,
+              "achievedVy": -3.4151135770057133,
+              "requestedVelocity": {
+                "x": 5.9728128393012305,
+                "y": -7.286221888857783
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "wz-strong",
+      "beforeSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "afterSource": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "exactAllSavedFrames": false,
+      "firstDivergence": {
+        "postStepTime": 0.75,
+        "commandTime": 0.7,
+        "allBodiesBeforeEqual": true,
+        "changedCommands": [
+          {
+            "slot": "LG",
+            "before": {
+              "vel": {
+                "x": 0.4107850980207045,
+                "y": -0.706608699431653
+              },
+              "facing": -0.3203336718810247,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9938084772370487
+            },
+            "after": {
+              "vel": {
+                "x": 0.4107850980207045,
+                "y": -2.618229672629352
+              },
+              "facing": -0.3203336718810247,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9938084772370487
+            }
+          }
+        ]
+      },
+      "before": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "wz",
+          "dir": "strong",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 5.775824263309914e-12,
+        "maxArmLimitExcess": 1.4210854715202004e-14,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 40.6546822347049,
+              "y": 30.534889747237838,
+              "playsideWidth": -1.2648897472378344,
+              "achievedVy": 1.0094863862871164,
+              "requestedVelocity": {
+                "x": 1.7409195549481438,
+                "y": 0.005143874416000616
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.308494153429734,
+              "y": 31.913392919901884,
+              "playsideWidth": -2.6433929199018813,
+              "achievedVy": 2.173971672605963,
+              "requestedVelocity": {
+                "x": 0.6763270547386494,
+                "y": 3.1796250014985628
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.52115856808207,
+              "y": 26.241440798367623,
+              "playsideWidth": 1.728559201632379,
+              "achievedVy": -0.8111216267901085,
+              "requestedVelocity": {
+                "x": 0.24733970887439552,
+                "y": -2.618229672629352
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 705.998350796279,
+                  "tangent": 386.11097565148157,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 39.584090034030105,
+              "y": 25.40385810026745,
+              "playsideWidth": 2.5661418997325534,
+              "achievedVy": -1.776390423008781,
+              "requestedVelocity": {
+                "x": 0.4164802021141404,
+                "y": -2.618229672629352
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 688.0001664463756,
+                  "tangent": 370.88174274002466,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 1527.0367144055408,
+              "absoluteTangent": 872.0901940708098
+            }
+          },
+          "C": {
+            "2": {
+              "x": 43.183259033541624,
+              "y": 24.39827860805264,
+              "playsideWidth": 2.271721391947363,
+              "achievedVy": -1.8565616051839022,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 1060.4632413635477,
+                  "tangent": 566.2851005702296,
+                  "hold": 230.67263105757667
+                }
+              ]
+            },
+            "3": {
+              "x": 44.20898705795162,
+              "y": 22.234719654583543,
+              "playsideWidth": 4.435280345416459,
+              "achievedVy": -2.771257569399238,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 289.35907371590656,
+                  "tangent": 737.7777075731542,
+                  "hold": 268.90856790960765
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 33,
+              "normal": 1462.324161750286,
+              "absoluteTangent": 998.2891593198658
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 41.45050364087479,
+              "y": 24.88831278917144,
+              "playsideWidth": 0.4816872108285608,
+              "achievedVy": 0.21797044988121647,
+              "requestedVelocity": {
+                "x": 2.3858883385320078,
+                "y": 0.2594874403435199
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 913.568101184745,
+                  "tangent": 581.799307489448,
+                  "hold": 175.24879590419766
+                }
+              ]
+            },
+            "3": {
+              "x": 43.229066974719224,
+              "y": 24.81534556945262,
+              "playsideWidth": 0.5546544305473802,
+              "achievedVy": -0.8872103985324441,
+              "requestedVelocity": {
+                "x": 1.6459459750395502,
+                "y": -0.9735406273299345
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": -156.7801660869986,
+                  "tangent": 541.1683218916104,
+                  "hold": 156.78016608699858
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 44,
+              "normal": 1629.6689650571213,
+              "absoluteTangent": 1189.0112522053166
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 40.847204698386896,
+              "y": 22.35216980971882,
+              "playsideWidth": 1.7178301902811803,
+              "achievedVy": -1.0183546263960084,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 0.722037717969543
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 903.1808647910465,
+                  "tangent": -575.3495020862172,
+                  "hold": 173.40841055662895
+                }
+              ]
+            },
+            "3": {
+              "x": 42.234244427771515,
+              "y": 22.946145368649077,
+              "playsideWidth": 1.1238546313509232,
+              "achievedVy": 1.8734015160440263,
+              "requestedVelocity": {
+                "x": 1.9692122939180146,
+                "y": 1.594832354710201
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 0,
+                  "tangent": -719.4567291482853,
+                  "hold": 243.22216003238393
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 25,
+              "normal": 756.698416432797,
+              "absoluteTangent": 786.8231342127034
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.82345361427305,
+              "y": 19.87100503752252,
+              "playsideWidth": 2.8989949624774844,
+              "achievedVy": -1.9555289401076807,
+              "requestedVelocity": {
+                "x": -1,
+                "y": -1.9154582806309124
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.44604811145446,
+              "y": 19.642740132999826,
+              "playsideWidth": 3.127259867000177,
+              "achievedVy": -0.748633107744649,
+              "requestedVelocity": {
+                "x": -0.48672970747812944,
+                "y": -1.0089057556184937
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.41506531991195,
+              "y": 31.497301692892716,
+              "playsideWidth": -0.9273016928927156,
+              "achievedVy": 1.698533877561315,
+              "requestedVelocity": {
+                "x": 4.6623304554732155,
+                "y": -0.15531778455585776
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.22642764190949,
+              "y": 33.584078596822366,
+              "playsideWidth": -3.0140785968223653,
+              "achievedVy": 2.3276654092416913,
+              "requestedVelocity": {
+                "x": 4.9751582498432025,
+                "y": 0.018475434538579805
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.50345324049651,
+              "y": 21.957672940977172,
+              "playsideWidth": 4.7123270590228294,
+              "achievedVy": -3.8818016026319393,
+              "requestedVelocity": {
+                "x": 2.3498129154968597,
+                "y": -5.611422127804961
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.85297306638086,
+              "y": 17.02541255820211,
+              "playsideWidth": 9.644587441797892,
+              "achievedVy": -5.812980831331875,
+              "requestedVelocity": {
+                "x": 3.7407474767472255,
+                "y": -8.646983921703635
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "wz",
+          "dir": "strong",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 4.490630090003833e-12,
+        "maxArmLimitExcess": 1.4210854715202004e-14,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 40.6546822347049,
+              "y": 30.534889747237838,
+              "playsideWidth": -1.2648897472378344,
+              "achievedVy": 1.0094863862871164,
+              "requestedVelocity": {
+                "x": 1.7409195549481438,
+                "y": 0.005143874416000616
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.308494153429734,
+              "y": 31.913392919901884,
+              "playsideWidth": -2.6433929199018813,
+              "achievedVy": 2.173971672605963,
+              "requestedVelocity": {
+                "x": 0.6763270547386494,
+                "y": 3.1796250014985628
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.1392828310769,
+              "y": 26.28861451548296,
+              "playsideWidth": 1.681385484517044,
+              "achievedVy": -0.8194735252773693,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -0.7294328016737877
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 705.998350796279,
+                  "tangent": 386.11097565148157,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 39.04308513016452,
+              "y": 25.596294852554532,
+              "playsideWidth": 2.3737051474454702,
+              "achievedVy": -1.2361683216593868,
+              "requestedVelocity": {
+                "x": 1.0449363693800708,
+                "y": -2.618229672629352
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 548.286340269179,
+                  "tangent": 370.88174274002466,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 1522.9660132326092,
+              "absoluteTangent": 837.0174270971947
+            }
+          },
+          "C": {
+            "2": {
+              "x": 43.203872743678254,
+              "y": 24.353224960555238,
+              "playsideWidth": 2.3167750394447637,
+              "achievedVy": -1.9097431369250706,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 1060.4632413635477,
+                  "tangent": 444.67562494889296,
+                  "hold": 230.67263105757667
+                }
+              ]
+            },
+            "3": {
+              "x": 44.26183775142679,
+              "y": 22.21227037422356,
+              "playsideWidth": 4.457729625776441,
+              "achievedVy": -2.3590340475568574,
+              "requestedVelocity": {
+                "x": 1.4180302744515196,
+                "y": -2.9171220824326047
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 1084.428842025879,
+                  "tangent": 253.1435023365072,
+                  "hold": 268.90856790960765
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 33,
+              "normal": 1688.786878726385,
+              "absoluteTangent": 647.4239636580573
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 41.219641010695575,
+              "y": 23.942758326039392,
+              "playsideWidth": 1.4272416739606086,
+              "achievedVy": -1.3826526654270461,
+              "requestedVelocity": {
+                "x": 3.2224179639641504,
+                "y": -2.676281568362218
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 913.568101184745,
+                  "tangent": 248.73536363700873,
+                  "hold": 175.24879590419766
+                }
+              ]
+            },
+            "3": {
+              "x": 43.19881426849813,
+              "y": 22.01756220683704,
+              "playsideWidth": 3.3524377931629594,
+              "achievedVy": -2.6871714269571476,
+              "requestedVelocity": {
+                "x": 1.6264908865969205,
+                "y": -2.676281568362218
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 423.7921715059509,
+                  "tangent": 541.1683218916104,
+                  "hold": 156.78016608699858
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 44,
+              "normal": 1905.320099093627,
+              "absoluteTangent": 771.7013420796222
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 40.8682616089051,
+              "y": 22.350433070957042,
+              "playsideWidth": 1.7195669290429585,
+              "achievedVy": -0.9966363298776105,
+              "requestedVelocity": {
+                "x": 2.1811752640583064,
+                "y": 0.467297803249594
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 903.1808647910465,
+                  "tangent": -575.3495020862172,
+                  "hold": 173.40841055662895
+                }
+              ]
+            },
+            "3": {
+              "x": 42.22729438990652,
+              "y": 22.287988250798705,
+              "playsideWidth": 1.7820117492012955,
+              "achievedVy": -0.31099908253017655,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.40679239323181
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1070.6141938530088,
+                  "tangent": -719.476058237193,
+                  "hold": 243.22216003238393
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 25,
+              "normal": 1167.0473299610262,
+              "absoluteTangent": 754.0268572824248
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.82345361427305,
+              "y": 19.87100503752252,
+              "playsideWidth": 2.8989949624774844,
+              "achievedVy": -1.9555289401076807,
+              "requestedVelocity": {
+                "x": -1,
+                "y": -1.9154582806309124
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.44604811145446,
+              "y": 19.642740132999826,
+              "playsideWidth": 3.127259867000177,
+              "achievedVy": -0.748633107744649,
+              "requestedVelocity": {
+                "x": -0.48672970747812944,
+                "y": -1.0089057556184937
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.41506531991195,
+              "y": 31.497301692892716,
+              "playsideWidth": -0.9273016928927156,
+              "achievedVy": 1.698533877561315,
+              "requestedVelocity": {
+                "x": 4.6623304554732155,
+                "y": -0.15531778455585776
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.22642764190949,
+              "y": 33.584078596822366,
+              "playsideWidth": -3.0140785968223653,
+              "achievedVy": 2.3276654092416913,
+              "requestedVelocity": {
+                "x": 4.9751582498432025,
+                "y": 0.018475434538579805
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.50345324049651,
+              "y": 21.957672940977172,
+              "playsideWidth": 4.7123270590228294,
+              "achievedVy": -3.8818016026319393,
+              "requestedVelocity": {
+                "x": 2.3498129154968597,
+                "y": -5.611422127804961
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.57876941678149,
+              "y": 17.07370160615975,
+              "playsideWidth": 9.59629839384025,
+              "achievedVy": -5.831771910193175,
+              "requestedVelocity": {
+                "x": 3.6262650295336374,
+                "y": -8.69561524922609
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "wz-weak",
+      "beforeSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "afterSource": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "exactAllSavedFrames": false,
+      "firstDivergence": {
+        "postStepTime": 0.65,
+        "commandTime": 0.6,
+        "allBodiesBeforeEqual": true,
+        "changedCommands": [
+          {
+            "slot": "RT",
+            "before": {
+              "vel": {
+                "x": 0.2685756047270385,
+                "y": 1.0998152091392155
+              },
+              "facing": 0.40821260352030303,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.996850863422292
+            },
+            "after": {
+              "vel": {
+                "x": 0.2685756047270385,
+                "y": 2.40679239323181
+              },
+              "facing": 0.40821260352030303,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.996850863422292
+            }
+          }
+        ]
+      },
+      "before": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "wz",
+          "dir": "weak",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.31,
+            "y": 34.31
+          },
+          "note": "grasp"
+        },
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 7.0174976940506895e-12,
+        "maxArmLimitExcess": 0.0,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 40.12444122072301,
+              "y": 31.35951887813221,
+              "playsideWidth": 2.089518878132207,
+              "achievedVy": 1.38961730369651,
+              "requestedVelocity": {
+                "x": 0.5843303686501577,
+                "y": 2.6844986645426014
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.58025293868149,
+              "y": 33.08462137545644,
+              "playsideWidth": 3.81462137545644,
+              "achievedVy": 2.580647495205655,
+              "requestedVelocity": {
+                "x": 0.5558110227213748,
+                "y": 2.6844986645426014
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.450702842558265,
+              "y": 28.29947677080779,
+              "playsideWidth": 0.32947677080778703,
+              "achievedVy": 0.16602995599900924,
+              "requestedVelocity": {
+                "x": -0.4245253440110596,
+                "y": 0.16675884077178982
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.22681527915904,
+              "y": 30.081560693776147,
+              "playsideWidth": 2.111560693776145,
+              "achievedVy": 3.56010668889517,
+              "requestedVelocity": {
+                "x": 1.845290510798718,
+                "y": 7.460809897643236
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "C": {
+            "2": {
+              "x": 39.832592230468336,
+              "y": 27.05464984599223,
+              "playsideWidth": 0.38464984599222873,
+              "achievedVy": -0.4408989466313069,
+              "requestedVelocity": {
+                "x": -2.143117426647736,
+                "y": 0.6350652370265202
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 566.1477798711,
+                  "tangent": 39.5266280369695,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 38.31098394606104,
+              "y": 27.320277709411098,
+              "playsideWidth": 0.6502777094110961,
+              "achievedVy": 1.4417689682200672,
+              "requestedVelocity": {
+                "x": 1.107700549494114,
+                "y": 2.1818366352861966
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 37,
+              "normal": 931.7098053490632,
+              "absoluteTangent": 416.5610784468695
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 42.546379047562176,
+              "y": 26.14246046632023,
+              "playsideWidth": 0.7724604663202292,
+              "achievedVy": 2.504748590771399,
+              "requestedVelocity": {
+                "x": 1.2343980363365565,
+                "y": 3.3762026777200127
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 1003.039732242197,
+                  "tangent": -612.1630469159356,
+                  "hold": 209.66096169552532
+                }
+              ]
+            },
+            "3": {
+              "x": 43.42702235508776,
+              "y": 28.495949430679325,
+              "playsideWidth": 3.1259494306793236,
+              "achievedVy": 2.6096217008435776,
+              "requestedVelocity": {
+                "x": 1.2343980363365565,
+                "y": 3.3762026777200127
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 1077.2929870685605,
+                  "tangent": -312.13300197085806,
+                  "hold": 276.1743808574253
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 26,
+              "normal": 1213.11439939323,
+              "absoluteTangent": 495.0567289498295
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 40.28919237962587,
+              "y": 25.551757183670222,
+              "playsideWidth": 1.4817571836702221,
+              "achievedVy": 1.6871970994796832,
+              "requestedVelocity": {
+                "x": 1.0462902860314223,
+                "y": 2.284605604246954
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1058.960677153621,
+                  "tangent": 623.8616033324274,
+                  "hold": 311.6298056941104
+                }
+              ]
+            },
+            "3": {
+              "x": 41.372887865260644,
+              "y": 28.089572426466393,
+              "playsideWidth": 4.019572426466393,
+              "achievedVy": 3.1276371158084517,
+              "requestedVelocity": {
+                "x": 1.1655430348287168,
+                "y": 3.119764098301904
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 674.9504095371915,
+                  "tangent": -674.7006418681628,
+                  "hold": 319.52655829818417
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 1915.7856275385543,
+              "absoluteTangent": 1142.9038943120195
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 42.56985034492589,
+              "y": 23.818604789598727,
+              "playsideWidth": 1.0486047895987234,
+              "achievedVy": 0.42978602713792247,
+              "requestedVelocity": {
+                "x": -7.849300145081941,
+                "y": -3.879050948250161
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.59428736101269,
+              "y": 24.260098946645236,
+              "playsideWidth": 1.490098946645233,
+              "achievedVy": 2.1089914046635156,
+              "requestedVelocity": {
+                "x": -2.114604801669776,
+                "y": 3.920281816301964
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 621.5176710812906,
+                  "tangent": -382.68970141185474,
+                  "hold": 107.14143376830408
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 9,
+              "normal": 205.4756528865535,
+              "absoluteTangent": 163.51629632542912
+            }
+          },
+          "H": {
+            "2": {
+              "x": 42.679970829517195,
+              "y": 30.540280559386357,
+              "playsideWidth": -0.0297194406136434,
+              "achievedVy": 1.5052951188271,
+              "requestedVelocity": {
+                "x": 1.0610928402348443,
+                "y": 3.8094656679742926
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.73474120444016,
+              "y": 32.26367622282514,
+              "playsideWidth": 1.6936762228251396,
+              "achievedVy": 2.2807676524154497,
+              "requestedVelocity": {
+                "x": 0.9082425433775165,
+                "y": 4.191591410117612
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "H",
+                  "normal": 0,
+                  "tangent": 180.9010580228359,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 2,
+              "normal": 0.0,
+              "absoluteTangent": 18.000496334643948
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.6062040354099,
+              "y": 31.268961836473576,
+              "playsideWidth": 4.598961836473574,
+              "achievedVy": 3.1389832167882794,
+              "requestedVelocity": {
+                "x": 4.6818239652824865,
+                "y": 3.8846110992429583
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.9979375137885,
+              "y": 34.74116308640042,
+              "playsideWidth": 8.071163086400418,
+              "achievedVy": 2.710877724144707,
+              "requestedVelocity": {
+                "x": 8.078025693730096,
+                "y": 4.848610472952879
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+        "spec": {
+          "concept": "wz",
+          "dir": "weak",
+          "look": "over3",
+          "roster": "pair11",
+          "seed": 77,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 1.3396395104336989e-11,
+        "maxArmLimitExcess": 0.0,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 39.98324214300246,
+              "y": 31.896099747957084,
+              "playsideWidth": 2.626099747957081,
+              "achievedVy": 1.8805571866382451,
+              "requestedVelocity": {
+                "x": 0.8595388885403007,
+                "y": 2.6844986645426014
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.58304065231384,
+              "y": 33.88116440310977,
+              "playsideWidth": 4.611164403109768,
+              "achievedVy": 0.7459637677467267,
+              "requestedVelocity": {
+                "x": 0.5023394768586831,
+                "y": 0.48494958699631296
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 39.852932549592175,
+              "y": 28.368783167391264,
+              "playsideWidth": 0.39878316739126163,
+              "achievedVy": 0.7173365516342715,
+              "requestedVelocity": {
+                "x": 0.3076674978878668,
+                "y": 1.0658345594145642
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.754436215875295,
+              "y": 30.039575977342913,
+              "playsideWidth": 2.069575977342911,
+              "achievedVy": 3.2783936858225853,
+              "requestedVelocity": {
+                "x": 1.279099580467777,
+                "y": 7.050442003699426
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "C": {
+            "2": {
+              "x": 40.397979995015945,
+              "y": 27.622276099726086,
+              "playsideWidth": 0.9522760997260846,
+              "achievedVy": 0.28787929144765506,
+              "requestedVelocity": {
+                "x": 0.0794084526153852,
+                "y": 1.4289928102196288
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 520.5960248764646,
+                  "tangent": -248.11809551825846,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 40.15260974239747,
+              "y": 28.444444662674368,
+              "playsideWidth": 1.774444662674366,
+              "achievedVy": 1.5456945683150212,
+              "requestedVelocity": {
+                "x": -1.2589120104600817,
+                "y": 2.2266349861642976
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 512.4265226691548,
+                  "tangent": -241.20543980438103,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 40,
+              "normal": 1015.339241885228,
+              "absoluteTangent": 470.1359862681754
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 42.249943551187584,
+              "y": 26.80457822941652,
+              "playsideWidth": 1.4345782294165197,
+              "achievedVy": 2.48889812168489,
+              "requestedVelocity": {
+                "x": 1.2343980363365565,
+                "y": 3.3762026777200127
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 809.9107330417397,
+                  "tangent": -311.89309853745635,
+                  "hold": 135.38057738765718
+                }
+              ]
+            },
+            "3": {
+              "x": 43.76994830819336,
+              "y": 28.859698968020844,
+              "playsideWidth": 3.489698968020843,
+              "achievedVy": 2.0711601840085314,
+              "requestedVelocity": {
+                "x": 1.6420790164025436,
+                "y": 2.3570002275550443
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 1015.4973303269021,
+                  "tangent": 336.08092747626904,
+                  "hold": 214.45234557425812
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 24,
+              "normal": 1018.5247835271492,
+              "absoluteTangent": 315.71220778673387
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 41.04151930860118,
+              "y": 26.270010841293537,
+              "playsideWidth": 2.200010841293537,
+              "achievedVy": 2.0647746641634046,
+              "requestedVelocity": {
+                "x": 1.9463885325713264,
+                "y": 2.40679239323181
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1056.659019743298,
+                  "tangent": 530.2142843343826,
+                  "hold": 323.0849981027222
+                }
+              ]
+            },
+            "3": {
+              "x": 42.284601430866196,
+              "y": 28.718619547413823,
+              "playsideWidth": 4.648619547413823,
+              "achievedVy": 2.7684288816534273,
+              "requestedVelocity": {
+                "x": 2.2305137967477253,
+                "y": 2.8011930084243795
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 1057.3809042815465,
+                  "tangent": -681.5779555185193,
+                  "hold": 303.579210409465
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 50,
+              "normal": 2174.1227714789597,
+              "absoluteTangent": 1156.0273370902016
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 42.56985034492589,
+              "y": 23.818604789598727,
+              "playsideWidth": 1.0486047895987234,
+              "achievedVy": 0.42978602713792247,
+              "requestedVelocity": {
+                "x": -7.849300145081941,
+                "y": -3.879050948250161
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.3336684442339,
+              "y": 24.080506706151333,
+              "playsideWidth": 1.3105067061513296,
+              "achievedVy": 1.8788763531880384,
+              "requestedVelocity": {
+                "x": -1.5339416225980327,
+                "y": 3.5976911612621065
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 0,
+                  "tangent": -225.51826847701295,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 8,
+              "normal": 92.49857541453834,
+              "absoluteTangent": 92.4508642593284
+            }
+          },
+          "H": {
+            "2": {
+              "x": 42.60291910399532,
+              "y": 30.547095261542832,
+              "playsideWidth": -0.022904738457167895,
+              "achievedVy": 1.0672877588920788,
+              "requestedVelocity": {
+                "x": 1.027223137240364,
+                "y": 3.8941399254604936
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.829468613082476,
+              "y": 32.096426228237696,
+              "playsideWidth": 1.5264262282376961,
+              "achievedVy": 1.3442549383387863,
+              "requestedVelocity": {
+                "x": -6.966273214302953,
+                "y": 3.654402654699712
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.57816800955182,
+              "y": 31.24558578374304,
+              "playsideWidth": 4.575585783743037,
+              "achievedVy": 2.6728779473724558,
+              "requestedVelocity": {
+                "x": 2.34089541305312,
+                "y": 1.9423255195024898
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.742091235007386,
+              "y": 34.00357380618602,
+              "playsideWidth": 7.333573806186017,
+              "achievedVy": 3.2813021066938983,
+              "requestedVelocity": {
+                "x": 6.754400251523215,
+                "y": 6.568226539121123
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "duo",
+      "beforeSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "afterSource": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "exactAllSavedFrames": true,
+      "firstDivergence": null,
+      "before": {
+        "initialHash": "ac19d3f5adbd43d9ef48e4ab118dd4162b54e422a1ab0d70e5c45c1cfccbed40",
+        "spec": "saved-Duo",
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 4.284572696633404e-12,
+        "maxArmLimitExcess": -7.105427357601002e-15,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 36.06779430541792,
+              "y": 31.659081176103232,
+              "playsideWidth": -2.3924145094365628,
+              "achievedVy": 1.6967917406107738,
+              "requestedVelocity": {
+                "x": -2.447450577081433,
+                "y": 2.8203916527480275
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 36.02931606995702,
+              "y": 33.159134611994716,
+              "playsideWidth": -3.892467945328047,
+              "achievedVy": 2.087337016319146,
+              "requestedVelocity": {
+                "x": 1.4977267448048992,
+                "y": 4.3463710108049165
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 13,
+              "normal": 85.81396129383064,
+              "absoluteTangent": 137.07474628291615
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 35.07618759812021,
+              "y": 28.512765120504568,
+              "playsideWidth": -0.5460984538378995,
+              "achievedVy": -0.008023354380353094,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.674319155720164
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 980.2082377300954,
+                  "tangent": -637.475731298422,
+                  "hold": 200.22439551298262
+                }
+              ]
+            },
+            "3": {
+              "x": 35.77654768652601,
+              "y": 28.407703144305337,
+              "playsideWidth": -0.4410364776386686,
+              "achievedVy": -0.4110337838915691,
+              "requestedVelocity": {
+                "x": 0,
+                "y": 0
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 49,
+              "normal": 2021.2465502352181,
+              "absoluteTangent": 1346.0867520946304
+            }
+          },
+          "C": {
+            "2": {
+              "x": 35.70593738703517,
+              "y": 27.195681106117913,
+              "playsideWidth": -0.5290144394512453,
+              "achievedVy": 1.0981770430193927,
+              "requestedVelocity": {
+                "x": 1.0706579318768832,
+                "y": 1.5887598113477515
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 36.50322115664082,
+              "y": 28.013907940015624,
+              "playsideWidth": -1.3472412733489563,
+              "achievedVy": 0.4794254630342405,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 1.7324667579548159
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 915.0380937023921,
+                  "tangent": 569.7299210258606,
+                  "hold": 273.2075504076441
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 16,
+              "normal": 735.489108359466,
+              "absoluteTangent": 215.241883354417
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 36.10586966225908,
+              "y": 26.319930038497922,
+              "playsideWidth": -0.9532633718312553,
+              "achievedVy": 0.7528957823887739,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.284604357203949
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 682.8978317846698,
+                  "tangent": -374.9368569313454,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 37.35832969241053,
+              "y": 27.502230391949194,
+              "playsideWidth": -2.135563725282527,
+              "achievedVy": 1.3777016594885885,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.284604357203949
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 574.8036591674304,
+                  "tangent": 274.7613776775154,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 40,
+              "normal": 1368.7255715704175,
+              "absoluteTangent": 545.349209342491
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 36.07915985161179,
+              "y": 24.794701590184953,
+              "playsideWidth": -0.7280349235182868,
+              "achievedVy": 1.4846008208273385,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.18451318765582
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 553.8052133688138,
+                  "tangent": 53.62777039242282,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 37.19756322518513,
+              "y": 25.850235336857864,
+              "playsideWidth": -1.7835686701911975,
+              "achievedVy": 1.649496299712273,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.18451318765582
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 797.9110970825805,
+                  "tangent": 480.43279968196856,
+                  "hold": 127.53898770079468
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 24,
+              "normal": 753.0208838768958,
+              "absoluteTangent": 351.806650852662
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 35.28100076791942,
+              "y": 22.139051814098362,
+              "playsideWidth": 0.627614852568307,
+              "achievedVy": -1.161703129213457,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -0.8340863037057009
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 529.8767005296772,
+                  "tangent": 118.53229239751886,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 34.52638797854327,
+              "y": 21.565863180540102,
+              "playsideWidth": 1.200803486126567,
+              "achievedVy": 0.6960118887351548,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 0.5919468895604111
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 490.0904066022685,
+                  "tangent": -271.6294457184902,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 45,
+              "normal": 1084.3915335414094,
+              "absoluteTangent": 567.1187775555007
+            }
+          },
+          "H": {
+            "2": {
+              "x": 38.34000660781171,
+              "y": 32.71058754844478,
+              "playsideWidth": 2.556079118221888,
+              "achievedVy": -1.8768386701923596,
+              "requestedVelocity": {
+                "x": 1.774800177055941,
+                "y": -5.131437300310493
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.58078803862379,
+              "y": 31.990883416293123,
+              "playsideWidth": 3.275783250373543,
+              "achievedVy": 1.614898963234344,
+              "requestedVelocity": {
+                "x": 0,
+                "y": 2.9553245531805628
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 32.30893085232434,
+              "y": 25.152323232472533,
+              "playsideWidth": 1.514343434194135,
+              "achievedVy": -1.365761231188457,
+              "requestedVelocity": {
+                "x": 8.61702595767299,
+                "y": -3.8663642517235117
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 37.78286730031761,
+              "y": 22.903976781271105,
+              "playsideWidth": 3.762689885395563,
+              "achievedVy": -3.19662178439536,
+              "requestedVelocity": {
+                "x": 8.430249991675344,
+                "y": -4.258261847288569
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "initialHash": "ac19d3f5adbd43d9ef48e4ab118dd4162b54e422a1ab0d70e5c45c1cfccbed40",
+        "spec": "saved-Duo",
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": null,
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 4.284572696633404e-12,
+        "maxArmLimitExcess": -7.105427357601002e-15,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 36.06779430541792,
+              "y": 31.659081176103232,
+              "playsideWidth": -2.3924145094365628,
+              "achievedVy": 1.6967917406107738,
+              "requestedVelocity": {
+                "x": -2.447450577081433,
+                "y": 2.8203916527480275
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 36.02931606995702,
+              "y": 33.159134611994716,
+              "playsideWidth": -3.892467945328047,
+              "achievedVy": 2.087337016319146,
+              "requestedVelocity": {
+                "x": 1.4977267448048992,
+                "y": 4.3463710108049165
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 13,
+              "normal": 85.81396129383064,
+              "absoluteTangent": 137.07474628291615
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 35.07618759812021,
+              "y": 28.512765120504568,
+              "playsideWidth": -0.5460984538378995,
+              "achievedVy": -0.008023354380353094,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.674319155720164
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "LG",
+                  "normal": 980.2082377300954,
+                  "tangent": -637.475731298422,
+                  "hold": 200.22439551298262
+                }
+              ]
+            },
+            "3": {
+              "x": 35.77654768652601,
+              "y": 28.407703144305337,
+              "playsideWidth": -0.4410364776386686,
+              "achievedVy": -0.4110337838915691,
+              "requestedVelocity": {
+                "x": 0,
+                "y": 0
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 49,
+              "normal": 2021.2465502352181,
+              "absoluteTangent": 1346.0867520946304
+            }
+          },
+          "C": {
+            "2": {
+              "x": 35.70593738703517,
+              "y": 27.195681106117913,
+              "playsideWidth": -0.5290144394512453,
+              "achievedVy": 1.0981770430193927,
+              "requestedVelocity": {
+                "x": 1.0706579318768832,
+                "y": 1.5887598113477515
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 36.50322115664082,
+              "y": 28.013907940015624,
+              "playsideWidth": -1.3472412733489563,
+              "achievedVy": 0.4794254630342405,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 1.7324667579548159
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "C",
+                  "normal": 915.0380937023921,
+                  "tangent": 569.7299210258606,
+                  "hold": 273.2075504076441
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 16,
+              "normal": 735.489108359466,
+              "absoluteTangent": 215.241883354417
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 36.10586966225908,
+              "y": 26.319930038497922,
+              "playsideWidth": -0.9532633718312553,
+              "achievedVy": 0.7528957823887739,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.284604357203949
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 682.8978317846698,
+                  "tangent": -374.9368569313454,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 37.35832969241053,
+              "y": 27.502230391949194,
+              "playsideWidth": -2.135563725282527,
+              "achievedVy": 1.3777016594885885,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.284604357203949
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 574.8036591674304,
+                  "tangent": 274.7613776775154,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 40,
+              "normal": 1368.7255715704175,
+              "absoluteTangent": 545.349209342491
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 36.07915985161179,
+              "y": 24.794701590184953,
+              "playsideWidth": -0.7280349235182868,
+              "achievedVy": 1.4846008208273385,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.18451318765582
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 553.8052133688138,
+                  "tangent": 53.62777039242282,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 37.19756322518513,
+              "y": 25.850235336857864,
+              "playsideWidth": -1.7835686701911975,
+              "achievedVy": 1.649496299712273,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 2.18451318765582
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RT",
+                  "normal": 797.9110970825805,
+                  "tangent": 480.43279968196856,
+                  "hold": 127.53898770079468
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 24,
+              "normal": 753.0208838768958,
+              "absoluteTangent": 351.806650852662
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 35.28100076791942,
+              "y": 22.139051814098362,
+              "playsideWidth": 0.627614852568307,
+              "achievedVy": -1.161703129213457,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": -0.8340863037057009
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 529.8767005296772,
+                  "tangent": 118.53229239751886,
+                  "hold": 0
+                }
+              ]
+            },
+            "3": {
+              "x": 34.52638797854327,
+              "y": 21.565863180540102,
+              "playsideWidth": 1.200803486126567,
+              "achievedVy": 0.6960118887351548,
+              "requestedVelocity": {
+                "x": 2.4,
+                "y": 0.5919468895604111
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "Y",
+                  "normal": 490.0904066022685,
+                  "tangent": -271.6294457184902,
+                  "hold": 0
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 45,
+              "normal": 1084.3915335414094,
+              "absoluteTangent": 567.1187775555007
+            }
+          },
+          "H": {
+            "2": {
+              "x": 38.34000660781171,
+              "y": 32.71058754844478,
+              "playsideWidth": 2.556079118221888,
+              "achievedVy": -1.8768386701923596,
+              "requestedVelocity": {
+                "x": 1.774800177055941,
+                "y": -5.131437300310493
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.58078803862379,
+              "y": 31.990883416293123,
+              "playsideWidth": 3.275783250373543,
+              "achievedVy": 1.614898963234344,
+              "requestedVelocity": {
+                "x": 0,
+                "y": 2.9553245531805628
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 32.30893085232434,
+              "y": 25.152323232472533,
+              "playsideWidth": 1.514343434194135,
+              "achievedVy": -1.365761231188457,
+              "requestedVelocity": {
+                "x": 8.61702595767299,
+                "y": -3.8663642517235117
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 37.78286730031761,
+              "y": 22.903976781271105,
+              "playsideWidth": 3.762689885395563,
+              "achievedVy": -3.19662178439536,
+              "requestedVelocity": {
+                "x": 8.430249991675344,
+                "y": -4.258261847288569
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fresh-wide9",
+      "beforeSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "afterSource": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "exactAllSavedFrames": false,
+      "firstDivergence": {
+        "postStepTime": 2.95,
+        "commandTime": 2.9000000000000004,
+        "allBodiesBeforeEqual": true,
+        "changedCommands": [
+          {
+            "slot": "RG",
+            "before": {
+              "vel": {
+                "x": 1.8043686144964193,
+                "y": -1.0226932085418619
+              },
+              "facing": -1.4823491362254237,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.948945054945055
+            },
+            "after": {
+              "vel": {
+                "x": 2.0475059288826043,
+                "y": -1.2592830804450674
+              },
+              "facing": -1.4823491362254237,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.948945054945055
+            }
+          }
+        ]
+      },
+      "before": {
+        "initialHash": "55498e55470bd3f1381fe78f0ddbcffb59c1678263268f17912885cd3b16c6b1",
+        "spec": {
+          "concept": "wz",
+          "dir": "strong",
+          "look": "wide9",
+          "roster": "pair31",
+          "seed": 83,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.96,
+            "y": 22.61
+          },
+          "note": "grasp"
+        },
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 5.264233493562642e-12,
+        "maxArmLimitExcess": 0.0,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 40.76147608842352,
+              "y": 28.519243480450903,
+              "playsideWidth": 0.7507565195490997,
+              "achievedVy": 0.13699421077588067,
+              "requestedVelocity": {
+                "x": -0.47187260299112177,
+                "y": -0.08688155561604222
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.78793064503124,
+              "y": 28.394550922212588,
+              "playsideWidth": 0.8754490777874153,
+              "achievedVy": -0.46694251232504785,
+              "requestedVelocity": {
+                "x": 0.7616955696183885,
+                "y": -0.8127405647013057
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 40.72653992569573,
+              "y": 27.55649217004128,
+              "playsideWidth": 0.4135078299587214,
+              "achievedVy": 0.23282936661338544,
+              "requestedVelocity": {
+                "x": 2.422064101752409,
+                "y": 0.7328565998211125
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.504730188316174,
+              "y": 27.767637599152216,
+              "playsideWidth": 0.202362400847786,
+              "achievedVy": 0.16577034276318073,
+              "requestedVelocity": {
+                "x": 2.4626468934162293,
+                "y": 0.6598075748262355
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "C": {
+            "2": {
+              "x": 40.5864378883866,
+              "y": 23.55335999896704,
+              "playsideWidth": 3.1166400010329625,
+              "achievedVy": -1.9605817720369727,
+              "requestedVelocity": {
+                "x": 6.915856929866568,
+                "y": -2.998539017059026
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 43.81603458058553,
+              "y": 22.30510321366341,
+              "playsideWidth": 4.36489678633659,
+              "achievedVy": -0.24875868536652385,
+              "requestedVelocity": {
+                "x": -5.21541426277589,
+                "y": -1.676620871122266
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 42.038054109638125,
+              "y": 23.94871979854839,
+              "playsideWidth": 1.4212802014516122,
+              "achievedVy": -0.8622687350396896,
+              "requestedVelocity": {
+                "x": 3.0154801024658235,
+                "y": -1.0702346473377418
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 864.3707618281483,
+                  "tangent": 505.526020761983,
+                  "hold": 140.14720580020187
+                }
+              ]
+            },
+            "3": {
+              "x": 44.4865910186118,
+              "y": 22.949857904527008,
+              "playsideWidth": 2.4201420954729933,
+              "achievedVy": -0.9121027097839122,
+              "requestedVelocity": {
+                "x": 1.6005324671881986,
+                "y": -1.2218428389289975
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 566.9640228358893,
+                  "tangent": 486.50086105478283,
+                  "hold": 123.73649007406544
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 46,
+              "normal": 1963.8356178270753,
+              "absoluteTangent": 1127.0156377953824
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 38.330998514818205,
+              "y": 20.54003121139298,
+              "playsideWidth": 3.5299687886070217,
+              "achievedVy": -2.154912750658803,
+              "requestedVelocity": {
+                "x": 2.3267130526194477,
+                "y": -1.184695336141721
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 38.18868945540767,
+              "y": 19.696437622325696,
+              "playsideWidth": 4.373562377674304,
+              "achievedVy": 0.015494598319693544,
+              "requestedVelocity": {
+                "x": 4.279687302195249,
+                "y": -0.3678973141547277
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.29376645544658,
+              "y": 21.158467207222024,
+              "playsideWidth": 1.6115327927779788,
+              "achievedVy": -0.816063531017111,
+              "requestedVelocity": {
+                "x": -1.4096200652857618,
+                "y": -3.526697283334459
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.35275062487667,
+              "y": 20.879930360006316,
+              "playsideWidth": 1.890069639993687,
+              "achievedVy": -0.20637587330962126,
+              "requestedVelocity": {
+                "x": -0.6706272057282647,
+                "y": -4.501526061683562
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.88133393305104,
+              "y": 31.142712669989915,
+              "playsideWidth": -0.5727126699899152,
+              "achievedVy": 0.3407767557373398,
+              "requestedVelocity": {
+                "x": -8.256879317406625,
+                "y": 3.225793566313257
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.19171454049426,
+              "y": 30.137714564102495,
+              "playsideWidth": 0.432285435897505,
+              "achievedVy": -2.7355058061903246,
+              "requestedVelocity": {
+                "x": -1.1758786479927927,
+                "y": -3.3987672864814176
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.8660530493731,
+              "y": 22.631416007630985,
+              "playsideWidth": 4.038583992369016,
+              "achievedVy": -1.6769837016556106,
+              "requestedVelocity": {
+                "x": 5.868079442855821,
+                "y": -2.141905897766636
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.92092529983137,
+              "y": 23.148532615099217,
+              "playsideWidth": 3.5214673849007845,
+              "achievedVy": 1.3099466247347131,
+              "requestedVelocity": {
+                "x": 9.13461922156241,
+                "y": 2.652209375294319
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "initialHash": "55498e55470bd3f1381fe78f0ddbcffb59c1678263268f17912885cd3b16c6b1",
+        "spec": {
+          "concept": "wz",
+          "dir": "strong",
+          "look": "wide9",
+          "roster": "pair31",
+          "seed": 83,
+          "formation": "ace_12"
+        },
+        "ticks": 60,
+        "until": 3,
+        "terminal": false,
+        "firstContact": {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.96,
+            "y": 22.61
+          },
+          "note": "grasp"
+        },
+        "positiveOffensiveImpacts": [],
+        "maxAbsWorkResidual": 5.264233493562642e-12,
+        "maxArmLimitExcess": 0.0,
+        "actors": {
+          "LT": {
+            "2": {
+              "x": 40.76147608842352,
+              "y": 28.519243480450903,
+              "playsideWidth": 0.7507565195490997,
+              "achievedVy": 0.13699421077588067,
+              "requestedVelocity": {
+                "x": -0.47187260299112177,
+                "y": -0.08688155561604222
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.78793064503124,
+              "y": 28.394550922212588,
+              "playsideWidth": 0.8754490777874153,
+              "achievedVy": -0.46694251232504785,
+              "requestedVelocity": {
+                "x": 0.7616955696183885,
+                "y": -0.8127405647013057
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "LG": {
+            "2": {
+              "x": 40.72653992569573,
+              "y": 27.55649217004128,
+              "playsideWidth": 0.4135078299587214,
+              "achievedVy": 0.23282936661338544,
+              "requestedVelocity": {
+                "x": 2.422064101752409,
+                "y": 0.7328565998211125
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 41.504730188316174,
+              "y": 27.767637599152216,
+              "playsideWidth": 0.202362400847786,
+              "achievedVy": 0.16577034276318073,
+              "requestedVelocity": {
+                "x": 2.4626468934162293,
+                "y": 0.6598075748262355
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "C": {
+            "2": {
+              "x": 40.5864378883866,
+              "y": 23.55335999896704,
+              "playsideWidth": 3.1166400010329625,
+              "achievedVy": -1.9605817720369727,
+              "requestedVelocity": {
+                "x": 6.915856929866568,
+                "y": -2.998539017059026
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 43.81603458058553,
+              "y": 22.30510321366341,
+              "playsideWidth": 4.36489678633659,
+              "achievedVy": -0.24875868536652385,
+              "requestedVelocity": {
+                "x": -5.21541426277589,
+                "y": -1.676620871122266
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RG": {
+            "2": {
+              "x": 42.038054109638125,
+              "y": 23.94871979854839,
+              "playsideWidth": 1.4212802014516122,
+              "achievedVy": -0.8622687350396896,
+              "requestedVelocity": {
+                "x": 3.0154801024658235,
+                "y": -1.0702346473377418
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 864.3707618281483,
+                  "tangent": 505.526020761983,
+                  "hold": 140.14720580020187
+                }
+              ]
+            },
+            "3": {
+              "x": 44.48814754759121,
+              "y": 22.94036782095403,
+              "playsideWidth": 2.4296321790459707,
+              "achievedVy": -0.9677643536921127,
+              "requestedVelocity": {
+                "x": 1.637745326322479,
+                "y": -1.2522871088688654
+              },
+              "ownSoloHands": [
+                {
+                  "actor": "RG",
+                  "normal": 806.2173392985331,
+                  "tangent": 486.50086105478283,
+                  "hold": 123.73649007406544
+                }
+              ]
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 46,
+              "normal": 1975.7982836502074,
+              "absoluteTangent": 1127.0156377953824
+            }
+          },
+          "RT": {
+            "2": {
+              "x": 38.330998514818205,
+              "y": 20.54003121139298,
+              "playsideWidth": 3.5299687886070217,
+              "achievedVy": -2.154912750658803,
+              "requestedVelocity": {
+                "x": 2.3267130526194477,
+                "y": -1.184695336141721
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 38.18868945540767,
+              "y": 19.696437622325696,
+              "playsideWidth": 4.373562377674304,
+              "achievedVy": 0.015494598319693544,
+              "requestedVelocity": {
+                "x": 4.279687302195249,
+                "y": -0.3678973141547277
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "Y": {
+            "2": {
+              "x": 39.29376645544658,
+              "y": 21.158467207222024,
+              "playsideWidth": 1.6115327927779788,
+              "achievedVy": -0.816063531017111,
+              "requestedVelocity": {
+                "x": -1.4096200652857618,
+                "y": -3.526697283334459
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 39.35275062487667,
+              "y": 20.879930360006316,
+              "playsideWidth": 1.890069639993687,
+              "achievedVy": -0.20637587330962126,
+              "requestedVelocity": {
+                "x": -0.6706272057282647,
+                "y": -4.501526061683562
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "H": {
+            "2": {
+              "x": 41.88133393305104,
+              "y": 31.142712669989915,
+              "playsideWidth": -0.5727126699899152,
+              "achievedVy": 0.3407767557373398,
+              "requestedVelocity": {
+                "x": -8.256879317406625,
+                "y": 3.225793566313257
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 40.19171454049426,
+              "y": 30.137714564102495,
+              "playsideWidth": 0.432285435897505,
+              "achievedVy": -2.7355058061903246,
+              "requestedVelocity": {
+                "x": -1.1758786479927927,
+                "y": -3.3987672864814176
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          },
+          "RB": {
+            "2": {
+              "x": 37.8660530493731,
+              "y": 22.631416007630985,
+              "playsideWidth": 4.038583992369016,
+              "achievedVy": -1.6769837016556106,
+              "requestedVelocity": {
+                "x": 5.868079442855821,
+                "y": -2.141905897766636
+              },
+              "ownSoloHands": []
+            },
+            "3": {
+              "x": 42.92092529983137,
+              "y": 23.148532615099217,
+              "playsideWidth": 3.5214673849007845,
+              "achievedVy": 1.3099466247347131,
+              "requestedVelocity": {
+                "x": 9.13461922156241,
+                "y": 2.652209375294319
+              },
+              "ownSoloHands": []
+            },
+            "sampledOwnedSoloLoad": {
+              "samples": 0,
+              "normal": 0,
+              "absoluteTangent": 0
+            }
+          }
+        }
+      }
+    }
+  ],
+  "adverseWeakDiagnostic": {
+    "baseline": {
+      "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+      "observedTicks": 53,
+      "exactSavedCommandsAndBodies": true,
+      "selectedRows": [
+        {
+          "t": 1.9,
+          "ownPos": {
+            "x": 37.231678554370525,
+            "y": 30.958235506681433
+          },
+          "ownVel": {
+            "x": 3.707057713791084,
+            "y": 3.0741314577174177
+          },
+          "decision": {
+            "vel": {
+              "x": 4.681847085735647,
+              "y": 3.884583233764419
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "final": {
+            "vel": {
+              "x": 4.681847085735647,
+              "y": 3.884583233764419
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "acquiredLT": {
+            "slot": "LT",
+            "idx": 1,
+            "seen": {
+              "pos": {
+                "x": 40.07542276888844,
+                "y": 31.22199679550768
+              },
+              "vel": {
+                "x": 0.5005842347535898,
+                "y": 1.3962208318186375
+              },
+              "stance": "low",
+              "facing": 0.7303132216819699,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "called": null
+          }
+        },
+        {
+          "t": 2.4,
+          "ownPos": {
+            "x": 39.1828122623665,
+            "y": 32.57710337176419
+          },
+          "ownVel": {
+            "x": 4.237488694297931,
+            "y": 3.5159278903722373
+          },
+          "decision": {
+            "vel": {
+              "x": 7.250619546524536,
+              "y": 6.015981949652796
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "final": {
+            "vel": {
+              "x": 7.250619546524536,
+              "y": 6.015981949652796
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "acquiredLT": {
+            "slot": "LT",
+            "idx": 1,
+            "seen": {
+              "pos": {
+                "x": 40.366086579426614,
+                "y": 31.946361619901936
+              },
+              "vel": {
+                "x": 0.5842040144655933,
+                "y": 1.5734807182692285
+              },
+              "stance": "low",
+              "facing": 1.2799378235147467,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "called": null
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "source": "852578abd175c0e4dcae64f7edad7e38a8891a43a05cfc84c34769094b1afe74",
+      "initialHash": "6e86ccf77098fb2088ce97b4c6f4ffa3dcc7f358f880cc5c5240864c8018d78c",
+      "observedTicks": 53,
+      "exactSavedCommandsAndBodies": true,
+      "selectedRows": [
+        {
+          "t": 1.9,
+          "ownPos": {
+            "x": 37.231678554370525,
+            "y": 30.958235506681433
+          },
+          "ownVel": {
+            "x": 3.707057713791084,
+            "y": 3.0741314577174177
+          },
+          "decision": {
+            "vel": {
+              "x": 4.681847085735647,
+              "y": 3.884583233764419
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "final": {
+            "vel": {
+              "x": 2.3409235428678237,
+              "y": 1.9422916168822095
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "acquiredLT": {
+            "slot": "LT",
+            "idx": 1,
+            "seen": {
+              "pos": {
+                "x": 39.94292977485624,
+                "y": 31.690642449771957
+              },
+              "vel": {
+                "x": 0.2136790790158441,
+                "y": 2.158176177161583
+              },
+              "stance": "low",
+              "facing": 0.04328201885420603,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "called": null
+          }
+        },
+        {
+          "t": 2.4,
+          "ownPos": {
+            "x": 38.66017294073966,
+            "y": 32.35842861015962
+          },
+          "ownVel": {
+            "x": 2.6772405506244885,
+            "y": 3.49559378585899
+          },
+          "decision": {
+            "vel": {
+              "x": 5.84866255413931,
+              "y": 7.386248638842358
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "final": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "cutSkill": 1.1535714285714285,
+            "squeeze": 0
+          },
+          "acquiredLT": {
+            "slot": "LT",
+            "idx": 1,
+            "seen": {
+              "pos": {
+                "x": 40.219912921593725,
+                "y": 32.700346690060016
+              },
+              "vel": {
+                "x": 0.37060329607974934,
+                "y": 2.3584435639050083
+              },
+              "stance": "low",
+              "facing": -0.3161035006947779,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "called": null
+          }
+        }
+      ]
+    }
+  },
+  "runtimeCommandSeconds": {
+    "initial-baseline.json": 0.896327359,
+    "opposing-baseline.json": 1.8571298040000002,
+    "playside-contracts-typecheck.json": 0.412964925,
+    "playside-contracts.json": 3.157630604,
+    "playside-final-typecheck.json": 10.051297843,
+    "playside-mechanism.json": 2.9393059669999997,
+    "playside-native-controls.json": 1.4879491750000002,
+    "playside-native-primary.json": 0.8969785330000001,
+    "playside-red.json": 1.6744924570000002,
+    "playside-typecheck.json": 10.036051035999998,
+    "runoff-focus-corrected.json": 3.799557102,
+    "runoff-focus.json": 4.130090662,
+    "runoff-mechanism.json": 2.220788677,
+    "runoff-native-primary.json": 0.8463824250000002,
+    "runoff-red.json": 1.674580035,
+    "weak-slowdown-baseline.json": 0.872714576,
+    "weak-slowdown-candidate.json": 0.885450281
+  },
+  "totalCommandSeconds": 47.839691461,
+  "generatedManifest": [
+    {
+      "path": "out/zone-footwork/initial-baseline.json",
+      "sha256": "165438ffdc58c586fefb67a4e9bcd6be0619524cd1ba228e2a93274829140769",
+      "bytes": 2320
+    },
+    {
+      "path": "out/zone-footwork/initial-oz.json.gz",
+      "sha256": "7bb38d56d6147c32e0778ca557a7620879a3137ae11d06d7ea8c7b08e818aec1",
+      "bytes": 686452
+    },
+    {
+      "path": "out/zone-footwork/opposing-baseline.json",
+      "sha256": "20952daddb2bea8ec68f1b11e8f5f65c4756026e0e34e213b9a44e48b727a5d5",
+      "bytes": 2464
+    },
+    {
+      "path": "out/zone-footwork/opposing-baseline.json.gz",
+      "sha256": "c7b89c1d13d88f70f06adc4fa9d006abcd52017ebe0dd887c78c222459240108",
+      "bytes": 2513722
+    },
+    {
+      "path": "out/zone-footwork/playside-contracts-typecheck.json",
+      "sha256": "80bacc7ea7b93b78146b1d05b2a6a041c138bf1ab59f55e6ffffb7deab23ccc0",
+      "bytes": 2544
+    },
+    {
+      "path": "out/zone-footwork/playside-contracts.json",
+      "sha256": "a8fec9de9b236e0ea26ddaca04553f9cbd612e88e094f5af671ef914f9d552a2",
+      "bytes": 2475
+    },
+    {
+      "path": "out/zone-footwork/playside-controls.json.gz",
+      "sha256": "2386444346e58a60961dc2bf32ce50874691a8c0fbdb9192ec902826fe080967",
+      "bytes": 2502552
+    },
+    {
+      "path": "out/zone-footwork/playside-final-typecheck.json",
+      "sha256": "9fbd6adb08736ad61dcd2288feafb27000a8c20cab4d35302def6d8a067ed994",
+      "bytes": 2297
+    },
+    {
+      "path": "out/zone-footwork/playside-mechanism.json",
+      "sha256": "cc6404eadc2bb1fa0fd8cb3eb4445979d5e7aa1453d57b2b5958475557ef661a",
+      "bytes": 2529
+    },
+    {
+      "path": "out/zone-footwork/playside-native-controls.json",
+      "sha256": "216a83475636150f540cecfe6d0e14d95eb051199622305b622addb533b37d5c",
+      "bytes": 2464
+    },
+    {
+      "path": "out/zone-footwork/playside-native-primary.json",
+      "sha256": "51804d10b219991286470758f121d4c697036b32621db87db7561aace3eeee08",
+      "bytes": 2434
+    },
+    {
+      "path": "out/zone-footwork/playside-oz.json.gz",
+      "sha256": "d7e9ecedefe1b651ee607d6e41383dc008db5f8f30d242f13f0177566baf6c44",
+      "bytes": 691144
+    },
+    {
+      "path": "out/zone-footwork/playside-red.json",
+      "sha256": "5400e293cbebaa0e326bf12da1e662cdc3d56216a4667b87972612738b42a95c",
+      "bytes": 2452
+    },
+    {
+      "path": "out/zone-footwork/playside-typecheck.json",
+      "sha256": "47ed78da7966e7658ec6539d7ef688a4b6703e41926b98d865465487c2b04cc2",
+      "bytes": 2303
+    },
+    {
+      "path": "out/zone-footwork/runoff-focus-corrected.json",
+      "sha256": "9c81592ffab5d5e7876a8e18ce557d0534a1536c269bc44e3bf914c95f577256",
+      "bytes": 2506
+    },
+    {
+      "path": "out/zone-footwork/runoff-focus.json",
+      "sha256": "cef37ada4c81405e4d70ecd2e872a831800a7e73d17fe18906bd5fc3a38bf28d",
+      "bytes": 2506
+    },
+    {
+      "path": "out/zone-footwork/runoff-mechanism.json",
+      "sha256": "c8b2fd28c00c640a88d5e9cd291b276334be08ab25cf65ec46ec4af958a53385",
+      "bytes": 2385
+    },
+    {
+      "path": "out/zone-footwork/runoff-native-primary.json",
+      "sha256": "63d43d7f2d3499ca4240d2ba215e91156992697ad5f18fdee10a548b119fc0d3",
+      "bytes": 2416
+    },
+    {
+      "path": "out/zone-footwork/runoff-oz.json.gz",
+      "sha256": "456955ff7630d186da0ec6189be961525429109c5b63ccf236d2b445ecff015a",
+      "bytes": 688687
+    },
+    {
+      "path": "out/zone-footwork/runoff-red.json",
+      "sha256": "f89aeca7d09e9f1359866ebdb9064abd53565eb8e6995c5f4e5c889f1252f8c3",
+      "bytes": 2295
+    },
+    {
+      "path": "out/zone-footwork/weak-slowdown-baseline-observations.json",
+      "sha256": "44319b62403bc41e585809444512bef7e8ea700329314a8b884aafb1118efefe",
+      "bytes": 122347
+    },
+    {
+      "path": "out/zone-footwork/weak-slowdown-baseline.json",
+      "sha256": "5842c3b46bf601fd80ec66f0c7acd932ab2674f2499c9a0d97d838cfa624128d",
+      "bytes": 2476
+    },
+    {
+      "path": "out/zone-footwork/weak-slowdown-candidate-observations.json",
+      "sha256": "f47cb9e1c445439652b9eab797c6dd23fd01c7f2f1986525ec61f82fb006a1c7",
+      "bytes": 122204
+    },
+    {
+      "path": "out/zone-footwork/weak-slowdown-candidate.json",
+      "sha256": "6077f35d0753ee4a21319c397f3b03a162101d39b08469a0e80b8bff9ba0723c",
+      "bytes": 2477
+    }
+  ],
+  "operators": [
+    {
+      "path": "scripts/diag/zone-footwork/inputs.ts",
+      "sha256": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033"
+    },
+    {
+      "path": "scripts/diag/zone-footwork/native.ts",
+      "sha256": "cfb792b30cf91768baf0234d9268631c149a2767dccc445005adddbd48850774"
+    },
+    {
+      "path": "scripts/diag/zone-footwork/weak-slowdown.ts",
+      "sha256": "1cb83815e7c35104731b27fe2dc869001b450b2db4e341a0087d2388df49fb3b"
+    },
+    {
+      "path": "/workspace/zone-reach-footwork/scripts/diag/zone-footwork/summarize.py",
+      "sha256": "405553ad0f62f47412ded7657dccc7a84cf9ac679fc441bb1350f0aac9f24c31"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    },
+    {
+      "path": "config/baseline.json",
+      "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4"
+    },
+    {
+      "path": "test/fixtures/planned-climb-fit.json.gz",
+      "sha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f"
+    }
+  ],
+  "publicationOnlyChanges": [
+    {
+      "path": "scripts/diag/zone-footwork/inputs.ts",
+      "testedSha256": "8cdec1033af1b031c62bedc30a28f1a42042cac212dc659bfdb2ca98a5bc0033",
+      "publishedSha256": "6911fb0605551f75b09c9caa8a8c835270c2dc4c2fa1a8ca77b02f84eb5a49bb",
+      "change": "Remove one blank line at EOF only; input factory behavior unchanged; no native repeat"
+    }
+  ]
+}

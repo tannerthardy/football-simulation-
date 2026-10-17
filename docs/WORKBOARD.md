@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Zone reach footwork — 2026-10-16 (America/Phoenix)
+
+Do-It-All's portable candidate starts at accepted
+d682b1f474cb6ba260a7b8b1119a62919c5a2159. Boundary coordinated on #112/#4:
+optional own cached RunBlocker footstep through Behavior and requested world-Y
+in engagement.ts::stepRunRep, before the unchanged lost-depth anchor. This keeps
+the computed world-X connection request; a diagonal frame's normal component
+can change. No extra sensing, defensive requests, force/hand/traction law,
+capability, assignment, release, runner or spacing changes. Reach/seal/combos
+keep their old policy. The escape/cap experiment remains separately validated
+and unimported. Two bounded trials are preserved; final mechanism works but
+promotion is HOLD for LG depth loss and weak-WZ runner traffic cost. No third
+variant or broad suite. [Evidence and next decision](reviews/zone-reach-footwork.md).
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).

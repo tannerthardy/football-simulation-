@@ -44,4 +44,3 @@ export function makeSim(c: LabCase, R = rosters(), record = false): PlaySim {
   return new PlaySim({ offense: structuredClone(r.offense[formation.personnel]), defense: structuredClone(r.defense[defCall.personnel]),
     offCall, defCall, los: 40, ballY: 26.67, firstDownX: 50, down: 1, seed: c.seed, audibles: false, hurry: false, record });
 }
-
