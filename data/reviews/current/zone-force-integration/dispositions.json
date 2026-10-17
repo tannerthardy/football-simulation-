@@ -1,0 +1,19 @@
+{
+  "mergedIntegration": 130,
+  "acceptedDevelop": "0000e560e0dbe31905151465152d412ba838803d",
+  "closedByExtraction": [
+    {
+      "pr": 128,
+      "head": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "comment": "https://github.com/tannerthardy/football-simulation-/pull/128#issuecomment-6229800310"
+    }
+  ],
+  "leftOpen": [
+    126,
+    127,
+    129
+  ],
+  "branchesDeleted": [],
+  "dataOnlyHistoriesMerged": [],
+  "handoff": "https://github.com/tannerthardy/football-simulation-/pull/130#issuecomment-6229797813"
+}

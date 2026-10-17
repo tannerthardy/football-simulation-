@@ -1,11 +1,11 @@
 # Current work ownership
 
-## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
+## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
 
-Integration claims only the minimal #128 two-file assembly and one exact combined check
+Integration completed the minimal #128 two-file assembly and one exact combined check
 in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
 `coverage/defender.ts` and quarter-flat-force-support test. #126 blocking/zone-combo files remain outside the current candidate.
-Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; publication/adoption pending. Contributors do not repeat the suite.
+Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; adopted as0000e560; assembly boundary released. Contributors do not repeat the suite.
 #127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
 [Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
 
@@ -21,7 +21,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-Original checkouts/branches/evidence remain; reconcile accepted changes at clean
+Accepted develop is0000e560; original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
