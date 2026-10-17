@@ -1,5 +1,28 @@
 # Current work ownership
 
+## Catching as Flex: bounded diagnostic probes — 2026-10-16 America/Phoenix
+
+Branch `codex/flex-diagnostic-probes`, current accepted/fetched
+`0000e560e0dbe31905151465152d412ba838803d`, queue `aa9ed35`; prior HEAD f012a86.
+At most three decision probes: local perimeter eligibility/access (P018 with
+P056/P117), C3 unreleased roof (P027 against a real comeback), and shared P020
+first-collection/later-INT trace using #131's exact restoration/tooling.
+Only optional diagnostic scripts/evidence/report; no production source/test,
+physics, flags, ratings or permanent behavior changes. Interventions live in
+isolated disposable source copies. Run owns any resulting assignment repair;
+Physics/Catching retain their existing query/consumer split. No overlapping
+#126 approach changes, game campaign, roster sweep or full suite.
+
+Completed: [three-probe memo](reviews/flex-three-probes-2026-10-16/README.md).
+13 bounded native executions (6.775 timed case seconds), exact baseline parity;
+P056/P117 identical. P018 eligibility alone loses an existing Y block without
+creating a useful replacement; it does not test #137's joint allocator. P027's
+unreleased floor helps depth but delays turning and worsens a real comeback.
+Shared P020 trace separates valid difficult collection, unproved actual touch
+and later false geometry. P064 exact reconstruction stays held; G2-P107's
+misnamed PBU control is corrected to drop/rebound, with actual P080 PBU kept.
+No runtime/test/config change or promotion; diagnostics stop at owner decisions.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check

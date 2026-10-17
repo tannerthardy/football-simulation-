@@ -1,0 +1,87 @@
+// Optional template, copied into a disposable runtime's shared-restorer folder.
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {gzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {reconstruct} from './reconstruct.js';
+import {sourceVersion} from '../../scripts/source-version.js';
+
+const copy=(x:any)=>structuredClone(x),hash=(x:any)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+const [mode,...ids]=process.argv.slice(2), summaries:any[]=[];
+assert(['construct','run'].includes(mode), 'Explicit constructor-only or native mode required');
+const preparation=JSON.parse(readFileSync('preparation.json','utf8'));
+for(const id of ids){
+ const start=performance.now();let r:any;
+ try{r=reconstruct(id);}catch(e){r={id,status:'HOLD',reason:String(e)};}
+ if(mode==='construct'||r.status!=='constructor-match'){
+  const {sim,setup,native,ob,meta,...row}=r;summaries.push(row);console.log(JSON.stringify(row));continue;
+ }
+ const {sim,native}=r;
+ const horizon=id==='G1-P027'?3: id==='G1-P192'?5:6;
+ const ticks:any[]=[],man:any[]=[],opportunities:any[]=[],windows:any[]=[],decisions:any[]=[],flights:any[]=[];
+ const ident=(a:any)=>({i:a.idx,id:a.player.id,slot:a.slot,team:a.team,position:a.player.position});
+ const plan=(a:any)=>{const p=a.behavior.plan;if(!p)return null;return {kind:p.kind,target:p.target?.idx??null,climbTo:p.climbTo?.idx??null,drive:copy(p.drive),combination:p.combination?{members:p.combination.members.map((b:any)=>b.idx),target:p.combination.target?.idx}:null};};
+ const agents=sim.agents.map((a:any)=>({...ident(a),start:copy(a.body),plan:plan(a),vmax:a.profile.vmax,runFit:copy(a.runFit)}));
+ let row:any;
+ (globalThis as any).__flexMan=(q:any)=>man.push(copy(q));
+ (globalThis as any).__flexWindow=(q:any)=>windows.push(copy(q));
+ (globalThis as any).__flexDecision=(q:any)=>decisions.push(copy(q));
+ (globalThis as any).__flexFlight=(q:any)=>flights.push(copy(q));
+ (globalThis as any).__flexStage=(s:any,stage:string)=>{
+  if(!row)return;
+  row[stage]=copy(s.intents);
+  if(stage==='pre-space'){
+   row.request=copy(s.cmds);
+   row.jobs=s.agents.map((a:any)=>({i:a.idx,kind:a.behavior.kind,target:a.behavior.target?.idx??null,job:a.behavior.job??null,plan:plan(a),man:a.behavior.recordedMan?.()??a.behavior.recordedTechnique?.()}));
+  }
+ };
+ const body=()=>sim.agents.map((a:any)=>({i:a.idx,pos:copy(a.pos),vel:copy(a.vel),facing:a.facing,support:copy(a.body.support),energy:a.body.energy}));
+ const worldStep=sim.world.step.bind(sim.world);
+ sim.world.step=(intents:any,dt:number)=>{
+  row.final=copy(intents);
+  const report=worldStep(intents,dt);
+  row.report=copy(report);
+  row.achieved=body();
+  row.engagements=sim.engagements.map((e:any)=>({blocker:e.blocker.idx,defender:e.defender.idx,helpers:e.helpers.map((a:any)=>a.idx),start:e.start,contactReported:e.contactReported,hands:e.hands?{normal:e.hands.normalForce,tangent:e.hands.tangentForce,broken:e.hands.broken}:null}));
+  return report;
+ };
+ if(preparation.arm==='trace'){
+  const update=sim.updateBall.bind(sim);
+  sim.updateBall=()=>{
+   if(sim.ball.kind!=='air')return update();
+   const q:any={t:sim.t,ballBefore:copy({kind:sim.ball.kind,flight:sim.ball.flight,target:sim.ball.target?.idx??null,deflected:!!sim.ball.deflected}),draws:[],chances:[]};
+   const next=sim.rng.next,chance=sim.rng.chance;
+   sim.rng.next=function(){const x=next.call(this);q.draws.push(x);return x;};
+   sim.rng.chance=function(p:number){q.chances.push(p);return chance.call(this,p);};
+   try{return update();}finally{sim.rng.next=next;sim.rng.chance=chance;q.ballAfter=copy(sim.ball.kind==='air'?{kind:sim.ball.kind,flight:sim.ball.flight,target:sim.ball.target?.idx??null,deflected:!!sim.ball.deflected}:{kind:sim.ball.kind});opportunities.push(q);}
+  };
+ }
+ // Keep original snap/tick order; do not call run(), which cannot censor a prefix.
+ sim.event('snap',sim.slot('C')??sim.qb);
+ while(sim.phase==='live'&&sim.t<horizon){
+  if(performance.now()-start>5000)throw new Error('Five-second per-case diagnostic budget exhausted');
+  row={t:sim.t,before:body(),ball:sim.ball.kind,carrier:sim.carrier?.idx??null};
+  const n=sim.events.length;sim.tick();row.events=copy(sim.events.slice(n));ticks.push(row);
+ }
+ const censored=sim.phase==='live';
+ const result=censored?null:sim.buildResult();
+ const cut=(xs:any[])=>xs.filter(x=>x.t<horizon-1e-8);
+ const replay=native.replay;
+ const parity=preparation.arm==='base'||preparation.arm==='trace'?{
+  frames:JSON.stringify(sim.frames)===JSON.stringify(cut(replay.frames)),
+  events:JSON.stringify(sim.events)===JSON.stringify(cut(replay.events)),
+  telemetry:JSON.stringify(sim.trace.data.frames)===JSON.stringify(cut(replay.telemetry.frames)),
+  stats:result?JSON.stringify(result.stats)===JSON.stringify(native.stats):null,
+ }:null;
+ const output={id,source:sourceVersion(),preparation,constructor:r.status,inputHash:hash(r.ob),nativeHash:hash(native),
+  horizon,censored,phase:sim.phase,t:sim.t,seconds:(performance.now()-start)/1000,parity,
+  agents,ticks,man,windows,decisions,flights,opportunities,events:sim.events,frames:sim.frames,telemetry:sim.trace.data,
+  result:result?{outcome:result.outcome,yards:result.yards,stats:result.stats,segments:result.segments}:null};
+ writeFileSync(`out/catch-opportunity-physics/${id}-${preparation.arm}.json.gz`,gzipSync(JSON.stringify(output)));
+ const summary={id,arm:preparation.arm,source:output.source,seconds:output.seconds,censored,t:sim.t,parity,result:output.result};
+ summaries.push(summary);console.log(JSON.stringify(summary));
+ delete(globalThis as any).__flexStage;delete(globalThis as any).__flexMan;
+ delete(globalThis as any).__flexWindow;delete(globalThis as any).__flexDecision;delete(globalThis as any).__flexFlight;
+}
+writeFileSync(`out/catch-opportunity-physics/${mode}-summary.json`,JSON.stringify(summaries,null,2)+'\n');
+if(summaries.some(r=>r.status==='HOLD'))process.exitCode=2;
