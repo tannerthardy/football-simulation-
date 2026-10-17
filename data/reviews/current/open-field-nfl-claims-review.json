@@ -1,0 +1,168 @@
+{
+  "schema": "open-field-nfl-claims-audit-v1",
+  "researchHead": "943f1d33c181325d9ba839da4a7b195d60c658b7",
+  "newSimulations": 0,
+  "newNflQueries": 0,
+  "newProviderDownloads": 0,
+  "aggregateVerification": "Confirms committed aggregate values, not independent raw tracking recomputation",
+  "referencePlays": {
+    "run": 5462,
+    "pass": 9713,
+    "air": 0
+  },
+  "referenceArchiveProvenance": {
+    "archive": "archive.zip (Big Data Bowl 2025)",
+    "archiveSha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "commands": [
+      "npm run nfl:fetch -- bdb2025-2022",
+      "npm run mech:nfl -- --out data/reviews/mechanics/nfl-bdb2022.json"
+    ],
+    "note": "Aggregates only. Raw tracking stays in ignored data/raw/; competition terms apply to the raw data."
+  },
+  "confirmedAggregateValues": {
+    "run.yards": {
+      "n": 5462,
+      "mean": 4.447,
+      "p10": 0.0,
+      "p25": 1.0,
+      "p50": 3.0,
+      "p75": 6.0,
+      "p90": 10.0
+    },
+    "run.yards_before_contact": {
+      "n": 5262,
+      "mean": 1.166,
+      "p10": -2.1,
+      "p25": -0.8,
+      "p50": 0.6,
+      "p75": 2.2,
+      "p90": 4.7
+    },
+    "run.yards@inside_zone": {
+      "n": 1230,
+      "mean": 4.127,
+      "p10": 0.0,
+      "p25": 1.0,
+      "p50": 3.0,
+      "p75": 5.0,
+      "p90": 9.0
+    },
+    "run.yards@outside_zone": {
+      "n": 1593,
+      "mean": 4.409,
+      "p10": -1.0,
+      "p25": 1.0,
+      "p50": 3.0,
+      "p75": 6.0,
+      "p90": 10.0
+    },
+    "run.yards_before_contact@inside_zone": {
+      "n": 1193,
+      "mean": 1.241,
+      "p10": -1.4,
+      "p25": -0.4,
+      "p50": 0.7,
+      "p75": 2.1,
+      "p90": 4.0
+    },
+    "run.yards_before_contact@outside_zone": {
+      "n": 1534,
+      "mean": 0.913,
+      "p10": -2.4,
+      "p25": -1.1,
+      "p50": 0.4,
+      "p75": 2.1,
+      "p90": 4.4
+    },
+    "contact.run.carrier_speed_at_contact": {
+      "n": 5262,
+      "mean": 4.632,
+      "p10": 2.693,
+      "p25": 3.536,
+      "p50": 4.507,
+      "p75": 5.618,
+      "p90": 6.801
+    },
+    "contact.run.tackler_speed_at_contact": {
+      "n": 5262,
+      "mean": 3.216,
+      "p10": 1.061,
+      "p25": 1.803,
+      "p50": 2.85,
+      "p75": 4.366,
+      "p90": 5.836
+    },
+    "contact.run.broke_contact": {
+      "n": 5105,
+      "mean": 0.125,
+      "p10": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p90": 1.0
+    }
+  },
+  "syntheticCounterexamples": {
+    "timing.py": "<synthetic recording>\n  runner crosses line: median 2.0 s; reaches 5 yd: median nan s (n 0)\n  t=1.0s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n  t=2.0s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n  t=2.5s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n  t=3.0s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n  t=3.5s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n  t=4.0s (runner short of 5): deepest  12.0  2nd   3.0  defenders 8+ deep 1   n 1\n",
+    "lbpass.py": "<synthetic recording> {'<10': 1}\n  all  passes 1: blocked 100%   per play 1.00\n  <10  passes 1: blocked 100%   per play 1.00\n  lateral of unblocked (+ = ahead of flow): far None  free-near None\n"
+  },
+  "syntheticContactSpeedWindow": {
+    "sameIncomingSpeed": 10.0,
+    "centeredWithContinuedMotion": 10.0,
+    "centeredWithPostContactStop": 5.0
+  },
+  "sourceHashes": {
+    "docs/reviews/open-field-tackling.md": "8e23247772598418809c692fdc52bfab9d255049081dc8ebca1baead073001e8",
+    "docs/reviews/trench-deep-dive.md": "3cf0278dc1c97f237c4b903268bd1801b254daaa5d61dcfdcfe981b18e8ca930",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/diag/trench/timeline.py": "7793e17bd3c882fbc1d38efb1b84487561da988ccb2ad38d301e96396f4cfd35",
+    "scripts/diag/open-field/firsttackler.py": "0aa44765995acea1780959e2816af50947c822556bafec108c4cd96d645b1580",
+    "scripts/diag/open-field/getoff.py": "0e41b5604f27d70642be545f3e5c17386d341f81973b2ad9babedf22ecbdbc45",
+    "scripts/diag/open-field/lbpass.py": "36e89b60aa29777ad6ab269dc6aca614d44a09b7bc73b2aa5b107f18cd5a6440",
+    "scripts/diag/open-field/second.py": "d8083f1e2495c733a0ebe9a7f23ef60ebfa0f5407f13a3ff9d4cc81e5ea0dbe7",
+    "scripts/diag/open-field/timing.py": "f33a23f5e9eb25f02f8aeb0fb99cfc783548574aec460905eb80986b7c1e1557",
+    "scripts/diag/open-field/geometry.py": "f648b0c674f81b07969eaaed5159831a791040279ae424ddf8c61a38f03636b5",
+    "scripts/diag/open-field/trace.ts": "0a144ad8cf68c94f490f326e91e3d1e9e3cf30e8b66bdf3321b39eb375a07bf8",
+    "data/reviews/mechanics/nfl-bdb2022.json": "fba67b1fa09b2576e01df303bd74e3e64040dba547882d100e343cfac6b893c4"
+  },
+  "missingEvidence": [
+    "original out/mechanics/nfl-plays.jsonl.gz and its identity/validity manifest",
+    "saved NFL firsttackler/getoff/timeline/lbpass/geometry outputs and per-metric exposure counts",
+    "original out/trench/mass_nfl.py and mass_nfl2.py, player-weight join and cell counts"
+  ],
+  "reviewVerdict": "partly-supported-needs-correction",
+  "currentAcceptedHead": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "canonicalQueueHead": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "pastedAccount": {
+    "bytes": 11305,
+    "sha256": "e100970e2847654764e7ffbd5b7497b85dcd5dc4e04fe19554c4088d4d1b30ed"
+  },
+  "claimStatus": {
+    "referenceGainYbcContactSpeeds": "matches committed aggregates; raw recomputation not performed",
+    "firstContactDl41_1Percent": "raw output unavailable; nearest-role proxy and EDGE/OLB classification mismatch",
+    "zoneFlow4_9Yards": "raw output unavailable; descriptive live displacement, no causal blocker lead proof",
+    "engagedOl3_0At2Seconds": "time label incorrect: .5-2.0s pooled player-frame statistic",
+    "nflWeightBarelyMatters": "unsupported physical/causal interpretation; missing scripts/weight joins/cell counts",
+    "nflLinebackersShedImmediately": "not measured by operator",
+    "blockedLinebackers40Percent": "raw output unavailable; proximity proxy on selected defender crossings",
+    "getoff0_2SecondLatencyGap": "threshold displacement cannot identify visual latency",
+    "secondaryDepth": "confirmed operator admits post-whistle frames; impact on actual cohort unknown",
+    "dlEscapeMatchesNfl": "insufficient mechanism validation; historical prototype not current accepted"
+  },
+  "checksAdded": {
+    "newNativeCases": 0,
+    "newNflDatasetQueries": 0,
+    "newDataAcquisitions": 0,
+    "operatorCounterexamples": "two original Python CLI reducers plus original centered speed function on synthetic recordings only"
+  },
+  "archiveReceiptReused": {
+    "receipt": "Prior Catching bdb2025-existing-restoration-v1",
+    "archiveBytes": 1219840421,
+    "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "reverifiedThisTurn": false,
+    "separateHostRawPath": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
+    "pathReadableHere": false
+  },
+  "reviewScriptSha256": "1e9366c7b89717d23490570f68cd72902224119bc06602616b3a7f28bc401f3c"
+}

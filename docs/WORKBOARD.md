@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Measurement: NFL claims in open-field/box research — 2026-10-17
+
+Independent review of `claude/open-field-tackling@943f1d3` NFL comparisons:
+`docs/reviews/open-field-nfl-claims-review.md`, compact receipt
+`data/reviews/current/open-field-nfl-claims-review.json`, and a bounded saved-data
+audit reproducer. Starts at accepted `d682b1f` / queue `bf493d8`. Check source
+definitions, published aggregates, selection and NFL/sim adapter comparability.
+No native cases, engine changes, full suite, competing P045 query or acquisition.
+Completed: reference aggregates match; causal weight/shedding/latency claims do
+not follow from the operators; post-whistle admission demonstrated synthetically.
+Missing original common packet/mass scripts and smallest handoff are documented.
+
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
 Integration owns minimal extraction of carrier.ts, contact-motion.ts and engagement.ts, with carrier-crease, run-entry-opponent-information and stretch-closure tests, from acceptedc3264b0 plus queue625f3b4. All six reviewed blobs and combined sourcebed3c36 match. No overlapping authored behavior or assertion rewrite is needed. Reuse65/66 focused/typecheck evidence; Exact #112 freeze df900af passes 1906 TS/145 Python/typecheck/build in 213.321s; guarded adoption pending, no unchanged rerun. All other source/tests/settings/tooling stay accepted. Contributors continue independent work and reconcile at clean checkpoints; no forced rebases or repeated shared suite. Physics retention/ownership, CLIMB_EXIT, rejected gradient and departure trials remain separate. [Review and scope](INTEGRATION.md#ready-blocked-experimental).
