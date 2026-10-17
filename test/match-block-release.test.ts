@@ -79,12 +79,20 @@ describe('blocking is provisional evidence for an uncommitted match key', () => 
   });
 
   it.each(roles)('%s preserves a genuine acquired flat/under exchange', (rule,zone) => {
-    const f=stage(rule,zone);
-    f.setPicture({ ...f.picture(),vel:{x:0,y:f.sim.offAlign.strongSign*5},facing:f.sim.offAlign.strongSign*Math.PI/2,stance:null });
-    f.block();const job=f.b.job;f.release();
-    // Deep judgment can legitimately rescue an uncovered observed vertical;
-    // the installed exchange itself must remain in its earned branch.
-    if(rule!=='q_safety') expect(f.b.job).toBe(job);
-    expect(f.b.recordedRule(1.2).mode).toBe(rule==='q_safety'?'one':'zoned');
+    for (const release of ['flat', 'under'] as const) {
+      const f=stage(rule,zone),sign=f.sim.offAlign.strongSign*(release==='flat'?1:-1);
+      // The inward shallow is beyond line contact; turning toward a nearby
+      // defender at x=41 legitimately presents blocking evidence instead.
+      f.setPicture({ ...f.picture(),pos:{...f.picture().pos,x:release==='under'?43:41},
+        vel:{x:0,y:sign*5},facing:sign*Math.PI/2,stance:null });
+      f.block();
+      expect(f.b.recordedRule(.8).reads.find(rd=>rd.target===f.r.idx)?.release).toBe(release);
+      const job=f.b.job;f.release();
+      // A genuine shallow earns zone-off. Quarter-flat instead owns the
+      // acquired outward route, including a subsequent wheel. Deep judgment
+      // may still rescue a vertical without rewriting its installed branch.
+      if(rule!=='q_safety') expect(f.b.job).toBe(job);
+      expect(f.b.recordedRule(1.2).mode).toBe(rule==='q_safety'?'one':rule==='q_apex'&&release==='flat'?'flat':'zoned');
+    }
   });
 });

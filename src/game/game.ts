@@ -891,6 +891,7 @@ export class Game {
     const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
     const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(), energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact });
     const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
+    for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
     const good = r.score?.kind === 'TD' && r.score.team === 'O';
     this.log.push(this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label));
     return good;

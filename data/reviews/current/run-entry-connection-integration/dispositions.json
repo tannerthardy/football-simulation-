@@ -1,0 +1,23 @@
+{
+  "acceptedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "successorPR": 112,
+  "method": "Closed as incorporated by reviewed six-file extraction; every original branch, experiment and evidence history retained.",
+  "closures": [
+    {
+      "pr": 110,
+      "head": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+      "comment": {
+        "id": 6226305071
+      },
+      "closed": true
+    },
+    {
+      "pr": 111,
+      "head": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+      "comment": {
+        "id": 6226306757
+      },
+      "closed": true
+    }
+  ]
+}

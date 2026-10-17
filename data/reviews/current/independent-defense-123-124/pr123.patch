@@ -1,0 +1,99 @@
+diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts
+index 15136e64db2fd9d8a78976fd42ec975a25776f94..8dea3c0fede012337a6160a7dbe1e9d20ca3b2dd 100644
+--- a/src/sim/run-fits.ts
++++ b/src/sim/run-fits.ts
+@@ -254,8 +254,15 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+   // projected position), never against his own gap. Backside cutback and
+   // lag duties stay home. FLOW_READ=0 restores the landmark-only fit.
+   let flowing = false;
+-  if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && Math.abs(seen.vel.y) > 1.5) {
+-    const f = Math.sign(seen.vel.y);
++  // An identified runner at the existing declaration surface can straighten
++  // up without ceasing to occupy his crease. Keep inside-out leverage there;
++  // a deep mesh or uncertain possession still requires the original flow cue.
++  const shallowRunner = job.kind === 'insert' && !premesh && seen.carrying === true
++    && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
++  const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
++    : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
++  if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
++    const f = flowSide;
+     const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
+     if ((onBall - gy) * f > 0) { gy = onBall; flowing = true; a.tags.add('fit-flow-read'); }
+   }
+diff --git a/test/second-level-handover.test.ts b/test/second-level-handover.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..66a24a7eac669570f9acca2103194d4e6b404e78
+--- /dev/null
++++ b/test/second-level-handover.test.ts
+@@ -0,0 +1,71 @@
++import {afterEach,describe,expect,it,vi} from 'vitest';
++import {CENTER_Y} from '../src/core/field.js';
++import {Rng} from '../src/core/rng.js';
++import {generateTeam,pickDefense,pickOffense} from '../src/league/team.js';
++import {RUN_BY_ID} from '../src/playbook/concepts.js';
++import {COVERAGE_BY_ID,FRONT_BY_ID} from '../src/playbook/defense.js';
++import {FORMATION_BY_ID} from '../src/playbook/formations.js';
++import {World} from '../src/physics/world.js';
++import {liveGap} from '../src/sim/live-gaps.js';
++import type {Perceived} from '../src/sim/perception.js';
++import {PlaySim} from '../src/sim/playsim.js';
++import {executeRunFit,type RunFitJob} from '../src/sim/run-fits.js';
++import * as steering from '../src/sim/behaviors/common.js';
++
++const offense=generateTeam(new Rng(31),'O','O',{strength:.55});
++const defense=generateTeam(new Rng(32),'D','D',{strength:.55});
++
++/** Explicit acquired picture, not a natural sensing claim. The defender has
++ * already read run; a shallow identified runner is outside his own gap. */
++function fixture(side:number,kind:RunFitJob['kind']='insert',technique:RunFitJob['technique']='attack'){
++ const sim=new PlaySim({offense:pickOffense(offense,'11'),defense:pickDefense(defense,'base43'),
++  offCall:{formation:FORMATION_BY_ID.ace_11,flip:false,kind:'run',run:RUN_BY_ID.counter,label:'Acquired fit'},
++  defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over'},
++  los:40,ballY:CENTER_Y,firstDownX:50,seed:3});
++ const a=sim.slot('LB_M')!,rb=sim.slot('RB')!;
++ sim.t=1;sim.handoffAt=.5;sim.ball={kind:'held',carrier:rb};
++ a.runFit={gap:'A',side,kind,technique,edge:'box',pace:'stack'};
++ Object.defineProperty(a.mind,'placementError',{get:()=>0});
++ const picture=new Map(sim.offense.map(o=>[o,{pos:{...sim.offAlign.spots[o.slot].pos},
++  vel:{x:0,y:0},age:.2,pose:'up',carrying:o===rb,stance:null,facing:0} as Perceived]));
++ const see=sim.see.bind(sim);sim.see=(observer,target,delay)=>picture.get(target)??see(observer,target,delay);
++ a.body.pos={x:41.5,y:liveGap(sim,a,'A',side).y};a.body.vel={x:0,y:0};a.body.facing=Math.PI;
++ const cue=picture.get(rb)!;cue.pos={x:38.8,y:a.pos.y+side*3};cue.vel={x:2,y:0};
++ return {sim,a,rb,cue,read:()=>executeRunFit(a,sim,'A',side,{target:rb,cue})};
++}
++
++afterEach(()=>vi.restoreAllMocks());
++
++describe('shallow acquired runner keeps insertion from returning to its old surface',()=>{
++ it.each([-1,1])('can close on an observed runner who straightens up, side=%s',side=>{
++  const f=fixture(side),original=structuredClone(f.a.body),spy=vi.spyOn(steering,'chase');
++  const command=f.read();
++  expect(spy).toHaveBeenCalledWith(f.sim,f.a,f.rb,2);
++  expect(command.vel.y*side).toBeGreaterThan(0);
++  const body=structuredClone(original),world=new World([body]);
++  for(let k=0;k<4;k++){
++   const report=world.step([command],.05);
++   expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  }
++  const destination={x:f.cue.pos.x+f.cue.vel.x*.2,y:f.cue.pos.y};
++  expect(Math.hypot(body.pos.x-destination.x,body.pos.y-destination.y))
++   .toBeLessThan(Math.hypot(original.pos.x-destination.x,original.pos.y-destination.y));
++  expect(body.support!.state).toBe('up');expect(f.a.body).toEqual(original);
++ });
++
++ it.each(['deep','not-carrying','unknown','cutback','lag','away-side'] as const)('preserves the %s control',control=>{
++  const f=fixture(1,control==='cutback'?'cutback':'insert',control==='lag'?'lag':'attack');
++  if(control==='deep')f.cue.pos.x=38.3;
++  if(control==='not-carrying')f.cue.carrying=false;
++  if(control==='unknown')f.cue.carrying=null;
++  if(control==='away-side')f.a.runFit!.side=-1;
++  const spy=vi.spyOn(steering,'chase');f.read();expect(spy).not.toHaveBeenCalled();
++ });
++
++ it('uses acquired possession and geometry rather than the hidden handoff or live runner',()=>{
++  const f=fixture(1),first=f.read();
++  f.sim.ball={kind:'held',carrier:f.sim.qb};f.sim.handoffAt=-1;
++  f.rb.body.pos={x:70,y:5};f.rb.body.vel={x:9,y:-8};
++  expect(f.read()).toEqual(first);
++ });
++});
