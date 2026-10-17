@@ -1,0 +1,2131 @@
+{
+  "protocol": "block-strength-evidence-v1",
+  "testedRevision": "0faa291f9ddd8d7e258d95689c0525ecb7f86b19",
+  "sourceSha256": "0a5e365a07640d77a03eec95361de93bb98f917c65a5b161874ca5e4938b5c4c",
+  "node": "v22.23.3",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "collector": {
+    "path": "scripts/diag/physics/block-protection.ts",
+    "sha256": "00ac2a42ddbf146ececf20431550dc7fd01421e513cbca4123b1a16d39041bb3"
+  },
+  "input": {
+    "path": "config/block-protection.json",
+    "sha256": "876a7116e05181701c074f9746510fcad89c4bc59ee68927f8b584fc8a95f116"
+  },
+  "raw": {
+    "path": "out/block-strength/protection.json.gz",
+    "sha256": "b17870b21983ee03a0847f6518f595aae649743e1492d3ed0e09d12df573f146",
+    "note": "Ignored trace; reproducible using the pinned collector/input."
+  },
+  "definitions": {
+    "arrival": "First sampled live crossing of the LOS, and separately of each pair's moving longitudinal midpoint, by an offensive ballcarrier other than the QB. Crossings are bracketed at controller ticks; no substep arrival time is inferred.",
+    "interposition": "Signed nominal blocker-radius minus perpendicular distance to the defender-to-actual-carrier segment, only when the blocker projects strictly inside that segment. This circular-profile proxy does not reconstruct squeeze-dependent collision support. Positive means geometric interception of that direct centerline, not certified approach protection or causal prevention of a tackle.",
+    "scope": "Observed executed paths only; no hypothetical alternate lanes, block-win threshold, NFL rate or causal counterfactual. Proximity/reach are explicitly separate from nonzero hand load, torso impulse and acquired tackle grip. A live prefix and a wall/error censor are retained explicitly."
+  },
+  "receipts": {
+    "force-checks": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-mass-response",
+      "commit": "3d5dd83304828f3fbb77f63711c49f4d3c31275f",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "73d22edf3f2f9054498e680e57a75788f590c7c2585b1e16e0e6530c6cdbab29",
+      "validationSha256": "67170a7c66105f215204a9056371c79afeb2267ccc9c98fcf041e3ce4e35e542",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T00:32:33.876Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/force-capacity.test.ts",
+            "test/actuation.test.ts",
+            "test/held-recovery.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 3.9049628390000004
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T00:32:37.788Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "force-checks-final": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-mass-response",
+      "commit": "0faa291f9ddd8d7e258d95689c0525ecb7f86b19",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0a5e365a07640d77a03eec95361de93bb98f917c65a5b161874ca5e4938b5c4c",
+      "validationSha256": "11e5d1cb5fb692b7f7f2f3a0fd7c49ed31f7d7e150ab09bf780837aa1e15969c",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T00:32:50.600Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/force-capacity.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.3037758680000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T00:32:52.910Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-mass-response",
+      "commit": "0faa291f9ddd8d7e258d95689c0525ecb7f86b19",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0a5e365a07640d77a03eec95361de93bb98f917c65a5b161874ca5e4938b5c4c",
+      "validationSha256": "11e5d1cb5fb692b7f7f2f3a0fd7c49ed31f7d7e150ab09bf780837aa1e15969c",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T00:33:05.993Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.544546263
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T00:33:19.542Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "protection": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/block-mass-response",
+      "commit": "0faa291f9ddd8d7e258d95689c0525ecb7f86b19",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0a5e365a07640d77a03eec95361de93bb98f917c65a5b161874ca5e4938b5c4c",
+      "validationSha256": "11e5d1cb5fb692b7f7f2f3a0fd7c49ed31f7d7e150ab09bf780837aa1e15969c",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-17T00:33:25.987Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/block-protection.ts",
+            "out/block-strength/protection.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.321820276
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-17T00:33:28.311Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "checks": {
+    "unique": 34,
+    "executed": 42,
+    "initiallyFailed": 1,
+    "finalForceChecks": 8,
+    "compatibleExistingActuation": 9,
+    "compatibleExistingHeldRecovery": 17,
+    "note": "Initial new multi-arm fixture had no compression and thus no applied force; corrected it to exercise load. The numerical rejection guard was strengthened; unchanged omitted-input controls are reused."
+  },
+  "cost": {
+    "newNativeExecutions": 3,
+    "focusedTestExecutions": 42,
+    "commandSeconds": 22.075105246,
+    "note": "Focused checks/typecheck/three native controls only; not a runtime comparison, no suite or game campaign."
+  },
+  "rows": [
+    {
+      "id": "wz-strong-over3",
+      "input": {
+        "id": "wz-strong-over3",
+        "kind": "pair11",
+        "direction": "strong",
+        "until": 20
+      },
+      "setupHash": "72c2f68b8b6e3520937506cf18da24d524866c762f6c71b911d51e624561eee2",
+      "initialProfilesAndBodiesSha256": "d0869f537a4c08ee02c7d7d89cc013a679a403ec11f640dbb064323a99aa5423",
+      "terminal": true,
+      "censor": null,
+      "finalTime": 4.15,
+      "ending": "tackle",
+      "gain": 2.53,
+      "firstContact": {
+        "t": 3.3,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 18,
+        "pos": {
+          "x": 40.83,
+          "y": 14.87
+        },
+        "note": "grasp"
+      },
+      "firstNonzeroRunnerTorso": {
+        "interval": [
+          3.85,
+          3.9
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "contact": {
+          "i": 6,
+          "j": 18,
+          "impulse": 123.55411679039929,
+          "closing": 2.3138962122227373,
+          "key": null
+        }
+      },
+      "firstLoadedRunnerGrasp": {
+        "interval": [
+          3.35,
+          3.4
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "grasp": {
+          "a": 18,
+          "b": 6,
+          "meanForce": 1569.2997189478638,
+          "broken": false,
+          "slipping": true
+        }
+      },
+      "lineArrival": {
+        "bracket": [
+          3.05,
+          3.1
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "pairObservations": [
+          {
+            "key": "7/12",
+            "blocker": 7,
+            "defender": 12,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 7,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": 0.697770194688168,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 1.089527455945612,
+              "pairNominalSurfaceGapYd": 0.4831638195819757,
+              "defenderRunnerNominalSurfaceGapYd": 3.6986221133380504,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.2518066551131083,
+              "perpendicularDistanceYd": 0.16670278924159698,
+              "interpositionMarginYd": 0.14966084712203936,
+              "directCenterlineInterposition": true
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "7/12",
+                "a": 7,
+                "b": 12,
+                "normalMeanForce": 0,
+                "tangentMeanForce": -225.67447879209953,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "4/14",
+            "blocker": 4,
+            "defender": 14,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 4,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": 0.5062603271179356,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 0.7449090699751804,
+              "pairNominalSurfaceGapYd": -0.0005454754793650651,
+              "defenderRunnerNominalSurfaceGapYd": 7.39240100034262,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.09190278187018601,
+              "perpendicularDistanceYd": 0.08358146007814458,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "4/14",
+                "a": 4,
+                "b": 14,
+                "normalMeanForce": 688.9407959327932,
+                "tangentMeanForce": 371.6776599977628,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "10/11",
+            "blocker": 10,
+            "defender": 11,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 10,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -2.3357417790067316,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 0.5642420469603292,
+              "pairNominalSurfaceGapYd": -0.063030680312398,
+              "defenderRunnerNominalSurfaceGapYd": 16.49492682865845,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.024069969555816927,
+              "perpendicularDistanceYd": 0.38584687114184846,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "10/11",
+                "a": 10,
+                "b": 11,
+                "normalMeanForce": 894.8444174528288,
+                "tangentMeanForce": 492.04045299374417,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 10,
+                "j": 11,
+                "impulse": 11.845145270839641,
+                "closing": 0.07987095361683437,
+                "key": "10/11"
+              }
+            ]
+          },
+          {
+            "key": "5/13",
+            "blocker": 5,
+            "defender": 13,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 5,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -3.46024577288582,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 1.373025268303577,
+              "pairNominalSurfaceGapYd": 0.7112070864853952,
+              "defenderRunnerNominalSurfaceGapYd": 7.37429183688837,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.10914918490069106,
+              "perpendicularDistanceYd": 1.0630335705155287,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "5/13",
+                "a": 5,
+                "b": 13,
+                "normalMeanForce": -157.28818406209518,
+                "tangentMeanForce": 542.2859614368224,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "2/13",
+            "blocker": 2,
+            "defender": 13,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -3.01565049727089,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 1.46728870119953,
+              "pairNominalSurfaceGapYd": 0.7991068830177117,
+              "defenderRunnerNominalSurfaceGapYd": 7.37429183688837,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.12381481587870168,
+              "perpendicularDistanceYd": 1.0868367144522113,
+              "interpositionMarginYd": -0.7186548962703931,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "1/11",
+            "blocker": 1,
+            "defender": 11,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 10,
+            "helper": true,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.8672250379213509,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 1.7533904578890447,
+              "pairNominalSurfaceGapYd": 1.0688450033435901,
+              "defenderRunnerNominalSurfaceGapYd": 16.49492682865845,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.08134730123872248,
+              "perpendicularDistanceYd": 1.06699561064568,
+              "interpositionMarginYd": -0.7042683379184072,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "1/11",
+                "a": 1,
+                "b": 11,
+                "normalMeanForce": 0,
+                "tangentMeanForce": 0,
+                "nonzeroMeanLoad": false
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "3/15",
+            "blocker": 3,
+            "defender": 15,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 3,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -4.207863933039512,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 0.9026381463303524,
+              "pairNominalSurfaceGapYd": 0.25445632814853425,
+              "defenderRunnerNominalSurfaceGapYd": 5.663028620215871,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.11082752855442748,
+              "perpendicularDistanceYd": 0.5807622269859694,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "3/15",
+                "a": 3,
+                "b": 15,
+                "normalMeanForce": 76.64625318863482,
+                "tangentMeanForce": 741.9295382135087,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "2/17",
+            "blocker": 2,
+            "defender": 17,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 2,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.804231156514767,
+              "runnerLineOffsetYd": 0.12112964673267612,
+              "pairCenterDistanceYd": 1.0842919573563965,
+              "pairNominalSurfaceGapYd": 0.42974650281094195,
+              "defenderRunnerNominalSurfaceGapYd": 6.635154726535026,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.03174428782407199,
+              "perpendicularDistanceYd": 1.0598689760327593,
+              "interpositionMarginYd": -0.6916871578509411,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "2/17",
+                "a": 2,
+                "b": 17,
+                "normalMeanForce": -244.6082519976456,
+                "tangentMeanForce": -723.2349735551654,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          }
+        ]
+      },
+      "arrivals": [
+        {
+          "bracket": [
+            2.85,
+            2.9
+          ],
+          "blocker": "Y",
+          "defender": "DE_S",
+          "blockerLb": 264.0,
+          "defenderLb": 235.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.08913302098513753,
+            "runnerLineOffsetYd": -0.42499313242341685,
+            "pairCenterDistanceYd": 1.1925379942205028,
+            "pairNominalSurfaceGapYd": 0.5861743578568663,
+            "defenderRunnerNominalSurfaceGapYd": 2.726963768649173,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.3608355436689432,
+            "perpendicularDistanceYd": 0.024515865020892667,
+            "interpositionMarginYd": 0.2918477713427437,
+            "directCenterlineInterposition": true
+          },
+          "handLoads": [
+            {
+              "key": "7/12",
+              "a": 7,
+              "b": 12,
+              "normalMeanForce": 0,
+              "tangentMeanForce": -58.023887578416975,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.9,
+            2.95
+          ],
+          "blocker": "LG",
+          "defender": "DT_W",
+          "blockerLb": 324.0,
+          "defenderLb": 328.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.10343085604183244,
+            "runnerLineOffsetYd": -0.28208817162457933,
+            "pairCenterDistanceYd": 0.6773499538027236,
+            "pairNominalSurfaceGapYd": -0.06810459165182187,
+            "defenderRunnerNominalSurfaceGapYd": 6.8460088367398395,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.08942681334985891,
+            "perpendicularDistanceYd": 0.08957452809269578,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "4/14",
+              "a": 4,
+              "b": 14,
+              "normalMeanForce": 671.8864100431879,
+              "tangentMeanForce": 357.2470257834813,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": []
+        }
+      ],
+      "unobservedPairArrivals": [
+        {
+          "key": "10/11",
+          "blocker": {
+            "idx": 10,
+            "slot": "H",
+            "team": "O",
+            "player": "pair11O-TE1"
+          },
+          "defender": {
+            "idx": 11,
+            "slot": "DE_W",
+            "team": "D",
+            "player": "pair11D-EDGE2"
+          },
+          "firstSeen": 0.5,
+          "initiallyHelper": false,
+          "localArrivalObserved": false
+        },
+        {
+          "key": "5/13",
+          "blocker": {
+            "idx": 5,
+            "slot": "RG",
+            "team": "O",
+            "player": "pair11O-OG1"
+          },
+          "defender": {
+            "idx": 13,
+            "slot": "DT_S",
+            "team": "D",
+            "player": "pair11D-EDGE1"
+          },
+          "firstSeen": 0.55,
+          "initiallyHelper": false,
+          "localArrivalObserved": false
+        },
+        {
+          "key": "2/13",
+          "blocker": {
+            "idx": 2,
+            "slot": "RT",
+            "team": "O",
+            "player": "pair11O-OT1"
+          },
+          "defender": {
+            "idx": 13,
+            "slot": "DT_S",
+            "team": "D",
+            "player": "pair11D-EDGE1"
+          },
+          "firstSeen": 0.7,
+          "initiallyHelper": true,
+          "localArrivalObserved": false
+        },
+        {
+          "key": "1/11",
+          "blocker": {
+            "idx": 1,
+            "slot": "LT",
+            "team": "O",
+            "player": "pair11O-OT2"
+          },
+          "defender": {
+            "idx": 11,
+            "slot": "DE_W",
+            "team": "D",
+            "player": "pair11D-EDGE2"
+          },
+          "firstSeen": 1.05,
+          "initiallyHelper": true,
+          "localArrivalObserved": false
+        },
+        {
+          "key": "3/15",
+          "blocker": {
+            "idx": 3,
+            "slot": "C",
+            "team": "O",
+            "player": "pair11O-OG2"
+          },
+          "defender": {
+            "idx": 15,
+            "slot": "LB_M",
+            "team": "D",
+            "player": "pair11D-LB3"
+          },
+          "firstSeen": 1.35,
+          "initiallyHelper": false,
+          "localArrivalObserved": false
+        },
+        {
+          "key": "2/17",
+          "blocker": {
+            "idx": 2,
+            "slot": "RT",
+            "team": "O",
+            "player": "pair11O-OT1"
+          },
+          "defender": {
+            "idx": 17,
+            "slot": "LB_S",
+            "team": "D",
+            "player": "pair11D-LB4"
+          },
+          "firstSeen": 1.75,
+          "initiallyHelper": false,
+          "localArrivalObserved": false
+        }
+      ],
+      "maxPlanarWorkResidual": 1.007638417149792e-11,
+      "elapsedSeconds": 0.7969632390000002
+    },
+    {
+      "id": "wz-weak-over3",
+      "input": {
+        "id": "wz-weak-over3",
+        "kind": "pair11",
+        "direction": "weak",
+        "until": 20
+      },
+      "setupHash": "b99a788734fd8042be5c1a10d6937feb1b3ce876003e25251e908dd3be4e002c",
+      "initialProfilesAndBodiesSha256": "d0869f537a4c08ee02c7d7d89cc013a679a403ec11f640dbb064323a99aa5423",
+      "terminal": true,
+      "censor": null,
+      "finalTime": 4,
+      "ending": "tackle",
+      "gain": 5.34,
+      "firstContact": {
+        "t": 2.8,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 41.31,
+          "y": 34.31
+        },
+        "note": "grasp"
+      },
+      "firstNonzeroRunnerTorso": {
+        "interval": [
+          3.15,
+          3.1999999999999997
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "contact": {
+          "i": 6,
+          "j": 15,
+          "impulse": 138.08985621782298,
+          "closing": 2.6470091857588747,
+          "key": null
+        }
+      },
+      "firstLoadedRunnerGrasp": {
+        "interval": [
+          2.85,
+          2.9
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "grasp": {
+          "a": 15,
+          "b": 6,
+          "meanForce": 1065.6406154541855,
+          "broken": false,
+          "slipping": true
+        }
+      },
+      "lineArrival": {
+        "bracket": [
+          2.55,
+          2.6
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "pair11O-RB1"
+        },
+        "pairObservations": [
+          {
+            "key": "7/12",
+            "blocker": 7,
+            "defender": 12,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 7,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.856099000043244,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 0.9433684833943404,
+              "pairNominalSurfaceGapYd": 0.33700484703070416,
+              "defenderRunnerNominalSurfaceGapYd": 8.794421402406376,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.024964697922868304,
+              "perpendicularDistanceYd": 0.9138961133023507,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "7/12",
+                "a": 7,
+                "b": 12,
+                "normalMeanForce": -43.87736245427246,
+                "tangentMeanForce": 361.2587805752878,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "2/13",
+            "blocker": 2,
+            "defender": 13,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 2,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.2626690504032183,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 0.9190776621964223,
+              "pairNominalSurfaceGapYd": 0.25089584401460413,
+              "defenderRunnerNominalSurfaceGapYd": 5.8121060055463705,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.005315540106030109,
+              "perpendicularDistanceYd": 0.9184479573685909,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "2/13",
+                "a": 2,
+                "b": 13,
+                "normalMeanForce": 942.7201344338338,
+                "tangentMeanForce": -570.049659530321,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "3/14",
+            "blocker": 3,
+            "defender": 14,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 3,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": 1.1379983376580185,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 0.6820151847565205,
+              "pairNominalSurfaceGapYd": -0.05616663342529771,
+              "defenderRunnerNominalSurfaceGapYd": 5.144771115314736,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.11476807608438108,
+              "perpendicularDistanceYd": 0.14505509884424467,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "3/14",
+                "a": 3,
+                "b": 14,
+                "normalMeanForce": 566.6470377997138,
+                "tangentMeanForce": 287.0843372225464,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "1/11",
+            "blocker": 1,
+            "defender": 11,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 1,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.4201492885198661,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 0.6151106073303951,
+              "pairNominalSurfaceGapYd": -0.06943484721505938,
+              "defenderRunnerNominalSurfaceGapYd": 0.042897028901405565,
+              "defenderNominalReachEnvelope": true,
+              "blockerProjectionFraction": -0.46164585354526233,
+              "perpendicularDistanceYd": 0.5364397143735187,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "1/11",
+                "a": 1,
+                "b": 11,
+                "normalMeanForce": 491.69622811271586,
+                "tangentMeanForce": -225.5625009923594,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 1,
+                "j": 11,
+                "impulse": 44.52413458763275,
+                "closing": 0.08733756000448284,
+                "key": "1/11"
+              }
+            ]
+          },
+          {
+            "key": "4/14",
+            "blocker": 4,
+            "defender": 14,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": 0.9965146076907274,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 1.310288138563654,
+              "pairNominalSurfaceGapYd": 0.5648335931091086,
+              "defenderRunnerNominalSurfaceGapYd": 5.144771115314736,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.2255666943031386,
+              "perpendicularDistanceYd": 0.03673273640419116,
+              "interpositionMarginYd": 0.33417635450489974,
+              "directCenterlineInterposition": true
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "10/16",
+            "blocker": 10,
+            "defender": 16,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.6390646403228715,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 1.9386235027930232,
+              "pairNominalSurfaceGapYd": 1.3486235027930231,
+              "defenderRunnerNominalSurfaceGapYd": 1.706420729694921,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.06093767313427873,
+              "perpendicularDistanceYd": 1.933646078309755,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "5/17",
+            "blocker": 5,
+            "defender": 17,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 5,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -3.1822634758035235,
+              "runnerLineOffsetYd": 0.07708581892218547,
+              "pairCenterDistanceYd": 0.5832062952800132,
+              "pairNominalSurfaceGapYd": -0.06497552290180497,
+              "defenderRunnerNominalSurfaceGapYd": 5.783262291640351,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.02635199482831577,
+              "perpendicularDistanceYd": 0.5586301556513994,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "5/17",
+                "a": 5,
+                "b": 17,
+                "normalMeanForce": 1083.8444065263222,
+                "tangentMeanForce": -279.57917114080215,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 5,
+                "j": 17,
+                "impulse": 8.530649559758743,
+                "closing": 0.08668563261268566,
+                "key": "5/17"
+              }
+            ]
+          }
+        ]
+      },
+      "arrivals": [
+        {
+          "bracket": [
+            2.4,
+            2.45
+          ],
+          "blocker": "C",
+          "defender": "DT_W",
+          "blockerLb": 316.0,
+          "defenderLb": 328.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.22935524758963055,
+            "runnerLineOffsetYd": -0.602284604299264,
+            "pairCenterDistanceYd": 0.6638438673818406,
+            "pairNominalSurfaceGapYd": -0.07433795079997751,
+            "defenderRunnerNominalSurfaceGapYd": 4.557884162599104,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.12675323753040482,
+            "perpendicularDistanceYd": 0.05436330435344002,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "3/14",
+              "a": 3,
+              "b": 14,
+              "normalMeanForce": 570.7537309733094,
+              "tangentMeanForce": 161.46199211285193,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 3,
+              "j": 14,
+              "impulse": 8.751690560679343,
+              "closing": 0.04854304817321893,
+              "key": "3/14"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            2.4,
+            2.45
+          ],
+          "blocker": "LG",
+          "defender": "DT_W",
+          "blockerLb": 324.0,
+          "defenderLb": 328.0,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.1848381312122669,
+            "runnerLineOffsetYd": -0.602284604299264,
+            "pairCenterDistanceYd": 1.0725356760176354,
+            "pairNominalSurfaceGapYd": 0.3270811305630901,
+            "defenderRunnerNominalSurfaceGapYd": 4.557884162599104,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.205119546010449,
+            "perpendicularDistanceYd": 0.06335274164453301,
+            "interpositionMarginYd": 0.3075563492645579,
+            "directCenterlineInterposition": true
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.65,
+            2.7
+          ],
+          "blocker": "LT",
+          "defender": "DE_W",
+          "blockerLb": 315.0,
+          "defenderLb": 270.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.028235301806603275,
+            "runnerLineOffsetYd": 0.5566045336475725,
+            "pairCenterDistanceYd": 0.6151198096714116,
+            "pairNominalSurfaceGapYd": -0.06942564487404296,
+            "defenderRunnerNominalSurfaceGapYd": 0.05221465262490654,
+            "defenderNominalReachEnvelope": true,
+            "blockerProjectionFraction": -0.8955795560971318,
+            "perpendicularDistanceYd": 0.16616333847072526,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "1/11",
+              "a": 1,
+              "b": 11,
+              "normalMeanForce": 494.6088845534686,
+              "tangentMeanForce": -237.47083884439803,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 1,
+              "j": 11,
+              "impulse": 41.98602864046941,
+              "closing": 0.08450427851241185,
+              "key": "1/11"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            2.7,
+            2.75
+          ],
+          "blocker": "Y",
+          "defender": "DE_S",
+          "blockerLb": 264.0,
+          "defenderLb": 235.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.1071674748213951,
+            "runnerLineOffsetYd": 0.8037092022114081,
+            "pairCenterDistanceYd": 0.6011296989108175,
+            "pairNominalSurfaceGapYd": -0.00523393745281886,
+            "defenderRunnerNominalSurfaceGapYd": 9.231478509381914,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.023097639870573297,
+            "perpendicularDistanceYd": 0.5568015200951923,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "7/12",
+              "a": 7,
+              "b": 12,
+              "normalMeanForce": 592.3173793525892,
+              "tangentMeanForce": 311.06655903706155,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.85,
+            2.9
+          ],
+          "blocker": "H",
+          "defender": "LB_W",
+          "blockerLb": 252.0,
+          "defenderLb": 228.99999999999997,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.13084450792615598,
+            "runnerLineOffsetYd": 1.5571933095461432,
+            "pairCenterDistanceYd": 1.0700219058857328,
+            "pairNominalSurfaceGapYd": 0.4800219058857328,
+            "defenderRunnerNominalSurfaceGapYd": 1.9492854720332513,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.12130689685847737,
+            "perpendicularDistanceYd": 1.0253860568397068,
+            "interpositionMarginYd": -0.7199315113851614,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.9,
+            2.95
+          ],
+          "blocker": "RT",
+          "defender": "DT_S",
+          "blockerLb": 321.0,
+          "defenderLb": 246.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.01609369584945597,
+            "runnerLineOffsetYd": 1.7824715750738491,
+            "pairCenterDistanceYd": 0.9452779385677818,
+            "pairNominalSurfaceGapYd": 0.2770961203859636,
+            "defenderRunnerNominalSurfaceGapYd": 5.816282166877416,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.03482072679467926,
+            "perpendicularDistanceYd": 0.9186032279291392,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "2/13",
+              "a": 2,
+              "b": 13,
+              "normalMeanForce": 739.7454770206316,
+              "tangentMeanForce": -709.5196961526877,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            3.5,
+            3.55
+          ],
+          "blocker": "RG",
+          "defender": "LB_S",
+          "blockerLb": 314.0,
+          "defenderLb": 231.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.09631564975347118,
+            "runnerLineOffsetYd": 4.255064604212102,
+            "pairCenterDistanceYd": 0.5832657107210351,
+            "pairNominalSurfaceGapYd": -0.06491610746078313,
+            "defenderRunnerNominalSurfaceGapYd": 5.448977844092046,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.07179307196526247,
+            "perpendicularDistanceYd": 0.39146483468539395,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "5/17",
+              "a": 5,
+              "b": 17,
+              "normalMeanForce": 1072.07656074153,
+              "tangentMeanForce": -293.221260220034,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 5,
+              "j": 17,
+              "impulse": 3.9688212126982867,
+              "closing": 0.0795621489123858,
+              "key": "5/17"
+            }
+          ]
+        }
+      ],
+      "unobservedPairArrivals": [],
+      "maxPlanarWorkResidual": 7.211564678755167e-12,
+      "elapsedSeconds": 0.5699427800000001
+    },
+    {
+      "id": "useful-climb-opponent",
+      "input": {
+        "id": "useful-climb-opponent",
+        "kind": "fixture",
+        "fixture": "test/fixtures/planned-climb-fit.json.gz",
+        "fixtureSha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+        "until": 3.5
+      },
+      "setupHash": "8ee8f7d7179633eba26c5919a744026b5e5a6b887aa6d03d039d854057173596",
+      "initialProfilesAndBodiesSha256": "c5c09806709648f43c64994a4127de1d0ada691b3649072611a23ef59c46f8e6",
+      "terminal": false,
+      "censor": "explicit-live-prefix",
+      "finalTime": 3.5,
+      "ending": null,
+      "gain": null,
+      "firstContact": {
+        "t": 3.25,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 39.75,
+          "y": 21.91
+        },
+        "note": "grasp"
+      },
+      "firstNonzeroRunnerTorso": null,
+      "firstLoadedRunnerGrasp": {
+        "interval": [
+          3.3,
+          3.3499999999999996
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "S88O-RB2"
+        },
+        "grasp": {
+          "a": 21,
+          "b": 6,
+          "meanForce": 1823.9214177248602,
+          "broken": false,
+          "slipping": true
+        }
+      },
+      "lineArrival": {
+        "bracket": [
+          2.5,
+          2.55
+        ],
+        "runner": {
+          "idx": 6,
+          "slot": "RB",
+          "team": "O",
+          "player": "S88O-RB2"
+        },
+        "pairObservations": [
+          {
+            "key": "3/13",
+            "blocker": 3,
+            "defender": 13,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.461843095604955,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.9499173623142613,
+              "pairNominalSurfaceGapYd": 0.23719008958698856,
+              "defenderRunnerNominalSurfaceGapYd": 3.1417973604872835,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.043921124883419864,
+              "perpendicularDistanceYd": 0.9351973700322708,
+              "interpositionMarginYd": -0.593379188214089,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "7/12",
+            "blocker": 7,
+            "defender": 12,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 7,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.025044007870477003,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.6120288500583521,
+              "pairNominalSurfaceGapYd": -0.06888024085073885,
+              "defenderRunnerNominalSurfaceGapYd": 2.0922815369197965,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.06514433703919109,
+              "perpendicularDistanceYd": 0.5853583786256353,
+              "interpositionMarginYd": -0.27535837862563534,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "7/12",
+                "a": 7,
+                "b": 12,
+                "normalMeanForce": 507.7643970260535,
+                "tangentMeanForce": 70.05268412559009,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 7,
+                "j": 12,
+                "impulse": 39.866796451727225,
+                "closing": 0.08766673199401481,
+                "key": "7/12"
+              }
+            ]
+          },
+          {
+            "key": "4/14",
+            "blocker": 4,
+            "defender": 14,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 4,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.062342229190363696,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.691931048457958,
+              "pairNominalSurfaceGapYd": -0.04534167881476919,
+              "defenderRunnerNominalSurfaceGapYd": 4.2774509682617285,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.13083067433321036,
+              "perpendicularDistanceYd": 0.2485931334241765,
+              "interpositionMarginYd": 0.11049777566673258,
+              "directCenterlineInterposition": true
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "4/14",
+                "a": 4,
+                "b": 14,
+                "normalMeanForce": 1073.8192481452868,
+                "tangentMeanForce": -716.6850478035839,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "5/13",
+            "blocker": 5,
+            "defender": 13,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 5,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.7498173324124622,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.6695568020339923,
+              "pairNominalSurfaceGapYd": -0.0749886525114623,
+              "defenderRunnerNominalSurfaceGapYd": 3.1417973604872835,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.17642724573884558,
+              "perpendicularDistanceYd": 0.023713219511786465,
+              "interpositionMarginYd": 0.3499231441245772,
+              "directCenterlineInterposition": true
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "5/13",
+                "a": 5,
+                "b": 13,
+                "normalMeanForce": 634.8185843437398,
+                "tangentMeanForce": -334.2544167890197,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 5,
+                "j": 13,
+                "impulse": 34.92506725796431,
+                "closing": 0.0697062634855326,
+                "key": "5/13"
+              }
+            ]
+          },
+          {
+            "key": "2/12",
+            "blocker": 2,
+            "defender": 12,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.8686578132683422,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 3.9221752284805462,
+              "pairNominalSurfaceGapYd": 3.1785388648441826,
+              "defenderRunnerNominalSurfaceGapYd": 2.0922815369197965,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 1.3172270831210973,
+              "perpendicularDistanceYd": 1.5253730387558662,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "1/11",
+            "blocker": 1,
+            "defender": 11,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -0.4811601842123494,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.9337731447891909,
+              "pairNominalSurfaceGapYd": 0.28831859933464554,
+              "defenderRunnerNominalSurfaceGapYd": 7.114122292561608,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.09582240898688536,
+              "perpendicularDistanceYd": 0.573927976614002,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "2/15",
+            "blocker": 2,
+            "defender": 15,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 2,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.6062366092692884,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.5891627886666317,
+              "pairNominalSurfaceGapYd": -0.06629175678791366,
+              "defenderRunnerNominalSurfaceGapYd": 1.7729736621089447,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.24915922244790448,
+              "perpendicularDistanceYd": 0.09183510736504097,
+              "interpositionMarginYd": 0.2808921653622317,
+              "directCenterlineInterposition": true
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "2/15",
+                "a": 2,
+                "b": 15,
+                "normalMeanForce": 719.9202555819212,
+                "tangentMeanForce": 414.4405491814111,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 2,
+                "j": 15,
+                "impulse": 27.30294945948816,
+                "closing": 0.08752203905641939,
+                "key": "2/15"
+              }
+            ]
+          },
+          {
+            "key": "10/19",
+            "blocker": 10,
+            "defender": 19,
+            "runner": 6,
+            "engagementPresent": false,
+            "primary": null,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -3.1901565021128278,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 1.7717022242210927,
+              "pairNominalSurfaceGapYd": 1.2698840424029108,
+              "defenderRunnerNominalSurfaceGapYd": 7.768007236663741,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": -0.01340359464084146,
+              "perpendicularDistanceYd": 1.7682014856871804,
+              "interpositionMarginYd": null,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [],
+            "precedingIntervalTorsoImpulses": []
+          },
+          {
+            "key": "3/16",
+            "blocker": 3,
+            "defender": 16,
+            "runner": 6,
+            "engagementPresent": true,
+            "primary": 3,
+            "helper": false,
+            "geometry": {
+              "runnerPairLongitudinalOffsetYd": -1.289221342356683,
+              "runnerLineOffsetYd": 0.07944996615788114,
+              "pairCenterDistanceYd": 0.5699002142427735,
+              "pairNominalSurfaceGapYd": -0.06464524030268104,
+              "defenderRunnerNominalSurfaceGapYd": 3.503623414507285,
+              "defenderNominalReachEnvelope": false,
+              "blockerProjectionFraction": 0.08780458707058941,
+              "perpendicularDistanceYd": 0.44348380955802047,
+              "interpositionMarginYd": -0.10166562773983867,
+              "directCenterlineInterposition": false
+            },
+            "precedingIntervalHandLoads": [
+              {
+                "key": "3/16",
+                "a": 3,
+                "b": 16,
+                "normalMeanForce": 920.8653632882534,
+                "tangentMeanForce": -174.260136948749,
+                "nonzeroMeanLoad": true
+              }
+            ],
+            "precedingIntervalTorsoImpulses": [
+              {
+                "i": 3,
+                "j": 16,
+                "impulse": 15.835678292362532,
+                "closing": 0.08736144456039224,
+                "key": "3/16"
+              }
+            ]
+          }
+        ]
+      },
+      "arrivals": [
+        {
+          "bracket": [
+            2.55,
+            2.6
+          ],
+          "blocker": "Y",
+          "defender": "DE_S",
+          "blockerLb": 257.0,
+          "defenderLb": 324.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.3010610869256496,
+            "runnerLineOffsetYd": 0.36691843895626874,
+            "pairCenterDistanceYd": 0.6119647041911247,
+            "pairNominalSurfaceGapYd": -0.06894438671796621,
+            "defenderRunnerNominalSurfaceGapYd": 1.9909184773863096,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.040934556814458525,
+            "perpendicularDistanceYd": 0.6023338760284705,
+            "interpositionMarginYd": -0.29233387602847055,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "7/12",
+              "a": 7,
+              "b": 12,
+              "normalMeanForce": 500.1147779178314,
+              "tangentMeanForce": -88.32759554225714,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 7,
+              "j": 12,
+              "impulse": 42.59653952297151,
+              "closing": 0.08775605301560208,
+              "key": "7/12"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            2.55,
+            2.6
+          ],
+          "blocker": "LG",
+          "defender": "DT_W",
+          "blockerLb": 311.0,
+          "defenderLb": 332.00000000000006,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.21946481854298128,
+            "runnerLineOffsetYd": 0.36691843895626874,
+            "pairCenterDistanceYd": 0.7070698599573676,
+            "pairNominalSurfaceGapYd": -0.03020286731535965,
+            "defenderRunnerNominalSurfaceGapYd": 4.387145818583076,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.12830832011706414,
+            "perpendicularDistanceYd": 0.28438712445845576,
+            "interpositionMarginYd": 0.07470378463245331,
+            "directCenterlineInterposition": true
+          },
+          "handLoads": [
+            {
+              "key": "4/14",
+              "a": 4,
+              "b": 14,
+              "normalMeanForce": 1070.2281617039619,
+              "tangentMeanForce": -713.6464361993862,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.6,
+            2.65
+          ],
+          "blocker": "LT",
+          "defender": "DE_W",
+          "blockerLb": 304.0,
+          "defenderLb": 238.0,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.04785429480012482,
+            "runnerLineOffsetYd": 0.6572517403448117,
+            "pairCenterDistanceYd": 0.7508563977726148,
+            "pairNominalSurfaceGapYd": 0.10540185231806937,
+            "defenderRunnerNominalSurfaceGapYd": 7.582095745998962,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": -0.06616962332865407,
+            "perpendicularDistanceYd": 0.522125922043476,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.7,
+            2.75
+          ],
+          "blocker": "RT",
+          "defender": "DE_S",
+          "blockerLb": 326.0,
+          "defenderLb": 324.0,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.22992664133586516,
+            "runnerLineOffsetYd": 1.246651367431454,
+            "pairCenterDistanceYd": 4.369327056331353,
+            "pairNominalSurfaceGapYd": 3.6256906926949894,
+            "defenderRunnerNominalSurfaceGapYd": 1.8441896117667824,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 1.7487223710084696,
+            "perpendicularDistanceYd": 0.2306511753347205,
+            "interpositionMarginYd": null,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.8,
+            2.85
+          ],
+          "blocker": "C",
+          "defender": "LB_W",
+          "blockerLb": 292.0,
+          "defenderLb": 238.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.24323630785319494,
+            "runnerLineOffsetYd": 1.8505716180840608,
+            "pairCenterDistanceYd": 0.5706776114980315,
+            "pairNominalSurfaceGapYd": -0.06386784304742299,
+            "defenderRunnerNominalSurfaceGapYd": 4.165060251030832,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.034701609978712245,
+            "perpendicularDistanceYd": 0.5464820808815983,
+            "interpositionMarginYd": -0.20466389906341653,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "3/16",
+              "a": 3,
+              "b": 16,
+              "normalMeanForce": 917.0679046228457,
+              "tangentMeanForce": 12.94586867328003,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 3,
+              "j": 16,
+              "impulse": 13.68710531535247,
+              "closing": 0.08388286018149523,
+              "key": "3/16"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            2.85,
+            2.9
+          ],
+          "blocker": "C",
+          "defender": "DT_S",
+          "blockerLb": 292.0,
+          "defenderLb": 324.0,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.2043512250817301,
+            "runnerLineOffsetYd": 2.1578580572369717,
+            "pairCenterDistanceYd": 1.1320779844269047,
+            "pairNominalSurfaceGapYd": 0.41935071169963195,
+            "defenderRunnerNominalSurfaceGapYd": 4.097389938816947,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.014492457086532058,
+            "perpendicularDistanceYd": 1.1299845683335428,
+            "interpositionMarginYd": -0.788166386515361,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        },
+        {
+          "bracket": [
+            2.9,
+            2.95
+          ],
+          "blocker": "RG",
+          "defender": "DT_S",
+          "blockerLb": 327.0,
+          "defenderLb": 324.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.029442659508980284,
+            "runnerLineOffsetYd": 2.4685071725128793,
+            "pairCenterDistanceYd": 0.6692336857547442,
+            "pairNominalSurfaceGapYd": -0.07531176879071039,
+            "defenderRunnerNominalSurfaceGapYd": 4.311936354899654,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.1207691231367552,
+            "perpendicularDistanceYd": 0.2977299503124586,
+            "interpositionMarginYd": 0.07590641332390508,
+            "directCenterlineInterposition": true
+          },
+          "handLoads": [
+            {
+              "key": "5/13",
+              "a": 5,
+              "b": 13,
+              "normalMeanForce": 574.8280453191863,
+              "tangentMeanForce": -34.80462600359768,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 46.31285067667869,
+              "closing": 0.0854061252576952,
+              "key": "5/13"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            2.9,
+            2.95
+          ],
+          "blocker": "RT",
+          "defender": "LB_M",
+          "blockerLb": 326.0,
+          "defenderLb": 227.0,
+          "engagementPresent": true,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.1482706222034622,
+            "runnerLineOffsetYd": 2.4685071725128793,
+            "pairCenterDistanceYd": 0.5894851045339757,
+            "pairNominalSurfaceGapYd": -0.06596944092056967,
+            "defenderRunnerNominalSurfaceGapYd": 2.55305166736427,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.13405996453493155,
+            "perpendicularDistanceYd": 0.4159547861452378,
+            "interpositionMarginYd": -0.0432275134179651,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [
+            {
+              "key": "2/15",
+              "a": 2,
+              "b": 15,
+              "normalMeanForce": 787.1447252943179,
+              "tangentMeanForce": 471.322792784208,
+              "nonzeroMeanLoad": true
+            }
+          ],
+          "torsoImpulses": [
+            {
+              "i": 2,
+              "j": 15,
+              "impulse": 14.919754080875292,
+              "closing": 0.07495256290348684,
+              "key": "2/15"
+            }
+          ]
+        },
+        {
+          "bracket": [
+            3.05,
+            3.1
+          ],
+          "blocker": "H",
+          "defender": "NB",
+          "blockerLb": 185.00000000000003,
+          "defenderLb": 199.0,
+          "engagementPresent": false,
+          "helper": false,
+          "geometry": {
+            "runnerPairLongitudinalOffsetYd": 0.01180570061080033,
+            "runnerLineOffsetYd": 3.4235797147454363,
+            "pairCenterDistanceYd": 2.4694614104398225,
+            "pairNominalSurfaceGapYd": 1.9676432286216405,
+            "defenderRunnerNominalSurfaceGapYd": 9.902793821643144,
+            "defenderNominalReachEnvelope": false,
+            "blockerProjectionFraction": 0.10095534017943834,
+            "perpendicularDistanceYd": 2.2332408796707868,
+            "interpositionMarginYd": -1.9886954251253322,
+            "directCenterlineInterposition": false
+          },
+          "handLoads": [],
+          "torsoImpulses": []
+        }
+      ],
+      "unobservedPairArrivals": [],
+      "maxPlanarWorkResidual": 7.250200440012122e-12,
+      "elapsedSeconds": 0.3742875690000001
+    }
+  ]
+}

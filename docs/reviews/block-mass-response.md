@@ -173,7 +173,12 @@ Giving ground and providing no useful delay are different claims.
    successful/adverse football cases before Integration's combined verification.
    The old NFL weight correlation alone cannot pick a coefficient.
 
-**Single best next step:** obtain one source-pinned push/anchor capability bound
+**Continuation:** [strength calibration and runner-arrival evidence](block-strength-calibration.md)
+adds independently sourced bounds, a default-preserving absolute-capacity
+interface and three accepted football controls. Numerical roster calibration
+remains held; the recommendation below records the original diagnosis checkpoint.
+
+**Single best next step at that checkpoint:** obtain one source-pinned push/anchor capability bound
 or feasible-request contact witness from Measurement/Run, then test the smallest
 absolute-force mapping or demonstrated response correction against this panel.
 No production weight nerf is justified yet. The solver remains parked; existing

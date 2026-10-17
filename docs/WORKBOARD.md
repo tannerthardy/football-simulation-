@@ -13,14 +13,22 @@ square mismatch and provides finite early delay. No momentum/work defect;
 mirror exact and48-subdivision difference.0026yd.21 unique conditions/38 executions;
 all recorded commands28.888s, no games/full suite. No controller ownership
 transfer, solver expansion, force/capacity/default change or old-failure waiver.
-Current continuation: Physics owns optional absolute-capacity inputs in
+Completed bounded continuation: Physics owns optional absolute-capacity inputs in
 `players/physical.ts`/`physics/support.ts`, focused `force-capacity` checks and
 an independently sourced push/anchor protocol. Omitted inputs preserve the
 current mapping; no roster mapping/default or solver change. Diagnostic helper
 owns only `block-protection.ts`/its manifest: three existing accepted controls,
-actual runner arrival, interposition and delivered contact rather than proximity.
+actual runner arrival, interposition, reported load/contact separated from proximity.
 Independent review precedes any capability adoption; the old observational
 weight table is not a target. Preserve corrective-support/fatigue/grip coupling.
+[Report and recommendation](reviews/block-strength-calibration.md): independent
+seam review ACCEPT at0faa291; numerical roster mapping HOLD.34 unique focused
+checks (42 executions including initial bad fixture),typecheck,three native controls;
+22.075 command seconds. Defaults reproduce2.53/5.34yd and censored Duo; no new
+suite/games/NFL collection. Preserve nominal-geometry and tick-mean/net-load limits.
+Next physics gate is a task-matched supported push/anchor reproduction before a
+coefficient change. Run handoff: weakWZ LT315/DE270 near-runner opportunity has
+an unmeasured engagement-win tackle gate; do not label it a mass/force failure.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
