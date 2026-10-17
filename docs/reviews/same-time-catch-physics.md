@@ -14,6 +14,11 @@ runtime difference is only `coverage/defender.ts`, with its direct test. There
 is no geometry/World overlap. This candidate and saved-input evidence remain
 intentionally pinned to70b4; no later-source native result is implied. Catching
 and Integration compose the caller fix on the current accepted publication.
+For a clean handoff, this branch subsequently merges accepted0000e56 normally.
+Only WORKBOARD conflicted; both owners' sections were preserved. The resulting
+candidate source is `840a6778439c3c005f2d646f70b36c45037a4efce1d69f7244bf1af862bcad2a`.
+The helper/core vector types are unchanged, so compatible focused evidence is
+reused; there is no new combined-suite or native-result claim on that source.
 
 ## Result and caller boundary
 

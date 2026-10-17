@@ -1089,6 +1089,11 @@
       "src/sim/coverage/defender.ts"
     ],
     "geometryWorldOverlap": false,
-    "nativeEvidenceHost": "Deliberately pinned70b4; no later-source native claim"
+    "nativeEvidenceHost": "Deliberately pinned70b4; no later-source native claim",
+    "candidateSourceAfterAcceptedMerge": "840a6778439c3c005f2d646f70b36c45037a4efce1d69f7244bf1af862bcad2a",
+    "conflictsResolved": [
+      "docs/WORKBOARD.md; preserved both owner sections"
+    ],
+    "evidenceReuse": "Helper/core vector types unchanged; reuse focused component checks. Native captures remain pinned70b4; no new combined run."
   }
 }

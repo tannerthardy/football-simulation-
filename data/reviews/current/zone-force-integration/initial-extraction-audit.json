@@ -1,0 +1,40 @@
+{
+  "base": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "metadata": "9a70bb5",
+  "exactBlobs": [
+    {
+      "path": "src/sim/behaviors/blocking.ts",
+      "publication": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "sha256": "0576e2a4a174505492c186e20ac575e4b0a057a3ea5f6a5665f31fb20793ee00",
+      "exact": true
+    },
+    {
+      "path": "test/zone-combo-surface.test.ts",
+      "publication": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "sha256": "4ce75546d64fbc0de2961eb2800e09b16ccbfd7b7f3e06a494a14a93633ce4e3",
+      "exact": true
+    },
+    {
+      "path": "src/sim/coverage/defender.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "cfaaf2a67ca155a6ae22e4da3dedacfccc0999c65ad5c9a665aec73e32b35173",
+      "exact": true
+    },
+    {
+      "path": "test/quarter-flat-force-support.test.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "42cb7264ed2ac2a4e0e2b139292f0b155769c9023548ca4766a4e8f2dee05ef4",
+      "exact": true
+    }
+  ],
+  "sourceSha256": "82c480d982cefc288272c861c506cb5d3cf1387efa4d6cdd72fe2dd49d78524b",
+  "overlappingRuntimeFiles": [],
+  "settingsToolingChanges": [],
+  "otherRuntimeChanges": [],
+  "authorAncestryImported": false,
+  "dataOnlyAuditHistoryImported": false,
+  "independentReviewComments": [
+    "https://github.com/tannerthardy/football-simulation-/pull/126#issuecomment-6229698160",
+    "https://github.com/tannerthardy/football-simulation-/pull/128#issuecomment-6229698539"
+  ]
+}
