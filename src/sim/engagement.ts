@@ -1066,7 +1066,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  const displace = stretch && b.behavior.contactFootwork?.(b, sim) === 'displace';
+  const forward = stretch && !displace ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).

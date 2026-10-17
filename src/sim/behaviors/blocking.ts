@@ -748,6 +748,15 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
+  contactFootwork(a: Agent, sim: PlaySim): 'connect' | 'displace' | null {
+    const e = a.engagement, read = this.zoneRead;
+    if (!this.zoneEligible(a, sim) || !e || !read || read.target !== e.defender.idx) return null;
+    // The acquired runoff gives up the outside shoulder and works the man
+    // wide along the installed drive. Merely matching his motion cannot
+    // execute that displacement. Reach/seal still close their own fit.
+    return read.phase === 'runoff' ? 'displace' : 'connect';
+  }
+
   contactMotion(a: Agent): Vec2 | null {
     const e = a.engagement, read = this.zoneRead;
     if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
