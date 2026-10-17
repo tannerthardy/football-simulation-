@@ -237,7 +237,7 @@ function quarterFlat(c: RuleCtx): Directive {
   if (!cornerTakesFlat && two && c.state.mode !== 'zoned'
     && (c.state.mode === 'flat' || isQuickOut(two, c.sim))) {
     c.state.mode = 'flat';
-    return man(two, { lev: 'inside', overTop: true });
+    return man(two, { lev: 'inside', overTop: true, topDownFlat: true });
   }
   return wallTwo(c, 10, true);
 }
