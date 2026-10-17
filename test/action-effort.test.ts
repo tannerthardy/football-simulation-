@@ -57,6 +57,35 @@ describe('completed action effort', () => {
     expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
   });
 
+  it('charges achieved force rather than an unmet lunge request', () => {
+    const costs: number[] = [];
+    for (const request of [3, 30]) {
+      const { b, w } = scene();
+      const r = w.step([{ vel: { x: 0, y: 0 }, lunge: { x: request, y: 0 } }, free], dt);
+      expect(b.vel.x).toBeLessThan(request);
+      expect(r.groundWork[0] / profile.massKg).toBeCloseTo(kineticPerKg(b), 12);
+      costs.push(1 - b.energy);
+      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + .03 * kineticPerKg(b) / workScale, 14);
+    }
+    expect(costs[0]).toBe(costs[1]);
+  });
+
+  it('charges once over unequal local impact pieces, including an unrelated active body', () => {
+    const { b } = scene(); b.pos.y = .8;
+    const a = structuredClone(b), target = structuredClone(b);
+    a.pos = { x: 0, y: 0 }; a.vel.x = 8;
+    target.pos = { x: .85, y: 0 };
+    const w = new World([a, target, b], { substeps: 1, impactTiming: 'local-sweep' });
+    const r = w.step([free, free, { vel: { x: 0, y: 0 }, lunge: { x: .1, y: 0 } }], dt);
+    expect(r.impactSplits).toBeGreaterThan(0);
+    expect(r.impactSplitLimitHits).toBe(0);
+    expect(r.contacts.every(c => c.i !== 2 && c.j !== 2)).toBe(true);
+    expect(b.support!.state).toBe('up');
+    expect(b.vel.x).toBeCloseTo(.1, 13);
+    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
+    expect(a.energy).toBe(1); expect(target.energy).toBe(1);
+  });
+
   it('retains work before falling and excludes the later passive portion', () => {
     const { b, w } = scene(12);
     b.support!.xi.x = 2; // Existing recovery limit: falls in the first piece.
