@@ -101,7 +101,8 @@ export class CoverageDefender implements Behavior {
     // while the new man is a different receiver. Recheck belief and picture
     // each tick; recognized flight retains the ordinary ball priority.
     if (this.sub instanceof ManCoverage && believesRun(sim, a)
-      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
+      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley'
+        || (a.runFit?.kind === 'force' && this.rule === 'q_apex' && this.sub.opts.topDownFlat))
       && (sim.ball.kind !== 'air' || !sawThrow(a, sim, this.sub.target))) {
       for (const back of sim.offense) {
         if (!sim.offAlign.spots[back.slot]?.backfield
@@ -139,7 +140,7 @@ export class CoverageDefender implements Behavior {
 function directiveKey(d: Directive): string {
   switch (d.t) {
     case 'zone': return `zone:${d.zone}:${d.style}`;
-    case 'man': return `man:${d.r.slot}:${d.opts.lev ?? 'inside'}:${d.opts.overTop ? 'top' : ''}${d.opts.trail ? 'trail' : ''}`;
+    case 'man': return `man:${d.r.slot}:${d.opts.lev ?? 'inside'}:${d.opts.overTop ? 'top' : ''}${d.opts.trail ? 'trail' : ''}${d.opts.topDownFlat ? ':flat' : ''}`;
     default: return `${d.t}:${d.r.slot}`;
   }
 }

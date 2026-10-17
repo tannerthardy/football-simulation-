@@ -177,6 +177,9 @@ export interface ManOptions {
   lev?: 'inside' | 'outside' | 'head';
   trail?: boolean;
   overTop?: boolean;
+  /** Quarter-flat widens from its entry depth until the acquired route
+   * climbs above it or recognized flight transfers control to the ball. */
+  topDownFlat?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
 }
@@ -186,6 +189,7 @@ export class ManCoverage implements Behavior {
   readonly kind = 'man';
   private readonly press: boolean;
   private readonly initialCushion: number;
+  private readonly flatDepth?: number;
   private hipsOpen = false;
   private releaseObserved = false;
   private routeRead = false;
@@ -197,7 +201,8 @@ export class ManCoverage implements Behavior {
   /** The technique actually in use, without updating receiver observation. */
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
     return { leverage: this.opts.lev ?? 'inside', initialCushion: this.initialCushion, press: this.press,
-      hipsOpen: this.hipsOpen, trail: !!this.opts.trail, overTop: !!this.opts.overTop, routeRead: this.routeRead };
+      hipsOpen: this.hipsOpen, trail: !!this.opts.trail, overTop: !!this.opts.overTop, routeRead: this.routeRead,
+      ...(this.flatDepth === undefined ? {} : { flatDepth: this.flatDepth }) };
   }
 
   constructor(
@@ -211,6 +216,7 @@ export class ManCoverage implements Behavior {
   ) {
     this.press = press;
     this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
+    this.flatDepth = opts.topDownFlat ? a.pos.x : undefined;
     void sim;
   }
 
@@ -318,6 +324,10 @@ export class ManCoverage implements Behavior {
       tx = seen.pos.x + top;
     }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
+    // The quarter-flat player's width is not a race to the receiver's low
+    // hip. Keep the depth already earned while widening; a newly acquired
+    // upfield path can consume it. No future wheel or persistence timer.
+    if (this.flatDepth !== undefined) tx = Math.max(tx, this.flatDepth);
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     if (!this.hipsOpen) {
