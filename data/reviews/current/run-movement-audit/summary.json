@@ -1,0 +1,712 @@
+{
+  "purpose": "Observational support; no behavior candidate or population claim",
+  "accepted": "0000e560e0dbe31905151465152d412ba838803d",
+  "queue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "runPublication": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+  "nativeResearchSource": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+  "cases": [
+    {
+      "id": "B01",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "c3f3c33a98a28d1451adbffd8c1cf4f1883104f0734e53f3f639eace678d7570",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "endTime": 5,
+      "censor": "live at5",
+      "firstContact": {
+        "t": 4,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 20,
+        "pos": {
+          "x": 42.46,
+          "y": 12.34
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 1.040221544,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "LG",
+          "targetSlot": "LB_S",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 17,
+              "slot": "LB_S"
+            }
+          ],
+          "role": "lead"
+        },
+        {
+          "slot": "RG",
+          "targetSlot": "SS",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 21,
+              "slot": "SS"
+            }
+          ],
+          "role": "force"
+        }
+      ]
+    },
+    {
+      "id": "P01",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "a0562af89847fe7791aa17d569d05593633f5832c0118f73865d62e06fd9973f",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 0.13,
+      "endTime": 4.45,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 3.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 17,
+        "pos": {
+          "x": 40.12,
+          "y": 19.68
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.659334154,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "C",
+          "targetSlot": "SS",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 21,
+              "slot": "SS"
+            }
+          ],
+          "role": "force"
+        }
+      ]
+    },
+    {
+      "id": "C01",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "e8287314ab58072f85dfc50e7c4b3baf4ad21e0fa04225cdb840b27e67bd54df",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 2.52,
+      "endTime": 3.85,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 2.85,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 13,
+        "pos": {
+          "x": 40.33,
+          "y": 22.42
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.436177999,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "RT",
+          "targetSlot": "CB_S",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 18,
+              "slot": "CB_S"
+            }
+          ],
+          "role": "force"
+        }
+      ]
+    },
+    {
+      "id": "K01",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 5.59,
+      "endTime": 4.45,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 3.7,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 19,
+        "pos": {
+          "x": 43.37,
+          "y": 35.98
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.51013596,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "RT",
+          "targetSlot": "LB_S",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 17,
+              "slot": "LB_S"
+            }
+          ],
+          "role": "lead"
+        },
+        {
+          "slot": "RG",
+          "targetSlot": "DE_W",
+          "firstLoadedPair": {
+            "t": 1.95,
+            "target": 11,
+            "slot": "DE_W",
+            "pairForce": 239.49055439870642,
+            "helper": false
+          },
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 11,
+              "slot": "DE_W"
+            }
+          ],
+          "role": "kick"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "12d5692989410e0a268688a78b79f6d992b46e123c836609ea04440c1231282d",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 4.87,
+      "endTime": 4,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 3.35,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 18,
+        "pos": {
+          "x": 43.36,
+          "y": 16.07
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.43147240899999995,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "RG",
+          "targetSlot": "LB_S",
+          "firstLoadedPair": {
+            "t": 1.8,
+            "target": 17,
+            "slot": "LB_S",
+            "pairForce": 236.80952765505995,
+            "helper": false
+          },
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 17,
+              "slot": "LB_S"
+            }
+          ],
+          "role": "kick"
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "9a88b2df77daf96c591f718d91efa9c4f0a3eed2516176ed64f2187969f49f1c",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 0.09,
+      "endTime": 3.5,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 2.65,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 11,
+        "pos": {
+          "x": 38.94,
+          "y": 30.8
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.33264467800000014,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "LT",
+          "targetSlot": "CB_W",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 19,
+              "slot": "CB_W"
+            }
+          ],
+          "role": "force"
+        }
+      ]
+    },
+    {
+      "id": "B02",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "a36590d57a23144176b3560b3c86ac3d125d46bd262383f68bfbb416efd1eb63",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 3.06,
+      "endTime": 3.95,
+      "censor": "native ending",
+      "firstContact": {
+        "t": 3.05,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 11,
+        "pos": {
+          "x": 39.96,
+          "y": 35.01
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.7889582970000001,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "LG",
+          "targetSlot": "CB_W",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 19,
+              "slot": "CB_W"
+            }
+          ],
+          "role": "force"
+        },
+        {
+          "slot": "RG",
+          "targetSlot": "LB_W",
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 16,
+              "slot": "LB_W"
+            },
+            {
+              "t": 1.5,
+              "target": null,
+              "slot": null
+            },
+            {
+              "t": 2,
+              "target": 15,
+              "slot": "LB_M"
+            },
+            {
+              "t": 2.25,
+              "target": null,
+              "slot": null
+            },
+            {
+              "t": 2.5,
+              "target": 17,
+              "slot": "LB_S"
+            }
+          ],
+          "role": "lead"
+        }
+      ]
+    },
+    {
+      "id": "K02",
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "inputSha256": "c1201086e05d69a14ae33413a5fed53840be414ca98cf32f74e22f818c4385b8",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "endTime": 5,
+      "censor": "live at5",
+      "firstContact": {
+        "t": 4.05,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 19,
+        "pos": {
+          "x": 40.64,
+          "y": 34.99
+        },
+        "note": "grasp"
+      },
+      "elapsedSeconds": 0.704164718,
+      "publishedIdentityEndingAndFirstContactMatch": true,
+      "pullers": [
+        {
+          "slot": "RT",
+          "targetSlot": null,
+          "firstLoadedPair": null,
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": null,
+              "slot": null
+            },
+            {
+              "t": 0.05,
+              "target": 13,
+              "slot": "DT_S"
+            },
+            {
+              "t": 0.6,
+              "target": null,
+              "slot": null
+            },
+            {
+              "t": 1.4,
+              "target": 11,
+              "slot": "DE_W"
+            },
+            {
+              "t": 2.35,
+              "target": 16,
+              "slot": "LB_W"
+            }
+          ],
+          "role": "lead"
+        },
+        {
+          "slot": "RG",
+          "targetSlot": "DE_W",
+          "firstLoadedPair": {
+            "t": 2.35,
+            "target": 11,
+            "slot": "DE_W",
+            "pairForce": 194.9963449631286,
+            "helper": false
+          },
+          "targetTransitions": [
+            {
+              "t": 0,
+              "target": 11,
+              "slot": "DE_W"
+            }
+          ],
+          "role": "kick"
+        }
+      ]
+    }
+  ],
+  "historicalFilmIDs": [
+    "G1-P002",
+    "G1-P015",
+    "G1-P018",
+    "G1-P021",
+    "G1-P030",
+    "G1-P032",
+    "G1-P056",
+    "G1-P117",
+    "G1-P164",
+    "G1-P175"
+  ],
+  "checks": {
+    "cases": 18,
+    "blockers": 162,
+    "defenderPhaseRows": 792,
+    "plates": 36,
+    "nativeActorIdentityAndCoordinatesExact": true,
+    "nonnegativeSnapFrames": true,
+    "nativeSimulationsInCheck": 0
+  },
+  "openingMovement": [
+    {
+      "case": "B01",
+      "index": 4,
+      "slot": "LG",
+      "role": "lead",
+      "target": 17,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1,
+        1.05,
+        1.1,
+        1.15,
+        1.2
+      ],
+      "firstLateralSpeedAbovePointOne": 1.1,
+      "headingTravelDegreesThroughOneSecond": 216.77635521795824
+    },
+    {
+      "case": "B01",
+      "index": 5,
+      "slot": "RG",
+      "role": "force",
+      "target": 21,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7
+      ],
+      "firstLateralSpeedAbovePointOne": 0.3,
+      "headingTravelDegreesThroughOneSecond": 252.16258513095224
+    },
+    {
+      "case": "P01",
+      "index": 3,
+      "slot": "C",
+      "role": "force",
+      "target": 21,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "firstLateralSpeedAbovePointOne": 0.3,
+      "headingTravelDegreesThroughOneSecond": 249.37081614475272
+    },
+    {
+      "case": "C01",
+      "index": 2,
+      "slot": "RT",
+      "role": "force",
+      "target": 18,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [],
+      "firstLateralSpeedAbovePointOne": 0.35,
+      "headingTravelDegreesThroughOneSecond": 151.31335816766483
+    },
+    {
+      "case": "K01",
+      "index": 2,
+      "slot": "RT",
+      "role": "lead",
+      "target": 17,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        1.3,
+        1.35,
+        1.4,
+        1.45
+      ],
+      "firstLateralSpeedAbovePointOne": 0.35,
+      "headingTravelDegreesThroughOneSecond": 281.05188051500664
+    },
+    {
+      "case": "K01",
+      "index": 5,
+      "slot": "RG",
+      "role": "kick",
+      "target": 11,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65
+      ],
+      "firstLateralSpeedAbovePointOne": 0.3,
+      "headingTravelDegreesThroughOneSecond": 296.53810464382354
+    },
+    {
+      "case": "P02",
+      "index": 5,
+      "slot": "RG",
+      "role": "kick",
+      "target": 17,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8
+      ],
+      "firstLateralSpeedAbovePointOne": 0.3,
+      "headingTravelDegreesThroughOneSecond": 281.0525111501107
+    },
+    {
+      "case": "C02",
+      "index": 1,
+      "slot": "LT",
+      "role": "force",
+      "target": 19,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "firstLateralSpeedAbovePointOne": 0.35,
+      "headingTravelDegreesThroughOneSecond": 277.6453025962332
+    },
+    {
+      "case": "B02",
+      "index": 4,
+      "slot": "LG",
+      "role": "force",
+      "target": 19,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "firstLateralSpeedAbovePointOne": 0.35,
+      "headingTravelDegreesThroughOneSecond": 280.5448418044154
+    },
+    {
+      "case": "B02",
+      "index": 5,
+      "slot": "RG",
+      "role": "lead",
+      "target": 16,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1,
+        1.05,
+        1.1
+      ],
+      "firstLateralSpeedAbovePointOne": 1.05,
+      "headingTravelDegreesThroughOneSecond": 245.89355275006042
+    },
+    {
+      "case": "K02",
+      "index": 2,
+      "slot": "RT",
+      "role": "lead",
+      "target": null,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "firstLateralSpeedAbovePointOne": 0.35,
+      "headingTravelDegreesThroughOneSecond": 282.01504384531063
+    },
+    {
+      "case": "K02",
+      "index": 5,
+      "slot": "RG",
+      "role": "kick",
+      "target": 11,
+      "source": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+      "backfieldFacingSampleTimes": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        1.15,
+        1.2,
+        1.25
+      ],
+      "firstLateralSpeedAbovePointOne": 0.3,
+      "headingTravelDegreesThroughOneSecond": 298.75911266905587
+    }
+  ],
+  "cost": {
+    "nativeRestorations": 8,
+    "fullGames": 0,
+    "newSeeds": 0,
+    "variants": 0,
+    "nativeCaseSeconds": 4.903109759,
+    "launchCommandSeconds": 8.314647832,
+    "finalRender": {
+      "cases": 18,
+      "blockerLedgers": 162,
+      "allDefenderPhaseRows": 792,
+      "engineTicks": 0,
+      "platesRenderedThisCommand": 36,
+      "elapsedSeconds": 42.473114383989014
+    },
+    "finalReduction": {
+      "cases": 18,
+      "blockerLedgers": 162,
+      "allDefenderPhaseRows": 792,
+      "engineTicks": 0,
+      "platesRenderedThisCommand": 0,
+      "elapsedSeconds": 6.9570849949959666
+    },
+    "qualification": "Recorded final rendering/reduction excludes earlier plot formatting/renders and other offline inspection time. No full-suite or typecheck needed for diagnostic-only files."
+  },
+  "limitations": [
+    "Current unpublished Run coordination candidate not available.",
+    "Perimeter tapes precede the #140 information-only correction; initial assignments unchanged, later churn may change.",
+    "Historical 70b4db6 films are rounded observations, not exact checkpoints or relabeled current outcomes.",
+    "All-frame original puller tapes unavailable; input/source/ending/first-contact parity checked, no all-frame restoration parity claim.",
+    "Heading is body orientation, not eyes or anatomical steps.",
+    "Euclidean alternative pairing is not an executed improvement.",
+    "No-contact, loaded contact and useful runner protection remain distinct.",
+    "B01 and K02 live at5s; no terminal gains inferred."
+  ]
+}

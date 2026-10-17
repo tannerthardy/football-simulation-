@@ -1,0 +1,144 @@
+{
+  "B01": {
+    "judgment": "Pins and cutoff acquire real first-level work. Both guards are still travelling when the back passes the edge; neither earns hand load before first runner contact. The first tackler is the unowned FS, so missing a guard/LB block is not automatically the cause of the ending. Live at5s; no final gain.",
+    "blockers": {
+      "LT": "Real cutoff fit; do not replace because the opposite-side runner later reaches a safety.",
+      "RT": "Useful early DT_S surface; later defender travel does not prove a failed initial step.",
+      "C": "Acquires DT_W and keeps first-level work near the line.",
+      "LG": "Deep wrapper drop; no meaningful lateral velocity until1.10s, no loaded fit before runner contact.",
+      "RG": "Routes toward SS but never collects him before runner contact; late force and an unowned FS are different issues.",
+      "Y": "Actual down block on DE_S; later changes to SS after the end falls.",
+      "X": "Stalks CB_W; no loaded fit in this window, far from the actual run.",
+      "Z": "Stalks CB_S; no loaded fit; corner has a missed tackle before FS arrives.",
+      "H": "Climbs toward Will without a loaded fit; verify relevance after runner has already cleared that fitter."
+    }
+  },
+  "P01": {
+    "judgment": "First-level pins exist, but current-target churn does not produce a stable second-level wall. RG eventually loads Sam and that same defender still reaches the runner. This is a useful example of contact existing without useful protection. The C force route does not load SS.",
+    "blockers": {
+      "LT": "Acquires backside cutoff; not the first runner threat.",
+      "RT": "Pins DT_S, then climbs to Mike; actual first-level work precedes the transition.",
+      "C": "Force pull to SS remains distant from its useful fit at runner arrival.",
+      "LG": "Initially named Mike, collects DT_W instead; near-gap recovery may be legitimate.",
+      "RG": "Starts on DT_W, changes to Mike then Sam; Sam contacts the runner despite a late loaded pair.",
+      "Y": "Acquires DE_S down block, but end remains close to the later runner path.",
+      "X": "No loaded stalk fit in the measured window; weak-side corner is not first contact.",
+      "Z": "No loaded stalk fit; corner is among the nearby threats at the failed entry.",
+      "H": "Reaches a loaded Will fit2.90s; preserve this evidence against a blanket inability to climb."
+    }
+  },
+  "C01": {
+    "judgment": "The crack and several interior/linebacker blocks actually load. DT_S reaches the runner2.85s, before the separately diagnosed RT corner restart2.95s. Fixing the deep force route cannot be credited with rescuing this already contacted runner.",
+    "blockers": {
+      "LT": "Real cutoff work on DE_W, away from the first runner contact.",
+      "RT": "Force route toward CB_S; never loads him before contact. Late route restart is already isolated by Run.",
+      "C": "Reaches Mike and loads him1.30s; a useful second-level access control.",
+      "LG": "Keeps real DT_W cutoff work; does not erase opposite DT_S access.",
+      "RG": "Down block loads DT_S early, but DT_S later gains runner access; examine protection through arrival, not touch alone.",
+      "Y": "Loads Sam1.55s; preserve real linebacker collection.",
+      "X": "Stalks CB_W; no useful load before the inside first contact.",
+      "Z": "Actual loaded crack on DE_S1.75s; do not label the crack nonexistent.",
+      "H": "Loads Will2.20s; this does not cover DT_S at the entry."
+    }
+  },
+  "K01": {
+    "judgment": "Wrapper RT is assigned Sam from its starting location although its installed pull exits on the other side. The nearby Will job is reserved to the combo/climber. RT never loads a defender and collides with the working RG in11 positive-impulse intervals. CB_W makes the first tackle attempt, so these defects do not establish a guaranteed different ending.",
+    "blockers": {
+      "LT": "Brief real DT_W combination, then Will responsibility; no loaded Will fit before runner contact.",
+      "RT": "Wraps toward the playside exit with a far-side Sam job; real RG traffic2.70\u20133.50s, no loaded fit.",
+      "C": "Real DT_S first-level fit; later penetration is separate from RT arrival.",
+      "LG": "Sustained DT_W keeper work; preserve the functioning half of the combination.",
+      "RG": "Real loaded DE_W kick1.95s; RT traffic must not be fixed by removing this needed job.",
+      "Y": "Real backside cutoff on DE_S.",
+      "X": "No loaded CB_W stalk; CB_W is the first runner contact. Legitimate defensive access remains possible.",
+      "Z": "Far-side CB_S stalk without load; not an immediate runner threat in this ending.",
+      "H": "Actual Mike load2.35s; do not duplicate its job while repairing the wrapper."
+    }
+  },
+  "P02": {
+    "judgment": "Walked-up Sam is a reachable short kick and RG loads it1.80s. This is the useful opposing control for generic earlier/deeper pull changes. Other interior teammate impacts and the later CB_S finish remain visible; this is not a perfect whole-line control.",
+    "blockers": {
+      "LT": "Climbs toward Will without a loaded fit before contact; do not infer a guaranteed free lane.",
+      "RT": "Real DT_S down fit; repeated C contact needs separate traffic interpretation.",
+      "C": "Real DT_W down fit; RT/C teammate impacts remain in the tape.",
+      "LG": "Real Mike load1.60s; one LT/LG impact interval remains.",
+      "RG": "Actual short Sam kick1.80s; preserve its surface and wall clearance.",
+      "Y": "Actual DE_S down work.",
+      "X": "No loaded weak-side stalk; far from the entry.",
+      "Z": "No loaded CB_S stalk; corner eventually contacts RB.",
+      "H": "Actual DE_W cutoff away from the initial kick."
+    }
+  },
+  "C02": {
+    "judgment": "X acquires a real DE_W crack1.45s, but that end reaches the runner2.65s while LT has not collected CB_W. This is a first-level defensive win before the deep-force job can matter. It is not evidence for strengthening every crack or speeding up LT.",
+    "blockers": {
+      "LT": "Force route to CB_W remains uncollected at the earlier end contact.",
+      "RT": "Acquires DT_S cutoff; not first runner contact.",
+      "C": "Real Mike load1.35s, then Mike falls and work becomes unavailable.",
+      "LG": "Real DT_W down/keeper work.",
+      "RG": "Actual Sam load1.85s.",
+      "Y": "Actual backside DE_S cutoff.",
+      "X": "Actual DE_W crack, then loses useful control; distinguish arrival from subsequent execution.",
+      "Z": "Far-side stalk; no loaded fit before the end reaches the runner.",
+      "H": "Actual Will load1.55s; does not inherit the end by magic."
+    }
+  },
+  "B02": {
+    "judgment": "Most suspicious installation beyond Counter: LG has CB_W19.37yd away while X has Mike19.74yd away. Their first movements travel toward opposite sides of the same field space. X later loses its job as other work reallocates; RG also cycles targets. H has a real DE_W block, and that end wins first contact3.05s. Initial assignment mismatch survives an information-only patch; later churn is measured on the older prototype source only.",
+    "blockers": {
+      "LT": "Starts on DE_W, then takes DT_W/Will/Mike as other bodies engage; requires ownership/cue review.",
+      "RT": "Acquires DT_S cutoff; not the first contact defender.",
+      "C": "Real DT_W down work.",
+      "LG": "Guard assigned deep/wide CB_W19.37yd away; no loaded force fit before runner contact.",
+      "RG": "Deeper wrapper starts toward Will, then null/Mike/null/Sam; no loaded fit. First lateral speed>.1 only1.05s.",
+      "Y": "Actual backside DE_S cutoff.",
+      "X": "WR assigned Mike19.74yd away while nearby corner belongs to LG; no loaded fit, current target disappears2.10s.",
+      "Z": "Opposite-side stalk without load; not first runner contact.",
+      "H": "Initially no target, acquires and loads DE_W. End later wins; preserve actual contact rather than pretending it was unblocked."
+    }
+  },
+  "K02": {
+    "judgment": "Wrapper begins without a linebacker job. Its selected target changes DT_S\u2192none\u2192DE_W\u2192Will, while LG already owns the eventual Will approach. RG still earns a real DE_W kick2.35s and H reaches Mike. No RT/RG teammate impulse here: do not transfer K01 traffic as a universal explanation. Runner remains live at5s.",
+    "blockers": {
+      "LT": "Actual DT_W keeper work.",
+      "RT": "No installed backer; fallback target churn precedes duplicate Will work with LG. No loaded fit.",
+      "C": "Actual DT_S down work.",
+      "LG": "Actual DT_W combination, then Will; no useful loaded Will fit before contact.",
+      "RG": "Real DE_W kick2.35s; must survive any wrapper reassignment.",
+      "Y": "Actual walked-up Sam cutoff.",
+      "X": "No loaded CB_W stalk; corner first contacts RB4.05s, grasp later breaks.",
+      "Z": "Far-side stalk without useful load in this window.",
+      "H": "Actual Mike load1.65s; preserve its separate responsibility."
+    }
+  },
+  "G1-P002": {
+    "judgment": "Inside-zone success context: helpers acquire combination work and C climbs. RT later loads its wide end. First contact remains an earned edge play; this control does not prove every backside track is good."
+  },
+  "G1-P015": {
+    "judgment": "Power has recognizable initial down/hinge work and a real pulling-guard kick. The later long Y\u2013SS engagement/restart belongs to #138 and is not repaired here. Presnap idle frames must not be interpreted as missing installed jobs. No recorded carrier_contact event is imputed."
+  },
+  "G1-P018": {
+    "judgment": "Bunch has unowned nearby CB_S/NB while Z/H/Y travel toward remote linebackers/safeties. Existing #137/#139 diagnose that eligibility/access boundary. RT actually blocks DE_S before DE_S wins the runner; receivers are not proved to cause the loss."
+  },
+  "G1-P021": {
+    "judgment": "LT continues the called lateral track while its acquired DE_W lies the other way. The request/body contradiction is real. DE_W is not the first runner threat; a beneficial recovery or replacement job remains unproved."
+  },
+  "G1-P030": {
+    "judgment": "RG joins RT\u2019s DE_S very late, near runner contact. Simple center-line obstruction is insufficient to prove a free strike path; real acquired geometry and same-time eligibility matter. Other combination work is real."
+  },
+  "G1-P032": {
+    "judgment": "LT again travels away from DE_W, while the runner gains the opposite edge and is contacted by NB. This repeats the objective concern without proving that chasing the backside end improves the play."
+  },
+  "G1-P056": {
+    "judgment": "Useful Bunch H\u2192Mike insert crosses formation space and creates real contact. Preserve it when repairing bad long receiver jobs: cross-formation or WR-to-LB is not automatically wrong."
+  },
+  "G1-P117": {
+    "judgment": "Gun Wing Trap has real pull/kick and H cross-formation linebacker work. Preserve the useful insert; the later corner finish is not a reason to ban this route."
+  },
+  "G1-P164": {
+    "judgment": "Duo provides real first-level combinations and a useful C\u2192Mike climb before runner contact. Keep this attainable sequence while repairing late joins/collection. DE_S still wins the first runner contact."
+  },
+  "G1-P175": {
+    "judgment": "LG\u2019s DE_S join arrives very late, unlike RG/C\u2019s earlier work. It repeats the late-join concern but does not establish one universal teammate obstruction or grip defect."
+  }
+}

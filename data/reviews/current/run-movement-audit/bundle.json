@@ -1,0 +1,19 @@
+{
+  "purpose": "Data-only run movement audit; do not merge",
+  "file": "evidence.tar.gz",
+  "bytes": 28252330,
+  "sha256": "692831945dd8ee7b3aa72995f58365a92de1736c749b8170d8e7956df659e86c",
+  "manifestSha256": "cca3b984164a7d144d4c53cada1970b89f7a150dc26770a6e133b10a781f53bf",
+  "physicalFiles": 174,
+  "nativeSource": "af87f432d53fb59c6b15c2195ababc65b98109ef8e5e664551ec028bbb45c596",
+  "accepted": "0000e560e0dbe31905151465152d412ba838803d",
+  "evidenceCommit": "902fa3f9d8608aaf295c7561d6b5c85e7d9b8813",
+  "evidenceRef": "refs/heads/evidence/run-movement-audit-2026-10-17",
+  "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/902fa3f9d8608aaf295c7561d6b5c85e7d9b8813/evidence.tar.gz",
+  "manifestUrl": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/902fa3f9d8608aaf295c7561d6b5c85e7d9b8813/bundle-manifest.json",
+  "selectedPictures": {
+    "B02-all22.png": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/902fa3f9d8608aaf295c7561d6b5c85e7d9b8813/B02-all22.png",
+    "K01-box.png": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/902fa3f9d8608aaf295c7561d6b5c85e7d9b8813/K01-box.png",
+    "P02-box.png": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/902fa3f9d8608aaf295c7561d6b5c85e7d9b8813/P02-box.png"
+  }
+}

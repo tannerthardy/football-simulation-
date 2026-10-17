@@ -1,5 +1,30 @@
 # Current work ownership
 
+## Catching support: run-blocking movement audit — 2026-10-17 UTC
+
+Branch `codex/run-movement-audit`, new from accepted/fetched
+`0000e560e0dbe31905151465152d412ba838803d`; queue
+`aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Observational support for Run's
+Counter/puller coordination, perimeter prototypes and zone-combination work.
+Claim only a saved-film reducer, annotated blocker/threat plates and review memo.
+Reuse #140/#126/#129 evidence; distinguish accepted, historical and prototype
+sources. #140 publishes compact decisions but not its all22 tape. Restore only
+its eight exact frozen inputs with its unchanged passive collector (two bounded
+launches, five-second horizons); no new seeds, variants or games. No controller/
+assignment/spacing/carrier/physics edits.
+Inspect all offensive blockers and defensive threats at key phases, preserving
+useful blocks and legitimate defensive wins. Run retains implementation;
+Integration retains review/adoption and combined verification.
+
+Completed saved-picture review:18 witnesses,36 six-frame plates,162 blocker
+ledgers/all11 defenders. Supports Run's approach-origin Counter allocation;
+flags weak Buck's guard/WR force-region exchange and the opening-depth-drop
+heading cost as separate decisions. Preserve successful kicks, Duo collection
+and cross-formation inserts; no runtime change. Eight exact tape restorations
+use unchanged #140 source/inputs (4.903 native seconds/8.315 command seconds);
+six endings/two5s censors, zero games/new seeds. Historical70b4 films and older
+prototype continuation limits stay explicit. [Support memo](reviews/run-movement-audit/README.md).
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
