@@ -1,10 +1,10 @@
 # Current work ownership
 
-## Current #126/#128 checkpoint and audit ownership — 2026-10-16 America/Phoenix
+## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
-Integration claims only minimal four-file assembly and one exact combined check
+Integration claims only the minimal #128 two-file assembly and one exact combined check
 in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
-`blocking.ts`, `coverage/defender.ts`, zone-combo-surface and quarter-flat-force-support tests.
+`coverage/defender.ts` and quarter-flat-force-support test. #126 blocking/zone-combo files remain outside the current candidate.
 Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration now verifies #128-only exact two-file scope; contributors do not repeat the suite.
 #127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
 [Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
