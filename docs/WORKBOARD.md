@@ -5,12 +5,17 @@
 Physics owns `codex/block-mass-response` from accepted #112 merge
 `d682b1f474cb6ba260a7b8b1119a62919c5a2159`. Bounded diagnostic scope:
 `scripts/diag/physics/block-mass-response.ts`, its input manifest and review.
-Separate mass/inertia, mass-linked strength/traction ceilings, prescribed
-requests and supported response; retain equal/near-equal line weights, a
-lighter tight-end-sized body and the user's extreme WR/DT contrast. Reuse #113's
-measurement qualifications. No controller ownership transfer, solver expansion,
-force/capacity/default change or broad game campaign. Correct a demonstrated
-accounting defect if found; new calibration/law candidates require separate review.
+[Completed bounded diagnosis](reviews/block-mass-response.md), engine sourcebed3c36 unchanged.
+20 contact drills + one same-DT unblocked control:15% weight advantage drives
+pair COM1.153yd with normal mapped force versus.070yd at equal absolute force.
+Strength can offset modest weight; generated249/308lb TE/DT preserves a real
+square mismatch and provides finite early delay. No momentum/work defect;
+mirror exact and48-subdivision difference.0026yd.21 unique conditions/38 executions;
+all recorded commands28.888s, no games/full suite. No controller ownership
+transfer, solver expansion, force/capacity/default change or old-failure waiver.
+Next: one independent push/anchor bound or feasible-request/response witness
+from Measurement/Run before a capability calibration proposal. New mapping
+requires separate review; the old observational weight table is not a target.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
