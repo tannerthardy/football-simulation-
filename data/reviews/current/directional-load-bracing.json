@@ -1,0 +1,3307 @@
+{
+  "protocol": "directional-load-bracing-v1",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "acceptedSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "candidateSource": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+  "settings": {
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "mechanical": [
+    {
+      "input": {
+        "id": "transverse-with-lean",
+        "xLoad": 400,
+        "coupleForce": 500
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 10.174697198988191
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 389.8253028010117
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 389.8253028010117,
+        "remainingAlongCouple": 10.174697198988191
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 163.33306116032367
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 236.66693883967622
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967622,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "tipBefore": 0.6529526583388193,
+      "tipAfter": 2.391724549498138,
+      "deviationBefore": 0.0047652101300379975,
+      "deviationAfter": 0.020805538149194346,
+      "completeAfterStateExact": false,
+      "momentumResidual": 0,
+      "planarWorkResidual": 0
+    },
+    {
+      "input": {
+        "id": "transverse-without-lean",
+        "xLoad": 0,
+        "coupleForce": 500
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 163.33306116032367
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 236.66693883967622
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 0,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967622,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 163.33306116032367
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 236.66693883967622
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 0,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967622,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "tipBefore": 2.391724549498138,
+      "tipAfter": 2.391724549498138,
+      "deviationBefore": 0.020805538149194346,
+      "deviationAfter": 0.020805538149194346,
+      "completeAfterStateExact": true,
+      "momentumResidual": 0,
+      "planarWorkResidual": 0
+    },
+    {
+      "input": {
+        "id": "collinear-with-lean",
+        "xLoad": 400,
+        "coupleForce": 500,
+        "plane": "parallel"
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 399.9999999999999,
+          "y": 0
+        },
+        "remainingMoment": {
+          "x": 10.174697198988191,
+          "y": 0
+        },
+        "canceledMoment": {
+          "x": 389.8253028010117,
+          "y": 0
+        },
+        "oldTip": {
+          "x": 8.209297477590164,
+          "y": 0
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 389.8253028010117,
+        "remainingAlongCouple": 10.174697198988191
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 399.9999999999999,
+          "y": 0
+        },
+        "remainingMoment": {
+          "x": 10.174697198988191,
+          "y": 0
+        },
+        "canceledMoment": {
+          "x": 389.8253028010117,
+          "y": 0
+        },
+        "oldTip": {
+          "x": 8.209297477590164,
+          "y": 0
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 389.8253028010117,
+        "remainingAlongCouple": 10.174697198988191
+      },
+      "tipBefore": 0.6529526583388193,
+      "tipAfter": 0.6529526583388193,
+      "deviationBefore": 0.0047652101300379975,
+      "deviationAfter": 0.0047652101300379975,
+      "completeAfterStateExact": true,
+      "momentumResidual": 0,
+      "planarWorkResidual": 0
+    },
+    {
+      "input": {
+        "id": "small-transverse-without-lean",
+        "xLoad": 0,
+        "coupleForce": 100
+      },
+      "independentMoment": 80,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 79.99999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": -2.0285956764068844e-14
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 80
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 1.641859495518033
+        },
+        "achievedBrace": {
+          "x": 0,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 80,
+        "remainingAlongCouple": -2.0285956764068844e-14
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 79.99999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": -2.0285956764068844e-14
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 80
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 1.641859495518033
+        },
+        "achievedBrace": {
+          "x": 0,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 80,
+        "remainingAlongCouple": -2.0285956764068844e-14
+      },
+      "tipBefore": -2.970520509320326e-16,
+      "tipAfter": -2.970520509320326e-16,
+      "deviationBefore": -2.7406442280971235e-18,
+      "deviationAfter": -2.7406442280971235e-18,
+      "completeAfterStateExact": true,
+      "momentumResidual": 0,
+      "planarWorkResidual": 2.7755575615628914e-17
+    },
+    {
+      "input": {
+        "id": "transverse-with-lean-mirror",
+        "xLoad": 400,
+        "coupleForce": 500,
+        "mirror": -1
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": -399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": -10.174697198988191
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": -389.8253028010117
+        },
+        "oldTip": {
+          "x": 0,
+          "y": -8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 389.8253028010117,
+        "remainingAlongCouple": 10.174697198988191
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": -399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": -163.33306116032367
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": -236.66693883967622
+        },
+        "oldTip": {
+          "x": 0,
+          "y": -8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 389.8253028010118,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967622,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "tipBefore": 0.6529526583388193,
+      "tipAfter": 2.391724549498138,
+      "deviationBefore": 0.0047652101300379975,
+      "deviationAfter": 0.020805538149194346,
+      "completeAfterStateExact": false,
+      "momentumResidual": 0,
+      "planarWorkResidual": 0
+    },
+    {
+      "input": {
+        "id": "transverse-with-lean-rotate",
+        "xLoad": 400,
+        "coupleForce": 500,
+        "angle": 0.7
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": -257.68707489507636,
+          "y": 305.93687491379535
+        },
+        "remainingMoment": {
+          "x": -6.554719897875893,
+          "y": 7.7820376606313975
+        },
+        "canceledMoment": {
+          "x": -251.13235499720048,
+          "y": 298.154837253164
+        },
+        "oldTip": {
+          "x": -5.288574634859346,
+          "y": 6.278817038829096
+        },
+        "achievedBrace": {
+          "x": 298.1548372531639,
+          "y": 251.13235499720042
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 389.8253028010119,
+        "remainingAlongCouple": 10.174697198988063
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.004166666666666667,
+        "incomingMoment": {
+          "x": -257.68707489507636,
+          "y": 305.93687491379535
+        },
+        "remainingMoment": {
+          "x": -105.22204691015604,
+          "y": 124.9240157537331
+        },
+        "canceledMoment": {
+          "x": -152.4650279849203,
+          "y": 181.01285916006225
+        },
+        "oldTip": {
+          "x": -5.288574634859346,
+          "y": 6.278817038829096
+        },
+        "achievedBrace": {
+          "x": 298.1548372531639,
+          "y": 251.13235499720042
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967628,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "tipBefore": 0.6529526583388181,
+      "tipAfter": 2.3917245494981385,
+      "deviationBefore": 0.004765210130037986,
+      "deviationAfter": 0.020805538149194357,
+      "completeAfterStateExact": false,
+      "momentumResidual": 3.972054645195637e-15,
+      "planarWorkResidual": 8.881784197001252e-16
+    },
+    {
+      "input": {
+        "id": "transverse-with-lean-48",
+        "xLoad": 400,
+        "coupleForce": 500,
+        "substeps": 48
+      },
+      "independentMoment": 400,
+      "firstBefore": {
+        "t": 0,
+        "h": 0.0010416666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 1.922483650190125
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 398.07751634980974
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 398.0775163498098,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 398.07751634980974,
+        "remainingAlongCouple": 1.922483650190125
+      },
+      "firstAfter": {
+        "t": 0,
+        "h": 0.0010416666666666667,
+        "incomingMoment": {
+          "x": 0,
+          "y": 399.9999999999999
+        },
+        "remainingMoment": {
+          "x": 0,
+          "y": 163.33306116032367
+        },
+        "canceledMoment": {
+          "x": 0,
+          "y": 236.66693883967622
+        },
+        "oldTip": {
+          "x": 0,
+          "y": 8.209297477590164
+        },
+        "achievedBrace": {
+          "x": 398.0775163498098,
+          "y": 0
+        },
+        "ankleMomentBudget": 236.6669388396763,
+        "canceledAlongCouple": 236.66693883967622,
+        "remainingAlongCouple": 163.33306116032367
+      },
+      "tipBefore": 0.11139498767555943,
+      "tipAfter": 2.3917245494981385,
+      "deviationBefore": 0.001620754649245772,
+      "deviationAfter": 0.020808182000226435,
+      "completeAfterStateExact": false,
+      "momentumResidual": 3.552713678800501e-15,
+      "planarWorkResidual": -8.881784197001252e-15
+    }
+  ],
+  "native": [
+    {
+      "id": "wz-strong-over3",
+      "input": {
+        "id": "wz-strong-over3",
+        "kind": "pair11",
+        "direction": "strong",
+        "until": 20
+      },
+      "setupHash": "72c2f68b8b6e3520937506cf18da24d524866c762f6c71b911d51e624561eee2",
+      "initialProfilesAndBodiesSha256": "d0869f537a4c08ee02c7d7d89cc013a679a403ec11f640dbb064323a99aa5423",
+      "before": {
+        "gain": 2.53,
+        "ending": "tackle",
+        "t": 4.15,
+        "censor": null,
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.83,
+            "y": 14.87
+          },
+          "note": "grasp"
+        }
+      },
+      "after": {
+        "gain": 2.53,
+        "ending": "tackle",
+        "t": 4.15,
+        "censor": null,
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.83,
+            "y": 14.87
+          },
+          "note": "grasp"
+        }
+      },
+      "firstSupportDifference": {
+        "t": 3.6,
+        "actor": "CB_S",
+        "differences": [
+          {
+            "field": "support.causes.contact",
+            "before": 0.7487549820547018,
+            "after": 0.7487549818484963,
+            "delta": -2.0620549712191405e-10
+          },
+          {
+            "field": "support.peak",
+            "before": 0.82859392814427,
+            "after": 0.8285939485362643,
+            "delta": 2.0391994315360762e-08
+          },
+          {
+            "field": "support.tipAccel.x",
+            "before": -8.956629783424072,
+            "after": -8.956697840495174,
+            "delta": -6.805707110224546e-05
+          },
+          {
+            "field": "support.tipAccel.y",
+            "before": 3.297330387842161,
+            "after": 3.297222943765984,
+            "delta": -0.00010744407617702123
+          },
+          {
+            "field": "support.xi.x",
+            "before": 0.6663402561973458,
+            "after": 0.6663402144366272,
+            "delta": -4.1760718660910356e-08
+          },
+          {
+            "field": "support.xi.y",
+            "before": -0.8562591999924118,
+            "after": -0.8562592663250054,
+            "delta": -6.633259352906151e-08
+          }
+        ]
+      },
+      "firstPoseDifference": {
+        "t": 3.65,
+        "actor": "RB",
+        "differences": [
+          {
+            "field": "facing",
+            "before": -0.007342735287504043,
+            "after": -0.007342735271245569,
+            "delta": 1.62584737339877e-11
+          },
+          {
+            "field": "pos.x",
+            "before": 41.54886543052919,
+            "after": 41.54886542977826,
+            "delta": -7.509299848607043e-10
+          },
+          {
+            "field": "pos.y",
+            "before": 13.320740599625509,
+            "after": 13.320740599494037,
+            "delta": -1.3147172239769134e-10
+          },
+          {
+            "field": "spin",
+            "before": 3.516252035233593,
+            "after": 3.516252040180513,
+            "delta": 4.9469197627161066e-09
+          },
+          {
+            "field": "vel.x",
+            "before": 1.4425904156431641,
+            "after": 1.4425903149908452,
+            "delta": -1.0065231892397719e-07
+          },
+          {
+            "field": "vel.y",
+            "before": -4.516313496581043,
+            "after": -4.516313512861845,
+            "delta": -1.628080159576939e-08
+          }
+        ]
+      },
+      "firstIssuedRequestDifference": {
+        "t": 3.65,
+        "intervalEnd": 3.6999999999999997,
+        "actor": "Z",
+        "differences": [
+          {
+            "field": "request.vel.y",
+            "before": -3.343085670288973,
+            "after": -3.343085324817622,
+            "delta": 3.454713510819829e-07
+          }
+        ]
+      },
+      "firstIssuedRequestActors": {
+        "t": 3.65,
+        "actors": [
+          "Z",
+          "CB_S"
+        ]
+      },
+      "firstReportedHandLoadDifference": null,
+      "firstDivergentEndpointActors": {
+        "support": {
+          "t": 3.6,
+          "actors": [
+            "CB_S"
+          ]
+        },
+        "pose": {
+          "t": 3.65,
+          "actors": [
+            "RB",
+            "CB_S"
+          ]
+        },
+        "request": {
+          "t": 3.7,
+          "actors": [
+            "Z",
+            "CB_S"
+          ]
+        }
+      },
+      "endpointOrdering": "First detailed record uses body-index order within a .05s endpoint; causal body ordering comes from substep bracing events, not frame array order.",
+      "maxLiveRunnerPositionDifferenceYd": 4.699716565557829e-05,
+      "maxLiveBodyPositionDifferenceYd": 4.813103726272054e-05,
+      "supportStatesEqual": true,
+      "handLoadHistoryExact": true,
+      "localPassageClassificationsEqual": true,
+      "lineArrivalBracketsEqual": true,
+      "maxPlanarWorkResidual": 8.36930524883428e-12
+    },
+    {
+      "id": "wz-weak-over3",
+      "input": {
+        "id": "wz-weak-over3",
+        "kind": "pair11",
+        "direction": "weak",
+        "until": 20
+      },
+      "setupHash": "b99a788734fd8042be5c1a10d6937feb1b3ce876003e25251e908dd3be4e002c",
+      "initialProfilesAndBodiesSha256": "d0869f537a4c08ee02c7d7d89cc013a679a403ec11f640dbb064323a99aa5423",
+      "before": {
+        "gain": 5.34,
+        "ending": "tackle",
+        "t": 4,
+        "censor": null,
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.31,
+            "y": 34.31
+          },
+          "note": "grasp"
+        }
+      },
+      "after": {
+        "gain": 5.34,
+        "ending": "tackle",
+        "t": 4,
+        "censor": null,
+        "firstContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.31,
+            "y": 34.31
+          },
+          "note": "grasp"
+        }
+      },
+      "firstSupportDifference": {
+        "t": 3.1,
+        "actor": "RB",
+        "differences": [
+          {
+            "field": "support.accel.x",
+            "before": -0.12893603137886395,
+            "after": -0.12893598086867472,
+            "delta": 5.051018922563877e-08
+          },
+          {
+            "field": "support.accel.y",
+            "before": -0.43141140949957346,
+            "after": -0.4314114004329805,
+            "delta": 9.06659297639223e-09
+          },
+          {
+            "field": "support.causes.legs",
+            "before": 0.5758962808831884,
+            "after": 0.5758962798431854,
+            "delta": -1.0400030836521523e-09
+          },
+          {
+            "field": "support.feetLock",
+            "before": 0.42035288358009426,
+            "after": 0.42035287428288903,
+            "delta": -9.297205227909444e-09
+          },
+          {
+            "field": "support.feetVel.x",
+            "before": 5.7729132281579325,
+            "after": 5.7729132555033695,
+            "delta": 2.7345437025871888e-08
+          },
+          {
+            "field": "support.feetVel.y",
+            "before": 2.883673910742258,
+            "after": 2.883673915570881,
+            "delta": 4.828622834907037e-09
+          },
+          {
+            "field": "support.felt.x",
+            "before": -857.3537413342384,
+            "after": -857.353736023023,
+            "delta": 5.311215431902383e-06
+          },
+          {
+            "field": "support.felt.y",
+            "before": -154.0955218053313,
+            "after": -154.0955208520329,
+            "delta": 9.53298382455614e-07
+          },
+          {
+            "field": "support.foot.achieved.x",
+            "before": 1.5510566058915682,
+            "after": 1.5510566305899756,
+            "delta": 2.4698407319334592e-08
+          },
+          {
+            "field": "support.foot.achieved.y",
+            "before": 0.21204911442351318,
+            "after": 0.21204911877725108,
+            "delta": 4.353737897977439e-09
+          },
+          {
+            "field": "support.foot.anchor.x",
+            "before": 42.35181008116215,
+            "after": 42.351810081635314,
+            "delta": 4.731646185973659e-10
+          },
+          {
+            "field": "support.foot.anchor.y",
+            "before": 34.97407475241339,
+            "after": 34.974074752497074,
+            "delta": 8.36877234178246e-11
+          },
+          {
+            "field": "support.foot.capacity",
+            "before": 889.7961295755981,
+            "after": 889.7961295575441,
+            "delta": -1.8054038264381234e-08
+          },
+          {
+            "field": "support.foot.desired.x",
+            "before": 2.6689215436440494,
+            "after": 2.6689215436029325,
+            "delta": -4.111688767238775e-11
+          },
+          {
+            "field": "support.foot.desired.y",
+            "before": 0.41091363159602906,
+            "after": 0.410913631503021,
+            "delta": -9.300804570955279e-11
+          },
+          {
+            "field": "support.foot.force.x",
+            "before": -368.34667050644657,
+            "after": -368.3466623545482,
+            "delta": 8.151898384767264e-06
+          },
+          {
+            "field": "support.foot.force.y",
+            "before": -65.5276682437531,
+            "after": -65.52766677850984,
+            "delta": 1.4652432582806796e-06
+          },
+          {
+            "field": "support.foot.offset.x",
+            "before": -0.06777863639678888,
+            "after": -0.06777863596014506,
+            "delta": 4.366438183245336e-10
+          },
+          {
+            "field": "support.foot.offset.y",
+            "before": -0.03601646723331846,
+            "after": -0.03601646715618342,
+            "delta": 7.713504140971494e-11
+          },
+          {
+            "field": "support.foot.target.x",
+            "before": 42.7841681686564,
+            "after": 42.7841681681786,
+            "delta": -4.777973572345218e-10
+          },
+          {
+            "field": "support.foot.target.y",
+            "before": 35.03232972599818,
+            "after": 35.03232972591805,
+            "delta": -8.01279043116665e-11
+          },
+          {
+            "field": "support.lean.x",
+            "before": 498.34432888944247,
+            "after": 498.34432890813815,
+            "delta": 1.8695686776482034e-08
+          },
+          {
+            "field": "support.lean.y",
+            "before": 106.85055819067479,
+            "after": 106.85055819424944,
+            "delta": 3.574655238480773e-09
+          },
+          {
+            "field": "support.load.x",
+            "before": -711.659588238059,
+            "after": -711.6595724840321,
+            "delta": 1.575402689013572e-05
+          },
+          {
+            "field": "support.load.y",
+            "before": -126.67485268966432,
+            "after": -126.67484985576773,
+            "delta": 2.833896587617346e-06
+          },
+          {
+            "field": "support.peak",
+            "before": 0.4906923686789397,
+            "after": 0.4906923678090938,
+            "delta": -8.698459175171536e-10
+          },
+          {
+            "field": "support.xi.x",
+            "before": 0.621949188113781,
+            "after": 0.621949187015149,
+            "delta": -1.0986319631811625e-09
+          },
+          {
+            "field": "support.xi.y",
+            "before": 0.09602707030767073,
+            "after": 0.09602707011223911,
+            "delta": -1.9543161533519537e-10
+          }
+        ]
+      },
+      "firstPoseDifference": {
+        "t": 3.1,
+        "actor": "RB",
+        "differences": [
+          {
+            "field": "pos.x",
+            "before": 42.41958871755894,
+            "after": 42.41958871759546,
+            "delta": 3.652189661806915e-11
+          },
+          {
+            "field": "pos.y",
+            "before": 35.010091219646704,
+            "after": 35.010091219653255,
+            "delta": 6.551204023708124e-12
+          },
+          {
+            "field": "vel.x",
+            "before": 4.2384685889625535,
+            "after": 4.238468591609952,
+            "delta": 2.6473987446706815e-09
+          },
+          {
+            "field": "vel.y",
+            "before": 2.673711813549629,
+            "after": 2.6737118140245846,
+            "delta": 4.749556303806912e-10
+          }
+        ]
+      },
+      "firstIssuedRequestDifference": {
+        "t": 3.1,
+        "intervalEnd": 3.15,
+        "actor": "LB_M",
+        "differences": [
+          {
+            "field": "request.facing",
+            "before": 1.7243511880807252,
+            "after": 1.7243511883374607,
+            "delta": 2.5673552173088865e-10
+          },
+          {
+            "field": "request.vel.x",
+            "before": 4.41757753548818,
+            "after": 4.417577538289269,
+            "delta": 2.801089138415591e-09
+          },
+          {
+            "field": "request.vel.y",
+            "before": 1.5164772925667274,
+            "after": 1.5164772940142688,
+            "delta": 1.447541420063203e-09
+          }
+        ]
+      },
+      "firstIssuedRequestActors": {
+        "t": 3.1,
+        "actors": [
+          "LB_M"
+        ]
+      },
+      "firstReportedHandLoadDifference": null,
+      "firstDivergentEndpointActors": {
+        "support": {
+          "t": 3.1,
+          "actors": [
+            "RB",
+            "LB_M"
+          ]
+        },
+        "pose": {
+          "t": 3.1,
+          "actors": [
+            "RB",
+            "LB_M"
+          ]
+        },
+        "request": {
+          "t": 3.15,
+          "actors": [
+            "LB_M"
+          ]
+        }
+      },
+      "endpointOrdering": "First detailed record uses body-index order within a .05s endpoint; causal body ordering comes from substep bracing events, not frame array order.",
+      "maxLiveRunnerPositionDifferenceYd": 1.9109983773929426e-08,
+      "maxLiveBodyPositionDifferenceYd": 2.4362183932656433e-08,
+      "supportStatesEqual": true,
+      "handLoadHistoryExact": true,
+      "localPassageClassificationsEqual": true,
+      "lineArrivalBracketsEqual": true,
+      "maxPlanarWorkResidual": 7.197353824039965e-12
+    },
+    {
+      "id": "useful-climb-opponent",
+      "input": {
+        "id": "useful-climb-opponent",
+        "kind": "fixture",
+        "fixture": "test/fixtures/planned-climb-fit.json.gz",
+        "fixtureSha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+        "until": 3.5
+      },
+      "setupHash": "8ee8f7d7179633eba26c5919a744026b5e5a6b887aa6d03d039d854057173596",
+      "initialProfilesAndBodiesSha256": "c5c09806709648f43c64994a4127de1d0ada691b3649072611a23ef59c46f8e6",
+      "before": {
+        "gain": null,
+        "ending": null,
+        "t": 3.5,
+        "censor": "explicit-live-prefix",
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        }
+      },
+      "after": {
+        "gain": null,
+        "ending": null,
+        "t": 3.5,
+        "censor": "explicit-live-prefix",
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        }
+      },
+      "firstSupportDifference": {
+        "t": 3.5,
+        "actor": "RB",
+        "differences": [
+          {
+            "field": "support.accel.x",
+            "before": -12.849763112981833,
+            "after": -12.84976311298179,
+            "delta": 4.263256414560601e-14
+          },
+          {
+            "field": "support.accel.y",
+            "before": 0.9934091316278508,
+            "after": 0.9934091316290634,
+            "delta": 1.212585587495596e-12
+          },
+          {
+            "field": "support.causes.contact",
+            "before": 0.25852003830226733,
+            "after": 0.2585200383022674,
+            "delta": 5.551115123125783e-17
+          },
+          {
+            "field": "support.feetVel.x",
+            "before": 3.443301484187427,
+            "after": 3.443301484187531,
+            "delta": 1.0391687510491465e-13
+          },
+          {
+            "field": "support.feetVel.y",
+            "before": -3.22561612825808,
+            "after": -3.2256161282551066,
+            "delta": 2.9736213491560193e-12
+          },
+          {
+            "field": "support.felt.x",
+            "before": -1776.252593568679,
+            "after": -1776.2525935686742,
+            "delta": 4.774847184307873e-12
+          },
+          {
+            "field": "support.felt.y",
+            "before": 266.57364183811274,
+            "after": 266.5736418382369,
+            "delta": 1.241460267920047e-10
+          },
+          {
+            "field": "support.foot.achieved.x",
+            "before": -0.8518725581335032,
+            "after": -0.8518725581333912,
+            "delta": 1.1191048088221578e-13
+          },
+          {
+            "field": "support.foot.achieved.y",
+            "before": -0.8355070500436917,
+            "after": -0.8355070500407655,
+            "delta": 2.926214826004525e-12
+          },
+          {
+            "field": "support.foot.anchor.y",
+            "before": 21.420041434867606,
+            "after": 21.42004143486762,
+            "delta": 1.4210854715202004e-14
+          },
+          {
+            "field": "support.foot.force.x",
+            "before": -1156.211427389813,
+            "after": -1156.2114273897823,
+            "delta": 3.069544618483633e-11
+          },
+          {
+            "field": "support.foot.force.y",
+            "before": 43.84085132886215,
+            "after": 43.84085132966401,
+            "delta": 8.018616881599883e-10
+          },
+          {
+            "field": "support.foot.offset.x",
+            "before": -0.24509056673388696,
+            "after": -0.2450905667338865,
+            "delta": 4.718447854656915e-16
+          },
+          {
+            "field": "support.foot.offset.y",
+            "before": 0.03971325679288019,
+            "after": 0.03971325679289238,
+            "delta": 1.2191636589165e-14
+          },
+          {
+            "field": "support.load.x",
+            "before": -1822.5996875925953,
+            "after": -1822.5996875925475,
+            "delta": 4.774847184307873e-11
+          },
+          {
+            "field": "support.load.y",
+            "before": 69.42418039012293,
+            "after": 69.42418039137834,
+            "delta": 1.2554153272503754e-09
+          },
+          {
+            "field": "support.peak",
+            "before": 0.703464894781713,
+            "after": 0.7034648947817175,
+            "delta": 4.440892098500626e-15
+          },
+          {
+            "field": "support.xi.x",
+            "before": 0.9174971378428624,
+            "after": 0.9174971378428612,
+            "delta": -1.1102230246251565e-15
+          },
+          {
+            "field": "support.xi.y",
+            "before": -0.26359502898391457,
+            "after": -0.263595028983941,
+            "delta": -2.6423307986078726e-14
+          }
+        ]
+      },
+      "firstPoseDifference": {
+        "t": 3.5,
+        "actor": "RB",
+        "differences": [
+          {
+            "field": "vel.x",
+            "before": 4.299548655447439,
+            "after": 4.299548655447441,
+            "delta": 1.7763568394002505e-15
+          },
+          {
+            "field": "vel.y",
+            "before": -2.3804626353061225,
+            "after": -2.3804626353060714,
+            "delta": 5.10702591327572e-14
+          }
+        ]
+      },
+      "firstIssuedRequestDifference": null,
+      "firstIssuedRequestActors": null,
+      "firstReportedHandLoadDifference": null,
+      "firstDivergentEndpointActors": {
+        "support": {
+          "t": 3.5,
+          "actors": [
+            "RB",
+            "SS"
+          ]
+        },
+        "pose": {
+          "t": 3.5,
+          "actors": [
+            "RB",
+            "SS"
+          ]
+        },
+        "request": null
+      },
+      "endpointOrdering": "First detailed record uses body-index order within a .05s endpoint; causal body ordering comes from substep bracing events, not frame array order.",
+      "maxLiveRunnerPositionDifferenceYd": 0,
+      "maxLiveBodyPositionDifferenceYd": 6.292236711980837e-11,
+      "supportStatesEqual": true,
+      "handLoadHistoryExact": true,
+      "localPassageClassificationsEqual": true,
+      "lineArrivalBracketsEqual": true,
+      "maxPlanarWorkResidual": 7.250200440012122e-12
+    }
+  ],
+  "fresh": {
+    "id": "wz-strong-over3-fresh78",
+    "input": {
+      "id": "wz-strong-over3-fresh78",
+      "kind": "pair11",
+      "direction": "strong",
+      "seed": 78,
+      "fresh": true,
+      "until": 20
+    },
+    "setupHash": "1eb05332f94ff7716df321abfd11c4c6272c76c2e034c383ecb5c247c5d78ccd",
+    "initialProfilesAndBodiesSha256": "a8fc2db3e8a174656525765d8819ab32a53b1f29ac4c8988a9f1a41adcd4c71e",
+    "before": {
+      "gain": 4.19,
+      "ending": "tackle",
+      "t": 4.3,
+      "censor": null,
+      "firstContact": {
+        "t": 3.15,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 41.9,
+          "y": 16.98
+        },
+        "note": "grasp"
+      }
+    },
+    "after": {
+      "gain": 4.19,
+      "ending": "tackle",
+      "t": 4.3,
+      "censor": null,
+      "firstContact": {
+        "t": 3.15,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 41.9,
+          "y": 16.98
+        },
+        "note": "grasp"
+      }
+    },
+    "firstSupportDifference": {
+      "t": 3.55,
+      "actor": "RB",
+      "differences": [
+        {
+          "field": "support.accel.x",
+          "before": 8.486340677284174,
+          "after": 8.486341198214973,
+          "delta": 5.209307989417766e-07
+        },
+        {
+          "field": "support.accel.y",
+          "before": 1.4449601088059738,
+          "after": 1.4449592915599683,
+          "delta": -8.172460055355657e-07
+        },
+        {
+          "field": "support.causes.contact",
+          "before": 0.416470183428485,
+          "after": 0.4164701850107841,
+          "delta": 1.5822990695468775e-09
+        },
+        {
+          "field": "support.causes.legs",
+          "before": 0.5303001303827782,
+          "after": 0.5303001303392262,
+          "delta": -4.3552050854600566e-11
+        },
+        {
+          "field": "support.feetLock",
+          "before": 0.5025259519257045,
+          "after": 0.50252596892487,
+          "delta": 1.6999165519671067e-08
+        },
+        {
+          "field": "support.feetVel.x",
+          "before": 0.7071034035853945,
+          "after": 0.7071041571201844,
+          "delta": 7.535347898990352e-07
+        },
+        {
+          "field": "support.feetVel.y",
+          "before": -5.8057141934950405,
+          "after": -5.8057152291859095,
+          "delta": -1.035690869066741e-06
+        },
+        {
+          "field": "support.felt.x",
+          "before": 462.62713080203304,
+          "after": 462.6271985638113,
+          "delta": 6.776177826850471e-05
+        },
+        {
+          "field": "support.felt.y",
+          "before": 401.5888176985789,
+          "after": 401.58871573096377,
+          "delta": -0.00010196761513725505
+        },
+        {
+          "field": "support.foot.achieved.x",
+          "before": -1.2940000664057787,
+          "after": -1.2939993351969947,
+          "delta": 7.31208783966153e-07
+        },
+        {
+          "field": "support.foot.achieved.y",
+          "before": -0.7836309054300941,
+          "after": -0.7836319053365136,
+          "delta": -9.999064195520546e-07
+        },
+        {
+          "field": "support.foot.anchor.x",
+          "before": 42.676711717497376,
+          "after": 42.67671172585011,
+          "delta": 8.352735392236355e-09
+        },
+        {
+          "field": "support.foot.anchor.y",
+          "before": 15.092632044685626,
+          "after": 15.092632032378917,
+          "delta": -1.2306708541132139e-08
+        },
+        {
+          "field": "support.foot.capacity",
+          "before": 1001.2718076183927,
+          "after": 1001.2717984614187,
+          "delta": -9.156973987956007e-06
+        },
+        {
+          "field": "support.foot.desired.x",
+          "before": -2.5367227553744596,
+          "after": -2.5367225728844542,
+          "delta": 1.824900053293277e-07
+        },
+        {
+          "field": "support.foot.desired.y",
+          "before": -1.6729007972497956,
+          "after": -1.6729010234930017,
+          "delta": -2.2624320616948523e-07
+        },
+        {
+          "field": "support.foot.force.x",
+          "before": 409.48843584338994,
+          "after": 409.48861665122126,
+          "delta": 0.00018080783132745637
+        },
+        {
+          "field": "support.foot.force.y",
+          "before": 293.0225224632133,
+          "after": 293.0222675341435,
+          "delta": -0.00025492906979707186
+        },
+        {
+          "field": "support.foot.offset.x",
+          "before": -0.14397897693856335,
+          "after": -0.14397896880949052,
+          "delta": 8.129072831541961e-09
+        },
+        {
+          "field": "support.foot.offset.y",
+          "before": 0.06283802255094598,
+          "after": 0.06283801061899723,
+          "delta": -1.193194874848924e-08
+        },
+        {
+          "field": "support.foot.target.x",
+          "before": 42.158157127856086,
+          "after": 42.1581571739072,
+          "delta": 4.605111314504029e-08
+        },
+        {
+          "field": "support.foot.target.y",
+          "before": 14.776792622899517,
+          "after": 14.776792571392653,
+          "delta": -5.150686455124287e-08
+        },
+        {
+          "field": "support.lean.x",
+          "before": 21.5677307782139,
+          "after": 21.56766723100985,
+          "delta": -6.354720404999625e-05
+        },
+        {
+          "field": "support.lean.y",
+          "before": -26.60629717025986,
+          "after": -26.60621877741397,
+          "delta": 7.839284588939677e-05
+        },
+        {
+          "field": "support.load.x",
+          "before": 627.349463245662,
+          "after": 627.3497399218978,
+          "delta": 0.0002766762357850894
+        },
+        {
+          "field": "support.load.y",
+          "before": 446.8215542943462,
+          "after": 446.82116583322545,
+          "delta": -0.00038846112073542827
+        },
+        {
+          "field": "support.xi.x",
+          "before": -0.6539577358039272,
+          "after": -0.653957691576372,
+          "delta": 4.4227555284770403e-08
+        },
+        {
+          "field": "support.xi.y",
+          "before": -0.4342015630469139,
+          "after": -0.4342016115783566,
+          "delta": -4.8531442753407816e-08
+        }
+      ]
+    },
+    "firstPoseDifference": {
+      "t": 3.55,
+      "actor": "RB",
+      "differences": [
+        {
+          "field": "facing",
+          "before": -0.5086361760951462,
+          "after": -0.5086361763873033,
+          "delta": -2.921570763092518e-10
+        },
+        {
+          "field": "pos.x",
+          "before": 42.82069069443594,
+          "after": 42.8206906946596,
+          "delta": 2.2366464236256434e-10
+        },
+        {
+          "field": "pos.y",
+          "before": 15.02979402213468,
+          "after": 15.02979402175992,
+          "delta": -3.7475977876511024e-10
+        },
+        {
+          "field": "spin",
+          "before": 6.2841320972526375,
+          "after": 6.284132053802906,
+          "delta": -4.344973181247269e-08
+        },
+        {
+          "field": "vel.x",
+          "before": 2.017005627583175,
+          "after": 2.017005652902508,
+          "delta": 2.531933329663616e-08
+        },
+        {
+          "field": "vel.y",
+          "before": -5.017301479463082,
+          "after": -5.017301519664635,
+          "delta": -4.020155230932687e-08
+        }
+      ]
+    },
+    "firstIssuedRequestDifference": {
+      "t": 3.55,
+      "intervalEnd": 3.5999999999999996,
+      "actor": "CB_S",
+      "differences": [
+        {
+          "field": "request.facing",
+          "before": -2.398838279192124,
+          "after": -2.3988392265941525,
+          "delta": -9.474020283839479e-07
+        },
+        {
+          "field": "request.vel.x",
+          "before": 2.9813294610498926,
+          "after": 2.9813279061130977,
+          "delta": -1.5549367948786141e-06
+        },
+        {
+          "field": "request.vel.y",
+          "before": -4.131904594516318,
+          "after": -4.131907769404416,
+          "delta": -3.1748880973125893e-06
+        }
+      ]
+    },
+    "firstIssuedRequestActors": {
+      "t": 3.55,
+      "actors": [
+        "CB_S"
+      ]
+    },
+    "firstReportedHandLoadDifference": {
+      "start": 4.15,
+      "end": 4.2,
+      "beforeCount": 4,
+      "afterCount": 4,
+      "changed": [
+        {
+          "pair": "3/15",
+          "differences": [
+            {
+              "field": "tangentMeanForce",
+              "before": -518.2616910184914,
+              "after": -518.2749110589558,
+              "delta": -0.013220040464375415
+            }
+          ]
+        }
+      ]
+    },
+    "firstDivergentEndpointActors": {
+      "support": {
+        "t": 3.55,
+        "actors": [
+          "RB",
+          "CB_S"
+        ]
+      },
+      "pose": {
+        "t": 3.55,
+        "actors": [
+          "RB",
+          "CB_S"
+        ]
+      },
+      "request": {
+        "t": 3.6,
+        "actors": [
+          "CB_S"
+        ]
+      }
+    },
+    "endpointOrdering": "First detailed record uses body-index order within a .05s endpoint; causal body ordering comes from substep bracing events, not frame array order.",
+    "maxLiveRunnerPositionDifferenceYd": 0.00030766006027782355,
+    "maxLiveBodyPositionDifferenceYd": 0.0003141136812730678,
+    "supportStatesEqual": true,
+    "handLoadHistoryExact": false,
+    "localPassageClassificationsEqual": true,
+    "lineArrivalBracketsEqual": true,
+    "maxPlanarWorkResidual": 1.1449508008354314e-11
+  },
+  "massTransfer": [
+    {
+      "id": "equal-square",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": 0.0,
+      "summary": {
+        "defenderDriven": -0.10512309645834961,
+        "blockerAdvance": 0.10512309645834961,
+        "defenderLateral": 0,
+        "firstRelease": null,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 8.171241461241152e-14,
+        "maximumWorkResidual": 9.237055564881302e-14,
+        "bodies": [
+          {
+            "massKg": 136.077711,
+            "power": 158.2597664410714,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612244,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": 2869.7394636459694,
+              "y": 0
+            }
+          },
+          {
+            "massKg": 136.077711,
+            "power": 158.2597664410714,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612244,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": -2869.7394636459694,
+              "y": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "plus15-square",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": 1.1531547549238508,
+      "summary": {
+        "defenderDriven": 1.0407419568140241,
+        "blockerAdvance": 1.2509050141497866,
+        "defenderLateral": 0,
+        "firstRelease": null,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 2.8421709430404007e-13,
+        "maximumWorkResidual": 3.446132268436486e-13,
+        "bodies": [
+          {
+            "massKg": 156.48936765000002,
+            "power": 181.9987314072321,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612243,
+            "saturatedFraction": 0.6,
+            "groundImpulse": {
+              "x": 3257.3068889617425,
+              "y": 0
+            }
+          },
+          {
+            "massKg": 136.077711,
+            "power": 158.2597664410714,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612244,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": -2886.67711869312,
+              "y": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "equal-force-plus15",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": 0.06963322484812287,
+      "summary": {
+        "defenderDriven": -0.04279316750696438,
+        "blockerAdvance": 0.16739530515689438,
+        "defenderLateral": 0,
+        "firstRelease": null,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 8.526512829121202e-14,
+        "maximumWorkResidual": 3.552713678800501e-14,
+        "bodies": [
+          {
+            "massKg": 156.48936765000002,
+            "power": 149.6854821,
+            "pushPerWeight": 0.9565217391304347,
+            "armPerWeight": 0.717391304347826,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": 2874.488999561334,
+              "y": 0
+            }
+          },
+          {
+            "massKg": 136.077711,
+            "power": 149.6854821,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8250000000000001,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": -2863.46186622656,
+              "y": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "strong-light",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": 0.07657203211584847,
+      "summary": {
+        "defenderDriven": -0.02582348214170338,
+        "blockerAdvance": 0.18435678396590305,
+        "defenderLateral": 0,
+        "firstRelease": null,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 8.526512829121202e-14,
+        "maximumWorkResidual": 2.842170943040401e-14,
+        "bodies": [
+          {
+            "massKg": 129.27382545,
+            "power": 157.27216162526784,
+            "pushPerWeight": 1.0999999999999999,
+            "armPerWeight": 0.9124362244897958,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": 2730.228152129728,
+              "y": 0
+            }
+          },
+          {
+            "massKg": 136.077711,
+            "power": 140.03507300357143,
+            "pushPerWeight": 1.0290816326530612,
+            "armPerWeight": 0.771811224489796,
+            "saturatedFraction": 0.8,
+            "groundImpulse": {
+              "x": -2698.164450004149,
+              "y": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "plus15-cross",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": 1.860558766153423,
+      "summary": {
+        "defenderDriven": -0.6222143419219393,
+        "blockerAdvance": 4.019491903610259,
+        "defenderLateral": 3.39069572537538,
+        "firstRelease": 1.1,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 1.723066134218243e-13,
+        "maximumWorkResidual": 6.323830348264892e-13,
+        "bodies": [
+          {
+            "massKg": 156.48936765000002,
+            "power": 181.9987314072321,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612243,
+            "saturatedFraction": 0.03546099290780142,
+            "groundImpulse": {
+              "x": 1035.6761290116806,
+              "y": 49.188625085484496
+            }
+          },
+          {
+            "massKg": 136.077711,
+            "power": 158.2597664410714,
+            "pushPerWeight": 1.1,
+            "armPerWeight": 0.8722576530612244,
+            "saturatedFraction": 0.1276595744680851,
+            "groundImpulse": {
+              "x": -634.2870092723816,
+              "y": 271.09675205128633
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "roster-te-dt-square",
+      "completeStepsExact": true,
+      "pairComAdvanceYd": -2.690068169779555,
+      "summary": {
+        "defenderDriven": -2.78108081104714,
+        "blockerAdvance": -2.577490284195555,
+        "defenderLateral": 0,
+        "firstRelease": null,
+        "states": [
+          "up",
+          "up"
+        ],
+        "maximumMomentumResidual": 7.815970093361102e-13,
+        "maximumWorkResidual": 1.3000711618360583e-12,
+        "bodies": [
+          {
+            "massKg": 112.94450013000001,
+            "power": 100.80872884052144,
+            "pushPerWeight": 0.8925510204081634,
+            "armPerWeight": 0.6694132653061224,
+            "saturatedFraction": 0.825,
+            "groundImpulse": {
+              "x": 1991.241226366064,
+              "y": 0
+            }
+          },
+          {
+            "massKg": 139.70644996000001,
+            "power": 167.7831696739,
+            "pushPerWeight": 1.0999999999999999,
+            "armPerWeight": 0.9007270408163264,
+            "saturatedFraction": 0.275,
+            "groundImpulse": {
+              "x": -2627.6963227739675,
+              "y": 0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "nativeBracing": {
+    "protocol": "bracing-native-v1",
+    "source": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+    "testedRevision": "7beec5a06100d3c69180758e07a9fc5e13902715",
+    "node": "v22.23.3",
+    "tool": "scripts/diag/physics/bracing-native.ts",
+    "toolSha256": "1f46871ba070d889a0ce8e961c5e5a536ad2d13cf2d1550d60618a9f7b3055a3",
+    "collectorToolSha256": "234c7fd3155239cfff0321e35d3ac029e724e09dc63ecb46a20c867e1b85a68a",
+    "inputSha256": "8813470419287457c47a2c571df4020743adced8ef65e02b2de7e9a84d823714",
+    "nativeOutput": "out/directional-brace/native-after.json.gz",
+    "nativeOutputSha256": "b9caed2ed2449ff30b7f73d5adaa57443f6778d17c197a88f5d78805d0eee861",
+    "threshold": 1e-08,
+    "units": {
+      "moment": "kg yd\u00b2/s\u00b2",
+      "integral": "kg yd\u00b2/s",
+      "oldTip": "yd/s\u00b2",
+      "braceAndFelt": "kg yd/s\u00b2"
+    },
+    "scope": "Actual native responses minus the former scalar bracing subtraction at identical current states. This identifies correction invocation; it is not a paired-history counterfactual or a football-benefit attribution. Only upright updateSupport calls are included. Integrated magnitude is summed across bodies/substeps, not a conserved net angular impulse. Instrumented cost is not a native runtime benchmark.",
+    "ignoredSingleBodyPreviewWorlds": 33,
+    "elapsedSeconds": 1.9695997969999999,
+    "error": null,
+    "worlds": [
+      {
+        "world": 0,
+        "case": "wz-strong-over3",
+        "profileHash": "9c187e0166b4513c0b3cc9662cb59e27042dfb6ab1889bccc482342e7390e403",
+        "significantSubsteps": 24,
+        "integralRestoredMomentMagnitude": 0.1277674852080214,
+        "first": {
+          "world": 0,
+          "idx": 18,
+          "time": 3.5958333333333354,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -9.821189128964523,
+            "y": 4.279944074203913
+          },
+          "oldFelt": {
+            "x": 1377.0743679678797,
+            "y": -659.033412768121
+          },
+          "achievedBrace": {
+            "x": -126.94647582468222,
+            "y": 80.41025283731501
+          },
+          "leanFraction": 0.09774394090933179,
+          "ankleFraction": 0.09695985795953695,
+          "legacyFraction": 0.09774394090933179,
+          "ankleMomentBudget": 33.130357980560376,
+          "equivalentMomentScale": 31.89429522712239,
+          "incomingRawMoment": {
+            "x": -389.863747946424,
+            "y": 100.332699952472
+          },
+          "storedFeltMoment": {
+            "x": -313.2399055605995,
+            "y": 136.50579985823262
+          },
+          "legacyResidualMoment": {
+            "x": -359.24644512686405,
+            "y": 86.99008511734785
+          },
+          "actualResidualMoment": {
+            "x": -359.26838735216364,
+            "y": 86.95544415956881
+          },
+          "restoredMoment": {
+            "x": -0.021942225299604306,
+            "y": -0.03464095777903193
+          },
+          "restoredMomentMagnitude": 0.041005575315403976,
+          "support": {
+            "state": "up",
+            "posture": 0.5942711972937537,
+            "xi": {
+              "x": 0.6576820289231187,
+              "y": -0.8520326618281454
+            },
+            "availability": 0.28034736714737196
+          }
+        },
+        "maximum": {
+          "world": 0,
+          "idx": 18,
+          "time": 3.6458333333333357,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -12.112432439240518,
+            "y": 3.473860733665425
+          },
+          "oldFelt": {
+            "x": 1472.576593009523,
+            "y": -449.46089849882526
+          },
+          "achievedBrace": {
+            "x": -133.45045169765248,
+            "y": 68.35847938942898
+          },
+          "leanFraction": 0.09586195746394702,
+          "ankleFraction": 0.05341030749871487,
+          "legacyFraction": 0.09586195746394702,
+          "ankleMomentBudget": 21.464496187598556,
+          "equivalentMomentScale": 31.89330026888817,
+          "incomingRawMoment": {
+            "x": -393.6371992863104,
+            "y": 108.94362671814474
+          },
+          "storedFeltMoment": {
+            "x": -386.3054447713194,
+            "y": 110.79288347109156
+          },
+          "legacyResidualMoment": {
+            "x": -356.605203171551,
+            "y": 98.32280403553092
+          },
+          "actualResidualMoment": {
+            "x": -358.1053394573848,
+            "y": 95.39421541359751
+          },
+          "restoredMoment": {
+            "x": -1.5001362858337657,
+            "y": -2.9285886219334265
+          },
+          "restoredMomentMagnitude": 3.290446807440147,
+          "support": {
+            "state": "up",
+            "posture": 0.5941564879539732,
+            "xi": {
+              "x": 0.7433925338748956,
+              "y": -0.8922514230771823
+            },
+            "availability": 0.18164140006469687
+          }
+        },
+        "bodies": [
+          {
+            "idx": 18,
+            "substeps": 270,
+            "significantSubsteps": 24,
+            "first": {
+              "world": 0,
+              "idx": 18,
+              "time": 3.5958333333333354,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -9.821189128964523,
+                "y": 4.279944074203913
+              },
+              "oldFelt": {
+                "x": 1377.0743679678797,
+                "y": -659.033412768121
+              },
+              "achievedBrace": {
+                "x": -126.94647582468222,
+                "y": 80.41025283731501
+              },
+              "leanFraction": 0.09774394090933179,
+              "ankleFraction": 0.09695985795953695,
+              "legacyFraction": 0.09774394090933179,
+              "ankleMomentBudget": 33.130357980560376,
+              "equivalentMomentScale": 31.89429522712239,
+              "incomingRawMoment": {
+                "x": -389.863747946424,
+                "y": 100.332699952472
+              },
+              "storedFeltMoment": {
+                "x": -313.2399055605995,
+                "y": 136.50579985823262
+              },
+              "legacyResidualMoment": {
+                "x": -359.24644512686405,
+                "y": 86.99008511734785
+              },
+              "actualResidualMoment": {
+                "x": -359.26838735216364,
+                "y": 86.95544415956881
+              },
+              "restoredMoment": {
+                "x": -0.021942225299604306,
+                "y": -0.03464095777903193
+              },
+              "restoredMomentMagnitude": 0.041005575315403976,
+              "support": {
+                "state": "up",
+                "posture": 0.5942711972937537,
+                "xi": {
+                  "x": 0.6576820289231187,
+                  "y": -0.8520326618281454
+                },
+                "availability": 0.28034736714737196
+              }
+            },
+            "maximum": {
+              "world": 0,
+              "idx": 18,
+              "time": 3.6458333333333357,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -12.112432439240518,
+                "y": 3.473860733665425
+              },
+              "oldFelt": {
+                "x": 1472.576593009523,
+                "y": -449.46089849882526
+              },
+              "achievedBrace": {
+                "x": -133.45045169765248,
+                "y": 68.35847938942898
+              },
+              "leanFraction": 0.09586195746394702,
+              "ankleFraction": 0.05341030749871487,
+              "legacyFraction": 0.09586195746394702,
+              "ankleMomentBudget": 21.464496187598556,
+              "equivalentMomentScale": 31.89330026888817,
+              "incomingRawMoment": {
+                "x": -393.6371992863104,
+                "y": 108.94362671814474
+              },
+              "storedFeltMoment": {
+                "x": -386.3054447713194,
+                "y": 110.79288347109156
+              },
+              "legacyResidualMoment": {
+                "x": -356.605203171551,
+                "y": 98.32280403553092
+              },
+              "actualResidualMoment": {
+                "x": -358.1053394573848,
+                "y": 95.39421541359751
+              },
+              "restoredMoment": {
+                "x": -1.5001362858337657,
+                "y": -2.9285886219334265
+              },
+              "restoredMomentMagnitude": 3.290446807440147,
+              "support": {
+                "state": "up",
+                "posture": 0.5941564879539732,
+                "xi": {
+                  "x": 0.7433925338748956,
+                  "y": -0.8922514230771823
+                },
+                "availability": 0.18164140006469687
+              }
+            },
+            "maximumRestoredMoment": 3.290446807440147,
+            "integralRestoredMomentMagnitude": 0.12776748520789466,
+            "integralRestoredMoment": {
+              "x": -0.03848447807656879,
+              "y": -0.0713132334686119
+            },
+            "actor": {
+              "idx": 18,
+              "slot": "CB_S",
+              "team": "D",
+              "player": "pair11D-CB3"
+            }
+          }
+        ],
+        "belowReportingThresholdActors": [
+          {
+            "idx": 0,
+            "slot": "QB",
+            "team": "O",
+            "player": "pair11O-QB1"
+          },
+          {
+            "idx": 1,
+            "slot": "LT",
+            "team": "O",
+            "player": "pair11O-OT2"
+          },
+          {
+            "idx": 2,
+            "slot": "RT",
+            "team": "O",
+            "player": "pair11O-OT1"
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "team": "O",
+            "player": "pair11O-OG2"
+          },
+          {
+            "idx": 4,
+            "slot": "LG",
+            "team": "O",
+            "player": "pair11O-OT4"
+          },
+          {
+            "idx": 5,
+            "slot": "RG",
+            "team": "O",
+            "player": "pair11O-OG1"
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "team": "O",
+            "player": "pair11O-RB1"
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "team": "O",
+            "player": "pair11O-TE3"
+          },
+          {
+            "idx": 8,
+            "slot": "X",
+            "team": "O",
+            "player": "pair11O-WR1"
+          },
+          {
+            "idx": 9,
+            "slot": "Z",
+            "team": "O",
+            "player": "pair11O-WR3"
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "team": "O",
+            "player": "pair11O-TE1"
+          },
+          {
+            "idx": 11,
+            "slot": "DE_W",
+            "team": "D",
+            "player": "pair11D-EDGE2"
+          },
+          {
+            "idx": 12,
+            "slot": "DE_S",
+            "team": "D",
+            "player": "pair11D-LB1"
+          },
+          {
+            "idx": 13,
+            "slot": "DT_S",
+            "team": "D",
+            "player": "pair11D-EDGE1"
+          },
+          {
+            "idx": 14,
+            "slot": "DT_W",
+            "team": "D",
+            "player": "pair11D-DT3"
+          },
+          {
+            "idx": 15,
+            "slot": "LB_M",
+            "team": "D",
+            "player": "pair11D-LB3"
+          },
+          {
+            "idx": 16,
+            "slot": "LB_W",
+            "team": "D",
+            "player": "pair11D-LB2"
+          },
+          {
+            "idx": 17,
+            "slot": "LB_S",
+            "team": "D",
+            "player": "pair11D-LB4"
+          },
+          {
+            "idx": 19,
+            "slot": "CB_W",
+            "team": "D",
+            "player": "pair11D-CB1"
+          },
+          {
+            "idx": 20,
+            "slot": "FS",
+            "team": "D",
+            "player": "pair11D-S2"
+          },
+          {
+            "idx": 21,
+            "slot": "SS",
+            "team": "D",
+            "player": "pair11D-CB4"
+          }
+        ]
+      },
+      {
+        "world": 1,
+        "case": "wz-weak-over3",
+        "profileHash": "9c187e0166b4513c0b3cc9662cb59e27042dfb6ab1889bccc482342e7390e403",
+        "significantSubsteps": 1,
+        "integralRestoredMomentMagnitude": 2.0594105402051287e-05,
+        "first": {
+          "world": 1,
+          "idx": 15,
+          "time": 3.0541666666666667,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -7.073096940670325,
+            "y": -1.2773732182812698
+          },
+          "oldFelt": {
+            "x": 964.7639682454734,
+            "y": 177.22551103603848
+          },
+          "achievedBrace": {
+            "x": -372.8811640905143,
+            "y": -69.7776611659925
+          },
+          "leanFraction": 0.3867356559716193,
+          "ankleFraction": 0.3839274672554445,
+          "legacyFraction": 0.3867356559716193,
+          "ankleMomentBudget": 106.89813207734842,
+          "equivalentMomentScale": 38.73843959874151,
+          "incomingRawMoment": {
+            "x": -293.96599338021076,
+            "y": -52.011111552679985
+          },
+          "storedFeltMoment": {
+            "x": -274.00073861220073,
+            "y": -49.48344526143902
+          },
+          "legacyResidualMoment": {
+            "x": -188.00013799631307,
+            "y": -32.87409888976165
+          },
+          "actualResidualMoment": {
+            "x": -188.00104712669446,
+            "y": -32.86924063585557
+          },
+          "restoredMoment": {
+            "x": -0.000909130381368854,
+            "y": 0.004858253906077948
+          },
+          "restoredMomentMagnitude": 0.0049425852614041485,
+          "support": {
+            "state": "up",
+            "posture": 0.5944686031038687,
+            "xi": {
+              "x": 0.5279351759273644,
+              "y": 0.37035533249188357
+            },
+            "availability": 0.6784198084275916
+          }
+        },
+        "maximum": {
+          "world": 1,
+          "idx": 15,
+          "time": 3.0541666666666667,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -7.073096940670325,
+            "y": -1.2773732182812698
+          },
+          "oldFelt": {
+            "x": 964.7639682454734,
+            "y": 177.22551103603848
+          },
+          "achievedBrace": {
+            "x": -372.8811640905143,
+            "y": -69.7776611659925
+          },
+          "leanFraction": 0.3867356559716193,
+          "ankleFraction": 0.3839274672554445,
+          "legacyFraction": 0.3867356559716193,
+          "ankleMomentBudget": 106.89813207734842,
+          "equivalentMomentScale": 38.73843959874151,
+          "incomingRawMoment": {
+            "x": -293.96599338021076,
+            "y": -52.011111552679985
+          },
+          "storedFeltMoment": {
+            "x": -274.00073861220073,
+            "y": -49.48344526143902
+          },
+          "legacyResidualMoment": {
+            "x": -188.00013799631307,
+            "y": -32.87409888976165
+          },
+          "actualResidualMoment": {
+            "x": -188.00104712669446,
+            "y": -32.86924063585557
+          },
+          "restoredMoment": {
+            "x": -0.000909130381368854,
+            "y": 0.004858253906077948
+          },
+          "restoredMomentMagnitude": 0.0049425852614041485,
+          "support": {
+            "state": "up",
+            "posture": 0.5944686031038687,
+            "xi": {
+              "x": 0.5279351759273644,
+              "y": 0.37035533249188357
+            },
+            "availability": 0.6784198084275916
+          }
+        },
+        "bodies": [
+          {
+            "idx": 15,
+            "substeps": 417,
+            "significantSubsteps": 1,
+            "first": {
+              "world": 1,
+              "idx": 15,
+              "time": 3.0541666666666667,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -7.073096940670325,
+                "y": -1.2773732182812698
+              },
+              "oldFelt": {
+                "x": 964.7639682454734,
+                "y": 177.22551103603848
+              },
+              "achievedBrace": {
+                "x": -372.8811640905143,
+                "y": -69.7776611659925
+              },
+              "leanFraction": 0.3867356559716193,
+              "ankleFraction": 0.3839274672554445,
+              "legacyFraction": 0.3867356559716193,
+              "ankleMomentBudget": 106.89813207734842,
+              "equivalentMomentScale": 38.73843959874151,
+              "incomingRawMoment": {
+                "x": -293.96599338021076,
+                "y": -52.011111552679985
+              },
+              "storedFeltMoment": {
+                "x": -274.00073861220073,
+                "y": -49.48344526143902
+              },
+              "legacyResidualMoment": {
+                "x": -188.00013799631307,
+                "y": -32.87409888976165
+              },
+              "actualResidualMoment": {
+                "x": -188.00104712669446,
+                "y": -32.86924063585557
+              },
+              "restoredMoment": {
+                "x": -0.000909130381368854,
+                "y": 0.004858253906077948
+              },
+              "restoredMomentMagnitude": 0.0049425852614041485,
+              "support": {
+                "state": "up",
+                "posture": 0.5944686031038687,
+                "xi": {
+                  "x": 0.5279351759273644,
+                  "y": 0.37035533249188357
+                },
+                "availability": 0.6784198084275916
+              }
+            },
+            "maximum": {
+              "world": 1,
+              "idx": 15,
+              "time": 3.0541666666666667,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -7.073096940670325,
+                "y": -1.2773732182812698
+              },
+              "oldFelt": {
+                "x": 964.7639682454734,
+                "y": 177.22551103603848
+              },
+              "achievedBrace": {
+                "x": -372.8811640905143,
+                "y": -69.7776611659925
+              },
+              "leanFraction": 0.3867356559716193,
+              "ankleFraction": 0.3839274672554445,
+              "legacyFraction": 0.3867356559716193,
+              "ankleMomentBudget": 106.89813207734842,
+              "equivalentMomentScale": 38.73843959874151,
+              "incomingRawMoment": {
+                "x": -293.96599338021076,
+                "y": -52.011111552679985
+              },
+              "storedFeltMoment": {
+                "x": -274.00073861220073,
+                "y": -49.48344526143902
+              },
+              "legacyResidualMoment": {
+                "x": -188.00013799631307,
+                "y": -32.87409888976165
+              },
+              "actualResidualMoment": {
+                "x": -188.00104712669446,
+                "y": -32.86924063585557
+              },
+              "restoredMoment": {
+                "x": -0.000909130381368854,
+                "y": 0.004858253906077948
+              },
+              "restoredMomentMagnitude": 0.0049425852614041485,
+              "support": {
+                "state": "up",
+                "posture": 0.5944686031038687,
+                "xi": {
+                  "x": 0.5279351759273644,
+                  "y": 0.37035533249188357
+                },
+                "availability": 0.6784198084275916
+              }
+            },
+            "maximumRestoredMoment": 0.0049425852614041485,
+            "integralRestoredMomentMagnitude": 2.0594105271868293e-05,
+            "integralRestoredMoment": {
+              "x": -3.7880432621880197e-06,
+              "y": 2.024272460707114e-05
+            },
+            "actor": {
+              "idx": 15,
+              "slot": "LB_M",
+              "team": "D",
+              "player": "pair11D-LB3"
+            }
+          }
+        ],
+        "belowReportingThresholdActors": [
+          {
+            "idx": 0,
+            "slot": "QB",
+            "team": "O",
+            "player": "pair11O-QB1"
+          },
+          {
+            "idx": 1,
+            "slot": "LT",
+            "team": "O",
+            "player": "pair11O-OT2"
+          },
+          {
+            "idx": 2,
+            "slot": "RT",
+            "team": "O",
+            "player": "pair11O-OT1"
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "team": "O",
+            "player": "pair11O-OG2"
+          },
+          {
+            "idx": 4,
+            "slot": "LG",
+            "team": "O",
+            "player": "pair11O-OT4"
+          },
+          {
+            "idx": 5,
+            "slot": "RG",
+            "team": "O",
+            "player": "pair11O-OG1"
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "team": "O",
+            "player": "pair11O-RB1"
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "team": "O",
+            "player": "pair11O-TE3"
+          },
+          {
+            "idx": 8,
+            "slot": "X",
+            "team": "O",
+            "player": "pair11O-WR1"
+          },
+          {
+            "idx": 9,
+            "slot": "Z",
+            "team": "O",
+            "player": "pair11O-WR3"
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "team": "O",
+            "player": "pair11O-TE1"
+          },
+          {
+            "idx": 11,
+            "slot": "DE_W",
+            "team": "D",
+            "player": "pair11D-EDGE2"
+          },
+          {
+            "idx": 12,
+            "slot": "DE_S",
+            "team": "D",
+            "player": "pair11D-LB1"
+          },
+          {
+            "idx": 13,
+            "slot": "DT_S",
+            "team": "D",
+            "player": "pair11D-EDGE1"
+          },
+          {
+            "idx": 14,
+            "slot": "DT_W",
+            "team": "D",
+            "player": "pair11D-DT3"
+          },
+          {
+            "idx": 16,
+            "slot": "LB_W",
+            "team": "D",
+            "player": "pair11D-LB2"
+          },
+          {
+            "idx": 17,
+            "slot": "LB_S",
+            "team": "D",
+            "player": "pair11D-LB4"
+          },
+          {
+            "idx": 18,
+            "slot": "CB_S",
+            "team": "D",
+            "player": "pair11D-CB3"
+          },
+          {
+            "idx": 19,
+            "slot": "CB_W",
+            "team": "D",
+            "player": "pair11D-CB1"
+          },
+          {
+            "idx": 20,
+            "slot": "FS",
+            "team": "D",
+            "player": "pair11D-S2"
+          },
+          {
+            "idx": 21,
+            "slot": "SS",
+            "team": "D",
+            "player": "pair11D-CB4"
+          }
+        ]
+      },
+      {
+        "world": 2,
+        "case": "useful-climb-opponent",
+        "profileHash": "9512a5acc894a1e9f5c49f96a6d4204347a949079bf7cda5d3e78590289d306b",
+        "significantSubsteps": 2,
+        "integralRestoredMomentMagnitude": 0.010315402282232489,
+        "first": {
+          "world": 2,
+          "idx": 21,
+          "time": 3.487500000000002,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -15.329043758091727,
+            "y": 2.679607211466083
+          },
+          "oldFelt": {
+            "x": 1759.4297400786306,
+            "y": -334.7941946283997
+          },
+          "achievedBrace": {
+            "x": -339.4591890977618,
+            "y": 128.83535913048863
+          },
+          "leanFraction": 0.19964207483092938,
+          "ankleFraction": 0.19433824630997532,
+          "legacyFraction": 0.19964207483092938,
+          "ankleMomentBudget": 105.17636685604823,
+          "equivalentMomentScale": 34.77833539298518,
+          "incomingRawMoment": {
+            "x": -609.8223975071497,
+            "y": 31.52397745467668
+          },
+          "storedFeltMoment": {
+            "x": -533.11862507266,
+            "y": 93.19227832182919
+          },
+          "legacyResidualMoment": {
+            "x": -503.3894890666316,
+            "y": 12.918877652285254
+          },
+          "actualResidualMoment": {
+            "x": -503.581528178542,
+            "y": 12.412887358594459
+          },
+          "restoredMoment": {
+            "x": -0.19203911191039977,
+            "y": -0.5059902936907948
+          },
+          "restoredMomentMagnitude": 0.5412071671852026,
+          "support": {
+            "state": "up",
+            "posture": 0.5946178227119316,
+            "xi": {
+              "x": 0.4716876624342327,
+              "y": -0.2262887954517385
+            },
+            "availability": 0.7754671742096416
+          }
+        },
+        "maximum": {
+          "world": 2,
+          "idx": 21,
+          "time": 3.491666666666669,
+          "h": 0.004166666666666667,
+          "oldTip": {
+            "x": -15.547223049685728,
+            "y": 2.5041954191909075
+          },
+          "oldFelt": {
+            "x": 1765.5689768848104,
+            "y": -310.9894355038137
+          },
+          "achievedBrace": {
+            "x": -362.2309301725866,
+            "y": 126.01636792524059
+          },
+          "leanFraction": 0.21118369089443562,
+          "ankleFraction": 0.1909072828227486,
+          "legacyFraction": 0.21118369089443562,
+          "ankleMomentBudget": 104.55525537020816,
+          "equivalentMomentScale": 34.77833539298518,
+          "incomingRawMoment": {
+            "x": -615.0412182987762,
+            "y": 27.272529579030923
+          },
+          "storedFeltMoment": {
+            "x": -540.7065376515201,
+            "y": 87.09174817819849
+          },
+          "legacyResidualMoment": {
+            "x": -500.8528159867771,
+            "y": 8.880172752310227
+          },
+          "actualResidualMoment": {
+            "x": -501.4884391408288,
+            "y": 7.053089730301748
+          },
+          "restoredMoment": {
+            "x": -0.6356231540517119,
+            "y": -1.8270830220084795
+          },
+          "restoredMomentMagnitude": 1.9344893805028458,
+          "support": {
+            "state": "up",
+            "posture": 0.5946178227119316,
+            "xi": {
+              "x": 0.4777956390782234,
+              "y": -0.2257665588344203
+            },
+            "availability": 0.7708877084685138
+          }
+        },
+        "bodies": [
+          {
+            "idx": 21,
+            "substeps": 125,
+            "significantSubsteps": 2,
+            "first": {
+              "world": 2,
+              "idx": 21,
+              "time": 3.487500000000002,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -15.329043758091727,
+                "y": 2.679607211466083
+              },
+              "oldFelt": {
+                "x": 1759.4297400786306,
+                "y": -334.7941946283997
+              },
+              "achievedBrace": {
+                "x": -339.4591890977618,
+                "y": 128.83535913048863
+              },
+              "leanFraction": 0.19964207483092938,
+              "ankleFraction": 0.19433824630997532,
+              "legacyFraction": 0.19964207483092938,
+              "ankleMomentBudget": 105.17636685604823,
+              "equivalentMomentScale": 34.77833539298518,
+              "incomingRawMoment": {
+                "x": -609.8223975071497,
+                "y": 31.52397745467668
+              },
+              "storedFeltMoment": {
+                "x": -533.11862507266,
+                "y": 93.19227832182919
+              },
+              "legacyResidualMoment": {
+                "x": -503.3894890666316,
+                "y": 12.918877652285254
+              },
+              "actualResidualMoment": {
+                "x": -503.581528178542,
+                "y": 12.412887358594459
+              },
+              "restoredMoment": {
+                "x": -0.19203911191039977,
+                "y": -0.5059902936907948
+              },
+              "restoredMomentMagnitude": 0.5412071671852026,
+              "support": {
+                "state": "up",
+                "posture": 0.5946178227119316,
+                "xi": {
+                  "x": 0.4716876624342327,
+                  "y": -0.2262887954517385
+                },
+                "availability": 0.7754671742096416
+              }
+            },
+            "maximum": {
+              "world": 2,
+              "idx": 21,
+              "time": 3.491666666666669,
+              "h": 0.004166666666666667,
+              "oldTip": {
+                "x": -15.547223049685728,
+                "y": 2.5041954191909075
+              },
+              "oldFelt": {
+                "x": 1765.5689768848104,
+                "y": -310.9894355038137
+              },
+              "achievedBrace": {
+                "x": -362.2309301725866,
+                "y": 126.01636792524059
+              },
+              "leanFraction": 0.21118369089443562,
+              "ankleFraction": 0.1909072828227486,
+              "legacyFraction": 0.21118369089443562,
+              "ankleMomentBudget": 104.55525537020816,
+              "equivalentMomentScale": 34.77833539298518,
+              "incomingRawMoment": {
+                "x": -615.0412182987762,
+                "y": 27.272529579030923
+              },
+              "storedFeltMoment": {
+                "x": -540.7065376515201,
+                "y": 87.09174817819849
+              },
+              "legacyResidualMoment": {
+                "x": -500.8528159867771,
+                "y": 8.880172752310227
+              },
+              "actualResidualMoment": {
+                "x": -501.4884391408288,
+                "y": 7.053089730301748
+              },
+              "restoredMoment": {
+                "x": -0.6356231540517119,
+                "y": -1.8270830220084795
+              },
+              "restoredMomentMagnitude": 1.9344893805028458,
+              "support": {
+                "state": "up",
+                "posture": 0.5946178227119316,
+                "xi": {
+                  "x": 0.4777956390782234,
+                  "y": -0.2257665588344203
+                },
+                "availability": 0.7708877084685138
+              }
+            },
+            "maximumRestoredMoment": 1.9344893805028458,
+            "integralRestoredMomentMagnitude": 0.010315402282040097,
+            "integralRestoredMoment": {
+              "x": -0.0034485927748403263,
+              "y": -0.009721138815413602
+            },
+            "actor": {
+              "idx": 21,
+              "slot": "SS",
+              "team": "D",
+              "player": "S88D-CB2"
+            }
+          }
+        ],
+        "belowReportingThresholdActors": [
+          {
+            "idx": 0,
+            "slot": "QB",
+            "team": "O",
+            "player": "S88O-QB2"
+          },
+          {
+            "idx": 1,
+            "slot": "LT",
+            "team": "O",
+            "player": "S88O-OT3"
+          },
+          {
+            "idx": 2,
+            "slot": "RT",
+            "team": "O",
+            "player": "S88O-OT4"
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "team": "O",
+            "player": "S88O-C1"
+          },
+          {
+            "idx": 4,
+            "slot": "LG",
+            "team": "O",
+            "player": "S88O-OG1"
+          },
+          {
+            "idx": 5,
+            "slot": "RG",
+            "team": "O",
+            "player": "S88O-OG3"
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "team": "O",
+            "player": "S88O-RB2"
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "team": "O",
+            "player": "S88O-TE1"
+          },
+          {
+            "idx": 8,
+            "slot": "X",
+            "team": "O",
+            "player": "S88O-WR1"
+          },
+          {
+            "idx": 9,
+            "slot": "Z",
+            "team": "O",
+            "player": "S88O-WR5"
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "team": "O",
+            "player": "S88O-WR3"
+          },
+          {
+            "idx": 11,
+            "slot": "DE_W",
+            "team": "D",
+            "player": "S88D-EDGE2"
+          },
+          {
+            "idx": 12,
+            "slot": "DE_S",
+            "team": "D",
+            "player": "S88D-DT2"
+          },
+          {
+            "idx": 13,
+            "slot": "DT_S",
+            "team": "D",
+            "player": "S88D-DT3"
+          },
+          {
+            "idx": 14,
+            "slot": "DT_W",
+            "team": "D",
+            "player": "S88D-DT5"
+          },
+          {
+            "idx": 15,
+            "slot": "LB_M",
+            "team": "D",
+            "player": "S88D-LB2"
+          },
+          {
+            "idx": 16,
+            "slot": "LB_W",
+            "team": "D",
+            "player": "S88D-LB3"
+          },
+          {
+            "idx": 17,
+            "slot": "CB_S",
+            "team": "D",
+            "player": "S88D-CB3"
+          },
+          {
+            "idx": 18,
+            "slot": "CB_W",
+            "team": "D",
+            "player": "S88D-CB1"
+          },
+          {
+            "idx": 19,
+            "slot": "NB",
+            "team": "D",
+            "player": "S88D-S2"
+          },
+          {
+            "idx": 20,
+            "slot": "FS",
+            "team": "D",
+            "player": "S88D-S1"
+          }
+        ]
+      }
+    ]
+  },
+  "freshBaselineSourceOverlay": {
+    "engineBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+    "runtimeFile": "src/physics/world.ts",
+    "baselineFileSha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+    "candidateFileSha256": "7fd453144cd80e836c27b50e6e1afedf7410c73a122048e5854b0b0a1358f4a4",
+    "candidateRestored": true,
+    "exitCode": 0
+  },
+  "sourceCompatibility": "Cached3-native source includes only an unused optional force interface. Profiles/complete initial bodies match exactly; its omitted-input arithmetic was independently tested identical. It is retained under its actual source pin, not relabeled accepted. Mechanical/fresh/mass references use literal accepted sourcebed3c36.",
+  "preservedFailures": {
+    "red": "Three expected directional failures plus one JSON -Infinity sentinel mismatch; the test restores that existing sentinel without weakening numeric comparison.",
+    "rejectedFreshReceipt": "Child completed, but validation tree changed while a diagnostic file was being written. Receipt rejected; repeated after freeze."
+  },
+  "counts": {
+    "newFocusedChecks": 7,
+    "existingFocusedChecks": 30,
+    "focusedTestExecutions": 44,
+    "explicitWitnessRowsExecuted": 21,
+    "selectedMassRowsExecuted": 6,
+    "nativeExecutions": 6,
+    "cachedNativeComparisons": 3
+  },
+  "commandSeconds": 51.346659147,
+  "receipts": [
+    {
+      "file": "accepted-before.receipt.json",
+      "sha256": "b8d0cfa29d2e14030a3e8eda4a1356b558d94413f7c4273eb1b357b48140e26e",
+      "commit": "342173ca6ea534afdfbe3888b96057ca047fb156",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "1f0b19bf91526336da1dfa63b55e533fe6a837b997d5f4b63c29ce02c9cabfee",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/directional-brace.ts",
+            "out/directional-brace/accepted-before.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.296510498
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "after.receipt.json",
+      "sha256": "1f223227e96f31822e97f84f689ce5a123e48d3b60604532bd52eef5614088e2",
+      "commit": "d29e8cf7cd09ac7136e67193c175afc04997df01",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "16fe55e9e1b793ce58900f238d1186e1c909cb668ecbe2ea26dca057a5c0cfd4",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/directional-brace.ts",
+            "out/directional-brace/after.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.377307137
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "before.receipt.json",
+      "sha256": "ecefd12b1b840cc1e5374df753423324fe14cddad4ef3811111783cf83cd02ff",
+      "commit": "074097822c7dc3029bd55f755a3a3c0adf5fee7e",
+      "sourceSha256": "0a5e365a07640d77a03eec95361de93bb98f917c65a5b161874ca5e4938b5c4c",
+      "validationSha256": "adaaf7afd742ee7c83ee6a0e314cd737b3a49d098ec78ab63c414d89abcc9e8a",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/directional-brace.ts",
+            "out/directional-brace/before.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.42476441
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "focused.receipt.json",
+      "sha256": "6d154c910137ac850356e81aed8c3184659d8cb90770d39f94b1a9a2b3afa397",
+      "commit": "6d36c7d49b185d9121b64fb470c433b96af06a4c",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "365e5c5b5412180a14f9814f1fcba85f23149a275ae20e6ed7e2f23018d2d5c2",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/directional-brace.test.ts",
+            "test/contact-height.test.ts",
+            "test/held-recovery.test.ts",
+            "test/actuation.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.8379607989999998
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "fresh-after.receipt.json",
+      "sha256": "ed399028c7df2538abd570827eeb27608d24b9d6aa9e50577b86cab7397184b3",
+      "commit": "7beec5a06100d3c69180758e07a9fc5e13902715",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "6c5cd50bdcdde1aa6cbaf276a8c68f8dd464ae2a9f0faa055f60e75f7c4ab6b5",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/block-protection.ts",
+            "out/directional-brace/fresh-after.json.gz",
+            "--fresh-only"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9738135010000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "fresh-before-final.receipt.json",
+      "sha256": "5c7900e2fbe640ada6642fb090301e9be08029cd1da72fb411e7f51d3a3ffc10",
+      "commit": "7beec5a06100d3c69180758e07a9fc5e13902715",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "6c5cd50bdcdde1aa6cbaf276a8c68f8dd464ae2a9f0faa055f60e75f7c4ab6b5",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/block-protection.ts",
+            "out/directional-brace/fresh-before-final.json.gz",
+            "--fresh-only"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.318895464
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": [
+        "src/physics/world.ts"
+      ]
+    },
+    {
+      "file": "fresh-before.receipt.json",
+      "sha256": "12195135c97c021d1812a7a46cbdf72d8283e5d6c207582bcfec7a96981fbc01",
+      "commit": "d29e8cf7cd09ac7136e67193c175afc04997df01",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "62efb16aaa9ec06e9598fb865ddd3ddb2a0c96d57244cb9746b73a2eef2ff615",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/block-protection.ts",
+            "out/directional-brace/fresh-before.json.gz",
+            "--fresh-only"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.528405205
+        }
+      ],
+      "inputsUnchanged": false,
+      "exitCode": 1,
+      "trackedChanges": [
+        "src/physics/world.ts"
+      ]
+    },
+    {
+      "file": "mass-transfer.receipt.json",
+      "sha256": "fd2639dc7f796d98868cd682e4c4fb2d9f62eb89514d6f8a8adf519aaf042336",
+      "commit": "a7b2e4f1a17ce5f563dc8c20988bc4aa21ac54ab",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "fd05594bc3d4f99bd4c038a638775dc859892f22086a1c6e723c9bf617bdc791",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/block-mass-response.ts",
+            "out/directional-brace/mass-transfer",
+            "equal-square,plus15-square,equal-force-plus15,strong-light,plus15-cross,roster-te-dt-square"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9421569019999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "native-after.receipt.json",
+      "sha256": "e857eda6453cd0ae41685c6c4be38c8a97e27c644eab187db33581d0de274abf",
+      "commit": "7beec5a06100d3c69180758e07a9fc5e13902715",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "6c5cd50bdcdde1aa6cbaf276a8c68f8dd464ae2a9f0faa055f60e75f7c4ab6b5",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/bracing-native.ts",
+            "out/directional-brace/native-after.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.2416648759999998
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "red.receipt.json",
+      "sha256": "01a9a52c8a7e9bffbd3bb0cf9ec0fa13280f0697943a023761e4839980c691d0",
+      "commit": "dcddddbd2cf63ab525cbc730acc14abe9f3f7e4b",
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "validationSha256": "a1d4eada4a87b4e659be36b22881170fe92a09fdd6091325ddef504c3cb2532c",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/directional-brace.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.697554811
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "trackedChanges": []
+    },
+    {
+      "file": "typecheck-final.receipt.json",
+      "sha256": "346f0761da218495e97146d983c058a6112fa54bea7def3716d1d9e99d20242e",
+      "commit": "7beec5a06100d3c69180758e07a9fc5e13902715",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "6c5cd50bdcdde1aa6cbaf276a8c68f8dd464ae2a9f0faa055f60e75f7c4ab6b5",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.259433785999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "typecheck-publication.receipt.json",
+      "sha256": "394a8944196d13343f1e55b0b90eb1b312f993ec258bcc09f72b74ef7784c680",
+      "commit": "a7b2e4f1a17ce5f563dc8c20988bc4aa21ac54ab",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "fd05594bc3d4f99bd4c038a638775dc859892f22086a1c6e723c9bf617bdc791",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 12.224318957
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    },
+    {
+      "file": "typecheck.receipt.json",
+      "sha256": "1059aafc8cfefb891e3a614001191fcaf4fa6e015a5b5cddf70f6faa831cd36b",
+      "commit": "d29e8cf7cd09ac7136e67193c175afc04997df01",
+      "sourceSha256": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "validationSha256": "16fe55e9e1b793ce58900f238d1186e1c909cb668ecbe2ea26dca057a5c0cfd4",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.223872800999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "trackedChanges": []
+    }
+  ],
+  "limits": "No force calibration, block-win/NFL benefit, full-suite/game campaign, whole-World solver expansion or resolved historical mechanical hold is claimed. Actual-minus-legacy moment events at current states are not a paired-history counterfactual. Native cost is instrumented collection cost, not an uninstrumented speed benchmark."
+}

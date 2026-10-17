@@ -12,6 +12,14 @@ response. Preserve collinear bracing, all mass/capacity/traction/recovery rates,
 native successful/adverse controls. No optional strength inputs or experimental
 solver ancestry imported. One solver owner; helper reviewers read-only.
 Separate physical-response review/adoption; no production merge authority used.
+Candidate runtime6d36c7d/source19f0ce52:37 focused checks/typecheck pass;
+exact accepted collinear execution retained. Three saved native controls and
+freshseed78 keep contact/endings; changed support occurs in tackling, not approach
+blocking. Six mass controls retain every recorded step/force exactly.13 commands
+51.347s including retained red/metadata failures. Independent runtime review
+ACCEPT; calibration coefficients/NFL benefit remain unproved. [Evidence and
+adoption boundary](reviews/directional-load-bracing.md). Integration owns any
+combined verification/merge; #115 remains separately reviewable.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
