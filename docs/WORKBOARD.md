@@ -1,5 +1,12 @@
 # Current work ownership
 
+## Puller access investigation — 2026-10-17 UTC
+
+Run owns `codex/puller-access` from fetched accepted `0000e560e0dbe31905151465152d412ba838803d`, canonical queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`.
+Bounded boundary: RunBlocker pull-route/strike transition and personally acquired puller reads; diagnostic LB flow tracing. No shared movement/spacing, carrier navigation, solver/capacity, contact retention or pending #126/#136/#138 changes. Do-It-All retains movement/spacing and other collection work. Before any boundary expansion, coordinate on the owning PR.
+Research dependency: explicit-call-only #99 concept installation extracted from `d212b414d3a9b6e0d85e185bd7bbaf1a2813b676`, reconciled onto current accepted source; no experimental ancestry imported. Automatic call distributions remain accepted. Prototype outcomes are separate from accepted counter behavior. Any general controller promotion must have a minimal patch separate from this dependency.
+Question: where do a guard/tackle's achieved pull and personally observed target cease to produce attainable useful protection? Primary saved B01/P01/C01 plus fixed-roster counter K01; opposing short kick P02 and weak-crack upstream-loss C02 are declared before new results. Native all22 ordinary reactions; no game campaign. Integration owns final combined verification.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
