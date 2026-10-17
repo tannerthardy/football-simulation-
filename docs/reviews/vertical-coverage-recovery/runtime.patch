@@ -1,0 +1,295 @@
+diff --git a/src/playbook/coverages.ts b/src/playbook/coverages.ts
+index d7a7939..1669c61 100644
+--- a/src/playbook/coverages.ts
++++ b/src/playbook/coverages.ts
+@@ -182,7 +182,7 @@ export const COVERAGES: Coverage[] = [
+     note: 'Backside corner locks X; the trips side plays match with the post safety relating to #3.',
+     roles: {
+       CB_S: z('deep_third_s', 'c3_corner'),
+-      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside' },
++      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
+       FS: z('deep_mid'),
+     },
+     underneath: [seat('curl_flat_s', 'c3_curl_flat'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+@@ -282,7 +282,7 @@ export const COVERAGES: Coverage[] = [
+     roles: {
+       CB_S: z('quarter_s_out', 'q_corner_mod'),
+       SS: z('quarter_s_in', 'q_safety'),
+-      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside' },
++      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
+       FS: z('quarter_w_in', 'poach_safety'),
+     },
+     underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+@@ -291,7 +291,7 @@ export const COVERAGES: Coverage[] = [
+     id: 'cover4_stubbie', name: 'Quarters Stubbie (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
+     note: 'Trips corner locks #1; nickel, safety and hook build a triangle on #2/#3; backside plays quarters on X.',
+     roles: {
+-      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
++      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
+       SS: z('quarter_s_in', 'stubbie_safety'),
+       ...QUARTERS_W,
+     },
+diff --git a/src/playbook/types.ts b/src/playbook/types.ts
+index 584eff1..efc11f3 100644
+--- a/src/playbook/types.ts
++++ b/src/playbook/types.ts
+@@ -241,6 +241,8 @@ export type CoverageRole =
+       trail?: boolean;
+       /** Stay on top of the receiver (a deep player in a bracket). */
+       overTop?: boolean;
++      /** Independently protect this receiver's vertical; no assumed deep helper. */
++      protectDepth?: boolean;
+       /** May double a receiver another defender already has (bracket). */
+       double?: boolean;
+       /** Press regardless of the call's default technique. */
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index 67af325..31175ed 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -45,7 +45,8 @@ export function assignBehaviors(sim: PlaySim): void {
+       case 'man': {
+         const tgt = spot.manTarget ? sim.slot(spot.manTarget) : undefined;
+         d.behavior = tgt
+-          ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign, { lev: role.lev, trail: role.trail, overTop: role.overTop })
++          ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign,
++            { lev: role.lev, trail: role.trail, overTop: role.overTop, protectDepth: role.protectDepth })
+           : new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
+         break;
+       }
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 5db25b8..45b1503 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -6,7 +6,7 @@
+  * reads the play, he executes his pre-snap job; play action can fool him into
+  * believing run for longer.
+  */
+-import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
++import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
+ import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
+ import type { MoveCommand } from '../../physics/kinematics.js';
+ import { timeToReach } from '../../physics/reach.js';
+@@ -24,6 +24,7 @@ import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
+ import { RouteObservation } from '../coverage-read.js';
+ import { movingCatchApproach } from '../catch-approach.js';
+ import { withMovementObjective } from '../movement-objective.js';
++import { DeepCoverage } from '../coverage-leverage.js';
+ 
+ /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
+ export function believesRun(sim: PlaySim, a: Agent): boolean {
+@@ -177,6 +178,8 @@ export interface ManOptions {
+   lev?: 'inside' | 'outside' | 'head';
+   trail?: boolean;
+   overTop?: boolean;
++  /** Installed deep responsibility, distinct from an underneath top shoulder. */
++  protectDepth?: boolean;
+   /** Acquired entry picture; used only to initialize cushion. */
+   initialPosition?: Vec2;
+ }
+@@ -192,6 +195,7 @@ export class ManCoverage implements Behavior {
+   private stemHeading: number | null = null;
+   private stableSince = 0;
+   private readonly observation = new RouteObservation();
++  private readonly depth = new DeepCoverage();
+   private keyedFitRecorded = false;
+ 
+   /** The technique actually in use, without updating receiver observation. */
+@@ -269,7 +273,8 @@ export class ManCoverage implements Behavior {
+       this.routeRead = false;
+     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
+     const delayScale = this.routeRead ? 0.65 : 1;
+-    const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
++    const acquired = sim.see(a, R, delayScale);
++    const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
+       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
+     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
+@@ -318,14 +323,22 @@ export class ManCoverage implements Behavior {
+       tx = seen.pos.x + top;
+     }
+     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
++    if (o.protectDepth) {
++      if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
++      tx = Math.min(tx, END_LINE_X - a.profile.radius);
++    }
+     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
+     const tgt = { x: tx, y: ty };
+-    if (!this.hipsOpen) {
+-      // Backpedal facing the QB, keeping the cushion.
+-      return track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+-    }
+     const cs = 0.85 + 0.35 * a.r('manCoverage');
+-    return track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') });
++    const command = this.hipsOpen
++      ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
++      : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
++    if (!o.protectDepth) return command;
++    const base = o.overTop ? .8 + .15 * Math.max(0, vx)
++      : vx > 3 && deep > 3 ? cushion * .5 : cushion;
++    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
++    if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
++    return selected;
+   }
+ }
+ 
+@@ -355,6 +368,7 @@ export class ZoneCoverage implements Behavior {
+   private readonly initialDepth: number;
+   private turnedWith: Agent | null = null;
+   private readonly observations = new Map<Agent, RouteObservation>();
++  private readonly depthReads = new Map<Agent, DeepCoverage>();
+   private flatExpansionRecorded = false;
+ 
+   constructor(
+@@ -407,16 +421,17 @@ export class ZoneCoverage implements Behavior {
+     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
+ 
+     // Perceived routes in (or about to enter) this zone's lateral band.
+-    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }> = [];
++    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; cue: Perceived }> = [];
+     for (const r of sim.offense) {
+       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
+       let observation = this.observations.get(r);
+       if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
+-      const seen = observation.read(sim.see(a, r), sim.t, r.profile, a.profile.reactionTime,
++      const cue = sim.see(a, r);
++      const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
+         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
+       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
+       if (fut.y < ylo || fut.y > yhi) continue;
+-      threats.push({ r, pos: seen.pos, vel: seen.vel, fut });
++      threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
+     }
+ 
+     if (this.deep) {
+@@ -479,7 +494,7 @@ export class ZoneCoverage implements Behavior {
+       // the stem climbs; otherwise a corner retreats from a hitch into grass.
+       const developing = clamp((deepest.pos.x - sim.los) / 8, 0, 1);
+       const workingCushion = Math.max(cushion, this.initialDepth * (1 - developing) + cushion * developing);
+-      const tx = deepest.pos.x + workingCushion;
++      const tx = Math.min(END_LINE_X - a.profile.radius, deepest.pos.x + workingCushion);
+       // Turn before the receiver consumes the cushion during the hip flip.
+       // Pedaling has a physical speed cap; racing a vertical does not.
+       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
+@@ -489,11 +504,16 @@ export class ZoneCoverage implements Behavior {
+       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
+       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
+       this.target = deepest.r;
+-      return track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
++      const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+         facing: turnRun ? undefined : facingQB,
+         speed: turnRun ? 1 : zs * 1.05,
+         gain: 1.8,
+       });
++      let depth = this.depthReads.get(deepest.r);
++      if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
++      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
++      if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
++      return selected;
+     }
+ 
+     // Low red-zone Cover 2: the corner sinks under #1 with outside leverage
+diff --git a/src/sim/coverage-leverage.ts b/src/sim/coverage-leverage.ts
+new file mode 100644
+index 0000000..cbbb8e1
+--- /dev/null
++++ b/src/sim/coverage-leverage.ts
+@@ -0,0 +1,85 @@
++/** Deep-duty steering from an acquired stem and this body's achievable motion.
++ * No route, future cut, ball outcome, extra observation or random draw.
++ */
++import { END_LINE_X } from '../core/field.js';
++import { angleDiff, clamp } from '../core/vec.js';
++import { arriveVelocity, commandFacing, fatigueFactor, turnRateOf, type MoveCommand } from '../physics/kinematics.js';
++import { previewFreeMovement } from '../physics/movement-preview.js';
++import type { PhysicalProfile } from '../players/physical.js';
++import type { Agent } from './agent.js';
++import type { Perceived } from './perception.js';
++
++export class DeepCoverage {
++  private previous: { stamp: number; vx: number } | null = null;
++  private acceleration = 0;
++
++  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
++    cushion: number, original: MoveCommand, now: number,
++    model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
++    const stamp = now - (cue.age ?? 0), previous = this.previous;
++    if (!previous || stamp > previous.stamp + 1e-9) {
++      const dt = previous ? stamp - previous.stamp : 0;
++      this.acceleration = previous && dt > 0 && dt <= .3
++        ? clamp((cue.vel.x - previous.vx) / dt, -receiver.brake,
++          Math.max(0, (receiver.vmax - cue.vel.x) / receiver.tau)) : 0;
++      this.previous = { stamp, vx: cue.vel.x };
++    }
++    const s = a.body.support;
++    if (seen.vel.x <= 1.5 || seen.vel.x <= Math.abs(seen.vel.y) || a.engagement || a.isDown(now)
++      || (s && (s.state !== 'up' || s.foot || s.strike || Math.hypot(s.lean.x, s.lean.y) > 1e-6
++        || Math.hypot(s.load.x, s.load.y) > 1e-6))) return original;
++
++    // A measured burst/plant is a short expectation, not a route commitment.
++    // RouteObservation already corrects stale braking; do not apply that age
++    // correction twice. Continue it briefly from the consumed picture, stopping
++    // at zero rather than inventing a reverse route. Positive burst prediction
++    // also supplies the missing correction to constant-velocity dead reckoning.
++    // Re-querying an aging picture cannot renew its transient plant/burst.
++    // Use the same .4 s image-age bound as RouteObservation's correction.
++    const acceleration = (cue.age ?? 0) > .4 ? 0 : this.acceleration;
++    const age = acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);
++    const burst = acceleration < 0 ? Math.min(.25, seen.vel.x / -acceleration) : .25;
++    const extra = (t: number) => {
++      const h = Math.min(t, burst);
++      return acceleration * (h * h * .5 + h * Math.max(0, t - burst));
++    };
++    const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);
++    const targetV = clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);
++    const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));
++    const heading = Math.atan2(seen.vel.y, Math.max(.1, targetV));
++    const tau = a.profile.tau / fatigueFactor(a.body.energy);
++    const score = (command: MoveCommand) => {
++      const path = previewFreeMovement(a.body, command, now, 16, model);
++      let margin = Infinity;
++      for (const p of path) {
++        if (p.support !== 'up') return -Infinity;
++        margin = Math.min(margin, p.pos.x - targetX(p.t) - base,
++          END_LINE_X - a.profile.radius - p.pos.x);
++      }
++      const end = path[path.length - 1];
++      const turn = Math.abs(angleDiff(commandFacing(a.body, command), heading)) / turnRateOf(a.body);
++      const recovery = Math.max(0, targetV - end.vel.x) * (turn + tau);
++      return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
++    };
++    let choice = original, best = score(original);
++    if (best >= 0) return original;
++    const endLineSpeed = Math.max(0, arriveVelocity(a.body,
++      { x: END_LINE_X - a.profile.radius, y: a.pos.y }, a.profile.vmax).x);
++    const request = (vx: number, facing?: number): MoveCommand => {
++      const x = Math.min(vx, endLineSpeed), y = original.vel.y;
++      const scale = Math.min(1, a.profile.vmax / Math.max(1e-9, Math.hypot(x, y)));
++      return { ...original, vel: { x: x * scale, y: y * scale }, facing };
++    };
++    // Spend excess depth if safe; otherwise match the stem square, open with
++    // it, or run with it. The chosen request is the one actually previewed.
++    const candidates = [request(targetV, original.facing)];
++    if (original.facing !== undefined) candidates.push(request(targetV));
++    candidates.push(request(a.profile.vmax));
++    for (const command of candidates) {
++      const margin = score(command);
++      if (margin > best) { choice = command; best = margin; }
++      if (margin >= 0) return command;
++    }
++    return choice;
++  }
++}
+diff --git a/src/sim/coverage/defender.ts b/src/sim/coverage/defender.ts
+index bfa0645..9110501 100644
+--- a/src/sim/coverage/defender.ts
++++ b/src/sim/coverage/defender.ts
+@@ -130,7 +130,8 @@ export class CoverageDefender implements Behavior {
+       case 'man':
+         if (this.sub instanceof ReadRelease && this.sub.target === d.r
+           && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();
+-        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
++        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign,
++          { ...d.opts, protectDepth: isDeepZone(this.zone) });
+       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
+       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
+       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);

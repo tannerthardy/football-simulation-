@@ -1,0 +1,13 @@
+{
+  "purpose": "Data-only vertical coverage evidence; do not merge",
+  "code": "61bf22e2f3684064c90d73d013cfc23b35f05741",
+  "file": "evidence.tar.gz",
+  "bytes": 45824471,
+  "sha256": "de56edc8ab23fa6dc4c72816c0e90344a34b0ea6313647aa2600366617a573e5",
+  "manifestSha256": "640a8c5458107fa586c1f89ab82b617646f54cf363d03cab3b27aa6b0ec224d3",
+  "physicalFiles": 945,
+  "evidenceCommit": "cd5c47eb9fb244ad4a7136b207009ce740bbb319",
+  "evidenceRef": "refs/heads/evidence/vertical-coverage-recovery-2026-10-17",
+  "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/cd5c47eb9fb244ad4a7136b207009ce740bbb319/evidence.tar.gz",
+  "manifestUrl": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/cd5c47eb9fb244ad4a7136b207009ce740bbb319/bundle-manifest.json"
+}

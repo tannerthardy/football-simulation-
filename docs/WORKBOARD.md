@@ -18,6 +18,18 @@ The three solo #1 locks in Mable, Poach and Stubbie need the same explicit
 deep-duty contract; claim only their optional `CoverageRole.protectDepth`
 installation and forwarding in `assignBehaviors`, not a new route distribution.
 
+Supported correction published for review: [vertical coverage recovery](reviews/vertical-coverage-recovery/README.md),
+code `61bf22e` / source `c9614df` on accepted `0000e56`. Five audited outside vertical matches
+now retain top leverage; fresh Quarters transfers across all four roofs. Acquired
+plant forecast repairs the P185 hitch response without hiding its earlier 38.6 YAC
+adverse version. P192 comeback-space cost and G4's RB checkdown/broken tackle stay
+visible. 107 distinct focused checks/typecheck pass; 12 paired inputs, no games or
+full suite. Final age-expiry guard reuses native evidence through an explicit
+unreached-predicate/source proof; stale and fresh-contradiction contracts pass.
+Independent review must assess the three justified coverage-test contract
+reconciliations and short-space tradeoffs. Integration owns combined verification;
+no claim that every handoff, pressure/QB-information issue or YAC is repaired.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
