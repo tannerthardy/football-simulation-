@@ -920,14 +920,11 @@ export class RunBlocker implements Behavior {
       }
       const wp = plan.pullPath[this.pullIdx];
       if (wp) {
-        // The wrapper's separate second-level interception is unchanged.
-        if (plan.pullRole === 'lead' && this.pullIdx > 0 && target
-          && Math.hypot(target.pos.x-a.pos.x, target.pos.y-a.pos.y) < 1.2) return this.attack(a, sim, target);
         // Clear the wall with the feet before fitting the moving kick/trap
         // target. Reaching a waypoint's tolerance does not establish that
         // clearance, and a penetrator need not pass within an arbitrary
         // distance of the puller to become relevant work.
-        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force')
+        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
         const edge = plan.pullPath.at(-1)!;
         const perimeterSide = playSideSign(sim, sim.offCall.run!);
@@ -937,18 +934,23 @@ export class RunBlocker implements Behavior {
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
+          // Once the flat pull is achieved behind the acquired wall, collect
+          // the assigned moving backer. The upfield snap waypoint describes
+          // the installation, not a mandatory stop before using that picture.
+          if (plan.pullRole === 'lead' && this.pullCleared && (this.pullIdx >= 2 || distance < 1.2))
+            return this.attack(a, sim, read.target, read.seen);
           // The outside gate is a completed route step, not a permanent
           // constraint on the later acquired interception. Following support
           // back inside must not restart a cleared pull behind the line.
           if (plan.pullRole === 'force' && this.pullCleared && this.pullIdx >= 2 && atCorner)
             this.pullCornerCleared = true;
-          if (this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : approachingDepth < sim.los || distance < 1.2))
+          if (plan.pullRole !== 'lead' && this.pullCleared && (plan.pullRole==='force' ? this.pullCornerCleared : approachingDepth < sim.los || distance < 1.2))
             return this.attack(a, sim, read.target, read.seen);
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
-        let path = read && this.pullCleared && plan.pullRole!=='force' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        let path = read && this.pullCleared && plan.pullRole!=='force' && plan.pullRole!=='lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         if(plan.pullRole==='force'&&this.pullIdx>=2&&!this.pullCornerCleared&&!atCorner)
           // Arrival steering stops short of its goal. Put the flat goal a
           // body radius beyond the gate so that ordinary feet can cross it;
@@ -956,7 +958,7 @@ export class RunBlocker implements Behavior {
           path={x:plan.pullPath[1].x,y:edge.y+perimeterSide*a.profile.radius};
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
-        if (read && this.pullCleared && plan.pullRole!=='force') plan.pullPath[this.pullIdx] = path;
+        if (read && this.pullCleared && plan.pullRole!=='force' && plan.pullRole!=='lead') plan.pullPath[this.pullIdx] = path;
         if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
@@ -1081,7 +1083,7 @@ export class RunBlocker implements Behavior {
     let target = plan.target;
     // New crack and perimeter-force jobs are named responsibilities. Another
     // defender's unobserved engagement cannot redirect their approach.
-    if(plan.kind==='crack'||(plan.kind==='pull'&&plan.pullRole==='force'))return target;
+    if(plan.kind==='crack'||(plan.kind==='pull'&&(plan.pullRole==='force'||plan.pullRole==='lead')))return target;
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1179,7 +1181,7 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
-    if((plan.kind==='crack'||plan.pullRole==='force')&&(seen.pose==='down'||seen.pose==='rising'))return stand();
+    if((plan.kind==='crack'||plan.pullRole==='force'||plan.pullRole==='lead')&&(seen.pose==='down'||seen.pose==='rising'))return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'force') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);

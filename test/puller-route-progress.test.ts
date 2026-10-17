@@ -47,3 +47,44 @@ describe('completed perimeter corner is route progress', () => {
     expect(a.engagement).toBeNull();
   });
 });
+
+describe('a wrapper collects after its flat pull clears', () => {
+  function wrapper(obstructed = false, privateContact = false) {
+    const sim = new PlaySim(structuredClone(inputs.rows.find((r: { id: string }) => r.id === 'K01').setup) as PlaySetup);
+    const a = sim.offense.find(a => a.behavior instanceof RunBlocker && a.behavior.plan.pullRole === 'lead')!;
+    const controller = a.behavior as RunBlocker;
+    const flat = controller.plan.pullPath![1];
+    sim.t = 2;
+    a.body.pos = { x: flat.x - .5, y: flat.y };
+    a.body.vel = { x: 0, y: 2 };
+    Reflect.set(controller, 'pullIdx', 1);
+    const target = controller.plan.target!;
+    // The real hook must use this acquired picture, regardless of private contact.
+    const ordinarySee = sim.see.bind(sim);
+    sim.see = (observer, other, scale) => {
+      const picture = ordinarySee(observer, other, scale);
+      if (observer !== a) return picture;
+      if (other === target) return { ...picture, pos: { x: 42, y: flat.y + 2 }, vel: { x: 0, y: 2 }, pose: 'up' };
+      if (obstructed && ['C', 'LG', 'RG', 'LT', 'Y', 'H'].includes(other.slot))
+        return { ...picture, pos: { ...picture.pos, x: 38 }, vel: { x: 0, y: 0 } };
+      return picture;
+    };
+    if (privateContact) target.engagement = { blocker: sim.slot('C')!, defender: target, helpers: [] } as NonNullable<typeof target.engagement>;
+    const before = structuredClone(a.body), rng = JSON.stringify(sim.rng);
+    const command = controller.update(a, sim);
+    expect(a.body).toEqual(before);
+    expect(JSON.stringify(sim.rng)).toBe(rng);
+    expect(a.engagement).toBeNull();
+    expect(sim.world.joints).toHaveLength(0);
+    return { command, target: controller.plan.target?.idx };
+  }
+  it('switches from the completed flat track to the acquired moving backer', () => {
+    expect(wrapper().command.facing).toBeDefined();
+  });
+  it('keeps the installed route while an observed first-level wall obstructs it', () => {
+    expect(wrapper(true).command.facing).toBeUndefined();
+  });
+  it('does not abandon the installed wrapper job from private defender contact', () => {
+    expect(wrapper(false, true)).toEqual(wrapper(false, false));
+  });
+});
