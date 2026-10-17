@@ -46,9 +46,115 @@ does not establish overall coverage, protection or statistical realism.
   PRs. After adoption, publish the actual accepted commit, included fixes, exact
   verification, held items, football limits and next decision in one handoff.
 
-## Verified #125 maintenance candidate — guarded adoption pending
+<a id="accepted-development"></a>
+## Accepted development reference
 
-Accepted develop remains `d682b1f474cb6ba260a7b8b1119a62919c5a2159` until adoption.
+**`develop@70b4db6a3ef53acc1a0e90cd055f1087205daa30`** is accepted through
+[#125](https://github.com/tannerthardy/football-simulation-/pull/125).
+Entire actual merged tree equals publication `df603380eabc535597c8a6434fd790761589445c`;
+protected source/tests/settings/tooling equal passing freeze
+`910c0588307ee443e24af9852e564c84a7e932d7`.
+[Actual merged-pin preservation receipt](../data/reviews/current/pr125-merge.json).
+
+Included seven independently accepted narrow scopes: **117/122** stretch normal
+following/anchored shoulder and verified gentler pacing; **123/124** shallow
+observed-runner insertion and Quarters flat/wheel duty distinct from Palms;
+**118/120/121** transverse-support, dive/effort/fall-history accounting and two-point
+participant energy persistence.24 protected files/seven runtime files, no diagnostic
+ancestry. Independent mechanical classification accepts existing-budget/accounting
+repairs, not a new force law, capacity, coefficient/default or solver proposal.
+
+**1,980 TS/174 files,145 Python,typecheck/build pass** in219.521 command seconds,
+Node22.23.3,44settings/components1/CF_FLOW unset, no skipped phase/input drift.
+One exact combined verification; compatible component receipts reused. Four
+nonauthor reviewers performed source/receipt/patch/emission checks and only
+zero-engine algebra/stubs; no duplicate contributor suite or new native/panel/
+evaluation-game campaign. Existing full-suite game assertions ran normally.
+[Final receipt and raw log](../data/reviews/current/reviewed-maintenance-integration/final-receipt.json).
+Source `9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941`;
+validation `dfbff86ef7dbaaf59d308a90383bde5a6d32381c1b2e1fc64079978713a5474e`.
+
+Preserve depth/weak-traffic costs, tackle-sensitive gains and incomplete LG/Mike
+protection,123 prefix limits and broader tracker HOLD,124 top-depth/cushion cost,
+118 source-qualified postcontact observations and inherited support/fatigue limits.
+Corrected effort can change later energy under the existing mapping; no population
+football/NFL or calibrated-fatigue claim. Original failed/adverse receipts and raw
+retention qualifications remain explicit.115 capacity seam,116/119, departure/
+CLIMB_EXIT/initial-surface diagnosis and experimental solver work remain separate.
+
+[Consolidated owner handoff](https://github.com/tannerthardy/football-simulation-/pull/125#issuecomment-6228298079).
+Delivered117/118/120/121/122/123/124 PRs are closed as incorporated by extraction;
+all original branches, experiments and evidence remain.
+[Exact dispositions](../data/reviews/current/reviewed-maintenance-integration/dispositions.json).
+Authors fetch/record current origin/develop before new implementation/handoff and
+reconcile at clean checkpoints. Intentionally pinned research remains historical;
+no forced rebase or old-source relabeling. Integration extraction boundary released.
+
+### Current checkpoint and audit priorities
+
+**Verified #130 / #128-only; adoption pending:** exact freeze82fdc79,
+two reviewed protected files/one runtime file on accepted70b4db6. Source matches
+author5b710a1b exactly. **1988 TS/175 files,145 Python,typecheck/build pass**
+in212.180s, Node22.23.3,44 settings/components1/CF_FLOW unset, no drift/skips.
+[Final receipt and complete logs](../data/reviews/current/zone-force-integration/final-receipt.json).
+Contributor74 focused/typecheck and four native preservation controls reused;
+no new standalone native/panel/game campaign. No new fit allocation, movement,
+physical law/capacity/default or experimental activation. Native controls do not
+establish newly won stops; man-QB/premesh/fast#3/cushion failures stay open.
+
+**#126 holds itself:** initial combined7f98ad4 passes typecheck/build/2003 TS,
+but fails existing zone-reach double exact-command contract; Python skipped by
+fail-fast,219.553s. [Failure, source-only diagnosis and hash correction](../data/reviews/current/zone-force-integration/initial-failure-disposition.json).
+Run/original nonauthor must adjudicate the old ordinary request versus intended
+installed half; no assertion changed. Original reviewed code and failed freeze
+remain. Total integration command cost431.733s includes both different candidates;
+no unchanged verification is repeated for publication/merge.
+
+**Audit is evidence, not an engine candidate.** [#129 report](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md)
+stays pinned to measured70b4db6, even after later accepted fixes. Integration verified
+its protected source/tests/settings delta is empty and independently fetched the
+permanent evidence tag. [Seven published files/size/SHA256 checks](../data/reviews/current/zone-force-integration/audit-data-check.json)
+include the14,192,453-byte archive, SHA256
+`5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56`.
+Evidence tree23d5f6d/originalb9b9c175 remain outside development ancestry.
+No audit source/tooling/history is imported; the existing issue register is reconciled.
+No collector, full suite or game is run for audit/source-document publication.
+
+| Owner | Bounded next action | Dependency / evidence boundary |
+| --- | --- | --- |
+| Run | RUN-006 offensive failed-exchange continuation: `QBHandoff` in qb.ts and `RunnerToMesh` in assign.ts on `codex/run-failed-exchange`. | Four saved failed exchanges; G3-P140 is nonmatched success context. Acquired recovery/failure cue, real reach and normal mesh/PA. Independent implementation/review. |
+| Pass/Awareness/Catching | CTRL-001 acquired committed-QB pursuit in `ManCoverage.coverMan` and unkeyed premesh retirement; publish exact claim/pin/settings/observer initialization. | Six scramble witnesses plus ordinary/PA controls. Coordinate one composed native witness/control with Run before better-broken-play claims; neither implementation waits for the other. |
+| Physics + Catching | BALL-001 local relative endpoint query, jointly legal height/reach interval and closest legal opportunity. | Physics helper/tests; Catching tick-entry/end capture and eligibility/order/retry/difficulty. No earliest-reach semantic change, World rewrite or capability/default change. Native nominated INT invalidity remains unresolved. |
+| Flex / Do-It-All + Awareness/Pass | INFO-002/003 explicit acquired QB receiver estimate plus immutable installed expectation: QBPass.evaluate/release and RouteRunner.predict, with observer/estimate cache key. | Ordinary teammate see() refresh and live converted routes are not legitimate acquisition/prior. Frozen-input hidden-state invariance plus anticipation/observed-change controls; other QB readers remain named debt. Separate from Run's exchange functions. |
+| Measurement + Integration | GAME-004 independent saved-result credit repairs and explicit safety goal-plane convention. | Existing fixtures/ordinary credits; no new games or silent historical rewrite. No ready patch is presumed. |
+
+[Consolidated owner coordination and exact contracts](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
+#127@f6a3c86 remains HOLD: wheel leverage costs the successful swing
+0.5862→6.6145/12.9918YAC. #128 does not adopt either approach. Tooling101/106,
+reference108 and experimental Physics retain their existing independent dispositions.
+A blocked item holds itself; do not wait for every audit priority or fill a batch
+with unrelated findings. Another broad evaluation needs a named transfer question.
+Historical4ded6b6/default branch and experimental flags remain unchanged.
+
+### Remaining agent tasks
+
+| Owner | Task / exact starting publication | Cost boundary |
+| --- | --- | --- |
+| Catching → Measurement |106@706a10cc: preserve resumed failed/wall-cache index/counts/partial evidence; keep no-retry. Independent HOLD682f47c. | Tiny zero-engine regression; no3198-case campaign. |
+| Run → Measurement |101@ed2fed9e: finish wall-censor/partial-exception accounting repair with correct attempted/skipped separation. | Tiny stubs; preserve1848-study caches, no recollection/reserve reveal. |
+| Nonauthor reference reviewer |108@5cade6a5: image/OCR/hash/provenance/link and uncertainty-label checks; original images outrank OCR. | Documentation checks only; runtime lane does not wait. |
+| Measurement | Independently review the two exact repair pins and reconcile PA full-input identity offline. | Reuse failure repros; no new football campaign for accounting. |
+
+[Full copyable prompts, source pins, posted assignments and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
+Existing football checkpoint carries forward; if already frozen/completed, preserve
+its real source/results without automatic restart/recollection. Four-game context
+still needs a CEO call. Historical4ded6b6/GitHub default unchanged.
+
+<details>
+<summary>Completed #125 integration preparation and independent-review assignments — historical</summary>
+## Completed #125 integration preparation
+
+Prepared from acceptedd682b1f; adopted as70b4db6 through125 after exact passing verification. Extraction boundary released.
 Integration owns `codex/reviewed-maintenance-integration` from that pin plus queue
 bf493d8. Seven narrow corrections have independent ACCEPT dispositions:
 
@@ -69,7 +175,7 @@ receipts are reused with their actual source/retention limits. Exact freeze910c0
 in219.521 command seconds, Node22.23.3, same44 settings/components1/CF_FLOW unset.
 No skipped phase/input drift; one exact combined run, no unchanged publication rerun.
 [Final receipt and complete raw log](../data/reviews/current/reviewed-maintenance-integration/final-receipt.json).
-[Guarded adoption PR #125](https://github.com/tannerthardy/football-simulation-/pull/125). No additional native, panel or game job.
+[Merged PR #125](https://github.com/tannerthardy/football-simulation-/pull/125). No additional native, panel or game job.
 [Intake and preserved risks](../data/reviews/current/reviewed-maintenance-integration/intake.json),
 [exact extraction audit](../data/reviews/current/reviewed-maintenance-integration/extraction-audit.json),
 [copyable agent tasks and posted assignments](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
@@ -102,8 +208,11 @@ review; exact verification/adoption remain Integration's responsibility.
 Existing measurement checkpoint carries forward; no new panel, game or baseline
 recollection merely to validate this intake. Four-game context remains a CEO call.
 
-<a id="accepted-development"></a>
-## Accepted development reference
+
+</details>
+
+<details>
+<summary>Previous accepted #112 /d682b1f record — historical</summary>
 
 **`develop@d682b1f474cb6ba260a7b8b1119a62919c5a2159`** is accepted through
 [#112](https://github.com/tannerthardy/football-simulation-/pull/112).
@@ -148,6 +257,9 @@ the existing budget; if frozen/completed on107, preserve its real source/results
 with no automatic restart/recollection. Four-game context needs a separate CEO
 call. #101 tooling repair, rejected gradient, CLIMB_EXIT/departure/release and
 experimental Physics remain separate. Historical4ded6b6/default unchanged.
+
+
+</details>
 
 <details>
 <summary>Completed #112 preparation and earlier #107 integration boundary — historical</summary>
@@ -571,8 +683,20 @@ needed for distribution. These remain8ca8dee observations, not current-build
 results; final intents cannot reconstruct discarded producer stages/every-tick RNG.
 
 <a id="ready-blocked-experimental"></a>
+## Current queue checkpoint
 
-**Current intake:**117/122,123/124 and118/120/121 independently accepted and verified together in125; guarded adoption pending.106/101 tooling blocked,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source remainsd682b1f until adoption.
+| Disposition | Exact scope / owner | Next decision |
+| --- | --- | --- |
+| Verified; adoption pending | #128@ec2a2e9 via #130, passing82fdc79; Integration | Final unchanged-tree/ref/review checks, then routine adoption under standing authority. |
+| Held by exact contract failure | #126@b3de4f5; Run + original nonauthor reviewer | Adjudicate zone-reach planned-double ordinary command versus installed-half contract. Preserve failure; no automatic assertion relaxation. |
+| Held by adverse football evidence | #127@f6a3c86; Catching | Acquired-cue/own-preview feasible wheel-versus-swing objective, preserving successful swing; no broad approach promotion. |
+| Independent audit work, not ready patches | RUN-006/CTRL-001, INFO-002/003, BALL-001; owners above | Publish small reviewed scopes and compatible focused receipts. Joint native evidence gates broken-play claims, not independent implementation. |
+| Existing holds | Tooling101/106; reference108; optional115,116/119 and experiments | Existing owner repair/review decisions; no collector/game/suite while waiting. |
+
+Earlier delivered checkpoints below are preserved history; accepted pin/current queue above govern new work.
+
+
+**Current disposition:**117/122,123/124 and118/120/121 adopted as70b4db6 through125.106/101 tooling blocked with author/Measurement tasks,108 documentation review queued,115/116/119/research held. [All tasks, pins and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json). Accepted source is70b4db6; all earlier code/evidence history remains.
 
 
 **Delivered via #112:**110@a32bdfb and final111@411639c, independent review de3de0c; six-file candidate adopted asd682b1f after its exact passing verification. [Current candidate and receipts](../data/reviews/current/run-entry-connection-integration/intake.json). No experimental scope or new evaluation campaign.

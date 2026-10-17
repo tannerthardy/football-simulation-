@@ -1,0 +1,124 @@
+{
+  "schema": "zone-force-integration-intake-v1",
+  "base": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queueAtIntake": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "question": "Do the two independently supported controller contracts compose without breaking accepted correctness, settings or preserved behavior contracts?",
+  "independentReviewer": "Integration, nonauthor of both implementations; reuses #126 nonauthor refresh and independently adjudicates #128",
+  "candidates": [
+    {
+      "pr": 126,
+      "publication": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "code": "78a2574557d957d81a1c2bd255aff13420aad8fa",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/zone-combo-surface.test.ts"
+      ],
+      "decision": "ACCEPT for exact combined verification",
+      "dependencies": "#117/#122 already adopted through #125; no unaccepted dependency",
+      "review": "https://github.com/tannerthardy/football-simulation-/blob/b3de4f5429ff36f31d15d76c55d065abbc749cf5/docs/reviews/zone-combo-surface/independent-review.md",
+      "reason": "Installed known half-man offset and initial contact normal now agree for either first actor. Existing acquired frame/hands retain constructor early return. No private partner live position read in new helper; other approaches and physical budgets stay accepted.",
+      "risks": [
+        "Earlier weak Mike wrap 3.10→3.00s; fresh 3.00→2.95s. C still fails timely second-level collection.",
+        "Strong RG loses 2.13yd upfield depth while gaining lateral displacement. Strong OZ 7.99→7.11yd.",
+        "Historical old-cohort recordings are source-qualified, not exact current-body equality. Duo equality ends at 3.50s censor.",
+        "No new runner-protection, general rushing or NFL-realism claim."
+      ],
+      "focusedEvidence": "68 current-source checks/typecheck reused; historical 130/68 cohorts not added as unique counts."
+    },
+    {
+      "pr": 128,
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "code": "995effce77812177aa74fa9ec5aa695b4fd136cf",
+      "files": [
+        "src/sim/coverage/defender.ts",
+        "test/quarter-flat-force-support.test.ts"
+      ],
+      "decision": "ACCEPT for exact combined verification",
+      "dependencies": "Existing #124/#80 wrapper and keyed-fit contracts already accepted. No #127 cushion trial dependency.",
+      "reason": "Narrow force + q_apex + flat-mode gate retains the same installed body’s support through a match transition. Requires current run belief and personally consumed positive RB/FB carrying picture each tick; unchanged keyed executor preserves force/inside option. Changed belief/unknown evidence cancels. Existing recognized-flight priority remains. No fitter allocation, private possession oracle, capacity or law change.",
+      "risks": [
+        "Active force transfer is shown with supplied acquired pictures and generated bodies; four native controls show exact preservation, not new run stops.",
+        "Intentional PA exposure persists while acquired evidence still supports run; no permanent latch or timer.",
+        "Does not repair man-QB pursuit, unkeyed failed-mesh expectation, fast #3 takeover, wheel cushion or general explosive YAC."
+      ],
+      "focusedEvidence": "74 checks/typecheck reused; includes 8 new force contracts and 66 existing checks. Four uncensored native controls exactly match accepted signatures/cues/requests/bodies/outcomes."
+    }
+  ],
+  "composition": {
+    "overlappingFiles": [],
+    "runtimeFiles": 2,
+    "protectedFiles": 4,
+    "reason": "#126 edits RunBlocker.attack/combinationFit; #128 edits CoverageDefender support admission. Shared movement/fit/contact interfaces and their implementations remain unchanged. Football interactions can change trajectories but do not require a new panel for these bounded contracts.",
+    "minimalExtraction": "Exact four blobs from publication pins; no author ancestry, diagnostic tooling or #127 parent."
+  },
+  "verification": {
+    "owner": "Integration",
+    "policy": "docs/TESTING_COSTS.md",
+    "fullCombinedRunsPlanned": 1,
+    "extraFocusedRuns": 0,
+    "nativeRuns": 0,
+    "panelRuns": 0,
+    "gameCampaigns": 0,
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    }
+  },
+  "held": [
+    "#127 approach/cushion trials",
+    "#101/#106 tooling accounting pending exact repair/review",
+    "#108 reference-only review",
+    "#115 capacity seam, #116/#119 and experimental Physics",
+    "RUN-006/CTRL-001 native composed improvement claim pending independent ready implementations",
+    "INFO-002/003 receiver forecast and BALL-001 same-time query interface work not included"
+  ],
+  "audit": {
+    "publication": "94f25c64cf2c471220f6297cb7cddd86a1fc3d4e",
+    "dataOnlyEvidenceCommit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "dataHistoryMerged": false,
+    "ownerHandoff": "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789"
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1"
+}

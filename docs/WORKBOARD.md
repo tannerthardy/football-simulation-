@@ -1,8 +1,32 @@
 # Current work ownership
 
-## Active reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
+## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
-Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; source boundaries remain frozen pending guarded adoption. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
+Integration claims only the minimal #128 two-file assembly and one exact combined check
+in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
+`coverage/defender.ts` and quarter-flat-force-support test. #126 blocking/zone-combo files remain outside the current candidate.
+Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; publication/adoption pending. Contributors do not repeat the suite.
+#127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
+[Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
+
+Run claims only `QBHandoff`/`RunnerToMesh` on `codex/run-failed-exchange`; Flex owns
+forecast/QBMind, not exchange recovery. Pass/Awareness/Catching owns defensive
+acquired-QB man/premesh continuation and publishes its exact claim. Implementations
+are independent; a composed native witness/control is required before a better
+broken-play claim, not before either can progress. Physics owns the pure paired-
+endpoint closest-legal query/tests on `codex/catch-opportunity-physics`; Catching
+owns caller tick-entry capture and eligibility/order/retry/difficulty. Flex with
+Awareness/Pass owns explicit acquired receiver estimate + immutable installed prior,
+including evaluation/release/cache boundaries. No global transport/phase-manager,
+World rewrite, earliest-reach semantics or capacity activation is authorized here.
+Measurement owns saved-result credit contracts, including unresolved safety yardage.
+[Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
+Original checkouts/branches/evidence remain; reconcile accepted changes at clean
+checkpoints, never relabel old audit70b4 film as a later accepted source.
+
+## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
+
+Integration owns extraction/combined verification only in codex/reviewed-maintenance-integration from acceptedd682b1f plus queuebf493d8. Scope:117engagement,122spacing,123run-fits,124coverage rules,118/120World+kinematics and121game energy, plus direct tests/fixtures and118 required helper (24 protected/seven runtime files). Three independent reviewer branches accept these deltas and their actual overlaps; no new author implementation is requested. Exact125 freeze910c058 passes1980 TS/145 Python/typecheck/build in219.521s; adopted as70b4db6, actual tree equals publication/protected passing freeze; boundary released. Authors continue separate work and reconcile at clean checkpoints, no forced rebases or repeated suite. Fourth independent tooling lane holds106; Catching repairs106, Run repairs101, Measurement reviews tiny failure-accounting controls.108 nonauthor docs review remains queued,115/116/119 and experiments excluded. [Exact assignments, scopes and receipts](INTEGRATION.md#ready-blocked-experimental).
 
 ## Completed #112 / #110/#111 exact integration boundary — 2026-10-16
 
