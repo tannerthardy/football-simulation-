@@ -261,7 +261,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // up without ceasing to occupy his crease. Keep inside-out leverage there;
   // a deep mesh or uncertain possession still requires the original flow cue.
   const shallowRunner = job.kind === 'insert' && !premesh && seen.carrying === true
-    && seen.pos.x > sim.los - 1.6;
+    && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
   const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
     : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {

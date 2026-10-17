@@ -44,10 +44,17 @@ function fixture(side:number,velocity=2,kind:RunFitJob['kind']='insert',techniqu
 
 afterEach(()=>vi.restoreAllMocks());
 
+function movingGoal(command:Parameters<typeof movementObjective>[0]){
+ const goal=movementObjective(command);
+ expect(goal?.kind).toBe('moving');
+ if(goal?.kind!=='moving')throw Error('Expected an insertion tracking objective');
+ return goal;
+}
+
 describe('second-level insertion owns a moving fit rather than a stationary stop',()=>{
  it.each([-1,1])('keeps achievable co-flow on arrival, side=%s',side=>{
   const f=fixture(side),before=structuredClone(f.a.body),rng=structuredClone(f.sim.rng);
-  const command=f.read(),goal=movementObjective(command)!;
+  const command=f.read(),goal=movingGoal(command);
   expect(goal.velocity).toEqual({x:0,y:side*2});
   expect(command.vel.y).toBeCloseTo(side*2,10);
   expect(f.a.body).toEqual(before);expect(f.sim.rng).toEqual(rng);
@@ -66,22 +73,22 @@ describe('second-level insertion owns a moving fit rather than a stationary stop
  });
 
  it('holds point and velocity from one read, then admits an observed reversal on the next read',()=>{
-  const f=fixture(1),first=f.read(),goal=movementObjective(first)!;
+  const f=fixture(1),first=f.read(),goal=movingGoal(first);
   const until=f.sim.t+f.a.mind.decisionInterval;
   for(const [o,s] of f.picture)if(o!==f.rb)s.vel.y=-2;
   f.sim.t+=.05;
-  const held=movementObjective(f.read())!;
+  const held=movingGoal(f.read());
   expect(held.velocity).toEqual(goal.velocity);
   expect(held.point.y).toBeCloseTo(goal.point.y+2*.05,10);
   f.sim.t=until+1e-6;
-  expect(movementObjective(f.read())!.velocity).toEqual({x:0,y:-2});
+  expect(movingGoal(f.read()).velocity).toEqual({x:0,y:-2});
  });
 
  it('stops carrying old motion when the next acquired picture is stationary',()=>{
   const f=fixture(1);f.read();const until=f.sim.t+f.a.mind.decisionInterval;
   for(const s of f.picture.values())s.vel.y=0;
   f.sim.t=until+1e-6;
-  expect(movementObjective(f.read())!.velocity).toEqual({x:0,y:0});
+  expect(movingGoal(f.read()).velocity).toEqual({x:0,y:0});
  });
 
  it('still requests braking when it would overrun the moving fit',()=>{
@@ -94,7 +101,7 @@ describe('second-level insertion owns a moving fit rather than a stationary stop
 
  it.each(['interior','cutback','lag'] as const)('keeps %s responsibility out of new insertion tracking',kind=>{
   const f=fixture(1,2,kind==='lag'?'insert':kind,kind==='lag'?'lag':'attack');
-  expect(movementObjective(f.read())!.velocity).toEqual({x:0,y:0});
+  expect(movingGoal(f.read()).velocity).toEqual({x:0,y:0});
  });
 
  it('does not infer fit motion from a stationary acquired surface or private live motion',()=>{
@@ -102,7 +109,7 @@ describe('second-level insertion owns a moving fit rather than a stationary stop
   for(const o of f.sim.offense){o.body.vel={x:8,y:9};o.body.pos={x:60,y:45};}
   f.sim.t+=f.a.mind.decisionInterval+.01;
   expect(f.read()).toEqual(command);
-  expect(movementObjective(command)!.velocity).toEqual({x:0,y:0});
+  expect(movingGoal(command).velocity).toEqual({x:0,y:0});
  });
 });
 
@@ -122,12 +129,13 @@ describe('shallow acquired runner keeps insertion from returning to its old surf
   expect(body.support!.state).toBe('up');expect(f.a.body).toEqual(original);
  });
 
- it.each(['deep','not-carrying','unknown','cutback','lag'] as const)('preserves the %s control',control=>{
+ it.each(['deep','not-carrying','unknown','cutback','lag','away-side'] as const)('preserves the %s control',control=>{
   const f=fixture(1,0,control==='cutback'?'cutback':'insert',control==='lag'?'lag':'attack');
   const cue=f.picture.get(f.rb)!;
   cue.pos={x:control==='deep'?38.3:38.8,y:f.a.pos.y+3};cue.vel={x:2,y:0};
   if(control==='not-carrying')cue.carrying=false;
   if(control==='unknown')cue.carrying=null;
+  if(control==='away-side')f.a.runFit!.side=-1;
   const spy=vi.spyOn(steering,'chase');f.read(true);
   expect(spy).not.toHaveBeenCalled();
  });
