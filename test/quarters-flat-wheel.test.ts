@@ -95,9 +95,12 @@ describe('Quarters owns the acquired #2 flat and its possible wheel',()=>{
     expect((f.sim.slot('FS')!.behavior as CoverageDefender).job).toBe(`man:${f.one.slot}`);
   });
   it('uses the installed Palms exchange despite hidden changes to the corner live choice',()=>{
-    const a=stage('cover4_palms'),b=stage('cover4_palms');a.flat();b.flat();
+    const a=stage('cover4_palms'),b=stage('cover4_palms');
     const corner=b.sim.slot('CB_W')!;corner.body.pos={x:80,y:2};corner.body.vel={x:-8,y:6};
     corner.behavior={kind:'hidden failed trap',update:()=>({vel:{x:-8,y:6}})};
+    // Change the hidden choice before either apex makes its flat decision,
+    // rather than checking only after a terminal curl branch is established.
+    expect(b.flat()).toEqual(a.flat());
     a.sim.perception.record(a.sim.agents);b.sim.perception.record(b.sim.agents);
     expect(b.update(.8)).toEqual(a.update(.8));expect(b.b.job.startsWith('zone:')).toBe(true);
   });
