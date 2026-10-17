@@ -243,6 +243,11 @@ export class ManCoverage implements Behavior {
       }
       return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
     }
+    // Snap possession alone is not a run cue. Once his own picture puts
+    // the carrying QB clearly beyond the line, retained pass belief must
+    // not discard pursuit. No private scramble/handoff state is required.
+    const qbCue = sim.see(a, sim.qb);
+    if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
