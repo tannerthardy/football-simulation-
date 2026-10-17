@@ -90,6 +90,44 @@ Authors fetch/record current origin/develop before new implementation/handoff an
 reconcile at clean checkpoints. Intentionally pinned research remains historical;
 no forced rebase or old-source relabeling. Integration extraction boundary released.
 
+### Current checkpoint and audit priorities
+
+**Review ACCEPT, exact combined verification pending:** #126@b3de4f5 and
+#128@ec2a2e9. Extract only four exact files into
+`codex/zone-force-integration` from accepted70b4db6 plus current queue metadata.
+Integration claims assembly/verification only: `blocking.ts`, `coverage/defender.ts`
+and the two new direct contract tests. Authors retain their separate checkouts.
+[Independent decisions, exact pins, compatible receipts and adverse evidence](../data/reviews/current/zone-force-integration/intake.json).
+#126's #117/#122 dependencies are already accepted. #128 has no held #127 dependency.
+The runtime files are disjoint; shared movement/fit/contact implementations stay accepted.
+One exact combined check is planned, with no duplicated focused/native/panel/game run.
+
+**Audit is evidence, not an engine candidate.** [#129 report](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-deep-audit-2026-10-16/README.md)
+stays pinned to measured70b4db6, even after later accepted fixes. Integration verified
+its protected source/tests/settings delta is empty and independently fetched the
+permanent evidence tag. [Seven published files/size/SHA256 checks](../data/reviews/current/zone-force-integration/audit-data-check.json)
+include the14,192,453-byte archive, SHA256
+`5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56`.
+Evidence tree23d5f6d/originalb9b9c175 remain outside development ancestry.
+No audit source/tooling/history is imported; the existing issue register is reconciled.
+No collector, full suite or game is run for audit/source-document publication.
+
+| Owner | Bounded next action | Dependency / evidence boundary |
+| --- | --- | --- |
+| Run | RUN-006 offensive failed-exchange continuation: `QBHandoff` in qb.ts and `RunnerToMesh` in assign.ts on `codex/run-failed-exchange`. | Four saved failed exchanges; G3-P140 is nonmatched success context. Acquired recovery/failure cue, real reach and normal mesh/PA. Independent implementation/review. |
+| Pass/Awareness/Catching | CTRL-001 acquired committed-QB pursuit in `ManCoverage.coverMan` and unkeyed premesh retirement; publish exact claim/pin/settings/observer initialization. | Six scramble witnesses plus ordinary/PA controls. Coordinate one composed native witness/control with Run before better-broken-play claims; neither implementation waits for the other. |
+| Physics + Catching | BALL-001 local relative endpoint query, jointly legal height/reach interval and closest legal opportunity. | Physics helper/tests; Catching tick-entry/end capture and eligibility/order/retry/difficulty. No earliest-reach semantic change, World rewrite or capability/default change. Native nominated INT invalidity remains unresolved. |
+| Flex / Do-It-All + Awareness/Pass | INFO-002/003 explicit acquired QB receiver estimate plus immutable installed expectation at evaluation and release, with observer/estimate cache key. | Ordinary teammate see() refresh and live converted routes are not legitimate acquisition/prior. Frozen-input hidden-state invariance plus anticipation/observed-change controls; other QB readers remain named debt. Separate from Run's exchange functions. |
+| Measurement + Integration | GAME-004 independent saved-result credit repairs and explicit safety goal-plane convention. | Existing fixtures/ordinary credits; no new games or silent historical rewrite. No ready patch is presumed. |
+
+[Consolidated owner coordination and exact contracts](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
+#127@f6a3c86 remains HOLD: wheel leverage costs the successful swing
+0.5862→6.6145/12.9918YAC. #128 does not adopt either approach. Tooling101/106,
+reference108 and experimental Physics retain their existing independent dispositions.
+A blocked item holds itself; do not wait for every audit priority or fill a batch
+with unrelated findings. Another broad evaluation needs a named transfer question.
+Historical4ded6b6/default branch and experimental flags remain unchanged.
+
 ### Remaining agent tasks
 
 | Owner | Task / exact starting publication | Cost boundary |
