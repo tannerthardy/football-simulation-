@@ -1384,6 +1384,8 @@ export class World {
         // contact subdivision. He leaves his feet at the end of that plant.
         const launch = Math.min(sp.traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
+        // Launch supplies translation, not a torque that arrests acquired spin.
+        b.facing += (b.spin ?? 0) * h;
         if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
