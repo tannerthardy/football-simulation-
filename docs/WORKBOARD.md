@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Bounded two-point effort persistence — 2026-10-17
+## Bounded two-point effort persistence — 2026-10-16 (America/Phoenix)
 
 Physics review owns only `Game.twoPointTry` in `src/game/game.ts` and new
 `test/two-point-energy.test.ts` on `codex/two-point-effort`, isolated from exact
@@ -17,7 +17,8 @@ ordinary control passes. Corrected focused test: 3/3 pass in 2.460 command secon
 CF_FLOW unset; both receipts have unchanged inputs. Runtime source
 `a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354`;
 raw receipts/logs: ignored `out/two-point-energy/{red,green}.{json,log}`.
-Independent read-only review accepts exact line/test scope. No suite, game,
+Parent and independent read-only reviews accept exact line/test scope.
+[Fetchable receipts and scope](reviews/two-point-energy.md). No suite, game,
 typecheck, publication or promotion run; integration retains combined checks.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
