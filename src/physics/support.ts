@@ -97,22 +97,40 @@ export interface SupportParams {
 /** Cleat-turf traction coefficient for a sustained push (model assumption). */
 export const TURF_MU = 1.1;
 
+/** Explicit calibration inputs fail closed; legacy hand-built profiles keep
+ * their historical fallback, including its existing boundary behavior. Zero
+ * muscular drive needs a separate recovery/compliance contract. */
+function measuredCapacity(value: number | undefined, fallback: number, name: string): number {
+  if (value === undefined) return fallback;
+  const square = value * value;
+  // Numerical headroom for existing squared shared budgets/structural grip
+  // multiples, not an athlete-force cap. Reject, never clip a measurement.
+  if (!Number.isFinite(value) || value <= 0 || !Number.isFinite(square)
+    || !Number.isFinite(1 / square) || value > Math.sqrt(Number.MAX_VALUE) / 16)
+    throw new RangeError(`${name} must be positive and numerically representable`);
+  return value;
+}
+
 /** Derived on demand (cheap), so a scenario that edits a profile sees the change. */
 export function supportParams(p: PhysicalProfile): SupportParams {
   const balance = p.balance ?? 0.5;
   const traction = TURF_MU * p.massKg * G;
+  const pushForce = Math.min(measuredCapacity(p.loadedDriveForce, p.power * G, 'loadedDriveForce'), traction);
+  const stepSpeed = p.stepSpeed ?? 3.2;
+  if (p.loadedDriveForce !== undefined && (!Number.isFinite(stepSpeed / pushForce) || pushForce <= 0))
+    throw new RangeError('loadedDriveForce requires finite corrective-support mobility');
   return {
     comHeight: 0.55 * p.heightYd,
     // Wider, heavier bases resist more before a step is needed.
     baseRadius: 0.11 + 0.05 * balance + 0.04 * clamp((p.massKg - 90) / 60, 0, 1),
-    stepSpeed: p.stepSpeed ?? 3.2,
+    stepSpeed,
     bend: p.bend ?? 0.5,
     getUp: p.getUp ?? 0.9,
     yawInertia: p.massKg * (0.5 * p.radius) ** 2,
     pitchRadiusSq: (0.3 * p.heightYd) ** 2,
     traction,
-    pushForce: Math.min(p.power * G, traction),
-    armForce: 0.75 * p.power * G,
+    pushForce,
+    armForce: measuredCapacity(p.armForce, 0.75 * p.power * G, 'armForce'),
   };
 }
 

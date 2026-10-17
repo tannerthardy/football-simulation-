@@ -37,8 +37,20 @@ export interface PhysicalProfile {
   reactReach: number;
   /** Perception delay, s. */
   reactionTime: number;
-  /** Functional push force in "body-weight-g" units, used by engagements. */
+  /** Legacy absolute force scale divided by G, kg (not watts or a BW ratio).
+   * supportParams derives loaded drive and arm capacity from this scale. */
   power: number;
+  /** Optional independently measured loaded leg-drive/corrective-support
+   * capacity at zero speed, kg·yd/s², positive and numerically representable.
+   * Traction still caps it.
+   * Not a universal locomotor ceiling: measured free gait remains separate.
+   * Also sets existing corrective-foot compliance and fatigue normalization.
+   * Omitted by roster derivation pending task-matched calibration. */
+  loadedDriveForce?: number;
+  /** Optional independently measured arm-force capacity, kg·yd/s², positive
+   * and numerically representable. Feeds shared active arm budgets AND existing structural grip
+   * limits, across blocking/tackling. Omitted uses the legacy mapping. */
+  armForce?: number;
   /**
    * Support and contact capacities (see physics/support.ts). Optional so a
    * hand-built test profile still works; the support model derives

@@ -13,9 +13,14 @@ square mismatch and provides finite early delay. No momentum/work defect;
 mirror exact and48-subdivision difference.0026yd.21 unique conditions/38 executions;
 all recorded commands28.888s, no games/full suite. No controller ownership
 transfer, solver expansion, force/capacity/default change or old-failure waiver.
-Next: one independent push/anchor bound or feasible-request/response witness
-from Measurement/Run before a capability calibration proposal. New mapping
-requires separate review; the old observational weight table is not a target.
+Current continuation: Physics owns optional absolute-capacity inputs in
+`players/physical.ts`/`physics/support.ts`, focused `force-capacity` checks and
+an independently sourced push/anchor protocol. Omitted inputs preserve the
+current mapping; no roster mapping/default or solver change. Diagnostic helper
+owns only `block-protection.ts`/its manifest: three existing accepted controls,
+actual runner arrival, interposition and delivered contact rather than proximity.
+Independent review precedes any capability adoption; the old observational
+weight table is not a target. Preserve corrective-support/fatigue/grip coupling.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 
