@@ -1,0 +1,208 @@
+{
+  "schema": "puller-coordination-reduction-v1",
+  "qualification": "Offline only; all all22 native prefixes retained. Censored gains remain null. Loaded hands are evidence of work, never alone proof of protection. Approximate impulse uses recorded end-of-tick samples, not solver integrals. Diagnostic inside/outside routes override commands and are not production policies.",
+  "newCollectedCases": 10,
+  "collectorElapsedSeconds": 5.319921057,
+  "fullGames": 0,
+  "arms": {
+    "baseline": {
+      "source": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "inputs": [
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "G01",
+          "inputSha256": "e3ddfa111677d87bc566e459c63e4a9f6965e5f58e29630eb8557d03e711987c"
+        }
+      ],
+      "elapsedSeconds": 1.311562179,
+      "traceSha256": "6ff58d29fccbffdbae627e8b25bab5e42bc35d7add8dc89ef602158276b39c9f"
+    },
+    "candidate": {
+      "source": "cb95eadd25836583339d3739880eed07880ecfbfa0cb2c9f0f4e4202b5336a19",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "inputs": [
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        },
+        {
+          "id": "K02",
+          "inputSha256": "c1201086e05d69a14ae33413a5fed53840be414ca98cf32f74e22f818c4385b8"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "G01",
+          "inputSha256": "e3ddfa111677d87bc566e459c63e4a9f6965e5f58e29630eb8557d03e711987c"
+        }
+      ],
+      "elapsedSeconds": 1.938927339,
+      "traceSha256": "1ade1f992c4b404bc24a42784a015f34ded9f817db80d6951c4c76c27f6748c8"
+    },
+    "kick-only": {
+      "source": "5734bb3f2f8d702e1e8a93ff0d1f1c19eca1cdba3a2406e72de7ae9c5197ccee",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "inputs": [
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        },
+        {
+          "id": "K02",
+          "inputSha256": "c1201086e05d69a14ae33413a5fed53840be414ca98cf32f74e22f818c4385b8"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "G01",
+          "inputSha256": "e3ddfa111677d87bc566e459c63e4a9f6965e5f58e29630eb8557d03e711987c"
+        }
+      ],
+      "elapsedSeconds": 2.069431539,
+      "traceSha256": "548d600a3dea8e801d722776fb84c3c3cbd8691511591063db9ee627a25e11ae"
+    }
+  }
+}
