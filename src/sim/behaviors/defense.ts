@@ -177,8 +177,8 @@ export interface ManOptions {
   lev?: 'inside' | 'outside' | 'head';
   trail?: boolean;
   overTop?: boolean;
-  /** Quarter-flat widens from its entry depth until the acquired route
-   * climbs above it, carrying is acquired or recognized flight takes priority. */
+  /** Quarter-flat retains the acquired release cushion while widening;
+   * the existing observed-depth progression compresses it on a climb. */
   topDownFlat?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
@@ -189,7 +189,6 @@ export class ManCoverage implements Behavior {
   readonly kind = 'man';
   private readonly press: boolean;
   private readonly initialCushion: number;
-  private readonly flatDepth?: number;
   private hipsOpen = false;
   private releaseObserved = false;
   private routeRead = false;
@@ -202,7 +201,7 @@ export class ManCoverage implements Behavior {
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
     return { leverage: this.opts.lev ?? 'inside', initialCushion: this.initialCushion, press: this.press,
       hipsOpen: this.hipsOpen, trail: !!this.opts.trail, overTop: !!this.opts.overTop, routeRead: this.routeRead,
-      ...(this.flatDepth === undefined ? {} : { flatDepth: this.flatDepth }) };
+      ...(this.opts.topDownFlat ? { topDownFlat: true } : {}) };
   }
 
   constructor(
@@ -216,7 +215,6 @@ export class ManCoverage implements Behavior {
   ) {
     this.press = press;
     this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
-    this.flatDepth = opts.topDownFlat ? a.pos.x : undefined;
     void sim;
   }
 
@@ -316,25 +314,24 @@ export class ManCoverage implements Behavior {
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
+    let targetVelocity = seen.vel;
     if (o.overTop) {
       // Keep a roof on a climbing receiver. A visible plant compresses the
       // cushion instead of preserving four yards of empty grass forever.
       const climbing = Math.max(0, vx);
       const top = 0.8 + 0.15 * climbing;
       tx = seen.pos.x + top;
+      if (o.topDownFlat && seen.carrying !== true && cushion > top) {
+        // Keep the ordinary release cushion instead of replacing it with a
+        // low-hip chase. It moves with the acquired receiver and compresses
+        // through the existing eight-yard development, never by a timer.
+        tx = seen.pos.x + cushion;
+        const rate = !this.press && deep > 0 && deep < 8 && cushion > 1
+          ? 1 - (Math.min(5.5, this.initialCushion) - 1) / 8 : 1;
+        targetVelocity = { x: seen.vel.x * rate, y: seen.vel.y };
+      }
     }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
-    // The quarter-flat player's width is not a race to the receiver's low
-    // hip. Keep the depth already earned while widening; a newly acquired
-    // upfield path can consume it. An acquired runner needs closing even
-    // behind the line; hidden possession cannot release this plane early.
-    let targetVelocity = seen.vel;
-    if (this.flatDepth !== undefined && seen.carrying !== true && tx <= this.flatDepth) {
-      tx = this.flatDepth;
-      // Depth is fixed while width follows the acquired receiver. Giving
-      // this plane the receiver's x velocity would invent forward drift.
-      targetVelocity = { x: 0, y: seen.vel.y };
-    }
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     if (!this.hipsOpen) {

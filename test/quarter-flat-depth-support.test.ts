@@ -9,6 +9,7 @@ import { ManCoverage, playBall, runFit, sawThrow } from '../src/sim/behaviors/de
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { movementObjective } from '../src/sim/movement-objective.js';
 
 const offense=generateTeam(new Rng(401),'Depth O','FDO',{strength:.6});
 const defense=generateTeam(new Rng(402),'Depth D','FDD',{strength:.6});
@@ -33,23 +34,36 @@ function stage(flip=false,side:'S'|'W'='W') {
 }
 
 describe('quarter-flat widens from above and retains installed support',()=>{
-  it.each([false,true])('keeps achieved depth while widening with an acquired flat, mirror=%s',flip=>{
+  it.each([false,true])('keeps useful achieved cushion while widening with an acquired flat, mirror=%s',flip=>{
     const f=stage(flip),world=new World([f.a.body]);f.flat();
-    const entry=f.a.pos.x;
+    const entry=f.b.recordedMan()!.initialCushion;
     for(let k=0;k<16;k++) {
       f.picture(f.r,{pos:{x:41+.05*k,y:f.startY+f.out*(2+.25*k)},vel:{x:1,y:f.out*5}});
       const report=world.step([f.update(.7+.05*k)],.05);
       expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
     }
-    expect(f.a.pos.x).toBeGreaterThanOrEqual(entry-.02);
-    expect(f.a.pos.x).toBeLessThanOrEqual(entry+.02);
+    expect(f.a.pos.x-f.pictures.get(f.r.idx)!.pos.x).toBeGreaterThan(2.5);
     expect(f.a.vel.y*f.out).toBeGreaterThan(0);
-    expect(f.b.recordedMan()?.flatDepth).toBe(entry);
+    expect(f.b.recordedMan()?.initialCushion).toBe(entry);
     f.picture(f.r,{pos:{x:47,y:f.startY+f.out*5},vel:{x:7,y:0}});
     f.update(1.6);const wheel=f.update(1.8);
     expect(wheel.vel.x).toBeGreaterThan(0);
     expect(f.b.job).toBe(`man:${f.r.slot}`);
-    expect(f.b.recordedMan()?.flatDepth).toBe(entry);
+    expect(f.b.recordedMan()?.initialCushion).toBe(entry);
+  });
+
+  it('requests a coherent moving cushion as the acquired receiver advances',()=>{
+    const f=stage();f.flat();
+    const goal=(x:number,t:number)=>{
+      f.picture(f.r,{pos:{x,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},facing:Math.atan2(f.out*5,1)});
+      const p=movementObjective(f.update(t));
+      if(p?.kind!=='moving'||!p.velocity)throw Error('Missing acquired moving objective');
+      return p;
+    };
+    const a=goal(41.4,.8),b=goal(41.45,.85);
+    expect(b.point.x).toBeGreaterThan(a.point.x);
+    expect((b.point.x-a.point.x)/.05).toBeCloseTo(a.velocity!.x,6);
+    expect(a.point.x-41.4).toBeGreaterThan(2.5);
   });
 
   it('uses no future wheel, hidden receiver motion or private call to set depth',()=>{
@@ -62,7 +76,8 @@ describe('quarter-flat widens from above and retains installed support',()=>{
       expect(b.update(.7+k*.05)).toEqual(a.update(.7+k*.05));
       expect(b.sim.rng).toEqual(a.sim.rng);
     }
-    expect(b.b.recordedMan()?.flatDepth).toBe(45);
+    expect(b.b.recordedMan()?.initialCushion).toBe(a.b.recordedMan()?.initialCushion);
+    expect(b.b.recordedMan()?.topDownFlat).toBe(true);
   });
 
   it('closes on an acquired carrying receiver behind the line without requiring hidden confirmation',()=>{
@@ -80,7 +95,9 @@ describe('quarter-flat widens from above and retains installed support',()=>{
     for(const f of [a,b])f.picture(f.r,{pos:{x:39,y:f.startY+f.out*3},vel:{x:1,y:f.out*5},carrying:null});
     b.sim.ball={kind:'held',carrier:b.r};b.sim.catchAt=.5;
     expect(b.update(.7)).toEqual(a.update(.7));
-    expect(b.update(.75).vel.x).toBeGreaterThanOrEqual(0);
+    const command=b.update(.75);
+    expect(command).toEqual(a.update(.75));
+    expect(movementObjective(command)!.point.x-39).toBeGreaterThan(2.5);
   });
 
   it.each(['S','W'] as const)('preserves the installed %s-side force, including its inside option',side=>{
@@ -156,6 +173,6 @@ describe('quarter-flat widens from above and retains installed support',()=>{
     const ordinary=new ManCoverage(f.a,f.sim,f.r,false,'B',f.out,{lev:'inside',overTop:true,
       initialPosition:{...f.pictures.get(f.r.idx)!.pos}});
     expect(ordinary.update(f.a,f.sim).vel.x).toBeLessThan(0);
-    expect(ordinary.recordedTechnique().flatDepth).toBeUndefined();
+    expect(ordinary.recordedTechnique().topDownFlat).toBeUndefined();
   });
 });

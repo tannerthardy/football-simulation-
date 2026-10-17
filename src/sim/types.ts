@@ -22,8 +22,8 @@ export interface ReplayAgentState {
   zone?: string;
   landmark?: [number, number];
   man?: { leverage: string; initialCushion: number; press: boolean; hipsOpen: boolean; trail: boolean; overTop: boolean; routeRead: boolean;
-    /** Own quarter-flat entry plane; absent for ordinary man techniques. */
-    flatDepth?: number };
+    /** Quarter-flat release cushion, absent for ordinary man techniques. */
+    topDownFlat?: boolean };
   intent?: { velocity: [number, number]; facing?: number; posture?: number };
   runFit?: { gap: string; side: number; kind: string; technique: string; edge: string; pace: string; partner?: string };
   passSet?: { depth: number; laneY: number; outside: number };
