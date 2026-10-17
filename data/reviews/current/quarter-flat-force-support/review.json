@@ -1,0 +1,223 @@
+{
+  "schema": "quarter-flat-force-continuity-v1",
+  "disposition": "ready-for-independent-review",
+  "base": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "queue": "c933dbc3c2ee3a2d230b70ee1032b9ac4ea49d0b",
+  "code": "995effce77812177aa74fa9ec5aa695b4fd136cf",
+  "baselineSource": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "candidateSource": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "minimalFiles": [
+    "src/sim/coverage/defender.ts",
+    "test/quarter-flat-force-support.test.ts"
+  ],
+  "research": {
+    "publication": "f6a3c866622404965ee43551e2b9307de84b4db8",
+    "pr": 127,
+    "disposition": "HOLD",
+    "operator": "scripts/diag/honest-quarter-flat.ts",
+    "operatorSha256": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+    "baselineRoot": "data/reviews/current/quarter-flat-depth-current/"
+  },
+  "provenance": {
+    "source": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+    "manifest": "1580c4b50d98f4c488e43a23d3d6a80e78db0ec08bdc1b1e81e4f8cef60ac087",
+    "operator": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+    "node": "v22.23.3",
+    "lock": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "comparison": [
+    {
+      "id": "IZ",
+      "referenceFile": "baseline.json.gz",
+      "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+      "matchedFields": [
+        "inputSha256",
+        "physicalSignature",
+        "status",
+        "terminal",
+        "actualCatcher",
+        "firstContact",
+        "yac",
+        "samples",
+        "cues",
+        "invariants"
+      ],
+      "physicalSignature": "135754343d6488403dab42ef3621e1fca8f4e4c079b22c89588a5253f1262e53",
+      "status": "native",
+      "outcome": "tackle",
+      "yac": null,
+      "actualCatcher": null,
+      "firstContact": null,
+      "steps": 73
+    },
+    {
+      "id": "OZ",
+      "referenceFile": "baseline.json.gz",
+      "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+      "matchedFields": [
+        "inputSha256",
+        "physicalSignature",
+        "status",
+        "terminal",
+        "actualCatcher",
+        "firstContact",
+        "yac",
+        "samples",
+        "cues",
+        "invariants"
+      ],
+      "physicalSignature": "22b873a60cb11d22a8ba5f893b585001da7372a9995b61729a8f79597e6a6f59",
+      "status": "native",
+      "outcome": "tackle",
+      "yac": null,
+      "actualCatcher": null,
+      "firstContact": null,
+      "steps": 76
+    },
+    {
+      "id": "TRANSFER",
+      "referenceFile": "baseline.json.gz",
+      "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+      "matchedFields": [
+        "inputSha256",
+        "physicalSignature",
+        "status",
+        "terminal",
+        "actualCatcher",
+        "firstContact",
+        "yac",
+        "samples",
+        "cues",
+        "invariants"
+      ],
+      "physicalSignature": "482d371eb0937b5f66774bb90c6314d38393369c54bf509937f564a22d32800a",
+      "status": "native",
+      "outcome": "incomplete",
+      "yac": null,
+      "actualCatcher": null,
+      "firstContact": null,
+      "steps": 109
+    },
+    {
+      "id": "SLOT-SWING",
+      "referenceFile": "slot-baseline.json.gz",
+      "inputSha256": "d75dffcb44b24c6da6bccd5ff51c0b41dc1f7c4c2dd9b8b2109ba2efc02cd9e2",
+      "matchedFields": [
+        "inputSha256",
+        "physicalSignature",
+        "status",
+        "terminal",
+        "actualCatcher",
+        "firstContact",
+        "yac",
+        "samples",
+        "cues",
+        "invariants"
+      ],
+      "physicalSignature": "d18ba9d5aeb433b147e7b8c451067d8564176b20e7f31f676732397920fe7f61",
+      "status": "native",
+      "outcome": "tackle",
+      "yac": 0.5862276501511445,
+      "actualCatcher": "HFO-WR3",
+      "firstContact": {
+        "t": 2.8,
+        "type": "carrier_contact",
+        "a": 10,
+        "b": 19,
+        "pos": {
+          "x": 39.72,
+          "y": 45.21
+        },
+        "note": "grasp"
+      },
+      "steps": 76
+    }
+  ],
+  "checks": {
+    "acceptedRed": {
+      "passed": 4,
+      "failed": 4,
+      "expected": "two sides plus two fresh-player active-force contracts"
+    },
+    "candidateFocused": {
+      "passed": 74,
+      "failed": 0,
+      "new": 8,
+      "reused": 66
+    },
+    "typecheck": "pass",
+    "native": {
+      "new": 4,
+      "completed": 4,
+      "censored": 0,
+      "failed": 0,
+      "reusedBaseline": 4,
+      "exactPhysicalMatches": 4
+    }
+  },
+  "commandSeconds": 17.304540105,
+  "nativeSimulationMs": 1410.483915,
+  "limits": [
+    "Positive activation uses supplied acquired pictures with actual controllers and generated bodies; native controls show preservation, not newly won run stops.",
+    "No whole-population YAC, scheme calibration, new helper policy or physics claim.",
+    "Existing production-buffer expiry contracts are reused; force-specific negative/unknown picture tests supply the current picture.",
+    "No full suite/game campaign; Integration owns combined verification and adoption.",
+    "Both broad cushion approaches remain held in PR127."
+  ]
+}

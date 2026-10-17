@@ -1,0 +1,162 @@
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941
+Running npx vitest run test/quarter-flat-force-support.test.ts
+
+ RUN  v3.2.4 /workspace/football-yac-angle
+
+ ❯ |core| test/quarter-flat-force-support.test.ts (8 tests | 4 failed) 225ms
+   × acquired quarter-flat match retains its installed force duty > preserves the installed S-side force, including its inside option 39ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+   × acquired quarter-flat match retains its installed force duty > preserves the installed W-side force, including its inside option 11ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(2), …(1) }
+   ✓ acquired quarter-flat match retains its installed force duty > keeps the same keyed force under hidden possession/motion while reality snapshots advance 8ms
+   ✓ acquired quarter-flat match retains its installed force duty > does not turn run belief alone or unknown/negative carrying into permission to abandon coverage 67ms
+   ✓ acquired quarter-flat match retains its installed force duty > releases acquired force when possession evidence expires or run belief changes 15ms
+   ✓ acquired quarter-flat match retains its installed force duty > preserves force through unrecognized flight and yields to a recognized reachable contest 8ms
+   × acquired quarter-flat match retains its installed force duty > transfers active acquired force to fresh players, side=S 33ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(2), …(1) }
+   × acquired quarter-flat match retains its installed force duty > transfers active acquired force to fresh players, side=W 41ms
+     → expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(2), …(1) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/quarter-flat-force-support.test.ts > acquired quarter-flat match retains its installed force duty > preserves the installed S-side force, including its inside option
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": undefined,
+-   "effort": 1,
++   "cutSkill": 1.075,
+    "facing": undefined,
+    "vel": {
+-     "x": -8.527883293269921,
+-     "y": 3.0105826214877367,
++     "x": -3.112559553203011,
++     "y": -8.020489222046244,
++   },
++   Symbol(own movement objective): {
++     "kind": "moving",
++     "point": {
++       "x": 42.05753607073657,
++       "y": 20.80613838081906,
++     },
++     "velocity": {
++       "x": 1.559334589103416,
++       "y": -4.854737442872239,
++     },
+    },
+  }
+
+ ❯ test/quarter-flat-force-support.test.ts:48:23
+     46|       const fit=structuredClone(f.a.runFit),command=f.update(.7);
+     47|       control.sim.t=.7;
+     48|       expect(command).toEqual(runFit(control.a,control.sim,'B',control…
+       |                       ^
+     49|         {target:control.rb,cue:control.pictures.get(control.rb.idx)!})…
+     50|       expect(f.a.runFit).toEqual(fit);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |core| test/quarter-flat-force-support.test.ts > acquired quarter-flat match retains its installed force duty > preserves the installed W-side force, including its inside option
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(2), …(1) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": undefined,
+-   "facing": 3.141592653589793,
++   "cutSkill": 1.0785714285714285,
++   "facing": undefined,
+    "vel": {
+-     "x": -5.671517133484819,
+-     "y": -5.334525192500969,
++     "x": -3.16359695896252,
++     "y": 8.142699203382952,
+    },
+    Symbol(own movement objective): {
+      "kind": "moving",
+      "point": {
+-       "x": 40.3,
+-       "y": 29.479266038583027,
++       "x": 42.096459815284874,
++       "y": 35.88900126756731,
+      },
+      "velocity": {
+-       "x": 0,
+-       "y": 0,
++       "x": 1.711274499662438,
++       "y": 4.803284250052778,
+      },
+    },
+  }
+
+ ❯ test/quarter-flat-force-support.test.ts:48:23
+     46|       const fit=structuredClone(f.a.runFit),command=f.update(.7);
+     47|       control.sim.t=.7;
+     48|       expect(command).toEqual(runFit(control.a,control.sim,'B',control…
+       |                       ^
+     49|         {target:control.rb,cue:control.pictures.get(control.rb.idx)!})…
+     50|       expect(f.a.runFit).toEqual(fit);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |core| test/quarter-flat-force-support.test.ts > acquired quarter-flat match retains its installed force duty > transfers active acquired force to fresh players, side=S
+ FAIL  |core| test/quarter-flat-force-support.test.ts > acquired quarter-flat match retains its installed force duty > transfers active acquired force to fresh players, side=W
+AssertionError: expected { vel: { …(2) }, …(2), …(1) } to deeply equal { vel: { …(2) }, …(2), …(1) }
+
+- Expected
++ Received
+
+  {
+-   "cutSkill": undefined,
+-   "facing": 3.141592653589793,
++   "cutSkill": 1.1035714285714286,
++   "facing": undefined,
+    "vel": {
+-     "x": -5.0989957301477755,
+-     "y": -5.820809055797464,
++     "x": -3.0647209740415713,
++     "y": -8.012664640313016,
+    },
+    Symbol(own movement objective): {
+      "kind": "moving",
+      "point": {
+-       "x": 40.3,
+-       "y": 17.434668470009637,
++       "x": 42.06732880087591,
++       "y": 20.807089147895194,
+      },
+      "velocity": {
+-       "x": 0,
+-       "y": 0,
++       "x": 1.6035668151069826,
++       "y": -4.840307166852911,
+      },
+    },
+  }
+
+ ❯ test/quarter-flat-force-support.test.ts:117:21
+    115|     const expected=runFit(control.a,control.sim,'B',control.out,
+    116|       {target:control.rb,cue:control.pictures.get(control.rb.idx)!});
+    117|     expect(command).toEqual(expected);
+       |                     ^
+    118|     const actual=new World([f.a.body]).step([command],.05);
+    119|     new World([control.a.body]).step([expected],.05);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+   Start at  02:50:57
+   Duration  1.45s (transform 726ms, setup 0ms, collect 974ms, tests 225ms, environment 0ms, prepare 60ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/quarter-flat-force/red-receipt.json; exit 1

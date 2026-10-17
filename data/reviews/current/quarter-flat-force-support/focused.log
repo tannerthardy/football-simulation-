@@ -1,0 +1,21 @@
+Profile candidate: run-game-2026-10-13, commit 70b4db6a3ef53acc1a0e90cd055f1087205daa30, source 5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482
+Running npx vitest run test/quarter-flat-force-support.test.ts test/coverage-run-support.test.ts test/back-man-run-fit.test.ts test/quarters-flat-wheel.test.ts
+
+ RUN  v3.2.4 /workspace/football-yac-angle
+
+ ✓ |core| test/quarter-flat-force-support.test.ts (8 tests) 223ms
+ ✓ |core| test/back-man-run-fit.test.ts (38 tests) 497ms
+ ✓ |core| test/coverage-run-support.test.ts (15 tests) 651ms
+ ✓ |core| test/quarters-flat-wheel.test.ts (13 tests) 205ms
+
+ Test Files  4 passed (4)
+      Tests  74 passed (74)
+   Start at  02:51:06
+   Duration  1.93s (transform 919ms, setup 0ms, collect 2.61s, tests 1.58s, environment 2ms, prepare 297ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/quarter-flat-force/focused-receipt.json; exit 0

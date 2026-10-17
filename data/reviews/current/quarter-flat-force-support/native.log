@@ -1,0 +1,4 @@
+Profile candidate: run-game-2026-10-13, commit 995effce77812177aa74fa9ec5aa695b4fd136cf, source 5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482
+Running node --import tsx scripts/diag/honest-quarter-flat.ts run out/quarter-flat-force/inputs.json.gz out/quarter-flat-force/native.json.gz force-continuity extraction: preserve run fits, successful swing tackle and fresh wheel control; compatible accepted reference reused
+{"source":"5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482","cases":4,"steps":334,"native":4,"censored":0,"simulationMs":1410.483915,"out":"out/quarter-flat-force/native.json.gz"}
+Validation receipt: out/quarter-flat-force/native-receipt.json; exit 0
