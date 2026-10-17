@@ -1,0 +1,5842 @@
+{
+  "schema": "quarter-flat-depth-support-v1",
+  "date": "2026-10-17 UTC",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "queuePin": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "parent124": "9f2206a3fd22aab83b19a0431346c7569ed19f7b",
+  "codeCommit": "0a566d21578df1e50ad98b2dba9ec6ea67fb8d6b",
+  "sourceSha256": {
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "reference124": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+    "candidate": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177"
+  },
+  "fileSha256": {
+    "src/sim/behaviors/defense.ts": "9390edbea0ebe8a18d8bd72a2e3863a0af793a4bf83927d0da90b9456acd5cfb",
+    "src/sim/coverage/defender.ts": "7cc53b32917b4c8e255a99288759d7fc5870230bbc725dba43194bf1e5e5fa10",
+    "src/sim/coverage/rules.ts": "6a45d6aa17c111786229ee4e0fe7c38ac4a49ba912a4cf9663bb15ec7665c6cc",
+    "src/sim/types.ts": "6c0269960cc8ac9ec515a67cb9a111ba8b1608689f84992d9215f7725b7f486f",
+    "test/quarter-flat-depth-support.test.ts": "3fa6fa15551ca12976618f3e677d23466186721ff6d95b63fe70a955b94f5b1c",
+    "scripts/diag/honest-quarter-flat.ts": "676c9daca1aa364825d82913f5bb758990cbd850a66b729176a9d61eed291f1e",
+    "config/baseline.json": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "data/reviews/current/quarter-flat-depth-support/after-124.patch": "a8306658faa76a760d44876fd0302b6ed342a9fd2ff290ae856ebfb477ee67aa",
+    "data/reviews/current/quarter-flat-depth-support/combined.patch": "4b1c858dab971689b97407d4f4a001e397382ee0147471f32087f13b61063cb9"
+  },
+  "referenceArtifacts": {
+    "cachedSeven": "https://github.com/tannerthardy/football-simulation-/blob/9f2206a3fd22aab83b19a0431346c7569ed19f7b/data/reviews/current/honest-quarter-flat/candidate.json.gz",
+    "newRunThree": "run-baseline.json.gz",
+    "newTransferThree": "transfer-baseline.json.gz",
+    "cachedAcceptedSeven": "https://github.com/tannerthardy/football-simulation-/blob/9f2206a3fd22aab83b19a0431346c7569ed19f7b/data/reviews/current/honest-quarter-flat/baseline.json.gz"
+  },
+  "comparisons": [
+    {
+      "id": "QW",
+      "inputSha256": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "2f9bcee8d831e974c1609b7b951200ea2de433168a8757e3c4adc803bf270cd6",
+        "steps": 82,
+        "elapsedMs": 404.76976199999996,
+        "events": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 344,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "slide",
+        "gain": 7.14,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "5b45eeb4217f986a8ec745586acb158685e401d2a90c4debaa27c3276b3423ea",
+        "steps": 117,
+        "elapsedMs": 612.004007,
+        "events": [
+          {
+            "t": 2.8,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 5.85,
+            "type": "slide",
+            "a": 0,
+            "pos": {
+              "x": 47.14,
+              "y": 36.12
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 512,
+          "cap": 512,
+          "mayHaveOmissions": true
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 0.75,
+          "achievedTime": 0.8,
+          "gap": 6.088787483439688,
+          "depthAboveReceiver": 5.772792225685883,
+          "defenderPos": {
+            "x": 44.931410591886284,
+            "y": 34.824882241198175
+          },
+          "defenderVelocity": {
+            "x": -0.12814402224107468,
+            "y": 1.6129998018043537
+          },
+          "receiverPos": {
+            "x": 39.1586183662004,
+            "y": 36.76090985917072
+          },
+          "receiverVelocity": {
+            "x": 0.867889456111906,
+            "y": 3.6162060682650883
+          },
+          "rawVelocity": {
+            "x": -5.049770652479477,
+            "y": 5.753736249534143
+          },
+          "finalRequestVelocity": {
+            "x": -5.049770652479477,
+            "y": 5.753736249534143
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 0.75,
+          "achievedTime": 0.8,
+          "gap": 6.1039245084197535,
+          "depthAboveReceiver": 5.7876230758031895,
+          "defenderPos": {
+            "x": 44.94624144200359,
+            "y": 34.821499243308836
+          },
+          "defenderVelocity": {
+            "x": 0.4650899824512643,
+            "y": 1.4776798862307121
+          },
+          "receiverPos": {
+            "x": 39.1586183662004,
+            "y": 36.76090985917072
+          },
+          "receiverVelocity": {
+            "x": 0.867889456111906,
+            "y": 3.6162060682650883
+          },
+          "rawVelocity": {
+            "x": 1.051997626146151,
+            "y": 4.186801720687226
+          },
+          "finalRequestVelocity": {
+            "x": 1.051997626146151,
+            "y": 4.186801720687226
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 0.75,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 39.1324688261501,
+                "y": 36.49192766532774
+              },
+              "velocity": {
+                "x": 1.051997626146151,
+                "y": 2.512827673526438
+              },
+              "depth": -0.8675311738498976,
+              "outward": 1.2252609986610707,
+              "release": "flat",
+              "first": "flat",
+              "since": 0.75,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 44.93127893415538,
+            "y": 34.74973362152302
+          },
+          "vel": {
+            "x": 0.13341033147714554,
+            "y": 1.3929449852017821
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.310100477620383,
+            "depthAboveReceiver": 1.7969831641920138,
+            "defenderPos": {
+              "x": 43.21886970545616,
+              "y": 39.81614162349551
+            },
+            "defenderVelocity": {
+              "x": -1.0654561067466328,
+              "y": 6.420306967261392
+            },
+            "receiverPos": {
+              "x": 41.42188654126414,
+              "y": 42.59600073495299
+            },
+            "receiverVelocity": {
+              "x": 4.324404567983018,
+              "y": 4.7995617190511375
+            },
+            "rawVelocity": {
+              "x": 2.2493484548612677,
+              "y": 9.420620550249927
+            },
+            "finalRequestVelocity": {
+              "x": 2.2493484548612677,
+              "y": 9.420620550249927
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 4.941090912281507,
+            "depthAboveReceiver": 3.9968486376207863,
+            "defenderPos": {
+              "x": 45.41873517888493,
+              "y": 39.690905147647854
+            },
+            "defenderVelocity": {
+              "x": 0.878405988536087,
+              "y": 6.312523682735774
+            },
+            "receiverPos": {
+              "x": 41.42188654126414,
+              "y": 42.59600073495299
+            },
+            "receiverVelocity": {
+              "x": 4.324404567983018,
+              "y": 4.7995617190511375
+            },
+            "rawVelocity": {
+              "x": 2.8325759531258563,
+              "y": 9.545520357641983
+            },
+            "finalRequestVelocity": {
+              "x": 2.8325759531258563,
+              "y": 9.545520357641983
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.5692989471016918,
+            "depthAboveReceiver": -1.5449625990874836,
+            "defenderPos": {
+              "x": 44.89882625305732,
+              "y": 46.501586788781815
+            },
+            "defenderVelocity": {
+              "x": 4.418203325320058,
+              "y": 5.716710180312295
+            },
+            "receiverPos": {
+              "x": 46.443788852144806,
+              "y": 46.776886176349834
+            },
+            "receiverVelocity": {
+              "x": 6.3510644290225065,
+              "y": 2.7666943419219314
+            },
+            "rawVelocity": {
+              "x": 8.536203499868535,
+              "y": 1.6668532482780904
+            },
+            "finalRequestVelocity": {
+              "x": 8.536203499868535,
+              "y": 1.6668532482780904
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.0479727746740861,
+            "depthAboveReceiver": 0.9646998622267517,
+            "defenderPos": {
+              "x": 47.40683372951183,
+              "y": 46.26263767491999
+            },
+            "defenderVelocity": {
+              "x": 3.5273981309369824,
+              "y": 5.450543534525364
+            },
+            "receiverPos": {
+              "x": 46.44213386728508,
+              "y": 46.67202882318506
+            },
+            "receiverVelocity": {
+              "x": 6.337884961954813,
+              "y": 2.1813395106321827
+            },
+            "rawVelocity": {
+              "x": 7.122683545141712,
+              "y": 2.5335051187782187
+            },
+            "finalRequestVelocity": {
+              "x": 7.122683545141712,
+              "y": 2.5335051187782187
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.6789258167477183,
+            "depthAboveReceiver": -2.5044769951226797,
+            "defenderPos": {
+              "x": 49.285697841904515,
+              "y": 49.675147329685906
+            },
+            "defenderVelocity": {
+              "x": 7.1183875070202784,
+              "y": 3.118756907877186
+            },
+            "receiverPos": {
+              "x": 51.790174837027195,
+              "y": 48.72423276331377
+            },
+            "receiverVelocity": {
+              "x": 7.449157453048024,
+              "y": 2.209925345743288
+            },
+            "rawVelocity": {
+              "x": 9.908701096199266,
+              "y": 0.7819027777344152
+            },
+            "finalRequestVelocity": {
+              "x": 9.908701096199266,
+              "y": 0.7819027777344152
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.9384117903918339,
+            "depthAboveReceiver": -0.41157266136298176,
+            "defenderPos": {
+              "x": 51.28996494014248,
+              "y": 48.982587509205615
+            },
+            "defenderVelocity": {
+              "x": 6.4952377127112015,
+              "y": 1.6102607530264248
+            },
+            "receiverPos": {
+              "x": 51.701537601505464,
+              "y": 47.08837310382573
+            },
+            "receiverVelocity": {
+              "x": 7.363213657450594,
+              "y": -0.08370749745097884
+            },
+            "rawVelocity": {
+              "x": 9.251468561854567,
+              "y": -3.6811377150822513
+            },
+            "finalRequestVelocity": {
+              "x": 9.251468561854567,
+              "y": -3.6811377150822513
+            },
+            "job": "man:H"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 1.4998432067335745,
+          "depthAboveReceiver": -0.03635522797691948,
+          "defenderPos": {
+            "x": 46.40577863930816,
+            "y": 45.172626294781296
+          },
+          "defenderVelocity": {
+            "x": -0.4515206954560536,
+            "y": 4.452057970278938
+          },
+          "receiverPos": {
+            "x": 46.44213386728508,
+            "y": 46.67202882318506
+          },
+          "receiverVelocity": {
+            "x": 6.337884961954813,
+            "y": 2.1813395106321827
+          },
+          "rawVelocity": {
+            "x": -5.408155079031512,
+            "y": -6.901672669085691
+          },
+          "finalRequestVelocity": {
+            "x": -5.408155079031512,
+            "y": -6.901672669085691
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 1.0479727746740861,
+          "depthAboveReceiver": 0.9646998622267517,
+          "defenderPos": {
+            "x": 47.40683372951183,
+            "y": 46.26263767491999
+          },
+          "defenderVelocity": {
+            "x": 3.5273981309369824,
+            "y": 5.450543534525364
+          },
+          "receiverPos": {
+            "x": 46.44213386728508,
+            "y": 46.67202882318506
+          },
+          "receiverVelocity": {
+            "x": 6.337884961954813,
+            "y": 2.1813395106321827
+          },
+          "rawVelocity": {
+            "x": 7.122683545141712,
+            "y": 2.5335051187782187
+          },
+          "finalRequestVelocity": {
+            "x": 7.122683545141712,
+            "y": 2.5335051187782187
+          },
+          "job": "man:H"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "QM",
+      "inputSha256": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "ccebde2ef1e359f3421d7d9befad30ad7d3f3e527e9a19bec490c37be5aba624",
+        "steps": 120,
+        "elapsedMs": 447.02360899999996,
+        "events": [
+          {
+            "t": 3.15,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 512,
+          "cap": 512,
+          "mayHaveOmissions": true
+        }
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "12010256b21be4d425097ead5b1b407eeac6a4981b3f0c0ad1fb24d7ad372f9b",
+        "steps": 120,
+        "elapsedMs": 359.658181,
+        "events": [
+          {
+            "t": 3.15,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 512,
+          "cap": 512,
+          "mayHaveOmissions": true
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 0.75,
+          "achievedTime": 0.8,
+          "gap": 6.052726984800787,
+          "depthAboveReceiver": 5.761005497045176,
+          "defenderPos": {
+            "x": 44.9196238632456,
+            "y": 18.428850045711005
+          },
+          "defenderVelocity": {
+            "x": -0.0080143581002734,
+            "y": -1.426217564324864
+          },
+          "receiverPos": {
+            "x": 39.15861836620042,
+            "y": 16.57242347416262
+          },
+          "receiverVelocity": {
+            "x": 0.8678894561248099,
+            "y": -3.616206068261991
+          },
+          "rawVelocity": {
+            "x": -5.082285315651181,
+            "y": -5.642478303506067
+          },
+          "finalRequestVelocity": {
+            "x": -5.082285315651181,
+            "y": -5.642478303506067
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 0.75,
+          "achievedTime": 0.8,
+          "gap": 6.065055239523312,
+          "depthAboveReceiver": 5.772794639080125,
+          "defenderPos": {
+            "x": 44.93141300528055,
+            "y": 18.432460332258973
+          },
+          "defenderVelocity": {
+            "x": 0.46355132329771687,
+            "y": -1.2818061024061664
+          },
+          "receiverPos": {
+            "x": 39.15861836620042,
+            "y": 16.57242347416262
+          },
+          "receiverVelocity": {
+            "x": 0.8678894561248099,
+            "y": -3.616206068261991
+          },
+          "rawVelocity": {
+            "x": 1.0519976261461512,
+            "y": -4.044494703204449
+          },
+          "finalRequestVelocity": {
+            "x": 1.0519976261461512,
+            "y": -4.044494703204449
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 0.75,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 39.132469625976654,
+                "y": 16.84140592952504
+              },
+              "velocity": {
+                "x": 1.0519976261461512,
+                "y": -2.5128276735264383
+              },
+              "depth": -0.867530374023346,
+              "outward": 1.2252607371416318,
+              "release": "flat",
+              "first": "flat",
+              "since": 0.75,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 44.913401806687304,
+            "y": 18.49465799667175
+          },
+          "vel": {
+            "x": 0.2568966204319052,
+            "y": -1.206100474104994
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.3811949149333653,
+            "depthAboveReceiver": 1.8142681864242647,
+            "defenderPos": {
+              "x": 43.2361547276884,
+              "y": 13.590560594965991
+            },
+            "defenderVelocity": {
+              "x": -1.1639278725459354,
+              "y": -6.336841252184028
+            },
+            "receiverPos": {
+              "x": 41.421886541264136,
+              "y": 10.737332598380359
+            },
+            "receiverVelocity": {
+              "x": 4.324404567983014,
+              "y": -4.799561719051143
+            },
+            "rawVelocity": {
+              "x": 2.228960640001869,
+              "y": -9.487663826282722
+            },
+            "finalRequestVelocity": {
+              "x": 2.228960640001869,
+              "y": -9.487663826282722
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 4.972846117536211,
+            "depthAboveReceiver": 3.981349888833833,
+            "defenderPos": {
+              "x": 45.40323643009797,
+              "y": 13.716938540678399
+            },
+            "defenderVelocity": {
+              "x": 0.886696604484419,
+              "y": -6.23386235895123
+            },
+            "receiverPos": {
+              "x": 41.421886541264136,
+              "y": 10.737332598380359
+            },
+            "receiverVelocity": {
+              "x": 4.324404567983014,
+              "y": -4.799561719051143
+            },
+            "rawVelocity": {
+              "x": 2.823743951565021,
+              "y": -9.54813675668632
+            },
+            "finalRequestVelocity": {
+              "x": 2.823743951565021,
+              "y": -9.54813675668632
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.6284436501105861,
+            "depthAboveReceiver": -1.6071134254388184,
+            "defenderPos": {
+              "x": 44.835020441846225,
+              "y": 6.9240118746430745
+            },
+            "defenderVelocity": {
+              "x": 4.4950139231587976,
+              "y": -5.822112744752527
+            },
+            "receiverPos": {
+              "x": 46.442133867285044,
+              "y": 6.661304510148288
+            },
+            "receiverVelocity": {
+              "x": 6.337884961954776,
+              "y": -2.181339510632201
+            },
+            "rawVelocity": {
+              "x": 9.748351583134214,
+              "y": -2.0273349106620375
+            },
+            "finalRequestVelocity": {
+              "x": 9.748351583134214,
+              "y": -2.0273349106620375
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.0472495558446087,
+            "depthAboveReceiver": 0.9608943848620157,
+            "defenderPos": {
+              "x": 47.40302825214706,
+              "y": 7.077734112070845
+            },
+            "defenderVelocity": {
+              "x": 3.542698394277527,
+              "y": -5.670913818434602
+            },
+            "receiverPos": {
+              "x": 46.442133867285044,
+              "y": 6.661304510148288
+            },
+            "receiverVelocity": {
+              "x": 6.337884961954776,
+              "y": -2.181339510632201
+            },
+            "rawVelocity": {
+              "x": 7.135268578897321,
+              "y": -2.581838586266046
+            },
+            "finalRequestVelocity": {
+              "x": 7.135268578897321,
+              "y": -2.581838586266046
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 3.2984434335460677,
+            "depthAboveReceiver": -2.294868529532174,
+            "defenderPos": {
+              "x": 49.406669071973226,
+              "y": 3.8757182586515113
+            },
+            "defenderVelocity": {
+              "x": 7.390973510733326,
+              "y": -2.2279275264308493
+            },
+            "receiverPos": {
+              "x": 51.7015376015054,
+              "y": 6.244960229507593
+            },
+            "receiverVelocity": {
+              "x": 7.363213657450577,
+              "y": 0.08370749745098158
+            },
+            "rawVelocity": {
+              "x": 9.785893559418433,
+              "y": 1.8375888201981472
+            },
+            "finalRequestVelocity": {
+              "x": 9.785893559418433,
+              "y": 1.8375888201981472
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.0707317775844505,
+            "depthAboveReceiver": -0.4373011014516379,
+            "defenderPos": {
+              "x": 51.26423650005376,
+              "y": 4.220930130579408
+            },
+            "defenderVelocity": {
+              "x": 6.43868985722576,
+              "y": -1.7472509834362766
+            },
+            "receiverPos": {
+              "x": 51.7015376015054,
+              "y": 6.244960229507594
+            },
+            "receiverVelocity": {
+              "x": 7.363213657450573,
+              "y": 0.08370749745098131
+            },
+            "rawVelocity": {
+              "x": 9.209273180473225,
+              "y": 3.785463368704149
+            },
+            "finalRequestVelocity": {
+              "x": 9.209273180473225,
+              "y": 3.785463368704149
+            },
+            "job": "man:H"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 2.603440005989467,
+          "depthAboveReceiver": -1.5757863007083373,
+          "defenderPos": {
+            "x": 44.86634756657671,
+            "y": 8.733693807381405
+          },
+          "defenderVelocity": {
+            "x": -0.6886835291449317,
+            "y": -3.1723274786171576
+          },
+          "receiverPos": {
+            "x": 46.442133867285044,
+            "y": 6.661304510148288
+          },
+          "receiverVelocity": {
+            "x": 6.337884961954776,
+            "y": -2.181339510632201
+          },
+          "rawVelocity": {
+            "x": 0.8402505210438767,
+            "y": 0.40371388178018064
+          },
+          "finalRequestVelocity": {
+            "x": 0.8402505210438767,
+            "y": 0.40371388178018064
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 1.0472495558446087,
+          "depthAboveReceiver": 0.9608943848620157,
+          "defenderPos": {
+            "x": 47.40302825214706,
+            "y": 7.077734112070845
+          },
+          "defenderVelocity": {
+            "x": 3.542698394277527,
+            "y": -5.670913818434602
+          },
+          "receiverPos": {
+            "x": 46.442133867285044,
+            "y": 6.661304510148288
+          },
+          "receiverVelocity": {
+            "x": 6.337884961954776,
+            "y": -2.181339510632201
+          },
+          "rawVelocity": {
+            "x": 7.135268578897321,
+            "y": -2.581838586266046
+          },
+          "finalRequestVelocity": {
+            "x": 7.135268578897321,
+            "y": -2.581838586266046
+          },
+          "job": "man:H"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "QF",
+      "inputSha256": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "36b404319a8bd0cf918f32ecf8bf8d6b5357d09aadcb00657c1c8990bc9ba05f",
+        "steps": 83,
+        "elapsedMs": 196.13808300000005,
+        "events": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.35,
+            "type": "pbu",
+            "a": 19,
+            "b": 10,
+            "pos": {
+              "x": 43.85,
+              "y": 46.68
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 347,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "c2d8cc10ce0d30219fe842b715d88905c2ccd045e76405aae63366571e7a2366",
+        "steps": 88,
+        "elapsedMs": 324.6104280000002,
+        "events": [
+          {
+            "t": 2.45,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.11,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.5,
+            "type": "interception",
+            "a": 19,
+            "pos": {
+              "x": 44.13,
+              "y": 48.05
+            }
+          },
+          {
+            "t": 3.65,
+            "type": "carrier_contact",
+            "a": 19,
+            "b": 10,
+            "pos": {
+              "x": 43.67,
+              "y": 48.87
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.65,
+            "type": "tackle_wrap",
+            "a": 10,
+            "b": 19,
+            "pos": {
+              "x": 43.56,
+              "y": 49.7
+            },
+            "note": "initial"
+          },
+          {
+            "t": 4.35,
+            "type": "tackle",
+            "a": 10,
+            "b": 19,
+            "pos": {
+              "x": 42.31,
+              "y": 51.18
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.5,
+            "type": "interception",
+            "index": 19,
+            "slot": "NB",
+            "playerId": "HFD-S2"
+          }
+        ],
+        "cueRetention": {
+          "retained": 367,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 1,
+          "achievedTime": 1.05,
+          "gap": 4.9437281621609435,
+          "depthAboveReceiver": 4.629249944926244,
+          "defenderPos": {
+            "x": 45.457782293886524,
+            "y": 35.03420596416816
+          },
+          "defenderVelocity": {
+            "x": 1.0018453570294423,
+            "y": 1.638992245712159
+          },
+          "receiverPos": {
+            "x": 40.82853234896028,
+            "y": 36.76928322145199
+          },
+          "receiverVelocity": {
+            "x": 3.4389322614849394,
+            "y": 2.5473572307372563
+          },
+          "rawVelocity": {
+            "x": -2.765339365033111,
+            "y": 3.714302312642545
+          },
+          "finalRequestVelocity": {
+            "x": -2.765339365033111,
+            "y": 3.714302312642545
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 1,
+          "achievedTime": 1.05,
+          "gap": 4.946833148045083,
+          "depthAboveReceiver": 4.633462722151144,
+          "defenderPos": {
+            "x": 45.461995071111424,
+            "y": 35.036602813230864
+          },
+          "defenderVelocity": {
+            "x": 1.1703564460253626,
+            "y": 1.7348662082205448
+          },
+          "receiverPos": {
+            "x": 40.82853234896028,
+            "y": 36.76928322145199
+          },
+          "receiverVelocity": {
+            "x": 3.4389322614849394,
+            "y": 2.5473572307372563
+          },
+          "rawVelocity": {
+            "x": 2.9146574121864837,
+            "y": 3.714302312642545
+          },
+          "finalRequestVelocity": {
+            "x": 2.9146574121864837,
+            "y": 3.714302312642545
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 1,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 40.61265445390086,
+                "y": 36.61172955738565
+              },
+              "velocity": {
+                "x": 2.9146574121864837,
+                "y": 2.186551192431867
+              },
+              "depth": 0.6126544539008592,
+              "outward": 1.3450628907189852,
+              "release": "flat",
+              "first": "flat",
+              "since": 1,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 45.40024359198931,
+            "y": 34.95635852915232
+          },
+          "vel": {
+            "x": 1.2997027188592292,
+            "y": 1.474905154921388
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.6926947659160474,
+            "depthAboveReceiver": 2.086634658224,
+            "defenderPos": {
+              "x": 45.2519386779779,
+              "y": 38.017364103138235
+            },
+            "defenderVelocity": {
+              "x": -0.5208804680581078,
+              "y": 4.937032398357857
+            },
+            "receiverPos": {
+              "x": 43.1653040197539,
+              "y": 41.06399345987367
+            },
+            "receiverVelocity": {
+              "x": 0.5326374310573871,
+              "y": 6.274283208625063
+            },
+            "rawVelocity": {
+              "x": -1.1769001828307888,
+              "y": 9.887130594264306
+            },
+            "finalRequestVelocity": {
+              "x": -1.1769001828307888,
+              "y": 9.887130594264306
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 4.33789681631031,
+            "depthAboveReceiver": 3.2069619630834083,
+            "defenderPos": {
+              "x": 46.372265982837305,
+              "y": 38.14290740220756
+            },
+            "defenderVelocity": {
+              "x": 0.06321947402645137,
+              "y": 5.271142855043295
+            },
+            "receiverPos": {
+              "x": 43.1653040197539,
+              "y": 41.06399345987367
+            },
+            "receiverVelocity": {
+              "x": 0.5326374310573871,
+              "y": 6.274283208625063
+            },
+            "rawVelocity": {
+              "x": -0.9418147905845804,
+              "y": 9.912286836478277
+            },
+            "finalRequestVelocity": {
+              "x": -0.9418147905845804,
+              "y": 9.912286836478277
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.4270548320327614,
+            "depthAboveReceiver": 1.204663501627543,
+            "defenderPos": {
+              "x": 44.571693984664186,
+              "y": 44.32265209216908
+            },
+            "defenderVelocity": {
+              "x": -1.5458735437032243,
+              "y": 6.735056540875054
+            },
+            "receiverPos": {
+              "x": 43.36703048303664,
+              "y": 47.53099912290088
+            },
+            "receiverVelocity": {
+              "x": -0.43442191186316637,
+              "y": 5.0211294864060205
+            },
+            "rawVelocity": {
+              "x": -3.988270667984342,
+              "y": 6.181907871350776
+            },
+            "finalRequestVelocity": {
+              "x": -3.988270667984342,
+              "y": 6.181907871350776
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.748897432580723,
+            "depthAboveReceiver": 2.3837833198302363,
+            "defenderPos": {
+              "x": 45.75081380286688,
+              "y": 44.637591262935494
+            },
+            "defenderVelocity": {
+              "x": -1.7676418906540952,
+              "y": 6.762756259514834
+            },
+            "receiverPos": {
+              "x": 43.36703048303664,
+              "y": 47.53099912290088
+            },
+            "receiverVelocity": {
+              "x": -0.43442191186316637,
+              "y": 5.0211294864060205
+            },
+            "rawVelocity": {
+              "x": -5.462525354222427,
+              "y": 5.652464735905467
+            },
+            "finalRequestVelocity": {
+              "x": -5.462525354222427,
+              "y": 5.652464735905467
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.5869538684423832,
+            "depthAboveReceiver": -0.03991059276544462,
+            "defenderPos": {
+              "x": 43.03688909890023,
+              "y": 48.480359513938104
+            },
+            "defenderVelocity": {
+              "x": -3.1898476465611654,
+              "y": 4.549276745130612
+            },
+            "receiverPos": {
+              "x": 43.07679969166568,
+              "y": 50.066811443606746
+            },
+            "receiverVelocity": {
+              "x": -1.6873129195413663,
+              "y": 2.890965591488518
+            },
+            "rawVelocity": {
+              "x": -3.4935443707815437,
+              "y": 4.067977767180603
+            },
+            "finalRequestVelocity": {
+              "x": -3.4935443707815437,
+              "y": 4.067977767180603
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 0.6360080452619781,
+            "depthAboveReceiver": -0.051649595157883255,
+            "defenderPos": {
+              "x": 43.51332992752208,
+              "y": 49.12423151347606
+            },
+            "defenderVelocity": {
+              "x": -3.0042106041730245,
+              "y": 5.032937668889474
+            },
+            "receiverPos": {
+              "x": 43.56497952267996,
+              "y": 49.758138882858994
+            },
+            "receiverVelocity": {
+              "x": -0.3931569605738716,
+              "y": 1.0300714113195395
+            },
+            "rawVelocity": {
+              "x": -9.95692951809866,
+              "y": 1.2193721863675321e-15
+            },
+            "finalRequestVelocity": {
+              "x": -9.95692951809866,
+              "y": 1.2193721863675321e-15
+            },
+            "job": "man:H"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 4.488341248820838,
+          "depthAboveReceiver": -1.157598489044311,
+          "defenderPos": {
+            "x": 42.4825402170775,
+            "y": 43.16299176272519
+          },
+          "defenderVelocity": {
+            "x": -0.5381837384634287,
+            "y": 6.593767517564073
+          },
+          "receiverPos": {
+            "x": 43.64013870612181,
+            "y": 47.49948492010812
+          },
+          "receiverVelocity": {
+            "x": 1.1056264419512787,
+            "y": 4.953592366389989
+          },
+          "rawVelocity": {
+            "x": 2.5308793770894513,
+            "y": 7.435839106732397
+          },
+          "finalRequestVelocity": {
+            "x": 2.5308793770894513,
+            "y": 7.435839106732397
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 3.748897432580723,
+          "depthAboveReceiver": 2.3837833198302363,
+          "defenderPos": {
+            "x": 45.75081380286688,
+            "y": 44.637591262935494
+          },
+          "defenderVelocity": {
+            "x": -1.7676418906540952,
+            "y": 6.762756259514834
+          },
+          "receiverPos": {
+            "x": 43.36703048303664,
+            "y": 47.53099912290088
+          },
+          "receiverVelocity": {
+            "x": -0.43442191186316637,
+            "y": 5.0211294864060205
+          },
+          "rawVelocity": {
+            "x": -5.462525354222427,
+            "y": 5.652464735905467
+          },
+          "finalRequestVelocity": {
+            "x": -5.462525354222427,
+            "y": 5.652464735905467
+          },
+          "job": "man:H"
+        },
+        "receiverBodyIdentical": false
+      }
+    },
+    {
+      "id": "PW",
+      "inputSha256": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "6f16a70113c7c17c421bb9edbcdcfbac46669d422ac7d07178090a05981df656",
+        "steps": 120,
+        "elapsedMs": 298.47313499999996,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.05,
+            "type": "pbu",
+            "a": 20,
+            "b": 8,
+            "pos": {
+              "x": 54.93,
+              "y": 40.85
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 54.83,
+              "y": 41.71
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.3,
+            "type": "interception",
+            "index": 20,
+            "slot": "FS",
+            "playerId": "HFD-CB3"
+          }
+        ],
+        "cueRetention": {
+          "retained": 374,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "6f16a70113c7c17c421bb9edbcdcfbac46669d422ac7d07178090a05981df656",
+        "steps": 120,
+        "elapsedMs": 315.1758320000001,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.05,
+            "type": "pbu",
+            "a": 20,
+            "b": 8,
+            "pos": {
+              "x": 54.93,
+              "y": 40.85
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "interception",
+            "a": 20,
+            "pos": {
+              "x": 54.83,
+              "y": 41.71
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.3,
+            "type": "interception",
+            "index": 20,
+            "slot": "FS",
+            "playerId": "HFD-CB3"
+          }
+        ],
+        "cueRetention": {
+          "retained": 374,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 5.199623813308191,
+            "depthAboveReceiver": 3.9533510739910156,
+            "defenderPos": {
+              "x": 45.366544783582434,
+              "y": 39.21413375908837
+            },
+            "defenderVelocity": {
+              "x": 1.0409522654217318,
+              "y": 5.668933572906596
+            },
+            "receiverPos": {
+              "x": 41.41319370959142,
+              "y": 42.59157407472619
+            },
+            "receiverVelocity": {
+              "x": 3.976691301074045,
+              "y": 4.622495309978994
+            },
+            "rawVelocity": {
+              "x": 2.2413628189549435,
+              "y": 9.701378156849197
+            },
+            "finalRequestVelocity": {
+              "x": 2.2413628189549435,
+              "y": 9.701378156849197
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 5.199623813308191,
+            "depthAboveReceiver": 3.9533510739910156,
+            "defenderPos": {
+              "x": 45.366544783582434,
+              "y": 39.21413375908837
+            },
+            "defenderVelocity": {
+              "x": 1.0409522654217318,
+              "y": 5.668933572906596
+            },
+            "receiverPos": {
+              "x": 41.41319370959142,
+              "y": 42.59157407472619
+            },
+            "receiverVelocity": {
+              "x": 3.976691301074045,
+              "y": 4.622495309978994
+            },
+            "rawVelocity": {
+              "x": 2.2413628189549435,
+              "y": 9.701378156849197
+            },
+            "finalRequestVelocity": {
+              "x": 2.2413628189549435,
+              "y": 9.701378156849197
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.2994705877137513,
+            "depthAboveReceiver": 2.9287343131957115,
+            "defenderPos": {
+              "x": 48.36830692195215,
+              "y": 44.58646058561466
+            },
+            "defenderVelocity": {
+              "x": 5.38398853769836,
+              "y": 3.981849447183945
+            },
+            "receiverPos": {
+              "x": 45.439572608756436,
+              "y": 46.10600705805246
+            },
+            "receiverVelocity": {
+              "x": 4.776922709393943,
+              "y": 1.728589297957014
+            },
+            "rawVelocity": {
+              "x": 9.955186140739034,
+              "y": 0.18631782421940354
+            },
+            "finalRequestVelocity": {
+              "x": 9.955186140739034,
+              "y": 0.18631782421940354
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.2994705877137513,
+            "depthAboveReceiver": 2.9287343131957115,
+            "defenderPos": {
+              "x": 48.36830692195215,
+              "y": 44.58646058561466
+            },
+            "defenderVelocity": {
+              "x": 5.38398853769836,
+              "y": 3.981849447183945
+            },
+            "receiverPos": {
+              "x": 45.439572608756436,
+              "y": 46.10600705805246
+            },
+            "receiverVelocity": {
+              "x": 4.776922709393943,
+              "y": 1.728589297957014
+            },
+            "rawVelocity": {
+              "x": 9.955186140739034,
+              "y": 0.18631782421940354
+            },
+            "finalRequestVelocity": {
+              "x": 9.955186140739034,
+              "y": 0.18631782421940354
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 4.025567046958005,
+            "depthAboveReceiver": 4.025209134854002,
+            "defenderPos": {
+              "x": 52.57265968942502,
+              "y": 46.286966460238624
+            },
+            "defenderVelocity": {
+              "x": 4.013716045216659,
+              "y": 0.6480919898325949
+            },
+            "receiverPos": {
+              "x": 48.54745055457102,
+              "y": 46.340645788122764
+            },
+            "receiverVelocity": {
+              "x": 4.394842556692653,
+              "y": -1.2561389358706783
+            },
+            "rawVelocity": {
+              "x": -5.521978357082223,
+              "y": -4.252831208010008
+            },
+            "finalRequestVelocity": {
+              "x": -5.521978357082223,
+              "y": -4.252831208010008
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 4.025567046958005,
+            "depthAboveReceiver": 4.025209134854002,
+            "defenderPos": {
+              "x": 52.57265968942502,
+              "y": 46.286966460238624
+            },
+            "defenderVelocity": {
+              "x": 4.013716045216659,
+              "y": 0.6480919898325949
+            },
+            "receiverPos": {
+              "x": 48.54745055457102,
+              "y": 46.340645788122764
+            },
+            "receiverVelocity": {
+              "x": 4.394842556692653,
+              "y": -1.2561389358706783
+            },
+            "rawVelocity": {
+              "x": -5.521978357082223,
+              "y": -4.252831208010008
+            },
+            "finalRequestVelocity": {
+              "x": -5.521978357082223,
+              "y": -4.252831208010008
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 3.2994705877137513,
+          "depthAboveReceiver": 2.9287343131957115,
+          "defenderPos": {
+            "x": 48.36830692195215,
+            "y": 44.58646058561466
+          },
+          "defenderVelocity": {
+            "x": 5.38398853769836,
+            "y": 3.981849447183945
+          },
+          "receiverPos": {
+            "x": 45.439572608756436,
+            "y": 46.10600705805246
+          },
+          "receiverVelocity": {
+            "x": 4.776922709393943,
+            "y": 1.728589297957014
+          },
+          "rawVelocity": {
+            "x": 9.955186140739034,
+            "y": 0.18631782421940354
+          },
+          "finalRequestVelocity": {
+            "x": 9.955186140739034,
+            "y": 0.18631782421940354
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 3.2994705877137513,
+          "depthAboveReceiver": 2.9287343131957115,
+          "defenderPos": {
+            "x": 48.36830692195215,
+            "y": 44.58646058561466
+          },
+          "defenderVelocity": {
+            "x": 5.38398853769836,
+            "y": 3.981849447183945
+          },
+          "receiverPos": {
+            "x": 45.439572608756436,
+            "y": 46.10600705805246
+          },
+          "receiverVelocity": {
+            "x": 4.776922709393943,
+            "y": 1.728589297957014
+          },
+          "rawVelocity": {
+            "x": 9.955186140739034,
+            "y": 0.18631782421940354
+          },
+          "finalRequestVelocity": {
+            "x": 9.955186140739034,
+            "y": 0.18631782421940354
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "QV",
+      "inputSha256": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": null,
+        "physicalSignature": "c26e2a2aa1a417b41d8980aaabeb5b820f40838a54caafb8c6046a940d929cfe",
+        "steps": 120,
+        "elapsedMs": 263.6802459999999,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.25,
+            "type": "catch",
+            "index": 8,
+            "slot": "X",
+            "playerId": "HFO-WR6"
+          }
+        ],
+        "cueRetention": {
+          "retained": 350,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": null,
+        "physicalSignature": "c26e2a2aa1a417b41d8980aaabeb5b820f40838a54caafb8c6046a940d929cfe",
+        "steps": 120,
+        "elapsedMs": 298.30311499999993,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.25,
+            "type": "catch",
+            "index": 8,
+            "slot": "X",
+            "playerId": "HFO-WR6"
+          }
+        ],
+        "cueRetention": {
+          "retained": 350,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 0.9090873025384306,
+            "depthAboveReceiver": 0.5731944251227716,
+            "defenderPos": {
+              "x": 48.617671258299545,
+              "y": 34.09552423561783
+            },
+            "defenderVelocity": {
+              "x": 4.053817512246818,
+              "y": -0.1430869216473638
+            },
+            "receiverPos": {
+              "x": 48.04447683317677,
+              "y": 34.80113593807519
+            },
+            "receiverVelocity": {
+              "x": 7.16354213685097,
+              "y": -0.1254053277207126
+            },
+            "rawVelocity": {
+              "x": 7.98052902146625,
+              "y": -0.2812262103937544
+            },
+            "finalRequestVelocity": {
+              "x": 7.98052902146625,
+              "y": -0.2812262103937544
+            },
+            "job": "wall:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 0.9090873025384306,
+            "depthAboveReceiver": 0.5731944251227716,
+            "defenderPos": {
+              "x": 48.617671258299545,
+              "y": 34.09552423561783
+            },
+            "defenderVelocity": {
+              "x": 4.053817512246818,
+              "y": -0.1430869216473638
+            },
+            "receiverPos": {
+              "x": 48.04447683317677,
+              "y": 34.80113593807519
+            },
+            "receiverVelocity": {
+              "x": 7.16354213685097,
+              "y": -0.1254053277207126
+            },
+            "rawVelocity": {
+              "x": 7.98052902146625,
+              "y": -0.2812262103937544
+            },
+            "finalRequestVelocity": {
+              "x": 7.98052902146625,
+              "y": -0.2812262103937544
+            },
+            "job": "wall:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 0.9372410635651082,
+            "depthAboveReceiver": -0.62627067237419,
+            "defenderPos": {
+              "x": 53.161432619330135,
+              "y": 35.48476508998389
+            },
+            "defenderVelocity": {
+              "x": 5.124886027991297,
+              "y": 3.130019836159819
+            },
+            "receiverPos": {
+              "x": 53.787703291704325,
+              "y": 34.78748045932247
+            },
+            "receiverVelocity": {
+              "x": 5.466818489615677,
+              "y": -0.10881823378957385
+            },
+            "rawVelocity": {
+              "x": 6.099783573227629,
+              "y": 6.980293814761178
+            },
+            "finalRequestVelocity": {
+              "x": 6.099783573227629,
+              "y": 6.980293814761178
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 0.9372410635651082,
+            "depthAboveReceiver": -0.62627067237419,
+            "defenderPos": {
+              "x": 53.161432619330135,
+              "y": 35.48476508998389
+            },
+            "defenderVelocity": {
+              "x": 5.124886027991297,
+              "y": 3.130019836159819
+            },
+            "receiverPos": {
+              "x": 53.787703291704325,
+              "y": 34.78748045932247
+            },
+            "receiverVelocity": {
+              "x": 5.466818489615677,
+              "y": -0.10881823378957385
+            },
+            "rawVelocity": {
+              "x": 6.099783573227629,
+              "y": 6.980293814761178
+            },
+            "finalRequestVelocity": {
+              "x": 6.099783573227629,
+              "y": 6.980293814761178
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 3.2334322565947775,
+            "depthAboveReceiver": -0.36693914413896067,
+            "defenderPos": {
+              "x": 57.16250766388223,
+              "y": 38.41445788808065
+            },
+            "defenderVelocity": {
+              "x": 6.3586678491791755,
+              "y": 3.3248715653295395
+            },
+            "receiverPos": {
+              "x": 57.52944680802119,
+              "y": 35.20191375258832
+            },
+            "receiverVelocity": {
+              "x": 3.9953389497158964,
+              "y": 2.164177164093544
+            },
+            "rawVelocity": {
+              "x": 9.937193401086445,
+              "y": -0.62660413164012
+            },
+            "finalRequestVelocity": {
+              "x": 9.937193401086445,
+              "y": -0.62660413164012
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 3.2334322565947775,
+            "depthAboveReceiver": -0.36693914413896067,
+            "defenderPos": {
+              "x": 57.16250766388223,
+              "y": 38.41445788808065
+            },
+            "defenderVelocity": {
+              "x": 6.3586678491791755,
+              "y": 3.3248715653295395
+            },
+            "receiverPos": {
+              "x": 57.52944680802119,
+              "y": 35.20191375258832
+            },
+            "receiverVelocity": {
+              "x": 3.9953389497158964,
+              "y": 2.164177164093544
+            },
+            "rawVelocity": {
+              "x": 9.937193401086445,
+              "y": -0.62660413164012
+            },
+            "finalRequestVelocity": {
+              "x": 9.937193401086445,
+              "y": -0.62660413164012
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 0.9372410635651082,
+          "depthAboveReceiver": -0.62627067237419,
+          "defenderPos": {
+            "x": 53.161432619330135,
+            "y": 35.48476508998389
+          },
+          "defenderVelocity": {
+            "x": 5.124886027991297,
+            "y": 3.130019836159819
+          },
+          "receiverPos": {
+            "x": 53.787703291704325,
+            "y": 34.78748045932247
+          },
+          "receiverVelocity": {
+            "x": 5.466818489615677,
+            "y": -0.10881823378957385
+          },
+          "rawVelocity": {
+            "x": 6.099783573227629,
+            "y": 6.980293814761178
+          },
+          "finalRequestVelocity": {
+            "x": 6.099783573227629,
+            "y": 6.980293814761178
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 0.9372410635651082,
+          "depthAboveReceiver": -0.62627067237419,
+          "defenderPos": {
+            "x": 53.161432619330135,
+            "y": 35.48476508998389
+          },
+          "defenderVelocity": {
+            "x": 5.124886027991297,
+            "y": 3.130019836159819
+          },
+          "receiverPos": {
+            "x": 53.787703291704325,
+            "y": 34.78748045932247
+          },
+          "receiverVelocity": {
+            "x": 5.466818489615677,
+            "y": -0.10881823378957385
+          },
+          "rawVelocity": {
+            "x": 6.099783573227629,
+            "y": 6.980293814761178
+          },
+          "finalRequestVelocity": {
+            "x": 6.099783573227629,
+            "y": 6.980293814761178
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "QU",
+      "inputSha256": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 31.43,
+        "yac": 12.922406286772961,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": {
+          "t": 4.05,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 18,
+          "pos": {
+            "x": 63.27,
+            "y": 39.5
+          },
+          "note": "grasp"
+        },
+        "physicalSignature": "a2763727b81c7848f6886cbc4719eb842aae16d3f1c7de6eebd7c1f95f21457a",
+        "steps": 108,
+        "elapsedMs": 300.83839699999976,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          },
+          {
+            "t": 4.05,
+            "type": "carrier_contact",
+            "a": 8,
+            "b": 18,
+            "pos": {
+              "x": 63.27,
+              "y": 39.5
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.05,
+            "type": "tackle_wrap",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 62.98,
+              "y": 40.34
+            },
+            "note": "initial"
+          },
+          {
+            "t": 5.35,
+            "type": "tackle",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 71.68,
+              "y": 35.43
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.25,
+            "type": "catch",
+            "index": 8,
+            "slot": "X",
+            "playerId": "HFO-WR6"
+          }
+        ],
+        "cueRetention": {
+          "retained": 305,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 31.43,
+        "yac": 12.922406286772961,
+        "actualCatcher": "HFO-WR6",
+        "firstContact": {
+          "t": 4.05,
+          "type": "carrier_contact",
+          "a": 8,
+          "b": 18,
+          "pos": {
+            "x": 63.27,
+            "y": 39.5
+          },
+          "note": "grasp"
+        },
+        "physicalSignature": "a2763727b81c7848f6886cbc4719eb842aae16d3f1c7de6eebd7c1f95f21457a",
+        "steps": 108,
+        "elapsedMs": 261.764412,
+        "events": [
+          {
+            "t": 1.95,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.12,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.25,
+            "type": "catch",
+            "a": 8,
+            "pos": {
+              "x": 58.51,
+              "y": 42.09
+            }
+          },
+          {
+            "t": 4.05,
+            "type": "carrier_contact",
+            "a": 8,
+            "b": 18,
+            "pos": {
+              "x": 63.27,
+              "y": 39.5
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.05,
+            "type": "tackle_wrap",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 62.98,
+              "y": 40.34
+            },
+            "note": "initial"
+          },
+          {
+            "t": 5.35,
+            "type": "tackle",
+            "a": 18,
+            "b": 8,
+            "pos": {
+              "x": 71.68,
+              "y": 35.43
+            }
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 3.25,
+            "type": "catch",
+            "index": 8,
+            "slot": "X",
+            "playerId": "HFO-WR6"
+          }
+        ],
+        "cueRetention": {
+          "retained": 305,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.302156825512987,
+            "depthAboveReceiver": 3.1119576044630435,
+            "defenderPos": {
+              "x": 47.17112088672895,
+              "y": 32.05238009160981
+            },
+            "defenderVelocity": {
+              "x": 1.8527947714429693,
+              "y": -1.566308890696525
+            },
+            "receiverPos": {
+              "x": 44.05916328226591,
+              "y": 30.94786229261034
+            },
+            "receiverVelocity": {
+              "x": 1.9454994973046065,
+              "y": -5.2877459188028
+            },
+            "rawVelocity": {
+              "x": 5.419675557970625,
+              "y": 6.988666168842882
+            },
+            "finalRequestVelocity": {
+              "x": 5.419675557970625,
+              "y": 6.988666168842882
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.302156825512987,
+            "depthAboveReceiver": 3.1119576044630435,
+            "defenderPos": {
+              "x": 47.17112088672895,
+              "y": 32.05238009160981
+            },
+            "defenderVelocity": {
+              "x": 1.8527947714429693,
+              "y": -1.566308890696525
+            },
+            "receiverPos": {
+              "x": 44.05916328226591,
+              "y": 30.94786229261034
+            },
+            "receiverVelocity": {
+              "x": 1.9454994973046065,
+              "y": -5.2877459188028
+            },
+            "rawVelocity": {
+              "x": 5.419675557970625,
+              "y": 6.988666168842882
+            },
+            "finalRequestVelocity": {
+              "x": 5.419675557970625,
+              "y": 6.988666168842882
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 9.681268614483324,
+            "depthAboveReceiver": 6.015476549153313,
+            "defenderPos": {
+              "x": 50.5263711021467,
+              "y": 33.09365511140271
+            },
+            "defenderVelocity": {
+              "x": 4.673481712191217,
+              "y": 3.118286401124468
+            },
+            "receiverPos": {
+              "x": 44.510894552993385,
+              "y": 25.50807643391433
+            },
+            "receiverVelocity": {
+              "x": 0.18773217250350713,
+              "y": -5.466246208216729
+            },
+            "rawVelocity": {
+              "x": 6.809524782481618,
+              "y": 7.264352528970018
+            },
+            "finalRequestVelocity": {
+              "x": 6.809524782481618,
+              "y": 7.264352528970018
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 9.681268614483324,
+            "depthAboveReceiver": 6.015476549153313,
+            "defenderPos": {
+              "x": 50.5263711021467,
+              "y": 33.09365511140271
+            },
+            "defenderVelocity": {
+              "x": 4.673481712191217,
+              "y": 3.118286401124468
+            },
+            "receiverPos": {
+              "x": 44.510894552993385,
+              "y": 25.50807643391433
+            },
+            "receiverVelocity": {
+              "x": 0.18773217250350713,
+              "y": -5.466246208216729
+            },
+            "rawVelocity": {
+              "x": 6.809524782481618,
+              "y": 7.264352528970018
+            },
+            "finalRequestVelocity": {
+              "x": 6.809524782481618,
+              "y": 7.264352528970018
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 16.846377854326875,
+            "depthAboveReceiver": 9.808388442566553,
+            "defenderPos": {
+              "x": 54.65729558465157,
+              "y": 35.71820152364054
+            },
+            "defenderVelocity": {
+              "x": 6.596318866548077,
+              "y": 3.15478436324453
+            },
+            "receiverPos": {
+              "x": 44.84890714208502,
+              "y": 22.021633962003722
+            },
+            "receiverVelocity": {
+              "x": 1.0959531144295531,
+              "y": -2.7549838109503155
+            },
+            "rawVelocity": {
+              "x": 9.902060334715754,
+              "y": 1.0438613682062012
+            },
+            "finalRequestVelocity": {
+              "x": 9.902060334715754,
+              "y": 1.0438613682062012
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 16.846377854326875,
+            "depthAboveReceiver": 9.808388442566553,
+            "defenderPos": {
+              "x": 54.65729558465157,
+              "y": 35.71820152364054
+            },
+            "defenderVelocity": {
+              "x": 6.596318866548077,
+              "y": 3.15478436324453
+            },
+            "receiverPos": {
+              "x": 44.84890714208502,
+              "y": 22.021633962003722
+            },
+            "receiverVelocity": {
+              "x": 1.0959531144295531,
+              "y": -2.7549838109503155
+            },
+            "rawVelocity": {
+              "x": 9.902060334715754,
+              "y": 1.0438613682062012
+            },
+            "finalRequestVelocity": {
+              "x": 9.902060334715754,
+              "y": 1.0438613682062012
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 9.681268614483324,
+          "depthAboveReceiver": 6.015476549153313,
+          "defenderPos": {
+            "x": 50.5263711021467,
+            "y": 33.09365511140271
+          },
+          "defenderVelocity": {
+            "x": 4.673481712191217,
+            "y": 3.118286401124468
+          },
+          "receiverPos": {
+            "x": 44.510894552993385,
+            "y": 25.50807643391433
+          },
+          "receiverVelocity": {
+            "x": 0.18773217250350713,
+            "y": -5.466246208216729
+          },
+          "rawVelocity": {
+            "x": 6.809524782481618,
+            "y": 7.264352528970018
+          },
+          "finalRequestVelocity": {
+            "x": 6.809524782481618,
+            "y": 7.264352528970018
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 9.681268614483324,
+          "depthAboveReceiver": 6.015476549153313,
+          "defenderPos": {
+            "x": 50.5263711021467,
+            "y": 33.09365511140271
+          },
+          "defenderVelocity": {
+            "x": 4.673481712191217,
+            "y": 3.118286401124468
+          },
+          "receiverPos": {
+            "x": 44.510894552993385,
+            "y": 25.50807643391433
+          },
+          "receiverVelocity": {
+            "x": 0.18773217250350713,
+            "y": -5.466246208216729
+          },
+          "rawVelocity": {
+            "x": 6.809524782481618,
+            "y": 7.264352528970018
+          },
+          "finalRequestVelocity": {
+            "x": 6.809524782481618,
+            "y": 7.264352528970018
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "FRESH",
+      "inputSha256": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0",
+      "defenderId": "HFD-S1",
+      "keyedReceiverId": "HFO-WR2",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "cb22d7cda52d679ef0968db701ab6a95f1309beae33068e8c68902be01cd2bea",
+        "steps": 97,
+        "elapsedMs": 242.9077440000001,
+        "events": [
+          {
+            "t": 2.8,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "pbu",
+            "a": 16,
+            "b": 7,
+            "pos": {
+              "x": 53.68,
+              "y": 25.38
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 400,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "bfba8c3595311acb3b798fa25766bf59dc68796f561ee6d95328c6b15ce39a10",
+        "steps": 97,
+        "elapsedMs": 186.25843699999996,
+        "events": [
+          {
+            "t": 2.8,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.1,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "pbu",
+            "a": 16,
+            "b": 7,
+            "pos": {
+              "x": 53.68,
+              "y": 25.38
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 400,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 0.85,
+          "achievedTime": 0.9,
+          "gap": 6.054810260784729,
+          "depthAboveReceiver": 5.718215560038779,
+          "defenderPos": {
+            "x": 44.922288921098215,
+            "y": 34.95964294144264
+          },
+          "defenderVelocity": {
+            "x": 0.01838850347627985,
+            "y": 1.5056484415077251
+          },
+          "receiverPos": {
+            "x": 39.204073361059436,
+            "y": 36.950305671046635
+          },
+          "receiverVelocity": {
+            "x": 0.8631875819192558,
+            "y": 3.5966149090075503
+          },
+          "rawVelocity": {
+            "x": -5.199576136351833,
+            "y": 5.6834307447911785
+          },
+          "finalRequestVelocity": {
+            "x": -5.199576136351833,
+            "y": 5.6834307447911785
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 0.85,
+          "achievedTime": 0.9,
+          "gap": 6.057694985587158,
+          "depthAboveReceiver": 5.720790570766503,
+          "defenderPos": {
+            "x": 44.92486393182594,
+            "y": 34.958265565065616
+          },
+          "defenderVelocity": {
+            "x": 0.12138893258516975,
+            "y": 1.4505533864266922
+          },
+          "receiverPos": {
+            "x": 39.204073361059436,
+            "y": 36.950305671046635
+          },
+          "receiverVelocity": {
+            "x": 0.8631875819192558,
+            "y": 3.5966149090075503
+          },
+          "rawVelocity": {
+            "x": 0.7466355049021002,
+            "y": 4.249545461578135
+          },
+          "finalRequestVelocity": {
+            "x": 0.7466355049021002,
+            "y": 4.249545461578135
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 0.85,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 39.14514515075942,
+                "y": 36.65972697085323
+              },
+              "velocity": {
+                "x": 0.7466355049021002,
+                "y": 2.5356922430745854
+              },
+              "depth": -0.8548548492405814,
+              "outward": 1.3930603041865623,
+              "release": "flat",
+              "first": "flat",
+              "since": 0.85,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S1",
+          "slot": "NB",
+          "pos": {
+            "x": 44.9146267635594,
+            "y": 34.889759112476774
+          },
+          "vel": {
+            "x": 0.28809779807646213,
+            "y": 1.2897047171269438
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.786808134347061,
+            "depthAboveReceiver": 2.3619243309894387,
+            "defenderPos": {
+              "x": 43.38602690339109,
+              "y": 39.157985894982446
+            },
+            "defenderVelocity": {
+              "x": -1.344271321032191,
+              "y": 5.954528053083126
+            },
+            "receiverPos": {
+              "x": 41.02410257240165,
+              "y": 42.11792327625205
+            },
+            "receiverVelocity": {
+              "x": 3.758562829528232,
+              "y": 4.787828028806986
+            },
+            "rawVelocity": {
+              "x": 0.5568522610225308,
+              "y": 9.17911212445609
+            },
+            "finalRequestVelocity": {
+              "x": 0.5568522610225308,
+              "y": 9.17911212445609
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 5.269966317422367,
+            "depthAboveReceiver": 4.288170917447175,
+            "defenderPos": {
+              "x": 45.31227348984883,
+              "y": 39.05456969406038
+            },
+            "defenderVelocity": {
+              "x": 0.7086504653713468,
+              "y": 5.882114113062433
+            },
+            "receiverPos": {
+              "x": 41.02410257240165,
+              "y": 42.11792327625205
+            },
+            "receiverVelocity": {
+              "x": 3.758562829528232,
+              "y": 4.787828028806986
+            },
+            "rawVelocity": {
+              "x": 2.3870531337683945,
+              "y": 9.413062997787069
+            },
+            "finalRequestVelocity": {
+              "x": 2.3870531337683945,
+              "y": 9.413062997787069
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.3985705311507146,
+            "depthAboveReceiver": -1.2623635457780082,
+            "defenderPos": {
+              "x": 44.45214649925151,
+              "y": 45.764413390766656
+            },
+            "defenderVelocity": {
+              "x": 3.9046344254152965,
+              "y": 6.1327147751614906
+            },
+            "receiverPos": {
+              "x": 45.71451004502952,
+              "y": 46.36644147058849
+            },
+            "receiverVelocity": {
+              "x": 5.361583042240347,
+              "y": 2.4463072559345713
+            },
+            "rawVelocity": {
+              "x": 9.261407092223463,
+              "y": 2.9206362895531
+            },
+            "finalRequestVelocity": {
+              "x": 9.261407092223463,
+              "y": 2.9206362895531
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.6345208171773398,
+            "depthAboveReceiver": 1.4471590830750287,
+            "defenderPos": {
+              "x": 47.16166912810455,
+              "y": 45.60658037140028
+            },
+            "defenderVelocity": {
+              "x": 3.531360722135302,
+              "y": 6.023631808251781
+            },
+            "receiverPos": {
+              "x": 45.71451004502952,
+              "y": 46.36644147058849
+            },
+            "receiverVelocity": {
+              "x": 5.361583042240347,
+              "y": 2.4463072559345713
+            },
+            "rawVelocity": {
+              "x": 5.894056668751246,
+              "y": 3.898758899667084
+            },
+            "finalRequestVelocity": {
+              "x": 5.894056668751246,
+              "y": 3.898758899667084
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.785600038076332,
+            "depthAboveReceiver": -1.9996508847678882,
+            "defenderPos": {
+              "x": 47.79395498640895,
+              "y": 48.79355522231471
+            },
+            "defenderVelocity": {
+              "x": 4.408767522885414,
+              "y": 1.617943409196915
+            },
+            "receiverPos": {
+              "x": 49.79360587117684,
+              "y": 46.85423474565855
+            },
+            "receiverVelocity": {
+              "x": 5.466394137358592,
+              "y": -0.01584702998906561
+            },
+            "rawVelocity": {
+              "x": 4.147205155564273,
+              "y": -8.78091493304671
+            },
+            "finalRequestVelocity": {
+              "x": 4.147205155564273,
+              "y": -8.78091493304671
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.5475348405080414,
+            "depthAboveReceiver": 0.24847373820993823,
+            "defenderPos": {
+              "x": 50.04207960938678,
+              "y": 48.38169174472798
+            },
+            "defenderVelocity": {
+              "x": 3.7383759686603337,
+              "y": 1.2288779423162253
+            },
+            "receiverPos": {
+              "x": 49.793605871176844,
+              "y": 46.85423474565854
+            },
+            "receiverVelocity": {
+              "x": 5.46639413735859,
+              "y": -0.01584702998906306
+            },
+            "rawVelocity": {
+              "x": 3.4651801538827374,
+              "y": -9.071731045664812
+            },
+            "finalRequestVelocity": {
+              "x": 3.4651801538827374,
+              "y": -9.071731045664812
+            },
+            "job": "man:H"
+          }
+        }
+      ],
+      "acceptedComparisonAt295": {
+        "accepted": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 2.062155936206898,
+          "depthAboveReceiver": -0.6153219256193339,
+          "defenderPos": {
+            "x": 45.09918811941019,
+            "y": 44.39822755104482
+          },
+          "defenderVelocity": {
+            "x": -1.4351680810180913,
+            "y": 3.86194707579448
+          },
+          "receiverPos": {
+            "x": 45.71451004502952,
+            "y": 46.36644147058849
+          },
+          "receiverVelocity": {
+            "x": 5.361583042240347,
+            "y": 2.4463072559345713
+          },
+          "rawVelocity": {
+            "x": -0.7797868898852296,
+            "y": 0.467194706284078
+          },
+          "finalRequestVelocity": {
+            "x": -0.7797868898852296,
+            "y": 0.467194706284078
+          },
+          "job": "zone:curl_flat_w"
+        },
+        "candidate": {
+          "controllerTime": 2.95,
+          "achievedTime": 3,
+          "gap": 1.6345208171773398,
+          "depthAboveReceiver": 1.4471590830750287,
+          "defenderPos": {
+            "x": 47.16166912810455,
+            "y": 45.60658037140028
+          },
+          "defenderVelocity": {
+            "x": 3.531360722135302,
+            "y": 6.023631808251781
+          },
+          "receiverPos": {
+            "x": 45.71451004502952,
+            "y": 46.36644147058849
+          },
+          "receiverVelocity": {
+            "x": 5.361583042240347,
+            "y": 2.4463072559345713
+          },
+          "rawVelocity": {
+            "x": 5.894056668751246,
+            "y": 3.898758899667084
+          },
+          "finalRequestVelocity": {
+            "x": 5.894056668751246,
+            "y": 3.898758899667084
+          },
+          "job": "man:H"
+        },
+        "receiverBodyIdentical": true
+      }
+    },
+    {
+      "id": "PA",
+      "inputSha256": "719ffd85ada958151624b5c3fc5fbb6a33dc519e204a4e1ff8f37629b9f539ac",
+      "defenderId": "UFD-S2",
+      "keyedReceiverId": "UFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "1b84bbf5bcd7714a853a5217d30556ba36a81ddddceec9edf73a25eaf588fc27",
+        "steps": 120,
+        "elapsedMs": 585.243028,
+        "events": [
+          {
+            "t": 3.7,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 31.8,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 409,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "censored",
+        "terminal": false,
+        "outcome": null,
+        "gain": null,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "1b84bbf5bcd7714a853a5217d30556ba36a81ddddceec9edf73a25eaf588fc27",
+        "steps": 120,
+        "elapsedMs": 214.723481,
+        "events": [
+          {
+            "t": 3.7,
+            "type": "scramble",
+            "a": 0,
+            "pos": {
+              "x": 31.8,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 409,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 2.004078157032322,
+            "depthAboveReceiver": 1.9019005634992823,
+            "defenderPos": {
+              "x": 48.38336301878394,
+              "y": 34.1162463861
+            },
+            "defenderVelocity": {
+              "x": 3.022032797433253,
+              "y": -0.39185666265100744
+            },
+            "receiverPos": {
+              "x": 46.48146245528466,
+              "y": 34.74799277988091
+            },
+            "receiverVelocity": {
+              "x": 3.9416111439148915,
+              "y": -0.9501086928120879
+            },
+            "rawVelocity": {
+              "x": 2.7453035954893767,
+              "y": -0.3882067843410495
+            },
+            "finalRequestVelocity": {
+              "x": 2.7453035954893767,
+              "y": -0.3882067843410495
+            },
+            "job": "wall:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 2.004078157032322,
+            "depthAboveReceiver": 1.9019005634992823,
+            "defenderPos": {
+              "x": 48.38336301878394,
+              "y": 34.1162463861
+            },
+            "defenderVelocity": {
+              "x": 3.022032797433253,
+              "y": -0.39185666265100744
+            },
+            "receiverPos": {
+              "x": 46.48146245528466,
+              "y": 34.74799277988091
+            },
+            "receiverVelocity": {
+              "x": 3.9416111439148915,
+              "y": -0.9501086928120879
+            },
+            "rawVelocity": {
+              "x": 2.7453035954893767,
+              "y": -0.3882067843410495
+            },
+            "finalRequestVelocity": {
+              "x": 2.7453035954893767,
+              "y": -0.3882067843410495
+            },
+            "job": "wall:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.404358695066176,
+            "depthAboveReceiver": 1.129171353357485,
+            "defenderPos": {
+              "x": 48.41225500216838,
+              "y": 33.10502615088199
+            },
+            "defenderVelocity": {
+              "x": -2.8986428138113656,
+              "y": -0.1871124317907194
+            },
+            "receiverPos": {
+              "x": 47.283083648810894,
+              "y": 33.94000842564284
+            },
+            "receiverVelocity": {
+              "x": -1.56787086346439,
+              "y": 0.32633836268662086
+            },
+            "rawVelocity": {
+              "x": -6.745067812299947,
+              "y": -0.7729681631854878
+            },
+            "finalRequestVelocity": {
+              "x": -6.745067812299947,
+              "y": -0.7729681631854878
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.404358695066176,
+            "depthAboveReceiver": 1.129171353357485,
+            "defenderPos": {
+              "x": 48.41225500216838,
+              "y": 33.10502615088199
+            },
+            "defenderVelocity": {
+              "x": -2.8986428138113656,
+              "y": -0.1871124317907194
+            },
+            "receiverPos": {
+              "x": 47.283083648810894,
+              "y": 33.94000842564284
+            },
+            "receiverVelocity": {
+              "x": -1.56787086346439,
+              "y": 0.32633836268662086
+            },
+            "rawVelocity": {
+              "x": -6.745067812299947,
+              "y": -0.7729681631854878
+            },
+            "finalRequestVelocity": {
+              "x": -6.745067812299947,
+              "y": -0.7729681631854878
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.6261134151225523,
+            "depthAboveReceiver": 0.5821407822679205,
+            "defenderPos": {
+              "x": 47.1030202470088,
+              "y": 33.48864212767839
+            },
+            "defenderVelocity": {
+              "x": -1.5897676809648709,
+              "y": 0.6626045320384291
+            },
+            "receiverPos": {
+              "x": 46.52087946474088,
+              "y": 35.006982322911995
+            },
+            "receiverVelocity": {
+              "x": -0.08180279980863003,
+              "y": 2.353465981139598
+            },
+            "rawVelocity": {
+              "x": -8.023298735537002,
+              "y": -3.5366515788792494
+            },
+            "finalRequestVelocity": {
+              "x": -8.023298735537002,
+              "y": -3.5366515788792494
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.6261134151225523,
+            "depthAboveReceiver": 0.5821407822679205,
+            "defenderPos": {
+              "x": 47.1030202470088,
+              "y": 33.48864212767839
+            },
+            "defenderVelocity": {
+              "x": -1.5897676809648709,
+              "y": 0.6626045320384291
+            },
+            "receiverPos": {
+              "x": 46.52087946474088,
+              "y": 35.006982322911995
+            },
+            "receiverVelocity": {
+              "x": -0.08180279980863003,
+              "y": 2.353465981139598
+            },
+            "rawVelocity": {
+              "x": -8.023298735537002,
+              "y": -3.5366515788792494
+            },
+            "finalRequestVelocity": {
+              "x": -8.023298735537002,
+              "y": -3.5366515788792494
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ]
+    },
+    {
+      "id": "IZ",
+      "inputSha256": "13a185fc2d6618deabb6023ad05fe229b68dc58b5147ee973a143d634c52f51b",
+      "defenderId": "UFD-S2",
+      "keyedReceiverId": "UFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 0.36,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "410923f45d3fb2fee1f138895e6db0108d295bebe484150657a322b45d1096dd",
+        "steps": 69,
+        "elapsedMs": 235.62680999999986,
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 35.04,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.95,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.24,
+              "y": 23.44
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.05,
+              "y": 23.55
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.4,
+            "type": "tackle",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41,
+              "y": 23.55
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 216,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 0.36,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "410923f45d3fb2fee1f138895e6db0108d295bebe484150657a322b45d1096dd",
+        "steps": 69,
+        "elapsedMs": 195.502113,
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 35.04,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.95,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.24,
+              "y": 23.44
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.05,
+              "y": 23.55
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.4,
+            "type": "tackle",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41,
+              "y": 23.55
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 216,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 1.3262763475524835,
+            "depthAboveReceiver": 0.4434462584423571,
+            "defenderPos": {
+              "x": 43.35982516259273,
+              "y": 31.079243053430506
+            },
+            "defenderVelocity": {
+              "x": -1.3819388087229665,
+              "y": -3.7544485891337587
+            },
+            "receiverPos": {
+              "x": 42.91637890415037,
+              "y": 32.329188798633325
+            },
+            "receiverVelocity": {
+              "x": -6.791979026255949e-06,
+              "y": -3.368733977958855
+            },
+            "rawVelocity": {
+              "x": -1.5611231185713257,
+              "y": -4.256745429939914
+            },
+            "finalRequestVelocity": {
+              "x": -1.5611231185713257,
+              "y": -4.256745429939914
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 1.3262763475524835,
+            "depthAboveReceiver": 0.4434462584423571,
+            "defenderPos": {
+              "x": 43.35982516259273,
+              "y": 31.079243053430506
+            },
+            "defenderVelocity": {
+              "x": -1.3819388087229665,
+              "y": -3.7544485891337587
+            },
+            "receiverPos": {
+              "x": 42.91637890415037,
+              "y": 32.329188798633325
+            },
+            "receiverVelocity": {
+              "x": -6.791979026255949e-06,
+              "y": -3.368733977958855
+            },
+            "rawVelocity": {
+              "x": -1.5611231185713257,
+              "y": -4.256745429939914
+            },
+            "finalRequestVelocity": {
+              "x": -1.5611231185713257,
+              "y": -4.256745429939914
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.1012969219921303,
+            "depthAboveReceiver": -0.9815609270649333,
+            "defenderPos": {
+              "x": 41.93481782055678,
+              "y": 28.627020741139866
+            },
+            "defenderVelocity": {
+              "x": -2.1872652071793377,
+              "y": -0.7282012785357491
+            },
+            "receiverPos": {
+              "x": 42.916378747621714,
+              "y": 29.126413429160795
+            },
+            "receiverVelocity": {
+              "x": 0,
+              "y": -2.3325280698548623
+            },
+            "rawVelocity": {
+              "x": -2.1430161256487494,
+              "y": -0.7124828993742441
+            },
+            "finalRequestVelocity": {
+              "x": -2.1430161256487494,
+              "y": -0.7124828993742441
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.1012969219921303,
+            "depthAboveReceiver": -0.9815609270649333,
+            "defenderPos": {
+              "x": 41.93481782055678,
+              "y": 28.627020741139866
+            },
+            "defenderVelocity": {
+              "x": -2.1872652071793377,
+              "y": -0.7282012785357491
+            },
+            "receiverPos": {
+              "x": 42.916378747621714,
+              "y": 29.126413429160795
+            },
+            "receiverVelocity": {
+              "x": 0,
+              "y": -2.3325280698548623
+            },
+            "rawVelocity": {
+              "x": -2.1430161256487494,
+              "y": -0.7124828993742441
+            },
+            "finalRequestVelocity": {
+              "x": -2.1430161256487494,
+              "y": -0.7124828993742441
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ]
+    },
+    {
+      "id": "OZ",
+      "inputSha256": "c347aa2ecf657f675ecc32296e919d617b105d4c0a01e5f20910ec1bc40b961a",
+      "defenderId": "UFD-S2",
+      "keyedReceiverId": "UFO-WR3",
+      "physicalIdentity": true,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 1.01,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "20baeb43830c8fa101d3a28bc65eddac560f1c667596a1db7fedd2581ae30191",
+        "steps": 78,
+        "elapsedMs": 403.604517,
+        "events": [
+          {
+            "t": 1,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 35.04,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.1,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.46,
+              "y": 20.48
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 3.25,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.01,
+              "y": 20.41
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.85,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.04,
+              "y": 18.98
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 243,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "tackle",
+        "gain": 1.01,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "20baeb43830c8fa101d3a28bc65eddac560f1c667596a1db7fedd2581ae30191",
+        "steps": 78,
+        "elapsedMs": 235.1876440000001,
+        "events": [
+          {
+            "t": 1,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 35.04,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.1,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.46,
+              "y": 20.48
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 3.25,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.01,
+              "y": 20.41
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.85,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.04,
+              "y": 18.98
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 243,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 1.4551595432311686,
+            "depthAboveReceiver": 0.5532855587783487,
+            "defenderPos": {
+              "x": 43.47970365106537,
+              "y": 30.969376173002882
+            },
+            "defenderVelocity": {
+              "x": -1.2175774271108677,
+              "y": -4.039563533436947
+            },
+            "receiverPos": {
+              "x": 42.92641809228702,
+              "y": 32.31524555251342
+            },
+            "receiverVelocity": {
+              "x": -8.249229453201876e-06,
+              "y": -3.4228191623601987
+            },
+            "rawVelocity": {
+              "x": -1.5093422413251032,
+              "y": -5.077433037901768
+            },
+            "finalRequestVelocity": {
+              "x": -1.5093422413251032,
+              "y": -5.077433037901768
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 1.4551595432311686,
+            "depthAboveReceiver": 0.5532855587783487,
+            "defenderPos": {
+              "x": 43.47970365106537,
+              "y": 30.969376173002882
+            },
+            "defenderVelocity": {
+              "x": -1.2175774271108677,
+              "y": -4.039563533436947
+            },
+            "receiverPos": {
+              "x": 42.92641809228702,
+              "y": 32.31524555251342
+            },
+            "receiverVelocity": {
+              "x": -8.249229453201876e-06,
+              "y": -3.4228191623601987
+            },
+            "rawVelocity": {
+              "x": -1.5093422413251032,
+              "y": -5.077433037901768
+            },
+            "finalRequestVelocity": {
+              "x": -1.5093422413251032,
+              "y": -5.077433037901768
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.7364226871888704,
+            "depthAboveReceiver": -0.4579748868486675,
+            "defenderPos": {
+              "x": 42.46844302373768,
+              "y": 27.05234343235294
+            },
+            "defenderVelocity": {
+              "x": -2.283310210168623,
+              "y": -2.983216177679775
+            },
+            "receiverPos": {
+              "x": 42.926417910586345,
+              "y": 28.72728305860822
+            },
+            "receiverVelocity": {
+              "x": -1.5176850002770508e-24,
+              "y": -3.7817888639229107
+            },
+            "rawVelocity": {
+              "x": -3.693091276543944,
+              "y": -2.1592278265358273
+            },
+            "finalRequestVelocity": {
+              "x": -3.693091276543944,
+              "y": -2.1592278265358273
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.7364226871888704,
+            "depthAboveReceiver": -0.4579748868486675,
+            "defenderPos": {
+              "x": 42.46844302373768,
+              "y": 27.05234343235294
+            },
+            "defenderVelocity": {
+              "x": -2.283310210168623,
+              "y": -2.983216177679775
+            },
+            "receiverPos": {
+              "x": 42.926417910586345,
+              "y": 28.72728305860822
+            },
+            "receiverVelocity": {
+              "x": -1.5176850002770508e-24,
+              "y": -3.7817888639229107
+            },
+            "rawVelocity": {
+              "x": -3.693091276543944,
+              "y": -2.1592278265358273
+            },
+            "finalRequestVelocity": {
+              "x": -3.693091276543944,
+              "y": -2.1592278265358273
+            },
+            "job": "zone:curl_flat_w"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.232742493414531,
+            "depthAboveReceiver": -1.089588096735298,
+            "defenderPos": {
+              "x": 41.83682981385105,
+              "y": 25.607120964361652
+            },
+            "defenderVelocity": {
+              "x": 1.3997557323671352,
+              "y": -0.7947301160100965
+            },
+            "receiverPos": {
+              "x": 42.926417910586345,
+              "y": 26.18370732781697
+            },
+            "receiverVelocity": {
+              "x": 0,
+              "y": -2.5015637272551015
+            },
+            "rawVelocity": {
+              "x": 2.1806524589762546,
+              "y": -0.9201657315777253
+            },
+            "finalRequestVelocity": {
+              "x": 2.1806524589762546,
+              "y": -0.9201657315777253
+            },
+            "job": "zone:curl_flat_w"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 1.232742493414531,
+            "depthAboveReceiver": -1.089588096735298,
+            "defenderPos": {
+              "x": 41.83682981385105,
+              "y": 25.607120964361652
+            },
+            "defenderVelocity": {
+              "x": 1.3997557323671352,
+              "y": -0.7947301160100965
+            },
+            "receiverPos": {
+              "x": 42.926417910586345,
+              "y": 26.18370732781697
+            },
+            "receiverVelocity": {
+              "x": 0,
+              "y": -2.5015637272551015
+            },
+            "rawVelocity": {
+              "x": 2.1806524589762546,
+              "y": -0.9201657315777253
+            },
+            "finalRequestVelocity": {
+              "x": 2.1806524589762546,
+              "y": -0.9201657315777253
+            },
+            "job": "zone:curl_flat_w"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EARLY-FLAT",
+      "inputSha256": "3ec17d02e0d584b651c8e4e8427c541e4aa7417246ff8890dfd7a7327f2f204b",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "oob",
+        "gain": 8.3,
+        "yac": 5.3068310571849935,
+        "actualCatcher": "HFO-WR3",
+        "firstContact": {
+          "t": 4,
+          "type": "carrier_contact",
+          "a": 10,
+          "b": 18,
+          "pos": {
+            "x": 47.2,
+            "y": 52.33
+          },
+          "note": "grasp"
+        },
+        "physicalSignature": "2b5dba2f1fe506d9734fc48cf017b24be78ac6f02f10ef724b67e268252234d3",
+        "steps": 89,
+        "elapsedMs": 460.4145960000001,
+        "events": [
+          {
+            "t": 1.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 33.53,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 43,
+              "y": 44.28
+            }
+          },
+          {
+            "t": 4,
+            "type": "carrier_contact",
+            "a": 10,
+            "b": 18,
+            "pos": {
+              "x": 47.2,
+              "y": 52.33
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4,
+            "type": "tackle_wrap",
+            "a": 18,
+            "b": 10,
+            "pos": {
+              "x": 46.89,
+              "y": 51.42
+            },
+            "note": "initial"
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 2.45,
+            "type": "catch",
+            "index": 10,
+            "slot": "H",
+            "playerId": "HFO-WR3"
+          }
+        ],
+        "cueRetention": {
+          "retained": 403,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "oob",
+        "gain": 8.3,
+        "yac": 5.3068310571849935,
+        "actualCatcher": "HFO-WR3",
+        "firstContact": {
+          "t": 4,
+          "type": "carrier_contact",
+          "a": 10,
+          "b": 18,
+          "pos": {
+            "x": 47.2,
+            "y": 52.33
+          },
+          "note": "grasp"
+        },
+        "physicalSignature": "de7a51b9bf9177a43ef33dca9e89021190210e0f84d2f71c65f9155849ac300b",
+        "steps": 89,
+        "elapsedMs": 424.985766,
+        "events": [
+          {
+            "t": 1.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 33.53,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 43,
+              "y": 44.28
+            }
+          },
+          {
+            "t": 4,
+            "type": "carrier_contact",
+            "a": 10,
+            "b": 18,
+            "pos": {
+              "x": 47.2,
+              "y": 52.33
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4,
+            "type": "tackle_wrap",
+            "a": 18,
+            "b": 10,
+            "pos": {
+              "x": 46.89,
+              "y": 51.42
+            },
+            "note": "initial"
+          }
+        ],
+        "ballAcquisitions": [
+          {
+            "t": 2.45,
+            "type": "catch",
+            "index": 10,
+            "slot": "H",
+            "playerId": "HFO-WR3"
+          }
+        ],
+        "cueRetention": {
+          "retained": 355,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 1.05,
+          "achievedTime": 1.1,
+          "gap": 4.869907568796887,
+          "depthAboveReceiver": 4.459691123638848,
+          "defenderPos": {
+            "x": 45.46206395389675,
+            "y": 34.94174241630705
+          },
+          "defenderVelocity": {
+            "x": 0.9716731694376424,
+            "y": 1.8130527504201164
+          },
+          "receiverPos": {
+            "x": 41.002372830257904,
+            "y": 36.898053948339225
+          },
+          "receiverVelocity": {
+            "x": 3.5146869904199027,
+            "y": 2.603471844751987
+          },
+          "rawVelocity": {
+            "x": -2.3429148769418977,
+            "y": 4.1629409333989065
+          },
+          "finalRequestVelocity": {
+            "x": -2.3429148769418977,
+            "y": 4.1629409333989065
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 1.05,
+          "achievedTime": 1.1,
+          "gap": 4.875641575148235,
+          "depthAboveReceiver": 4.4657900192963496,
+          "defenderPos": {
+            "x": 45.468162849554254,
+            "y": 34.94137301551776
+          },
+          "defenderVelocity": {
+            "x": 1.215628995737755,
+            "y": 1.7982767188485234
+          },
+          "receiverPos": {
+            "x": 41.002372830257904,
+            "y": 36.898053948339225
+          },
+          "receiverVelocity": {
+            "x": 3.5146869904199027,
+            "y": 2.603471844751987
+          },
+          "rawVelocity": {
+            "x": 3.0393791613943066,
+            "y": 4.1629409333989065
+          },
+          "finalRequestVelocity": {
+            "x": 3.0393791613943066,
+            "y": 4.1629409333989065
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 1.05,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 40.78648720720832,
+                "y": 36.739681798938975
+              },
+              "velocity": {
+                "x": 3.0393791613943066,
+                "y": 2.269567993057476
+              },
+              "depth": 0.7864872072083173,
+              "outward": 1.4730151322723088,
+              "release": "flat",
+              "first": "flat",
+              "since": 1.05,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 45.40658458831127,
+            "y": 34.85597851320275
+          },
+          "vel": {
+            "x": 1.2475014539816967,
+            "y": 1.6175033737519169
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.7805530231982023,
+            "depthAboveReceiver": 2.094460586186422,
+            "defenderPos": {
+              "x": 45.27292437107361,
+              "y": 37.911807104126744
+            },
+            "defenderVelocity": {
+              "x": -0.7236680041516809,
+              "y": 4.9721483247732206
+            },
+            "receiverPos": {
+              "x": 43.178463784887185,
+              "y": 41.05915773825137
+            },
+            "receiverVelocity": {
+              "x": 0.6677605435696328,
+              "y": 6.258690184882129
+            },
+            "rawVelocity": {
+              "x": -2.8462674262718086,
+              "y": 9.040787458360446
+            },
+            "finalRequestVelocity": {
+              "x": -2.8462674262718086,
+              "y": 9.040787458360446
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 4.298796786623788,
+            "depthAboveReceiver": 3.0238271833462775,
+            "defenderPos": {
+              "x": 46.20229096823346,
+              "y": 38.00365074628701
+            },
+            "defenderVelocity": {
+              "x": -0.27918512584732613,
+              "y": 5.271297380445912
+            },
+            "receiverPos": {
+              "x": 43.178463784887185,
+              "y": 41.05915773825137
+            },
+            "receiverVelocity": {
+              "x": 0.6677605435696328,
+              "y": 6.258690184882129
+            },
+            "rawVelocity": {
+              "x": -3.8472973439457445,
+              "y": 8.810172537669184
+            },
+            "finalRequestVelocity": {
+              "x": -3.8472973439457445,
+              "y": 8.810172537669184
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.601416720211546,
+            "depthAboveReceiver": -0.4271909429619285,
+            "defenderPos": {
+              "x": 42.91263838481741,
+              "y": 43.60439080949094
+            },
+            "defenderVelocity": {
+              "x": -2.2293882304178,
+              "y": 6.8789488211157375
+            },
+            "receiverPos": {
+              "x": 43.33982932777934,
+              "y": 47.18038162196104
+            },
+            "receiverVelocity": {
+              "x": 1.9332212468720562,
+              "y": 5.822423737563237
+            },
+            "rawVelocity": {
+              "x": 1.3134479888289001,
+              "y": 9.868949906555029
+            },
+            "finalRequestVelocity": {
+              "x": 1.3134479888289001,
+              "y": 9.868949906555029
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.2229481979094743,
+            "depthAboveReceiver": 0.8765018749596081,
+            "defenderPos": {
+              "x": 44.21633120273895,
+              "y": 44.078907851380315
+            },
+            "defenderVelocity": {
+              "x": -2.3671868158908143,
+              "y": 7.105570438723346
+            },
+            "receiverPos": {
+              "x": 43.33982932777934,
+              "y": 47.18038162196104
+            },
+            "receiverVelocity": {
+              "x": 1.9332212468720562,
+              "y": 5.822423737563237
+            },
+            "rawVelocity": {
+              "x": -0.2313419153580148,
+              "y": 9.94863365071087
+            },
+            "finalRequestVelocity": {
+              "x": -0.2313419153580148,
+              "y": 9.94863365071087
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 3.814969839552242,
+            "depthAboveReceiver": -3.049421088584509,
+            "defenderPos": {
+              "x": 42.89042028398948,
+              "y": 49.06083610074053
+            },
+            "defenderVelocity": {
+              "x": 2.2334821031997802,
+              "y": 6.87219931125251
+            },
+            "receiverPos": {
+              "x": 45.93984137257399,
+              "y": 51.35322042741643
+            },
+            "receiverVelocity": {
+              "x": 4.1960435655004265,
+              "y": 4.208149610407355
+            },
+            "rawVelocity": {
+              "x": 9.00861425592928,
+              "y": 4.240909644905461
+            },
+            "finalRequestVelocity": {
+              "x": 9.00861425592928,
+              "y": 4.240909644905461
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.615134051026405,
+            "depthAboveReceiver": -2.191666986533953,
+            "defenderPos": {
+              "x": 43.748174386040034,
+              "y": 49.926503242766664
+            },
+            "defenderVelocity": {
+              "x": 1.6104865285063306,
+              "y": 7.98317850142122
+            },
+            "receiverPos": {
+              "x": 45.93984137257399,
+              "y": 51.35322042741643
+            },
+            "receiverVelocity": {
+              "x": 4.1960435655004265,
+              "y": 4.208149610407355
+            },
+            "rawVelocity": {
+              "x": 6.336824276178865,
+              "y": 7.65860239560536
+            },
+            "finalRequestVelocity": {
+              "x": 6.336824276178865,
+              "y": 7.65860239560536
+            },
+            "job": "man:H"
+          }
+        }
+      ]
+    },
+    {
+      "id": "LATE-OUT",
+      "inputSha256": "f2b5d5e529f1fb8df30d836128f211903d739b3da4dc6274f38185cbbc32dfea",
+      "defenderId": "HFD-S2",
+      "keyedReceiverId": "HFO-WR3",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "2cdd5fb6d2fab475400a262f0061438cada67544a508fc0d30e4f04caedd9471",
+        "steps": 82,
+        "elapsedMs": 295.3467979999999,
+        "events": [
+          {
+            "t": 2.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.81,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 303,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "061a4b0ec9c9e77f835332156af576728e12031f54841d7213a07788ed312fae",
+        "steps": 82,
+        "elapsedMs": 283.437732,
+        "events": [
+          {
+            "t": 2.55,
+            "type": "throw",
+            "a": 0,
+            "b": 10,
+            "pos": {
+              "x": 32.81,
+              "y": 26.67
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 303,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 2.3,
+          "achievedTime": 2.3499999999999996,
+          "gap": 2.677874222788859,
+          "depthAboveReceiver": 2.235911328449447,
+          "defenderPos": {
+            "x": 48.51539625658205,
+            "y": 34.866506199099625
+          },
+          "defenderVelocity": {
+            "x": 1.0030474692958584,
+            "y": 2.098072329592371
+          },
+          "receiverPos": {
+            "x": 46.279484928132604,
+            "y": 36.34017878294872
+          },
+          "receiverVelocity": {
+            "x": 1.9305732035725842,
+            "y": 3.4848337407063745
+          },
+          "rawVelocity": {
+            "x": -0.44553142846478,
+            "y": 4.220509331711822
+          },
+          "finalRequestVelocity": {
+            "x": -0.44553142846478,
+            "y": 4.220509331711822
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 2.3,
+          "achievedTime": 2.3499999999999996,
+          "gap": 2.6781096320983706,
+          "depthAboveReceiver": 2.2364394995609587,
+          "defenderPos": {
+            "x": 48.51592442769356,
+            "y": 34.86687991091304
+          },
+          "defenderVelocity": {
+            "x": 1.024174313756321,
+            "y": 2.113020802129199
+          },
+          "receiverPos": {
+            "x": 46.279484928132604,
+            "y": 36.34017878294872
+          },
+          "receiverVelocity": {
+            "x": 1.9305732035725842,
+            "y": 3.4848337407063745
+          },
+          "rawVelocity": {
+            "x": 2.3976784904261703,
+            "y": 4.220509331711822
+          },
+          "finalRequestVelocity": {
+            "x": 2.3976784904261703,
+            "y": 4.220509331711822
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 2.3,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 46.196285817589406,
+                "y": 36.11224458619707
+              },
+              "velocity": {
+                "x": 2.1320808163594926,
+                "y": 2.8129320120770798
+              },
+              "depth": 6.1962858175894056,
+              "outward": 0.8455779195304061,
+              "release": "out",
+              "first": "vertical",
+              "since": 2.3,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "HFD-S2",
+          "slot": "NB",
+          "pos": {
+            "x": 48.4591282682562,
+            "y": 34.768195807716204
+          },
+          "vel": {
+            "x": 1.2476720637380951,
+            "y": 1.834343325744412
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 2.755059093377678,
+            "depthAboveReceiver": 2.5799367919510487,
+            "defenderPos": {
+              "x": 47.96251195052274,
+              "y": 34.49002949958987
+            },
+            "defenderVelocity": {
+              "x": 1.8017495509706498,
+              "y": -0.05757052647772053
+            },
+            "receiverPos": {
+              "x": 45.38257515857169,
+              "y": 35.45660942775948
+            },
+            "receiverVelocity": {
+              "x": 3.1668525141677253,
+              "y": 1.5140865881158394
+            },
+            "rawVelocity": {
+              "x": 1.4244132932215523,
+              "y": -0.052723075661916134
+            },
+            "finalRequestVelocity": {
+              "x": 1.4244132932215523,
+              "y": -0.052723075661916134
+            },
+            "job": "wall:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 2.755059093377678,
+            "depthAboveReceiver": 2.5799367919510487,
+            "defenderPos": {
+              "x": 47.96251195052274,
+              "y": 34.49002949958987
+            },
+            "defenderVelocity": {
+              "x": 1.8017495509706498,
+              "y": -0.05757052647772053
+            },
+            "receiverPos": {
+              "x": 45.38257515857169,
+              "y": 35.45660942775948
+            },
+            "receiverVelocity": {
+              "x": 3.1668525141677253,
+              "y": 1.5140865881158394
+            },
+            "rawVelocity": {
+              "x": 1.4244132932215523,
+              "y": -0.052723075661916134
+            },
+            "finalRequestVelocity": {
+              "x": 1.4244132932215523,
+              "y": -0.052723075661916134
+            },
+            "job": "wall:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 2.896355852182634,
+            "depthAboveReceiver": 1.6625517328306785,
+            "defenderPos": {
+              "x": 48.26325576258224,
+              "y": 36.97655433721923
+            },
+            "defenderVelocity": {
+              "x": -1.2458995861306816,
+              "y": 4.353411281382988
+            },
+            "receiverPos": {
+              "x": 46.60070402975156,
+              "y": 39.34822019862009
+            },
+            "receiverVelocity": {
+              "x": -1.2603955514384342,
+              "y": 4.958984391037196
+            },
+            "rawVelocity": {
+              "x": -3.6691401001017265,
+              "y": 9.249794175265297
+            },
+            "finalRequestVelocity": {
+              "x": -3.6691401001017265,
+              "y": 9.249794175265297
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 3.116672635312609,
+            "depthAboveReceiver": 2.0334464772137935,
+            "defenderPos": {
+              "x": 48.634150506965355,
+              "y": 36.986283760014416
+            },
+            "defenderVelocity": {
+              "x": -0.593285442914175,
+              "y": 4.435894100520975
+            },
+            "receiverPos": {
+              "x": 46.60070402975156,
+              "y": 39.34822019862009
+            },
+            "receiverVelocity": {
+              "x": -1.2603955514384342,
+              "y": 4.958984391037196
+            },
+            "rawVelocity": {
+              "x": -4.01721467731184,
+              "y": 9.104100835822555
+            },
+            "finalRequestVelocity": {
+              "x": -4.01721467731184,
+              "y": 9.104100835822555
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.2508265543377695,
+            "depthAboveReceiver": 1.5888912122925731,
+            "defenderPos": {
+              "x": 46.5885798954455,
+              "y": 41.015495747509014
+            },
+            "defenderVelocity": {
+              "x": -3.4990142256585663,
+              "y": 5.904845079399694
+            },
+            "receiverPos": {
+              "x": 44.999688683152925,
+              "y": 42.609749457936395
+            },
+            "receiverVelocity": {
+              "x": -1.7353900670261513,
+              "y": 3.069094125844415
+            },
+            "rawVelocity": {
+              "x": -5.23210784382408,
+              "y": 6.984831749265723
+            },
+            "finalRequestVelocity": {
+              "x": -5.23210784382408,
+              "y": 6.984831749265723
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.738166791135026,
+            "depthAboveReceiver": 2.239212015037765,
+            "defenderPos": {
+              "x": 47.23890069819069,
+              "y": 41.033841171333016
+            },
+            "defenderVelocity": {
+              "x": -3.252951323352008,
+              "y": 5.936356803835025
+            },
+            "receiverPos": {
+              "x": 44.999688683152925,
+              "y": 42.609749457936395
+            },
+            "receiverVelocity": {
+              "x": -1.7353900670261513,
+              "y": 3.069094125844415
+            },
+            "rawVelocity": {
+              "x": -6.390852231871253,
+              "y": 6.715709905252399
+            },
+            "finalRequestVelocity": {
+              "x": -6.390852231871253,
+              "y": 6.715709905252399
+            },
+            "job": "man:H"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TRANSFER",
+      "inputSha256": "487cf93a17c501476daefb62afa95d374dae3f9b10e2869d8455528881c2292f",
+      "defenderId": "TFD-S1",
+      "keyedReceiverId": "TFO-WR6",
+      "physicalIdentity": false,
+      "reference124": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "74cc45348326ce7ca0c7e2d4ceee31fa3bd59e36796a542bb370bc00cff9dd4b",
+        "steps": 109,
+        "elapsedMs": 401.00474599999995,
+        "events": [
+          {
+            "t": 3.05,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.07,
+              "y": 23.57
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 447,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "candidate": {
+        "status": "native",
+        "terminal": true,
+        "outcome": "incomplete",
+        "gain": 0,
+        "yac": null,
+        "actualCatcher": null,
+        "firstContact": null,
+        "physicalSignature": "88ca9995fe12ada3cb76a05c2944948bb0f06195cb78154dc1d5b993b9781a17",
+        "steps": 109,
+        "elapsedMs": 333.94439,
+        "events": [
+          {
+            "t": 3.05,
+            "type": "throw",
+            "a": 0,
+            "b": 8,
+            "pos": {
+              "x": 32.07,
+              "y": 23.57
+            }
+          }
+        ],
+        "ballAcquisitions": [],
+        "cueRetention": {
+          "retained": 447,
+          "cap": 512,
+          "mayHaveOmissions": false
+        }
+      },
+      "firstSampledDifference": {
+        "entryBodyIdentical": true,
+        "releaseReadsIdentical": true,
+        "reference124": {
+          "controllerTime": 0.7,
+          "achievedTime": 0.75,
+          "gap": 6.011183209380109,
+          "depthAboveReceiver": 5.771299177765393,
+          "defenderPos": {
+            "x": 44.88886420631571,
+            "y": 31.82532216051943
+          },
+          "defenderVelocity": {
+            "x": -0.2991840276498207,
+            "y": 1.2785247815806369
+          },
+          "receiverPos": {
+            "x": 39.11756502855032,
+            "y": 33.50652095229209
+          },
+          "receiverVelocity": {
+            "x": 0.8267176493143509,
+            "y": 3.444656871840962
+          },
+          "rawVelocity": {
+            "x": -6.054827117101205,
+            "y": 5.098664263604579
+          },
+          "finalRequestVelocity": {
+            "x": -6.054827117101205,
+            "y": 5.098664263604579
+          },
+          "job": "man:H"
+        },
+        "candidate": {
+          "controllerTime": 0.7,
+          "achievedTime": 0.75,
+          "gap": 6.022402057338687,
+          "depthAboveReceiver": 5.7824478693830486,
+          "defenderPos": {
+            "x": 44.900012897933365,
+            "y": 31.82348108998797
+          },
+          "defenderVelocity": {
+            "x": 0.1467636370563477,
+            "y": 1.2048819603221004
+          },
+          "receiverPos": {
+            "x": 39.11756502855032,
+            "y": 33.50652095229209
+          },
+          "receiverVelocity": {
+            "x": 0.8267176493143509,
+            "y": 3.444656871840962
+          },
+          "rawVelocity": {
+            "x": 0.06079716114943864,
+            "y": 3.7755368697244247
+          },
+          "finalRequestVelocity": {
+            "x": 0.06079716114943864,
+            "y": 3.7755368697244247
+          },
+          "job": "man:H"
+        },
+        "candidateRule": {
+          "rule": "q_apex",
+          "mode": "flat",
+          "cut": null,
+          "judgment": "rule",
+          "readTick": 0.7,
+          "reads": [
+            {
+              "target": 10,
+              "slot": "H",
+              "position": {
+                "x": 39.02447278019754,
+                "y": 33.258982357743236
+              },
+              "velocity": {
+                "x": 0.06079716114943864,
+                "y": 2.508798699371425
+              },
+              "depth": -0.9755272198024585,
+              "outward": 1.0756490244099055,
+              "release": "flat",
+              "first": "flat",
+              "since": 0.7,
+              "climbed": false
+            }
+          ]
+        },
+        "before": {
+          "index": 19,
+          "id": "TFD-S1",
+          "slot": "NB",
+          "pos": {
+            "x": 44.89726717998366,
+            "y": 31.765747425513222
+          },
+          "vel": {
+            "x": -0.03693491906807678,
+            "y": 1.1044646186676865
+          },
+          "support": "up"
+        }
+      },
+      "geometry": [
+        {
+          "controllerTime": 1.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 3.514205645675472,
+            "depthAboveReceiver": 1.6360969363424758,
+            "defenderPos": {
+              "x": 43.12172009228056,
+              "y": 36.35445311742233
+            },
+            "defenderVelocity": {
+              "x": -1.0509666050433104,
+              "y": 5.8623629086594455
+            },
+            "receiverPos": {
+              "x": 41.485623155938086,
+              "y": 39.464570178722134
+            },
+            "receiverVelocity": {
+              "x": 4.374938902263424,
+              "y": 4.711783440650602
+            },
+            "rawVelocity": {
+              "x": 2.9931878736237447,
+              "y": 9.139099889508733
+            },
+            "finalRequestVelocity": {
+              "x": 2.9931878736237447,
+              "y": 9.139099889508733
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 1.95,
+            "achievedTime": 2,
+            "gap": 5.081467250921195,
+            "depthAboveReceiver": 3.9104404648248448,
+            "defenderPos": {
+              "x": 45.39606362076293,
+              "y": 36.21961027246057
+            },
+            "defenderVelocity": {
+              "x": 0.8800946552488292,
+              "y": 5.698746652868133
+            },
+            "receiverPos": {
+              "x": 41.485623155938086,
+              "y": 39.464570178722134
+            },
+            "receiverVelocity": {
+              "x": 4.374938902263424,
+              "y": 4.711783440650602
+            },
+            "rawVelocity": {
+              "x": 3.069174950590551,
+              "y": 9.113862274573512
+            },
+            "finalRequestVelocity": {
+              "x": 3.069174950590551,
+              "y": 9.113862274573512
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 2.95,
+          "receiverBodyIdentical": true,
+          "reference124": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 2.169805364071426,
+            "depthAboveReceiver": -1.9691901306162762,
+            "defenderPos": {
+              "x": 44.48966934365631,
+              "y": 42.69039700203273
+            },
+            "defenderVelocity": {
+              "x": 4.028090338569001,
+              "y": 5.811988629146662
+            },
+            "receiverPos": {
+              "x": 46.458859474272586,
+              "y": 43.60162998400638
+            },
+            "receiverVelocity": {
+              "x": 6.385647489896388,
+              "y": 2.060367867707811
+            },
+            "rawVelocity": {
+              "x": 9.145655195811967,
+              "y": 2.973097959459851
+            },
+            "finalRequestVelocity": {
+              "x": 9.145655195811967,
+              "y": 2.973097959459851
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 2.95,
+            "achievedTime": 3,
+            "gap": 1.2409087137582175,
+            "depthAboveReceiver": 0.8469021553954335,
+            "defenderPos": {
+              "x": 47.30576162966802,
+              "y": 42.69465083591771
+            },
+            "defenderVelocity": {
+              "x": 3.8192599641035465,
+              "y": 6.287326989261841
+            },
+            "receiverPos": {
+              "x": 46.458859474272586,
+              "y": 43.60162998400638
+            },
+            "receiverVelocity": {
+              "x": 6.385647489896388,
+              "y": 2.060367867707811
+            },
+            "rawVelocity": {
+              "x": 7.3598458185035955,
+              "y": 4.20831723885886
+            },
+            "finalRequestVelocity": {
+              "x": 7.3598458185035955,
+              "y": 4.20831723885886
+            },
+            "job": "man:H"
+          }
+        },
+        {
+          "controllerTime": 3.7,
+          "receiverBodyIdentical": false,
+          "reference124": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.8908376346604885,
+            "depthAboveReceiver": -2.184334660896191,
+            "defenderPos": {
+              "x": 48.5543333861672,
+              "y": 45.85580998745408
+            },
+            "defenderVelocity": {
+              "x": 6.122372984242905,
+              "y": 2.2479939339386537
+            },
+            "receiverPos": {
+              "x": 50.73866804706339,
+              "y": 43.96223550537608
+            },
+            "receiverVelocity": {
+              "x": 5.386241473410101,
+              "y": -0.051338553162821376
+            },
+            "rawVelocity": {
+              "x": 7.468404604085205,
+              "y": -6.058486040827833
+            },
+            "finalRequestVelocity": {
+              "x": 7.468404604085205,
+              "y": -6.058486040827833
+            },
+            "job": "man:H"
+          },
+          "candidate": {
+            "controllerTime": 3.7,
+            "achievedTime": 3.75,
+            "gap": 2.0015631184006537,
+            "depthAboveReceiver": 1.066993340857337,
+            "defenderPos": {
+              "x": 51.61031664375269,
+              "y": 45.81676561299444
+            },
+            "defenderVelocity": {
+              "x": 6.403585685520492,
+              "y": 2.066164822072395
+            },
+            "receiverPos": {
+              "x": 50.54332330289535,
+              "y": 44.123313479774296
+            },
+            "receiverVelocity": {
+              "x": 5.260938691964249,
+              "y": -0.07858009914530571
+            },
+            "rawVelocity": {
+              "x": 6.8233207668666145,
+              "y": -6.776770185691234
+            },
+            "finalRequestVelocity": {
+              "x": 6.8233207668666145,
+              "y": -6.776770185691234
+            },
+            "job": "man:H"
+          }
+        }
+      ]
+    }
+  ],
+  "pilot": {
+    "codePin": "7efa6a14271c0b80544373c9b5ed1ef036349066",
+    "runtime": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "executed": 11,
+    "nativeComputeSeconds": 2.67623074,
+    "purpose": "Initial shallow-handoff hypothesis did not justify blanket retention. No handoff behavior change. Actual installed actors must be followed.",
+    "examples": [
+      {
+        "id": "S-AWAY",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6269181855781767,
+            "snapReadyAt": 0.2045081945745965
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 47.67184636038412,
+              "y": 25.94126581464002
+            },
+            "vel": {
+              "x": 2.047649297827326,
+              "y": -1.9692783189574583
+            },
+            "support": "up",
+            "job": "man:H",
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 3.3009586979936043,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 43.92521149550429,
+                  "y": 31.26059602194861
+                },
+                "velocity": {
+                  "x": 1.832066368842139,
+                  "y": -4.864936632179479
+                },
+                "depth": 3.9252114955042927,
+                "outward": -4.006070644718054,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.75,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "incomplete",
+        "nativeStatus": "native",
+        "retainedCues": 1839,
+        "cueCap": 4096
+      },
+      {
+        "id": "S-TO",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6269181855781767,
+            "snapReadyAt": 0.2045081945745965
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 47.67184636038412,
+              "y": 25.94126581464002
+            },
+            "vel": {
+              "x": 2.047649297827326,
+              "y": -1.9692783189574583
+            },
+            "support": "up",
+            "job": "man:H",
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 3.3009586979936043,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 43.92521149550429,
+                  "y": 31.26059602194861
+                },
+                "velocity": {
+                  "x": 1.832066368842139,
+                  "y": -4.864936632179479
+                },
+                "depth": 3.9252114955042927,
+                "outward": -4.006070644718054,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.75,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "incomplete",
+        "nativeStatus": "native",
+        "retainedCues": 1839,
+        "cueCap": 4096
+      },
+      {
+        "id": "S-BLOCK",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6269181855781767,
+            "snapReadyAt": 0.2045081945745965
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 47.67184636038412,
+              "y": 25.94126581464002
+            },
+            "vel": {
+              "x": 2.047649297827326,
+              "y": -1.9692783189574583
+            },
+            "support": "up",
+            "job": "man:H",
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 3.3009586979936043,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 43.92521149550429,
+                  "y": 31.26059602194861
+                },
+                "velocity": {
+                  "x": 1.832066368842139,
+                  "y": -4.864936632179479
+                },
+                "depth": 3.9252114955042927,
+                "outward": -4.006070644718054,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.75,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "incomplete",
+        "nativeStatus": "native",
+        "retainedCues": 1839,
+        "cueCap": 4096
+      },
+      {
+        "id": "S-MIRROR",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6269181855781767,
+            "snapReadyAt": 0.2045081945745965
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 47.561258268823316,
+              "y": 25.601330651998552
+            },
+            "vel": {
+              "x": -0.5412158936005612,
+              "y": -0.3604942312678887
+            },
+            "support": "up",
+            "job": "man:H",
+            "runFit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 3.3205972605843357,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 43.92521865137915,
+                  "y": 22.07273416391903
+                },
+                "velocity": {
+                  "x": 1.8321092999099629,
+                  "y": 4.864920464729896
+                },
+                "depth": 3.925218651379147,
+                "outward": -4.00606749725236,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.75,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "tackle",
+        "nativeStatus": "native",
+        "retainedCues": 2259,
+        "cueCap": 4096
+      },
+      {
+        "id": "S-MESH",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6269181855781767,
+            "snapReadyAt": 0.2045081945745965
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 46.90472839247311,
+              "y": 27.11815385797882
+            },
+            "vel": {
+              "x": 0.06966193307503388,
+              "y": -0.016455988388671572
+            },
+            "support": "up",
+            "job": "man:Y",
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 2.8177504301926817,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 44.244909697632814,
+                  "y": 31.84545839656014
+                },
+                "velocity": {
+                  "x": 1.3796025910049707,
+                  "y": -2.7320138783712182
+                },
+                "depth": 4.244909697632814,
+                "outward": -3.4212082701065256,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.85,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "tackle",
+        "nativeStatus": "native",
+        "retainedCues": 2693,
+        "cueCap": 4096
+      },
+      {
+        "id": "FRESH",
+        "installedMidpoint": [
+          {
+            "slot": "LB_W",
+            "idx": 16,
+            "playerId": "UFD-LB2",
+            "role": {
+              "kind": "zone",
+              "zone": "hook_mid",
+              "rule": "mike_3"
+            },
+            "behavior": "zone",
+            "target": null,
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            },
+            "read": "unsure",
+            "priorPassProbability": 0.6421795765148202,
+            "snapReadyAt": 0.1540412684443885
+          }
+        ],
+        "midpointAt195": [
+          {
+            "index": 16,
+            "id": "UFD-LB2",
+            "slot": "LB_W",
+            "pos": {
+              "x": 48.29406798668191,
+              "y": 26.154099948012462
+            },
+            "vel": {
+              "x": 2.1100900520323904,
+              "y": -2.223507752341451
+            },
+            "support": "up",
+            "job": "man:H",
+            "runFit": {
+              "gap": "B",
+              "side": 1,
+              "kind": "insert",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        ],
+        "apexAt195": {
+          "job": "zone:curl_flat_w",
+          "gap": 2.9136610640460745,
+          "rule": {
+            "rule": "q_apex",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.95,
+            "reads": [
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 44.21100003066995,
+                  "y": 31.931752558582854
+                },
+                "velocity": {
+                  "x": 2.632638769953232,
+                  "y": -4.100248803432017
+                },
+                "depth": 4.21100003066995,
+                "outward": -3.3349141080838116,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.95,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        "nativeOutcome": "tackle",
+        "nativeStatus": "native",
+        "retainedCues": 2116,
+        "cueCap": 4096
+      }
+    ]
+  },
+  "focused": {
+    "uniquePassingTests": 76,
+    "files": {
+      "quarter-flat-depth-support": 10,
+      "quarters-flat-wheel": 13,
+      "coverage-run-support": 15,
+      "back-man-run-fit": 38
+    },
+    "typecheck": "typecheck-corrected.json passes; initial failure was the test fixture optional numbered-slot type, fixed before native collection.",
+    "compatibleReuse": "Final new-contract receipt covers aligned control time and non-null slot type. A later test-title correction changes no assertions or behavior. Reuse the other66 passes.",
+    "expectedRed": "Five of ten new checks failed on unchanged124; retained red receipt.",
+    "inheritedEvidence": "Parent124 checks remain source-qualified; not counted as newly executed checks.",
+    "isolatedChecks": {
+      "depth-only.json": {
+        "passed": 4,
+        "notRun": 6,
+        "source": "c9ed2585e96e36682a382e552f6b28d1b3f99f64d35ac281b83c25df678c1e1d"
+      },
+      "support-only.json": {
+        "passed": 6,
+        "notRun": 4,
+        "source": "af8d0ced0ac25ff571792f7da01cfe57799e3502ff927643e01e40324ab979a1"
+      }
+    },
+    "isolatedInterpretation": "These are the same ten existing contracts selected for two causal ablations, not ten additional unique tests. The combined source was restored byte-for-byte; no native ablation campaigns."
+  },
+  "cost": {
+    "newDiagnosticPlays": 11,
+    "newRefinementReferencePlays": 6,
+    "newRefinementCandidatePlays": 13,
+    "cachedReferencePlays": 7,
+    "newNativePlaysTotal": 30,
+    "evaluationGames": 0,
+    "nativeComputeSeconds": 9.103026773,
+    "recordedCommandSeconds": 46.010906534,
+    "receipts": [
+      {
+        "file": "candidate-receipt.json",
+        "sha256": "5ed22de83332f016cf7738d277641b3d188dabe247c0622177b80877c0c142ad",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 3.5737867739999998
+      },
+      {
+        "file": "depth-only.json",
+        "sha256": "85c876bf78ad5875f80b3248ab716c558c52d73b48ff34f49ffda55d46b8f6ec",
+        "source": "c9ed2585e96e36682a382e552f6b28d1b3f99f64d35ac281b83c25df678c1e1d",
+        "exitCode": 0,
+        "seconds": 1.58934492
+      },
+      {
+        "file": "focused.json",
+        "sha256": "9b99569f84dc5ca9806f036a3533382943cfb55f616710e5899c6eebf274bdd9",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 3.653431216
+      },
+      {
+        "file": "handoff-probe-plan.json",
+        "sha256": "41f09a2289fe172c1d2c3ea17482a9643daa80f9b09f309de0cbbbf85d0557a1",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 0.335689705
+      },
+      {
+        "file": "handoff-probe-receipt.json",
+        "sha256": "221fe3c1254a13add79db50bb5d699815d217ec0b24c2535028316f3d00ba69b",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 3.9167564589999997
+      },
+      {
+        "file": "new-contracts-final.json",
+        "sha256": "3c785348d1d8a0b8ef72278e2e6bcdd544ba699284b98c34cf6223c5a4493281",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 2.2963894799999998
+      },
+      {
+        "file": "red.json",
+        "sha256": "de039a5209df06736b44a01b958565f24c51a12b2ce6ada64a47f6f91f4f7d74",
+        "source": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+        "exitCode": 1,
+        "seconds": 1.881316283
+      },
+      {
+        "file": "run-baseline-receipt.json",
+        "sha256": "507c55166b936ad261df3be32a77b2779ebcd0ff77c95e486def8b4be54c0940",
+        "source": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+        "exitCode": 0,
+        "seconds": 1.5982934779999998
+      },
+      {
+        "file": "support-only.json",
+        "sha256": "5923e892c20d93ec52ce53a03e67f3764c7fa89809a9a58622e023fad77af761",
+        "source": "af8d0ced0ac25ff571792f7da01cfe57799e3502ff927643e01e40324ab979a1",
+        "exitCode": 0,
+        "seconds": 1.5330818199999998
+      },
+      {
+        "file": "transfer-baseline-receipt.json",
+        "sha256": "045dcf183201edf67090d02371661e61bea0645873cefb88b1cb24a792799877",
+        "source": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+        "exitCode": 0,
+        "seconds": 1.438256667
+      },
+      {
+        "file": "transfer-candidate-receipt.json",
+        "sha256": "de378b07b502bd44b27a1ef2b31fc45c5fb415709e4f20e863aecdd2837b95a9",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 1.329784722
+      },
+      {
+        "file": "transfer-plan.json",
+        "sha256": "9610f8b4b7528a54b1f270b2b36871f1669a4c8d8489e4a8226aa2aab750c188",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 0.19419835900000001
+      },
+      {
+        "file": "typecheck-corrected.json",
+        "sha256": "8eacb629dd69ded7e087c582d1e5150bd4c44fd71bed056af7f34ed105d98b1b",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 0,
+        "seconds": 10.762725255
+      },
+      {
+        "file": "typecheck.json",
+        "sha256": "367746eec7b8390ae0cdb9a1672e052949bc36c43938ab2dc604932dafebb20c",
+        "source": "26d8882d6b2912fde83cd86a632bf57dbaa7639ae0633bb96995b567afbdd177",
+        "exitCode": 1,
+        "seconds": 11.907851396
+      }
+    ]
+  },
+  "verdict": {
+    "supported": "Useful depth and continuous wheel approach across mirrors, fresh players and a fresh routes/hash input; six exact controls and ordinary early-flat offensive win preserved. Keyed force uses the existing fit including inside option.",
+    "adverse": [
+      "Greater early flat separation; ordinary QF becomes interception/return; QW QB and later receiver path change. Fresh wheel is .24yd farther at2.95 despite better leverage.",
+      "Runner can still get past the marker; no guaranteed square tackle or lower population YAC.",
+      "Force continuity proved at controller/World boundary; unchanged native runs do not demonstrate a newly won force tackle."
+    ],
+    "integration": "Historical mechanism evidence only; new current-source reconciliation required after125.",
+    "next": "Actual installed roles and legitimate observer-owned peer information before helper availability rules; current teammate see() remains a global .05s picture."
+  },
+  "status": "Historical research; reconcile with accepted70b4db6 before any current-source readiness claim.",
+  "subsequentAccepted": "70b4db6a3ef53acc1a0e90cd055f1087205daa30"
+}

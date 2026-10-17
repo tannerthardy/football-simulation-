@@ -1,5 +1,34 @@
 # Current work ownership
 
+## Catching: quarter-flat depth and installed force support — 2026-10-17
+
+Genuine dependent branch `codex/quarter-flat-depth-support` from draft #124
+publication `9f2206a3fd22aab83b19a0431346c7569ed19f7b`; accepted develop remains
+`d682b1f474cb6ba260a7b8b1119a62919c5a2159`, queue `bf493d8`. The dependency
+supplies the acquired flat relationship being tested, not an accepted runtime.
+Keep #124 independently reviewable. Claim q_apex's flat directive, its own man
+objective/options/recorded depth, CoverageDefender's corresponding force-support
+boundary and direct tests/evidence. HNFL-078/196/312 teach widening from above.
+Question: can the same acquired flat objective retain entry depth while moving
+laterally, then continue with an observed wheel, and retain installed force on
+positive acquired run evidence? No fixed timer, future route, peer job/position,
+global movement modifier, capacity, fit allocation/execution or physics change.
+The separate eleven-prefix accepted-source handoff probe at `7efa6a1` found
+the actual midpoint already taking the Drive shallow in several controls;
+do not add a blanket shallow-retention policy or rename a jersey as the Mike.
+
+Supported freeze `0a566d2`, source `26d8882d`: quarter-flat entry depth and
+acquired force continuity, four runtime files plus one direct contract file.
+[Exact coverage/Run handoff](reviews/quarter-flat-depth-support.md), portable
+five-file delta after124 and eight-file accepted-base composition published.
+76 unique focused passes/typecheck; isolated4/6 checks reuse those contracts.
+Thirteen matched native cases (seven references reused); six exact controls,
+ordinary early-flat5.3068-YAC OOB win preserved. Greater early flat gap, changed
+interception/return and live prefixes remain. Thirty new native plays including
+the eleven-prefix diagnostic, no full suite/games. Ready for independent
+coverage/Run review; parent124 remains unaccepted, Integration owns combined
+verification/adoption. No complete handoff, gaze, fit or population-YAC claim.
+
 ## Catching: HonestNFL coverage teaching audit / original #2 flat ownership — 2026-10-16
 
 User asks to apply the supplied scheme teaching collection. Start on accepted
