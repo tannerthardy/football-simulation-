@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Receiver run-assignment eligibility — Flex / Do-It-All
+
+`codex/receiver-run-assignments`, accepted
+`0000e560e0dbe31905151465152d412ba838803d`, queue `aa9ed35`.
+User assigned G1-P018's unowned shallow-defender exclusion first, plus a bounded
+assignment-only review across formations, run concepts and looks. Claim only
+the final receiver candidate/ownership block in `planRunBlocking` and new focused
+tests/collector. Run coordination posted #126; Integration notified #130.
+Do not change classifying policy, combo/release/approach, protection, defensive
+coverage, physics or ratings. Preserve actual inline/pull/lead/slice ownership;
+depth bucket alone is not ownership. RB outcome cost remains unproved. #135 QB
+forecast is frozen separately; no historical experimental stack is imported.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
