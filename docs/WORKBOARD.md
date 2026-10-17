@@ -20,6 +20,9 @@ blocking. Six mass controls retain every recorded step/force exactly.13 commands
 ACCEPT; calibration coefficients/NFL benefit remain unproved. [Evidence and
 adoption boundary](reviews/directional-load-bracing.md). Integration owns any
 combined verification/merge; #115 remains separately reviewable.
+[Draft #118](https://github.com/tannerthardy/football-simulation-/pull/118)
+publishes the independent correction and requests Integration review; no merge
+or baseline/default designation has been performed.
 
 ## Active #110/#111 exact integration boundary — 2026-10-16
 

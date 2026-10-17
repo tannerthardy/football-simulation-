@@ -4,6 +4,7 @@
 mass and do not retune strength coefficients from the old NFL weight claim.**
 There is now a concrete support inconsistency to repair. It does not explain
 the mass-response results or establish better run-blocking outcomes.
+[Draft candidate #118](https://github.com/tannerthardy/football-simulation-/pull/118).
 
 This independent candidate starts from accepted #112
 `d682b1f474cb6ba260a7b8b1119a62919c5a2159`, verified against queuebf493d8.
