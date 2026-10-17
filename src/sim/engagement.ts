@@ -1054,9 +1054,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
   const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
   const seal = clamp(dLat + feedback + correction, -mirror, mirror);
-  // Anchor: a blocker who feels himself driven back stops spending traction
-  // on lateral drive and pushes straight against the load he feels.
-  // Locomotion and lean share one traction budget in the World.
+  // Anchor against felt lost depth. A stretch keeps its shoulder footwork;
+  // drive blocks reduce it. Locomotion and lean share one physical budget.
   // On a stretch play the reach is a race for the playside shoulder, not a
   // vertical drive: forward work only keeps him connected (matches the
   // defender's own forward motion and closes separation), leaving the shared
@@ -1106,14 +1105,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const load = Math.hypot(feltLoad.x, feltLoad.y);
     if (ANCHOR_SPLIT) {
       // The normal threat is lost depth: load and motion toward his own
-      // backfield. Then he braces upfield and spends little on lateral work
-      // (one traction budget). Load from a defender flowing across him, with
-      // no depth lost, is lateral co-flow: he keeps working sideways.
+      // backfield. Then he braces upfield. A stretch retains its shoulder
+      // work; a vertical drive reduces it. Both spend the same World budget.
+      // Flowing across him without lost depth is lateral co-flow.
       const up = sim.attackDir(b.team);
       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
       if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
         anchored = true;
-        blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
+        const shoulderWork = lateral * (stretch ? 1 : 0.3);
+        blockVel = { x: up * 2.4 + lat.x * shoulderWork, y: lat.y * shoulderWork };
       }
     } else {
       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
@@ -1132,6 +1132,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
+    // `forward` is retained for older diagnostic readers. Component-mode
+    // normal work is the emitted command, not that legacy drive projection.
+    legacyDriveRequest: forward, normalRequest: -(blockVel.x * axis.x + blockVel.y * axis.y),
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
     sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,

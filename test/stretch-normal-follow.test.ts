@@ -108,8 +108,8 @@ describe('stretch connection follows velocity in the acquired normal frame', () 
     expect(requested.movement.anchored).toBe(false);
   });
 
-  it('retains the opposing lost-depth anchor response', async () => {
-    const requested = await command({ anchor: true, normalVelocity: -.5, lateralVelocity: 3 });
+  it('retains the opposing vertical-block lost-depth anchor response', async () => {
+    const requested = await command({ stretch: false, anchor: true, normalVelocity: -.5, lateralVelocity: 3 });
     expect(requested.movement.anchored).toBe(true);
     expect(requested.intent.vel.x).toBeCloseTo(2.4, 12);
     expect(requested.intent.vel.y).toBeCloseTo(requested.movement.lat.y * requested.movement.lateral * .3, 12);
