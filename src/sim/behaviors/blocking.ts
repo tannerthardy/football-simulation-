@@ -29,6 +29,7 @@ import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
+import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -742,6 +743,7 @@ export class RunBlocker implements Behavior {
   /** Held climb plan from one acquired picture of the backer. */
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
+  private workPicture: BlockerWorkPicture | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
@@ -871,8 +873,8 @@ export class RunBlocker implements Behavior {
       }
     }
     if (!target) {
-      const c = sim.carrier;
-      return goTo(a, { x: (c?.pos.x ?? sim.los) + 3, y: a.pos.y }, { speed: 0.5 });
+      const ref = this.workReference(a, sim);
+      return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
     if (plan.kind === 'stalk') {
       // Stay square on the DB until the run comes; engage when he closes.
@@ -1306,9 +1308,14 @@ export class RunBlocker implements Behavior {
     sim.event('block_collect',a,threat,'penetration before climb');
   }
 
+  private workReference(a: Agent, sim: PlaySim): Vec2 {
+    if (!this.workPicture || sim.t >= this.workPicture.nextRead)
+      this.workPicture = readBlockerWorkPicture(a, sim);
+    return blockerWorkPoint(this.workPicture, sim.t);
+  }
+
   private findWork(a: Agent, sim: PlaySim): Agent | null {
-    const c = sim.carrier;
-    const ref = c && c.team === a.team ? c.pos : { x: sim.los, y: sim.ballY };
+    const ref = this.workReference(a, sim);
     let best: Agent | null = null;
     let bs = Infinity;
     for (const d of sim.defense) {

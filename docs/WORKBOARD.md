@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Catching: acquired work reference and Counter review — 2026-10-18 UTC
+
+Branch `codex/blocker-work-picture`, from accepted914f4d56a3b7ef2845ff0208f55d626c0ff5f880 /
+canonical queuee8d806b940a84c7cff7e5ee066022079723c78ef. Review published #146/#140
+controller contracts and reuse their focused/native evidence. Own only a bounded
+observer-owned carrier/work reference for RunBlocker.findWork and the no-target
+movement fallback, its helper/tests and focused evidence. Do not alter GH/GT
+installations, pull paths, emergency target priority, availableTarget/private
+engagement filters, helper release, shared spacing/movement or Physics. Run
+retains those implementation boundaries; Integration owns combined verification.
+Preserve installed lane and use acquired possession/motion, with installed
+fallback when no carrier is acquired. No truth fallback or extra sightings/RNG.
+
 ## Handbook/reference documentation integration
 
 Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
