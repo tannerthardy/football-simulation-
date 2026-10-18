@@ -1,0 +1,181 @@
+# HNFL-156 — 82-83 ‘Z’ TALLAHASSEE
+
+[Original image](../../images/pass-concepts/hnfl-156-82-83-z-tallahassee.jpeg) · [Topic](../../topics/pass-concepts.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Four-strong corner/read/flat with backside dig–shallow
+
+**Basis:** diagram-supported — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Tallahassee is explicitly built from Tampa in the Florida/Snag family. Multiple triangles and a corner alert remain; its shallow/basic stretch makes it more than plain three-route Snag.
+
+**Browse:** [Snag / Spot and other triangle relatives](../../CONCEPTS.md#snag-spot), [Shallow Cross / Drive](../../CONCEPTS.md#shallow-drive)
+
+Original archive path(s): `HonestNFL/HLBkCCxXQAAV9EM.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+eS
+
+Wy)
+
+82-83 ‘Z’ TALLAHASSEE
+
+(ZE/T) GUN TRIPS RT BUNCH NASTY
+
+(ZE/T) GUN TRIPS RT BUNCH NASTY
+
+82 ‘Z’ TALLAHASSEE
+
+82 ‘Z’ TALLAHASSEE
+
+Vs. MAN
+
+VS. ZONE
+
+12-14
+
+WFLAT LEVERAGE
+
+12-14
+
+22+ FLAT LEVERAGE
+
+10-12
+
+fo
+
+ane
+
+10-12
+
+7.
+
+SIT SOFT
+
+10
+
+SIT SOFT
+
+10
+
+4-6
+
+46
+
+4-6
+
+READ
+
+4-6
+
+BASIC
+
+OOUOO
+
+BASIC
+
+OOUOO
+
+ARROW.
+
+cross
+
+| ARROW
+
+CORNER
+
+HL CRS
+
+CORNER
+
+HL CRS.
+
+FLAT
+
+FLAT
+
+POSITION
+
+ASSIGNMENT
+
+COACHING POINTS
+
+GOOD VS. ALL COVERAGES
+
+GUN 3 STEP
+
+PURE PROGRESSION READ WITH A CORNER ALERT
+
+PROGRESSION
+
+OPEN TO FLAT/ARROW VS. ZONE OFF THE FLAT DEFENDER
+
+VS. COVER 2/6, WORK BASIC CROSS/SHALLOW CROSS STRETCH ON BACKSIDE HOOK
+
+WITH ALERTS
+
+DEFENDER
+
+MULTIPLE TRIANGLES BUILT VS. ZONE
+
+BEST RELEASE TO A DEPTH OF 10-12 YARDS, PLANT ON OUTSIDE FOOT AND
+
+ROLL TO 12-14 YARDS WITH SPEED, THEN FLATTEN OUT.
+
+VS. ZONE, CAN SIT SOFT IN THE 157 & 28° WINDOWS, OTHERWISE STAY ON THE
+
+MOVE
+
+Ca
+
+INSIDE RELEASE WORKING TO HIT A DEPTH OF 4-6 YARDS AS YOU CROSS THE
+
+TRACKS OF THE CORNER ROUTE’S STEM, THEN READ COVERAGE
+
+SIT SOFT VS. ZONE
+
+STRIKE BACK OUTSIDE VS. MAN OR WALL.
+
+ac
+
+BEST RELEASE ON A VERTICAL STEM TO A DEPTH OF 10 YARDS, THEN PLANT ON
+
+INSIDE FOOT AND BREAK TO THE CORNER ON A HIGH ANGLE, KNOWING YOU
+
+CAN ADJUST AS NEEDED AND THE QB CAN FLATTEN YOU OUT.
+
+=
+
+INSIDE RELEASE WORKING ACROSS THE FIELD BUILDING TO A DEPTH OF 4-6
+
+YARDS BY THE TIME YOU CLEAR THE BOX.
+
+READ THROUGH TO THE FAR FLAT DEFENDER TO INFORM YOUR COVERAGE
+
+READ.
+
+SIT SOFT AT THE GHOST TE VS. ZONE. MUST GET ENOUGH WIDTH
+
+mia
+
+STAY ON THE MOVE AND SEPARATE VS. MAN.
+
+SCAT RELEASE TO THE FLAT ON AN ANGLE THAT PUTS YOU AT 3-5 YARDS
+
+DEPTH AT THE SIDELINE, BUT ALWAYS PRIORITIZING WIDTH OVER DEPTH.
+
+SNAP EYES AROUND WITH CHIN ON SHOULDER BY YOUR 3°° STRIDE.
+
+a
+
+“FLORIDA” FAMILY CONCEPT BUILT FROM “TAMPA”
+
+FOUR-STRONG “FLOW” CONCEPT
+
+PREFER TO RUN FROM FORMATIONS BUILT WITH MAN/ZONE INDICATORS
+
+“SCAT” HOT MECHANICS — RULES ARE SPECIFIC TO FRONT STRUCTURE
+
+VS. ZONE: WE ARE LOOKING TO SPACE OUT AND STRETCH THE UNDERCOVERAGE TRIANGULARLY (VERTICALLY & HORIZONTALLY)
+```

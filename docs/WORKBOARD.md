@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Catching support: causal blocking boundary follow-up — 2026-10-18 UTC
+
+Continue diagnostic PR #142 on `codex/run-movement-audit`. Reconciled accepted
+`914f4d56a3b7ef2845ff0208f55d626c0ff5f880` / queue
+`e8d806b940a84c7cff7e5ee066022079723c78ef`; runtime remains source5b710a1b.
+Read Run #143 and held coordination sourcee574704 before proposing anything.
+Own only passive saved-data gate/request/achieved traces and a bounded local
+causal probe, plus support memo/evidence. Run keeps blocking/count/route changes;
+Flex keeps shared movement/spacing. Do not repeat the held open-step, depth,
+exit-arc or count campaigns. Existing #140/#143 and prototype evidence remain
+source-qualified and independent. No physics/capacity/default changes.
+
 ## Catching support: run-blocking movement audit — 2026-10-17 UTC
 
 Branch `codex/run-movement-audit`, new from accepted/fetched
@@ -25,12 +37,18 @@ use unchanged #140 source/inputs (4.903 native seconds/8.315 command seconds);
 six endings/two5s censors, zero games/new seeds. Historical70b4 films and older
 prototype continuation limits stay explicit. [Support memo](reviews/run-movement-audit/README.md).
 
-## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
-Integration claims only the minimal #128 two-file assembly and one exact combined check
+
+## Handbook/reference documentation integration
+
+Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
+
+## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
+
+Integration completed the minimal #128 two-file assembly and one exact combined check
 in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
 `coverage/defender.ts` and quarter-flat-force-support test. #126 blocking/zone-combo files remain outside the current candidate.
-Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; publication/adoption pending. Contributors do not repeat the suite.
+Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; adopted as0000e560; assembly boundary released. Contributors do not repeat the suite.
 #127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
 [Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
 
@@ -46,7 +64,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-Original checkouts/branches/evidence remain; reconcile accepted changes at clean
+Accepted develop is0000e560; original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix

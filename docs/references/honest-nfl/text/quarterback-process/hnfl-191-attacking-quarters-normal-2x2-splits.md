@@ -1,0 +1,309 @@
+# HNFL-191 — Attacking Quarters — normal 2x2 splits
+
+[Original image](../../images/quarterback-process/hnfl-191-attacking-quarters-normal-2x2-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Attacking quarters with isolation, quick game and vacated-space reads
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+A second normal-split attack menu. Includes multiple mechanisms and examples, not one universally effective quarters beater.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
+Original archive path(s): `HonestNFL/HOrG2VXW8AAuVe9.jpeg`, `HonestNFL/HQbXemQXIAAFzvk.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+ATTACKING QUARTERS (2x2 -- NORMAL SPLITS)
+
+CORNER/SAFETY COLLAPSE — DEEP 1/4 VOID ATTACKER
+
+ISOLATE THE WEAK ‘QUARTER FLAT’ WITH #3 AWAY
+
+DEEP
+
+OCCUPY THE CORNER
+
+INSIDE
+
+AND ISOLATE #2 WEAK ON THE
+
+GET THE CORNER/SAFETY
+
+1/4
+
+‘QTR FLAT’ APEX UNDERNEATH.
+
+TO COMMIT TO #1/#2,
+
+THEY MUST MATCH ANY
+
+THEN ATTACK THE DEEP
+
+12
+
+8-10
+
+OUT, SHALLOW, OR UNDER
+
+1/4 THEIR COMMITMENT
+
+ROUTE WITH NO DIRECT HELP.
+
+ATTACK APEX MATCHUP
+
+(ORK TO.
+
+”AGE
+
+LEAVES VOIDED.
+
+M
+
+O
+
+COOUOO
+
+BRANCH
+
+COMO
+
+H
+
+GO
+
+CAN ALSO APPLY TO
+
+(©)
+
+@
+
+THE HB IN 3x1 FORMATIONS,
+
+FLAT
+
+OR VS. MIDPOINT IN 2x2
+
+“BRANCH”
+
+(ex. 44/66 QUADS)
+
+“TAMPA ‘F’ READ”
+
+(ex. 44/88 QUADS)
+
+PRESS THE CORNERS VERTICALLY, THEN BREAK IT OFF
+
+ATTACK THE UNDERCOVERAGE WITH QUICK GAME
+
+SELL
+
+THE WEAKNESS OF ANY
+
+MUST COME OUT FLAT VS.
+
+THE CORNERS ARE
+
+[Bees
+
+BRI
+
+FLIP.CB’s HIPS
+
+FFL
+
+QUARTERS CONCEPT IS IN
+
+QUARTERS DUE TO THE
+
+RESPONSIBLE FOR
+
+LEVERAGE WE NEED AT THE
+
+STAYING ON TOP OF #1
+
+THE UNDERCOVERAGE
+
+CATCH POINT AND TO AVOID
+
+AROUND THE “NO COVER
+
+THE SAFETY DRIVING DOWN
+
+AT ANY EXPENSE, SO WE
+
+DIRECTLY INTO #1
+
+WANT TO PRESS THEM
+
+ZONE” (5YDS FROM LOS)
+
+ON QUICK GAME TIMING.
+
+VERTICALLY, FLIP THEIR
+
+IT’S HARD FOR THEM TO
+
+HIPS, THEN BREAK IT OFF. [3 M
+
+A
+
+2A
+
+WIN WITH RHYTHM!
+
+PICK UP QUICK GAME.
+
+(CROSS FACE OF APEX
+
+RUN TO WIN
+
+(WE PREFER BACKSIDE)
+
+VS. QUARTERS
+
+COOMOO
+
+BENDER
+
+LOOKIE
+
+HINGE
+
+eeHhoe
+
+SLANT
+
+THIS IS ALL ABOUT TIMING BETWEEN US
+
+WE ARE ALWAYS WORKING OFF OF THE
+
+AND THE RECEIVER. GOOD TIMING
+
+@
+
+APEX VS. MOFO ZONES IN QUICK GAME
+
+CK OPTION
+
+MEANS THE CB CAN’T RECOVER.
+
+“RAIDER”
+
+“LION”
+
+(ex. 44/66 QUADS)
+
+(ex. 44/88 QUADS)
+
+ATTACK THE IMMEDIATE FLAT AREA
+
+CLEAR OUT THE CORNER & ATTACK THE VOID
+
+THE SPACE OUTSIDE OF
+
+a y
+
+CLEAR THE CORNER AND
+
+THE APEX THAT EXTENDS
+
+ATTACK THE DEPTH & LEVERAGE
+
+UP TO THE CB DEPTH IS
+
+OF THE SAFETY WITHIN THAT
+
+THE “FLAT” AREA FOR US.
+
+VOID OF FIELD SPACE.
+
+10
+
+VOIDED AREA
+
+QUARTERS TYPICALLY
+
+NO DEEP EXCHANGE MEANS
+
+UNDER THE CLEAROUT
+
+SACRIFICES THAT SPACE
+
+THEY CAN’T JUST ZONE IT OFF.
+
+FOR I/S LEVERAGE ON #2
+
+Av
+
+THROW ON TIME AND
+
+AND CUSHION ON #1.
+
+4 STEPS
+
+MAINTAIN
+
+FLAT
+
+TO LEVERAGE!
+
+FLAT
+
+AREA
+
+LEVERAGE
+
+OOOO
+
+PRESSURE
+
+OHIO
+
+‘SINCE QUARTERS PLAYS OUT LIKE
+
+H
+
+OOMOO
+
+Go
+
+MAN COVERAGE ONCE #1 & #2
+
+GO
+
+STAREDOWNS & HESITATIONS ON QUICK
+
+THIS PLAYS OUT ESSENTIALLY THE
+
+DECLARE VERTICAL INTENTIONS,
+
+CAN ALSO APPLY TO THE INSIDE 1/4
+
+OUTS ARE NOT ACCEPTABLE. THROW ON
+
+SAME AS A “Z’ CALL” DOES VS. “FIST” (6)
+
+WE NEED AN ANCHOR FOR THE APEX TO
+
+WITH #2 CLEARING & #1 FILLING, BUT
+
+o)
+
+WHERE WE JUST CLEAR OUT THE CB
+
+PREVENT THEM FROM SINKING TOO DEEP
+
+TIME AND TO LEVERAGE!
+
+AND WORK THE LEVERAGE OF #2.
+
+“OHIO”
+
+(ex. 44/88 QUADS)
+
+“PRESSURE”
+
+(ex. 44/88 QUADS)
+```

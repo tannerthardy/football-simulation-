@@ -1,0 +1,128 @@
+{
+  "schema": "accepted-pr130-merge-v1",
+  "pr": 130,
+  "acceptedDevelop": "0000e560e0dbe31905151465152d412ba838803d",
+  "previousAcceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "reviewedPublication": "691dda69ee613d1c7b0d131870395d581c20524f",
+  "testedCommit": "82fdc799f2981f72089ae7908caa430685dfac18",
+  "actualParents": [
+    "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "691dda69ee613d1c7b0d131870395d581c20524f"
+  ],
+  "actualTree": "ab310a3ee34e17de1aa84e3ed3bfad7ab30d7919",
+  "publicationTree": "ab310a3ee34e17de1aa84e3ed3bfad7ab30d7919",
+  "actualTreeEqualsPublication": true,
+  "protectedSourceTestsSettingsToolingEqualTestedFreeze": true,
+  "included": [
+    {
+      "pr": 128,
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "files": [
+        "src/sim/coverage/defender.ts",
+        "test/quarter-flat-force-support.test.ts"
+      ],
+      "disposition": "Closed as incorporated by extraction; branch/evidence retained."
+    }
+  ],
+  "held": [
+    {
+      "pr": 126,
+      "publication": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "owner": "Run plus original/nonauthor combo reviewer",
+      "nextDecision": "Adjudicate ordinary planned-double command guarantee versus intended installed half; no automatic assertion edit.",
+      "failure": "data/reviews/current/zone-force-integration/initial-failure-disposition.json"
+    },
+    {
+      "pr": 127,
+      "publication": "f6a3c866622404965ee43551e2b9307de84b4db8",
+      "reason": "Adverse ordinary swing approach/entry costs remain."
+    }
+  ],
+  "verification": {
+    "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+    "validationSha256": "98f5ba28cd1ccb0423d5d9dff960824d18af768ff50bf7ae696bfa805655348f",
+    "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+    "outcome": {
+      "typescriptPassed": 1988,
+      "typescriptFiles": 175,
+      "pythonPassed": 145,
+      "typecheck": "pass",
+      "build": "pass",
+      "allPhasesComplete": true,
+      "inputsUnchanged": true,
+      "trackedChanges": [],
+      "skippedCommands": [],
+      "exitCode": 0
+    },
+    "cost": {
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.530480368000001
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.352211209000002
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:all"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 190.507244428
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:data"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7903341729999811
+        }
+      ],
+      "exactCandidateCombinedRuns": 1,
+      "passingCandidateCommandSeconds": 212.180270178,
+      "priorFailedCandidateRuns": 1,
+      "priorFailedCandidateSeconds": 219.552908087,
+      "totalIntegrationCommandSeconds": 431.733178265,
+      "extraFocusedRuns": 0,
+      "extraNativeDiagnostics": 0,
+      "extraPanelRuns": 0,
+      "extraGameCampaigns": 0,
+      "qualification": "The prior combined candidate failed one existing #126 assertion and skipped Python explicitly. Changed #128-only candidate verified once; no unchanged rerun. Existing game/integration/research assertions run normally inside full code verification. Audit metadata receives data/ref/link checks only."
+    },
+    "finalReceipt": "data/reviews/current/zone-force-integration/final-receipt.json",
+    "finalReceiptSha256": "b0cefba1696c1d09b41e2723bafd8680d2d7921608788673afed111694aa2ad4",
+    "noUnchangedMergeRerun": true
+  },
+  "audit": {
+    "publication": "94f25c64cf2c471220f6297cb7cddd86a1fc3d4e",
+    "measuredEngine": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "dataHistoryMerged": false,
+    "runtimeOrAuditToolingImported": false,
+    "dataRefDocChecksOnly": true,
+    "ownerCoordination": [
+      "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789",
+      "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229772574",
+      "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229801617"
+    ]
+  },
+  "consolidatedHandoff": "https://github.com/tannerthardy/football-simulation-/pull/130#issuecomment-6229797813",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "historicalDefaultExperimentalChanges": false,
+  "preservation": "All original branches, adverse/rejected evidence, failed combined candidate and untouched owner checkouts retained."
+}
