@@ -34,6 +34,9 @@ and proposed mechanisms are identified separately.
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
 
+Chapter check catalogs are proposed options, not mandatory test suites. Choose
+the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
+
 For an OL problem, read the shared model, trenches and the relevant defensive
 fit. For a coverage problem, read defense, the WR/QB contracts and the data
 definitions. A coverage bust is not necessarily a bad physical turn; a good

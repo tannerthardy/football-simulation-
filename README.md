@@ -32,6 +32,7 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
   one integration owner verifies the exact combined candidate.
 - **Branches and recovery:** [branch map, cleanup record and pending decisions](docs/BRANCHES.md).
 - **Football handbook and source sheets:** [handbook](docs/football-handbook/README.md),
+  [pulling guards and moving run-game footwork](docs/football-handbook/moving-run-footwork.md),
   [HonestNFL concepts and original diagrams](docs/references/honest-nfl/CONCEPTS.md),
   [reading paths](docs/references/honest-nfl/READING-GUIDE.md).
 - **Evidence and research:** [current receipts](data/reviews/current),
