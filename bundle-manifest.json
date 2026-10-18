@@ -1,0 +1,106 @@
+{
+  "schema": "wrapper-arrival-evidence-v1",
+  "files": [
+    {
+      "path": "b03-launch.json",
+      "bytes": 2322,
+      "sha256": "67d850aecf42de6691e81bc78e38910dbaeffddd14624b4a08744672348fbe62"
+    },
+    {
+      "path": "b03-native/receipt.json",
+      "bytes": 2186,
+      "sha256": "8e552e5418694b1d0af81d8f8e07aa290c4c299a5a4561665ccff9f312c6b48e"
+    },
+    {
+      "path": "b03-native/trace.json.gz",
+      "bytes": 1161125,
+      "sha256": "8d36262e995eb600448f125769ca51ff7c48d95758ad284bfdf70f80876bcd74"
+    },
+    {
+      "path": "candidate-blocking.patch",
+      "bytes": 6227,
+      "sha256": "7e222fd2509e9f5b49d87688557e35fb9a164e27fdf17a691adc811506c650b1"
+    },
+    {
+      "path": "coord-summary.json.gz",
+      "bytes": 3436533,
+      "sha256": "a5fd2489da0a2cf2f4312abfaecf0e2ff292dcd0e44163565004e903804c51a5"
+    },
+    {
+      "path": "early-forecast/receipt.json",
+      "bytes": 2382,
+      "sha256": "5dafbe3c32b918f86181a5449522e308f3835ac00ae13452f4bf67f7b40bd0f5"
+    },
+    {
+      "path": "early-forecast/trace.json.gz",
+      "bytes": 1164845,
+      "sha256": "ddc0cba7cf954858e5adfb76985ae1329615ae938ffc329f6dab197cbe333f05"
+    },
+    {
+      "path": "early-forecast-launch.json",
+      "bytes": 2334,
+      "sha256": "b39eec43a5abf262117d55148eb937e418fb01bc45703b4e9b11006d1e2154d1"
+    },
+    {
+      "path": "early-lead/receipt.json",
+      "bytes": 2382,
+      "sha256": "c2a06a5bb7e5f7420affa95705c61fcf1b004e34cdec4deb5ab12de7d49c1b3b"
+    },
+    {
+      "path": "early-lead/trace.json.gz",
+      "bytes": 1164254,
+      "sha256": "5e1a9c6269401c4257fed2afe2bc5c10b5b36f071c4cd62f73595bece51394a0"
+    },
+    {
+      "path": "early-lead-launch.json",
+      "bytes": 2338,
+      "sha256": "f3ed98bc3cff444e62fb2666d54e31dfa04cdffd4fc4d2a6a2bef2a64b35c16f"
+    },
+    {
+      "path": "forecast-dispatch.patch",
+      "bytes": 632,
+      "sha256": "8c3df65aabf0f5da40b7ad8ce5fcf02c30220b78d982f10cf8ef432734c05e1f"
+    },
+    {
+      "path": "inputs-12.json.gz",
+      "bytes": 10488,
+      "sha256": "ca3dda35ff5f9dfe16595084d4bb5d9f21d0ae72ab760e47c4a125871b47c026"
+    },
+    {
+      "path": "probe-wrapper.mjs",
+      "bytes": 3075,
+      "sha256": "162928bd8b276cc2819e73c4831d6c080cc77d77d76bd3b869ec79f04fcdeb08"
+    },
+    {
+      "path": "puller-access.mjs",
+      "bytes": 7952,
+      "sha256": "1283a416dbb7f7c33b68fb283bb1319373a1eeda16190e50b8bb801484adc195"
+    },
+    {
+      "path": "reduced.json",
+      "bytes": 437782,
+      "sha256": "fc694b72692c98580bcf58e869d3448d2d636c1e28599d406e5eab7b65b50fe0"
+    },
+    {
+      "path": "wrapper-arrival-review.py",
+      "bytes": 6142,
+      "sha256": "e6a261012d3d334eb44d463f1683da6f8ae4064bc5a18196353b514f9649817f"
+    },
+    {
+      "path": "wrapper-early-lead.mjs",
+      "bytes": 8835,
+      "sha256": "ee82a98a6033de5f962aab9b425987c4a075ebd0e0070571be6f26d043e2bfb3"
+    },
+    {
+      "path": "wrapper-preview-launch.json",
+      "bytes": 2199,
+      "sha256": "4b7fe3e5140c4ed98e8af896aa738219baffb156bf91c519407068dae02abba2"
+    },
+    {
+      "path": "wrapper-preview.json",
+      "bytes": 106481,
+      "sha256": "a93f2ef37ffb3231c8a9446bd3cb0aadcb48bc7b55fcf71c1870217c5a5d0a0e"
+    }
+  ],
+  "qualification": "Data-only; never merge this evidence history. Full research prefixes, not restorable midplay checkpoints; reconstruct from frozen setup and source patches."
+}
