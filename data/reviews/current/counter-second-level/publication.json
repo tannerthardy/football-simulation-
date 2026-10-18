@@ -1,0 +1,10 @@
+{
+  "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/146",
+  "evidenceHead": "7a4b55472693a8b09332dc7299521bb6a9200795",
+  "testedCode": "edff961edfa79972aa3d7286d8de3d456c0b47af",
+  "sourceSha256": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+  "integrationHandoff": "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6244002661",
+  "movementBoundaryHandoff": "https://github.com/tannerthardy/football-simulation-/pull/137#issuecomment-6244002836",
+  "lifecycleEvidenceHandoff": "https://github.com/tannerthardy/football-simulation-/pull/138#issuecomment-6244002956",
+  "status": "draft; independent GH review and PR140 prerequisite outstanding; no automatic calling or author approval"
+}

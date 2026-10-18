@@ -2,6 +2,8 @@
 
 ## Counter second-level access — 2026-10-18 UTC
 
+[Draft #146](https://github.com/tannerthardy/football-simulation-/pull/146), evidence pin `7a4b554`; [recorded direct owner handoffs](../data/reviews/current/counter-second-level/publication.json).
+
 Run owns `codex/counter-second-level`; tested code `edff961`, source `73c6977`. Reconciled accepted documentation-only `914f4d56a3b7ef2845ff0208f55d626c0ff5f880`, queue `e8d806b940a84c7cff7e5ee066022079723c78ef`; runtime equals original host0000e560. Reviewed new moving-run-footwork GT/GH sections. Final scope is explicit GH tag/count/achieved-depth/acquired kick-surface and traffic memory only, with exact #140 runtime prerequisite reused; automatic calling unchanged. GT depth/count/entry trials are parked. Shared movement/spacing, carrier navigation, helper release, lifecycle, physics and capacities unchanged; #143 separate.54 focused/typecheck pass; final six native controls2.695s, all41 continuations19.365s/zero games. Sniffer and wing Over H/Will work; Under interior loss and strong RT/RB traffic preserved. GT and strong GH also demonstrate useful real body protection without prolonged hands. [Report, films and review boundary](reviews/counter-second-level/README.md). Integration owns final combined verification.
 
 ## Handbook/reference documentation integration
