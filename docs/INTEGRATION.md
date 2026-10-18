@@ -49,6 +49,13 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+### Current runtime intake
+
+Integration is preparing independently supported126/132/133/134/135/136/138/140/143/146/147 from accepted914f4d5. [Exact pins, minimal dependencies, nonauthor decisions, overlap boundaries and preserved risks](../data/reviews/current/controller-checkpoint/intake.json). #126’s old strict-command conflict is now independently adjudicated at7f75b08; original failed receipt remains. #140/#143/#146 have pinned nonauthor review0319d2a; GH requires140 and remains outside automatic calling. Integration independently reviews the narrow information/continuation/result/support work and owns one exact combined verification. Reuse component receipts; no new native/panel/game campaign.
+
+Held independently:137/148/149/150 await Run/nonauthor controller dispositions;141 has three existing-contract reconciliations/comeback tradeoff;131 is a pure helper without Catching caller hookup. Tooling101/106 and experiments retain their existing holds. A blocked item holds itself. [Posted Run review task](https://github.com/tannerthardy/football-simulation-/pull/150#issuecomment-6245714067). Older checkpoint dispositions below retain their historical evidence; this intake is current.
+
+
 **`develop@914f4d56a3b7ef2845ff0208f55d626c0ff5f880`** is accepted through documentation-only
 [#144](https://github.com/tannerthardy/football-simulation-/pull/144) and
 [#145](https://github.com/tannerthardy/football-simulation-/pull/145).
@@ -753,7 +760,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
 | Adopted | #128@ec2a2e9 via #130, passing82fdc79, actual0000e560; Integration | Delivered/closed by extraction; branch/evidence retained; no unchanged rerun. |
-| Held by exact contract failure | #126@b3de4f5; Run + original nonauthor reviewer | Adjudicate zone-reach planned-double ordinary command versus installed-half contract. Preserve failure; no automatic assertion relaxation. |
+| Contract gate resolved; verification pending | #126@7f75b08; original nonauthor exact-diff approval | Reviewed strict installed-half assertion; no production change versus original126. Original failed receipt remains. |
 | Held by adverse football evidence | #127@f6a3c86; Catching | Acquired-cue/own-preview feasible wheel-versus-swing objective, preserving successful swing; no broad approach promotion. |
 | Independent audit work, not ready patches | RUN-006/CTRL-001, INFO-002/003, BALL-001; owners above | Publish small reviewed scopes and compatible focused receipts. Joint native evidence gates broken-play claims, not independent implementation. |
 | Existing holds | Tooling101/106; reference108; optional115,116/119 and experiments | Existing owner repair/review decisions; no collector/game/suite while waiting. |

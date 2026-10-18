@@ -1,0 +1,202 @@
+{
+  "schema": "accepted-controller-checkpoint-intake-v1",
+  "acceptedBase": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "queueAtIntake": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "question": "Do the independently supported information, continuation, accounting and run-controller contracts compose on current accepted source without violating preserved correctness or settings?",
+  "included": [
+    {
+      "pr": 126,
+      "head": "7f75b087e6f9221495fed1a810e63254666d4265",
+      "branch": "codex/zone-combo-surface",
+      "title": "Align stretch-combination approaches and initial contact references",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Original nonauthor contract adjudication plus Integration source review"
+    },
+    {
+      "pr": 132,
+      "head": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "branch": "codex/acquired-qb-continuation",
+      "title": "Accept personally acquired committed QB pursuit in man coverage",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 133,
+      "head": "60430be909997546f78c681891be8a350bbd447b",
+      "branch": "codex/game-result-accounting",
+      "title": "Preserve team turnover, safety sack and scramble pressure credit",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 134,
+      "head": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "branch": "codex/acquired-mesh-contradiction",
+      "title": "Retire contradicted unkeyed mesh expectation from acquired cues",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 135,
+      "head": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "branch": "codex/qb-receiver-estimate",
+      "title": "Use acquired receiver estimates for QB evaluation and release forecasts",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 136,
+      "head": "97ba574a16034309db5dd5be8259feda6b378a57",
+      "branch": "codex/run-failed-exchange",
+      "title": "Continue an observed passed exchange with retained QB carry",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 138,
+      "head": "d398edf50af0101acd6d49de991e76d588d3450e",
+      "branch": "codex/block-shed-lifecycle",
+      "title": "Let contact support work off toward personally acquired runners",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 140,
+      "head": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+      "branch": "codex/puller-access",
+      "title": "Use acquired information for wrapper jobs; preserve puller diagnostic limits",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 143,
+      "head": "572c07d53247da02d858768f654a900abe147ce8",
+      "branch": "codex/counter-count-kick",
+      "title": "Fit cleared kick pullers to the acquired end",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 146,
+      "head": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "branch": "codex/counter-second-level",
+      "title": "Install explicit Counter GH with acquired block-surface and traffic reads",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 147,
+      "head": "0319d2a9377b51ddde49ee1efd91c4edc5f28257",
+      "branch": "codex/blocker-work-picture",
+      "title": "Use acquired carrier pictures for free run-blocker work",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    }
+  ],
+  "held": [
+    {
+      "pr": 131,
+      "head": "2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e",
+      "branch": "codex/catch-opportunity-physics",
+      "title": "Provide same-time catch-opportunity geometry",
+      "reason": "Pure helper only; Catching caller/semantic hookup remains unavailable",
+      "owner": "Physics+Catching"
+    },
+    {
+      "pr": 137,
+      "head": "cdaeff43b4ce783abe5e8590caf551f2d5f97b41",
+      "branch": "codex/receiver-run-assignments",
+      "title": "Keep shallow run threats eligible and allocate receiver blocks together",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 141,
+      "head": "055f78ded6821336ce90c708b892e881ea9b7f08",
+      "branch": "codex/vertical-roof-budget",
+      "title": "Keep deep coverage in phase through acquired verticals and plants",
+      "reason": "Three existing assertions and comeback tradeoff need independent coverage-contract disposition",
+      "owner": "Nonauthor coverage/controller reviewer"
+    },
+    {
+      "pr": 148,
+      "head": "6fd13e4782a08497383912272b693e6a59747d80",
+      "branch": "codex/stalk-moving-surface",
+      "title": "Meet closing perimeter defenders with an acquired moving stalk fit",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 149,
+      "head": "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+      "branch": "codex/stalk-strike-access",
+      "title": "Keep inside stalk responsibility and close within real strike range",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 150,
+      "head": "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+      "branch": "codex/climb-objective-access",
+      "title": "Route assigned climbs around acquired first-level traffic",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    }
+  ],
+  "dependencies": {
+    "126": "117/122 already accepted; exact strict assertion correction independently approved, runtime unchanged from original reviewed126",
+    "135": "Immutable installed prior and acquired observer forecast only; residual QB readers remain explicit.",
+    "146": "Exact140 prerequisite. Manual export only, outside RUN_CONCEPTS/automatic calling. No143/held99 dependency.",
+    "147": "Independent acquired work/fallback reference; no GH/GT/count/departure/movement changes.",
+    "132+134+136": "Independent implementations; reuse composed P087/P140 source-qualified native receipt. No new combined-ending claim."
+  },
+  "overlaps": {
+    "blocking.ts": [
+      "126 initial combo surface",
+      "140 named wrapper/near-fit",
+      "143 cleared kick conditional only",
+      "146 explicit GH installation/acquired guard/end/traffic",
+      "147 findWork/no-target reference"
+    ],
+    "qb.ts": [
+      "135 QBPass evaluation/release",
+      "136 QBHandoff continuation"
+    ],
+    "playbook/types.ts": [
+      "146 H pull tag only"
+    ],
+    "engagement.ts": [
+      "138 contact support aim/mode only, no physical law/capacity/default change"
+    ]
+  },
+  "specificComposition": "Preserve140's lead-only distance admission when adding143's cleared-kick allowance. GH behavior is scoped to pullSurface; legacy GT branch stays. Richer143/146 puller fixture preserves all140 rows exactly. All other unshared protected blobs must match reviewed publications.",
+  "limits": [
+    "Information corrections do not establish overall football quality, population rates or NFL calibration.",
+    "Preserve126 earlier Mike/depth/short OZ;136 composed86.07kg·yd/s LT/RB impact and nonmatched P140 context.",
+    "133 goal-plane safety credit preserves physical endX; archived observations/index not silently rewritten.",
+    "135 control-fixture anticipation, nominal fresh forecast, conditional activation/unknown progress and residual private consumers remain limitations.",
+    "138 long Y/SS retention/reacquisition is unresolved; a censored SS does not prove rescue.",
+    "143 late K02/K03 impacts, GH Under C/DT loss/strong RT-RB impact5s censor and real body blocks without persistent hands remain.",
+    "147 finite-age/source-qualified evidence, leftover awareness/availability debt and existing teammate impacts remain."
+  ],
+  "verification": {
+    "owner": "Integration",
+    "fullCombinedRunsPlanned": 1,
+    "contributorFocusedReceipts": "Reuse with actual source/flags/operator qualifications; overlapping counts not added as unique.",
+    "additionalNativeRuns": 0,
+    "additionalPanels": 0,
+    "additionalGameCampaigns": 0,
+    "node": "22.23.3",
+    "flags": "44 accepted settings;RUN_CONTACT_COMPONENTS=1;CF_FLOW unset",
+    "policy": "docs/TESTING_COSTS.md"
+  },
+  "exclusions": [
+    "131 unconnected geometry helper",
+    "137/148/149/150 pending independent adjudications",
+    "141 unresolved deep-coverage contract changes",
+    "101/106 tooling accounting holds",
+    "99/114/115/116/119/127 and other held experimental/default branches",
+    "all data-only evidence histories"
+  ],
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1"
+}
