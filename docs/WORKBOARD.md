@@ -13,6 +13,22 @@ retains those implementation boundaries; Integration owns combined verification.
 Preserve installed lane and use acquired possession/motion, with installed
 fallback when no carrier is acquired. No truth fallback or extra sightings/RNG.
 
+Completed code964683a/sourceac0c6df: seven new acquired-work/controller checks plus
+17 retarget controls and typecheck pass. Four native pairs (two existing frozen
+Counter inputs, fresh631/632 Inside Zone and Counter inputs),8 continuations/
+4.826088 collector seconds: runner/RNG/contact events and loaded membership
+preserved; four endings/four5s censors. Fresh Counter has small retained force/
+late event-position differences, no new lost loaded interval or teammate impact.
+This is an information correction, not a demonstrated yardage gain. Original
+three pairs source2b56869 remain explicitly compatible via always-present
+production observation age; exact final-source F01 activates work reference.
+Nonauthor controller review approves pinned #140/#143/explicit #146 scopes,
+retaining #146 prerequisite/manual-only calling and all adverse limits; no suite
+repeat. Mechanical overlap applied/verified separately; Integration owns combined
+verification. [Candidate/evidence](reviews/blocker-work-picture.md),
+[separate Run review](reviews/run-blocker-controller-review-2026-10-18.md).
+No helper/spacing/physics/default/automatic-calling change; scope released.
+
 ## Handbook/reference documentation integration
 
 Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).

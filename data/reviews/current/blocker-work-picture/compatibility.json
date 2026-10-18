@@ -1,0 +1,8 @@
+{
+  "testedCode": "964683aa084b11f42c395285cb7e4747d7132e77",
+  "sourceFinal": "ac0c6df2bec5fffd3ef4652007d50f9ba8f551a9d2d01211916cbf4777642aa2",
+  "sourceInitial": "2b56869c0893bd6be2f34b2f3536d4e8f3414d0116fed4686a4aafa95afb9d10",
+  "difference": "Only missing optional observation age changed from0 toInfinity for conflicting positive evidence. Production PerceptionBuffer.perceive always returns finite age:lag. Three initial native pairs remain compatible; F01 and final24 focused/typecheck use exact final source.",
+  "perceptionSha256": "c3ac1392222789fd8dd597b0f151588f3eda6b15c8e8841113af670216df232e",
+  "collectorDifference": "Candidate adds workPicture metadata only; see/update/World query and execution order retained. The production source separately adds the specified acquired work queries."
+}

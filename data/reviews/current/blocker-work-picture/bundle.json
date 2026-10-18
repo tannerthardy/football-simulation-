@@ -1,0 +1,10 @@
+{
+  "purpose": "Data-only blocker work evidence; do not merge",
+  "evidenceCommit": "94c8988d41c86d2ffea85f407cd5d50d352f22d2",
+  "evidenceRef": "refs/heads/evidence/blocker-work-picture-2026-10-18",
+  "bytes": 13387869,
+  "sha256": "52beaf1332e5bb2fbd0e1c8d42fb0c391d2d87a7046e6e133df729d2f84b8c3d",
+  "physicalFiles": 32,
+  "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/94c8988d41c86d2ffea85f407cd5d50d352f22d2/evidence.tar.gz",
+  "manifestUrl": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/94c8988d41c86d2ffea85f407cd5d50d352f22d2/bundle-manifest.json"
+}

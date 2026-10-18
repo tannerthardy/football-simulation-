@@ -1,0 +1,26 @@
+[
+  {
+    "pr": 140,
+    "pin": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+    "sourceBefore": "e0d45bd932d6334485f0cbbc1b3ad0dc7a3fbecc24931fa52baec08077916330",
+    "sourceAfter": "b2023174375963e26d27adfb6ffa890a5b9aafb3d68a443f6e8b45a4b7c11a05",
+    "applied": true,
+    "qualification": "Mechanical extraction only; no combined runtime verification or integration adoption."
+  },
+  {
+    "pr": 143,
+    "pin": "572c07d53247da02d858768f654a900abe147ce8",
+    "sourceBefore": "5734bb3f2f8d702e1e8a93ff0d1f1c19eca1cdba3a2406e72de7ae9c5197ccee",
+    "sourceAfter": "5956c35555bed063d932c3abc08d0a9c6b79eafdb0e84e0072e7517ef03fd907",
+    "applied": true,
+    "qualification": "Mechanical extraction only; no combined runtime verification or integration adoption."
+  },
+  {
+    "pr": 146,
+    "pin": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+    "sourceBefore": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+    "sourceAfter": "0a247c6ef5b681a1ea511bc51ea32754d190b4b144d84d1371b44c8cc00a7573",
+    "applied": true,
+    "qualification": "Mechanical extraction only; no combined runtime verification or integration adoption."
+  }
+]
