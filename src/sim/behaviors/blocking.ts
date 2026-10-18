@@ -409,6 +409,8 @@ export interface RunBlockPlan {
   pullPath?: Vec2[];
   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
   pullRole?: 'kick' | 'lead' | 'trap';
+  /** This exact installed perimeter defender uses a moving near-surface stalk. */
+  perimeterStalk?: Agent;
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
@@ -687,7 +689,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         }
       }
     }
-    plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })) });
+    plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })),
+      perimeterStalk: best && db.includes(best) ? best : undefined });
   }
   // Save the finalized installation, including backside cutoff and Draw's
   // pass-influence conversion, rather than an intermediate owner label.
@@ -878,8 +881,17 @@ export class RunBlocker implements Behavior {
       // Stay square on the DB until the run comes; engage when he closes.
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
-      const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
-      return goTo(a, fit, { speed: 0.85, through: 1 });
+      const seen = sim.see(a, target);
+      if (plan.perimeterStalk === target) {
+        const capacity = a.body.support
+          ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+        const surface = a.profile.radius + target.profile.radius + .15;
+        const aim = { x: seen.pos.x-plan.drive.x*surface, y: seen.pos.y-plan.drive.y*surface };
+        return { vel: movingArrivalVelocity(a.body, aim, seen.vel, a.profile.vmax * .85, .1, 1, 1, capacity),
+          facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
+      }
+      const fit = { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
+      return goTo(a, fit, { speed: .85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
   }

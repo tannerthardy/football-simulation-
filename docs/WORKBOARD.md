@@ -1,5 +1,35 @@
 # Current work ownership
 
+## Catching: free zone approach versus acquired responsibility — 2026-10-18 UTC
+
+Branch `codex/stalk-moving-surface` (initial local name zone-track-recovery), accepted914f4d56a3b7ef2845ff0208f55d626c0ff5f880 /
+canonical queuee8d806b940a84c7cff7e5ee066022079723c78ef. User explicitly authorizes
+expanded diagnostics to find consequential dumb blocking. Start with28 fixed
+ordinary native encounters across zone direction/front/formation plus gap/Duo
+controls, full all22 consumed cues/raw/final/achieved movement. Own only free
+zoneFlow-to-ordinary-fit dispatch and any minimal acquired-responsibility helper,
+with targeted tests/film/evidence. Diagnose useful threat/access before changing
+behavior; a backside defender being outflanked is not automatically a miss.
+No #116 loaded runoff, #126 contact frame/helper release, #146 GH/GT counts/routes,
+#147 work-reference, carrier navigation, shared spacing/movement, or Physics
+change. Coordinate blocking.ts with Run; preserve prior adverse evidence.
+
+Discovery completed28 native prefixes/source5b710a1b (27 endings/one5s censor).
+No screened lateral-passage target was first runner contact, so no zone recovery
+rule is justified. Pivot inside the same investigation: four distinct CB first
+contacts have assigned X/Z stalks with no body/hand acquisition before arrival;
+the fixed forward-clamped stationary fit fails to follow their downhill motion.
+Own only RunBlocker.stalk movement; reuse exact #29 acquired-position extraction
+as its explicit information-only arm. Test one moving-body approach with existing
+movement law/.85 speed/unchanged physical acquisition, plus successful H/LB and
+patient/late-cut controls. Assignment137, release/physics/movement modifiers stay
+separate. This supersedes the earlier tentative zoneFlow-edit boundary; zoneFlow
+will not be changed without new causal evidence. Final candidate tags the exact
+installed `db`-group stalk target; it uses its acquired moving near surface.
+Interior LB help retains #29's ordinary approach, not the rejected broad center/
+near-surface policy. Success transfer and F01 private same-tick job-drop witness
+stay visible; check any named-stalk continuity correction independently.
+
 ## Handbook/reference documentation integration
 
 Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
