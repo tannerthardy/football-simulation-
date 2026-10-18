@@ -1,0 +1,1030 @@
+{
+  "accepted": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "queue": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "testedCode": "edff961edfa79972aa3d7286d8de3d456c0b47af",
+  "sourceSha256": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+  "node": "v22.23.3",
+  "newNativeContinuations": 41,
+  "newNativeSeconds": 19.365195993,
+  "cachedNativeCases": 3,
+  "games": 0,
+  "GTStrongHistoryIdentical": true,
+  "sources": {
+    "baseline": {
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "patch": "data/reviews/current/counter-second-level/sources/baseline.patch",
+      "sha256": "b0bb638f57dc3460003716e54ce90cbcacc255e653844f68e17b82f629a622cc"
+    },
+    "count": {
+      "sourceSha256": "3af84c6529d6ce8afbb155263f6ac4fd861ee3c74e18a30cd2559b8e143a75cd",
+      "patch": "data/reviews/current/counter-second-level/sources/count.patch",
+      "sha256": "db459fae9661406237ffdb303b6030ee6dbc5c0f051c07c254bbafc84b822d2a"
+    },
+    "count-entry": {
+      "sourceSha256": "c0a54fa025f1fae2b5d854c9502d61be69eca8a0b49213524145aa06222fea5c",
+      "patch": "data/reviews/current/counter-second-level/sources/count-entry.patch",
+      "sha256": "385586fd23c7d8d9b3171019508e0337fe11e0a85ac6355e58902a9026308061"
+    },
+    "drop": {
+      "sourceSha256": "28bc85c8ab700b7fe4f83be50503f093b9e3d65e8d8c41c7286cedaa688d7495",
+      "patch": "data/reviews/current/counter-second-level/sources/drop.patch",
+      "sha256": "4c23d18a23cbc89adcf340fa01fc5b6125bc08544a8e3bb3331db34dd5f89da4"
+    },
+    "early": {
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "patch": "data/reviews/current/counter-second-level/sources/early.patch",
+      "sha256": "b0bb638f57dc3460003716e54ce90cbcacc255e653844f68e17b82f629a622cc"
+    },
+    "entry": {
+      "sourceSha256": "7c2f1fec6b6fbbbbf0c4d00ab605b1b5f9ca6ef6974173eb043f3132e9dd1d91",
+      "patch": "data/reviews/current/counter-second-level/sources/entry.patch",
+      "sha256": "54f165a805ce6ec7cc62958a47cdbcff959bf87131b92b2245ac4b88f1f7f791"
+    },
+    "final": {
+      "sourceSha256": "0987e40f04cc30b44be6598de20f260909fd6fcd45b2d332fb95d20190c38504",
+      "patch": "data/reviews/current/counter-second-level/sources/final.patch",
+      "sha256": "4d69101f91e63b7a173349a124a14ad2053b6c1e00dd4dd71004e581587f4174"
+    },
+    "gh": {
+      "sourceSha256": "ef5784d9ccd93f918a732563cd5fb701f2db7d1452cc30d10dd7afde03c8fa8c",
+      "patch": "data/reviews/current/counter-second-level/sources/gh.patch",
+      "sha256": "8cc0db05c2c38da5dbec8216265d0d9026731a955b00ed953cbd43d22dca33d8"
+    },
+    "gh-acquired": {
+      "sourceSha256": "63d74a9388c0e33b1550f958f996f2210417b5ebe90a8b25cd19b6908d3198d8",
+      "patch": "data/reviews/current/counter-second-level/sources/gh-acquired.patch",
+      "sha256": "c50d1130009509fecfc2eeb48a2f6da49188e5b4e0294760c87b16bdada5c3d3"
+    },
+    "gh-final": {
+      "sourceSha256": "5856d0ab786c87e320893e1da275243362db7fa2822b8d007796e4bd050a256f",
+      "patch": "data/reviews/current/counter-second-level/sources/gh-final.patch",
+      "sha256": "5ecdce8acce1b322cf2e877977a5621ced32ba70227a66c1aac7cd0b7ac42515"
+    },
+    "gh-entry": {
+      "sourceSha256": "f51fc369caf4db8a48253adbdd79cacc025595dc820025beda082e19aa1e7cb5",
+      "patch": "data/reviews/current/counter-second-level/sources/gh-entry.patch",
+      "sha256": "ff1974489cd9cf38eaf2fdab641943a84fed8820b4ff5b50c937793415812fd0"
+    },
+    "gh-entry-inspect": {
+      "sourceSha256": "f51fc369caf4db8a48253adbdd79cacc025595dc820025beda082e19aa1e7cb5",
+      "patch": "data/reviews/current/counter-second-level/sources/gh-entry-inspect.patch",
+      "sha256": "ff1974489cd9cf38eaf2fdab641943a84fed8820b4ff5b50c937793415812fd0"
+    },
+    "candidate": {
+      "sourceSha256": "8c3ff51d9752772ac5d2feec12bc4bd5bb70e8e09cd51a0dce41a576ac1463f6",
+      "patch": "data/reviews/current/counter-second-level/sources/candidate.patch",
+      "sha256": "eccf4c0513cb04a619b96568b4d33f2a90f325aec61a4eacc22bec175a881d15"
+    },
+    "memory": {
+      "sourceSha256": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+      "patch": "data/reviews/current/counter-second-level/sources/memory.patch",
+      "sha256": "effc58f21c25f5a88e49f379c91df9ff00443e68fda83a433b5b45962aaf514f"
+    }
+  },
+  "arms": {
+    "baseline": {
+      "traceSha256": "7a32bac826300ab3011837cd57e97f42b9284f6db233f0e063b391e1630be7ae",
+      "cases": [
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        },
+        {
+          "id": "K06",
+          "inputSha256": "edcd07190d9f0ca74818601eb138d57e348b30b58aa7a8c7147573992b8f36a6"
+        }
+      ],
+      "elapsedSeconds": 1.0386498899999999,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "count": {
+      "traceSha256": "b806acd042d5523814669a23cc88fa0f208072dddfc3a0a1e5c546d78d319595",
+      "cases": [
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        },
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        }
+      ],
+      "elapsedSeconds": 1.059685809,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "count-entry": {
+      "traceSha256": "6fb3c54302715b232cee8e36214fd0df86cb478dcef90da19280d9009d99719e",
+      "cases": [
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        },
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        }
+      ],
+      "elapsedSeconds": 1.350849932,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "drop": {
+      "traceSha256": "dd8516d7a161af6cf745e0026554cc44e805cf588dee38ffe045944e6a6b1a11",
+      "cases": [
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        },
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        }
+      ],
+      "elapsedSeconds": 0.962864107,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "early": {
+      "traceSha256": "0e86828584740c96f11d54edb197c60b8ca020b647cd34f4cfef48bf5fb65ec0",
+      "cases": [
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        }
+      ],
+      "elapsedSeconds": 0.6538508470000001,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "entry": {
+      "traceSha256": "a0679d37a8a4337bb07bd5dc762a2cc4502cf7be6ab998e5e146bd0dbd8b00b5",
+      "cases": [
+        {
+          "id": "K05",
+          "inputSha256": "f1e2bc2e32ef5fdc27fff5e27a3c02be32e95dcf823f6818788a204d90ccb593"
+        },
+        {
+          "id": "K01",
+          "inputSha256": "e01c15722e9b354561eaed6dd3117d8a4fa758a5517be6c2fe801bf17c5e5e87"
+        }
+      ],
+      "elapsedSeconds": 1.050849874,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "final": {
+      "traceSha256": "71f6eb7719f2a9916059e2962737dd9507260628395530653719518917625416",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        },
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        },
+        {
+          "id": "GH04",
+          "inputSha256": "5bd6c077c3170d4bbf009c116532f7792d9275c34a2db611ae63a88f96e983fe"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "GT01",
+          "inputSha256": "b03b1172a17478a75e293323a3dae279437c77263fff465ceb5be3e8f831dec2"
+        }
+      ],
+      "elapsedSeconds": 2.323014698,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "gh": {
+      "traceSha256": "591c84c5935e4cd635a716bb9982b5830785be1204d6728f5289a69ed7788672",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        }
+      ],
+      "elapsedSeconds": 1.103235527,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "gh-acquired": {
+      "traceSha256": "56a96abe77fe948d1c8d260585b75d8701076a58d39b4e9dfad7ffce52d3a8ce",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        },
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        }
+      ],
+      "elapsedSeconds": 1.53117957,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "gh-final": {
+      "traceSha256": "b7a171246db10f618931c56f11874c50e4eb0dd25df5d43e67a980227cdea666",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        },
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        }
+      ],
+      "elapsedSeconds": 1.463500276,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "gh-entry": {
+      "traceSha256": "42bd629d800fa670313f95f3b0adb0ba8cfee58f9f7bcabee8731401aea7d354",
+      "cases": [
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        },
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        }
+      ],
+      "elapsedSeconds": 1.1789693169999997,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "gh-entry-inspect": {
+      "traceSha256": "abf57ff71294a04277c1592f9ddfcc4e1ddb443b35f980e7afd0943dddf4bb12",
+      "cases": [
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        }
+      ],
+      "elapsedSeconds": 0.375094704,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "candidate": {
+      "traceSha256": "e97a476a3cb60a07244cf64bdfdd4ded05844252fa8d30a0e1919813fc15cc82",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        },
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        },
+        {
+          "id": "GH04",
+          "inputSha256": "5bd6c077c3170d4bbf009c116532f7792d9275c34a2db611ae63a88f96e983fe"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "GT01",
+          "inputSha256": "b03b1172a17478a75e293323a3dae279437c77263fff465ceb5be3e8f831dec2"
+        }
+      ],
+      "elapsedSeconds": 2.5788547820000005,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    },
+    "memory": {
+      "traceSha256": "c0915bd32136d6035f76dd69c850b74532bec44e0f99dcbb5d38f6d9abd830ef",
+      "cases": [
+        {
+          "id": "GH01",
+          "inputSha256": "833cc4fa252b2ae253c6ee98d040e792fbbbff630162d0eb7e3ef9e4bbdf039b"
+        },
+        {
+          "id": "GH02",
+          "inputSha256": "230d15f68910a99f409b4696a9a5e0ae5fe7d02b363f574f5e7a690c83d84881"
+        },
+        {
+          "id": "GH03",
+          "inputSha256": "d6ddc777f3cff563452a778cfc1977e560f2e78fe7b4ab8702f06e6ba17adbf9"
+        },
+        {
+          "id": "GH04",
+          "inputSha256": "5bd6c077c3170d4bbf009c116532f7792d9275c34a2db611ae63a88f96e983fe"
+        },
+        {
+          "id": "K03",
+          "inputSha256": "8efd6a672ce474b37ac2a39047976e1cc308466ceeee072fceaece75451d274c"
+        },
+        {
+          "id": "GT01",
+          "inputSha256": "b03b1172a17478a75e293323a3dae279437c77263fff465ceb5be3e8f831dec2"
+        }
+      ],
+      "elapsedSeconds": 2.69459666,
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      }
+    }
+  },
+  "collectorVersions": {
+    "original": {
+      "path": "data/reviews/current/counter-second-level/sources/collector-original.mjs.txt",
+      "sha256": "3ba0802c1f8b09be991a6a47f5d50f9f35c1cf750715fa2d7d09bbf7fa118656"
+    },
+    "before-entry-trace": {
+      "path": "data/reviews/current/counter-second-level/sources/collector-before-entry-trace.mjs.txt",
+      "sha256": "7634c779131cb7772a4a0f475940b56740b742d1e18b9c63e09ffc72beee63f9"
+    },
+    "published": {
+      "path": "scripts/diag/puller-access.mjs",
+      "sha256": "b1c6cb6355d6ad04a4d9b1d87b538722f53a66640718c3d730a364c3e6a0b6c5"
+    }
+  },
+  "checks": {
+    "focused": {
+      "receipt": "ready-focused.json",
+      "source": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+      "seconds": 1.9055616229999999,
+      "exit": 0
+    },
+    "typecheck": {
+      "receipt": "memory-typecheck.json",
+      "source": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+      "seconds": 9.232185668,
+      "exit": 0
+    }
+  },
+  "fixedSettingsCount": 44,
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "recommendation": "Independent review of explicit GH after PR140; automatic calling stays off. GH is an alternate installation, not proof of a universal GT failure. Current accepted documentation is merged; protected runtime is unchanged.",
+  "nextBlocker": "GT installed second-level count and physically attainable wrapper entry remain unresolved. GH strong H noncontact is not a proven miss: RT body contact knocks Mike down before runner arrival; late RT/RB traffic remains.",
+  "finalArm": "memory",
+  "finalNativeSeconds": 2.69459666,
+  "currentAccepted": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "currentQueue": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "runtimeEquivalentToAccepted0000e56": true,
+  "offlineParser": "ijson3.6.0; streamed one native row at a time",
+  "qualification": "Final candidate is memory. Earlier final/candidate arm names identify historical prototype stages. GT body protection is real; missing hands alone is not a defect. No automatic calling.",
+  "allCommandSeconds": 69.719684289,
+  "comparisonHost": "0000e560e0dbe31905151465152d412ba838803d",
+  "comparisonQueue": "aa9ed35272cc334ce0a7c79eec709970e5c628fc",
+  "sourcePatchBase": "0000e560e0dbe31905151465152d412ba838803d"
+}

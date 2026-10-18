@@ -1,0 +1,149 @@
+{
+  "case": "GH04",
+  "t": 1.4,
+  "oldSource": "8c3ff51d9752772ac5d2feec12bc4bd5bb70e8e09cd51a0dce41a576ac1463f6",
+  "correctedSource": "73c69771e61a0eac975bb17ec630e0fd40bac95b5ad16f291b29b15c3120521b",
+  "oldOwnBody": {
+    "pos": {
+      "x": 38.59981172984637,
+      "y": 25.348599293467494
+    },
+    "vel": {
+      "x": 0.04156082755698158,
+      "y": 4.04289855288962
+    },
+    "facing": 1.564858814294013,
+    "energy": 0.987507708587469,
+    "profile": {
+      "vmax": 9.055265422916397,
+      "tau": 1.4446410819119608,
+      "brake": 5.950102040816325,
+      "lateral": 6.054826530612246,
+      "turnRate": 8.12,
+      "backpedal": 0.5306122448979592,
+      "shuffle": 0.5224000000000001,
+      "massKg": 114.30527724000001,
+      "heightYd": 2.1555555555555554,
+      "radius": 0.3054545454545454,
+      "reach": 1.0456944444444445,
+      "maxCatchHeight": 3.6068888888888893,
+      "reactReach": 3.144388888888889,
+      "reactionTime": 0.24522448979591838,
+      "power": 118.1368367883,
+      "balance": 0.2653061224489796,
+      "bend": 0.401061224489796,
+      "stepSpeed": 3.2791836734693875,
+      "getUp": 0.996
+    },
+    "support": {
+      "xi": {
+        "x": 0,
+        "y": 0
+      },
+      "state": "up",
+      "since": null,
+      "posture": 0.1975744508275028,
+      "lean": {
+        "x": 0,
+        "y": 0
+      },
+      "load": {
+        "x": 0,
+        "y": 0
+      },
+      "felt": {
+        "x": 0,
+        "y": 0
+      },
+      "feetLock": 0,
+      "feetVel": {
+        "x": 0,
+        "y": 0
+      },
+      "fall": {
+        "x": 0,
+        "y": 0
+      },
+      "peak": 0,
+      "out": 0,
+      "feltTip": {
+        "x": 0,
+        "y": 0
+      },
+      "causes": {
+        "contact": 0,
+        "legs": 0,
+        "overspeed": 0
+      },
+      "accel": {
+        "x": 0.5763405386146239,
+        "y": 0.19774589317351438
+      },
+      "tipAccel": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "spin": -0.3252399688513208,
+    "squeeze": 0,
+    "sprintLoad": 0,
+    "squeezeHeading": 1.5609464876222021
+  },
+  "correctedOwnBody": {
+    "pos": {
+      "x": 38.59981172984637,
+      "y": 25.348599293467494
+    },
+    "vel": {
+      "x": 0.04156082755698158,
+      "y": 4.04289855288962
+    },
+    "facing": 1.564858814294013
+  },
+  "lastGuardPicture": {
+    "t": 1.25,
+    "a": 10,
+    "b": 5,
+    "consumer": 10,
+    "picture": {
+      "pos": {
+        "x": 38.63742567440466,
+        "y": 26.536663214558526
+      },
+      "vel": {
+        "x": -1.2371770399032698,
+        "y": 1.7815592571457985
+      },
+      "stance": "low",
+      "facing": -4.959769987023169,
+      "age": 0.05,
+      "pose": "up",
+      "carrying": false
+    }
+  },
+  "oldRequest": {
+    "vel": {
+      "x": -0.6703168374964128,
+      "y": 5.307761591537676
+    }
+  },
+  "correctedRequest": {
+    "vel": {
+      "x": 0.0003660882330701618,
+      "y": 5.388943325471758
+    }
+  },
+  "oldFinalRequest": {
+    "vel": {
+      "x": -0.5398761289665677,
+      "y": 3.7726215842192867
+    }
+  },
+  "correctedFinalRequest": {
+    "vel": {
+      "x": 0.05609845447433026,
+      "y": 4.347591310188742
+    }
+  },
+  "qualification": "Position-only cache was an intermediate GH implementation regression, not a pre-existing accepted-engine defect. Advance time held after delivery, not observation age twice."
+}
