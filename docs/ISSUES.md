@@ -10,6 +10,8 @@ Older entries retain their dated integration history; consult the canonical
 The previous register header's `90edc525` was the accepted reference at its publication,
 not the current development instruction.
 
+Latest accepted develop is `914f4d56a3b7ef2845ff0208f55d626c0ff5f880` through documentation-only #144/#145. Runtime and the issue dispositions below remain unchanged from0000e560; handbook proposals are not adopted fixes.
+
 Current runtime disposition: #128 acquired quarter-flat force-support correction is adopted through #130 as `0000e560e0dbe31905151465152d412ba838803d`; #128 closed by extraction, branch/evidence retained; #126 held for exact zone-reach planned-double contract adjudication by Run/nonauthor reviewer; #127 broad approach trials remain held. [Full receipt, limits and preserved failure](../data/reviews/current/zone-force-integration/final-receipt.json). The70b4 audit remains measured historical evidence, not a later-source result.
 
 This is the canonical list of the consequential problems surfaced in current

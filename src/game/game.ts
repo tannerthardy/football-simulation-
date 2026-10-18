@@ -695,7 +695,6 @@ export class Game {
     }
     if (r.turnover) {
       const yl = r.outcome === 'touchback' ? 20 : 110 - r.endX;
-      this.box.team(offTeam.abbr).turnovers++;
       this.changePossession(yl, s.ballY);
       this.recoverAll(r.duration + 40);
       return;
@@ -993,6 +992,10 @@ export class Game {
     const abbrOf = (id: string) => (agentOf(id)?.team === 'O' ? offTeam.abbr : defTeam.abbr);
     const t = box.team(offTeam.abbr);
     t.plays++;
+    // Official takeaway credit also applies when a defensive score ends the
+    // play before the ordinary change-of-possession branch. Nullified plays
+    // never reach recordStats.
+    if (r.turnover) t.turnovers++;
     // Rush and reception credit runs to the fumble spot when the ball was lost.
     const yds = r.offenseYards;
     const offTD = r.score?.kind === 'TD' && r.score.team === 'O';
@@ -1046,10 +1049,6 @@ export class Game {
       } else if (st.throwaway) {
         ql.att++;
       }
-      if (st.hurriedBy) {
-        const p = find(st.hurriedBy);
-        if (p) box.line(p, defTeam.abbr).pressures++;
-      }
     } else {
       const rusher = find(st.rusher) ?? (st.scramble ? sim.qb.player : undefined);
       if (rusher) {
@@ -1062,6 +1061,12 @@ export class Game {
         if (offTD) rl.rushTD++;
         if (yds >= 10) t.explosivePlays++;
       }
+    }
+    // Preserve the already-emitted pressure actor even when the QB later
+    // becomes a rusher. This credits the cue; it does not infer new pressure.
+    if (st.hurriedBy) {
+      const p = find(st.hurriedBy);
+      if (p) box.line(p, defTeam.abbr).pressures++;
     }
     // Tackles go to whoever made them: offensive players tackle returners.
     for (const id of st.tacklers) {

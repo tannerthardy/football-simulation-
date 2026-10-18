@@ -19,6 +19,7 @@ import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.j
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
 import { CoverageDefender } from './coverage/defender.js';
+import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
@@ -69,6 +70,7 @@ export function assignBehaviors(sim: PlaySim): void {
   if (call.kind === 'pass' && call.pass) {
     const concept = call.pass;
     const coord = new ProtectionCoordinator();
+    const receiverPriors = new Map<Agent, InstalledReceiverRoute>();
     for (const a of sim.offense) if (isOL(a)) {
       coord.add(a);
       a.behavior = new PassProtector(coord);
@@ -78,7 +80,16 @@ export function assignBehaviors(sim: PlaySim): void {
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
       const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
-      const mkRoute = (id: string, delay = 0) => () => new RouteRunner(a, sim, getRoute(id), outside, delay);
+      const mkRoute = (id: string, delay = 0, conditional = false) => {
+        const route = getRoute(id);
+        // Capture the installed call/alignment now, including deferred checkdowns.
+        // Neither live route progress nor the eventual protector release position
+        // becomes the QB's prior. Play-action activation is also conditional.
+        receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route,
+          conditional || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
+          a.profile, a.r('routeRunning')));
+        return () => new RouteRunner(a, sim, route, outside, delay);
+      };
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
         if (assign === 'block') {
@@ -86,9 +97,9 @@ export function assignBehaviors(sim: PlaySim): void {
           a.behavior = new PassProtector(coord);
         } else if (assign === 'check') {
           coord.add(a);
-          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown'), 1.0 + sim.rng.range(0, 0.3));
+          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.rng.range(0, 0.3));
         } else {
-          a.behavior = new RouteRunner(a, sim, getRoute(assign), outside, 0.1);
+          a.behavior = mkRoute(assign, 0.1)();
         }
         continue;
       }
@@ -100,7 +111,7 @@ export function assignBehaviors(sim: PlaySim): void {
       const side = ref[0] === 'S' ? concept.strong : concept.weak;
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
-      a.behavior = new RouteRunner(a, sim, getRoute(routeId), outside, spot?.inline ? 0.15 : 0);
+      a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
     }
     // Play action: the back sells the run through the mesh first.
     const back = sim.slot('RB');
@@ -108,7 +119,7 @@ export function assignBehaviors(sim: PlaySim): void {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
     }
-    const qbb = new QBPass(qb, sim, concept);
+    const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
     qbb.init(sim);
     return;

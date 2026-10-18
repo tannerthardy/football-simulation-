@@ -1,0 +1,337 @@
+{
+  "schema": "controller-checkpoint-final-v1",
+  "pr": 151,
+  "previousAcceptedDevelop": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "testedCommit": "638b1d8e57dea26f1ce62c5b682f61420c3586d7",
+  "sourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "validationSha256": "aa676bba88076ec5cacbf5244e00e699a75ae7a7a2ee1d01fd115bcbf4d0ad8f",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typescriptPassed": 2113,
+    "typescriptFiles": 189,
+    "pythonPassed": 145,
+    "typecheck": "pass",
+    "build": "pass",
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 126,
+      "head": "7f75b087e6f9221495fed1a810e63254666d4265",
+      "branch": "codex/zone-combo-surface",
+      "title": "Align stretch-combination approaches and initial contact references",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Original nonauthor contract adjudication plus Integration source review"
+    },
+    {
+      "pr": 132,
+      "head": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "branch": "codex/acquired-qb-continuation",
+      "title": "Accept personally acquired committed QB pursuit in man coverage",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 133,
+      "head": "60430be909997546f78c681891be8a350bbd447b",
+      "branch": "codex/game-result-accounting",
+      "title": "Preserve team turnover, safety sack and scramble pressure credit",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 134,
+      "head": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "branch": "codex/acquired-mesh-contradiction",
+      "title": "Retire contradicted unkeyed mesh expectation from acquired cues",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 135,
+      "head": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "branch": "codex/qb-receiver-estimate",
+      "title": "Use acquired receiver estimates for QB evaluation and release forecasts",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 136,
+      "head": "97ba574a16034309db5dd5be8259feda6b378a57",
+      "branch": "codex/run-failed-exchange",
+      "title": "Continue an observed passed exchange with retained QB carry",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 138,
+      "head": "d398edf50af0101acd6d49de991e76d588d3450e",
+      "branch": "codex/block-shed-lifecycle",
+      "title": "Let contact support work off toward personally acquired runners",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    },
+    {
+      "pr": 140,
+      "head": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+      "branch": "codex/puller-access",
+      "title": "Use acquired information for wrapper jobs; preserve puller diagnostic limits",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 143,
+      "head": "572c07d53247da02d858768f654a900abe147ce8",
+      "branch": "codex/counter-count-kick",
+      "title": "Fit cleared kick pullers to the acquired end",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 146,
+      "head": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "branch": "codex/counter-second-level",
+      "title": "Install explicit Counter GH with acquired block-surface and traffic reads",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Pinned nonauthor review0319d2a plus Integration dependency/overlap review"
+    },
+    {
+      "pr": 147,
+      "head": "0319d2a9377b51ddde49ee1efd91c4edc5f28257",
+      "branch": "codex/blocker-work-picture",
+      "title": "Use acquired carrier pictures for free run-blocker work",
+      "decision": "Independent ACCEPT for minimal composition/exact verification",
+      "review": "Integration nonauthor source/contract/evidence review"
+    }
+  ],
+  "held": [
+    {
+      "pr": 131,
+      "head": "2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e",
+      "branch": "codex/catch-opportunity-physics",
+      "title": "Provide same-time catch-opportunity geometry",
+      "reason": "Pure helper only; Catching caller/semantic hookup remains unavailable",
+      "owner": "Physics+Catching"
+    },
+    {
+      "pr": 137,
+      "head": "cdaeff43b4ce783abe5e8590caf551f2d5f97b41",
+      "branch": "codex/receiver-run-assignments",
+      "title": "Keep shallow run threats eligible and allocate receiver blocks together",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 141,
+      "head": "055f78ded6821336ce90c708b892e881ea9b7f08",
+      "branch": "codex/vertical-roof-budget",
+      "title": "Keep deep coverage in phase through acquired verticals and plants",
+      "reason": "Three existing assertions and comeback tradeoff need independent coverage-contract disposition",
+      "owner": "Nonauthor coverage/controller reviewer"
+    },
+    {
+      "pr": 148,
+      "head": "6fd13e4782a08497383912272b693e6a59747d80",
+      "branch": "codex/stalk-moving-surface",
+      "title": "Meet closing perimeter defenders with an acquired moving stalk fit",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 149,
+      "head": "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+      "branch": "codex/stalk-strike-access",
+      "title": "Keep inside stalk responsibility and close within real strike range",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    },
+    {
+      "pr": 150,
+      "head": "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+      "branch": "codex/climb-objective-access",
+      "title": "Route assigned climbs around acquired first-level traffic",
+      "reason": "Independent Run/controller disposition pending, including preserved assignment/protection tradeoffs",
+      "owner": "Run/nonauthor controller reviewer"
+    }
+  ],
+  "protectedFiles": [
+    "src/game/game.ts",
+    "src/playbook/concepts.ts",
+    "src/playbook/types.ts",
+    "src/sim/assign.ts",
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/behaviors/qb.ts",
+    "src/sim/behaviors/receiver.ts",
+    "src/sim/blocker-work-picture.ts",
+    "src/sim/engagement.ts",
+    "src/sim/playsim.ts",
+    "src/sim/qbmind.ts",
+    "src/sim/receiver-forecast.ts",
+    "src/sim/route-motion.ts",
+    "src/sim/run-fits.ts",
+    "src/sim/types.ts",
+    "test/acquired-mesh-contradiction.test.ts",
+    "test/acquired-qb-continuation.test.ts",
+    "test/blocker-work-picture.test.ts",
+    "test/counter-gh.test.ts",
+    "test/failed-exchange-continuation.test.ts",
+    "test/fixtures/acquired-mesh-scenes.json.gz",
+    "test/fixtures/acquired-qb-scenes.json.gz",
+    "test/fixtures/counter-second-level-inputs.json.gz",
+    "test/fixtures/puller-access-inputs.json.gz",
+    "test/fixtures/saved-game-result-accounting.json",
+    "test/game-safety-credit.test.ts",
+    "test/game-scramble-pressure-credit.test.ts",
+    "test/game-takeaway-credit.test.ts",
+    "test/helpers/saved-game-result-accounting.ts",
+    "test/puller-kick-transition.test.ts",
+    "test/puller-route-progress.test.ts",
+    "test/puller-target-read.test.ts",
+    "test/qb-receiver-consumer.test.ts",
+    "test/qb-receiver-forecast.test.ts",
+    "test/support-work-off.test.ts",
+    "test/zone-combo-surface.test.ts",
+    "test/zone-reach.test.ts"
+  ],
+  "sourceFileCount": 16,
+  "review": "https://github.com/tannerthardy/football-simulation-/pull/151#issuecomment-6245774023",
+  "verification": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.485885185
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.280511529000002
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 187.469984542
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8045713819999947
+      }
+    ],
+    "combinedRuns": 1,
+    "commandSeconds": 209.040952638,
+    "additionalFocusedRuns": 0,
+    "additionalNativeRuns": 0,
+    "additionalPanels": 0,
+    "additionalGameCampaigns": 0,
+    "qualification": "Existing game/integration/research assertions ran normally in the preserved full code suite. Component receipts remain source-qualified; no unchanged rerun for publication/merge."
+  },
+  "remainingFootballRisks": [
+    "Information corrections do not establish overall football quality, population rates or NFL calibration.",
+    "Preserve126 earlier Mike/depth/short OZ;136 composed86.07kg·yd/s LT/RB impact and nonmatched P140 context.",
+    "133 goal-plane safety credit preserves physical endX; archived observations/index not silently rewritten.",
+    "135 control-fixture anticipation, nominal fresh forecast, conditional activation/unknown progress and residual private consumers remain limitations.",
+    "138 long Y/SS retention/reacquisition is unresolved; a censored SS does not prove rescue.",
+    "143 late K02/K03 impacts, GH Under C/DT loss/strong RT-RB impact5s censor and real body blocks without persistent hands remain.",
+    "147 finite-age/source-qualified evidence, leftover awareness/availability debt and existing teammate impacts remain."
+  ],
+  "scope": "38 exact/minimally composed protected files. No physical laws/capacities, shared spacing/carrier, flags/settings/tooling or author/data-only history promotion. GH manual only.",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "artifacts": {
+    "final-combined.json": {
+      "bytes": 2619,
+      "sha256": "064270247a04d4745a8049f3acb69782afe0f327213d65149540b96b7de9f360"
+    },
+    "intake.json": {
+      "bytes": 10059,
+      "sha256": "a3ec5ee0198e67d482d0e0e82917a7877cee626ffdd0d5d4228b11f1556b29de"
+    },
+    "final-combined.log": {
+      "bytes": 23214,
+      "sha256": "3ee129b60b17901fcd51355f54fc226d20b2a471e905a13dac845b5d73731f1b"
+    },
+    "extraction-audit.json": {
+      "bytes": 8874,
+      "sha256": "ec9f297c37033ee287d99a6ae740e31cdfb606dcd45eceeb0fb05f12924a4f40"
+    }
+  }
+}

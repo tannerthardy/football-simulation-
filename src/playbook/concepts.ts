@@ -117,3 +117,10 @@ export const RUN_CONCEPTS: RunConcept[] = [
 
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
+
+/** Explicit Counter installations; GH requires an off-ball H.
+ * Kept outside automatic calling until its formation/response coverage is reviewed. */
+export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
+  gt: RUN_BY_ID.counter,
+  gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
+};

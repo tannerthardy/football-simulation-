@@ -1,6 +1,6 @@
 # Shared integration queue
 
-Updated **2026-10-16 (America/Phoenix)**. Integration in this chat owns queue
+Updated **2026-10-18 (UTC)**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
@@ -49,6 +49,39 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+### Current runtime intake
+
+**Verified #151; adoption pending.** Exact freeze638b1d8 composes reviewed126/132/133/134/135/136/138/140/143/146/147 on accepted914f4d5:38 protected files/16 source files, no diagnostic ancestry. **2113 TS/189 files,145 Python,typecheck/build pass** in209.041s,Node22.23.3,44 settings/components1/CF_FLOW unset,no drift/skips. One exact combined verification; contributor receipts reused; no additional native/panel/game campaign or unchanged publication rerun. [Final receipt and raw logs](../data/reviews/current/controller-checkpoint/final-receipt.json). [Independent scope review](https://github.com/tannerthardy/football-simulation-/pull/151#issuecomment-6245774023).
+
+#126's strict installed-half assertion is independently adjudicated, original failure retained. #140/#143/#146 have pinned nonauthor review0319d2a; GH requires140 and stays outside automatic calling. Shared143 kick allowance preserves140 lead/trap/uncleared gates. QBPass forecast135 and QBHandoff136 remain distinct; reversible projection proves only reviewed hunks. Existing laws/capacities/spacing/carrier/settings/tooling stay accepted. [Pins/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json).
+
+Held independently:137/148/149/150 await Run/nonauthor controller dispositions;141 has three existing-contract reconciliations/comeback tradeoff;131 is a pure helper without Catching caller hookup. Tooling101/106 and experiments retain their existing holds. A blocked item holds itself. [Posted Run review task](https://github.com/tannerthardy/football-simulation-/pull/150#issuecomment-6245714067). Older checkpoint dispositions below retain their historical evidence; this intake is current.
+
+
+**`develop@914f4d56a3b7ef2845ff0208f55d626c0ff5f880`** is accepted through documentation-only
+[#144](https://github.com/tannerthardy/football-simulation-/pull/144) and
+[#145](https://github.com/tannerthardy/football-simulation-/pull/145).
+Runtime/source/tests/settings/tooling remain byte-identical to accepted0000e560
+and passing82fdc79. Reuse the existing1988 TS/145 Python/typecheck/build receipt;
+no code-suite/simulation rerun, experimental activation, baseline/default change.
+
+- [Moving run-game/pulling-guard handbook](football-handbook/moving-run-footwork.md)
+  is in the existing chapter index; original128,356characters/SHA25633c3636f preserved.
+- [HonestNFL source library](references/honest-nfl/README.md) is in references,
+  linked from the handbook and root README:385 original images/OCR,403 original
+  mappings,37 familiar families/27 crosswalk entries; all793 payloads match source108.
+- Documentation/hash/provenance/deterministic-index/1130 fragment checks pass.
+  Original images outrank unproofread OCR and first-pass interpretations. Proposed
+  handbook checks are options under TESTING_COSTS, not required suites or installed behavior.
+
+[Actual merged pins and documentation receipt](../data/reviews/current/pr145-merge.json).
+[Consolidated placement handoff](https://github.com/tannerthardy/football-simulation-/pull/145#issuecomment-6243511938). #108 is closed as incorporated by
+extraction; source branches and evidence retained. Runtime candidate/hold decisions
+below are unchanged by this documentation task; no broader runtime queue re-review claimed.
+
+<details>
+<summary>Unchanged runtime acceptance through #130 /0000e560 — retained receipt</summary>
+
 **`develop@0000e560e0dbe31905151465152d412ba838803d`** is accepted through
 [#130](https://github.com/tannerthardy/football-simulation-/pull/130).
 Included **#128 only**: acquired Quarters flat matches retain the same body's
@@ -78,6 +111,8 @@ and both data-only evidence histories stay outside develop ancestry.
 Authors fetch/record current develop and reconcile relevant contracts at clean
 checkpoints; no forced rebase, renamed historical film or shared-suite repeat.
 Historical4ded6b6/GitHub default unchanged. Integration assembly boundary released.
+
+</details>
 
 <details>
 <summary>Previous accepted #125 /70b4db6 reference — historical</summary>
@@ -127,7 +162,7 @@ no forced rebase or old-source relabeling. Integration extraction boundary relea
 
 ### Handbook/reference placement
 
-User-authorized documentation-only #108 extraction is prepared in `codex/handbook-reference-integration`: original source library in `docs/references/honest-nfl/`, linked from the handbook, reference catalog and root README. Independent source/OCR/provenance, fragment and deterministic-library checks pass; no source/tests/settings/tooling or old tracking imported. [Exact review/check receipt](../data/reviews/current/handbook-reference-integration.json). Original diagrams outrank unproofread OCR/first-pass interpretations; this does not install schemes or certify universal aliases. No code suite or game campaign.
+User-authorized documentation-only #108 extraction is adopted through145 at914f4d5: original source library in `docs/references/honest-nfl/`, linked from the handbook, reference catalog and root README. Independent source/OCR/provenance, fragment and deterministic-library checks pass; no source/tests/settings/tooling or old tracking imported. [Exact review/check receipt](../data/reviews/current/handbook-reference-integration.json). Original diagrams outrank unproofread OCR/first-pass interpretations; this does not install schemes or certify universal aliases. No code suite or game campaign.
 
 ### Current checkpoint and audit priorities
 
@@ -181,7 +216,7 @@ Historical4ded6b6/default branch and experimental flags remain unchanged.
 | --- | --- | --- |
 | Catching → Measurement |106@706a10cc: preserve resumed failed/wall-cache index/counts/partial evidence; keep no-retry. Independent HOLD682f47c. | Tiny zero-engine regression; no3198-case campaign. |
 | Run → Measurement |101@ed2fed9e: finish wall-censor/partial-exception accounting repair with correct attempted/skipped separation. | Tiny stubs; preserve1848-study caches, no recollection/reserve reveal. |
-| Nonauthor reference reviewer |108@5cade6a5: image/OCR/hash/provenance/link and uncertainty-label checks; original images outrank OCR. | Documentation checks only; runtime lane does not wait. |
+| Reference adoption completed |108@5cade6a5 delivered through145; original images/OCR/provenance and uncertain interpretation labels retained. | Documentation checks passed; no engine/suite/game rerun. |
 | Measurement | Independently review the two exact repair pins and reconcile PA full-input identity offline. | Reuse failure repros; no new football campaign for accounting. |
 
 [Full copyable prompts, source pins, posted assignments and decisions](../data/reviews/current/reviewed-maintenance-integration/agent-tasks.json).
@@ -727,7 +762,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
 | Adopted | #128@ec2a2e9 via #130, passing82fdc79, actual0000e560; Integration | Delivered/closed by extraction; branch/evidence retained; no unchanged rerun. |
-| Held by exact contract failure | #126@b3de4f5; Run + original nonauthor reviewer | Adjudicate zone-reach planned-double ordinary command versus installed-half contract. Preserve failure; no automatic assertion relaxation. |
+| Contract gate resolved; verification pending | #126@7f75b08; original nonauthor exact-diff approval | Reviewed strict installed-half assertion; no production change versus original126. Original failed receipt remains. |
 | Held by adverse football evidence | #127@f6a3c86; Catching | Acquired-cue/own-preview feasible wheel-versus-swing objective, preserving successful swing; no broad approach promotion. |
 | Independent audit work, not ready patches | RUN-006/CTRL-001, INFO-002/003, BALL-001; owners above | Publish small reviewed scopes and compatible focused receipts. Joint native evidence gates broken-play claims, not independent implementation. |
 | Existing holds | Tooling101/106; reference108; optional115,116/119 and experiments | Existing owner repair/review decisions; no collector/game/suite while waiting. |

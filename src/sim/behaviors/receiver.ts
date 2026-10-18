@@ -5,7 +5,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, fatigueFactor, stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint } from '../../physics/world.js';
@@ -14,10 +14,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 
-interface PathPoint {
-  p: Vec2;
-  s: number;
-}
+import { routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -58,8 +55,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
-    const base: Record<string, number> = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
-    this.effort = clamp((base[route.family] ?? 0.85) + 0.04 * (a.r('routeRunning') - 0.5), 0.7, 0.98);
+    this.effort = routeEffort(route.family, a.r('routeRunning'));
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
@@ -77,35 +73,7 @@ export class RouteRunner implements Behavior {
   }
 
   private buildPath(start: Vec2, pts: RoutePoint[], extend: boolean): PathPoint[] {
-    const sim = this.sim;
-    // Nothing runs out the back of the end zone.
-    const endX = OPP_GOAL_X + 8.5;
-    const out: PathPoint[] = pts.map((rp) => ({
-      p: { x: Math.min(endX, sim.los + rp.d), y: clamp(start.y + rp.l * this.outside, 1.2, FIELD_WIDTH - 1.2) },
-      s: rp.s ?? 1,
-    }));
-    if (extend && out.length >= 1) {
-      const last = out[out.length - 1].p;
-      const prev = out.length >= 2 ? out[out.length - 2].p : start;
-      const d = norm(sub(last, prev));
-      // Receivers working toward the sideline turn upfield a few yards inside
-      // it, leaving room to round the corner at speed and stay inbounds.
-      const lo = 5;
-      const hi = FIELD_WIDTH - 5;
-      // Extend along the final leg; if that runs into the sideline, turn upfield there.
-      let k = 40;
-      if (d.y < -1e-6) k = Math.min(k, (last.y - lo) / -d.y);
-      if (d.y > 1e-6) k = Math.min(k, (hi - last.y) / d.y);
-      const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
-      if (k < 39) {
-        // Flat routes turn up a few yards and then work back to the QB; other
-        // routes turn upfield and keep running.
-        const up = this.route.family === 'flat' ? 5 : 40;
-        out.push({ p: edge, s: 0.75 });
-        out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: this.route.family === 'flat' ? 0.6 : 1 });
-      } else out.push({ p: edge, s: 1 });
-    }
-    return out;
+    return routePath(start, this.sim.los, this.outside, pts, extend, this.route.family);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -153,32 +121,9 @@ export class RouteRunner implements Behavior {
     return cmd;
   }
 
-  /** Waypoint following for a body (the real receiver or a ghost used for prediction). */
+  /** The same waypoint controller is used by the explicitly seeded QB forecast. */
   private steer(body: Body, st: { idx: number }, rr: number, cutSkill: number): MoveCommand | null {
-    for (let guard = 0; guard < 6; guard++) {
-      if (st.idx >= this.path.length) return null;
-      const tgt = this.path[st.idx];
-      const next = this.path[st.idx + 1];
-      const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
-      if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) {
-        st.idx++;
-        continue;
-      }
-      const isLast = st.idx === this.path.length - 1;
-      const vtop = body.profile.vmax * this.effort;
-      let through = isLast && this.route.end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
-      if (next) {
-        // Physically sensible speed for the upcoming turn.
-        const ax = tgt.p.x - body.pos.x;
-        const ay = tgt.p.y - body.pos.y;
-        const bx = next.p.x - tgt.p.x;
-        const by = next.p.y - tgt.p.y;
-        const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
-        through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
-      }
-      return { vel: arriveVelocity(body, tgt.p, vtop, through), cutSkill };
-    }
-    return null;
+    return steerRoute(body, st, this.path, this.route.end, this.effort, rr, cutSkill);
   }
 
   private drill: { at: number; spot: Vec2 } | null = null;
@@ -334,53 +279,6 @@ export class RouteRunner implements Behavior {
       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }
 
-  private ghost: { t: number; pts: Vec2[] } | null = null;
-
-  /**
-   * Where the receiver will be `tAhead` seconds from now if he stays on his
-   * route: a ghost copy of his body runs the route through the same physics.
-   */
-  predict(a: Agent, tAhead: number): Vec2 {
-    const sim = this.sim;
-    if (!this.ghost || this.ghost.t !== sim.t) {
-      const body: Body = { pos: { ...a.pos }, vel: { ...a.vel }, facing: a.body.facing, energy: a.body.energy, profile: a.profile, sprintLoad: a.body.sprintLoad };
-      const st = { idx: this.idx };
-      const rr = a.r('routeRunning');
-      const cutSkill = 0.8 + 0.4 * rr;
-      const pts: Vec2[] = [{ ...body.pos }];
-      const settledSpot = this.path[this.path.length - 1]?.p ?? a.pos;
-      let done = this.settled;
-      const delay = Math.max(0, this.startDelay - sim.t);
-      for (let i = 0; i < 70; i++) {
-        const tt = i * sim.dt;
-        let cmd: MoveCommand | null;
-        if (tt < delay) cmd = { vel: { x: 0, y: 0 } };
-        else if (done) cmd = this.route.end === 'continue' ? { vel: body.vel } : { vel: arriveVelocity(body, settledSpot, body.profile.vmax * 0.6, 0) };
-        else {
-          cmd = this.steer(body, st, rr, cutSkill);
-          if (!cmd) {
-            done = true;
-            cmd = this.route.end === 'continue' ? { vel: body.vel } : { vel: { x: 0, y: 0 } };
-          }
-        }
-        stepBody(body, cmd, sim.dt);
-        pts.push({ ...body.pos });
-      }
-      this.ghost = { t: sim.t, pts };
-    }
-    const pts = this.ghost.pts;
-    const f = Math.max(0, tAhead) / sim.dt;
-    const i = Math.min(pts.length - 2, Math.floor(f));
-    const w = Math.min(1, f - i);
-    return { x: pts[i].x + (pts[i + 1].x - pts[i].x) * w, y: pts[i].y + (pts[i + 1].y - pts[i].y) * w };
-  }
-}
-
-function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
-  // Past the waypoint along the segment toward the next one.
-  const sx = next.x - wp.x;
-  const sy = next.y - wp.y;
-  return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
 }
 
 /** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */

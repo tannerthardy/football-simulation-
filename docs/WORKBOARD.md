@@ -1,8 +1,12 @@
 # Current work ownership
 
-## Handbook/reference documentation integration
+## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
-Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
+Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
+
+## Completed handbook/reference documentation integration
+
+Integration completed only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Adopted through #144/#145 as914f4d5; original resources preserved and boundary released. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
 
 ## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
 
@@ -25,7 +29,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-Accepted develop is0000e560; original checkouts/branches/evidence remain. Reconcile accepted changes at clean
+The unchanged runtime acceptance is0000e560; accepted develop now914f4d5 adds documentation only. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix

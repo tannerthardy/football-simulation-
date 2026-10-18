@@ -151,13 +151,14 @@ export interface PlayResult {
   /** Team in possession at the end of the play. */
   possession: TeamSide;
   turnover: boolean;
-  /** Spot where the ball is dead (play frame x, y). */
+  /** Physical dead-ball spot (play frame x, y), retained inside end zones. */
   endX: number;
   endY: number;
-  /** Net yards for the offense from the LOS (meaningless if turnover). */
+  /** Credited net yards from LOS, bounded at the goal plane on TD/safety (meaningless if turnover). */
   yards: number;
   /**
-   * Yards credited to the offense's rush or reception: to the dead-ball spot,
+   * Yards credited to the offense's rush, reception or sack: to the dead-ball spot
+   * (goal plane on a TD/safety),
    * or to the fumble spot when the offense lost the ball (0 on interceptions).
    */
   offenseYards: number;
