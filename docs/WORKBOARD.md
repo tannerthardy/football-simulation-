@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Counter second-level access — 2026-10-18 UTC
+
+Run owns `codex/counter-second-level` from accepted `0000e560e0dbe31905151465152d412ba838803d`, fetched queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Question: which earlier installed/observed Counter relationship prevents the second puller from obtaining useful backer access? Use handbook T6/T7 and small fixed GT looks; #140 acquired-wrapper repair and #143 cleared-kick remain separate pending candidates. Claim only Counter installation/pull approach in `planRunBlocking`/`RunBlocker`, focused diagnostics/tests. No shared locomotion/spacing, carrier navigation, contact law/capacity, helper release rule, or lifecycle edits. Coordinate any overlapping shared function with Do-It-All; Integration owns exact combined verification. Earlier rejected escape/depth/count experiments remain evidence, not a production starting point.
+
 ## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
 
 Integration claims only the minimal #128 two-file assembly and one exact combined check
