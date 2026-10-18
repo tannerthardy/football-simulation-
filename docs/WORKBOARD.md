@@ -2,6 +2,17 @@
 
 ## Catching: climb objective and departure access — 2026-10-18 UTC
 
+Checkpoint: **local acquired-body climb navigation ready for independent Run
+review, not integration-cleared**. Code403d7a9 /runtime06869378;
+[evidence and adverse cases](reviews/climb-access.md),
+[receipt](../data/reviews/current/climb-access.json). 77 focused checks/typecheck
+pass;15 final-source native continuations reproduce the isolated trial exactly.
+Z14 and fresh T02 gain real assigned-backer contact; C01/Z26 whole histories and
+C02 protected job persist. Z16/Z18 lose offensive gain as first-level geometry
+changes; Run reviews help/collection duty before promotion. Faster departure
+(C01 adverse), velocity/meeting-point/first-step trials stay held or rejected.
+No release/keeper, shared modifier, #146, #148/#149 or Physics changes included.
+
 User explicitly assigns climb planning. Branch `codex/climb-objective-access`
 starts independently from accepted914f4d56a3b7ef2845ff0208f55d626c0ff5f880,
 runtime5b710a1b, canonical queuee8d806b940a84c7cff7e5ee066022079723c78ef,

@@ -1,0 +1,1876 @@
+{
+  "schema": "climb-access-handoff-v1",
+  "status": "Independent Run review requested; not integration-cleared; outside-zone adverse help/first-level disposition open.",
+  "base": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "queue": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "codeCommit": "403d7a9f114e39fb069aa3d5cb2ede648c33cbe9",
+  "candidateSource": "06869378092c467aa529ffbb86abf8d1d2b76128e5f5d20a99c69bbf50347469",
+  "baselineSource": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "evidenceCommit": "08de3cc84ecce6a3612aa785894b7001bd5092a3",
+  "evidenceBranch": "codex/climb-access-evidence",
+  "reproduce": "https://github.com/tannerthardy/football-simulation-/blob/08de3cc84ecce6a3612aa785894b7001bd5092a3/REPRODUCE.md",
+  "manifest": "https://github.com/tannerthardy/football-simulation-/blob/08de3cc84ecce6a3612aa785894b7001bd5092a3/manifest.json",
+  "manifestSha256": "f843f9f0a274648d4cc16feca9b1c02d4006519d0d324af3b8be6ce124b136e7",
+  "archives": [
+    {
+      "path": "baseline.tar.gz",
+      "bytes": 14244519,
+      "sha256": "7b689231c144e0b7300bfe0eb467a89bccc16f1bc86516283c65f1a3cc406981"
+    },
+    {
+      "path": "rejected-departure.tar.gz",
+      "bytes": 9682380,
+      "sha256": "510c2d2b71b2d5b71b5b41eb23c18eea09ccf8abcd36929129ea450bfafc2ee9"
+    },
+    {
+      "path": "rejected-prediction.tar.gz",
+      "bytes": 18759553,
+      "sha256": "f5b92e0411c3d704000f741086790f47603aa7b442731fd7ef20f78455b92cf8"
+    },
+    {
+      "path": "rejected-goals.tar.gz",
+      "bytes": 28111915,
+      "sha256": "916be3994b145d8fb7364debd6167c611e1d3ddcd90ce9a2bfb414e9c138d88b"
+    },
+    {
+      "path": "prototype.tar.gz",
+      "bytes": 19307438,
+      "sha256": "3dace1e7ecac7eb4a802e3aba4b2fd67ed147f5dcc89420618f236b8ca8e8028"
+    },
+    {
+      "path": "candidate.tar.gz",
+      "bytes": 19336300,
+      "sha256": "7b337af5288b9140de5255340375a5c53560b9dd56dfc401dedc8711907234bf"
+    },
+    {
+      "path": "common.tar.gz",
+      "bytes": 759844,
+      "sha256": "0e4a2e22da10896e19bacae6e28795fc4884abca8a5b4b3406ceb80f0b6a00a3"
+    }
+  ],
+  "reusedBaselines": {
+    "commit": "15f5113709450363f3dbc744753cbc87b422e6f3",
+    "branch": "codex/stalk-moving-surface-evidence",
+    "archives": [
+      "discovery-a.tar.gz",
+      "discovery-b.tar.gz"
+    ],
+    "cases": [
+      "Z16",
+      "Z18",
+      "Z20",
+      "Z27"
+    ],
+    "note": "All28 old native inputs are there; only four existing traffic opposing controls reused here. Do not simulate28 again."
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "platform": "linux",
+  "arch": "x64",
+  "node": "v22.23.3",
+  "qualification": "Frozen exact initial inputs, native all22, unchanged World laws/capacities. Four saved transfer baselines reused from compatible original accepted recordings; the newer passive collector was proved identical on five witnesses. No population/gamewide rate claim. All trial-final histories compare body/request/RNG/physics exactly despite recording-format additions.",
+  "timeConvention": "Loaded force samples name recorder World-step t; the corresponding completed native tick is t+0.05. Event clocks are preserved separately. Body/velocity in load entries is step-entry geometry, not a substep contact reconstruction.",
+  "validation": [
+    {
+      "kind": "focused tests",
+      "passes": 77,
+      "exitCode": 0,
+      "source": "06869378092c467aa529ffbb86abf8d1d2b76128e5f5d20a99c69bbf50347469",
+      "seconds": 4.5951676809999995,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/climb-access.test.ts",
+          "test/planned-climb-fit.test.ts",
+          "test/combo-strike-access.test.ts",
+          "test/combo-transfer.test.ts",
+          "test/combo-attention.test.ts",
+          "test/run-combo-retarget.test.ts"
+        ]
+      ]
+    },
+    {
+      "kind": "typecheck",
+      "exitCode": 0,
+      "source": "06869378092c467aa529ffbb86abf8d1d2b76128e5f5d20a99c69bbf50347469",
+      "seconds": 9.947886226000001,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    }
+  ],
+  "cost": {
+    "newNativeContinuations": 83,
+    "newNativePrefixes": 2,
+    "fullGames": 0,
+    "newNativeContinuationBreakdown": {
+      "eightSevenInputArms": 56,
+      "transferFreshBaseline": 4,
+      "trialTransferCandidate": 8,
+      "finalSourceCandidate": 15
+    },
+    "nativeCollectorSeconds": 36.504408921
+  },
+  "allCommandSeconds": 76.579773146,
+  "finalCases": [
+    {
+      "id": "Z06",
+      "inputSha256": "41807b30307ed0b609118dc8afdcbcdf0ed7e5786b7b744f5ef76f2cd185646a",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 1.3771872531265217e-11,
+      "maxArmExcess": 3.552713678800501e-15,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.45,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 8.52,
+        "firstRunnerContact": {
+          "t": 2.75,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 2,
+        "obstacleImpulse": 254.8359539399013,
+        "firstTargetNotUp": 2.8
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.45,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 8.52,
+        "firstRunnerContact": {
+          "t": 2.75,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 2,
+        "obstacleImpulse": 254.8359539399013,
+        "firstTargetNotUp": 2.8
+      },
+      "firstRequestDivergence": {
+        "t": 2.65,
+        "actors": [
+          "LG"
+        ]
+      }
+    },
+    {
+      "id": "Z13",
+      "inputSha256": "3bd9de7c107ad6eb54cbacd8bb9fbe858d1fdff9559efc0e4cbe2138607b538b",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.55,
+      "maxWorkResidual": 4.472866521609831e-12,
+      "maxArmExcess": -10.405862645224072,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.25,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 2.22,
+        "firstRunnerContact": {
+          "t": 2.65,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "LG",
+        "blockerIdx": 4,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 29,
+        "obstacleImpulse": 873.2637875168059,
+        "firstTargetNotUp": 2.8
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.25,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 2.18,
+        "firstRunnerContact": {
+          "t": 2.65,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "LG",
+        "blockerIdx": 4,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 30,
+        "obstacleImpulse": 826.1023676977371,
+        "firstTargetNotUp": 2.8
+      },
+      "firstRequestDivergence": {
+        "t": 1.1,
+        "actors": [
+          "LT"
+        ]
+      }
+    },
+    {
+      "id": "Z14",
+      "inputSha256": "493fd6a2f54208ce7949e79542b547321b958ecaea664a991e3c92360efbf7fe",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.5,
+      "maxWorkResidual": 9.108269694024784e-12,
+      "maxArmExcess": 2.1316282072803006e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.4,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 2.45,
+        "firstRunnerContact": {
+          "t": 2.7,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 31,
+        "obstacleImpulse": 1127.98110237379,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.25,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.96,
+        "firstRunnerContact": {
+          "t": 3.4,
+          "defender": "FS",
+          "defenderIdx": 20,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 1.5,
+          "phi": 0.8873297853627274,
+          "normalForce": 574.2837226037366,
+          "tangentForce": 434.1018570260139,
+          "extension": 0.8235466083380847,
+          "ownPos": {
+            "x": 42.04608374688999,
+            "y": 29.762863228295984
+          },
+          "ownVel": {
+            "x": 1.155031223700054,
+            "y": -2.695069615432567
+          },
+          "targetPos": {
+            "x": 42.50207201078458,
+            "y": 29.03147532146528
+          },
+          "targetVel": {
+            "x": -2.552099950385142,
+            "y": 1.5730397548042778
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 4,
+          "phi": -1.9362268038496309,
+          "normalForce": 0,
+          "tangentForce": -238.7037317479635,
+          "extension": 0.7746193595660597,
+          "ownPos": {
+            "x": 42.181176903553876,
+            "y": 32.45716062251232
+          },
+          "ownVel": {
+            "x": 0.5420509559005708,
+            "y": 3.0839429429595513
+          },
+          "targetPos": {
+            "x": 41.28407217573521,
+            "y": 32.198872096146445
+          },
+          "targetVel": {
+            "x": -1.3521859388825037,
+            "y": 2.1797703694396917
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 0.25,
+        "actors": [
+          "Y"
+        ]
+      }
+    },
+    {
+      "id": "Z19",
+      "inputSha256": "06402a5966dc387d26ccdfbe8ca24672156fbef517bcff7adfa74bf543a74f8f",
+      "unchanged": true,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 5.737632591262809e-12,
+      "maxArmExcess": -7.105427357601002e-15,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.2,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 0.94,
+        "firstRunnerContact": {
+          "t": 2.6,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 17,
+        "obstacleImpulse": 504.409689223944,
+        "firstTargetNotUp": 2.8
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.2,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 0.94,
+        "firstRunnerContact": {
+          "t": 2.6,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 17,
+        "obstacleImpulse": 504.409689223944,
+        "firstTargetNotUp": 2.8
+      },
+      "firstRequestDivergence": null
+    },
+    {
+      "id": "Z26",
+      "inputSha256": "7c6a57d49672876254a29ee2b8968d5cac2358c549551aa7e2627cda067efe99",
+      "unchanged": true,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 7.331024676204834e-12,
+      "maxArmExcess": 2.1316282072803006e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.5,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 4.6,
+        "firstRunnerContact": {
+          "t": 3.4,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RT",
+        "blockerIdx": 2,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 2,
+          "phi": -0.4625519061405482,
+          "normalForce": 0,
+          "tangentForce": -571.8219815989399,
+          "extension": 0.9230246776347976,
+          "ownPos": {
+            "x": 41.207247403179984,
+            "y": 23.16599723933655
+          },
+          "ownVel": {
+            "x": 0.8733570186046596,
+            "y": 0.7244065850428052
+          },
+          "targetPos": {
+            "x": 42.090190037600934,
+            "y": 23.9507284453052
+          },
+          "targetVel": {
+            "x": -2.5799268118625007,
+            "y": -2.322684825207562
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.45,
+          "phi": -0.5051023504163046,
+          "normalForce": 0,
+          "tangentForce": -114.67833297617383,
+          "extension": 0.9325671465423606,
+          "ownPos": {
+            "x": 41.45750619997465,
+            "y": 23.167939688146287
+          },
+          "ownVel": {
+            "x": 0.897893038539205,
+            "y": 0.29710290270929773
+          },
+          "targetPos": {
+            "x": 42.086844432630464,
+            "y": 23.807447627592545
+          },
+          "targetVel": {
+            "x": 1.8045475641041246,
+            "y": 1.2184083905180196
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 2,
+        "obstacleImpulse": 433.5666367144252,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.5,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 4.6,
+        "firstRunnerContact": {
+          "t": 3.4,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "RT",
+        "blockerIdx": 2,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 2,
+          "phi": -0.4625519061405482,
+          "normalForce": 0,
+          "tangentForce": -571.8219815989399,
+          "extension": 0.9230246776347976,
+          "ownPos": {
+            "x": 41.207247403179984,
+            "y": 23.16599723933655
+          },
+          "ownVel": {
+            "x": 0.8733570186046596,
+            "y": 0.7244065850428052
+          },
+          "targetPos": {
+            "x": 42.090190037600934,
+            "y": 23.9507284453052
+          },
+          "targetVel": {
+            "x": -2.5799268118625007,
+            "y": -2.322684825207562
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.45,
+          "phi": -0.5051023504163046,
+          "normalForce": 0,
+          "tangentForce": -114.67833297617383,
+          "extension": 0.9325671465423606,
+          "ownPos": {
+            "x": 41.45750619997465,
+            "y": 23.167939688146287
+          },
+          "ownVel": {
+            "x": 0.897893038539205,
+            "y": 0.29710290270929773
+          },
+          "targetPos": {
+            "x": 42.086844432630464,
+            "y": 23.807447627592545
+          },
+          "targetVel": {
+            "x": 1.8045475641041246,
+            "y": 1.2184083905180196
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 2,
+        "obstacleImpulse": 433.5666367144252,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": null
+    },
+    {
+      "id": "C01",
+      "inputSha256": "8ee8f7d7179633eba26c5919a744026b5e5a6b887aa6d03d039d854057173596",
+      "unchanged": true,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 5.9392490925347374e-12,
+      "maxArmExcess": 7.105427357601002e-15,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 7.73,
+        "firstRunnerContact": {
+          "t": 3.25,
+          "defender": "SS",
+          "defenderIdx": 21,
+          "note": "grasp"
+        },
+        "blocker": "RT",
+        "blockerIdx": 2,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.8,
+          "phi": -0.5233782157173883,
+          "normalForce": 0,
+          "tangentForce": -338.2047540273679,
+          "extension": 0.821888511841218,
+          "ownPos": {
+            "x": 36.02872693693991,
+            "y": 24.46908832057648
+          },
+          "ownVel": {
+            "x": -0.10523047396464752,
+            "y": 1.5122248538935288
+          },
+          "targetPos": {
+            "x": 36.79184615851121,
+            "y": 25.29041852084065
+          },
+          "targetVel": {
+            "x": -1.368070273756803,
+            "y": 1.1008981953810668
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.95,
+          "phi": -0.44260697265615606,
+          "normalForce": 911.9841222421741,
+          "tangentForce": 325.6411436354766,
+          "extension": 0.8675032088707257,
+          "ownPos": {
+            "x": 39.04079696303264,
+            "y": 27.55367945881557
+          },
+          "ownVel": {
+            "x": 2.0127186833465713,
+            "y": 1.8028121842131908
+          },
+          "targetPos": {
+            "x": 39.493624582793075,
+            "y": 27.931425090082534
+          },
+          "targetVel": {
+            "x": 2.012718783128382,
+            "y": 1.802812064598543
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 7.73,
+        "firstRunnerContact": {
+          "t": 3.25,
+          "defender": "SS",
+          "defenderIdx": 21,
+          "note": "grasp"
+        },
+        "blocker": "RT",
+        "blockerIdx": 2,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.8,
+          "phi": -0.5233782157173883,
+          "normalForce": 0,
+          "tangentForce": -338.2047540273679,
+          "extension": 0.821888511841218,
+          "ownPos": {
+            "x": 36.02872693693991,
+            "y": 24.46908832057648
+          },
+          "ownVel": {
+            "x": -0.10523047396464752,
+            "y": 1.5122248538935288
+          },
+          "targetPos": {
+            "x": 36.79184615851121,
+            "y": 25.29041852084065
+          },
+          "targetVel": {
+            "x": -1.368070273756803,
+            "y": 1.1008981953810668
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.95,
+          "phi": -0.44260697265615606,
+          "normalForce": 911.9841222421741,
+          "tangentForce": 325.6411436354766,
+          "extension": 0.8675032088707257,
+          "ownPos": {
+            "x": 39.04079696303264,
+            "y": 27.55367945881557
+          },
+          "ownVel": {
+            "x": 2.0127186833465713,
+            "y": 1.8028121842131908
+          },
+          "targetPos": {
+            "x": 39.493624582793075,
+            "y": 27.931425090082534
+          },
+          "targetVel": {
+            "x": 2.012718783128382,
+            "y": 1.802812064598543
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": null
+    },
+    {
+      "id": "C02",
+      "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 1.0231815394945443e-11,
+      "maxArmExcess": 7.105427357601002e-15,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.55,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 12.78,
+        "firstRunnerContact": {
+          "t": 3.85,
+          "defender": "FS",
+          "defenderIdx": 20,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 2.3,
+          "phi": 0.0903199598140229,
+          "normalForce": -124.05832777626632,
+          "tangentForce": 449.30650907243944,
+          "extension": 0.8427190634500998,
+          "ownPos": {
+            "x": 35.36601557528198,
+            "y": 26.031709801407096
+          },
+          "ownVel": {
+            "x": 0.046341346119410175,
+            "y": 1.3110422939289608
+          },
+          "targetPos": {
+            "x": 36.330303182352814,
+            "y": 25.893976856938124
+          },
+          "targetVel": {
+            "x": 0.03877507210317145,
+            "y": -1.8205570937707103
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.65,
+          "phi": 1.512253611328839,
+          "normalForce": -137.21795851815222,
+          "tangentForce": 478.25769670458817,
+          "extension": 0.8489863292332133,
+          "ownPos": {
+            "x": 36.6297260510498,
+            "y": 24.633148875337334
+          },
+          "ownVel": {
+            "x": 1.6453614616600325,
+            "y": -2.217930198045261
+          },
+          "targetPos": {
+            "x": 35.76088918206101,
+            "y": 23.797130980575457
+          },
+          "targetVel": {
+            "x": -1.3776139272741257,
+            "y": -1.8900118531925534
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 24,
+        "obstacleImpulse": 702.0063253753984,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.55,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 12.78,
+        "firstRunnerContact": {
+          "t": 3.85,
+          "defender": "FS",
+          "defenderIdx": 20,
+          "note": "grasp"
+        },
+        "blocker": "RG",
+        "blockerIdx": 5,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 2.3,
+          "phi": 0.0903199598140229,
+          "normalForce": -124.05832777626632,
+          "tangentForce": 449.30650907243944,
+          "extension": 0.8427190634500998,
+          "ownPos": {
+            "x": 35.36601557528198,
+            "y": 26.031709801407096
+          },
+          "ownVel": {
+            "x": 0.046341346119410175,
+            "y": 1.3110422939289608
+          },
+          "targetPos": {
+            "x": 36.330303182352814,
+            "y": 25.893976856938124
+          },
+          "targetVel": {
+            "x": 0.03877507210317145,
+            "y": -1.8205570937707103
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.65,
+          "phi": 1.512253611328839,
+          "normalForce": -137.21795851815222,
+          "tangentForce": 478.25769670458817,
+          "extension": 0.8489863292332133,
+          "ownPos": {
+            "x": 36.6297260510498,
+            "y": 24.633148875337334
+          },
+          "ownVel": {
+            "x": 1.6453614616600325,
+            "y": -2.217930198045261
+          },
+          "targetPos": {
+            "x": 35.76088918206101,
+            "y": 23.797130980575457
+          },
+          "targetVel": {
+            "x": -1.3776139272741257,
+            "y": -1.8900118531925534
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 24,
+        "obstacleImpulse": 702.0063253753984,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 4.25,
+        "actors": [
+          "RG"
+        ]
+      }
+    },
+    {
+      "id": "Z16",
+      "inputSha256": "c80f0b4433bafd2f5a742f9f3d6e89977a42b025e132c7533928140525a1597f",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.45,
+      "maxWorkResidual": 4.2588155224621005e-12,
+      "maxArmExcess": -0.4866630433998438,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.15,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.72,
+        "firstRunnerContact": {
+          "t": 3.35,
+          "defender": "CB_W",
+          "defenderIdx": 19,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 2.9,
+          "phi": 0.8985602916989103,
+          "normalForce": -120.6307794780039,
+          "tangentForce": -432.32742204279606,
+          "extension": 0.8231022938303065,
+          "ownPos": {
+            "x": 41.55726104666814,
+            "y": 33.642405381189896
+          },
+          "ownVel": {
+            "x": 0.37849410357391833,
+            "y": 1.3381519458004576
+          },
+          "targetPos": {
+            "x": 42.09722407556492,
+            "y": 32.74129908202578
+          },
+          "targetVel": {
+            "x": 1.1101072412442474,
+            "y": 3.7489067145939536
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.95,
+          "phi": 1.9617414974394776,
+          "normalForce": 0,
+          "tangentForce": 302.90691325919926,
+          "extension": 0.7906956910522788,
+          "ownPos": {
+            "x": 43.199649908062646,
+            "y": 34.7579414211869
+          },
+          "ownVel": {
+            "x": 1.4035669282210443,
+            "y": 1.5648579930207966
+          },
+          "targetPos": {
+            "x": 41.79400259695755,
+            "y": 34.095154809496414
+          },
+          "targetVel": {
+            "x": -1.3855972328228692,
+            "y": 0.7052026173345707
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 46,
+        "obstacleImpulse": 1804.4826238956975,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 2.75,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": -0.96,
+        "firstRunnerContact": {
+          "t": 2.2,
+          "defender": "DE_W",
+          "defenderIdx": 11,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 1.45,
+          "phi": 0.5059370874510456,
+          "normalForce": 0,
+          "tangentForce": -184.1573932262614,
+          "extension": 0.7729013958278833,
+          "ownPos": {
+            "x": 41.91150126730138,
+            "y": 30.188536489801972
+          },
+          "ownVel": {
+            "x": 2.2032383535533935,
+            "y": -1.7605159197210478
+          },
+          "targetPos": {
+            "x": 42.88406414037229,
+            "y": 29.760944423473344
+          },
+          "targetVel": {
+            "x": -2.774281992880447,
+            "y": 1.5900550486832763
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 1.7,
+          "phi": 0.4414280687585286,
+          "normalForce": 405.9682386989062,
+          "tangentForce": -8.778095899157329,
+          "extension": 0.7754489401828005,
+          "ownPos": {
+            "x": 42.13459074441454,
+            "y": 30.056070938684098
+          },
+          "ownVel": {
+            "x": 0.2768011364082131,
+            "y": -0.07587261399041946
+          },
+          "targetPos": {
+            "x": 42.65859227641082,
+            "y": 29.886549144415252
+          },
+          "targetVel": {
+            "x": 0.27710977612624366,
+            "y": -0.07491856906714352
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 6,
+        "obstacleImpulse": 189.5826613030832,
+        "firstTargetNotUp": 1.7
+      },
+      "firstRequestDivergence": {
+        "t": 0.35,
+        "actors": [
+          "Y"
+        ]
+      }
+    },
+    {
+      "id": "Z18",
+      "inputSha256": "63b716dfd1948e87bedb2d1a67381a067b8f30b04df979994245966373785c8b",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.3,
+      "maxWorkResidual": 6.4996896753655165e-12,
+      "maxArmExcess": 2.1316282072803006e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.05,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 4.6,
+        "firstRunnerContact": {
+          "t": 2.55,
+          "defender": "DE_W",
+          "defenderIdx": 11,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 1.3,
+          "phi": 0.7174049488266939,
+          "normalForce": 0,
+          "tangentForce": 319.85071076264,
+          "extension": 0.7949383796370028,
+          "ownPos": {
+            "x": 42.255869207312244,
+            "y": 29.771005569471914
+          },
+          "ownVel": {
+            "x": 2.014507432748138,
+            "y": -1.7657887276011799
+          },
+          "targetPos": {
+            "x": 43.03979330142785,
+            "y": 29.04597198685048
+          },
+          "targetVel": {
+            "x": -2.5111556231209016,
+            "y": 0.8117518811974799
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 3.95,
+          "phi": -1.946553252780143,
+          "normalForce": -155.1883870743871,
+          "tangentForce": -494.352951329268,
+          "extension": 0.8386333461231438,
+          "ownPos": {
+            "x": 42.42021905662463,
+            "y": 33.835139566158716
+          },
+          "ownVel": {
+            "x": 0.5169957149985712,
+            "y": 2.810790059105307
+          },
+          "targetPos": {
+            "x": 41.045520491088936,
+            "y": 33.415082841332065
+          },
+          "targetVel": {
+            "x": -1.8360456855617404,
+            "y": 1.7885855207606352
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 23,
+        "obstacleImpulse": 722.5140248543939,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.05,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": -0.07,
+        "firstRunnerContact": {
+          "t": 2.4,
+          "defender": "DE_W",
+          "defenderIdx": 11,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 1.4,
+          "phi": 0.7314784439479415,
+          "normalForce": 280.09996881768603,
+          "tangentForce": 419.8013984427516,
+          "extension": 0.8199658058423511,
+          "ownPos": {
+            "x": 42.0682236754325,
+            "y": 29.931577813150447
+          },
+          "ownVel": {
+            "x": 2.0343889291431463,
+            "y": -1.7911663111231195
+          },
+          "targetPos": {
+            "x": 42.75788557542024,
+            "y": 29.264842414435492
+          },
+          "targetVel": {
+            "x": -2.6659624966333317,
+            "y": 1.23399865854741
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.85,
+          "phi": 1.9147863246204309,
+          "normalForce": -167.41883827105306,
+          "tangentForce": 521.2599439619333,
+          "extension": 0.8453707962413171,
+          "ownPos": {
+            "x": 42.47113591318966,
+            "y": 30.296178440259006
+          },
+          "ownVel": {
+            "x": 0.4267546475161737,
+            "y": 1.4513000211479503
+          },
+          "targetPos": {
+            "x": 41.166406794375185,
+            "y": 29.558880550548153
+          },
+          "targetVel": {
+            "x": -1.6981891691795314,
+            "y": 0.8564164100763635
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 7,
+        "obstacleImpulse": 311.3464637897744,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 0.25,
+        "actors": [
+          "Y"
+        ]
+      }
+    },
+    {
+      "id": "Z20",
+      "inputSha256": "62c7dd3a0bca23fdd4d931150c4501c8e2d7abb4818489e907f4dc9e8fd6b422",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 0.45,
+      "maxWorkResidual": 1.042721464727947e-11,
+      "maxArmExcess": 2.1316282072803006e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.05,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.55,
+        "firstRunnerContact": {
+          "t": 3.45,
+          "defender": "FS",
+          "defenderIdx": 20,
+          "note": "grasp"
+        },
+        "blocker": "C",
+        "blockerIdx": 3,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.75,
+          "phi": 1.233292073520399,
+          "normalForce": 0,
+          "tangentForce": 301.81533959145867,
+          "extension": 0.8046347162593123,
+          "ownPos": {
+            "x": 42.267050518253654,
+            "y": 26.074297105712656
+          },
+          "ownVel": {
+            "x": 0.8824288653561888,
+            "y": -2.1134400800620505
+          },
+          "targetPos": {
+            "x": 42.28204229658331,
+            "y": 25.007492124320045
+          },
+          "targetVel": {
+            "x": -2.781264922692571,
+            "y": 0.07857975228500533
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.15,
+          "phi": 1.8272356586307317,
+          "normalForce": 0,
+          "tangentForce": 331.29101115148785,
+          "extension": 0.8112725627951458,
+          "ownPos": {
+            "x": 42.89909940980729,
+            "y": 25.41337578188829
+          },
+          "ownVel": {
+            "x": 2.1113410614076353,
+            "y": -1.3296006465548666
+          },
+          "targetPos": {
+            "x": 41.7356418652046,
+            "y": 24.525446621014602
+          },
+          "targetVel": {
+            "x": -0.01950461224632185,
+            "y": -1.9815952130622845
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 12,
+        "obstacleImpulse": 568.2972784523569,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.5,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 9.76,
+        "firstRunnerContact": {
+          "t": 3.75,
+          "defender": "CB_W",
+          "defenderIdx": 19,
+          "note": "grasp"
+        },
+        "blocker": "C",
+        "blockerIdx": 3,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.7,
+          "phi": 1.0102613526840551,
+          "normalForce": 0,
+          "tangentForce": 364.5545164176537,
+          "extension": 0.8187634198821856,
+          "ownPos": {
+            "x": 41.969643724781164,
+            "y": 25.985178122552213
+          },
+          "ownVel": {
+            "x": 0.7886522874271606,
+            "y": -2.766415056484281
+          },
+          "targetPos": {
+            "x": 42.37132301421056,
+            "y": 24.932064687734204
+          },
+          "targetVel": {
+            "x": -3.055410824816618,
+            "y": -0.09142547920193939
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.25,
+          "phi": 1.8504561742469046,
+          "normalForce": -121.11477501064432,
+          "tangentForce": 430.4499907991689,
+          "extension": 0.833602913715588,
+          "ownPos": {
+            "x": 42.94793361339609,
+            "y": 24.888822490289286
+          },
+          "ownVel": {
+            "x": 2.4869243370983876,
+            "y": -1.6547158733944967
+          },
+          "targetPos": {
+            "x": 41.71360274850958,
+            "y": 24.016149177237946
+          },
+          "targetVel": {
+            "x": -0.3433343068281369,
+            "y": -1.768694522114177
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 0.05,
+        "actors": [
+          "C"
+        ]
+      }
+    },
+    {
+      "id": "Z27",
+      "inputSha256": "8f6a498c4cec504fc2de283409e3b8ed70a56acad35f045c6934722ed3540b33",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.6,
+      "maxWorkResidual": 8.981260180007666e-12,
+      "maxArmExcess": 1.4210854715202004e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 4.4,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 2.78,
+        "firstRunnerContact": {
+          "t": 3.8,
+          "defender": "CB_W",
+          "defenderIdx": 19,
+          "note": "grasp"
+        },
+        "blocker": "H",
+        "blockerIdx": 10,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.6,
+          "phi": 0.6734449381979772,
+          "normalForce": 402.75924990309534,
+          "tangentForce": 323.57710943490235,
+          "extension": 0.7845908513205793,
+          "ownPos": {
+            "x": 42.77897856676655,
+            "y": 26.784860551419104
+          },
+          "ownVel": {
+            "x": 1.3919248884190654,
+            "y": -3.971441676813975
+          },
+          "targetPos": {
+            "x": 42.82070653039043,
+            "y": 25.939204100542685
+          },
+          "targetVel": {
+            "x": -2.7917370704908797,
+            "y": 1.2171579686512692
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.05,
+          "phi": -1.988591010385894,
+          "normalForce": -90.85272015789502,
+          "tangentForce": 334.1365034993428,
+          "extension": 0.787549108975688,
+          "ownPos": {
+            "x": 43.0694982757349,
+            "y": 25.17411345713737
+          },
+          "ownVel": {
+            "x": 0.7042864238324634,
+            "y": -3.5549663206772175
+          },
+          "targetPos": {
+            "x": 41.766486410898544,
+            "y": 25.85507590984039
+          },
+          "targetVel": {
+            "x": -1.5629756715728473,
+            "y": 0.4559933854289972
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 4,
+        "obstacleImpulse": 496.41074462514075,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 4.75,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 3.56,
+        "firstRunnerContact": {
+          "t": 3.85,
+          "defender": "CB_W",
+          "defenderIdx": 19,
+          "note": "grasp"
+        },
+        "blocker": "H",
+        "blockerIdx": 10,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.7,
+          "phi": 0.6908073304822625,
+          "normalForce": 95.65829108040725,
+          "tangentForce": 192.94858191894238,
+          "extension": 0.7479947323443005,
+          "ownPos": {
+            "x": 42.52604112205018,
+            "y": 27.047469827876032
+          },
+          "ownVel": {
+            "x": 1.2832460555681946,
+            "y": -4.38791664086738
+          },
+          "targetPos": {
+            "x": 42.54711968615687,
+            "y": 26.090860617532336
+          },
+          "targetVel": {
+            "x": -2.673424952754048,
+            "y": 1.8123838435545117
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.15,
+          "phi": 1.979733693789908,
+          "normalForce": 0,
+          "tangentForce": 262.26152081143255,
+          "extension": 0.7674130371092776,
+          "ownPos": {
+            "x": 42.75464627927398,
+            "y": 25.286754713392135
+          },
+          "ownVel": {
+            "x": 0.303801643421794,
+            "y": -4.31133715005438
+          },
+          "targetPos": {
+            "x": 41.4875526887287,
+            "y": 25.87065378418705
+          },
+          "targetVel": {
+            "x": -1.5249460677605988,
+            "y": -0.58039400696557
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 1,
+        "obstacleImpulse": 113.74312709930797,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 0.05,
+        "actors": [
+          "H"
+        ]
+      }
+    },
+    {
+      "id": "T01",
+      "inputSha256": "96f052706d87de0104cbf69ebfea80d3f2a8024dedb748269b5686652b458bbd",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 2.05,
+      "maxWorkResidual": 6.992628698299086e-12,
+      "maxArmExcess": 1.4210854715202004e-14,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.7,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 4.35,
+        "firstRunnerContact": {
+          "t": 2.8,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        },
+        "blocker": "LG",
+        "blockerIdx": 4,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.55,
+          "phi": 1.007698675565294,
+          "normalForce": 0,
+          "tangentForce": 579.2848462827982,
+          "extension": 0.8931500466028568,
+          "ownPos": {
+            "x": 42.48095217354006,
+            "y": 27.117027130036597
+          },
+          "ownVel": {
+            "x": 1.9755855608587383,
+            "y": -2.225793946869661
+          },
+          "targetPos": {
+            "x": 42.86597764281866,
+            "y": 26.119652366681212
+          },
+          "targetVel": {
+            "x": -2.9118109499337796,
+            "y": 0.301971688536772
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2,
+          "phi": 1.846476383268962,
+          "normalForce": -207.49876556892505,
+          "tangentForce": 657.8338663617368,
+          "extension": 0.9085338911364791,
+          "ownPos": {
+            "x": 43.56479842433364,
+            "y": 26.439284838054473
+          },
+          "ownVel": {
+            "x": 2.709138265203919,
+            "y": -1.3046185841697913
+          },
+          "targetPos": {
+            "x": 42.3153885390088,
+            "y": 25.544183728738282
+          },
+          "targetVel": {
+            "x": -0.2443866656726596,
+            "y": -1.7056736017809397
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 10,
+        "obstacleImpulse": 313.98529644476855,
+        "firstTargetNotUp": 3.65
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.45,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 3.88,
+        "firstRunnerContact": {
+          "t": 2.8,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        },
+        "blocker": "LG",
+        "blockerIdx": 4,
+        "target": "LB_M",
+        "targetIdx": 15,
+        "firstLoad": {
+          "t": 1.55,
+          "phi": 0.9406061931264621,
+          "normalForce": 534.5967017083103,
+          "tangentForce": 579.2848462827982,
+          "extension": 0.8931500466028568,
+          "ownPos": {
+            "x": 42.42478265482353,
+            "y": 27.12680325340816
+          },
+          "ownVel": {
+            "x": 1.723517796813059,
+            "y": -2.447453663127641
+          },
+          "targetPos": {
+            "x": 42.87076507263941,
+            "y": 26.257031752654406
+          },
+          "targetVel": {
+            "x": -2.890609993539334,
+            "y": 0.4858265077222346
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.05,
+          "phi": 1.8995276361116469,
+          "normalForce": -216.50580778862542,
+          "tangentForce": 677.6493592450773,
+          "extension": 0.9124147601984747,
+          "ownPos": {
+            "x": 43.58555740483763,
+            "y": 26.337763482212583
+          },
+          "ownVel": {
+            "x": 2.731683154575326,
+            "y": -1.3409074242954857
+          },
+          "targetPos": {
+            "x": 42.29678011181717,
+            "y": 25.568158372182953
+          },
+          "targetVel": {
+            "x": -0.2909944808138097,
+            "y": -1.6863800772315216
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": null
+      },
+      "firstRequestDivergence": {
+        "t": 0.25,
+        "actors": [
+          "LG"
+        ]
+      }
+    },
+    {
+      "id": "T02",
+      "inputSha256": "a50ffe6036249a9fa20aab14a8fce909bfcb86d5b58324ca80be6a72dfe7399d",
+      "unchanged": false,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": 1.6,
+      "maxWorkResidual": 6.295408638834488e-12,
+      "maxArmExcess": -4.523973930507417,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.8,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.47,
+        "firstRunnerContact": {
+          "t": 3,
+          "defender": "LB_M",
+          "defenderIdx": 15,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": null,
+        "lastLoad": null,
+        "obstacleContactSteps": 23,
+        "obstacleImpulse": 1018.6007904136235,
+        "firstTargetNotUp": null
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.9,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.56,
+        "firstRunnerContact": {
+          "t": 3.1,
+          "defender": "DT_W",
+          "defenderIdx": 14,
+          "note": "grasp"
+        },
+        "blocker": "Y",
+        "blockerIdx": 7,
+        "target": "LB_W",
+        "targetIdx": 16,
+        "firstLoad": {
+          "t": 1.6,
+          "phi": 0.9409320820940313,
+          "normalForce": 95.26349200526376,
+          "tangentForce": 361.32151017436547,
+          "extension": 0.7965954118621086,
+          "ownPos": {
+            "x": 41.51124888674372,
+            "y": 30.112660699605875
+          },
+          "ownVel": {
+            "x": 0.4084061128383699,
+            "y": -2.8081396050654472
+          },
+          "targetPos": {
+            "x": 41.96362253681193,
+            "y": 29.22931132749221
+          },
+          "targetVel": {
+            "x": -2.5748259894635734,
+            "y": 1.2480185926749243
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "lastLoad": {
+          "t": 2.55,
+          "phi": 1.8693700848990025,
+          "normalForce": -141.05963386238173,
+          "tangentForce": 69.1981174104623,
+          "extension": 0.8185270655445716,
+          "ownPos": {
+            "x": 41.84887858780576,
+            "y": 30.651593745345572
+          },
+          "ownVel": {
+            "x": 1.290396757056239,
+            "y": 1.3182753237832652
+          },
+          "targetPos": {
+            "x": 40.598464595921925,
+            "y": 29.822138044100335
+          },
+          "targetVel": {
+            "x": -0.5630665567133059,
+            "y": 0.08878995123166175
+          },
+          "ownSupport": "up",
+          "targetSupport": "up"
+        },
+        "obstacleContactSteps": 0,
+        "obstacleImpulse": 0,
+        "firstTargetNotUp": 2.9
+      },
+      "firstRequestDivergence": {
+        "t": 0.05,
+        "actors": [
+          "Y"
+        ]
+      }
+    },
+    {
+      "id": "T03",
+      "inputSha256": "1c4c812fa21b67dde949cc21fa025aa27af727d61bf21c45eb21d5432181ade4",
+      "unchanged": true,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 1.0258904836746296e-11,
+      "maxArmExcess": 0.0,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.8,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 7.15,
+        "firstRunnerContact": {
+          "t": 2.85,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.8,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 7.15,
+        "firstRunnerContact": {
+          "t": 2.85,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        }
+      },
+      "firstRequestDivergence": null
+    },
+    {
+      "id": "T04",
+      "inputSha256": "7941055e0918925200b6bc2477474ae665a875e2e96fffd37b6d773a3cb2c60b",
+      "unchanged": true,
+      "trialFinalHistoryIdentity": true,
+      "firstRngDivergence": null,
+      "maxWorkResidual": 1.2419398842666851e-11,
+      "maxArmExcess": 0.0,
+      "baseline": {
+        "phase": "dead",
+        "endTime": 3.7,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.06,
+        "firstRunnerContact": {
+          "t": 2.8,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "phase": "dead",
+        "endTime": 3.7,
+        "censor": "native ending",
+        "outcome": "tackle",
+        "gain": 5.06,
+        "firstRunnerContact": {
+          "t": 2.8,
+          "defender": "LB_W",
+          "defenderIdx": 16,
+          "note": "grasp"
+        }
+      },
+      "firstRequestDivergence": null
+    }
+  ],
+  "heldOrRejected": [
+    "departure waypoint tempo (C01 protected finish lost)",
+    "bounded observed velocity trend and coherent near fit (no missed RG join; trend Z26 live5s)",
+    "advected moving meet (no missed RG join)",
+    "existing CLIMB_PLAN=0 (no missed RG join)",
+    "installed zone first foot for initial climbs (no missed RG join)",
+    "body-fit scoring (pure probe does not change Z06 chosen point)",
+    "composed forecast rewrite (local mismatch does not explain Z06)"
+  ]
+}
