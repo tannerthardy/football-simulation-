@@ -1,0 +1,774 @@
+{
+  "schema": "stalk-moving-surface-artifacts-v1",
+  "acceptedDevelop": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "integrationQueue": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "codeCommit": "265c40e8434d3c243fb0e0a78dec2bc429eebb73",
+  "sources": {
+    "baseline": {
+      "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+      "blockingSha256": "a26b5aeb7d992e406e56bfd7252f1c45dc05455c1b8801238becb3cc619beaf3"
+    },
+    "picture": {
+      "sourceSha256": "b95e1c409a3014623686b1a40c36efa4ab2b186b0808b2f19fc6b48824efe9c6",
+      "blockingSha256": "60c1166d44ca43aa099303311ef6139059833bdf95983cf7c44a4b827cc256f0"
+    },
+    "moving": {
+      "sourceSha256": "4dd114a7231f8e5012642f5cbf06b033a999658f5b71a41048f9e3a5abfe0a1c",
+      "blockingSha256": "2faa4250bc83c91fb6c311ef475872fdc456d8d22861f93254de27c8f83ecd21"
+    },
+    "surface": {
+      "sourceSha256": "f9d941a9c3b7f69d9b0d6304c585a60fcaf87766df6c8958bfb3752a290c12aa",
+      "blockingSha256": "f3075d18e3234b92287a72e59fc9c34d279de9964afd48114b382d8f10426418"
+    },
+    "perimeter": {
+      "sourceSha256": "d50530adb83384baa0cfc4b82caa08f0c269a20eb813048d2a33fde54a7ec3ac",
+      "blockingSha256": "2e81d577ae6b4ed725d52d302d24c8f92d4d86dbd7feffd765715df237fbfc39"
+    },
+    "continuity": {
+      "sourceSha256": "a7ba6d71965849ba34c628e9c6cb3cee64a1a5956dac0bebef03502f47b6f0fe",
+      "blockingSha256": "8bfc1ff299aad8d15b651bc2c0a1edfa48fd9f5836f1c8b0f34243a21fa02a89"
+    },
+    "composed": {
+      "sourceSha256": "4eb1c8cd31f23bfca700adce2d93d9ab9c2685095d8bab63d8ea353ab93a9be2",
+      "blockingSha256": "e446db719ff44bf4b8ee0105e3d8ec5976d5cbb3b3449708f0cb2416097c7ba0"
+    }
+  },
+  "archives": [
+    {
+      "path": "discovery-a.tar.gz",
+      "bytes": 20833199,
+      "sha256": "89a18e7c2b9d2d1f55f81bf32263630281ed2be5f5463dd84dd0ef4866774f1e",
+      "members": [
+        {
+          "path": "baseline-0/receipt.json",
+          "bytes": 2783,
+          "sha256": "3acf6ae510668633572a7129069791b8b908e02d8dc3361c543dc61ff74550c1"
+        },
+        {
+          "path": "baseline-0/trace.json.gz",
+          "bytes": 7517444,
+          "sha256": "2c8bc4d63d33e11f21c0937adec995c5250d9def6b4abfebdcd56ade072edbf7"
+        },
+        {
+          "path": "baseline-1/receipt.json",
+          "bytes": 2783,
+          "sha256": "bf3e8c52581851f6e0fe0ecfe424dba9c504d901b2504e450312a27ac13b0c32"
+        },
+        {
+          "path": "baseline-1/trace.json.gz",
+          "bytes": 6251531,
+          "sha256": "c50045874cd31104f1526cbdd3b757f7847697e4ef8ccc72b6d8e5f5e435beeb"
+        },
+        {
+          "path": "baseline-2/receipt.json",
+          "bytes": 2790,
+          "sha256": "8f34c714fef4317253a4d7e2953de54d1daba5a952a1e023fad0fe2944886fb9"
+        },
+        {
+          "path": "baseline-2/trace.json.gz",
+          "bytes": 7231688,
+          "sha256": "e62314d2a49f5e6300e1f3a2632d498280cd4020544dfb36b99507fe3a9e70b4"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/discovery-a.tar.gz"
+    },
+    {
+      "path": "discovery-b.tar.gz",
+      "bytes": 11798807,
+      "sha256": "f39e03ed285031c14faf4b233be333c06c488d8b755a60837effb16d60293e72",
+      "members": [
+        {
+          "path": "baseline-3/receipt.json",
+          "bytes": 2783,
+          "sha256": "b99055ba841788963c1ffec6daab0bfb4eadb779606bbea73b9329ab1db36388"
+        },
+        {
+          "path": "baseline-3/trace.json.gz",
+          "bytes": 6948119,
+          "sha256": "127a104ca160d572c4be9c18e78c7ab6e3e585f5a4983f8c4ce502f5048d741f"
+        },
+        {
+          "path": "baseline-4/receipt.json",
+          "bytes": 2543,
+          "sha256": "2d6bea4b5683e85c84bf6362154470f176ac5c689bc45b160cf099cd7579e52a"
+        },
+        {
+          "path": "baseline-4/trace.json.gz",
+          "bytes": 4941463,
+          "sha256": "bb9ef153f11011cdd837edc17f7941fda1874bb849d410a021024cce15e829b9"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/discovery-b.tar.gz"
+    },
+    {
+      "path": "picture.tar.gz",
+      "bytes": 14312152,
+      "sha256": "345677cc40b1ad8094a179dd6f59f195a0b32b81616c9895eb6fc0fe9e4b9c58",
+      "members": [
+        {
+          "path": "picture-0/receipt.json",
+          "bytes": 2790,
+          "sha256": "136cfc5c3a5185ca01ad291925887ec3fd42afbd2982b79a7bd5a0d9e1ab80fe"
+        },
+        {
+          "path": "picture-0/trace.json.gz",
+          "bytes": 7912897,
+          "sha256": "523c17f1ce31f7a1b5b2dd1565784a27cc764ca7f07180bc1c75d062b479458f"
+        },
+        {
+          "path": "picture-1/receipt.json",
+          "bytes": 2190,
+          "sha256": "02d691781fde5860e86d94355b657795a030d899e28375436782bd341381ab0d"
+        },
+        {
+          "path": "picture-1/trace.json.gz",
+          "bytes": 981922,
+          "sha256": "2d28bad3204685236b3cbfd60f6acaa9f9216e21b20bd34901e55a25b7209226"
+        },
+        {
+          "path": "transfer-picture/receipt.json",
+          "bytes": 2543,
+          "sha256": "a4892a2eed918c6c0d5d107e05b58dfcec4dca675919d56a904c1fde9778ec9e"
+        },
+        {
+          "path": "transfer-picture/trace.json.gz",
+          "bytes": 5536654,
+          "sha256": "bd3cc4b4ceef4a3b12f5171573323b2adbd5000aa0c93ba1255555a85f190481"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/picture.tar.gz"
+    },
+    {
+      "path": "rejected-approaches.tar.gz",
+      "bytes": 25726590,
+      "sha256": "0542e58373b9c3c402b8bb572fdb99cf8e2d16895a31e93615c734a3d8540b74",
+      "members": [
+        {
+          "path": "moving-0/receipt.json",
+          "bytes": 2783,
+          "sha256": "795ce24ec3432e4b30d4c1b2f575069acc88750cd27d4e95fe6a137a320996e3"
+        },
+        {
+          "path": "moving-0/trace.json.gz",
+          "bytes": 9302303,
+          "sha256": "105392f09d3d08fc4a44310568566973498e6dd9169bed6ffaf7312b9ee9637d"
+        },
+        {
+          "path": "moving-1/receipt.json",
+          "bytes": 2183,
+          "sha256": "76122ddba0855cbad02ca1e77f582757c2aeff5d3c9bb1acdb6d5b829e3a01d8"
+        },
+        {
+          "path": "moving-1/trace.json.gz",
+          "bytes": 937312,
+          "sha256": "4eeaa6243b26e45854639bf6d3de2ef2691bafa2e9c86b14f25b48b2f3651a7a"
+        },
+        {
+          "path": "surface-0/receipt.json",
+          "bytes": 2783,
+          "sha256": "7fc9ac7150eda5fed3b75a7c1e37ae141ebe4a80f64c26a76fb37674c1773fbb"
+        },
+        {
+          "path": "surface-0/trace.json.gz",
+          "bytes": 9094177,
+          "sha256": "b3447297efa7e5ca335879ba6eeb4d0b4343dff6fbea6a5c36ee6306935cf94c"
+        },
+        {
+          "path": "surface-1/receipt.json",
+          "bytes": 2182,
+          "sha256": "2ea491a24ef2bfd555fef9a5acf4ebed3b016874f21447705ce01a6b4cbe2fda"
+        },
+        {
+          "path": "surface-1/trace.json.gz",
+          "bytes": 1052782,
+          "sha256": "636febb83a8b86cd62f23d6e6a6b0b7fff0b0a0a6c08ac460223e947ad20506c"
+        },
+        {
+          "path": "transfer-surface/receipt.json",
+          "bytes": 2543,
+          "sha256": "afcbece0af8f8376cb690a1d1722ae90cef0020ffb6c9d81c57f1cd40619b582"
+        },
+        {
+          "path": "transfer-surface/trace.json.gz",
+          "bytes": 5571919,
+          "sha256": "1d52bb93da7a2c15e081e0de0e08e73bdd9704f078922d129e85f56f8d513fd5"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/rejected-approaches.tar.gz"
+    },
+    {
+      "path": "candidate.tar.gz",
+      "bytes": 15749616,
+      "sha256": "0ce1e37f9d639632090715eeee405bf960ae6e26bb2974adc6c347ae401c177f",
+      "members": [
+        {
+          "path": "perimeter-selected-0/receipt.json",
+          "bytes": 2790,
+          "sha256": "4068a385cb1101adc86e6965dd847a7065fdd123049010de6b81eb2e321e66e1"
+        },
+        {
+          "path": "perimeter-selected-0/trace.json.gz",
+          "bytes": 8562762,
+          "sha256": "2b095a13880afdcb1021cd1d1aaa223ea1bca364a75d2b407a22ac8bd01fd54f"
+        },
+        {
+          "path": "perimeter-selected-1/receipt.json",
+          "bytes": 2183,
+          "sha256": "00e5301833de45db6f33e71353b48c9ed69e4da1fd486084716c7de2c37f4da4"
+        },
+        {
+          "path": "perimeter-selected-1/trace.json.gz",
+          "bytes": 1704973,
+          "sha256": "58d95cda9e5f22e2097bfda1b01520867fb2f7dff26b2efe087faa6a36e7ef88"
+        },
+        {
+          "path": "perimeter-transfer/receipt.json",
+          "bytes": 2543,
+          "sha256": "a66fb944dbc0347a5033d3ebbba0cd29762e0770d3a61dabff5fd7f263ec306b"
+        },
+        {
+          "path": "perimeter-transfer/trace.json.gz",
+          "bytes": 5622309,
+          "sha256": "c75e7b7a133d84d24c4973ae33344bd3b5b2e92e222240340b7920228dd2ba16"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/candidate.tar.gz"
+    },
+    {
+      "path": "continuity-probes.tar.gz",
+      "bytes": 10885424,
+      "sha256": "c607909b2b612a09784ebf4b4f49f525dee472927d527fc7200d9621ae82c1f0",
+      "members": [
+        {
+          "path": "continuity-controls/receipt.json",
+          "bytes": 2430,
+          "sha256": "e06709b75b4c9d62fabd0dd13aee3f6ee0f25bafe7e18bf4111b4dba1868054c"
+        },
+        {
+          "path": "continuity-controls/trace.json.gz",
+          "bytes": 3717455,
+          "sha256": "7b6a6badaee0b8fa80678ecb79cb365a25eb8813a4f088c71f7f39a421851a4c"
+        },
+        {
+          "path": "continuity-fresh/receipt.json",
+          "bytes": 2190,
+          "sha256": "1c5c7b00fef0ad0aa70b70a91053748257b8c08a2627150146cb0d2ba1cbac2a"
+        },
+        {
+          "path": "continuity-fresh/trace.json.gz",
+          "bytes": 1437341,
+          "sha256": "86aa3a6beb53a4e169d8611cb28224c05fcfcd05a991cc6714568441451ce437"
+        },
+        {
+          "path": "composed-controls/receipt.json",
+          "bytes": 2422,
+          "sha256": "faf4ada612b1778c33b81fc4d5e7ad47f2f35511185c09e37643d74251168346"
+        },
+        {
+          "path": "composed-controls/trace.json.gz",
+          "bytes": 4258800,
+          "sha256": "b5a86318e4ad4f56fbaac202a9fbcd75525a6569415ab64d6ce66db6c84f06c9"
+        },
+        {
+          "path": "composed-fresh/receipt.json",
+          "bytes": 2190,
+          "sha256": "40d06f2bc5c5fd86d7c2f07d8868a2acd3d86b5bc9c0f3225c3532596628d36d"
+        },
+        {
+          "path": "composed-fresh/trace.json.gz",
+          "bytes": 1559244,
+          "sha256": "bd622dd6708e4d540ca54472020edef10df0e9c4cd44d95f1a05a6bb7f5970d1"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/continuity-probes.tar.gz"
+    },
+    {
+      "path": "common.tar.gz",
+      "bytes": 2072702,
+      "sha256": "f3f84989a4f2d819f0b3739c91cac1b26e5f5ef44930fd293e93fdbccdb1576c",
+      "members": [
+        {
+          "path": "REPRODUCE.md",
+          "bytes": 5501,
+          "sha256": "daecd862a9d928bbec4054e9bde96a56980b64c62f45fff3febe2c129fccbd44"
+        },
+        {
+          "path": "baseline-0.log",
+          "bytes": 30377,
+          "sha256": "fda69715141469c9457840cccb8936f319b9732642b7a4e420da91f45653b2c3"
+        },
+        {
+          "path": "baseline-1.log",
+          "bytes": 31212,
+          "sha256": "517994133a38f60c03f83d948adfb49a464e170a222fe6ee49e4172dfabb37d0"
+        },
+        {
+          "path": "baseline-2.log",
+          "bytes": 32393,
+          "sha256": "32d8b559f975f462c36f245dbd2ec15930df0f13dca613a7464784bba48d1caa"
+        },
+        {
+          "path": "baseline-3.log",
+          "bytes": 30566,
+          "sha256": "7d9de8f94b7c5e614bb54835353ea7ab2428bc28f01ddb43085b0f4e28a20eeb"
+        },
+        {
+          "path": "baseline-4.log",
+          "bytes": 21869,
+          "sha256": "39de8e4d9a06fd9dbc4efac03663c0cd14e08163fe4751d707545dc181480973"
+        },
+        {
+          "path": "baseline-collector.mjs",
+          "bytes": 8309,
+          "sha256": "9aa0d1d3e2a6266d24d235eec156a662342a8837f920cfb7c98d06fab295ee16"
+        },
+        {
+          "path": "baseline-from-accepted.patch",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "baseline-launcher.mjs",
+          "bytes": 7522,
+          "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+        },
+        {
+          "path": "baseline-profile.json",
+          "bytes": 1971,
+          "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4"
+        },
+        {
+          "path": "batches.json",
+          "bytes": 179,
+          "sha256": "8c3eb23251a554a48aa35a7d734c1a0a49286c6db45442a7d8aa16d41ff0788f"
+        },
+        {
+          "path": "candidate-code-tests.patch",
+          "bytes": 22925,
+          "sha256": "17a74098dfcd7450541431c74dee6f5c53320992fa8585fdf8b3f6bf1f603008"
+        },
+        {
+          "path": "compare-stalk.py",
+          "bytes": 1207,
+          "sha256": "a992a308ea09110dd3db171a5a73b4a840db6aa29a2310813072d35c3f2f19e3"
+        },
+        {
+          "path": "composed-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "composed-controls-launch.json",
+          "bytes": 2527,
+          "sha256": "bda5ddacb72db9a058460cb62c518c73a52941fabcd2d382f9a4050f7a00344e"
+        },
+        {
+          "path": "composed-controls.log",
+          "bytes": 17327,
+          "sha256": "7ea645953073e6a774f924fefd38219e31b4988e95241a908093f31d03526c06"
+        },
+        {
+          "path": "composed-fresh-launch.json",
+          "bytes": 2525,
+          "sha256": "cbd05d881d87a08fc48414d668b952f55082fbff838506a5eb6fa4e06dd3eace"
+        },
+        {
+          "path": "composed-fresh.log",
+          "bytes": 6816,
+          "sha256": "0266b06ee9f8f848fcf8b958342fed2b5cadb5fe82a1fedd4192c323ce975aaa"
+        },
+        {
+          "path": "composed-from-accepted.patch",
+          "bytes": 2981,
+          "sha256": "2f0c05f8b65af4348c0deb60009c1c6656fabb7b0ca4a38d06a3f3b0bec936da"
+        },
+        {
+          "path": "contact-trace.py",
+          "bytes": 1674,
+          "sha256": "a30ef5f1b3520bed3088d6d37330a0b8ae281704e1c9c926dcd18dbd8aae92e4"
+        },
+        {
+          "path": "continuity-collector.mjs",
+          "bytes": 8309,
+          "sha256": "9aa0d1d3e2a6266d24d235eec156a662342a8837f920cfb7c98d06fab295ee16"
+        },
+        {
+          "path": "continuity-controls-launch.json",
+          "bytes": 2522,
+          "sha256": "7a420aa75076746351206e5d89849bc235718a69d8ef89ab474f046905825703"
+        },
+        {
+          "path": "continuity-controls.log",
+          "bytes": 16056,
+          "sha256": "80cdb40e06baf363d57eb002fcaf84962be3346748a530266d48a24ecc7d0daf"
+        },
+        {
+          "path": "continuity-fresh-launch.json",
+          "bytes": 2527,
+          "sha256": "29821eb069cc0c3b4214ed131dc4ea4f3d33c86823ba0e33afb415631bd777b0"
+        },
+        {
+          "path": "continuity-fresh.log",
+          "bytes": 6508,
+          "sha256": "d468da2d60791b85d15fcb08d46fb1c98d36cb7125e1963346c10a0b76d33359"
+        },
+        {
+          "path": "continuity-from-accepted.patch",
+          "bytes": 1424,
+          "sha256": "484bbad460c8a20a977eec93c4a110cc8fc7e4262ced017dba6b6cd446618730"
+        },
+        {
+          "path": "discovery-launch-0.json",
+          "bytes": 2493,
+          "sha256": "fa0eb720e18d3a9548a625cc42a9983e9c43327904590e6bfe33b8b7c1ec3624"
+        },
+        {
+          "path": "discovery-launch-1.json",
+          "bytes": 2486,
+          "sha256": "3f4538335dd8095a6ee7e3c9266bf67972e3a6e6438fc11693730b404a0b6f06"
+        },
+        {
+          "path": "discovery-launch-2.json",
+          "bytes": 2487,
+          "sha256": "46ad523bf1deceea84e36cbfb0c5c84ccd513a0e8d73f48c9dfd3fb1f474b956"
+        },
+        {
+          "path": "discovery-launch-3.json",
+          "bytes": 2494,
+          "sha256": "8d255d4d3ec414f88deb8252e31016a10d2c7d5bdca832dc8ba9d9c9c88d31ea"
+        },
+        {
+          "path": "discovery-launch-4.json",
+          "bytes": 2479,
+          "sha256": "61e7bacebb333663d6d95a8a254df6c20a334baeb6e974ac072818e17bf87ecc"
+        },
+        {
+          "path": "failed-collector-0.log",
+          "bytes": 2277,
+          "sha256": "fe1f812d65c4e6d0e54c3b3d3ea58a8e7c7fb1bb71b6d20c2b22909adc9f34e1"
+        },
+        {
+          "path": "film/Z03.png",
+          "bytes": 227232,
+          "sha256": "b318177a69219e7b6103dcc8b1a650f3cdfe8c8c4159cecaee302333a47d7cfc"
+        },
+        {
+          "path": "film/Z08.png",
+          "bytes": 266960,
+          "sha256": "bce0f3712c200f318b3a9370c104122d3196b1d7b118993add8796b1c173eee0"
+        },
+        {
+          "path": "film/Z12.png",
+          "bytes": 262712,
+          "sha256": "c7970c28f904a9bd8ff7e8dbdca385e7633d58ac056a5881fc171e019ac887d3"
+        },
+        {
+          "path": "film/Z16.png",
+          "bytes": 228925,
+          "sha256": "9e89fadabaff005748a77aedfdebc5cb6fda608a8f5fb30971048ad71065aff4"
+        },
+        {
+          "path": "film/Z26.png",
+          "bytes": 271158,
+          "sha256": "0887e28e7c91bcaab3e42f6b2b48dd8784e68a7d1c9acd90b0d6ea6ab648b4a7"
+        },
+        {
+          "path": "film/Z27.png",
+          "bytes": 232238,
+          "sha256": "65834a2ce6c5295aabdb4a588f19122987bd98c4db9aae503f5e8acf8bb0e149"
+        },
+        {
+          "path": "film.py",
+          "bytes": 3177,
+          "sha256": "5c4bb5076ce8ebffd534a24d28e616dd3d3847642171d2570012d5da7fb19a0b"
+        },
+        {
+          "path": "inputs.json.gz",
+          "bytes": 15968,
+          "sha256": "0f8b2d345009cae553eca0838b143e1e467033734cee2b8d5f15626f142080b9"
+        },
+        {
+          "path": "moving-0.log",
+          "bytes": 34995,
+          "sha256": "f0ad3ac096bffe047634e4e37620a2d584c25537bf4cf815d82b15ee1f41c6e5"
+        },
+        {
+          "path": "moving-1.log",
+          "bytes": 5766,
+          "sha256": "e3dd75cf777ebca1d419f6f91cefd8b8a2428d1033c797bcee2b4c93fca83b32"
+        },
+        {
+          "path": "moving-collector.mjs",
+          "bytes": 8309,
+          "sha256": "9aa0d1d3e2a6266d24d235eec156a662342a8837f920cfb7c98d06fab295ee16"
+        },
+        {
+          "path": "moving-from-accepted.patch",
+          "bytes": 1025,
+          "sha256": "dda931df42f6bc7ab8089ad9bfd3e13ca5381356c609a456e16cd9f43c6eec6e"
+        },
+        {
+          "path": "moving-launch-0.json",
+          "bytes": 2491,
+          "sha256": "5c20f1d52319cfe137a40a5ab667d1421baeb3edeca471b72e7e7452dc41f073"
+        },
+        {
+          "path": "moving-launch-1.json",
+          "bytes": 2465,
+          "sha256": "5ee844e6d5140dea4e6eb6f6018213ef93929ed626ce13c91fa2d1dafbf4b2a8"
+        },
+        {
+          "path": "package-evidence.py",
+          "bytes": 6052,
+          "sha256": "0bceefb1c4562a148f4180c7dad68dd4e0ea5c75babf46c6d763744d0b0378c5"
+        },
+        {
+          "path": "perimeter-after-picture.patch",
+          "bytes": 2091,
+          "sha256": "9b2595e7e606a7a20745ffc1de20dbc78cfb50025e3233d02d707b6260e94559"
+        },
+        {
+          "path": "perimeter-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "perimeter-final-focused.json",
+          "bytes": 2473,
+          "sha256": "4302335873c1275356d7c0a98eace3859067b4faf327972bed5b946f5f13ffea"
+        },
+        {
+          "path": "perimeter-focused.json",
+          "bytes": 2480,
+          "sha256": "0ba724a49253eeec8ab4d8938372f8dcccf2b40641639efee5de9ae99c8957e1"
+        },
+        {
+          "path": "perimeter-from-accepted.patch",
+          "bytes": 2249,
+          "sha256": "3cce047a38bba9e68044358ceafd8a7162b097560e1279c15c65aa719fa92220"
+        },
+        {
+          "path": "perimeter-selected-0-launch.json",
+          "bytes": 2497,
+          "sha256": "8d7497d73e8861a778b287f4ff202a860c2c0fc48031097c64b6d7e0b5aa8cff"
+        },
+        {
+          "path": "perimeter-selected-0.log",
+          "bytes": 33995,
+          "sha256": "4c45591073d288dec09e2cfe2d003ca3b38619ea3e8aa868725d8ecaa9bc9ae7"
+        },
+        {
+          "path": "perimeter-selected-1-launch.json",
+          "bytes": 2484,
+          "sha256": "3cc7d6bd2d387884f4941213165265b3ef439cd7c6955bbab3faa3805cebce11"
+        },
+        {
+          "path": "perimeter-selected-1.log",
+          "bytes": 7086,
+          "sha256": "f102fd3b3c3549f175834365074728bed28394ab755270fe6bcf233c7e4b03f1"
+        },
+        {
+          "path": "perimeter-transfer-launch.json",
+          "bytes": 2496,
+          "sha256": "0cf6d37b82be0f7721dffad39514d3bdb7e031b33b41a6bae4aa408f89e17fff"
+        },
+        {
+          "path": "perimeter-transfer.log",
+          "bytes": 23612,
+          "sha256": "c805f7282c7d450ed096d7441b5f61672bfe485ec6c6d2db42870fc2f3233989"
+        },
+        {
+          "path": "perimeter-typecheck.json",
+          "bytes": 2296,
+          "sha256": "3d39efb6f87331358100845621fd43f8f5b122cda363aa8c99dd7e6b9e984e00"
+        },
+        {
+          "path": "picture-0.log",
+          "bytes": 32455,
+          "sha256": "242a01dc70f7bee6627917b456494e33a6a3ef1e85494f13dce200519d54d316"
+        },
+        {
+          "path": "picture-1.log",
+          "bytes": 5552,
+          "sha256": "58f9a5b8a0d10bd697bc3df9eb748d5465d94037d8958c3ba518701784255788"
+        },
+        {
+          "path": "picture-collector.mjs",
+          "bytes": 8309,
+          "sha256": "9aa0d1d3e2a6266d24d235eec156a662342a8837f920cfb7c98d06fab295ee16"
+        },
+        {
+          "path": "picture-from-accepted.patch",
+          "bytes": 693,
+          "sha256": "b279176a3fb85d0d466e5a8740155b32d50d5d9c7abbde8e31bcf32cff442328"
+        },
+        {
+          "path": "picture-launch-0.json",
+          "bytes": 2492,
+          "sha256": "5f5ae872c60dda5497c25d82ba5ddfbe2669a0c323917617e002a91013510c20"
+        },
+        {
+          "path": "picture-launch-1.json",
+          "bytes": 2466,
+          "sha256": "0c1b277f647fec249178f60748a54de488de429fde16488d9365dfdd124453e8"
+        },
+        {
+          "path": "prepare-inputs.mjs",
+          "bytes": 2244,
+          "sha256": "4970da1ff6cf5ce9fa43e69dbb36503db5fee91f5494039e229ebb4fa6852207"
+        },
+        {
+          "path": "prepare-transfer.mjs",
+          "bytes": 1370,
+          "sha256": "9059c1b9d6c53e5be06f243d005d91b40f089e1b2d3d05e35ec305ed42f16da0"
+        },
+        {
+          "path": "report.json.gz",
+          "bytes": 529952,
+          "sha256": "0a40755463dd26b6d7dd1539e6b1744ab80ab844a7078c18d5aa9e5e2177296f"
+        },
+        {
+          "path": "report.py",
+          "bytes": 4840,
+          "sha256": "52907d4d60718e32dd6b06b94e9b9e7adcca67b724a7de12b183450c668a1a54"
+        },
+        {
+          "path": "run-batches.py",
+          "bytes": 645,
+          "sha256": "24da71984aa8ae063a24292364eb89dc3691a09097d4c9cd134afc7734521c73"
+        },
+        {
+          "path": "run-continuity.py",
+          "bytes": 692,
+          "sha256": "63d8a2eb86a47b6216289d1a23676fc18d45a5635d87b1137cf3859a365fdd0a"
+        },
+        {
+          "path": "run-perimeter.py",
+          "bytes": 738,
+          "sha256": "00562432e6bb6ddf18cd96d8d8c11b58b96fbb8c5ba9e4a0308edce6172c7e71"
+        },
+        {
+          "path": "run-stalk-arms.py",
+          "bytes": 675,
+          "sha256": "c0bd9b78f5a58a788feca322b03eab6dabea82a1a38c9694e5ad216b56ac8541"
+        },
+        {
+          "path": "run-surface.py",
+          "bytes": 649,
+          "sha256": "72eef298fb289af05d105953ff9107f5b0ec16fb97fc25476d69a8ed318d6cd1"
+        },
+        {
+          "path": "run-transfer.py",
+          "bytes": 615,
+          "sha256": "3aeb35419c1ce70626b2c19c2c7fa7c4f6856ad4caf4ffaea37a5e7105ac59cc"
+        },
+        {
+          "path": "screen.json.gz",
+          "bytes": 42045,
+          "sha256": "f2542369c4277e6f1cb044eea7b76497e95ae7881fa04c3b888028a0ec564fb7"
+        },
+        {
+          "path": "screen.py",
+          "bytes": 2788,
+          "sha256": "ea0e172c1a20f1791ec89f36a353f2612135a823bffecc0a32050a9efce8287d"
+        },
+        {
+          "path": "sources.json",
+          "bytes": 1388,
+          "sha256": "9007f10ce03fee687f6e5db3ed116d945c3f31834b8fa6477794fe738cc1cb28"
+        },
+        {
+          "path": "surface-0.log",
+          "bytes": 34964,
+          "sha256": "62439f34f887cf4f45e48a13e5c05684893bd058c91299aa950fbcaea0978b20"
+        },
+        {
+          "path": "surface-1.log",
+          "bytes": 5673,
+          "sha256": "d2669e6bb69ffb95f3696121ad09acab2198f11599ad0c028c38c381cf2e05c1"
+        },
+        {
+          "path": "surface-collector.mjs",
+          "bytes": 8309,
+          "sha256": "9aa0d1d3e2a6266d24d235eec156a662342a8837f920cfb7c98d06fab295ee16"
+        },
+        {
+          "path": "surface-from-accepted.patch",
+          "bytes": 1111,
+          "sha256": "0b7ff55ef471c3503df00efe49ccffe68af24b826bc76d20bc101e1816cf8943"
+        },
+        {
+          "path": "surface-launch-0.json",
+          "bytes": 2492,
+          "sha256": "76197e74215b1bc979946ec894a30c923f095dbb9aeb8d825c91342327cc7388"
+        },
+        {
+          "path": "surface-launch-1.json",
+          "bytes": 2466,
+          "sha256": "429874b564d38c8454f9786d92cd130ddc75ef1d9dc57bb024fada5b98b7990b"
+        },
+        {
+          "path": "transfer-inputs.json.gz",
+          "bytes": 7923,
+          "sha256": "19efb79341913a934b947aa517dd7add7fcf6bc769f2bedeaaf69083f35912d3"
+        },
+        {
+          "path": "transfer-picture-launch.json",
+          "bytes": 2494,
+          "sha256": "e6a85ceb0d82439dbb8bcd0a1a659b9cfbd03dca4819d0acbec45df8b9311db7"
+        },
+        {
+          "path": "transfer-picture.log",
+          "bytes": 22486,
+          "sha256": "d45b081eaa24ea7e5370603bb9bf1d3af7e3a35642ebaeae47d3756d2c04e395"
+        },
+        {
+          "path": "transfer-surface-launch.json",
+          "bytes": 2494,
+          "sha256": "cc61ff6388c2824e5036a2ba3380ec1b2acb30a34a77f08599640a15def75427"
+        },
+        {
+          "path": "transfer-surface.log",
+          "bytes": 22816,
+          "sha256": "bb1ffc5ad47189040289ab834e03a0a032b7ed607d1e061143d315413dddcff0"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/common.tar.gz"
+    }
+  ],
+  "evidenceBranch": "evidence/stalk-moving-surface-2026-10-18",
+  "evidenceCommit": "15f5113709450363f3dbc744753cbc87b422e6f3",
+  "film": [
+    {
+      "path": "film/Z03.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z03.png",
+      "sha256": "b318177a69219e7b6103dcc8b1a650f3cdfe8c8c4159cecaee302333a47d7cfc"
+    },
+    {
+      "path": "film/Z08.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z08.png",
+      "sha256": "bce0f3712c200f318b3a9370c104122d3196b1d7b118993add8796b1c173eee0"
+    },
+    {
+      "path": "film/Z12.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z12.png",
+      "sha256": "c7970c28f904a9bd8ff7e8dbdca385e7633d58ac056a5881fc171e019ac887d3"
+    },
+    {
+      "path": "film/Z16.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z16.png",
+      "sha256": "9e89fadabaff005748a77aedfdebc5cb6fda608a8f5fb30971048ad71065aff4"
+    },
+    {
+      "path": "film/Z26.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z26.png",
+      "sha256": "0887e28e7c91bcaab3e42f6b2b48dd8784e68a7d1c9acd90b0d6ea6ab648b4a7"
+    },
+    {
+      "path": "film/Z27.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/15f5113709450363f3dbc744753cbc87b422e6f3/film/Z27.png",
+      "sha256": "65834a2ce6c5295aabdb4a588f19122987bd98c4db9aae503f5e8acf8bb0e149"
+    }
+  ],
+  "qualification": "Data-only evidence. Do not merge. All 76 native continuations, rejected/adverse arms, exact inputs, source patches, checksummed recordings and commands. Archive extraction rehashed every regular-file payload and rejects unsafe/link members."
+}

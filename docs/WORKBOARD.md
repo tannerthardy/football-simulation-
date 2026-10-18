@@ -1,34 +1,29 @@
 # Current work ownership
 
-## Catching: free zone approach versus acquired responsibility — 2026-10-18 UTC
+## Catching: installed perimeter stalk approach — 2026-10-18 UTC
 
-Branch `codex/stalk-moving-surface` (initial local name zone-track-recovery), accepted914f4d56a3b7ef2845ff0208f55d626c0ff5f880 /
-canonical queuee8d806b940a84c7cff7e5ee066022079723c78ef. User explicitly authorizes
-expanded diagnostics to find consequential dumb blocking. Start with28 fixed
-ordinary native encounters across zone direction/front/formation plus gap/Duo
-controls, full all22 consumed cues/raw/final/achieved movement. Own only free
-zoneFlow-to-ordinary-fit dispatch and any minimal acquired-responsibility helper,
-with targeted tests/film/evidence. Diagnose useful threat/access before changing
-behavior; a backside defender being outflanked is not automatically a miss.
-No #116 loaded runoff, #126 contact frame/helper release, #146 GH/GT counts/routes,
-#147 work-reference, carrier navigation, shared spacing/movement, or Physics
-change. Coordinate blocking.ts with Run; preserve prior adverse evidence.
+Branch `codex/stalk-moving-surface`, code265c40e/source d50530ad, from accepted
+914f4d56a3b7ef2845ff0208f55d626c0ff5f880 and canonical queue
+e8d806b940a84c7cff7e5ee066022079723c78ef, both refetched unchanged. User authorized
+expanded diagnosis. The fixed28-snap discovery did not justify changing zoneFlow;
+it instead found four actual corner contacts with assigned X/Z stalks that never
+acquired them. [Diagnosis, adverse evidence and handoff](reviews/stalk-moving-surface.md).
 
-Discovery completed28 native prefixes/source5b710a1b (27 endings/one5s censor).
-No screened lateral-passage target was first runner contact, so no zone recovery
-rule is justified. Pivot inside the same investigation: four distinct CB first
-contacts have assigned X/Z stalks with no body/hand acquisition before arrival;
-the fixed forward-clamped stationary fit fails to follow their downhill motion.
-Own only RunBlocker.stalk movement; reuse exact #29 acquired-position extraction
-as its explicit information-only arm. Test one moving-body approach with existing
-movement law/.85 speed/unchanged physical acquisition, plus successful H/LB and
-patient/late-cut controls. Assignment137, release/physics/movement modifiers stay
-separate. This supersedes the earlier tentative zoneFlow-edit boundary; zoneFlow
-will not be changed without new causal evidence. Final candidate tags the exact
-installed `db`-group stalk target; it uses its acquired moving near surface.
-Interior LB help retains #29's ordinary approach, not the rejected broad center/
-near-surface policy. Success transfer and F01 private same-tick job-drop witness
-stay visible; check any named-stalk continuity correction independently.
+Candidate: exact #29 acquired-position extraction plus a moving near-surface fit
+for the exact installed perimeter target. Existing speed/braking/contact/hands/
+release, inside H/backer work, assignments and shared modifiers remain unchanged.
+Four original and two fresh corner witnesses now acquire real loaded contact;
+earned corner escape and interior defeats remain. Broader center/surface policies
+are rejected for adverse H/backer access. F01 privately drops H's named Will job
+during a same-tick teammate engagement; diagnostic retention still does not
+restore contact, so neither continuity variant is promoted or bundled.
+
+38 focused checks/typecheck pass; 76 native continuations,36.002304 collector
+seconds,70 endings/six5s censors across all arms. Exact sources/flags/frozen inputs,
+all tapes/film and rejected arms are published at data-only15f5113. Ready for Run's
+independent controller review; Integration owns combined verification. #137
+assignment, #146 Counter, #147 work picture, #138 lifecycle, held runoff/contact
+frame/helper release, carrier navigation and Physics remain separate.
 
 ## Handbook/reference documentation integration
 
