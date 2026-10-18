@@ -113,8 +113,8 @@ export interface RunConcept {
   aim: 'A' | 'B' | 'C' | 'D' | 'edge';
   /** Handoff mesh time after snap (s). */
   meshTime: number;
-  /** Backside guard / tackle pulls (gap schemes): BSG kicks out or leads, BST leads. */
-  pullers: Array<'BSG' | 'BST'>;
+  /** Gap pulls: BSG kicks/leads, BST wraps; explicit Counter H tag uses an off-ball H. */
+  pullers: Array<'BSG' | 'BST' | 'H'>;
   beats: string[];
 }
 
