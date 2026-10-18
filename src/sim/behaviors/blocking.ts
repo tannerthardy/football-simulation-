@@ -852,30 +852,32 @@ export class RunBlocker implements Behavior {
       while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
       const wp = plan.pullPath[this.pullIdx];
       if (wp) {
-        // The wrapper's separate second-level interception is unchanged.
-        if (plan.pullRole === 'lead' && this.pullIdx > 0 && target
-          && Math.hypot(target.pos.x-a.pos.x, target.pos.y-a.pos.y) < 1.2) return this.attack(a, sim, target);
         // Clear the wall with the feet before fitting the moving kick/trap
         // target. Reaching a waypoint's tolerance does not establish that
         // clearance, and a penetrator need not pass within an arbitrary
         // distance of the puller to become relevant work.
-        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
         if (read) {
           this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
-          if (this.pullCleared && (approachingDepth < sim.los || distance < 1.2))
+          // The wrapper's existing near-target transition uses the same
+          // acquired picture as its eventual approach, not private live
+          // distance. Preserve the installed track and normal clearance.
+          const fit = plan.pullRole === 'lead' ? distance < 1.2
+            : approachingDepth < sim.los || distance < 1.2;
+          if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
-        let path = read && this.pullCleared ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
-        if (read && this.pullCleared) plan.pullPath[this.pullIdx] = path;
+        if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
         if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
@@ -997,6 +999,9 @@ export class RunBlocker implements Behavior {
   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
     const plan = this.plan, t = sim.t;
     let target = plan.target;
+    // A named wrapper job cannot disappear because of the target's private
+    // live contact. Approach and unavailability use its acquired picture.
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1094,6 +1099,7 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
