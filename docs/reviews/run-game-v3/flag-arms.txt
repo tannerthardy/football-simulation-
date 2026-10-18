@@ -1,0 +1,10 @@
+# Per-flag stretch arms on current code: mean, negative %, 4+ % per (formation, concept), 200 plays per cell.
+# xb/d0: develop; xte2/te2: ZONE_TE; xfl/fl: STRETCH_FLAT; xlk: LB_KEY; xrec2: UC_MESH ZONE_TE STRETCH_FLAT LB_KEY. Seeds: x* 77,71001,1,2,3; d0/te2/fl 10 seeds.
+xb     errors 0 gun_doubles_11 oz n200 m8.34 neg9.0 4+39.5 | gun_doubles_11 wz n200 m8.51 neg10.5 4+42.0 | pistol_12 oz n200 m7.24 neg7.5 4+46.5 | pistol_12 wz n200 m7.06 neg15.5 4+43.0
+xte2   errors 0 gun_doubles_11 oz n200 m5.63 neg15.0 4+33.5 | gun_doubles_11 wz n200 m7.75 neg12.5 4+38.0 | pistol_12 oz n200 m7.75 neg10.0 4+44.0 | pistol_12 wz n200 m8.19 neg11.0 4+45.0
+xfl    errors 0 gun_doubles_11 oz n200 m5.78 neg10.0 4+41.0 | gun_doubles_11 wz n200 m8.95 neg10.0 4+47.0 | pistol_12 oz n200 m6.00 neg10.5 4+42.0 | pistol_12 wz n200 m9.44 neg10.5 4+43.5
+xlk    errors 0 gun_doubles_11 oz n200 m7.80 neg9.0 4+35.0 | gun_doubles_11 wz n200 m8.38 neg11.0 4+44.5 | pistol_12 oz n200 m6.51 neg9.0 4+45.0 | pistol_12 wz n200 m8.36 neg13.0 4+39.5
+xrec2  errors 0 gun_doubles_11 oz n200 m5.99 neg14.5 4+37.5 | gun_doubles_11 wz n200 m8.27 neg19.5 4+36.0 | pistol_12 oz n200 m7.16 neg9.0 4+43.5 | pistol_12 wz n200 m6.49 neg11.5 4+40.0
+d0     errors 0 ace_12 oz n400 m5.15 neg14.2 4+29.8 | ace_12 wz n400 m4.99 neg20.8 4+31.0
+te2    errors 0 ace_12 oz n400 m5.64 neg13.8 4+38.0 | ace_12 wz n400 m5.97 neg14.8 4+37.5
+fl     errors 0 ace_12 oz n400 m4.43 neg14.5 4+31.2 | ace_12 wz n400 m7.40 neg18.8 4+35.8

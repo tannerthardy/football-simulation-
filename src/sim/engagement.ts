@@ -632,6 +632,11 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 /** Trial: retain the held solo reach's track intention through contact. */
 const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
+/** Experimental (STRETCH_FLAT=1, off): a reach blocker plays flat. Matching
+ * an attacking defender's normal motion asks his feet to retreat, so the
+ * defender walks into the backfield without load. He gives no ground on
+ * purpose; only felt force takes it, and the anchor answers that. */
+const STRETCH_FLAT = process.env.STRETCH_FLAT === '1';
 /** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
 const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
@@ -1110,6 +1115,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       Math.min(-driveNormal, 2.4 * driveNormal), Math.max(-driveNormal, 2.4 * driveNormal));
     blockVel = { x: -axis.x * normal + lat.x * lateral, y: -axis.y * normal + lat.y * lateral };
   } else blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  if (STRETCH_FLAT && stretch && blockVel.x * sim.attackDir(b.team) < 0) blockVel = { x: 0, y: blockVel.y };
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the

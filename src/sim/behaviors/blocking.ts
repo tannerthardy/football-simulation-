@@ -744,6 +744,10 @@ const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
+/** Experimental (ZONE_TE=1, off): an inline tight end on a zone call is part
+ * of the surface and runs the same track, rather than sprinting straight at
+ * his man's playside shoulder and meeting him with depth instead of width. */
+const ZONE_TE = process.env.ZONE_TE === '1';
 
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
@@ -834,7 +838,8 @@ export class RunBlocker implements Behavior {
     // coordination (checks, help, climb), as do all doubles once joined.
     const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
-    if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
+    const surface = isOL(a) || (ZONE_TE && !!sim.offAlign.spots[a.slot]?.inline);
+    if (ZONE_FLOW && surface && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
       const flow = this.zoneFlow(a, sim);
       if (flow) return this.withBase(a, flow);
     }
@@ -1029,7 +1034,12 @@ export class RunBlocker implements Behavior {
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
     const needed = requestToCover(gaitLag(a.profile), Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
-    const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
+    let lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
+    // ZONE_TE: an inline end has no outside neighbor to pass a slanting man
+    // to. When the man he is covered by shows his playside shoulder inside
+    // him, he takes him where he goes instead of running the tempo past him.
+    if (ZONE_TE && !isOL(a) && (shoulder - a.pos.y) * ps < 0)
+      lateral = ps * clamp(requestToCover(gaitLag(a.profile), (shoulder - a.pos.y) * ps, meet, a.vel.y * ps), -a.profile.vmax, a.profile.vmax);
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };
     // Depth: close to the defender's near surface without overrunning it.

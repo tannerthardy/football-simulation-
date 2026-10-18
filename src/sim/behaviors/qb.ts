@@ -618,6 +618,8 @@ export class QBHandoff implements Behavior {
     private readonly rb: Agent | null,
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
+    /** Speed kept through the mesh spot (0: arrive and stop on it). */
+    private readonly through = 0,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -666,10 +668,10 @@ export class QBHandoff implements Behavior {
     // and riding past, ride with him: put the ball where he is going.
     if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
       const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
-      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: 0 });
+      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: this.through });
     }
     const facing = angleTo(a.pos, this.mesh);
-    return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
+    return goTo(a, this.mesh, { speed: 1, facing, through: this.through });
   }
 }
 

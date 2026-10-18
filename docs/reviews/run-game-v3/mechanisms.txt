@@ -1,0 +1,104 @@
+# Mechanism receipts (same Python operator on 2022 NFL tracking and sim common plays). Generated 2026-10-18T20:22:34Z on f4146275 + working tree.
+## OL first steps (olstep.py)
+nfl-plays.jsonl.gz outside_zone
+   play  0.3s depth +0.00 lat +0.20 | 0.5s depth +0.10 lat +0.50 | 0.7s depth +0.20 lat +0.90 | 1.0s depth +0.30 lat +1.70
+   C     0.3s depth +0.00 lat +0.30 | 0.5s depth +0.00 lat +0.70 | 0.7s depth +0.00 lat +1.10 | 1.0s depth +0.10 lat +2.00
+   back  0.3s depth +0.10 lat +0.30 | 0.5s depth +0.20 lat +0.60 | 0.7s depth +0.30 lat +1.10 | 1.0s depth +0.60 lat +2.00
+d0-common.jsonl.gz outside_zone
+   play  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.20 | 0.7s depth +0.30 lat +0.50 | 1.0s depth +0.40 lat +0.80
+   C     0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.20 | 0.7s depth +0.30 lat +0.40 | 1.0s depth +0.40 lat +0.60
+   back  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.20 | 0.7s depth +0.30 lat +0.40 | 1.0s depth +0.50 lat +0.70
+full-common.jsonl.gz outside_zone
+   play  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.30 | 0.7s depth +0.30 lat +0.50 | 1.0s depth +0.40 lat +0.80
+   C     0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.20 | 0.7s depth +0.30 lat +0.40 | 1.0s depth +0.40 lat +0.70
+   back  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.20 | 0.7s depth +0.30 lat +0.50 | 1.0s depth +0.50 lat +0.80
+nfl-plays.jsonl.gz inside_zone
+   play  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.10 lat +0.20 | 0.7s depth +0.20 lat +0.40 | 1.0s depth +0.30 lat +0.80
+   C     0.3s depth +0.10 lat +0.20 | 0.5s depth +0.10 lat +0.30 | 0.7s depth +0.20 lat +0.60 | 1.0s depth +0.30 lat +1.00
+   back  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.30 | 0.7s depth +0.40 lat +0.60 | 1.0s depth +0.70 lat +1.10
+d0-common.jsonl.gz inside_zone
+   play  0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.30 | 1.0s depth +0.80 lat +0.40
+   C     0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.20 | 1.0s depth +0.70 lat +0.30
+   back  0.3s depth +0.10 lat +0.00 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.30 | 1.0s depth +0.90 lat +0.30
+full-common.jsonl.gz inside_zone
+   play  0.3s depth +0.10 lat +0.00 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.30 | 1.0s depth +0.80 lat +0.40
+   C     0.3s depth +0.10 lat +0.10 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.20 | 1.0s depth +0.70 lat +0.30
+   back  0.3s depth +0.10 lat +0.00 | 0.5s depth +0.20 lat +0.10 | 0.7s depth +0.50 lat +0.30 | 1.0s depth +0.90 lat +0.30
+## Box DL depth and flow by alignment (dldepth.py)
+outside_zone: plays nfl-plays.jsonl.gz 1608 | d0-common.jsonl.gz 800 | tf-common.jsonl.gz 800 | full-common.jsonl.gz 800
+  play end    1.0s nfl-plays. depth p25/50/75 -0.2/+0.2/+0.5 <-0.5  10% flow +1.1 | d0-common. depth p25/50/75 +0.4/+0.4/+0.5 <-0.5   0% flow +0.4 | tf-common. depth p25/50/75 +0.3/+0.4/+0.5 <-0.5   0% flow +0.3 | full-commo depth p25/50/75 +0.3/+0.4/+0.5 <-0.5   0% flow +0.3
+  play end    1.5s nfl-plays. depth p25/50/75 -0.7/-0.1/+0.5 <-0.5  30% flow +2.4 | d0-common. depth p25/50/75 -0.1/+0.1/+0.3 <-0.5   0% flow +1.3 | tf-common. depth p25/50/75 -0.1/+0.1/+0.4 <-0.5   0% flow +1.1 | full-commo depth p25/50/75 -0.1/+0.1/+0.4 <-0.5   0% flow +1.1
+  play end    2.0s nfl-plays. depth p25/50/75 -0.9/-0.1/+0.7 <-0.5  35% flow +3.9 | d0-common. depth p25/50/75 -0.6/-0.3/+0.2 <-0.5  29% flow +2.5 | tf-common. depth p25/50/75 -0.5/-0.1/+0.4 <-0.5  24% flow +2.0 | full-commo depth p25/50/75 -0.6/-0.1/+0.4 <-0.5  25% flow +2.0
+  play end    2.5s nfl-plays. depth p25/50/75 -0.9/+0.1/+1.1 <-0.5  33% flow +5.2 | d0-common. depth p25/50/75 -1.1/-0.6/+0.5 <-0.5  51% flow +3.1 | tf-common. depth p25/50/75 -0.9/-0.2/+0.6 <-0.5  38% flow +2.6 | full-commo depth p25/50/75 -1.0/-0.3/+0.6 <-0.5  42% flow +2.7
+  play inside 1.0s nfl-plays. depth p25/50/75 -0.3/+0.1/+0.4 <-0.5  14% flow +1.1 | d0-common. depth p25/50/75 +0.2/+0.3/+0.4 <-0.5   0% flow +0.2 | tf-common. depth p25/50/75 +0.2/+0.3/+0.4 <-0.5   0% flow +0.2 | full-commo depth p25/50/75 +0.2/+0.3/+0.4 <-0.5   0% flow +0.2
+  play inside 1.5s nfl-plays. depth p25/50/75 -1.0/-0.3/+0.4 <-0.5  41% flow +2.4 | d0-common. depth p25/50/75 -0.0/+0.1/+0.2 <-0.5   0% flow +0.8 | tf-common. depth p25/50/75 +0.1/+0.2/+0.2 <-0.5   0% flow +0.7 | full-commo depth p25/50/75 +0.1/+0.2/+0.2 <-0.5   0% flow +0.7
+  play inside 2.0s nfl-plays. depth p25/50/75 -1.3/-0.4/+0.5 <-0.5  43% flow +4.0 | d0-common. depth p25/50/75 -0.2/+0.0/+0.2 <-0.5   6% flow +1.4 | tf-common. depth p25/50/75 -0.2/+0.1/+0.2 <-0.5   7% flow +1.4 | full-commo depth p25/50/75 -0.2/+0.1/+0.2 <-0.5   7% flow +1.4
+  play inside 2.5s nfl-plays. depth p25/50/75 -1.1/-0.1/+0.8 <-0.5  37% flow +5.6 | d0-common. depth p25/50/75 -0.3/-0.1/+0.2 <-0.5  17% flow +2.5 | tf-common. depth p25/50/75 -0.4/+0.0/+0.3 <-0.5  17% flow +2.3 | full-commo depth p25/50/75 -0.5/-0.0/+0.2 <-0.5  20% flow +2.2
+  backside    1.0s nfl-plays. depth p25/50/75 +0.0/+0.4/+0.8 <-0.5   8% flow +1.5 | d0-common. depth p25/50/75 +0.3/+0.4/+0.6 <-0.5   0% flow +0.2 | tf-common. depth p25/50/75 +0.3/+0.4/+0.4 <-0.5   0% flow +0.2 | full-commo depth p25/50/75 +0.3/+0.4/+0.4 <-0.5   0% flow +0.2
+  backside    1.5s nfl-plays. depth p25/50/75 -0.4/+0.3/+0.9 <-0.5  21% flow +3.1 | d0-common. depth p25/50/75 -0.0/+0.2/+0.6 <-0.5   1% flow +0.5 | tf-common. depth p25/50/75 +0.0/+0.2/+0.4 <-0.5   1% flow +0.6 | full-commo depth p25/50/75 +0.0/+0.2/+0.4 <-0.5   1% flow +0.6
+  backside    2.0s nfl-plays. depth p25/50/75 -0.5/+0.5/+1.3 <-0.5  23% flow +4.9 | d0-common. depth p25/50/75 -0.2/+0.1/+0.6 <-0.5  12% flow +0.9 | tf-common. depth p25/50/75 -0.1/+0.1/+0.4 <-0.5   7% flow +1.1 | full-commo depth p25/50/75 -0.1/+0.1/+0.4 <-0.5   8% flow +1.2
+  backside    2.5s nfl-plays. depth p25/50/75 -0.3/+0.8/+1.8 <-0.5  21% flow +6.6 | d0-common. depth p25/50/75 -0.6/+0.0/+0.5 <-0.5  27% flow +1.5 | tf-common. depth p25/50/75 -0.3/+0.2/+0.4 <-0.5  15% flow +1.9 | full-commo depth p25/50/75 -0.3/+0.2/+0.4 <-0.5  16% flow +1.9
+## Second level depth/flow (lbdepth.py)
+nfl-plays.jsonl.gz inside_zone
+   play 0.5s depth 4.2 flow 0.0 OL<1.5 5% | 1.0s depth 3.7 flow 0.2 OL<1.5 12% | 1.5s depth 2.9 flow 0.5 OL<1.5 29% | 2.0s depth 2.5 flow 0.6 OL<1.5 57% | 2.5s depth 2.5 flow 0.6 OL<1.5 66%
+   back 0.5s depth 4.2 flow 0.1 OL<1.5 5% | 1.0s depth 3.7 flow 0.6 OL<1.5 9% | 1.5s depth 3.0 flow 1.5 OL<1.5 23% | 2.0s depth 2.6 flow 2.3 OL<1.5 48% | 2.5s depth 2.7 flow 2.9 OL<1.5 55%
+d0-common.jsonl.gz inside_zone
+   play 0.5s depth 4.5 flow -0.0 OL<1.5 0% | 1.0s depth 3.8 flow 0.1 OL<1.5 0% | 1.5s depth 2.8 flow 0.4 OL<1.5 31% | 2.0s depth 2.1 flow 0.7 OL<1.5 72% | 2.5s depth 2.1 flow 1.1 OL<1.5 70%
+   back 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 3.8 flow 0.1 OL<1.5 0% | 1.5s depth 2.8 flow 0.3 OL<1.5 30% | 2.0s depth 2.1 flow 0.4 OL<1.5 62% | 2.5s depth 2.0 flow 0.4 OL<1.5 61%
+full-common.jsonl.gz inside_zone
+   play 0.5s depth 4.5 flow -0.0 OL<1.5 0% | 1.0s depth 3.8 flow 0.1 OL<1.5 0% | 1.5s depth 2.8 flow 0.4 OL<1.5 30% | 2.0s depth 2.1 flow 0.9 OL<1.5 66% | 2.5s depth 2.0 flow 1.4 OL<1.5 66%
+   back 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 3.9 flow 0.3 OL<1.5 0% | 1.5s depth 3.1 flow 1.3 OL<1.5 23% | 2.0s depth 2.5 flow 1.9 OL<1.5 65% | 2.5s depth 2.2 flow 2.5 OL<1.5 69%
+nfl-plays.jsonl.gz outside_zone
+   play 0.5s depth 4.2 flow 0.2 OL<1.5 3% | 1.0s depth 3.5 flow 1.2 OL<1.5 7% | 1.5s depth 2.7 flow 2.8 OL<1.5 25% | 2.0s depth 2.1 flow 4.5 OL<1.5 56% | 2.5s depth 1.9 flow 5.8 OL<1.5 64%
+   back 0.5s depth 4.2 flow 0.2 OL<1.5 2% | 1.0s depth 3.8 flow 1.3 OL<1.5 4% | 1.5s depth 3.2 flow 3.2 OL<1.5 17% | 2.0s depth 2.9 flow 5.2 OL<1.5 41% | 2.5s depth 3.0 flow 7.0 OL<1.5 49%
+d0-common.jsonl.gz outside_zone
+   play 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 3.8 flow 0.2 OL<1.5 0% | 1.5s depth 3.0 flow 1.2 OL<1.5 10% | 2.0s depth 2.0 flow 2.6 OL<1.5 43% | 2.5s depth 1.6 flow 3.6 OL<1.5 68%
+   back 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 3.9 flow 0.4 OL<1.5 0% | 1.5s depth 3.2 flow 1.8 OL<1.5 13% | 2.0s depth 2.6 flow 3.7 OL<1.5 26% | 2.5s depth 2.1 flow 5.2 OL<1.5 47%
+full-common.jsonl.gz outside_zone
+   play 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 3.9 flow 0.2 OL<1.5 0% | 1.5s depth 3.0 flow 1.2 OL<1.5 10% | 2.0s depth 1.9 flow 2.6 OL<1.5 38% | 2.5s depth 1.5 flow 3.6 OL<1.5 58%
+   back 0.5s depth 4.5 flow 0.0 OL<1.5 0% | 1.0s depth 4.0 flow 0.5 OL<1.5 0% | 1.5s depth 3.4 flow 2.0 OL<1.5 9% | 2.0s depth 2.6 flow 3.9 OL<1.5 27% | 2.5s depth 2.1 flow 5.5 OL<1.5 49%
+## Second-level block episodes (lbblock.py)
+nfl-plays.jsonl.gz     inside_zone: second-level 3522, blocked 70%, censored 54% | ended: duration p25/50/75 0.8/1.3/1.9 s, dist to runner p50 3.4, runner still short of him 60%
+d0-common.jsonl.gz     inside_zone: second-level 1172, blocked 76%, censored 52% | ended: duration p25/50/75 0.7/1.0/1.4 s, dist to runner p50 4.67, runner still short of him 67%
+full-common.jsonl.gz   inside_zone: second-level 1172, blocked 72%, censored 67% | ended: duration p25/50/75 0.7/1.0/1.5 s, dist to runner p50 3.2, runner still short of him 53%
+nfl-plays.jsonl.gz     outside_zone: second-level 4236, blocked 67%, censored 47% | ended: duration p25/50/75 0.7/1.3/1.9 s, dist to runner p50 3.98, runner still short of him 64%
+d0-common.jsonl.gz     outside_zone: second-level 2344, blocked 62%, censored 62% | ended: duration p25/50/75 0.6/0.9/1.3 s, dist to runner p50 3.22, runner still short of him 52%
+full-common.jsonl.gz   outside_zone: second-level 2344, blocked 60%, censored 50% | ended: duration p25/50/75 0.6/0.9/1.5 s, dist to runner p50 4.24, runner still short of him 55%
+## Linemen near the runner at the crossing and first contact (dlconvert.py)
+nfl-plays.jsonl.gz     all: runs crossing 5116; a box defender within 1.6 yd at the crossing 42% (next to an OL 86% of those) | first contact by one of them 56% (by a lineman next to an OL 54%)
+d0-common.jsonl.gz     all: runs crossing 1036; a box defender within 1.6 yd at the crossing 36% (next to an OL 86% of those) | first contact by one of them 52% (by a lineman next to an OL 47%)
+full-common.jsonl.gz   all: runs crossing 1044; a box defender within 1.6 yd at the crossing 35% (next to an OL 92% of those) | first contact by one of them 52% (by a lineman next to an OL 49%)
+## Second level passed (lbpass.py)
+out/mechanics/nfl-plays.jsonl.gz {'<10': 5493, '10+': 730}
+  all  passes 9526: blocked 53%, free-near 34%, far 13%   per play 1.53
+  10+  passes 1739: blocked 40%, free-near 35%, far 26%   per play 2.38
+  <10  passes 7787: blocked 56%, free-near 33%, far 10%   per play 1.42
+  lateral of unblocked (+ = ahead of flow): far -6.74  free-near -0.48
+out/open-field/all/d0.jsonl.gz {'<10': 1079, '10+': 121}
+  all  passes 2057: blocked 51%, free-near 26%, far 23%   per play 1.71
+  10+  passes 348: blocked 61%, far 23%, free-near 16%   per play 2.88
+  <10  passes 1709: blocked 49%, free-near 28%, far 22%   per play 1.58
+  lateral of unblocked (+ = ahead of flow): far -8.96  free-near -1.7
+out/open-field/all/cap.jsonl.gz {'<10': 914, '10+': 286}
+  all  passes 2153: blocked 50%, free-near 26%, far 24%   per play 1.79
+  10+  passes 875: blocked 58%, far 23%, free-near 19%   per play 3.06
+  <10  passes 1278: blocked 45%, free-near 31%, far 24%   per play 1.40
+  lateral of unblocked (+ = ahead of flow): far -8.82  free-near -1.73
+out/open-field/all/full.jsonl.gz {'<10': 952, '10+': 248}
+  all  passes 2020: blocked 49%, free-near 30%, far 21%   per play 1.68
+  10+  passes 772: blocked 55%, free-near 24%, far 21%   per play 3.11
+  <10  passes 1248: blocked 45%, free-near 35%, far 20%   per play 1.31
+  lateral of unblocked (+ = ahead of flow): far -8.32  free-near -1.54
+## Get-off (getoff.py)
+out/mechanics/nfl-plays.jsonl.gz run box defenders first move p25/p50/p75 0.3/0.3/0.4 (n 16386)   OL 0.2/0.3/0.4
+out/open-field/all/d0-common.jsonl.gz run box defenders first move p25/p50/p75 0.5/0.5/0.6 (n 4428)   OL 0.4/0.4/0.5
+out/open-field/all/g5-common.jsonl.gz run box defenders first move p25/p50/p75 0.4/0.4/0.5 (n 4428)   OL 0.4/0.4/0.5
+## Mesh (mesh.py)
+nfl-plays.jsonl.gz SINGLEBACK OUTSIDE ZONE: n 979 | RB depth at snap -7.31 width 0.12 | handoff p25/p50/p75 1.3/1.4/1.4 | RB depth at handoff -5.09 QB -4.36 | cross p50 2.7
+nfl-plays.jsonl.gz SINGLEBACK INSIDE ZONE: n 296 | RB depth at snap -7.24 width 0.11 | handoff p25/p50/p75 1.3/1.3/1.4 | RB depth at handoff -5.04 QB -4.41 | cross p50 2.5
+d0.jsonl.gz all oz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.55/1.55/1.6 | RB depth at handoff -3.89 QB -3.68 | cross p50 2.6
+d0.jsonl.gz all iz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.5/1.5/1.5 | RB depth at handoff -4.36 QB -3.28 | cross p50 2.7
+m1.jsonl.gz all oz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.4/1.45/1.5 | RB depth at handoff -4.72 QB -3.92 | cross p50 2.8
+m1.jsonl.gz all iz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.25/1.3/1.3 | RB depth at handoff -4.59 QB -3.52 | cross p50 2.4
+full.jsonl.gz all oz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.4/1.45/1.5 | RB depth at handoff -4.72 QB -3.92 | cross p50 2.8
+full.jsonl.gz all iz: n 400 | RB depth at snap -6.8 width 0.0 | handoff p25/p50/p75 1.25/1.3/1.3 | RB depth at handoff -4.59 QB -3.52 | cross p50 2.4

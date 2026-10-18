@@ -1,0 +1,37 @@
+== rtf: plays 800, errors 0, non-terminal at 20 s 0
+  sim   n   800 mean  4.93 p10  -0.8 p50   2.3 p90   7.9 | neg 19.2% 4+ 29.6% 10+  8.6% 20+  3.6% 40+ 3.00%
+  NFL60 n  2633 mean  5.00 p10   0.0 p50   3.0 p90  11.0 | neg  8.6% 4+ 48.8% 10+ 13.1% 20+  3.0% 40+ 1.18%
+  NFL   n  6223 mean  4.48 p10  -1.0 p50   3.0 p90  11.0 | neg 10.2% 4+ 45.6% 10+ 11.7% 20+  2.7% 40+ 0.67%
+  tail sim P(40+|10+) 24/69=0.35  P(40+|20+) 24/29=0.83  | NFL60 P(40+|10+) 31/344=0.09  P(40+|20+) 31/79=0.39
+    oz       n   400 mean  4.60 p10  -0.7 p50   2.3 p90   7.6 | neg 18.2% 4+ 28.8% 10+  8.0% 20+  3.0% 40+ 2.50%
+    NFL60    n   776 mean  4.68 p10   0.0 p50   3.0 p90  10.0 | neg  9.5% 4+ 46.4% 10+ 11.3% 20+  2.8% 40+ 1.16% outside zone
+    wz       n   400 mean  5.27 p10  -0.9 p50   2.2 p90   8.5 | neg 20.2% 4+ 30.5% 10+  9.2% 20+  4.2% 40+ 3.50%
+    NFL60    n   776 mean  4.68 p10   0.0 p50   3.0 p90  10.0 | neg  9.5% 4+ 46.4% 10+ 11.3% 20+  2.8% 40+ 1.16% outside zone
+run.yards_before_contact               sim n=792 mean=0.41 p10=-1.8 p50=0.3 p90=3.0
+                                       nfl n=5262 mean=1.166 p10=-2.1 p50=0.6 p90=4.7
+run.yards_after_contact                sim n=792 mean=3.867 p10=0.64 p50=2.01 p90=5.16
+                                       nfl n=5262 mean=3.246 p10=0.5 p50=2.4 p90=6.2
+run.engaged_dl_driven_back_2s          sim n=2252 mean=-0.766 p10=-1.5 p50=-0.8 p90=0.1
+                                       nfl n=13179 mean=-0.708 p10=-2.4 p50=-0.5 p90=0.7
+run.max_engaged_dl_driven_back_3s      sim n=724 mean=0.037 p10=-1.1 p50=-0.1 p90=1.5
+                                       nfl n=4929 mean=0.819 p10=-1.1 p50=1.0 p90=2.5
+run.first_contact_s                    sim n=792 mean=2.774 p10=2.2 p50=2.65 p90=3.6
+                                       nfl n=5262 mean=2.889 p10=2.1 p50=2.7 p90=3.9
+run.carrier_cross_los_s                sim n=435 mean=2.765 p10=2.5 p50=2.7 p90=3.2
+                                       nfl n=3323 mean=2.591 p10=2.1 p50=2.5 p90=3.3
+contact.run.broke_contact              sim n=792 mean=0.104 p10=0.0 p50=0.0 p90=1.0
+                                       nfl n=5105 mean=0.125 p10=0.0 p50=0.0 p90=1.0
+  first contact (nearest defender): DL                42.4%   ybc median -1.3 | LB                34.1%   ybc median 0.6 | DB mid(5-10)      12.4%   ybc median 2.4 | DB deep(10+)       6.7%   ybc median 3.5 | DB shallow(<5)     4.4%   ybc median 1.6
+  secondary depth: t=1.0s (runner short of 5): deepest  12.6  2nd   8.0  defenders 8+ deep 2   n 800 | t=2.0s (runner short of 5): deepest  10.7  2nd   7.8  defenders 8+ deep 1   n 800 | t=2.5s (runner short of 5): deepest   8.8  2nd   7.3  defenders 8+ deep 1   n 800 | t=3.0s (runner short of 5): deepest   8.1  2nd   6.0  defenders 8+ deep 1   n 723
+  second level passed: all  passes 1179: blocked 51%, free-near 28%, far 21%   per play 1.47 | 10+  passes 188: blocked 65%, far 18%, free-near 16%   per play 2.72 | <10  passes 991: blocked 49%, free-near 30%, far 21%   per play 1.36 | lateral of unblocked (+ = ahead of flow): far -8.65  free-near -1.27
+  == outside_zone: NFL 1639 runs, sim 800 runs   (median [p25, p75])
+  lat DL 1.0                         NFL +1.32 [+0.97,+1.63] n=1608 | sim +0.25 [+0.15,+0.33] n=800
+  lat DL 2.0                         NFL +4.45 [+3.55,+5.10] n=1608 | sim +1.50 [+1.28,+1.80] n=800
+  lat LB 2.0                         NFL +4.83 [+3.50,+5.73] n=1603 | sim +2.97 [+2.18,+3.35] n=800
+  lat OL 2.0                         NFL +4.94 [+4.24,+5.58] n=1608 | sim +2.30 [+1.84,+2.68] n=800
+  OL lat speed engaged               NFL +3.00 [+2.25,+3.50] n=94865 | sim +1.25 [+0.75,+1.75] n=58489
+  double duration s                  NFL +1.10 [+0.60,+1.90] n=3333 | sim +1.70 [+1.00,+2.50] n=1913
+  doubles per play                   NFL               2.03 | sim               2.39
+  engaged DL depth 2.0               NFL +0.20 [-0.45,+0.87] n=1602 | sim +0.05 [-0.13,+0.30] n=800
+  engaged DL depth 3.0               NFL +1.03 [+0.00,+1.90] n=1509 | sim +0.07 [-0.30,+0.50] n=724
+  first block duration s             NFL +2.40 [+1.30,+3.30] n=6358 | sim +2.70 [+1.60,+3.30] n=3879

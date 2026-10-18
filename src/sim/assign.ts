@@ -3,6 +3,7 @@
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
 import { gaitLag } from '../physics/kinematics.js';
+import { timeToReach } from '../physics/reach.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
@@ -135,7 +136,7 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.qbThrough);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
   }
   for (const a of sim.offense) {
@@ -151,10 +152,21 @@ interface Mesh {
   pitch: number;
   /** A stretch back takes the ball on the move, riding his track. */
   ride: boolean;
+  /** Speed the QB keeps through the mesh spot instead of stopping on it. */
+  qbThrough: number;
 }
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
+/** Experimental (UC_MESH=1, off): the under-center exchange as it is run.
+ * The inside mesh sits at the tracked depth (QB about 4.4 yd, back 5.0 when
+ * the ball is given), the QB keeps moving through it rather than stopping on
+ * the spot, and the installed exchange time is the time this QB's own body
+ * needs to get there from his stance (never earlier than the call's), so the
+ * back's pacing meets him instead of riding past an empty mesh. */
+export const UC_MESH = process.env.UC_MESH === '1';
+/** Reverse pivot from the stance before the drop, s (UC_MESH). */
+const UC_PIVOT = .2;
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -201,8 +213,8 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     rb = { x: los - 5.0, y: by + ps * 2.8 };
   } else if (qbType === 'under') {
     // Reverse pivot and a couple of steps back: the mesh is ~3.5–4 yd deep.
-    qb = { x: los - 3.5, y: by + ps * 0.5 };
-    rb = { x: los - 4.0, y: by + ps * 1.1 };
+    qb = UC_MESH ? { x: los - 4.4, y: by + ps * 0.5 } : { x: los - 3.5, y: by + ps * 0.5 };
+    rb = UC_MESH ? { x: los - 5.0, y: by + ps * 1.1 } : { x: los - 4.0, y: by + ps * 1.1 };
   } else if (qbType === 'pistol') {
     qb = { x: los - 4.4, y: by + ps * 0.3 };
     rb = { x: los - 4.9, y: by + ps * 0.95 };
@@ -210,7 +222,19 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
   }
-  return { qb, rb, aim, time, pitch, ride: STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') };
+  const underMesh = UC_MESH && qbType === 'under' && concept.scheme !== 'toss';
+  if (underMesh) {
+    // The exchange is timed to when the QB can actually be on the mesh:
+    // his snap reaction, the pivot, and his own sprint law to the spot.
+    const q = sim.qb;
+    time = Math.max(time, q.snapReadyAt + UC_PIVOT + timeToReach({ pos: q.pos, vel: { x: 0, y: 0 }, profile: q.profile }, qb, .3));
+  }
+  // UC_MESH: an under-center back takes the ball moving on every inside
+  // mesh too (tracked backs do not stop on the spot and wait), and the QB
+  // is still moving at the exchange rather than braking to rest on it.
+  const ride = (STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone'))
+    || (underMesh && concept.scheme !== 'draw');
+  return { qb, rb, aim, time, pitch, ride, qbThrough: underMesh ? sim.qb.profile.vmax * .45 : 0 };
 }
 
 /**
