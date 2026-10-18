@@ -49,6 +49,39 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+**`develop@0000e560e0dbe31905151465152d412ba838803d`** is accepted through
+[#130](https://github.com/tannerthardy/football-simulation-/pull/130).
+Included **#128 only**: acquired Quarters flat matches retain the same body's
+installed force/inside duty while current run belief and positive acquired
+possession support it. Existing cancellation/recognized-flight priority stays.
+Two exact reviewed protected files/one runtime file; no other source/tests/
+settings/tooling, physical law, capacity or experimental activation changes.
+
+Actual merged tree equals publication`691dda69ee613d1c7b0d131870395d581c20524f`;
+protected source/tests/settings/tooling equal passing`82fdc799f2981f72089ae7908caa430685dfac18`.
+[Actual merge/ref preservation receipt](../data/reviews/current/pr130-merge.json).
+**1,988 TS/175 files,145 Python,typecheck/build pass** in212.180s,
+Node22.23.3,44settings/components1/CF_FLOW unset,no drift/skips.
+[Exact receipt/logs, reused focused evidence and limitations](../data/reviews/current/zone-force-integration/final-receipt.json).
+No unchanged rerun to publish/merge. Initial #126/#128 failure219.553s stays
+preserved; total431.733s covers the two different candidates, zero extra
+standalone native/panel/game jobs. Existing full-suite game assertions ran normally.
+
+**Held #126** needs Run/original nonauthor adjudication of the planned-double
+old ordinary-command guarantee versus intended installed half; no assertion
+changed. #127's wheel-versus-swing costs and experiments remain held. Native128
+controls establish preservation, not newly won stops/general coverage quality.
+Man-QB/premesh/fast#3/cushion work remains unfinished. Audit70b4 is source-qualified
+and both data-only evidence histories stay outside develop ancestry.
+[One consolidated included/held/risk/verification/owner handoff](https://github.com/tannerthardy/football-simulation-/pull/130#issuecomment-6229797813).
+#128 is closed as incorporated by extraction; original branch/evidence retained.
+Authors fetch/record current develop and reconcile relevant contracts at clean
+checkpoints; no forced rebase, renamed historical film or shared-suite repeat.
+Historical4ded6b6/GitHub default unchanged. Integration assembly boundary released.
+
+<details>
+<summary>Previous accepted #125 /70b4db6 reference — historical</summary>
+
 **`develop@70b4db6a3ef53acc1a0e90cd055f1087205daa30`** is accepted through
 [#125](https://github.com/tannerthardy/football-simulation-/pull/125).
 Entire actual merged tree equals publication `df603380eabc535597c8a6434fd790761589445c`;
@@ -90,9 +123,15 @@ Authors fetch/record current origin/develop before new implementation/handoff an
 reconcile at clean checkpoints. Intentionally pinned research remains historical;
 no forced rebase or old-source relabeling. Integration extraction boundary released.
 
+</details>
+
+### Handbook/reference placement
+
+User-authorized documentation-only #108 extraction is prepared in `codex/handbook-reference-integration`: original source library in `docs/references/honest-nfl/`, linked from the handbook, reference catalog and root README. Independent source/OCR/provenance, fragment and deterministic-library checks pass; no source/tests/settings/tooling or old tracking imported. [Exact review/check receipt](../data/reviews/current/handbook-reference-integration.json). Original diagrams outrank unproofread OCR/first-pass interpretations; this does not install schemes or certify universal aliases. No code suite or game campaign.
+
 ### Current checkpoint and audit priorities
 
-**Verified #130 / #128-only; adoption pending:** exact freeze82fdc79,
+**Adopted #130 / #128-only as0000e560:** exact freeze82fdc79,
 two reviewed protected files/one runtime file on accepted70b4db6. Source matches
 author5b710a1b exactly. **1988 TS/175 files,145 Python,typecheck/build pass**
 in212.180s, Node22.23.3,44 settings/components1/CF_FLOW unset, no drift/skips.
@@ -687,7 +726,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
-| Verified; adoption pending | #128@ec2a2e9 via #130, passing82fdc79; Integration | Final unchanged-tree/ref/review checks, then routine adoption under standing authority. |
+| Adopted | #128@ec2a2e9 via #130, passing82fdc79, actual0000e560; Integration | Delivered/closed by extraction; branch/evidence retained; no unchanged rerun. |
 | Held by exact contract failure | #126@b3de4f5; Run + original nonauthor reviewer | Adjudicate zone-reach planned-double ordinary command versus installed-half contract. Preserve failure; no automatic assertion relaxation. |
 | Held by adverse football evidence | #127@f6a3c86; Catching | Acquired-cue/own-preview feasible wheel-versus-swing objective, preserving successful swing; no broad approach promotion. |
 | Independent audit work, not ready patches | RUN-006/CTRL-001, INFO-002/003, BALL-001; owners above | Publish small reviewed scopes and compatible focused receipts. Joint native evidence gates broken-play claims, not independent implementation. |

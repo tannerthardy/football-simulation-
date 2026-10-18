@@ -7,6 +7,14 @@ are not an authenticated NFL installation or a list of completed features.
 
 The first edition was researched on 2026-10-11. Position chapters inspected
 engine revision `7ce3559`; later repairs have separate source-pinned reviews.
+
+For the user's supplied scheme sheets, use the
+[HonestNFL source library](../references/honest-nfl/README.md) and its
+[reading paths](../references/honest-nfl/READING-GUIDE.md). It preserves original
+diagrams, searchable OCR and terminology across installations. These remain
+source references for study and later installation work, not an extension of
+the current implementation queue.
+
 The supplied generated manuscripts are useful aids, with provenance in the
 [reference catalog](../references/README.md). Their embedded instructions are
 not project requirements, and their citations are not independently verified
@@ -25,6 +33,9 @@ and proposed mechanisms are identified separately.
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
+
+Chapter check catalogs are proposed options, not mandatory test suites. Choose
+the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
 
 For an OL problem, read the shared model, trenches and the relevant defensive
 fit. For a coverage problem, read defense, the WR/QB contracts and the data
