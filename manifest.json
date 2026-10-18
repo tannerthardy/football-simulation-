@@ -822,5 +822,10 @@
     }
   ],
   "qualification": "55 native all22 diagnostic continuations across accepted, rejected, prototype and final sources; 11 exact frozen inputs. Focused code tests have their own cost receipts. No games or full suite. Only common/collector.mjs versus free-path-collector.mjs passive state-field logging differs for the final pair; see diff, no extra sensing/randomness/World ticks. Archived hosts inherit outer git metadata, so canonical source digests/patches qualify their code.",
-  "restorationCheck": "All eight nonempty source patches independently git-applied outside the checkout and matched full canonical runtime digests. Every tar member hash verified. Zero additional simulation ticks."
+  "restorationCheck": "All eight nonempty source patches independently git-applied outside the checkout and matched full canonical runtime digests. Every tar member hash verified. Zero additional simulation ticks.",
+  "supplementaryAnalysis": {
+    "path": "protected-responsibilities.json",
+    "sha256": "8b931d0a117e20510762f8d4f0a0f6807e2af143197b4f13c6629c4230c03dfd",
+    "qualification": "Saved-tape inspection only, zero new simulator ticks; plan transitions and individual loaded steps for C01 RT/Y, C02 RT/RG and Z26 RT. Not a continuous-grip assertion."
+  }
 }
