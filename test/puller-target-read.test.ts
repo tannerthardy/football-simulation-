@@ -75,13 +75,13 @@ describe('a puller reads the moving target after clearing the wall', () => {
     expect(f.blocker.engagement).toBeNull();
   });
 
-  it('leaves an ordinary wrapper on its separate installed insertion path', () => {
+  it('reads a wrapper target while preserving its uncleared flat path', () => {
     const f = stage(); f.behavior.plan.pullRole = 'lead';
     const see = vi.spyOn(f.sim, 'see');
     const expected = goTo(f.blocker, f.path[1], { speed: .95,
       through: cornerSpeed(f.blocker.body, f.path[1], f.path[2], .65) });
     expect(f.behavior.update(f.blocker, f.sim)).toEqual(expected);
-    expect(see.mock.calls.some(([a, b]) => a === f.blocker && b === f.target)).toBe(false);
+    expect(see.mock.calls.some(([a, b]) => a === f.blocker && b === f.target)).toBe(true);
     expect(f.behavior.plan.pullRole).toBe('lead');
   });
 

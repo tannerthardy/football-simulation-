@@ -31,6 +31,7 @@
  * are as noisy as the rest of his picture.
  */
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
+import type { ReceiverPicture } from './receiver-forecast.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
@@ -406,6 +407,24 @@ export class QBMind {
       this.justIdentified = this.postSnapRead(1);
       this.confirmed = this.justIdentified;
     }
+  }
+
+  /** Separate receiver acquisition; ordinary teammate see() is not a QB look.
+   * Reuses the existing visual sectors/latency without touching defender gates.
+   * No near-pocket automatic acquisition: that exception is defender feel. */
+  receiverLook(target: Agent, gaze: Vec2): ReceiverPicture | null {
+    const sim = this.sim, qb = this.qb;
+    const delay = (scale: number) => qb.mind.observationDelay(qb.profile.reactionTime * scale);
+    const clear = sim.perception.perceive(target.idx, delay(1));
+    const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
+    const ang = Math.abs(angleDiff(Math.atan2(clear.pos.y - qb.pos.y, clear.pos.x - qb.pos.x), dir));
+    const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
+      : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
+    if (!seen) return null;
+    sim.trace.observe(qb, target, seen, sim.t);
+    const age = seen.age ?? 0;
+    return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
+      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
   }
 
   /** Where the QB thinks a defender is (and how he's moving). */

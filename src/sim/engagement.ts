@@ -801,24 +801,35 @@ interface RunStackRead {
   shoulder: number;
   nextRead: number;
   flow: number;
-  aim?: Vec2;
-  runner: boolean;
   contacted: boolean;
   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
   hold?: { y: number; until: number };
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
+const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean }>();
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
-  const carrier = sim.carrier;
+  const back = sim.slot('RB');
+  let backPicture: ReturnType<PlaySim['see']> | null = null;
+  let acquired: { target: Agent; cue: ReturnType<PlaySim['see']> } | null = null;
+  if (job?.kind !== 'interior' && job?.kind !== 'edge') {
+    // Contact support looks into the installed backfield. A new work-off
+    // decision cannot learn a give/keep from the hidden live holder identity.
+    const qbPicture = sim.see(d, sim.qb);
+    backPicture = back ? sim.see(d, back) : null;
+    if (qbPicture.carrying === true && backPicture?.carrying !== true)
+      acquired = { target: sim.qb, cue: qbPicture };
+    else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
+      acquired = { target: back, cue: backPicture };
+  }
+  const carrier = acquired?.target ?? sim.carrier;
   const enemy = carrier && carrier.team !== d.team ? carrier : null;
-  const carrierCue = enemy ? sim.see(d, enemy) : null;
+  const carrierCue = acquired?.cue ?? (enemy ? sim.see(d, enemy) : null);
   // Read through the mesh instead of working toward a stationary QB. This
   // uses only the observed depth; a QB draw/scramble can declare at the surface.
-  const back = sim.slot('RB');
   const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
-    ? sim.see(d, back) : carrierCue;
+    ? backPicture ?? sim.see(d, back) : carrierCue;
   const advanced = !!(enemy && carrierCue &&
     (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
   const reading = d.recog?.read === 'run' || advanced;
@@ -842,7 +853,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
         shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
           : clamp(liveGapY(sim, d, job.gap, job.side) - local.y, -sep * .65, sep * .65),
-        nextRead: -Infinity, flow: 0, runner: false, contacted: stack?.contacted ?? false };
+        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false };
       runStacks.set(e, stack);
     }
     // Reaching is not touching. Only the first transmitted hand load installs
@@ -871,17 +882,17 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
-  if (stack && stack.aim !== aim) {
-    stack.aim = aim;
-    stack.runner = declared && (!edge || advanced);
-  }
+  // Support contacts hold the selected target mode too. A safety's acquired
+  // runner aim must not keep being treated as an undeclared force landmark.
+  if (runTargets.get(e)?.aim !== aim)
+    runTargets.set(e, { aim, runner: declared && (!edge || advanced) });
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
   // advanced carrier supplies urgency even after an original pass read.
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
-  return { aim, reading, threat, declared: stack?.runner ?? false, stack };
+  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -982,7 +993,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // standing at the mesh before the handoff.
   if (read.threat && t >= e.nextMoveAt) {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
-    if (dc < 3.5) {
+    // A support player who has personally declared the carrying runner must
+    // work free toward him even when the block keeps him outside close range.
+    // First-level stack/shoulder and uncertain possession retain the old gate.
+    const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
+      && read.declared && read.threat.carrying === true;
+    if (dc < 3.5 || supportRunner) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);

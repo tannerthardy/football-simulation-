@@ -28,6 +28,7 @@ import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
+import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -82,6 +83,7 @@ export class QBPass implements Behavior {
   /** Look-off: eyes on a decoy to move the safety before the first read. */
   private lookOff: { until: number; decoy: Agent } | null = null;
   private lookOffChecked = false;
+  private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
 
   /** Existing private state only; never evaluates a fresh throw window. */
   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
@@ -95,6 +97,7 @@ export class QBPass implements Behavior {
     a: Agent,
     private readonly sim: PlaySim,
     private readonly concept: PassConcept,
+    receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
     this.snapAt = gun ? 0.3 : 0.1;
@@ -104,6 +107,7 @@ export class QBPass implements Behavior {
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
     if (concept.family === 'playaction') this.fakeUntil = 0.7;
     this.mind = sim.qbMind;
+    for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
   }
 
   /** Called after all behaviors are assigned (receivers exist). */
@@ -182,7 +186,12 @@ export class QBPass implements Behavior {
     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
-    this.mind.observe(this.gazePoint(sim));
+    const gaze = this.gazePoint(sim);
+    this.mind.observe(gaze);
+    for (const [r, forecast] of this.receiverForecasts) {
+      const picture = this.mind.receiverLook(r, gaze);
+      if (picture) forecast.acquire(picture);
+    }
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
     if (this.phase === 'snap') {
@@ -311,12 +320,16 @@ export class QBPass implements Behavior {
   }
 
   private gazePoint(sim: PlaySim): Vec2 {
-    if (this.lookOff && sim.t < this.lookOff.until) return this.lookOff.decoy.pos;
+    const heldPoint = (r: Agent): Vec2 => {
+      const forecast = this.receiverForecasts.get(r);
+      return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
+    };
+    if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
     if (this.phase === 'windup' && this.pending) return this.pending.point;
     const read = this.reads[this.readIdx];
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
-    return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
+    return read ? heldPoint(read) : { x: sim.los + 10, y: sim.ballY };
   }
 
   private ready(r: Agent, sim: PlaySim): boolean {
@@ -361,17 +374,19 @@ export class QBPass implements Behavior {
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (r.isDown(sim.t) || r.engagement) return null;
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     const wind = this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
-    const predict = (dt: number): Vec2 => (rr ? rr.predict(r, dt) : { x: r.pos.x + r.vel.x * dt, y: r.pos.y + r.vel.y * dt });
+    const forecast = this.receiverForecasts.get(r);
+    const current = forecast?.predict(sim.t, 0);
+    if (!forecast || !current) return null;
+    const predict = (dt: number): Vec2 => forecast.predict(sim.t, dt)!;
     // Natural throw: the flight time real QBs use at this distance (2023
     // tracking: ~0.6 s under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35,
     // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
     // a little sooner.
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
-    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+    let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
     let T = Math.max(0.3, natural(range));
     let Tmin = T;
     let pt = predict(wind + T);
@@ -487,10 +502,9 @@ export class QBPass implements Behavior {
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     // Re-aim at release with the latest prediction.
     const r = ev.target;
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     let point = ev.point;
-    if (rr) {
-      const p = rr.predict(r, ev.T);
+    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
@@ -597,6 +611,7 @@ export class QBPass implements Behavior {
 export class QBHandoff implements Behavior {
   readonly kind = 'qb-handoff';
   private handed = false;
+  private exchangeClosing = false;
   constructor(
     private readonly mesh: Vec2,
     private readonly meshTime: number,
@@ -626,6 +641,24 @@ export class QBHandoff implements Behavior {
       if (d <= handoffReach(a, rb)) {
         this.handed = sim.handoff(a, rb);
         return stand();
+      }
+      if (this.pitchRange <= handoffReach(a, rb)) {
+        const seen = sim.see(a, rb), dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+        const radial = dx * (seen.vel.x - a.vel.x) + dy * (seen.vel.y - a.vel.y);
+        if (radial < 0) this.exchangeClosing = true;
+        const speed = Math.hypot(seen.vel.x, seen.vel.y), reach = handoffReach(a, rb);
+        // A delayed picture of the back has passed the mesh and our closest
+        // approach, outside reach and separating. Continuing this give would
+        // require a new recovery route, not the installed run-through track.
+        // Secure the ball and carry; do not chase him or extend transfer reach.
+        const pastMesh = (seen.pos.x - this.mesh.x) * seen.vel.x + (seen.pos.y - this.mesh.y) * seen.vel.y;
+        if (this.exchangeClosing && Math.hypot(dx, dy) > reach && radial > 0
+          && dx * seen.vel.x + dy * seen.vel.y > 0 && pastMesh > reach * speed) {
+          a.behavior = new BallCarrier({ qb: true }, a);
+          sim.stats.rusher = a.player.id;
+          sim.event('read', a, rb, 'exchange passed outside reach; secure and carry');
+          return a.behavior.update(a, sim);
+        }
       }
     }
     if (sim.t < 0.05) return stand();
