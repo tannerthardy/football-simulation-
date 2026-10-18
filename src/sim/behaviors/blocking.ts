@@ -1172,11 +1172,16 @@ export class RunBlocker implements Behavior {
     // leverage boundary as an established run block, without a time grace.
     const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
       : zone ? { x: 1, y: 0 } : plan.drive;
-    const lost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    const installedLost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    const runnerFit = !sim.world.joints.some(j => j.a === a.body || j.b === a.body)
+      ? this.runnerSideFit(a, sim, target, seen) : null;
+    const lost = runnerFit ? runnerFit.lost : installedLost;
     // A solo drive still strikes downhill from an ordinary fit. Once the
     // personally observed shoulder is gone, replace the feet before reaching
     // again, using the same bounded recovery as other first-level blocks.
-    const fit = fitCandidate && (plan.kind !== 'drive' || lost);
+    // Once the carrying back is acquired, crossing the old drive normal need
+    // not lose useful screening position. Do not recover to its opposite side.
+    const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
     if (!lost && dd < contact) {
       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
       if (e) {
@@ -1261,6 +1266,9 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     const original = runThrough(a, aim, { speed: 1 });
+    if (runnerFit?.lost) return chooseRunBlockFit(a, seen,
+      { x: -runnerFit.axis.x, y: -runnerFit.axis.y }, runnerFit.aim, placementError,
+      contact, a.profile.radius + target.profile.radius, original, sim.t, true);
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
       !!zone || !!contactFit, zone ? 2.4 : 0) : original;
@@ -1396,6 +1404,29 @@ export class RunBlocker implements Behavior {
     delete p.contactFit;
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
+  }
+
+  /** A free first-level blocker recovers between his defender and the back
+   * he has acquired, rather than blindly returning to the original drive
+   * angle. This chooses feet only: target, drive and contact frame stay owned
+   * by the installation. Unknown possession and a snap-carrying QB keep it.
+   */
+  private runnerSideFit(a: Agent, sim: PlaySim, target: Agent, seen: Perceived):
+    { axis: Vec2; aim: Vec2; lost: boolean } | null {
+    if (!(isOL(a) || sim.offAlign.spots[a.slot]?.inline)
+      || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
+      || (this.plan.combination && !this.plan.combination.released)) return null;
+    const ref = this.workReference(a, sim);
+    if (this.workPicture?.source !== 'acquired' || this.workPicture.carrier !== sim.slot('RB')?.idx) return null;
+    // Existing run-contact continuation ends once the runner has passed the
+    // defender by this depth. This recovery does not renew an obsolete job.
+    if ((ref.x - seen.pos.x) * sim.attackDir(a.team) > 2.5) return null;
+    const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, distance = Math.hypot(dx, dy);
+    if (distance < 1e-9) return null;
+    const axis = { x: dx / distance, y: dy / distance }, drive = { x: -axis.x, y: -axis.y };
+    const sep = a.profile.radius + target.profile.radius + .15;
+    return { axis, aim: { x: seen.pos.x + axis.x * sep, y: seen.pos.y + axis.y * sep },
+      lost: Math.abs(observedBlockLeverage(a, seen, drive)) >= 1.1 };
   }
 
   private workReference(a: Agent, sim: PlaySim): Vec2 {

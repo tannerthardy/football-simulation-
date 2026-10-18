@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Catching: current accepted run build review — 2026-10-18 America/Phoenix
+
+Branch `codex/run-current-build-review`, accepted/fetched
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue
+`df4ee4dfe58aed5bd357ce3d2e3b73074eae5356`. Review delivered126/138/140/143/146/147
+against saved run failures and protected finishes, recording current acquired cues,
+requests and achieved movement. #137/#148/#149/#150 remain separate and held for
+independent review; do not self-approve or silently stack them. Start with eight
+exact old inputs on the current source; no automatic broad/full campaign. Any
+implementation is only `RunBlocker.attack` plus a small observer-owned recovery
+reference: free first-level feet recover toward an acquired carrying back rather
+than an obsolete drive angle. Existing #147 work pictures and bounded fit movement
+are reused; initial presentation, live doubles, reserved jobs, no-evidence fallback
+and loaded contact remain separate. Inline gate-only, loaded contact-recovery,
+bare-visual and loaded+free policies are isolated and unpromoted. Native C01/LT and
+fresh R01/H gain actual runner-side loaded work before first RB contact; other
+first-level failures remain. Final focused/information controls and the originally
+selected opposite cases decide whether this smaller correction is reviewable. Release/keeper, shared modifiers, contact law/capacities and held
+experiments retain their owners and boundaries.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
