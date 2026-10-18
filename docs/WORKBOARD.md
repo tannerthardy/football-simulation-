@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Catching: climb objective and departure access — 2026-10-18 UTC
+
+User explicitly assigns climb planning. Branch `codex/climb-objective-access`
+starts independently from accepted914f4d56a3b7ef2845ff0208f55d626c0ff5f880,
+runtime5b710a1b, canonical queuee8d806b940a84c7cff7e5ee066022079723c78ef,
+all freshly fetched. #148/#149 stay separate. Reuse saved Z06/Z13/Z14/Z19
+approaches and successful Z26/committed strike controls. First passive native
+probe records the existing departureRead/returned stage commands absent from
+the old collector. Distinguish departure navigation, planned interception,
+modifier changes and achieved movement before editing behavior. Own only
+RunBlocker.plannedClimb/leaveCombination and post-release navigation if justified;
+coordinate blocking.ts with Run. Original combination release/keeper eligibility,
+held CLIMB_EXIT/contact-frame/runoff experiments, #146 puller work, shared
+spacing/modifiers, assignments/counts, capacities and Physics remain separate.
+
 ## Handbook/reference documentation integration
 
 Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).

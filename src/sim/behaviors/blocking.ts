@@ -29,6 +29,7 @@ import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
+import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -740,6 +741,7 @@ export class RunBlocker implements Behavior {
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
+  private climbAccess: ClimbAccess | null = null;
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   /** The called track he is running this tick (known to teammates). */
@@ -914,12 +916,25 @@ export class RunBlocker implements Behavior {
       }
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
+      this.climbAccess = null;
+      if (Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
+        // A backer assignment does not remove the bodies between us. Read
+        // first-level surfaces on the same beat; never inspect their private
+        // assignments, engagement state or future controller requests.
+        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
+          ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
+          .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
+          .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
+        const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
+        this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
+      }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
         chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
         cue: 'one acquired picture of the backer, previewed with own free movement',
         options: ['attainable meeting point', 'closest approach (no attainable fit)'],
         detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
     }
+    if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
     const r = this.climbRead!;
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -1177,7 +1192,7 @@ export class RunBlocker implements Behavior {
         const bodyContact = a.profile.radius + target.profile.radius;
         // Interception supplies the approach, not permission to run through
         // the man. Use the same acquired near-strike fit as other climbs.
-        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+        if (!this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
           return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
             placementError, contact, bodyContact, fit, sim.t);
         return fit;
