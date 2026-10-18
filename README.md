@@ -31,6 +31,9 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
   [validation](docs/VALIDATION.md). Contributors supply focused receipts;
   one integration owner verifies the exact combined candidate.
 - **Branches and recovery:** [branch map, cleanup record and pending decisions](docs/BRANCHES.md).
+- **Football handbook and source sheets:** [handbook](docs/football-handbook/README.md),
+  [HonestNFL concepts and original diagrams](docs/references/honest-nfl/CONCEPTS.md),
+  [reading paths](docs/references/honest-nfl/READING-GUIDE.md).
 - **Evidence and research:** [current receipts](data/reviews/current),
   [pinned reviews](docs/reviews), [archived research](docs/archive/reviews),
   [data/replay retrieval](data/README.md). Historical evidence describes its

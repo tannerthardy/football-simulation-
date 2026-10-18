@@ -125,6 +125,10 @@ no forced rebase or old-source relabeling. Integration extraction boundary relea
 
 </details>
 
+### Handbook/reference placement
+
+User-authorized documentation-only #108 extraction is prepared in `codex/handbook-reference-integration`: original source library in `docs/references/honest-nfl/`, linked from the handbook, reference catalog and root README. Independent source/OCR/provenance, fragment and deterministic-library checks pass; no source/tests/settings/tooling or old tracking imported. [Exact review/check receipt](../data/reviews/current/handbook-reference-integration.json). Original diagrams outrank unproofread OCR/first-pass interpretations; this does not install schemes or certify universal aliases. No code suite or game campaign.
+
 ### Current checkpoint and audit priorities
 
 **Adopted #130 / #128-only as0000e560:** exact freeze82fdc79,

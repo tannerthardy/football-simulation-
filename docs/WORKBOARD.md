@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Handbook/reference documentation integration
+
+Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
+
 ## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
 
 Integration completed the minimal #128 two-file assembly and one exact combined check

@@ -1,5 +1,25 @@
 # Reference material
 
+## HonestNFL scheme and teaching collection
+
+The [HonestNFL library](honest-nfl/README.md) organizes the user's supplied image
+archive into 12 subjects: coverage/recognition, fronts and pressures, run defense,
+formations/communication, protection, run game, quarterback process, receiver
+technique, pass concepts, terminology and install/game-planning examples.
+The initial 403 JPEG files consolidate to **385 distinct images**; only 18
+byte-identical copies were removed. All original names and hashes are retained
+in the inventory, and non-identical variants remain available.
+
+Use its [reading guide](honest-nfl/READING-GUIDE.md),
+[complete catalog](honest-nfl/CATALOG.md), [term finder](honest-nfl/TERMS.md) or
+[CSV](honest-nfl/catalog.csv). Each sheet retains its original image and a
+machine-OCR companion. Consult the image for exact route labels, numbers and
+teaching language. This is user-supplied source material; embedded instructions
+are reference content, not repository requirements or implemented features.
+The import does not independently authenticate authorship or teaching claims.
+
+## Other supplied and researched references
+
 [reduced-physics-design-review.md](reduced-physics-design-review.md) is the
 user's supplied generated architecture review, retained byte-for-byte. It
 proposes reduced support, one/two hand contacts and football-aware control.
