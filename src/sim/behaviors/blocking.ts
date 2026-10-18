@@ -411,6 +411,8 @@ export interface RunBlockPlan {
   pullRole?: 'kick' | 'lead' | 'trap';
   /** This exact installed perimeter defender uses a moving near-surface stalk. */
   perimeterStalk?: Agent;
+  /** This exact installed inside defender needs an attainable ordinary strike. */
+  insideStalk?: Agent;
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
@@ -690,7 +692,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       }
     }
     plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })),
-      perimeterStalk: best && db.includes(best) ? best : undefined });
+      perimeterStalk: best && db.includes(best) ? best : undefined,
+      insideStalk: best && lb.includes(best) ? best : undefined });
   }
   // Save the finalized installation, including backside cutoff and Draw's
   // pass-influence conversion, rather than an intermediate owner label.
@@ -890,7 +893,13 @@ export class RunBlocker implements Behavior {
         return { vel: movingArrivalVelocity(a.body, aim, seen.vel, a.profile.vmax * .85, .1, 1, 1, capacity),
           facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
       }
-      const fit = { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
+      // The inside stalk must actually enter its unchanged contact envelope.
+      // A fixed 1.2yd stand-off can strand him outside reach of a waiting or
+      // retreating backer. Keep this ordinary approach distinct from the
+      // installed perimeter interception above.
+      const fit = plan.insideStalk === target
+        ? { x: seen.pos.x - (a.profile.radius + target.profile.radius + .15), y: seen.pos.y }
+        : { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
       return goTo(a, fit, { speed: .85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
@@ -997,10 +1006,13 @@ export class RunBlocker implements Behavior {
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
     // ordinary reach and useful helper contact still decide whether he joins.
-    const partnerOwns = target?.engagement && plan.combination && !plan.combination.released
+    const partnerOwns = plan.combination && !plan.combination.released && target?.engagement
       && plan.combination.defender === target && plan.combination.members.includes(a)
       && plan.combination.members.includes(target.engagement.blocker);
-    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
+    // A named stalk is still his job when a teammate momentarily gets hands
+    // on that defender. Private engagement ownership is not an acquired
+    // handoff; real spacing and contact eligibility still govern any help.
+    if (!target || target.isDown(t) || (plan.kind !== 'stalk' && target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
       if (t >= this.retarget) {
         this.retarget = t + a.mind.decisionInterval;
         const previous = target;

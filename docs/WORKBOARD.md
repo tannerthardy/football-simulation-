@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Catching: inside stalk strike access — 2026-10-18 UTC
+
+Continuing the user's explicit request in `codex/stalk-strike-access`, a genuine
+dependency stack from published #148 at6fd13e4 (accepted914f4d5/queuee8d806b
+refetched unchanged). #148 stays frozen for independent review. Reuse its saved
+F01 retained-target and successful Z08/Z26/F04 traces. Question: does the ordinary
+1.2yd stalk landmark strand an inside blocker outside the unchanged physical
+acquisition distance when the defender waits or moves upfield? Own only the
+stalk movement branch and, if independently justified, its target-availability
+contract in RunBlocker; no assignment allocation/count, puller, shared spacing/
+modifier, contact/release/Physics changes. Start with a pure controller contract,
+then isolated near-contact-footwork and continuity arms. Preserve successful
+inside entry, earned defender escape and all adverse evidence. No claim that
+retaining the F01 job by itself restores useful contact.
+
 ## Catching: installed perimeter stalk approach — 2026-10-18 UTC
 
 Branch `codex/stalk-moving-surface`, code265c40e/source d50530ad, from accepted
