@@ -146,6 +146,20 @@ back meets an end who has already penetrated.
   negatives rise 4–10 points, from a cell that was already NFL-like.
 - **Gap schemes:** fewer negatives everywhere except trap, but 4+ drops on
   counter and power, which were already below NFL.
+- **`ZONE_TE` is not a clean mechanism win.** With it alone on ace stretch:
+  - Play-side ends sit at NFL depth at 2.5 s (more than 0.5 yd in the
+    backfield 51% → 36%, NFL 33%).
+  - They flow less sideways (3.1 → 2.5 yd, NFL 5.2).
+  - With the candidate on, the tight end first engages later (about 0.70 s
+    vs 0.40), and his block ends by separation twice as often (29 vs 15 of 81
+    losses).
+  - In gun doubles inside zone alone, it raises negatives 6.0 → 10.5% and
+    lowers 4+ 40.5 → 33.5%.
+
+  Part of its ace inside-zone gain may come from a weaker tight-end block
+  rather than better football. Ace stretch losses in total are unchanged with
+  the candidate (17.5 → 17.2%; `losses.ts` 82 → 81 of 400). Review it before
+  relying on it.
 - `DEEP_CAP` puts the last level at NFL depth and confirms the earlier finding:
   without the collapsed safety, the box leaks 10–19 yd runs (10+ 23.8% with
   the cap alone, `report-cap.txt`; 20.7% on the first package, NFL60 13.1%). Inside-zone 10+ runs mostly get
@@ -188,9 +202,10 @@ back meets an end who has already penetrated.
 
 1. Review `rec2` (`UC_MESH ZONE_TE STRETCH_FLAT LB_KEY`) as the candidate,
    weighing the under-center IZ and tail repair against the gun-doubles and
-   gap-scheme 4+ adverses above. A narrower candidate is `UC_MESH
-   STRETCH_FLAT` plus `ZONE_TE` on 12/13 personnel, but that would be a
-   formation gate rather than a mechanism.
+   gap-scheme 4+ adverses above and the `ZONE_TE` caveat. Without `ZONE_TE`
+   (`rec`), the mesh exposure is uncovered: ace WZ negatives reach 26%.
+   `UC_MESH`, `STRETCH_FLAT` and `LB_KEY` each move their own mechanism toward
+   NFL. Their combined outcomes stay mixed until the line slides.
 2. Keep `DEEP_CAP` parked until the box holds without the collapsed safety.
 3. Physics owner: the engaged lateral race. Perception owner: the defensive
    snap latency.
