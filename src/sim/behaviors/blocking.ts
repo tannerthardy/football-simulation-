@@ -409,6 +409,8 @@ export interface RunBlockPlan {
   pullPath?: Vec2[];
   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
   pullRole?: 'kick' | 'lead' | 'trap';
+  /** Explicit GH installation: first guard/end relationship known at the snap. */
+  pullSurface?: { blocker: Agent; defender: Agent };
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
@@ -469,6 +471,8 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
 }
 
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
+  if (concept.pullers.includes('H') && concept.scheme !== 'counter')
+    throw new Error('The off-ball H pull tag is installed only for Counter GH');
   const plans = new Map<Agent, RunBlockPlan>();
   const ps = playSideSign(sim, concept);
   const { dl, lb, db } = classify(sim);
@@ -563,7 +567,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const h = sim.slot('H');
     if (concept.pullers.includes('H')) {
       if (scheme !== 'counter' || !h || sim.offAlign.spots.H?.inline || !bsg
-        || !pullers.has(bsg) || (bst && pullers.has(bst)) || sim.offCall.formation.slots.H!.depth < 1)
+        || !pullers.has(bsg) || (bst && pullers.has(bst)) || !sim.offAlign.spots.H || sim.offAlign.spots.H.pos.x > sim.los - 1)
         throw new Error('Counter GH requires a pulling backside guard and one off-ball H; no tackle pull');
       pullers.add(h);
     }
@@ -660,6 +664,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         path[1].x = Math.min(path[1].x, p.pos.x);
       }
       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
+      if (p === h && concept.pullers.includes('H') && bsg && emlos) plans.get(p)!.pullSurface = { blocker: bsg, defender: emlos };
     }
     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
       plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
@@ -749,6 +754,9 @@ export class RunBlocker implements Behavior {
   /** The puller's last ordinary read, not the defender's current position. */
   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
   private pullCleared = false;
+  private nextSurfaceRead = 0;
+  private wrapOutside = false;
+  private wrapCorner: Vec2 | null = null;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
     flow: Vec2; backer: Perceived } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
@@ -842,11 +850,31 @@ export class RunBlocker implements Behavior {
     }
     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
       if(plan.pullRole==='lead') {
-        const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
-        if(kick) {
-          const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
-          plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
-          a.tags.add('wrap-log');
+        if (plan.pullSurface) {
+          // GH follows the first block's acquired surface, not the guard's
+          // private chosen technique. A visible inside wash permits an
+          // outside insertion; it does not certify that the end is secured.
+          if (t >= this.nextSurfaceRead) {
+            this.nextSurfaceRead = t + a.mind.decisionInterval;
+            const guard = plan.pullSurface.blocker, end = plan.pullSurface.defender;
+            const g = sim.see(a, guard), d = sim.see(a, end);
+            const side = playSideSign(sim, sim.offCall.run!);
+            const reach = guard.profile.radius + end.profile.radius + .1 + guard.player.measurables.armIn / 36 * .45;
+            const joined = Math.hypot(g.pos.x-d.pos.x,g.pos.y-d.pos.y) <= reach;
+            this.wrapOutside ||= joined && (g.pos.y-d.pos.y)*side > .25;
+            if (this.wrapOutside && joined) this.wrapCorner = { x:Math.max(sim.los+.5,g.pos.x+.6),y:g.pos.y+side*1.1 };
+          }
+          if (this.wrapCorner) {
+            plan.pullPath[plan.pullPath.length-1] = {...this.wrapCorner};
+            a.tags.add('wrap-log');
+          }
+        } else {
+          const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+          if(kick) {
+            const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+            plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+            a.tags.add('wrap-log');
+          }
         }
       }
       while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;

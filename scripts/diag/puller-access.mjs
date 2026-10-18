@@ -24,7 +24,7 @@ const rep=e=>({b:e.blocker.idx,d:e.defender.idx,helpers:e.helpers.map(a=>a.idx),
 for(const input of selected){
  assert(performance.now()-started<30000);assert.equal(hash(input.setup),input.inputSha256);
  const sim=new PlaySim(structuredClone(input.setup)),frames=[],cues=[],calls=[];
- assert(['native','inside','outside'].includes(route));
+ assert(['native','inside','outside','early'].includes(route));
  const routeGoals=new Map();
  const initial=sim.agents.map(a=>({idx:a.idx,slot:a.slot,body:snapshot(a),plan:plan(a),runFit:a.runFit}));
  const pullers=new Set(sim.offense.filter(a=>a.behavior instanceof RunBlocker&&a.behavior.plan.kind==='pull'));
@@ -33,7 +33,9 @@ for(const input of selected){
  for(const a of sim.agents){
   const controller=a.behavior,update=controller.update;
   controller.update=function(actor,s){const before=plan(a);let command=update.call(this,actor,s);
-    if(route!=='native'&&controller instanceof RunBlocker&&controller.plan.kind==='pull'&&controller.plan.pullRole==='lead'&&s.t>=2.2){
+    if(route==='early'&&controller instanceof RunBlocker&&controller.plan.kind==='pull'&&controller.plan.pullRole==='lead'&&s.t>=1.4)
+      command=controller.attack(a,s,controller.plan.target);
+    if(route!=='native'&&route!=='early'&&controller instanceof RunBlocker&&controller.plan.kind==='pull'&&controller.plan.pullRole==='lead'&&s.t>=2.2){
       let goal=routeGoals.get(a);
       if(!goal){
         const first=s.offense.find(b=>b!==a&&b.behavior instanceof RunBlocker&&b.behavior.plan.kind==='pull'&&b.behavior.plan.pullRole==='kick');
@@ -69,6 +71,6 @@ const profile=JSON.parse(readFileSync('config/baseline.json'));
 const receipt={diagnosticRoute:route,schema:'perimeter-native-v1',head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),source:sourceVersion(),node:process.version,
  inputManifestSha256:hash(bytes),collectorSha256:hash(readFileSync(import.meta.filename)),flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),
  worldDefaults:profile.worldDefaults,cases:selected.map(r=>({id:r.id,inputSha256:r.inputSha256})),until,elapsedSeconds:(performance.now()-started)/1000,
- qualification:route==='native'?'Native all22. Passive existing see/update/World wrappers; no new pictures, random draws or assigned outcomes. Censored live prefixes have no terminal gain.':'Diagnostic command override from the same full native prefix at2.2s. All22 and runner react normally; no frozen future path, teleport or awarded contact. Not a production policy or feasibility proof.',fullGames:0};
+ qualification:route==='native'?'Native all22. Passive existing see/update/World wrappers; no new pictures, random draws or assigned outcomes. Censored live prefixes have no terminal gain.':'Diagnostic command override from the same full native prefix; early=ordinary assigned-backer attack at1.4s, inside/outside=route at2.2s. All22 and runner react normally; no frozen future path, teleport or awarded contact. Not a production policy or feasibility proof.',fullGames:0};
 mkdirSync(out,{recursive:true});writeFileSync(out+'/trace.json.gz',gzipSync(JSON.stringify({receipt,rows})));
 writeFileSync(out+'/receipt.json',JSON.stringify(receipt,null,2)+'\n');
