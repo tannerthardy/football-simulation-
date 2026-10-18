@@ -2,23 +2,27 @@
 
 ## Catching: current accepted run build review — 2026-10-18 America/Phoenix
 
-Branch `codex/run-current-build-review`, accepted/fetched
-`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue
-`df4ee4dfe58aed5bd357ce3d2e3b73074eae5356`. Review delivered126/138/140/143/146/147
-against saved run failures and protected finishes, recording current acquired cues,
-requests and achieved movement. #137/#148/#149/#150 remain separate and held for
-independent review; do not self-approve or silently stack them. Start with eight
-exact old inputs on the current source; no automatic broad/full campaign. Any
-implementation is only `RunBlocker.attack` plus a small observer-owned recovery
-reference: free first-level feet recover toward an acquired carrying back rather
-than an obsolete drive angle. Existing #147 work pictures and bounded fit movement
-are reused; initial presentation, live doubles, reserved jobs, no-evidence fallback
-and loaded contact remain separate. Inline gate-only, loaded contact-recovery,
-bare-visual and loaded+free policies are isolated and unpromoted. Native C01/LT and
-fresh R01/H gain actual runner-side loaded work before first RB contact; other
-first-level failures remain. Final focused/information controls and the originally
-selected opposite cases decide whether this smaller correction is reviewable. Release/keeper, shared modifiers, contact law/capacities and held
-experiments retain their owners and boundaries.
+Completed bounded candidate on `codex/run-current-build-review` from fetched accepted
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, queue
+`df4ee4dfe58aed5bd357ce3d2e3b73074eae5356`; both rechecked unchanged. Code
+`7b092ae2f6e345473dc74b4243350d57511a0545`, runtime `1e56ab2a063d0ba2fbb542a7ca7a7227aec821f20a53339a569a6758e9ed87c0`.
+Only `RunBlocker.attack` plus private `runnerSideFit`: free first-level feet recover
+toward an acquired carrying back instead of an obsolete drive normal, reusing
+accepted #147 work pictures and bounded fit movement. No acquired RB/no new rule;
+QB mesh, live doubles, pull/climb/stalk, release/keeper and loaded contact remain
+accepted. The existing acquired 2.5-yard continuation boundary limits activation.
+R01/H and C01/LT gain runner-facing real loaded access before first RB contact;
+Z16/GHC movement/RNG/endings remain exact. C02's earlier SS wrap retains an adverse
+ending: identical RB/SS bodies/requests after off-ball regrip changed shared RNG.
+Z13/Z19 departure stalls and Z14 blocked climb remain. 94 focused checks/typecheck
+pass; final11 bounded native continuations have10 endings/one live prefix. All55
+current-source diagnostic continuations, rejected gate/contact/API arms, exact
+inputs, source patches, failed fixture evidence and costs are published in the
+[review](reviews/run-current-recovery.md) and [receipt](../data/reviews/current/run-current-recovery.json).
+Ready for independent Run/controller disposition; Integration owns combined
+verification. #137/#148/#149/#150 remain separate and held; no self-approval or
+silent stack. Loaded motor, shared modifiers, physics/capacities, collection and
+climb/help contract retain their owners. No further variant is bundled here.
 
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 

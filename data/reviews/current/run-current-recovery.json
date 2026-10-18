@@ -1,0 +1,618 @@
+{
+  "schema": "run-current-recovery-review-v1",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "df4ee4dfe58aed5bd357ce3d2e3b73074eae5356",
+  "codeCommit": "7b092ae2f6e345473dc74b4243350d57511a0545",
+  "branch": "codex/run-current-build-review",
+  "dependencies": "Accepted f4146275 only; #148/#149/#150 remain separate and held.",
+  "status": "Ready for independent Run/controller review; not accepted or integration-cleared.",
+  "sourceSha256": "1e56ab2a063d0ba2fbb542a7ca7a7227aec821f20a53339a569a6758e9ed87c0",
+  "baselineSourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "changedRuntimeFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "evidence": {
+    "branch": "codex/run-current-recovery-evidence",
+    "commit": "dc403bf5f70c7c508638bbfc2a449edd3d866237",
+    "tree": "0a79e8a63cfe3adc1c7284922a2d7d47dde17e74"
+  },
+  "report": "docs/reviews/run-current-recovery.md",
+  "settings": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "horizonSeconds": 5,
+    "inputManifests": [
+      "common/inputs.json.gz",
+      "common/fresh-inputs.json.gz"
+    ],
+    "measurement": "common/free-path-collector.mjs adds only passive workPicture logging to common/collector.mjs; see patches and exact collector hashes in each receipt."
+  },
+  "validation": {
+    "focused": {
+      "testsPassed": 94,
+      "files": 8,
+      "sourceSha256": "1e56ab2a063d0ba2fbb542a7ca7a7227aec821f20a53339a569a6758e9ed87c0",
+      "validationSha256": "4dedabf84c5f97b77e87c4877a0bd594a4f6df8dca2941c551181bf09f4d3fe2",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/runner-side-recovery.test.ts",
+            "test/run-block-fit.test.ts",
+            "test/inline-zone-keeper.test.ts",
+            "test/run-base.test.ts",
+            "test/planned-climb-fit.test.ts",
+            "test/combo-strike-access.test.ts",
+            "test/zone-combo-surface.test.ts",
+            "test/counter-gh.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.7020908450000003
+        }
+      ]
+    },
+    "typecheck": {
+      "sourceSha256": "1e56ab2a063d0ba2fbb542a7ca7a7227aec821f20a53339a569a6758e9ed87c0",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.055845782
+        }
+      ]
+    },
+    "initialFailure": "Unknown-observation fixture passed undefined to a true default; preserved first failed receipts/log and original test code; fixture corrected explicitly, no engine/assertion weakening.",
+    "integration": "Reuse accepted f4146275/PR151 combined2113 TS/145 Python/typecheck/build. No full-suite rerun by this worker."
+  },
+  "costs": [
+    {
+      "group": "baseline",
+      "nativeContinuations": 11,
+      "collectorSeconds": 5.282742132
+    },
+    {
+      "group": "rejected-gates",
+      "nativeContinuations": 9,
+      "collectorSeconds": 4.534800687
+    },
+    {
+      "group": "rejected-loaded",
+      "nativeContinuations": 9,
+      "collectorSeconds": 4.438436633
+    },
+    {
+      "group": "rejected-path",
+      "nativeContinuations": 9,
+      "collectorSeconds": 4.56809738
+    },
+    {
+      "group": "prototype-free",
+      "nativeContinuations": 6,
+      "collectorSeconds": 2.9050576809999997
+    },
+    {
+      "group": "candidate",
+      "nativeContinuations": 11,
+      "collectorSeconds": 5.881716957999999
+    }
+  ],
+  "cases": [
+    {
+      "id": "Z06",
+      "baseline": {
+        "gain": 3.58,
+        "phase": "dead",
+        "endTime": 3.5,
+        "firstContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.43,
+            "y": 34.32
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 3.58,
+        "phase": "dead",
+        "endTime": 3.5,
+        "firstContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 41.43,
+            "y": 34.32
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 3.1,
+      "firstRngDifference": 3.1,
+      "firstRequestDifference": {
+        "t": 3.1,
+        "slot": "LT"
+      }
+    },
+    {
+      "id": "Z13",
+      "baseline": {
+        "gain": 2.21,
+        "phase": "dead",
+        "endTime": 3.25,
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.66,
+            "y": 25.04
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 2.22,
+        "phase": "dead",
+        "endTime": 3.25,
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.66,
+            "y": 25.04
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.75,
+      "firstRngDifference": 2.7,
+      "firstRequestDifference": {
+        "t": 1.75,
+        "slot": "Y"
+      }
+    },
+    {
+      "id": "Z14",
+      "baseline": {
+        "gain": 2.45,
+        "phase": "dead",
+        "endTime": 3.4,
+        "firstContact": {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 40.61,
+            "y": 30.22
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 2.62,
+        "phase": "dead",
+        "endTime": 3.45,
+        "firstContact": {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 40.61,
+            "y": 30.22
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.7,
+      "firstRngDifference": 2.35,
+      "firstRequestDifference": {
+        "t": 1.7,
+        "slot": "H"
+      }
+    },
+    {
+      "id": "Z16",
+      "baseline": {
+        "gain": 6.55,
+        "phase": "dead",
+        "endTime": 4.6,
+        "firstContact": {
+          "t": 3.4,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 19,
+          "pos": {
+            "x": 42.72,
+            "y": 38.83
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 6.55,
+        "phase": "dead",
+        "endTime": 4.6,
+        "firstContact": {
+          "t": 3.4,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 19,
+          "pos": {
+            "x": 42.72,
+            "y": 38.83
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": null,
+      "firstRngDifference": null,
+      "firstRequestDifference": null
+    },
+    {
+      "id": "Z19",
+      "baseline": {
+        "gain": 0.94,
+        "phase": "dead",
+        "endTime": 3.2,
+        "firstContact": {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 39.95,
+            "y": 23.09
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 0.94,
+        "phase": "dead",
+        "endTime": 3.2,
+        "firstContact": {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 39.95,
+            "y": 23.09
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.65,
+      "firstRngDifference": 2.9,
+      "firstRequestDifference": {
+        "t": 1.65,
+        "slot": "Y"
+      }
+    },
+    {
+      "id": "Z26",
+      "baseline": {
+        "gain": null,
+        "phase": "live",
+        "endTime": 5,
+        "firstContact": {
+          "t": 3.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 42.52,
+            "y": 21.79
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": null,
+        "phase": "live",
+        "endTime": 5,
+        "firstContact": {
+          "t": 3.45,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 42.52,
+            "y": 21.79
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 2.35,
+      "firstRngDifference": null,
+      "firstRequestDifference": {
+        "t": 2.35,
+        "slot": "C"
+      }
+    },
+    {
+      "id": "C01",
+      "baseline": {
+        "gain": 7.73,
+        "phase": "dead",
+        "endTime": 4,
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 7.91,
+        "phase": "dead",
+        "endTime": 4.05,
+        "firstContact": {
+          "t": 3.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.75,
+            "y": 21.91
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.75,
+      "firstRngDifference": 2.55,
+      "firstRequestDifference": {
+        "t": 1.75,
+        "slot": "LT"
+      }
+    },
+    {
+      "id": "C02",
+      "baseline": {
+        "gain": 12.78,
+        "phase": "dead",
+        "endTime": 4.55,
+        "firstContact": {
+          "t": 3.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 43.57,
+            "y": 18.1
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 12.46,
+        "phase": "dead",
+        "endTime": 4.5,
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.57,
+            "y": 20.13
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.8,
+      "firstRngDifference": 2.35,
+      "firstRequestDifference": {
+        "t": 1.8,
+        "slot": "LT"
+      }
+    },
+    {
+      "id": "R01",
+      "baseline": {
+        "gain": 0.86,
+        "phase": "dead",
+        "endTime": 4.2,
+        "firstContact": {
+          "t": 3.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 40.73,
+            "y": 23.32
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 0.91,
+        "phase": "dead",
+        "endTime": 4.25,
+        "firstContact": {
+          "t": 3.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 40.73,
+            "y": 23.32
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 1.6,
+      "firstRngDifference": 3.1,
+      "firstRequestDifference": {
+        "t": 1.6,
+        "slot": "H"
+      }
+    },
+    {
+      "id": "R02",
+      "baseline": {
+        "gain": 2.97,
+        "phase": "dead",
+        "endTime": 3.25,
+        "firstContact": {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 41.07,
+            "y": 21.2
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 2.97,
+        "phase": "dead",
+        "endTime": 3.25,
+        "firstContact": {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 41.07,
+            "y": 21.2
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": 3.1,
+      "firstRngDifference": 3.1,
+      "firstRequestDifference": {
+        "t": 3.1,
+        "slot": "RG"
+      }
+    },
+    {
+      "id": "GHC",
+      "baseline": {
+        "gain": 4.45,
+        "phase": "dead",
+        "endTime": 4.95,
+        "firstContact": {
+          "t": 3.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 19,
+          "pos": {
+            "x": 42.25,
+            "y": 33.38
+          },
+          "note": "grasp"
+        }
+      },
+      "candidate": {
+        "gain": 4.45,
+        "phase": "dead",
+        "endTime": 4.95,
+        "firstContact": {
+          "t": 3.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 19,
+          "pos": {
+            "x": 42.25,
+            "y": 33.38
+          },
+          "note": "grasp"
+        }
+      },
+      "firstAchievedDifference": null,
+      "firstRngDifference": null,
+      "firstRequestDifference": null
+    }
+  ],
+  "adverse": "C02 SS wraps at3.30 instead of missing, with identical full RB/SS bodies and requests at that World boundary after off-ball regrip shifted global RNG at2.35. RT keeper/RG Mike remain; 12.78\u219212.46yd. No terminal gain for Z26 live prefix.",
+  "limitations": [
+    "Marginal recovery/runner-facing hand load is a local access proxy, not proof of square block or full obstruction.",
+    "Accepted #147 teammate information abstraction remains; stale pictures and other awareness consumers are not repaired here.",
+    "Z13/Z19 departure stalls, Z14 climb traffic and loaded-foot/contact objective conflict remain; no loaded-contact API or physics changes retained."
+  ],
+  "ownerNextDecision": "Independent Run/controller disposition of this free recovery and its information/expiry contract; Integration then owns combined verification. #150 climb/help adjudication stays separate."
+}
