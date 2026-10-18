@@ -1,6 +1,8 @@
-# Pending owner handoffs
+# Published owner handoffs
 
-These follow-ups are saved locally because Git/GitHub API credentials began rejecting access before publication. No message below has been posted as a completed handoff.
+Published 2026-10-18 UTC after a successful credential retry. Accepted develop0000e56 and queueaa9ed35 re-fetched unchanged; no stored authentication/settings change. Exact production head572c07d53247da02d858768f654a900abe147ce8 is [draft143](https://github.com/tannerthardy/football-simulation-/pull/143). App artifact attachment was attempted; normal GitHub links work.
+
+Posted handoffs: [Integration](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6243441835), [Do-It-All](https://github.com/tannerthardy/football-simulation-/pull/137#issuecomment-6243441615), [lifecycle/traffic](https://github.com/tannerthardy/football-simulation-/pull/138#issuecomment-6243441708), [held perimeter owner](https://github.com/tannerthardy/football-simulation-/pull/99#issuecomment-6243441945). No merge or new baseline.
 
 Integration: review only the cleared-kick extraction, runtime0e52b95/source5734bb3, on `codex/counter-count-kick` (evidence97137c1, clean local handoffdffa75f). One runtime condition,34 focused/typecheck pass. Four exact accepted-host controls and all late-traffic costs are in the report. Joint count/perimeter host stays held; no #140 dependency. Final combined suite belongs to Integration.
 
