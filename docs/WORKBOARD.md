@@ -12,6 +12,16 @@ Flex keeps shared movement/spacing. Do not repeat the held open-step, depth,
 exit-arc or count campaigns. Existing #140/#143 and prototype evidence remain
 source-qualified and independent. No physics/capacity/default changes.
 
+Completed: reconciled Run's #143 gate-only traffic correction and adverse/held
+count evidence; one exact B03 prefix restores91 published actor intervals.
+Two diagnostic early-fit arms fail useful Mike contact, with identical runner
+and RNG histories through3.25s. Existing climb planner's constant-motion promise
+does not transfer to flowing Mike; no third variant or production edit. Three
+prefixes/1.793418 collector seconds, zero games/new players. Exact tapes, input,
+collectors and patches published data-only at0f0c8ef; [causal memo](reviews/run-movement-audit/causal-followup.md).
+Run owns next job/entry contract; #143 stays independently reviewable. No
+Integration suite/adoption requested; support boundary released.
+
 ## Catching support: run-blocking movement audit — 2026-10-17 UTC
 
 Branch `codex/run-movement-audit`, new from accepted/fetched

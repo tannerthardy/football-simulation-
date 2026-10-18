@@ -1,0 +1,10 @@
+{
+  "purpose": "Data-only B03 causal follow-up; do not merge",
+  "evidenceCommit": "0f0c8ef10b99f78de4c65467e56bde1fad90b4ba",
+  "evidenceRef": "refs/heads/evidence/run-movement-causal-2026-10-18",
+  "bytes": 6954413,
+  "sha256": "6dc8a6c4e7118bb1f4f1f19099fb4a0752064647f6ea80ef12a9dc631e65b14a",
+  "files": 21,
+  "url": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/0f0c8ef10b99f78de4c65467e56bde1fad90b4ba/evidence.tar.gz",
+  "manifestUrl": "https://raw.githubusercontent.com/tannerthardy/football-simulation-/0f0c8ef10b99f78de4c65467e56bde1fad90b4ba/bundle-manifest.json"
+}

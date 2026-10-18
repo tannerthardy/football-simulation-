@@ -1,5 +1,11 @@
 # Do these run blocks look like football?
 
+**October18 follow-up:** [The causal probes and corrected owner handoff](causal-followup.md)
+supersede the allocation-first recommendation below. Run's isolated cleared-kick
+gate removes K01's traffic without changing assignments; the joint count remains
+held. Two B03 earlier-entry diagnostics fail useful wrapper collection. The
+original18-snap picture audit and its source qualifications remain evidence.
+
 **The first-level down blocks and short kicks often do. The least convincing part is the coordinated route from initial blocking into useful second-level protection.** This supports Run's current Counter coordination work. It also exposes a perimeter installation conflict and a suspicious opening-turn cost worth preserving for the next decision. No behavior is changed here.
 
 I inspected 18 selected snaps at six phases: eight exact frozen #140 inputs spanning Counter, Buck, pin-pull and crack toss, plus ten existing G1 Inside/Outside/Wide Zone, Duo, Power and Trap films. The output includes 36 box/full-field plates, 162 blocker ledgers and all eleven defenders at four phases. Those are review coverage counts, not independent trials or football grades. [Case judgments and individual prototype notes](observations.json); [pins, settings and limits](reproduction.md).
@@ -25,7 +31,12 @@ K02 has a different manifestation: RT starts without a linebacker job, then sele
 
 </details>
 
-Run is already pursuing joint allocation from installed approach origins. That is the right next decision. Allocate immediate free climbs and the wrapper coherently, then conditional future combination work. Avoid solving one path by stealing the kick, duplicating H's Mike responsibility or exposing a near gap. Do not use private engagement flags to coordinate ownership.
+The original audit supported joint allocation from installed approach origins.
+Run's later #143 evidence separates that hypothesis from the traffic cause:
+the kick gate alone removes K01's collisions, while the count combination loses
+its strong control. Keep that count held. Avoid stealing the kick, duplicating
+H's Mike responsibility or exposing a near gap. Do not use private engagement
+flags to coordinate ownership.
 
 Both Counter endings also preserve legitimate secondary access: CB_W first contacts the runner. K01 ends in a5.59yd tackle; K02 is **still live at5s**, after a broken corner grasp. Improving the wrapper does not promise a different ending.
 
@@ -83,6 +94,10 @@ P030 RG and P175 LG join their partners very late. Existing paired geometry does
 **Keep the normal football that works:** P002 has actual combination/help and a climb; P164 Duo produces useful C→Mike collection; P056/P117 produce useful inserts. Power P015 has recognizable initial down/hinge/kick work. Its later obsolete Y–SS continuation is the separately owned #138 question. None is certified by yardage alone.
 
 ## Handoff and boundary
+
+This is the original October17 handoff; use the [October18 causal handoff](causal-followup.md#5-owner-handoff-and-smallest-next-action)
+for the current decision. In particular, joint count and additional opening
+variants are not approved by this earlier recommendation.
 
 1. Finish Counter's joint responsibility/approach-origin allocation on K01/K02 plus Run's declared opposite-direction control. Preserve edge/keeper work and examine actual useful protection; do not require a touchdown/tackle reversal.
 2. Carry B02's force-versus-WR installation conflict into the perimeter transfer decision. Establish the installed force owner before tuning collection toward a possibly wrong target.
