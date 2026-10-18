@@ -575,6 +575,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // GT retains its existing count; these are separately installed calls.
     const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
+    if (concept.pullers.includes('H') && !hBacker)
+      throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
@@ -757,6 +759,7 @@ export class RunBlocker implements Behavior {
   private nextSurfaceRead = 0;
   private wrapOutside = false;
   private wrapCorner: Vec2 | null = null;
+  private wrapTraffic: Vec2[] = [];
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
     flow: Vec2; backer: Perceived } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
@@ -858,6 +861,7 @@ export class RunBlocker implements Behavior {
             this.nextSurfaceRead = t + a.mind.decisionInterval;
             const guard = plan.pullSurface.blocker, end = plan.pullSurface.defender;
             const g = sim.see(a, guard), d = sim.see(a, end);
+            this.wrapTraffic = sim.offense.filter(b => b !== a && isOL(b)).map(b => ({...sim.see(a,b).pos}));
             const side = playSideSign(sim, sim.offCall.run!);
             const reach = guard.profile.radius + end.profile.radius + .1 + guard.player.measurables.armIn / 36 * .45;
             const joined = Math.hypot(g.pos.x-d.pos.x,g.pos.y-d.pos.y) <= reach;
@@ -906,7 +910,10 @@ export class RunBlocker implements Behavior {
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
-        if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
+        const nearWall = plan.pullSurface
+          ? this.wrapTraffic.some(p => Math.hypot(p.x-a.pos.x,p.y-a.pos.y)<1.2 && p.x>a.pos.x)
+          : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
+        if (this.pullIdx === 1 && nearWall) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
         const next = plan.pullPath[this.pullIdx+1];

@@ -35,6 +35,10 @@ describe('explicit Counter GH installation',()=>{
    const s=setup();s.offCall.run!.pullers=[...pullers];expect(()=>new PlaySim(s)).toThrow('Counter GH requires');
   }
  });
+ it('rejects an uninstalled all-walked-up count instead of finding hidden free work',()=>{
+  const s=setup();for(const slot of Object.keys(s.defCall.front.slots))if(slot.startsWith('LB'))s.defCall.front.slots[slot as keyof typeof s.defCall.front.slots]!.depth=.9;
+  expect(()=>new PlaySim(s)).toThrow('all-walked-up accounting is not installed');
+ });
  it('does not silently apply the H tag to another run installation',()=>{
   const s=setup();s.offCall.run!.scheme='insideZone';expect(()=>new PlaySim(s)).toThrow('installed only for Counter GH');
  });
@@ -42,11 +46,12 @@ describe('explicit Counter GH installation',()=>{
 
 /** A staged read through the real production update. Full normal constructor
  * and acquired history; no movement, contact or future runner state is awarded. */
-function surfaceRead(mirror:boolean,privateLog:boolean,reachable=true){
+function surfaceRead(mirror:boolean,privateLog:boolean,reachable=true,traffic?:'hidden'|'seen'|'clear'){
  const sim=new PlaySim(setup()),a=sim.slot('H')!,controller=a.behavior as RunBlocker;
  const p=controller.plan,g=p.pullSurface!.blocker,d=p.pullSurface!.defender,target=p.target!;
  sim.t=2;sim.world.time=2;
- a.body.pos={x:38.1,y:28.12};a.body.vel={x:0,y:2};
+ a.body.pos=traffic?{x:37.7,y:25.37}:{x:38.1,y:28.12};a.body.vel={x:0,y:2};
+ if(traffic==='seen')sim.slot('LG')!.body.pos={x:38.45,y:25.65};
  g.body.pos={x:39.8,y:30.2};g.body.vel={x:0,y:0};
  d.body.pos=reachable?{x:40,y:29.6}:{x:43,y:28};d.body.vel={x:0,y:0};
  target.body.pos={x:43,y:31};target.body.vel={x:0,y:0};
@@ -59,6 +64,7 @@ function surfaceRead(mirror:boolean,privateLog:boolean,reachable=true){
   for(const w of p.pullPath!)w.y=2*sim.ballY-w.y;
  }
  for(let i=0;i<24;i++)sim.perception.record(sim.agents);
+ if(traffic==='hidden')sim.slot('LG')!.body.pos={x:38.45,y:mirror?2*sim.ballY-25.65:25.65};
  const body=structuredClone(a.body),rng=JSON.stringify(sim.rng);
  const old=structuredClone(p.pullPath!.at(-1));
  const command=controller.update(a,sim);
@@ -68,6 +74,10 @@ function surfaceRead(mirror:boolean,privateLog:boolean,reachable=true){
 }
 
 describe('GH consumes an achieved guard/end picture',()=>{
+ it.each([false,true])('retains the near-wall response only from acquired traffic, mirror=%s',mirror=>{
+  expect(surfaceRead(mirror,false,true,'hidden')).toEqual(surfaceRead(mirror,false,true,'clear'));
+  expect(surfaceRead(mirror,false,true,'seen').command.vel.x).toBeLessThan(0);
+ });
  it.each([false,true])('ignores the private log tag through production update, mirror=%s',mirror=>{
   expect(surfaceRead(mirror,true)).toEqual(surfaceRead(mirror,false));
   const r=surfaceRead(mirror,false);expect(r.corner).not.toEqual(r.old);
