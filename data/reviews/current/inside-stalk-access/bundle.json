@@ -1,0 +1,678 @@
+{
+  "schema": "inside-stalk-artifacts-v1",
+  "codeCommit": "cd968d045b1be4654b6740e11350fb19d16cd78c",
+  "dependencyPR": 148,
+  "dependencyCommit": "6fd13e4782a08497383912272b693e6a59747d80",
+  "acceptedDevelop": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "integrationQueue": "e8d806b940a84c7cff7e5ee066022079723c78ef",
+  "reusedEvidence": "15f5113709450363f3dbc744753cbc87b422e6f3",
+  "sources": {
+    "near": "68ea74ac2d1a6d6c96529a5ef8ca19ea48e092ef2dcf59af048847f189e97715",
+    "joined": "ab2e6412e670f222d5231bb13d78b4cd59dbe569fcf1b24499cf2410e6d9e31f",
+    "strike": "4ac722a8c68ffff4e031f263b1951e542ce27f95764dd72865fdee446450415c",
+    "secured": "406596fbd25b9f6d054e9f0a7e148be76fa7e481511392d1fd1b5d1cd316c510",
+    "surface": "dd9e7c13c2c57823a6c722df6a3b4c510a55af22311bc4b741e6a21a82eff8e0",
+    "retained": "a058b19c643ebc0a575daa81d13128b1c65d6303b54c1c5954801660a26adfef",
+    "candidate": "6d40f421b75e85b168cb0fd1de5cd84fb8804f89d0526704e876e5e522504f51"
+  },
+  "archives": [
+    {
+      "path": "rejected-near.tar.gz",
+      "bytes": 13487763,
+      "sha256": "9bc1c373cb6251777ab107bbebe20ab4e46cf8cf0c3ee81392a35d85c0fbf5d7",
+      "members": [
+        {
+          "path": "stalk-strike-access/near-fresh/receipt.json",
+          "bytes": 2302,
+          "sha256": "b8328d1549e2e0fb5d9a69161f6666db696860fbd34032a929bd7d3b7530e29f"
+        },
+        {
+          "path": "stalk-strike-access/near-fresh/trace.json.gz",
+          "bytes": 2969220,
+          "sha256": "c44e9410afc89cc040b5351b5344574bbae94cf1f1377a7f19859e005d80b6bb"
+        },
+        {
+          "path": "stalk-strike-access/near-controls/receipt.json",
+          "bytes": 2423,
+          "sha256": "699b56e9d9eee83c800af42da79817c1b384ef4df825ebc59edba5513005a1a1"
+        },
+        {
+          "path": "stalk-strike-access/near-controls/trace.json.gz",
+          "bytes": 3835407,
+          "sha256": "9141c6d007b6690da8a3b6d1bbbdd97438322d7857b7508ddc4c11400a166b76"
+        },
+        {
+          "path": "stalk-strike-access/joined-fresh/receipt.json",
+          "bytes": 2303,
+          "sha256": "fd75d8727eb77d4cbeb4cf333561311a35471b636b650eaec792a7456366c005"
+        },
+        {
+          "path": "stalk-strike-access/joined-fresh/trace.json.gz",
+          "bytes": 2965861,
+          "sha256": "500ffc87098085af41a613d2c22f2c11b611229fdd98bf91848f844a6cad7159"
+        },
+        {
+          "path": "stalk-strike-access/joined-controls/receipt.json",
+          "bytes": 2430,
+          "sha256": "34e4e3020dd1b0117bb322193498bc53d6984d84cca2ccf3df0acd3549c07305"
+        },
+        {
+          "path": "stalk-strike-access/joined-controls/trace.json.gz",
+          "bytes": 3835407,
+          "sha256": "879d2939ae3112be525ebf3b33691c534a3af2741eb3f007b58de852a4e938bf"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/rejected-near.tar.gz"
+    },
+    {
+      "path": "rejected-broad.tar.gz",
+      "bytes": 15787868,
+      "sha256": "a7cc0d8ad1ec191e4369c71d8df2819b5f5d8b8389756ac97ad4c57528e3a8d2",
+      "members": [
+        {
+          "path": "stalk-strike-access/strike-fresh/receipt.json",
+          "bytes": 2310,
+          "sha256": "85734ca1e797c858f2cfb6de5fe6b7a15f1473ffd0720c96cdfc84527c060a1f"
+        },
+        {
+          "path": "stalk-strike-access/strike-fresh/trace.json.gz",
+          "bytes": 3058934,
+          "sha256": "e38142a11c8f6ba083d0699e2935eec83d595c358a974113a2bc53fec701460e"
+        },
+        {
+          "path": "stalk-strike-access/strike-controls/receipt.json",
+          "bytes": 2423,
+          "sha256": "2713d83f526b267e7d4fcebdbaa99c4d4fec655c9a66f25dfbc4530962f041ff"
+        },
+        {
+          "path": "stalk-strike-access/strike-controls/trace.json.gz",
+          "bytes": 4919532,
+          "sha256": "7489fb64e665519fbd3ba09d31935aef924be005b26a1c587a9413d652445d81"
+        },
+        {
+          "path": "stalk-strike-access/secured-fresh/receipt.json",
+          "bytes": 2303,
+          "sha256": "df8740ffc9c16d981e5ba927f483c0fd20a59244df144958469090ab97ceeae6"
+        },
+        {
+          "path": "stalk-strike-access/secured-fresh/trace.json.gz",
+          "bytes": 3030693,
+          "sha256": "5d89ea5f8e96b7b33d008732893b77d7a58aed2c28f27a1e93e95ade42b74750"
+        },
+        {
+          "path": "stalk-strike-access/secured-controls/receipt.json",
+          "bytes": 2423,
+          "sha256": "683d1bda52c870fbf4cef3ea1193ef5f0e6b3e0bd338528ecd7d6a1ef41d2f12"
+        },
+        {
+          "path": "stalk-strike-access/secured-controls/trace.json.gz",
+          "bytes": 4919531,
+          "sha256": "03f69ffcc5ff032b824756f116173b4b1f50fd621c8b9853b1c2ad0dff34ec38"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/rejected-broad.tar.gz"
+    },
+    {
+      "path": "surface-isolation.tar.gz",
+      "bytes": 12849330,
+      "sha256": "45fef87f19197dd02865f4421ba36291e3df429730b7dacde3f88debd975c9ef",
+      "members": [
+        {
+          "path": "stalk-strike-access/surface-fresh/receipt.json",
+          "bytes": 2303,
+          "sha256": "9ddb6dc4230de57b21d3cb2c17e46cfdcb21708b96d101bc1999ac932c0b7145"
+        },
+        {
+          "path": "stalk-strike-access/surface-fresh/trace.json.gz",
+          "bytes": 2979410,
+          "sha256": "700f3ebbe226ee52ef1675182a9a1dfaf28bf5934f98e960b242ce2837a6c032"
+        },
+        {
+          "path": "stalk-strike-access/surface-controls/receipt.json",
+          "bytes": 2430,
+          "sha256": "82b36fe1dd7b1c5a213fc004903377f0293f09f78415235e7dc7ce146a19f83c"
+        },
+        {
+          "path": "stalk-strike-access/surface-controls/trace.json.gz",
+          "bytes": 3505309,
+          "sha256": "d0d75ac37764da0870dc0ba228b8b1579e8fe670716decdf2161a7be35f5de49"
+        },
+        {
+          "path": "stalk-strike-access/retained-fresh/receipt.json",
+          "bytes": 2310,
+          "sha256": "9815f5bdd81c55b107aa89226f53fa1cc0344a1ba4a57ccdbfe47f8aced6dadf"
+        },
+        {
+          "path": "stalk-strike-access/retained-fresh/trace.json.gz",
+          "bytes": 2970490,
+          "sha256": "a83ea8f29eabb9e86d9b770facc69244153b882b451a0518561f9a3036500136"
+        },
+        {
+          "path": "stalk-strike-access/retained-controls/receipt.json",
+          "bytes": 2423,
+          "sha256": "785234508813dde5a14d6b2c1b07ba20ab8672b06f33fbaf885bff843f204b77"
+        },
+        {
+          "path": "stalk-strike-access/retained-controls/trace.json.gz",
+          "bytes": 3505299,
+          "sha256": "c4666cb7839e281876f7964f8c86517e91d41fafbd07447f9f32766fd1c0ed76"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/surface-isolation.tar.gz"
+    },
+    {
+      "path": "candidate.tar.gz",
+      "bytes": 12827855,
+      "sha256": "0e4d961adc5597b570ac3b02a74ca81ca6a967297751f7a682e6fce764a2fdb9",
+      "members": [
+        {
+          "path": "stalk-strike-access/candidate-old-fresh/receipt.json",
+          "bytes": 2310,
+          "sha256": "d7024a1b19fbd054bc350b4544e3e3ef3c436240a47325aac3fcad16909c41a8"
+        },
+        {
+          "path": "stalk-strike-access/candidate-old-fresh/trace.json.gz",
+          "bytes": 2985776,
+          "sha256": "5f3f0c647c47d72633d73f50e7563d2b328500e53dbac133ee605b8eba2c220d"
+        },
+        {
+          "path": "stalk-strike-access/candidate-controls/receipt.json",
+          "bytes": 2430,
+          "sha256": "943e0846ad815f3515e4cc864eca6af9ae884c8c94d1c6fb921d3a1322103af4"
+        },
+        {
+          "path": "stalk-strike-access/candidate-controls/trace.json.gz",
+          "bytes": 3581388,
+          "sha256": "8fe2ebbd99a68ed8816729df2f0a629a7447c9d543fff4739faeac0bfa7e874f"
+        },
+        {
+          "path": "stalk-strike-access/candidate-transfer/receipt.json",
+          "bytes": 2543,
+          "sha256": "5ee4cf5db96dce4a46708d67a92d3965a3bc5a903a751cc1379a41783c762928"
+        },
+        {
+          "path": "stalk-strike-access/candidate-transfer/trace.json.gz",
+          "bytes": 6370788,
+          "sha256": "161df3c57c074419e28756f82f097451a3ad5bfe9190001639fc85bcb725aa18"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/candidate.tar.gz"
+    },
+    {
+      "path": "references.tar.gz",
+      "bytes": 14408156,
+      "sha256": "1e9e4eab8e2afe83c60578c0cd77e4ba70fd476401e3936e2d0954c2b50f6e92",
+      "members": [
+        {
+          "path": "stalk-strike-access/reference-transfer/receipt.json",
+          "bytes": 2542,
+          "sha256": "8c876aa5d786e2c38c83ed6fc0c13ff67ab4fc1656cc4d1fb132dd7f19beff62"
+        },
+        {
+          "path": "stalk-strike-access/reference-transfer/trace.json.gz",
+          "bytes": 6226317,
+          "sha256": "348f3293a1a891a0a33c94c9a29e016761d4561af4c792b493b20915bc8adc37"
+        },
+        {
+          "path": "stalk-strike-access/accepted-old-fresh/receipt.json",
+          "bytes": 2303,
+          "sha256": "69af744ac1b6411f22502bae6d6b9d13792ac5e04c41db820dab8e7e9a51ee28"
+        },
+        {
+          "path": "stalk-strike-access/accepted-old-fresh/trace.json.gz",
+          "bytes": 2780897,
+          "sha256": "4ab5b42a13eec70419ef40e71f9d4b94a9bef003f5c533e378c9dd3b6448899b"
+        },
+        {
+          "path": "stalk-strike-access/accepted-transfer/receipt.json",
+          "bytes": 2543,
+          "sha256": "8c97e0bcaf977b8e1e7599c310d7aadee507fb937eb677aba1996b6f89ee0c7d"
+        },
+        {
+          "path": "stalk-strike-access/accepted-transfer/trace.json.gz",
+          "bytes": 5522094,
+          "sha256": "9154c5f1332290a4406520514ac3a3c5738b1b9a146622869e9cf4735e708350"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/references.tar.gz"
+    },
+    {
+      "path": "common.tar.gz",
+      "bytes": 1980020,
+      "sha256": "89c53515414ce79795a889f122698bef71a28458abb2a9fdf0058254373cfa6b",
+      "members": [
+        {
+          "path": "stalk-strike-access/REPRODUCE.md",
+          "bytes": 4704,
+          "sha256": "d58464a48a54b029ed4c0a82fcc822bf4c79428a3f4185add4fdf5fd17e7fe22"
+        },
+        {
+          "path": "stalk-strike-access/accepted-old-fresh-launch.json",
+          "bytes": 2525,
+          "sha256": "a5e016aac419ec9bf574ae81427f5edfe0c0d7f94c7d8c4c94cb595078edf0ee"
+        },
+        {
+          "path": "stalk-strike-access/accepted-old-fresh.log",
+          "bytes": 12140,
+          "sha256": "4f1b5e6efa3f0ad769a89331870427b9bdc19f7fa62520210d7e193402734585"
+        },
+        {
+          "path": "stalk-strike-access/accepted-transfer-launch.json",
+          "bytes": 2536,
+          "sha256": "2abe345cf95890c4f8c28c4b2dc9d5e225faef983cab0a0599bacca7a911e807"
+        },
+        {
+          "path": "stalk-strike-access/accepted-transfer.log",
+          "bytes": 20599,
+          "sha256": "7795e4d9cc843d03fd3f47c4180b72bbb1d5548195373eb1c9b29190c2af65a2"
+        },
+        {
+          "path": "stalk-strike-access/baseline-profile.json",
+          "bytes": 1971,
+          "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4"
+        },
+        {
+          "path": "stalk-strike-access/candidate-code-tests.patch",
+          "bytes": 8783,
+          "sha256": "b693ea3c05481cc3c3a44841f4d00dc20aaa2a1051db0bcee165bcaf17f593e7"
+        },
+        {
+          "path": "stalk-strike-access/candidate-collector.mjs",
+          "bytes": 8417,
+          "sha256": "ff9bd539b42d4e862cf054511d412e0039a28bfa2652f4d7f7e8931ea7c5888d"
+        },
+        {
+          "path": "stalk-strike-access/candidate-controls-launch.json",
+          "bytes": 2520,
+          "sha256": "88b82daf3b7dd7e5cdd81d25e8a46a75a999e1e7309a466c4ebceddabd7684f2"
+        },
+        {
+          "path": "stalk-strike-access/candidate-controls.log",
+          "bytes": 17200,
+          "sha256": "9034c4ba1fb876278c190c1dae88b6124792a180f78116526f2390470274b631"
+        },
+        {
+          "path": "stalk-strike-access/candidate-from148.patch",
+          "bytes": 3238,
+          "sha256": "4e2e543ad338087701794c096f93fd7aa16e096b63721d145babf4a2570a6651"
+        },
+        {
+          "path": "stalk-strike-access/candidate-old-fresh-launch.json",
+          "bytes": 2526,
+          "sha256": "ae20097ae2b18544e657f2ea99c936701aff976bb8dfc6cfb20d1583469b0d48"
+        },
+        {
+          "path": "stalk-strike-access/candidate-old-fresh.log",
+          "bytes": 12924,
+          "sha256": "76f49a00e350ce9002877fdfc3b1c2251f547c6182a7315af3422eaa29499546"
+        },
+        {
+          "path": "stalk-strike-access/candidate-transfer-launch.json",
+          "bytes": 2530,
+          "sha256": "2131f488f30f6452a4fa18fbf716099dd1f1f1441f253b09079db6a84cb96feb"
+        },
+        {
+          "path": "stalk-strike-access/candidate-transfer.log",
+          "bytes": 21342,
+          "sha256": "dcaf17e250d31809c612d4219abb30448f97d57c9b17a238129be8522644ccd0"
+        },
+        {
+          "path": "stalk-strike-access/contract.mjs",
+          "bytes": 1349,
+          "sha256": "b719c5e72dc8e97f411558c7b60878f0f6aa6211f1614a24a2826cadc438c5f5"
+        },
+        {
+          "path": "stalk-strike-access/film/F01.png",
+          "bytes": 288784,
+          "sha256": "2d10129c963736e7262f2dc381c6b602ce59d0fb8475c43f362ec71e6252ddc9"
+        },
+        {
+          "path": "stalk-strike-access/film/S02.png",
+          "bytes": 289287,
+          "sha256": "6173142055ece28a23af3344fc0c6313f684e0ea13048e17435ea0d1be53dd95"
+        },
+        {
+          "path": "stalk-strike-access/film/S03.png",
+          "bytes": 306090,
+          "sha256": "f9c7667060f9140c5d2e5f99e09029e969e26ae9e4cab86bd5da04d96608980e"
+        },
+        {
+          "path": "stalk-strike-access/film/Z26.png",
+          "bytes": 309677,
+          "sha256": "77455d4a45c1e66cb8063d0cde5d8646494e11830f4f3630fcdf9f45e0d0cd30"
+        },
+        {
+          "path": "stalk-strike-access/film.py",
+          "bytes": 3505,
+          "sha256": "3cfe0771f5fff194053c66e07837caa3cce361cc5b2041c137fc33768989d168"
+        },
+        {
+          "path": "stalk-strike-access/focused-final.json",
+          "bytes": 2566,
+          "sha256": "c02194ac53c61619eaea7155c0b5534933baef676cb5388ce7ed3e85e549172c"
+        },
+        {
+          "path": "stalk-strike-access/focused-first.json",
+          "bytes": 2516,
+          "sha256": "2a270c1a01b2d37cc1652164d8ee3d58a967e97c48c5cc2be7924ac58ba158f8"
+        },
+        {
+          "path": "stalk-strike-access/focused-second.json",
+          "bytes": 2559,
+          "sha256": "ab1f3bba16e774101e17b22f993dfbd2ac744a3174212e7288c40860dfdb6f33"
+        },
+        {
+          "path": "stalk-strike-access/fresh-inputs.json.gz",
+          "bytes": 7363,
+          "sha256": "137c6439a97f5fc85d3efc0def05de53d111174ab69ccf1c67f0aaac4487c603"
+        },
+        {
+          "path": "stalk-strike-access/joined-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/joined-controls-launch.json",
+          "bytes": 2480,
+          "sha256": "eb73c626de485cd3ec828ff3e1ea71bcd60d9ad22f1e70b70879827d72c3135e"
+        },
+        {
+          "path": "stalk-strike-access/joined-controls.log",
+          "bytes": 17707,
+          "sha256": "82504505a53f9d8e05fdb51b2f6118fb7039c4f0db5b955ad972c83578bf60ca"
+        },
+        {
+          "path": "stalk-strike-access/joined-fresh-launch.json",
+          "bytes": 2489,
+          "sha256": "e45e79cf6acba655469d6ae8f5469b8e4f33dd857d55f803d91555a858c8fa97"
+        },
+        {
+          "path": "stalk-strike-access/joined-fresh.log",
+          "bytes": 12592,
+          "sha256": "b8decc0773b13bdfb8f6b9def70d03e20db6b4bd8c63d4d03ad6d905d6a41573"
+        },
+        {
+          "path": "stalk-strike-access/joined-from148.patch",
+          "bytes": 1784,
+          "sha256": "88d21f366f069fc44485d28ed884cd7a3662ed0096add7ec0b9c5f1e66fe5060"
+        },
+        {
+          "path": "stalk-strike-access/near-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/near-contract-launch.json",
+          "bytes": 2335,
+          "sha256": "03f9cd0261150431b693a07e630cebe64264c7284bc9fcb010de61b9b3f7b65c"
+        },
+        {
+          "path": "stalk-strike-access/near-contract.json",
+          "bytes": 2729,
+          "sha256": "a567840ab083733105faffdd14331ebf4fb71aeaf2e6a989732076943c530577"
+        },
+        {
+          "path": "stalk-strike-access/near-contract.log",
+          "bytes": 1973,
+          "sha256": "e8f4702c6210e0af33477731d9e5773f6b6e31b4081dc995572df0a7c5640abc"
+        },
+        {
+          "path": "stalk-strike-access/near-controls-launch.json",
+          "bytes": 2478,
+          "sha256": "1ee8c6461a7416cde2f032d8849f12b67a58cfb329f6aa742693a55bf37b10c7"
+        },
+        {
+          "path": "stalk-strike-access/near-controls.log",
+          "bytes": 17690,
+          "sha256": "7d9428ce6170b087f9c1fdbf365b77b0dbee895f44d65aeb4e93be07c6e88e9e"
+        },
+        {
+          "path": "stalk-strike-access/near-fresh-launch.json",
+          "bytes": 2480,
+          "sha256": "c19bae5e9629fd5f8f6d208b8009b11d661c282ff5969e59b5db90145d37ab8d"
+        },
+        {
+          "path": "stalk-strike-access/near-fresh.log",
+          "bytes": 12582,
+          "sha256": "a40edea2c09e69572bf7a5d8a2fcfa5d0a8c2305b20de219b96faad10b04be58"
+        },
+        {
+          "path": "stalk-strike-access/near-from148.patch",
+          "bytes": 1051,
+          "sha256": "477f6616fc0bcb9e7fe85b110602670f4f20da0c8bf0fff65e9bbabaf783f578"
+        },
+        {
+          "path": "stalk-strike-access/package.py",
+          "bytes": 4292,
+          "sha256": "9cff0f0e6158dfc48d99ab799365bf4a408e414c8b055d8a3480ac0f3f42a59a"
+        },
+        {
+          "path": "stalk-strike-access/prepare-fresh.mjs",
+          "bytes": 1414,
+          "sha256": "5bf06562e9ab3a03047b2bcf685566d757239a133e180e56935c1ab2e67b2e20"
+        },
+        {
+          "path": "stalk-strike-access/prepare.py",
+          "bytes": 2049,
+          "sha256": "87477103d188bcb7a0b8f8d269371e92a3644988235745b0909c090950380328"
+        },
+        {
+          "path": "stalk-strike-access/reduce.py",
+          "bytes": 5088,
+          "sha256": "b646d96ed823b18fb1cf5563694330e9683c02b5856fceb4f4291c2a639a0ec4"
+        },
+        {
+          "path": "stalk-strike-access/reference-contract-launch.json",
+          "bytes": 2344,
+          "sha256": "654be60e811f7cc92f0809571e1091d1164836ed016b29d113cf06afa181341a"
+        },
+        {
+          "path": "stalk-strike-access/reference-contract.json",
+          "bytes": 2572,
+          "sha256": "c1e054b24663735ab51802d493f54e208950d8786b0b654a38ca122aed8306cf"
+        },
+        {
+          "path": "stalk-strike-access/reference-contract.log",
+          "bytes": 1881,
+          "sha256": "4f9e25cbcd4d06411c84bd367e751da87d95de215ae6ec9e9881a7f2456e574b"
+        },
+        {
+          "path": "stalk-strike-access/reference-transfer-launch.json",
+          "bytes": 2530,
+          "sha256": "1c29d9f32ba4cc7b652370bf7ea638f83532a2867fb393d28907c7fd7f6a4143"
+        },
+        {
+          "path": "stalk-strike-access/reference-transfer.log",
+          "bytes": 21839,
+          "sha256": "b12f0513600d96c1282e69fc63e1b27ad4cfd0c8a6a408dd319e09a4e558e5a4"
+        },
+        {
+          "path": "stalk-strike-access/retained-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/retained-controls-launch.json",
+          "bytes": 2482,
+          "sha256": "7ddf9dd87caefe5aef28feefc995b9d3db611b7e4c3da090d9ae8613092a18d6"
+        },
+        {
+          "path": "stalk-strike-access/retained-controls.log",
+          "bytes": 16705,
+          "sha256": "13c9e2dc62fb05dd479301fa82dc7739a4bc9b6e5e51a5ec6a0dcdc79185badb"
+        },
+        {
+          "path": "stalk-strike-access/retained-fresh-launch.json",
+          "bytes": 2484,
+          "sha256": "b61257706a64317177ab8c43f2d5d930067371665cd63fd0188329ca50c7bd58"
+        },
+        {
+          "path": "stalk-strike-access/retained-fresh.log",
+          "bytes": 12570,
+          "sha256": "e0814e694f6edef79272fa0abc6c86e14e49125973a0ba73d86ccd3b97fffca3"
+        },
+        {
+          "path": "stalk-strike-access/retained-from148.patch",
+          "bytes": 1326,
+          "sha256": "8cfcd8af0fa311ea653defff385adf646c7bd7823a5ea394c15d904d793ad6a7"
+        },
+        {
+          "path": "stalk-strike-access/run-accepted.py",
+          "bytes": 957,
+          "sha256": "06c1da416fcbc66cf80885e9f5f05ca82c553dbe389a4691965197b31467d11d"
+        },
+        {
+          "path": "stalk-strike-access/run-final.py",
+          "bytes": 1071,
+          "sha256": "ef8d34d336345dd22dfaefd50b38212a3259c05a44fa5911fb9dd8872d3b77d5"
+        },
+        {
+          "path": "stalk-strike-access/run-near.py",
+          "bytes": 860,
+          "sha256": "2ac6584f8f7156fa53465aefc30a7f027b98f9ec58aa7aebbbde1cc290e59428"
+        },
+        {
+          "path": "stalk-strike-access/run-strike.py",
+          "bytes": 863,
+          "sha256": "3fb3f897db5f1964ac3ccea17e1fe732bd18dbcfbc1d1e3fe44e441fc3fe5883"
+        },
+        {
+          "path": "stalk-strike-access/run-surface.py",
+          "bytes": 865,
+          "sha256": "0c568749e0e0f5ab4ea06da3ff6d27497d9274aabca11afd6cdeedd2383b5a9f"
+        },
+        {
+          "path": "stalk-strike-access/secured-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/secured-controls-launch.json",
+          "bytes": 2488,
+          "sha256": "f3651156deaa5ccec22dc3879dd1c1a4688b5308f0cd4a87c8fc7aba6f48ee5c"
+        },
+        {
+          "path": "stalk-strike-access/secured-controls.log",
+          "bytes": 18925,
+          "sha256": "31026c6d5bc6a40a4a52e69006917938b65a7a35b8addec1c859bd2c2ab6252b"
+        },
+        {
+          "path": "stalk-strike-access/secured-fresh-launch.json",
+          "bytes": 2490,
+          "sha256": "bbb88bb5840db8ba42bf3f8aaf5603379b45f4300fa0d047c7bf62d308622952"
+        },
+        {
+          "path": "stalk-strike-access/secured-fresh.log",
+          "bytes": 12818,
+          "sha256": "113005c8f14a1ed678338df339cf98cb6daf729863c0dbd4338a9fb019992363"
+        },
+        {
+          "path": "stalk-strike-access/secured-from148.patch",
+          "bytes": 1680,
+          "sha256": "8a606491625dd25d1c92ab9de0f1aace17d85a47a9ea8efc23be45c093644a92"
+        },
+        {
+          "path": "stalk-strike-access/sources.json",
+          "bytes": 568,
+          "sha256": "a24e30a04adf1641a7f8483341c1853aa530b7925d3a07889611efbf12f21808"
+        },
+        {
+          "path": "stalk-strike-access/strike-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/strike-controls-launch.json",
+          "bytes": 2487,
+          "sha256": "3855ea64e56ca367ca3be391adf0e7e9056358846f5e2c71ec5285478ab4ed40"
+        },
+        {
+          "path": "stalk-strike-access/strike-controls.log",
+          "bytes": 18930,
+          "sha256": "e695175f9db3a759fcc104df689b1e12d35851271849ab58581297f6a80e74aa"
+        },
+        {
+          "path": "stalk-strike-access/strike-fresh-launch.json",
+          "bytes": 2489,
+          "sha256": "83a9b37398f8d579054bfa8e5b2b99a19462f6b0c625897eeb2a50d89260e46f"
+        },
+        {
+          "path": "stalk-strike-access/strike-fresh.log",
+          "bytes": 12814,
+          "sha256": "e385a4ff46bef63a67dba846c045a9f5d2ae75b093e1eafb4bea4240125c6a6f"
+        },
+        {
+          "path": "stalk-strike-access/strike-from148.patch",
+          "bytes": 947,
+          "sha256": "cb636622d078514ed10cb3f04d96a4114046aa3caa2b4103b14a16afb8f33ec4"
+        },
+        {
+          "path": "stalk-strike-access/summary.json.gz",
+          "bytes": 761938,
+          "sha256": "0c0549ec7b268bf1bc91cb87b2c6bc1effcde804d46a731efd22e1b6a7c575c3"
+        },
+        {
+          "path": "stalk-strike-access/surface-collector.mjs",
+          "bytes": 8366,
+          "sha256": "c388170c02389dbc654365a2925844244895f63a775ef7445c28bc3cdae763f1"
+        },
+        {
+          "path": "stalk-strike-access/surface-controls-launch.json",
+          "bytes": 2481,
+          "sha256": "3364eb827f8c964eb383d304b75bf7fddfd428b65480423b0b1bc74441003107"
+        },
+        {
+          "path": "stalk-strike-access/surface-controls.log",
+          "bytes": 16696,
+          "sha256": "1a226589fc4e53da25ce2d0496e36e12f8bfab4ccd9d5fb2e60bd53f26917b9f"
+        },
+        {
+          "path": "stalk-strike-access/surface-fresh-launch.json",
+          "bytes": 2490,
+          "sha256": "7f79ad9a51d20d36017ab0f8d2314d09a707a41a491b90bdb9036ccb60655613"
+        },
+        {
+          "path": "stalk-strike-access/surface-fresh.log",
+          "bytes": 12803,
+          "sha256": "2229692ff2f0f1051539686a1f4790407f1c5c1f1300ffcd0a1381a5d1f7b98d"
+        },
+        {
+          "path": "stalk-strike-access/surface-from148.patch",
+          "bytes": 593,
+          "sha256": "3f650685b2768969e70e39e5a9b138d001e5295cdf81f5b0d88579055ee52e12"
+        },
+        {
+          "path": "stalk-strike-access/typecheck.json",
+          "bytes": 2294,
+          "sha256": "c2fd9f63019888a0b215f60d704cf4ec2dfdcd97979e147ac1adccf72740a2b8"
+        }
+      ],
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/common.tar.gz"
+    }
+  ],
+  "evidenceCommit": "c4bb661cfeaf4c03443f48e17030926177c34de0",
+  "evidenceBranch": "evidence/inside-stalk-access-2026-10-18",
+  "film": [
+    {
+      "path": "film/F01.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/film/F01.png",
+      "sha256": "2d10129c963736e7262f2dc381c6b602ce59d0fb8475c43f362ec71e6252ddc9"
+    },
+    {
+      "path": "film/S02.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/film/S02.png",
+      "sha256": "6173142055ece28a23af3344fc0c6313f684e0ea13048e17435ea0d1be53dd95"
+    },
+    {
+      "path": "film/S03.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/film/S03.png",
+      "sha256": "f9c7667060f9140c5d2e5f99e09029e969e26ae9e4cab86bd5da04d96608980e"
+    },
+    {
+      "path": "film/Z26.png",
+      "url": "https://github.com/tannerthardy/football-simulation-/raw/c4bb661cfeaf4c03443f48e17030926177c34de0/film/Z26.png",
+      "sha256": "77455d4a45c1e66cb8063d0cde5d8646494e11830f4f3630fcdf9f45e0d0cd30"
+    }
+  ],
+  "qualification": "Data-only evidence; do not merge.49 new native continuations, rejected variants, accepted references and exact frozen inputs. Older compatible references remain at the reused evidence pin; original hashes and costs are preserved. All archive payloads verified as safe regular files and rehashed."
+}

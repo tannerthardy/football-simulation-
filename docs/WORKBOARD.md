@@ -2,18 +2,24 @@
 
 ## Catching: inside stalk strike access — 2026-10-18 UTC
 
-Continuing the user's explicit request in `codex/stalk-strike-access`, a genuine
-dependency stack from published #148 at6fd13e4 (accepted914f4d5/queuee8d806b
-refetched unchanged). #148 stays frozen for independent review. Reuse its saved
-F01 retained-target and successful Z08/Z26/F04 traces. Question: does the ordinary
-1.2yd stalk landmark strand an inside blocker outside the unchanged physical
-acquisition distance when the defender waits or moves upfield? Own only the
-stalk movement branch and, if independently justified, its target-availability
-contract in RunBlocker; no assignment allocation/count, puller, shared spacing/
-modifier, contact/release/Physics changes. Start with a pure controller contract,
-then isolated near-contact-footwork and continuity arms. Preserve successful
-inside entry, earned defender escape and all adverse evidence. No claim that
-retaining the F01 job by itself restores useful contact.
+`codex/stalk-strike-access`, codecd968d0/source6d40f421, genuine dependency stack
+from published #148 at6fd13e4 (accepted914f4d5/queuee8d806b refetched unchanged).
+#148 stays frozen for independent review. The ordinary1.2yd stand-off can stop
+outside the unchanged physical range, while private foreign engagement can drop
+the named job. Retention-only and surface-only fail F01; together restore real
+contact. Tag only the exact installed inside target, approach its acquired near
+body with ordinary goTo/.85/through1, and do not abandon named stalks based on
+private engagement. No allocation/count, puller, shared spacing/modifier, hands,
+contact/release or Physics changes. Broader/late footwork variants are rejected.
+
+[Diagnosis and focused handoff](reviews/inside-stalk-access.md):60 checks/typecheck
+pass;49 new native continuations cost25.490533 collector seconds (42 endings/
+seven5s censors), with cached original references reused. Fresh S02 acquires a
+block absent on accepted develop. Later entries, shorter survival, worse Power
+endings and Z28 traffic remain visible; this is not a yardage-benefit claim.
+Run reviews the narrow dependent candidate; Integration owns combined checks.
+Combo-departure/climb misses from the saved discovery remain a distinct owner
+question, with no departure/CLIMB_EXIT/release change included.
 
 ## Catching: installed perimeter stalk approach — 2026-10-18 UTC
 
