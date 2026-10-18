@@ -1,0 +1,62 @@
+--- a/src/playbook/types.ts
++++ b/src/playbook/types.ts
+@@ -113,8 +113,8 @@
+   aim: 'A' | 'B' | 'C' | 'D' | 'edge';
+   /** Handoff mesh time after snap (s). */
+   meshTime: number;
+-  /** Backside guard / tackle pulls (gap schemes): BSG kicks out or leads, BST leads. */
+-  pullers: Array<'BSG' | 'BST'>;
++  /** Gap pulls: BSG kicks/leads, BST wraps; explicit Counter H tag uses an off-ball H. */
++  pullers: Array<'BSG' | 'BST' | 'H'>;
+   beats: string[];
+ }
+ 
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -560,6 +560,17 @@
+     const pullers = new Set<Agent>();
+     if (concept.pullers.includes('BSG') && bsg) pullers.add(bsg);
+     if (concept.pullers.includes('BST') && bst) pullers.add(bst);
++    const h = sim.slot('H');
++    if (concept.pullers.includes('H')) {
++      if (scheme !== 'counter' || !h || sim.offAlign.spots.H?.inline || !bsg
++        || !pullers.has(bsg) || pullers.has(bst!))
++        throw new Error('Counter GH requires a pulling backside guard and one off-ball H; no tackle pull');
++      pullers.add(h);
++    }
++    // GH installs the H's immediate backer before optional double-team jobs.
++    // GT retains its existing count; these are separately installed calls.
++    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
++    const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper.
+@@ -620,7 +631,6 @@
+     // End man on the line on the playside (kick-out target).
+     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
+     const trapTarget = trapReserved;
+-    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
+     const fb = sim.slot('F');
+     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+     // PULL_STEP (experimental, off): the pull step opens to the play side and
+@@ -636,13 +646,19 @@
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
+         { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
+         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
+       ] : pullPath(p);
++      // An off-ball wrapper already has his entry depth. Do not make him
++      // step toward the line before crossing behind the down wall.
++      if (p === h && concept.pullers.includes('H')) {
++        path[0].x = Math.min(path[0].x, p.pos.x);
++        path[1].x = Math.min(path[1].x, p.pos.x);
++      }
+       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
+     }
+     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {

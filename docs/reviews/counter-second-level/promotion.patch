@@ -1,0 +1,458 @@
+diff --git a/src/playbook/concepts.ts b/src/playbook/concepts.ts
+index 0e09b5f..cce6453 100644
+--- a/src/playbook/concepts.ts
++++ b/src/playbook/concepts.ts
+@@ -117,3 +117,10 @@ export const RUN_CONCEPTS: RunConcept[] = [
+ 
+ export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
+ export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
++
++/** Explicit Counter installations; GH requires an off-ball H.
++ * Kept outside automatic calling until its formation/response coverage is reviewed. */
++export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
++  gt: RUN_BY_ID.counter,
++  gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
++};
+diff --git a/src/playbook/types.ts b/src/playbook/types.ts
+index 584eff1..e9ac31f 100644
+--- a/src/playbook/types.ts
++++ b/src/playbook/types.ts
+@@ -113,8 +113,8 @@ export interface RunConcept {
+   aim: 'A' | 'B' | 'C' | 'D' | 'edge';
+   /** Handoff mesh time after snap (s). */
+   meshTime: number;
+-  /** Backside guard / tackle pulls (gap schemes): BSG kicks out or leads, BST leads. */
+-  pullers: Array<'BSG' | 'BST'>;
++  /** Gap pulls: BSG kicks/leads, BST wraps; explicit Counter H tag uses an off-ball H. */
++  pullers: Array<'BSG' | 'BST' | 'H'>;
+   beats: string[];
+ }
+ 
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index f17e26c..0aef7d8 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -409,6 +409,8 @@ export interface RunBlockPlan {
+   pullPath?: Vec2[];
+   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
+   pullRole?: 'kick' | 'lead' | 'trap';
++  /** Explicit GH installation: first guard/end relationship known at the snap. */
++  pullSurface?: { blocker: Agent; defender: Agent };
+   combination?: Combination;
+   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
+   contactFit?: RunContactSurface & { target: Agent };
+@@ -469,6 +471,8 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
+ }
+ 
+ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
++  if (concept.pullers.includes('H') && concept.scheme !== 'counter')
++    throw new Error('The off-ball H pull tag is installed only for Counter GH');
+   const plans = new Map<Agent, RunBlockPlan>();
+   const ps = playSideSign(sim, concept);
+   const { dl, lb, db } = classify(sim);
+@@ -560,6 +564,19 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+     const pullers = new Set<Agent>();
+     if (concept.pullers.includes('BSG') && bsg) pullers.add(bsg);
+     if (concept.pullers.includes('BST') && bst) pullers.add(bst);
++    const h = sim.slot('H');
++    if (concept.pullers.includes('H')) {
++      if (scheme !== 'counter' || !h || sim.offAlign.spots.H?.inline || !bsg
++        || !pullers.has(bsg) || (bst && pullers.has(bst)) || !sim.offAlign.spots.H || sim.offAlign.spots.H.pos.x > sim.los - 1)
++        throw new Error('Counter GH requires a pulling backside guard and one off-ball H; no tackle pull');
++      pullers.add(h);
++    }
++    // GH installs the H's immediate backer before optional double-team jobs.
++    // GT retains its existing count; these are separately installed calls.
++    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
++    const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
++    if (concept.pullers.includes('H') && !hBacker)
++      throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper.
+@@ -620,7 +637,6 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+     // End man on the line on the playside (kick-out target).
+     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
+     const trapTarget = trapReserved;
+-    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
+     const fb = sim.slot('F');
+     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+     // PULL_STEP (experimental, off): the pull step opens to the play side and
+@@ -636,14 +652,21 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
+         { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
+         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
+       ] : pullPath(p);
++      // An off-ball wrapper already has his entry depth. Do not make him
++      // step toward the line before crossing behind the down wall.
++      if (p === h && concept.pullers.includes('H')) {
++        path[0].x = Math.min(path[0].x, p.pos.x);
++        path[1].x = Math.min(path[1].x, p.pos.x);
++      }
+       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
++      if (p === h && concept.pullers.includes('H') && bsg && emlos) plans.get(p)!.pullSurface = { blocker: bsg, defender: emlos };
+     }
+     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
+       plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
+@@ -733,6 +756,11 @@ export class RunBlocker implements Behavior {
+   /** The puller's last ordinary read, not the defender's current position. */
+   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
+   private pullCleared = false;
++  private nextSurfaceRead = 0;
++  private wrapOutside = false;
++  private wrapCorner: Vec2 | null = null;
++  private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
++  private wrapTrafficAt = 0;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+     flow: Vec2; backer: Perceived } | null = null;
+   /** A personally consumed near-gap emergency, held through the normal beat. */
+@@ -826,11 +854,35 @@ export class RunBlocker implements Behavior {
+     }
+     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
+       if(plan.pullRole==='lead') {
+-        const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+-        if(kick) {
+-          const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+-          plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+-          a.tags.add('wrap-log');
++        if (plan.pullSurface) {
++          // GH follows the first block's acquired surface, not the guard's
++          // private chosen technique. A visible inside wash permits an
++          // outside insertion; it does not certify that the end is secured.
++          if (t >= this.nextSurfaceRead) {
++            this.nextSurfaceRead = t + a.mind.decisionInterval;
++            const guard = plan.pullSurface.blocker, end = plan.pullSurface.defender;
++            const g = sim.see(a, guard), d = sim.see(a, end);
++            this.wrapTrafficAt = t;
++            this.wrapTraffic = sim.offense.filter(b => b !== a && isOL(b)).map(b => {
++              const seen=sim.see(a,b);return {pos:{...seen.pos},vel:{...seen.vel}};
++            });
++            const side = playSideSign(sim, sim.offCall.run!);
++            const reach = guard.profile.radius + end.profile.radius + .1 + guard.player.measurables.armIn / 36 * .45;
++            const joined = Math.hypot(g.pos.x-d.pos.x,g.pos.y-d.pos.y) <= reach;
++            this.wrapOutside ||= joined && (g.pos.y-d.pos.y)*side > .25;
++            if (this.wrapOutside && joined) this.wrapCorner = { x:Math.max(sim.los+.5,g.pos.x+.6),y:g.pos.y+side*1.1 };
++          }
++          if (this.wrapCorner) {
++            plan.pullPath[plan.pullPath.length-1] = {...this.wrapCorner};
++            a.tags.add('wrap-log');
++          }
++        } else {
++          const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
++          if(kick) {
++            const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
++            plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
++            a.tags.add('wrap-log');
++          }
+         }
+       }
+       while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
+@@ -862,7 +914,15 @@ export class RunBlocker implements Behavior {
+         // Progress is measured against the same observed landmark requested
+         // by the feet, rather than a different old snap-coordinate waypoint.
+         if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
+-        if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
++        const nearWall = plan.pullSurface
++          ? this.wrapTraffic.some(p => {
++            // The delivered picture already includes observation age. Carry
++            // only time held since that read, keeping both bodies at this tick.
++            const elapsed=t-this.wrapTrafficAt,x=p.pos.x+p.vel.x*elapsed,y=p.pos.y+p.vel.y*elapsed;
++            return Math.hypot(x-a.pos.x,y-a.pos.y)<1.2 && x>a.pos.x;
++          })
++          : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
++        if (this.pullIdx === 1 && nearWall) {
+           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
+         }
+         const next = plan.pullPath[this.pullIdx+1];
+diff --git a/test/counter-gh.test.ts b/test/counter-gh.test.ts
+new file mode 100644
+index 0000000..dfcb8cb
+--- /dev/null
++++ b/test/counter-gh.test.ts
+@@ -0,0 +1,112 @@
++import {readFileSync} from 'node:fs';
++import {gunzipSync} from 'node:zlib';
++import {describe,expect,it,vi} from 'vitest';
++import {COUNTER_VARIANTS} from '../src/playbook/concepts.js';
++import {RunBlocker} from '../src/sim/behaviors/blocking.js';
++import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
++
++const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/counter-second-level-inputs.json.gz',import.meta.url))).toString()) as {rows:{id:string;setup:PlaySetup}[]};
++function setup(){
++ const s=structuredClone(inputs.rows.find(r=>r.id==='GH01')!.setup);
++ s.offCall.run={...COUNTER_VARIANTS.gh};
++ return s;
++}
++
++describe('explicit Counter GH installation',()=>{
++ it.each([false,true])('installs separate guard kick and H backer without vacating the tackle, flip=%s',flip=>{
++  const s=setup();s.offCall.flip=flip;const sim=new PlaySim(s);
++  const h=sim.slot('H')!,p=(h.behavior as RunBlocker).plan;
++  const pulls=sim.offense.filter(a=>a.behavior instanceof RunBlocker&&a.behavior.plan.kind==='pull');
++  expect(pulls).toHaveLength(2);
++  expect(pullies(pulls)).toEqual(['H',flip?'LG':'RG'].sort());
++  expect(p.pullRole).toBe('lead');expect(p.target).not.toBeNull();
++  expect(p.pullSurface?.blocker.slot).toBe(flip?'LG':'RG');
++  expect((p.pullSurface!.blocker.behavior as RunBlocker).plan.target).toBe(p.pullSurface!.defender);
++  expect(p.pullPath!.slice(0,2).every(w=>w.x<=h.pos.x)).toBe(true);
++  expect(sim.offense.every(a=>!(a.behavior instanceof RunBlocker)||a.behavior.plan.combination?.backer!==p.target)).toBe(true);
++ });
++ function pullies(agents:{slot:string}[]){return agents.map(a=>a.slot).sort();}
++ it('rejects an attached H rather than silently losing the second pull',()=>{
++  const s=setup();s.offCall.formation.slots.H={side:'L',split:'inline',depth:.6};
++  expect(()=>new PlaySim(s)).toThrow('Counter GH requires');
++ });
++ it('rejects three pullers and a missing guard instead of vacating extra work',()=>{
++  for(const pullers of [['BSG','BST','H'],['H']] as const){
++   const s=setup();s.offCall.run!.pullers=[...pullers];expect(()=>new PlaySim(s)).toThrow('Counter GH requires');
++  }
++ });
++ it('rejects an uninstalled all-walked-up count instead of finding hidden free work',()=>{
++  const s=setup();for(const slot of Object.keys(s.defCall.front.slots))if(slot.startsWith('LB'))s.defCall.front.slots[slot as keyof typeof s.defCall.front.slots]!.depth=.9;
++  expect(()=>new PlaySim(s)).toThrow('all-walked-up accounting is not installed');
++ });
++ it('does not silently apply the H tag to another run installation',()=>{
++  const s=setup();s.offCall.run!.scheme='insideZone';expect(()=>new PlaySim(s)).toThrow('installed only for Counter GH');
++ });
++});
++
++/** A staged read through the real production update. Full normal constructor
++ * and acquired history; no movement, contact or future runner state is awarded. */
++function surfaceRead(mirror:boolean,privateLog:boolean,reachable=true,traffic?:'hidden'|'seen'|'clear'){
++ const sim=new PlaySim(setup()),a=sim.slot('H')!,controller=a.behavior as RunBlocker;
++ const p=controller.plan,g=p.pullSurface!.blocker,d=p.pullSurface!.defender,target=p.target!;
++ sim.t=2;sim.world.time=2;
++ a.body.pos=traffic?{x:37.7,y:25.37}:{x:38.1,y:28.12};a.body.vel={x:0,y:2};
++ if(traffic==='seen')sim.slot('LG')!.body.pos={x:38.45,y:25.65};
++ g.body.pos={x:39.8,y:30.2};g.body.vel={x:0,y:0};
++ d.body.pos=reachable?{x:40,y:29.6}:{x:43,y:28};d.body.vel={x:0,y:0};
++ target.body.pos={x:43,y:31};target.body.vel={x:0,y:0};
++ if(privateLog)g.tags.add('block-log');else g.tags.delete('block-log');
++ Reflect.set(controller,'pullIdx',1);
++ if(mirror){
++  for(const b of sim.agents){b.body.pos.y=2*sim.ballY-b.pos.y;b.body.vel.y*=-1;b.body.facing*=-1;}
++  for(const spot of Object.values(sim.offAlign.spots))if(spot)spot.pos.y=2*sim.ballY-spot.pos.y;
++  sim.offAlign.strongSign*=-1;p.drive.y*=-1;
++  for(const w of p.pullPath!)w.y=2*sim.ballY-w.y;
++ }
++ for(let i=0;i<24;i++)sim.perception.record(sim.agents);
++ if(traffic==='hidden')sim.slot('LG')!.body.pos={x:38.45,y:mirror?2*sim.ballY-25.65:25.65};
++ const body=structuredClone(a.body),rng=JSON.stringify(sim.rng);
++ const old=structuredClone(p.pullPath!.at(-1));
++ const command=controller.update(a,sim);
++ expect(a.body).toEqual(body);expect(JSON.stringify(sim.rng)).toBe(rng);
++ expect(a.engagement).toBeNull();expect(sim.world.joints).toHaveLength(0);
++ return {command,corner:p.pullPath!.at(-1),old,target:p.target?.idx};
++}
++
++describe('GH consumes an achieved guard/end picture',()=>{
++ it.each([false,true])('retains the near-wall response only from acquired traffic, mirror=%s',mirror=>{
++  expect(surfaceRead(mirror,false,true,'hidden')).toEqual(surfaceRead(mirror,false,true,'clear'));
++  expect(surfaceRead(mirror,false,true,'seen').command.vel.x).toBeLessThan(0);
++ });
++ it.each([false,true])('ignores the private log tag through production update, mirror=%s',mirror=>{
++  expect(surfaceRead(mirror,true)).toEqual(surfaceRead(mirror,false));
++  const r=surfaceRead(mirror,false);expect(r.corner).not.toEqual(r.old);
++ });
++ it.each([false,true])('does not follow a tagged but unreachable end connection, mirror=%s',mirror=>{
++  const r=surfaceRead(mirror,true,false);expect(r.corner).toEqual(r.old);
++ });
++});
++
++it('carries acquired guard motion between reads instead of retreating from a cleared old position',()=>{
++ const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id==='GH04')!.setup));
++ const h=sim.slot('H')!,controller=h.behavior as RunBlocker,original=controller.update;
++ const stop=new Error('after the real H decision');let visited=false;
++ const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
++  if(s.t<1.4)return original.call(controller,a,s);
++  visited=true;
++  const at=Reflect.get(controller,'wrapTrafficAt') as number;
++  const pictures=Reflect.get(controller,'wrapTraffic') as {pos:{x:number;y:number};vel:{x:number;y:number}}[];
++  const guard=pictures[4];
++  expect(at).toBeCloseTo(1.25,8);
++  expect(guard.pos.x).toBeGreaterThan(a.pos.x);
++  expect(guard.pos.x+guard.vel.x*(s.t-at)).toBeLessThan(a.pos.x);
++  const before=structuredClone(a.body),rng=JSON.stringify(s.rng);
++  const command=original.call(controller,a,s);
++  expect(Math.abs(command.vel.x)).toBeLessThan(.005);expect(command.vel.y).toBeGreaterThan(0);
++  expect(a.body).toEqual(before);expect(JSON.stringify(s.rng)).toBe(rng);
++  throw stop;
++ });
++ let caught:unknown;
++ try{while(sim.phase==='live'&&sim.t<1.5)sim.tick();}catch(e){caught=e;}finally{hook.mockRestore();}
++ expect(visited).toBe(true);expect(caught).toBe(stop);
++});
+diff --git a/test/fixtures/counter-second-level-inputs.json.gz b/test/fixtures/counter-second-level-inputs.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..98d09d1aa62bea358a31a4719989343ef292afae
+GIT binary patch
+literal 10220
+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
+
+literal 0
+HcmV?d00001
+

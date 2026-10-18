@@ -1,0 +1,133 @@
+--- a/src/playbook/concepts.ts
++++ b/src/playbook/concepts.ts
+@@ -117,3 +117,10 @@
+ 
+ export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
+ export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
++
++/** Explicit Counter installations; GH requires an off-ball H.
++ * Kept outside automatic calling until its formation/response coverage is reviewed. */
++export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
++  gt: RUN_BY_ID.counter,
++  gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
++};
+--- a/src/playbook/types.ts
++++ b/src/playbook/types.ts
+@@ -113,8 +113,8 @@
+   aim: 'A' | 'B' | 'C' | 'D' | 'edge';
+   /** Handoff mesh time after snap (s). */
+   meshTime: number;
+-  /** Backside guard / tackle pulls (gap schemes): BSG kicks out or leads, BST leads. */
+-  pullers: Array<'BSG' | 'BST'>;
++  /** Gap pulls: BSG kicks/leads, BST wraps; explicit Counter H tag uses an off-ball H. */
++  pullers: Array<'BSG' | 'BST' | 'H'>;
+   beats: string[];
+ }
+ 
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -560,6 +560,17 @@
+     const pullers = new Set<Agent>();
+     if (concept.pullers.includes('BSG') && bsg) pullers.add(bsg);
+     if (concept.pullers.includes('BST') && bst) pullers.add(bst);
++    const h = sim.slot('H');
++    if (concept.pullers.includes('H')) {
++      if (scheme !== 'counter' || !h || sim.offAlign.spots.H?.inline || !bsg
++        || !pullers.has(bsg) || (bst && pullers.has(bst)) || sim.offCall.formation.slots.H!.depth < 1)
++        throw new Error('Counter GH requires a pulling backside guard and one off-ball H; no tackle pull');
++      pullers.add(h);
++    }
++    // GH installs the H's immediate backer before optional double-team jobs.
++    // GT retains its existing count; these are separately installed calls.
++    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
++    const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper.
+@@ -620,7 +631,6 @@
+     // End man on the line on the playside (kick-out target).
+     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
+     const trapTarget = trapReserved;
+-    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
+     const fb = sim.slot('F');
+     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+     // PULL_STEP (experimental, off): the pull step opens to the play side and
+@@ -636,13 +646,19 @@
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
+         { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
+         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
+       ] : pullPath(p);
++      // An off-ball wrapper already has his entry depth. Do not make him
++      // step toward the line before crossing behind the down wall.
++      if (p === h && concept.pullers.includes('H')) {
++        path[0].x = Math.min(path[0].x, p.pos.x);
++        path[1].x = Math.min(path[1].x, p.pos.x);
++      }
+       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
+     }
+     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
+@@ -836,30 +852,32 @@
+       while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
+       const wp = plan.pullPath[this.pullIdx];
+       if (wp) {
+-        // The wrapper's separate second-level interception is unchanged.
+-        if (plan.pullRole === 'lead' && this.pullIdx > 0 && target
+-          && Math.hypot(target.pos.x-a.pos.x, target.pos.y-a.pos.y) < 1.2) return this.attack(a, sim, target);
+         // Clear the wall with the feet before fitting the moving kick/trap
+         // target. Reaching a waypoint's tolerance does not establish that
+         // clearance, and a penetrator need not pass within an arbitrary
+         // distance of the puller to become relevant work.
+-        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
++        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
+           ? this.readPull(a, sim, target) : null;
+         if (read) {
+           this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
+           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
+           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
+           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
+-          if (this.pullCleared && (approachingDepth < sim.los || distance < 1.2))
++          // The wrapper's existing near-target transition uses the same
++          // acquired picture as its eventual approach, not private live
++          // distance. Preserve the installed track and normal clearance.
++          const fit = plan.pullRole === 'lead' ? distance < 1.2
++            : approachingDepth < sim.los || distance < 1.2;
++          if (this.pullCleared && fit)
+             return this.attack(a, sim, read.target, read.seen);
+         }
+         // Clear the line before turning up; approach the corner under control
+         // so a heavy puller doesn't run through the waypoint and circle back.
+         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+-        let path = read && this.pullCleared ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
++        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+         // Progress is measured against the same observed landmark requested
+         // by the feet, rather than a different old snap-coordinate waypoint.
+-        if (read && this.pullCleared) plan.pullPath[this.pullIdx] = path;
++        if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
+         if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
+           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
+         }
+@@ -981,6 +999,9 @@
+   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
+     const plan = this.plan, t = sim.t;
+     let target = plan.target;
++    // A named wrapper job cannot disappear because of the target's private
++    // live contact. Approach and unavailability use its acquired picture.
++    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
+     // Either member can land first. The covered owner's drive/reach/down
+     // label does not make his partner's contact somebody else's block.
+     // Keep the shared responsibility until the combination read releases it;
+@@ -1078,6 +1099,7 @@
+     const plan = this.plan;
+     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+       ? this.readPull(a, sim, target).seen : sim.see(a,target));
++    if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
+     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
+     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
+       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);

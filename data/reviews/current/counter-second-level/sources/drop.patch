@@ -1,0 +1,11 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -833,7 +833,7 @@
+           a.tags.add('wrap-log');
+         }
+       }
+-      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
++      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<(sim.offCall.run?.scheme === 'counter' && this.pullIdx === 0 ? .15 : .65)) this.pullIdx++;
+       const wp = plan.pullPath[this.pullIdx];
+       if (wp) {
+         // The wrapper's separate second-level interception is unchanged.

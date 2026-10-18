@@ -24,15 +24,16 @@ const rep=e=>({b:e.blocker.idx,d:e.defender.idx,helpers:e.helpers.map(a=>a.idx),
 for(const input of selected){
  assert(performance.now()-started<30000);assert.equal(hash(input.setup),input.inputSha256);
  const sim=new PlaySim(structuredClone(input.setup)),frames=[],cues=[],calls=[];
+ let consumer=null;
  assert(['native','inside','outside','early'].includes(route));
  const routeGoals=new Map();
  const initial=sim.agents.map(a=>({idx:a.idx,slot:a.slot,body:snapshot(a),plan:plan(a),runFit:a.runFit}));
  const pullers=new Set(sim.offense.filter(a=>a.behavior instanceof RunBlocker&&a.behavior.plan.kind==='pull'));
  const see=sim.see.bind(sim);
- sim.see=(a,b,...args)=>{const picture=see(a,b,...args);if(pullers.has(a)||(a.slot.startsWith('LB')&&b.team!==a.team&&(['LT','LG','C','RG','RT','RB','QB'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)))cues.push({t:sim.t,a:a.idx,b:b.idx,picture:structuredClone(picture)});return picture;};
+ sim.see=(a,b,...args)=>{const picture=see(a,b,...args);if(pullers.has(a)||(a.slot.startsWith('LB')&&b.team!==a.team&&(['LT','LG','C','RG','RT','RB','QB'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)))cues.push({t:sim.t,a:a.idx,b:b.idx,consumer,picture:structuredClone(picture)});return picture;};
  for(const a of sim.agents){
   const controller=a.behavior,update=controller.update;
-  controller.update=function(actor,s){const before=plan(a);let command=update.call(this,actor,s);
+  controller.update=function(actor,s){consumer=a.idx;const before=plan(a),entryReadBefore=controller.nextEntryRead??null;let command=update.call(this,actor,s);
     if(route==='early'&&controller instanceof RunBlocker&&controller.plan.kind==='pull'&&controller.plan.pullRole==='lead'&&s.t>=1.4)
       command=controller.attack(a,s,controller.plan.target);
     if(route!=='native'&&route!=='early'&&controller instanceof RunBlocker&&controller.plan.kind==='pull'&&controller.plan.pullRole==='lead'&&s.t>=2.2){
@@ -50,7 +51,7 @@ for(const input of selected){
       command=achieved?controller.attack(a,s,controller.plan.target)
         :goTo(a,goal,{speed:.95,through:2.4});
     }
-    calls.push({t:s.t,a:a.idx,before,after:plan(a),accessRead:controller.pullAccessRead?{...controller.pullAccessRead,target:controller.pullAccessRead.target.idx}:null,surfaceRead:controller.pullSurfaceRead?structuredClone(controller.pullSurfaceRead):null,read:controller.pullRead?{target:controller.pullRead.target.idx,seen:structuredClone(controller.pullRead.seen),clearanceX:controller.pullRead.clearanceX,nextRead:controller.pullRead.nextRead}:null,climbRead:controller.climbRead?{meet:controller.climbRead.meet,seenVel:controller.climbRead.seenVel,attainable:controller.climbRead.attainable}:null,command:structuredClone(command)});return command;};
+    consumer=null;calls.push({t:s.t,a:a.idx,before,after:plan(a),entryReadBefore,entry:{nextRead:controller.nextEntryRead??null,committed:controller.wrapApproach??null},accessRead:controller.pullAccessRead?{...controller.pullAccessRead,target:controller.pullAccessRead.target.idx}:null,surfaceRead:controller.pullSurfaceRead?structuredClone(controller.pullSurfaceRead):null,read:controller.pullRead?{target:controller.pullRead.target.idx,seen:structuredClone(controller.pullRead.seen),clearanceX:controller.pullRead.clearanceX,nextRead:controller.pullRead.nextRead}:null,climbRead:controller.climbRead?{meet:controller.climbRead.meet,seenVel:controller.climbRead.seenVel,attainable:controller.climbRead.attainable}:null,command:structuredClone(command)});return command;};
  }
  const step=sim.world.step.bind(sim.world);
  sim.world.step=(intents,dt)=>{

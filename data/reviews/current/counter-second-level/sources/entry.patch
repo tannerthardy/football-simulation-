@@ -1,0 +1,60 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1,3 +1,4 @@
++import { clearPullEntry } from '../pull-entry.js';
+ /**
+  * Blocking.
+  *
+@@ -733,6 +734,8 @@
+   /** The puller's last ordinary read, not the defender's current position. */
+   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
+   private pullCleared = false;
++  private pullInserting = false;
++  private nextEntryRead = 0;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+     flow: Vec2; backer: Perceived } | null = null;
+   /** A personally consumed near-gap emergency, held through the normal beat. */
+@@ -824,6 +827,16 @@
+       const leaving = this.leaveCombination(a, sim);
+       if (leaving) return leaving;
+     }
++    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target && sim.offCall.run?.scheme === 'counter'
++      && this.pullIdx > 0 && !this.pullInserting && t >= this.nextEntryRead) {
++      this.nextEntryRead = t + a.mind.decisionInterval;
++      const seen = sim.see(a, target);
++      const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
++      const bodies = sim.agents.filter(b => b !== a && b !== target)
++        .map(b => ({ seen: sim.see(a, b), radius: b.profile.radius }));
++      this.pullInserting = clearPullEntry(a.pos, a.profile.radius, seen, strike, bodies, a.mind.decisionInterval);
++    }
++    if (this.pullInserting && target) return this.attack(a, sim, target);
+     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
+       if(plan.pullRole==='lead') {
+         const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+--- /dev/null
++++ b/src/sim/pull-entry.ts
+@@ -0,0 +1,24 @@
++/** A wrapper can start his installed backer approach through a visible opening.
++ * This checks clearance, not future interception or a guaranteed block. */
++import {closestOnSegment, type Vec2} from '../core/vec.js';
++import type {Perceived} from './perception.js';
++
++export interface PullEntryBody {seen: Perceived; radius: number}
++
++export function clearPullEntry(pos: Vec2, radius: number, backer: Perceived,
++  strike: number, bodies: PullEntryBody[], horizon: number): boolean {
++  if (backer.pose === 'down' || backer.pose === 'rising' || backer.pos.x <= pos.x) return false;
++  // Stop the tested corridor at first strike, not beyond the backer. These
++  // pictures already include observation age; advance only the next beat.
++  return [0,horizon].every(dt => {
++    const target={x:backer.pos.x+backer.vel.x*dt,y:backer.pos.y+backer.vel.y*dt};
++    const dx=target.x-pos.x,dy=target.y-pos.y,d=Math.hypot(dx,dy);
++    const scale=Math.max(0,d-strike)/Math.max(d,1e-12);
++    const end={x:pos.x+dx*scale,y:pos.y+dy*scale};
++    return bodies.every(b=>{
++      const point={x:b.seen.pos.x+b.seen.vel.x*dt,y:b.seen.pos.y+b.seen.vel.y*dt};
++      const near=closestOnSegment(point,pos,end).point;
++      return Math.hypot(point.x-near.x,point.y-near.y)>=radius+b.radius;
++    });
++  });
++}
