@@ -1,8 +1,8 @@
 # Current work ownership
 
-## Handbook/reference documentation integration
+## Completed handbook/reference documentation integration
 
-Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
+Integration completed only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Adopted through #144/#145 as914f4d5; original resources preserved and boundary released. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
 
 ## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
 
@@ -25,7 +25,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-Accepted develop is0000e560; original checkouts/branches/evidence remain. Reconcile accepted changes at clean
+The unchanged runtime acceptance is0000e560; accepted develop now914f4d5 adds documentation only. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
