@@ -759,7 +759,8 @@ export class RunBlocker implements Behavior {
   private nextSurfaceRead = 0;
   private wrapOutside = false;
   private wrapCorner: Vec2 | null = null;
-  private wrapTraffic: Vec2[] = [];
+  private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
+  private wrapTrafficAt = 0;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
     flow: Vec2; backer: Perceived } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
@@ -861,7 +862,10 @@ export class RunBlocker implements Behavior {
             this.nextSurfaceRead = t + a.mind.decisionInterval;
             const guard = plan.pullSurface.blocker, end = plan.pullSurface.defender;
             const g = sim.see(a, guard), d = sim.see(a, end);
-            this.wrapTraffic = sim.offense.filter(b => b !== a && isOL(b)).map(b => ({...sim.see(a,b).pos}));
+            this.wrapTrafficAt = t;
+            this.wrapTraffic = sim.offense.filter(b => b !== a && isOL(b)).map(b => {
+              const seen=sim.see(a,b);return {pos:{...seen.pos},vel:{...seen.vel}};
+            });
             const side = playSideSign(sim, sim.offCall.run!);
             const reach = guard.profile.radius + end.profile.radius + .1 + guard.player.measurables.armIn / 36 * .45;
             const joined = Math.hypot(g.pos.x-d.pos.x,g.pos.y-d.pos.y) <= reach;
@@ -911,7 +915,12 @@ export class RunBlocker implements Behavior {
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
         const nearWall = plan.pullSurface
-          ? this.wrapTraffic.some(p => Math.hypot(p.x-a.pos.x,p.y-a.pos.y)<1.2 && p.x>a.pos.x)
+          ? this.wrapTraffic.some(p => {
+            // The delivered picture already includes observation age. Carry
+            // only time held since that read, keeping both bodies at this tick.
+            const elapsed=t-this.wrapTrafficAt,x=p.pos.x+p.vel.x*elapsed,y=p.pos.y+p.vel.y*elapsed;
+            return Math.hypot(x-a.pos.x,y-a.pos.y)<1.2 && x>a.pos.x;
+          })
           : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
         if (this.pullIdx === 1 && nearWall) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };

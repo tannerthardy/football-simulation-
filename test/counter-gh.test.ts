@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {describe,expect,it} from 'vitest';
+import {describe,expect,it,vi} from 'vitest';
 import {COUNTER_VARIANTS} from '../src/playbook/concepts.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
@@ -85,4 +85,28 @@ describe('GH consumes an achieved guard/end picture',()=>{
  it.each([false,true])('does not follow a tagged but unreachable end connection, mirror=%s',mirror=>{
   const r=surfaceRead(mirror,true,false);expect(r.corner).toEqual(r.old);
  });
+});
+
+it('carries acquired guard motion between reads instead of retreating from a cleared old position',()=>{
+ const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id==='GH04')!.setup));
+ const h=sim.slot('H')!,controller=h.behavior as RunBlocker,original=controller.update;
+ const stop=new Error('after the real H decision');let visited=false;
+ const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
+  if(s.t<1.4)return original.call(controller,a,s);
+  visited=true;
+  const at=Reflect.get(controller,'wrapTrafficAt') as number;
+  const pictures=Reflect.get(controller,'wrapTraffic') as {pos:{x:number;y:number};vel:{x:number;y:number}}[];
+  const guard=pictures[4];
+  expect(at).toBeCloseTo(1.25,8);
+  expect(guard.pos.x).toBeGreaterThan(a.pos.x);
+  expect(guard.pos.x+guard.vel.x*(s.t-at)).toBeLessThan(a.pos.x);
+  const before=structuredClone(a.body),rng=JSON.stringify(s.rng);
+  const command=original.call(controller,a,s);
+  expect(Math.abs(command.vel.x)).toBeLessThan(.005);expect(command.vel.y).toBeGreaterThan(0);
+  expect(a.body).toEqual(before);expect(JSON.stringify(s.rng)).toBe(rng);
+  throw stop;
+ });
+ let caught:unknown;
+ try{while(sim.phase==='live'&&sim.t<1.5)sim.tick();}catch(e){caught=e;}finally{hook.mockRestore();}
+ expect(visited).toBe(true);expect(caught).toBe(stop);
 });
