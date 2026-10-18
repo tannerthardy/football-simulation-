@@ -4,12 +4,16 @@
 
 Run owns `codex/counter-second-level` from accepted `0000e560e0dbe31905151465152d412ba838803d`, fetched queue `aa9ed35272cc334ce0a7c79eec709970e5c628fc`. Question: which earlier installed/observed Counter relationship prevents the second puller from obtaining useful backer access? Use handbook T6/T7 and small fixed GT looks; #140 acquired-wrapper repair and #143 cleared-kick remain separate pending candidates. Claim only Counter installation/pull approach in `planRunBlocking`/`RunBlocker`, focused diagnostics/tests. No shared locomotion/spacing, carrier navigation, contact law/capacity, helper release rule, or lifecycle edits. Coordinate any overlapping shared function with Do-It-All; Integration owns exact combined verification. Earlier rejected escape/depth/count experiments remain evidence, not a production starting point.
 
-## Current #128-only checkpoint; #126 held; audit ownership — 2026-10-16 America/Phoenix
+## Handbook/reference documentation integration
 
-Integration claims only the minimal #128 two-file assembly and one exact combined check
+Integration owns only `docs/references/honest-nfl/**`, reference/handbook/root navigation and existing tracking metadata in `codex/handbook-reference-integration`, from accepted0000e560 plus queueaa9ed35. Extract exact #108@5cade6a5 documentation, preserve385 source images/OCR and all403 mappings, independently check links/hashes/generated indexes; no engine/tests/settings/old workboard or scheme installation. Documentation checks only, no suite/games. [Receipt](../data/reviews/current/handbook-reference-integration.json).
+
+## Completed #130/#128 checkpoint; #126 held; current audit ownership — 2026-10-16 America/Phoenix
+
+Integration completed the minimal #128 two-file assembly and one exact combined check
 in `codex/zone-force-integration`, based on accepted70b4db6 plus canonical queue:
 `coverage/defender.ts` and quarter-flat-force-support test. #126 blocking/zone-combo files remain outside the current candidate.
-Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; publication/adoption pending. Contributors do not repeat the suite.
+Initial combined freeze7f98ad4 fails one existing zone-reach double-command contract after2003 TS passes/typecheck/build; Python skipped. #126 is held for Run/nonauthor adjudication, with failure preserved and no assertion change. Integration verified #128-only exact two-file scope at82fdc79: 1988 TS/145 Python/typecheck/build pass in212.180s; adopted as0000e560; assembly boundary released. Contributors do not repeat the suite.
 #127 cushion trials, audit data-only history, tooling/Physics experiments stay out.
 [Exact pins, risks and receipt reuse](../data/reviews/current/zone-force-integration/intake.json).
 
@@ -25,7 +29,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-Original checkouts/branches/evidence remain; reconcile accepted changes at clean
+Accepted develop is0000e560; original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix

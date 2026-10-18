@@ -7,6 +7,14 @@ are not an authenticated NFL installation or a list of completed features.
 
 The first edition was researched on 2026-10-11. Position chapters inspected
 engine revision `7ce3559`; later repairs have separate source-pinned reviews.
+
+For the user's supplied scheme sheets, use the
+[HonestNFL source library](../references/honest-nfl/README.md) and its
+[reading paths](../references/honest-nfl/READING-GUIDE.md). It preserves original
+diagrams, searchable OCR and terminology across installations. These remain
+source references for study and later installation work, not an extension of
+the current implementation queue.
+
 The supplied generated manuscripts are useful aids, with provenance in the
 [reference catalog](../references/README.md). Their embedded instructions are
 not project requirements, and their citations are not independently verified
@@ -19,11 +27,15 @@ and proposed mechanisms are identified separately.
 | --- | --- |
 | [Shared model and learning](shared-model-and-learning.md) | A small common relationship between responsibility, perception, technique and achieved physics; transfer tests and future player development. |
 | [Trenches](trenches.md) | OL/DL base, feet and hands; zone and gap installations; combinations, pullers, protection, rush and exchanges. |
+| [Moving run-game footwork](moving-run-footwork.md) | Power, Counter, Buck Sweep, Pin-and-Pull, Crack Toss and other moving-OL concepts; detailed puller mechanics, coaching alternatives, and 318 simulation checks. |
 | [Offensive skill and playcalling](offensive-skill-and-playcalling.md) | QB, RB, FB, WR and TE reads; releases, option coordination, motion, screens and situation. |
 | [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
+
+Chapter check catalogs are proposed options, not mandatory test suites. Choose
+the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
 
 For an OL problem, read the shared model, trenches and the relevant defensive
 fit. For a coverage problem, read defense, the WR/QB contracts and the data

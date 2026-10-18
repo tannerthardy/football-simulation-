@@ -1,0 +1,141 @@
+# HNFL-092 — Quarters techniques — inside quarter
+
+[Original image](../../images/coverage/hnfl-092-quarters-techniques-inside-quarter.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Inside-quarter safety route reactions
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Match #2 upfield, zone/squeeze #1 when #2 cancels, with possible nail-down triggers. The route fan is a technique chart.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match)
+
+Original archive path(s): `HonestNFL/HDQz9DFWkAA80jk.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+@& QUARTERS TECHNIQUES -— “INSIDE QUARTERS” (INSIDE 1/4) &
+
+RED ROUTES = TOP-DOWN ON #2
+
+“INSIDE QUARTERS” (INSIDE 1/4) |S A MATCH TECHNIQUE IN WHICH
+
+THE SAFETY IS RESPONSIBLE FOR MATCHING #2 WITH VERTICAL
+
+BLUE ROUTES = ZONE THE 1/4, SEE #1
+
+©
+
+BLACK ROUTES = POSSIBLE NAIL DOWN
+
+SEPARATION ON ANY UPFIELD ROUTE. IF #2 CANCELS, ZONE THE 1/4
+
+AND LOOK TO SQUEEZE #1.
+
+*
+
+IF A “CHINA” CALL IS MADE BY THE CORNER, PLAY #2 FROM
+
+THEIR TOP SHOULDER INSIDE AND SUFFOCATE THE CATCH
+
+POINT WITH THE CORNER. PATTERN READ FOR #2 = THINK
+
+OO
+
+CORNER ~ SEAMIFADE > POST - BASIC (PRIORITIZED IN
+
+THAT ORDER).
+
+e
+
+NO COVER Z0NE
+
+&
+
+%s
+
+IF “IN” CALL IS MADE BY THE NICKEL, ZONE THE 1/4 AND
+
+SHIFT FOCUS TO #1. PROTECT AGAINST THE POTENTIAL
+
+INSIDE BREAKS BY #1 SO THE CORNER CAN BE MORE
+
+AGGRESSIVE TO THE CATCH POINT. KNOW WHERE #3 IS IN
+
+THE DISTRIBUTION IN ORDER TO MAKE THE MOST
+
+EDUCATED PATTERN READ ON #1 -- PLAY IT WITH A POST >
+
+CURL ~ BASIC MINDSET.
+
+*
+
+ALIGN RELATIVE TO #2 IN A QUARTERS ALIGNMENT, WHICH IS
+
+HEAD-UP FROM 12-14 YARDS DEEP. PRE-SNAP DISGUISE OF OUR
+
+INTENTIONS ARE ENCOURAGED AS MUCH AS IS REASONABLY
+
+POSSIBLE, BUT ALWAYS BE WHERE YOU NEED TO BE AT THE
+
+SNAP.
+
+*
+
+KEY #21 WITH AWARENESS OF #3. KEYING THE ROUTE OF #2 IN
+
+A 2x2 FORMATION CAN HELP INFORM WHAT ROUTES TO EXPECT
+
+BY #1 AND HOW TO PLAY IT BEST.
+
+oo
+
+IF A DETACHED #2 IS FAST TO THE FLAT, WE CAN REASONABLY
+
+INFER THAT #1 WILL BE RUNNING SOME FORM OF HANK. MUST
+
+ALWAYS BE ALERT FOR A DOUBLE MOVE INTO A POST + WHEEL
+
+COMBO.
+
+%
+
+%
+
+Se
+
+IF #2 RUNS A CLEAROUT UP THE SEAM AND #1 IS ALSO RUNNING
+
+DEEP, WE CAN REASONABLY INFER THAT #1 WILL BE RUNNING
+
+SOME FORM OF IN-BREAKER IN A VOID ATTACKER CONCEPT.
+
+t
+
+%
+
+se
+
+IF #2 STAYS #2 AND FAILS TO CLEAR THE NO COVER ZONE, WE
+
+CAN REASONABLY INFER THAT #1 WILL BE RUNNING SOME
+
+FORM OF IN-BREAK ABOVE THE LB LEVEL IN ORDER TO
+
+STRETCH THE 1/4 FLAT DEFENDER.
+
+POSSIBLE “ZONE IT” CALL BETWEEN CORNER & SAFETY
+
+*
+
+KNOW THE STRESS POINTS OF THE TECHNIQUE!
+
+VS. DEEP EXCHANGES (SNAKES/SCISSORS) IN ORDER TO
+
+MAINTAIN GREAT DEPTH & LEVERAGE ON BOTH ROUTES
+
+*
+
+BY FORMATION, CAN ALSO “SHOVE” ACROSS IF #2 CANCELS.
+```
