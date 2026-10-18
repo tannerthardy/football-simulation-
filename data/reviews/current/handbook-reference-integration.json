@@ -1,6 +1,6 @@
 {
   "schema": "handbook-reference-integration-v1",
-  "acceptedBase": "0000e560e0dbe31905151465152d412ba838803d",
+  "acceptedBase": "a32e6b13da3f7b6a34af09bcb936a8b4e238ab79",
   "sourcePr": 108,
   "reviewedPublication": "5cade6a5e05bc6ff4232623b22be565ec462c15c",
   "originalImport": "0f81f9a1efb260c2ee4880ab3233a07eca40f5d4",
@@ -19,5 +19,7 @@
   "engineExecutions": 0,
   "sharedSuiteRuns": 0,
   "games": 0,
-  "referenceCheckSeconds": 5.476358882966451
+  "referenceCheckSeconds": 5.476358882966451,
+  "priorRuntimeAcceptedDevelop": "0000e560e0dbe31905151465152d412ba838803d",
+  "pullingGuardHandbook": "PR144 already adopted; moving-run-footwork.md and index row preserved exactly"
 }
