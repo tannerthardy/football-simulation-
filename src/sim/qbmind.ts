@@ -512,12 +512,16 @@ export class QBMind {
     }
     const box = boxL + boxR;
     const blockersOn = (sign: number) =>
-      sim.offense.filter((o) => {
+      sim.offense.reduce((count, o) => {
         const sp = sim.offAlign.spots[o.slot];
-        if (!sp || o === sim.qb) return false;
-        if (['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) return Math.sign(sp.pos.y - by) === sign || o.slot === 'C';
-        return (sp.inline || o.slot === 'FB') && Math.sign(sp.pos.y - by) === sign;
-      }).length;
+        if (!sp || o === sim.qb) return count;
+        const side = Math.sign(sp.pos.y - by);
+        if (['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) return count + Number(side === sign || o.slot === 'C');
+        // The installed backfield fullback is F. A centered lead contributes
+        // half to either side, one total; his actual block still has to work.
+        if (o.slot === 'F' && sp.backfield) return count + (side === 0 ? .5 : Number(side === sign));
+        return count + Number(!!sp.inline && side === sign);
+      }, 0);
     const blkL = blockersOn(1) - 0.5; // the center counts half to each side
     const blkR = blockersOn(-1) - 0.5;
     const blockers = blkL + blkR;
