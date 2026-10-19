@@ -1,0 +1,578 @@
+{
+  "reviewed": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+  "accepted": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "packet": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceSha256": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+  "protectedSha256": "eb2c7a69a8b8ccaa5cea2499457d635f8c2ead897191b1e8d4e5161cfecbfa68",
+  "archiveMatchesPinnedSource": true,
+  "filesUnchanged": true,
+  "results": [
+    {
+      "name": "support-off",
+      "file": "test/support-work-off.test.ts",
+      "selection": "contradictory|holds the target mode|uncertain/negative|hidden possession changes",
+      "command": [
+        "/workspace/.tools/node22/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "core",
+        "--maxWorkers=1",
+        "test/support-work-off.test.ts",
+        "-t",
+        "contradictory|holds the target mode|uncertain/negative|hidden possession changes",
+        "--reporter=verbose",
+        "--reporter=json",
+        "--outputFile.json=/workspace/football-simulation-/out/shed-pursue-review/support-off.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.436387786,
+      "settings": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "counts": {
+        "numTotalTests": 17,
+        "numPassedTests": 5,
+        "numFailedTests": 0,
+        "numPendingTests": 12
+      },
+      "assertions": [
+        {
+          "name": "support players work off toward a personally declared carrier force support can try beyond the old proximity trigger, side -1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier force support can try beyond the old proximity trigger, side 1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier insert support can try beyond the old proximity trigger, side -1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier insert support can try beyond the old proximity trigger, side 1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains the force shoulder before the existing advanced-carrier boundary",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from uncertain/negative possession undefined",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from uncertain/negative possession false",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier an unadvanced picture does not erase unsure belief",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier an unadvanced picture does not erase pass belief",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier keeps first-level stack work until its existing close-threat trigger",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier holds the target mode with the selected aim until the next ordinary read",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not use a hidden change in carrier position or velocity with fixed acquired evidence",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains the acquired back target when hidden possession changes without a new picture",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from contradictory QB and back possession pictures",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains an ordinary mesh or PA picture with a carrying QB deep and empty back",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier can work off toward a personally acquired advanced QB despite opposite hidden possession",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier executes attempted work-off through unchanged arm/support/work budgets",
+          "status": "skipped",
+          "failureMessages": []
+        }
+      ],
+      "consoleLog": "\n RUN  v3.2.4 /workspace/football-simulation-/out/shed-pursue-review/research\n\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > force support can try beyond the old proximity trigger, side -1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > force support can try beyond the old proximity trigger, side 1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > insert support can try beyond the old proximity trigger, side -1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > insert support can try beyond the old proximity trigger, side 1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains the force shoulder before the existing advanced-carrier boundary\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from uncertain/negative possession undefined 24ms\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from uncertain/negative possession false 6ms\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > an unadvanced picture does not erase unsure belief\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > an unadvanced picture does not erase pass belief\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > keeps first-level stack work until its existing close-threat trigger\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > holds the target mode with the selected aim until the next ordinary read 7ms\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not use a hidden change in carrier position or velocity with fixed acquired evidence\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains the acquired back target when hidden possession changes without a new picture 12ms\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from contradictory QB and back possession pictures 4ms\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains an ordinary mesh or PA picture with a carrying QB deep and empty back\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > can work off toward a personally acquired advanced QB despite opposite hidden possession\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > executes attempted work-off through unchanged arm/support/work budgets\n\n Test Files  1 passed (1)\n      Tests  5 passed | 12 skipped (17)\n   Start at  03:25:21\n   Duration  1.87s (transform 1.10s, setup 0ms, collect 1.43s, tests 53ms, environment 0ms, prepare 105ms)\n\nJSON report written to /workspace/football-simulation-/out/shed-pursue-review/support-off.json\n",
+      "consoleLogSha256": "1d7aa1352869b5953a218b17858f3f6aa4b228bd49763d82f779c384229b035b"
+    },
+    {
+      "name": "support-on",
+      "file": "test/support-work-off.test.ts",
+      "selection": "contradictory|holds the target mode|uncertain/negative|hidden possession changes",
+      "command": [
+        "/workspace/.tools/node22/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "core",
+        "--maxWorkers=1",
+        "test/support-work-off.test.ts",
+        "-t",
+        "contradictory|holds the target mode|uncertain/negative|hidden possession changes",
+        "--reporter=verbose",
+        "--reporter=json",
+        "--outputFile.json=/workspace/football-simulation-/out/shed-pursue-review/support-on.json"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 2.1319484170000007,
+      "settings": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "counts": {
+        "numTotalTests": 17,
+        "numPassedTests": 3,
+        "numFailedTests": 2,
+        "numPendingTests": 12
+      },
+      "assertions": [
+        {
+          "name": "support players work off toward a personally declared carrier force support can try beyond the old proximity trigger, side -1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier force support can try beyond the old proximity trigger, side 1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier insert support can try beyond the old proximity trigger, side -1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier insert support can try beyond the old proximity trigger, side 1",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains the force shoulder before the existing advanced-carrier boundary",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from uncertain/negative possession undefined",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from uncertain/negative possession false",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier an unadvanced picture does not erase unsure belief",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier an unadvanced picture does not erase pass belief",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier keeps first-level stack work until its existing close-threat trigger",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier holds the target mode with the selected aim until the next ordinary read",
+          "status": "failed",
+          "failureMessages": [
+            "AssertionError: expected 1.9399029383852175 to be +0 // Object.is equality\n    at /workspace/football-simulation-/out/shed-pursue-review/research/test/support-work-off.test.ts:64:35\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)\n    at runTest (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at runSuite (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)\n    at runSuite (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)"
+          ]
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not use a hidden change in carrier position or velocity with fixed acquired evidence",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains the acquired back target when hidden possession changes without a new picture",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier does not expand work-off from contradictory QB and back possession pictures",
+          "status": "failed",
+          "failureMessages": [
+            "AssertionError: expected 1.9299029383852175 to be +0 // Object.is equality\n    at /workspace/football-simulation-/out/shed-pursue-review/research/test/support-work-off.test.ts:86:35\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26\n    at file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)\n    at runTest (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at runSuite (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)\n    at runSuite (file:///workspace/football-simulation-/out/shed-pursue-review/research/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)"
+          ]
+        },
+        {
+          "name": "support players work off toward a personally declared carrier retains an ordinary mesh or PA picture with a carrying QB deep and empty back",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier can work off toward a personally acquired advanced QB despite opposite hidden possession",
+          "status": "skipped",
+          "failureMessages": []
+        },
+        {
+          "name": "support players work off toward a personally declared carrier executes attempted work-off through unchanged arm/support/work budgets",
+          "status": "skipped",
+          "failureMessages": []
+        }
+      ],
+      "consoleLog": "\n RUN  v3.2.4 /workspace/football-simulation-/out/shed-pursue-review/research\n\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > force support can try beyond the old proximity trigger, side -1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > force support can try beyond the old proximity trigger, side 1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > insert support can try beyond the old proximity trigger, side -1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > insert support can try beyond the old proximity trigger, side 1\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains the force shoulder before the existing advanced-carrier boundary\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from uncertain/negative possession undefined 29ms\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from uncertain/negative possession false 8ms\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > an unadvanced picture does not erase unsure belief\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > an unadvanced picture does not erase pass belief\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > keeps first-level stack work until its existing close-threat trigger\n \u00d7 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > holds the target mode with the selected aim until the next ordinary read 19ms\n   \u2192 expected 1.9399029383852175 to be +0 // Object.is equality\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not use a hidden change in carrier position or velocity with fixed acquired evidence\n \u2713 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains the acquired back target when hidden possession changes without a new picture 8ms\n \u00d7 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from contradictory QB and back possession pictures 4ms\n   \u2192 expected 1.9299029383852175 to be +0 // Object.is equality\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > retains an ordinary mesh or PA picture with a carrying QB deep and empty back\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > can work off toward a personally acquired advanced QB despite opposite hidden possession\n \u2193 |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > executes attempted work-off through unchanged arm/support/work budgets\n\n Test Files  1 failed (1)\n      Tests  2 failed | 3 passed | 12 skipped (17)\n   Start at  03:25:24\n   Duration  1.61s (transform 979ms, setup 0ms, collect 1.29s, tests 73ms, environment 0ms, prepare 67ms)\n\nJSON report written to /workspace/football-simulation-/out/shed-pursue-review/support-on.json\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af\n\n FAIL  |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > holds the target mode with the selected aim until the next ordinary read\nAssertionError: expected 1.9399029383852175 to be +0 // Object.is equality\n\n- Expected\n+ Received\n\n- 0\n+ 1.9399029383852175\n\n \u276f test/support-work-off.test.ts:64:35\n     62|   const f=scene();f.setCue({pos:{x:39,y:CENTER_Y+6}});f.command();\n     63|   f.setCue({pos:{x:43,y:CENTER_Y+6}});f.sim.t+=.01;f.command();\n     64|   expect(f.engagement.nextMoveAt).toBe(0);\n       |                                   ^\n     65|   f.sim.t+=f.defender.mind.decisionInterval+.01;f.command();\n     66|   expect(f.engagement.nextMoveAt).toBeGreaterThan(f.sim.t);\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[1/2]\u23af\n\n FAIL  |core| test/support-work-off.test.ts > support players work off toward a personally declared carrier > does not expand work-off from contradictory QB and back possession pictures\nAssertionError: expected 1.9299029383852175 to be +0 // Object.is equality\n\n- Expected\n+ Received\n\n- 0\n+ 1.9299029383852175\n\n \u276f test/support-work-off.test.ts:86:35\n     84|  it('does not expand work-off from contradictory QB and back possessio\u2026\n     85|   const f=scene();f.setQBCue({carrying:true});f.command();\n     86|   expect(f.engagement.nextMoveAt).toBe(0);\n       |                                   ^\n     87|  });\n     88| \n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[2/2]\u23af\n\n",
+      "consoleLogSha256": "17515882f8fab66dbc096789d89cb9365233a5488093eb1b037afbf609349770"
+    },
+    {
+      "name": "author-contracts",
+      "file": "test/shed-pursue.test.ts",
+      "selection": null,
+      "command": [
+        "/workspace/.tools/node22/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "core",
+        "--maxWorkers=1",
+        "test/shed-pursue.test.ts",
+        "--reporter=verbose",
+        "--reporter=json",
+        "--outputFile.json=/workspace/football-simulation-/out/shed-pursue-review/author-contracts.json"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.1703279309999997,
+      "settings": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "counts": {
+        "numTotalTests": 2,
+        "numPassedTests": 2,
+        "numFailedTests": 0,
+        "numPendingTests": 0
+      },
+      "assertions": [
+        {
+          "name": "SHED_PURSUE lets the same blocker re-latch a passed defender at once only when off",
+          "status": "passed",
+          "failureMessages": []
+        },
+        {
+          "name": "SHED_PURSUE works off toward a runner past the line beyond close range, not before he crosses",
+          "status": "passed",
+          "failureMessages": []
+        }
+      ],
+      "consoleLog": "\n RUN  v3.2.4 /workspace/football-simulation-/out/shed-pursue-review/research\n\n \u2713 |core| test/shed-pursue.test.ts > SHED_PURSUE > lets the same blocker re-latch a passed defender at once only when off 50ms\n \u2713 |core| test/shed-pursue.test.ts > SHED_PURSUE > works off toward a runner past the line beyond close range, not before he crosses 53ms\n\n Test Files  1 passed (1)\n      Tests  2 passed (2)\n   Start at  03:25:26\n   Duration  1.64s (transform 964ms, setup 0ms, collect 1.24s, tests 104ms, environment 0ms, prepare 79ms)\n\nJSON report written to /workspace/football-simulation-/out/shed-pursue-review/author-contracts.json\n",
+      "consoleLogSha256": "eb476da1c15bc69dfd790d62ccc7285d409e9568bedfd69e4ad2be26d6cad9a8"
+    }
+  ],
+  "schemaVersion": 1,
+  "kind": "independent-shed-pursue-review",
+  "recordedAtUtc": "2026-10-19T03:28:31.116183+00:00",
+  "decisions": {
+    "runtimeIntentGate": "HOLD as written: contradictory acquisition and held-mode controls fail",
+    "runnerPassedCooldown": "HOLD: administrative ending does not establish a shed",
+    "acceptedRuntimeHunks": [],
+    "acceptedTestHunks": [
+      "test/shed-pursue.test.ts:37-44, positive/pre-LOS control for revised proposal"
+    ],
+    "noActivationOrDefaultChange": true
+  },
+  "scope": {
+    "worldSteps": 0,
+    "nativeSnaps": 0,
+    "games": 0,
+    "sharedSuiteRuns": 0,
+    "selectedUniqueTests": 7,
+    "selectedTestExecutions": 12,
+    "passedExecutions": 10,
+    "failedExecutions": 2,
+    "focusedCommandSeconds": 6.738664134
+  },
+  "setup": {
+    "node": "v22.23.3 official archive checked against official SHA256 list",
+    "npmCiFirst": "failed: unavailable default cache /home/agent/.npm/_cacache",
+    "npmCiRetry": "passed: npm ci --no-audit --no-fund --cache /workspace/.cache/shed-review-npm; unchanged lockfile and integrity checks",
+    "testsDependOnNoSetupSourceChanges": true
+  },
+  "reviewedFiles": [
+    {
+      "path": "src/sim/engagement.ts",
+      "sha256": "0b11b0411ed0915b42bbd7feb9fb50247b8c5e4f23cbe8e93efd9283d444b801",
+      "bytes": 71459
+    },
+    {
+      "path": "src/sim/playsim.ts",
+      "sha256": "053dd6ecd4fd43c475d88f9a64dfa65635c9523f9d6030b3ecb40bdf4e21a6b2",
+      "bytes": 40542
+    },
+    {
+      "path": "src/sim/perception.ts",
+      "sha256": "c3ac1392222789fd8dd597b0f151588f3eda6b15c8e8841113af670216df232e",
+      "bytes": 3461
+    },
+    {
+      "path": "config/baseline.json",
+      "sha256": "b1a0cb7236f57a8437cbcae9bc0802976a5cbc39249add33728a40dc174286a9",
+      "bytes": 2193
+    },
+    {
+      "path": "test/support-work-off.test.ts",
+      "sha256": "7c548368f4e9afcfe0bd579e4214e45e45926a0c7d93834989cd637d476e9d66",
+      "bytes": 5768
+    },
+    {
+      "path": "test/shed-pursue.test.ts",
+      "sha256": "523a8549011917c9d0f10481c1b30d2bd36133a4658e7e8f5d1e758d615e2805",
+      "bytes": 2374
+    },
+    {
+      "path": "test/run-shed.test.ts",
+      "sha256": "dbe70c12f6da5ae6f760c5fea6dbf0facdd4ae722ee14a345d26f3f812e56e19",
+      "bytes": 1654
+    },
+    {
+      "path": "test/run-contact-span.test.ts",
+      "sha256": "d95b2e560b271e3a7ebc9c76e4d7061c9f5c8f622ecaf2208cc40e1693ff07b6",
+      "bytes": 5095
+    },
+    {
+      "path": "scripts/diag/run-contact-technique.ts",
+      "sha256": "f753dcdfa82d4a1d036ae81811208d25621320a2b7bc981a03985d9ca0d7e08b",
+      "bytes": 9144
+    },
+    {
+      "path": "scripts/diag/stretch/relatch.ts",
+      "sha256": "e16d066472e1e84a6360853522c1deeb61ed626eb7cf2f477d5a499b5e4b32f8",
+      "bytes": 2984
+    },
+    {
+      "path": "docs/reviews/run-game-v3/part3.txt",
+      "sha256": "25735ac5d6e21433c76b8dbe240e38b0251acc10478fdc3a592569b012f32b61",
+      "bytes": 37920
+    },
+    {
+      "path": "docs/reviews/run-game-v3.md",
+      "sha256": "c164ca672bbbf30d05c9591ba1ce142fc9116aaceeb70b9f2e53dbff020de93a",
+      "bytes": 31858
+    }
+  ]
+}

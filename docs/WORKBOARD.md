@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Completed SHED_PURSUE independent contact review — 2026-10-19 UTC
+
+Physics reviewed only `docs/reviews/shed-pursue-independent-review.md`, its compact
+review receipt and this ownership entry on `codex/shed-pursue-review`, from accepted
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`. Review #153 at `1c578afb38f2eb6fc4886639e63fccc4e79c4354`
+against packet `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`: disposition acquired
+post-LOS shed intent separately from administrative runner-passed re-grab lockout.
+Both runtime hunks HOLD as written: intent bypasses accepted unique-possession
+and held-mode contracts; administrative exit does not earn a re-grab prohibition.
+Seven unique focused controls/12 executions:10 pass,2 fail,6.739s; no World
+advance, runtime/test/settings edit, activation, shared suite or new native/lab/game
+collection. Boundary released; author and Integration retain their own files.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
