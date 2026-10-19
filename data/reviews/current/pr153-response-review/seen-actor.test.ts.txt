@@ -1,0 +1,33 @@
+import {afterEach,expect,it,vi} from 'vitest';
+afterEach(()=>{vi.unstubAllEnvs();vi.resetModules();});
+it('keeps current acquired RB identity after a remembered mesh contradiction',async()=>{
+ vi.stubEnv('LB_KEY','1');vi.resetModules();
+ const {Rng}=await import('../src/core/rng.js');
+ const {generateTeam,pickOffense,pickDefense}=await import('../src/league/team.js');
+ const {FORMATION_BY_ID}=await import('../src/playbook/formations.js');
+ const {RUN_BY_ID}=await import('../src/playbook/concepts.js');
+ const {FRONT_BY_ID,COVERAGE_BY_ID}=await import('../src/playbook/defense.js');
+ const {PlaySim}=await import('../src/sim/playsim.js');
+ function scene(retired:boolean){
+  const formation=FORMATION_BY_ID.ace_11;
+  const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(31),'O','O',{strength:.55}),formation.personnel),defense:pickDefense(generateTeam(new Rng(32),'D','D',{strength:.55}),'base43'),offCall:{formation,kind:'run',run:RUN_BY_ID.iz_strong,flip:false,label:'Observer identity'},defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,zoneStyle:'spot',pressure:null,label:'Over'},los:40,ballY:26.67,firstDownX:50,seed:3,record:false});
+  const a=sim.slot('LB_M')!,rb=sim.slot('RB')!,qb=sim.qb;
+  a.body.pos={x:44.1,y:sim.ballY};a.body.vel={x:0,y:0};
+  a.runFit={gap:'A',side:-1,kind:'insert',technique:'attack',edge:'spill',pace:'stack'};
+  expect(a.behavior.kind).toBe('zone');a.recog!.read='run';
+  Object.defineProperty(a.mind,'placementError',{get:()=>0});
+  let rbCue={pos:{x:41,y:sim.ballY},vel:{x:0,y:0},facing:0,stance:null,age:.2,pose:'up' as const,carrying:false as boolean};
+  const qbCue={pos:{x:36,y:sim.ballY},vel:{x:0,y:0},facing:0,stance:null,age:.2,pose:'up' as const,carrying:true};
+  const see=sim.see.bind(sim);sim.see=(observer,target,delay)=>target===rb?structuredClone(rbCue):target===qb?structuredClone(qbCue):see(observer,target,delay);
+  if(retired){sim.t=.8;a.behavior.update(a,sim);}
+  // A later legitimate RB possession can follow a QB fumble/recovery.
+  // This fixture stages personally interpreted pictures, not a native ending.
+  // Both arms now supply the same carrying RB picture and free physical state.
+  sim.t=3.2;sim.ball={kind:'held',carrier:rb};
+  rbCue={...rbCue,pos:{x:36,y:sim.ballY+1.5},vel:{x:1,y:.5},carrying:true};
+  a.tags.clear();const command=a.behavior.update(a,sim);
+  return{retired,flow:a.tags.has('fit-flow-read'),vel:command.vel};
+ }
+ const control=scene(false),remembered=scene(true);console.log(JSON.stringify({control,remembered}));
+ expect(control.flow).toBe(true);expect(remembered.flow).toBe(true);
+});

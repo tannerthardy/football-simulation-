@@ -1,5 +1,10 @@
 # Independent Run/controller review of #153
 
+Follow-up at`8d3c41f2`: see the [response review](pr153-run-controller-response-review.md).
+The dispositions below preserve the original`1c578afb` review. The follow-up
+recognizes repaired contracts, corrects the under-center dependency assessment,
+and records one remaining actor-identity defect.
+
 **Do not promote the package. No proposed changed runtime scope is accepted for
 extraction at this pin.** The scheduling idea is reasonable, but its independent
 football evidence is incomplete. Two specific experimental defects can already

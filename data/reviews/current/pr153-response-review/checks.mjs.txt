@@ -1,0 +1,16 @@
+import {createHash} from 'node:crypto';
+import {readdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync,execFileSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {environment,profile} from './snapshot/scripts/baseline.mjs';
+const root=resolve('out/pr153-response-review'),snapshot=resolve(root,'snapshot');
+const files=(d,p='')=>readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(resolve(d,e.name),p+e.name+'/'):[p+e.name]).sort();
+const hash=()=>{const h=createHash('sha256');for(const f of files(resolve(snapshot,'src')))h.update('src/'+f).update('\0').update(readFileSync(resolve(snapshot,'src',f))).update('\0');return h.digest('hex')};
+const source=hash(),results=[];
+const run=(name,tests,filter)=>{const args=[resolve(snapshot,'node_modules/vitest/vitest.mjs'),'run','--root',snapshot,'--project','core','--maxWorkers=1',...tests,...(filter?['-t',filter]:[])];const start=performance.now();const r=spawnSync(process.execPath,args,{cwd:snapshot,env:environment(process.env),encoding:'utf8'});writeFileSync(resolve(root,name+'.log'),r.stdout+r.stderr);const result={name,sourceSha256:hash(),command:[process.execPath,...args],seconds:(performance.now()-start)/1000,exitCode:r.status};results.push(result);console.log(JSON.stringify(result));console.log((r.stdout+r.stderr).slice(-4500));};
+run('repairs',['test/pr153-review-contracts.test.ts','test/run-game-flags.test.ts'],'ZONE_TE end level|preserves the under-center draw|MESH_TEMPO alone preserves installed|retains acquired failed-exchange|LB_KEY does not invent');
+const file=resolve(snapshot,'src/sim/behaviors/blocking.ts'),original=readFileSync(file,'utf8');
+const guard='    if (ZONE_TE && !isOL(a) && (seen.pos.x - a.pos.x) * dir < bodyContact) return null;';
+if(original.split(guard).length!==2)throw Error('Expected exact one-line TE repair.');
+try{writeFileSync(file,original.replace(guard,''));run('te-guard-rollback',['test/run-game-flags.test.ts'],'ZONE_TE end level');}finally{writeFileSync(file,original);}
+writeFileSync(resolve(root,'checks.json'),JSON.stringify({submission:'8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055',runtime:'76252fa9',base:'f4146275ce7539816bf57b4ed55a0d2be10e48c7',node:process.version,flags:profile.flags,sourceSha256:source,sourceRestored:source===hash(),worldSteps:0,nativeContinuations:0,results},null,2)+'\n');

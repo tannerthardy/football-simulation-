@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-controller-follow-up-not-activation",
+  "pullRequest": 153,
+  "submission": "8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055",
+  "runtime": "76252fa98543b8c22c1560b153865b54655f46af",
+  "accepted": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "sourceSha256": "f94f3a44edfce8a845e28a7f0f6679d1703d1daa6b0b01f3ec9681db257ec328",
+  "sourceRestored": true,
+  "decisions": [
+    {
+      "scope": "UC_MESH draw exclusion",
+      "decision": "ACCEPT repair only"
+    },
+    {
+      "scope": "LB_KEY keyed fullback original failure",
+      "decision": "CLEARED for original case; current feature HOLD"
+    },
+    {
+      "scope": "LB_KEY seenActor from persistent contradiction memory",
+      "decision": "REJECT inference",
+      "line": "src/sim/run-fits.ts:244",
+      "reason": "After a retired mesh, the current consumed RB picture can be labeled QB; installed spot-zone hook repro fails."
+    },
+    {
+      "scope": "ZONE_TE acquired near-surface guard",
+      "decision": "ACCEPT repair to held experiment only"
+    },
+    {
+      "scope": "MESH_TEMPO under-center dependency guard",
+      "decision": "ACCEPT conservative experimental guard only"
+    },
+    {
+      "scope": "MESH_TEMPO/UC_MESH feature promotion",
+      "decision": "HOLD",
+      "reason": "Demonstrated meeting compatibility requirement, not proof every UC depth/time/QB movement choice is necessary."
+    },
+    {
+      "scope": "Shotgun tempo alone",
+      "decision": "HOLD"
+    },
+    {
+      "scope": "GUN_MESH_SIDE",
+      "decision": "HOLD",
+      "geometryOnlyOZNegativeCounts": {
+        "tempoOff": [
+          18,
+          24
+        ],
+        "tempoOn": [
+          23,
+          34
+        ]
+      },
+      "casesPerCell": 200,
+      "combinedNotIsolatedContrast": [
+        18,
+        34
+      ]
+    },
+    {
+      "scope": "ZONE_TE full feature and STRETCH_FLAT",
+      "decision": "HOLD"
+    },
+    {
+      "scope": "SHED_PURSUE and shared Physics",
+      "decision": "OUT OF SCOPE"
+    }
+  ],
+  "newChecks": {
+    "passed": 10,
+    "failed": 1,
+    "expectedRollbackFailures": 2,
+    "skippedUnrelated": 20,
+    "finalCommandSeconds": 6.95180448,
+    "earlierFixtureDevelopmentSeconds": 1.653349321,
+    "node": "v22.23.3",
+    "worldSteps": 0,
+    "nativeContinuations": 0,
+    "labArms": 0,
+    "games": 0,
+    "sharedSuiteRuns": 0
+  },
+  "witnessAudit": {
+    "count": 27,
+    "oldPinCount": 6,
+    "checksumErrors": [],
+    "sourceChecks": [
+      {
+        "pin": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+        "actual": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+        "matched": true
+      },
+      {
+        "pin": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+        "actual": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+        "matched": true
+      }
+    ],
+    "headGateIdentity": "w7-head-oz-default == w7-head-oz-tempo for sampled actors, events, result; not all-state RNG proof"
+  },
+  "powerFinding": "Legal exchange and earlier arrival established in selected w4; three slipped DB holds remain. First-near-line proximity/motion proxy does not rule out tackling contribution or exclusively attribute extra power tail to front-seven flow.",
+  "productionSourceEdits": false,
+  "activation": false,
+  "merge": false,
+  "artifacts": [
+    {
+      "path": "data/reviews/current/pr153-response-review/audit-witnesses.mjs.txt",
+      "sha256": "c11c6fa41fde64685e1e22388b495c6554acff8b1533d49a561429715799e45b",
+      "bytes": 1867
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/check-seen-actor.mjs.txt",
+      "sha256": "fd59c94742af53d9a18277e0dfd22c6dbd2f89fa3a78dfdac0d024184b9f1a91",
+      "bytes": 1050
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/checks.json",
+      "sha256": "c8e7d8ef50d1918bdaef16bad197c451fbb01371c96208f8c8d5c14d3244c25e",
+      "bytes": 3091
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/checks.mjs.txt",
+      "sha256": "add3fa0b97b266713ace8297e0c8ac91c796c8397808b352b5bfd01108e6807b",
+      "bytes": 2372
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/manifest-audit.json",
+      "sha256": "fe28c3e2fa2354d6eff4fe16fed0ae91dc588bab0d7ef427f1fc5b8ae8168eed",
+      "bytes": 8385
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/repairs.log",
+      "sha256": "a93d986a2d000fab13244c9cb3a473c8ada52e18b64b27095f6c6c6eeaeafb97",
+      "bytes": 488
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/seen-actor.json",
+      "sha256": "b033b7ab305dd6eb2d80c81e6cfdbc6499d8ced24a3532725910c54837c189f7",
+      "bytes": 1916
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/seen-actor.log",
+      "sha256": "55bfdff1641eb87cbecb0390a57dd3bcb9a42b6f8bcd1dd11af5dbbd4377314d",
+      "bytes": 1478
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/seen-actor.test.ts.txt",
+      "sha256": "74b313c8d5c815ab615a085958d49907fa959f3f7a4ab63df9afde4873f66703",
+      "bytes": 2620
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/te-guard-rollback.log",
+      "sha256": "212cdf10480ef585d79515e711d9b2ee00185136b39b65b94264220bdec491da",
+      "bytes": 4108
+    },
+    {
+      "path": "data/reviews/current/pr153-response-review/witness-audit.json",
+      "sha256": "313b422da89da79c878b8887492247a3a4a4e0ee039a8267e8c42130d7edfbff",
+      "bytes": 15397
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+[
+  {
+    "label": "v5d0",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": []
+    },
+    "wallSeconds": 146.789
+  },
+  {
+    "label": "v5d0gap",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 195.775
+  },
+  {
+    "label": "v5g0",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 84.515
+  },
+  {
+    "label": "v5gs",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "1",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 81.035
+  },
+  {
+    "label": "v5gt",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 80.011
+  },
+  {
+    "label": "v5gte",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 85.29
+  },
+  {
+    "label": "v5gts",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "1",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 76.137
+  },
+  {
+    "label": "v5mt0",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "0",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": []
+    },
+    "wallSeconds": 145.375
+  },
+  {
+    "label": "v5mtr",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": []
+    },
+    "wallSeconds": 127.56
+  },
+  {
+    "label": "v5mtrgap",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 199.114
+  },
+  {
+    "label": "v5rec2gap",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 186.503
+  },
+  {
+    "label": "v5sp",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "1"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": []
+    },
+    "wallSeconds": 140.034
+  },
+  {
+    "label": "v5spgap",
+    "commit": "92c1d0c18d59fce6b3d589ae4e3e1ab90b14112d",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "1"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": [
+        "scripts/diag/stretch/sameplays.py"
+      ]
+    },
+    "wallSeconds": 188.033
+  },
+  {
+    "label": "v6gte",
+    "commit": "76252fa98543b8c22c1560b153865b54655f46af",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "0",
+      "MESH_TEMPO": "0",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "0",
+      "LB_KEY": "0",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [],
+      "patchSha256": null,
+      "untracked": []
+    },
+    "wallSeconds": 89.818
+  },
+  {
+    "label": "v6mtr",
+    "commit": "76252fa98543b8c22c1560b153865b54655f46af",
+    "sourceMatch": true,
+    "sourceUnchanged": true,
+    "shardExits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "flags": {
+      "UC_MESH": "1",
+      "MESH_TEMPO": "1",
+      "GUN_MESH_SIDE": "0",
+      "ZONE_TE": "1",
+      "STRETCH_FLAT": "1",
+      "LB_KEY": "1",
+      "SHED_PURSUE": "0"
+    },
+    "dirty": {
+      "trackedFiles": [
+        "scripts/diag/stretch/dbhits.py"
+      ],
+      "patchSha256": "777c2c2efa4afa6a9f20196c9ecc6cb0100b69f457834070227ccf3c3d89a81c",
+      "untracked": []
+    },
+    "wallSeconds": 124.972
+  }
+]

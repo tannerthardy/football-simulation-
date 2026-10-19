@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const root='out/pr153-response-review',data=JSON.parse(readFileSync(root+'/run-game-v3-witnesses.json'));
+const sha=b=>createHash('sha256').update(b).digest('hex'),errors=[],rows=[];
+for(const w of data.witnesses){const r=w.receipt,x=w.witness;
+ if(sha(JSON.stringify(x)+'\n')!==w.sha256)errors.push(w.name+': checksum');
+ if(r.exitCode!==0||!r.inputsUnchanged||r.trackedChanges.length)errors.push(w.name+': receipt');
+ if(r.commit!==x.commit||JSON.stringify(r.flags)!==JSON.stringify(x.flags))errors.push(w.name+': settings or commit');
+ rows.push({name:w.name,commit:r.commit,source:r.sourceSha256,case:x.case,flags:Object.fromEntries(Object.entries(x.flags).filter(([k,v])=>['MESH_TEMPO','UC_MESH','GUN_MESH_SIDE','ZONE_TE','SHED_PURSUE'].includes(k))),result:x.result,receiptSeconds:r.commands.reduce((a,b)=>a+b.elapsedSeconds,0),handoff:x.events.find(e=>e.type==='handoff')?.t??null,keep:x.events.find(e=>e.type==='read'&&e.note?.includes('exchange passed'))?.t??null});
+}
+const pins=[...new Set(rows.map(r=>r.commit))];const sourceChecks=[];
+for(const pin of pins){const paths=execFileSync('git',['ls-tree','-r','--name-only',pin,'src'],{encoding:'utf8'}).trim().split('\n').sort();const h=createHash('sha256');for(const p of paths)h.update(p).update('\0').update(execFileSync('git',['show',pin+':'+p])).update('\0');const actual=h.digest('hex');sourceChecks.push({pin,actual,matched:rows.filter(r=>r.commit===pin).every(r=>r.source===actual)});}
+const output={witnesses:rows.length,reviewedPinWitnesses:rows.filter(r=>r.commit.startsWith('1c578afb')).length,errors,sourceChecks,rows};
+writeFileSync(root+'/witness-audit.json',JSON.stringify(output,null,2)+'\n');console.log(JSON.stringify({...output,rows:undefined}));

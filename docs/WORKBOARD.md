@@ -12,6 +12,15 @@ and diagnostic evidence reused by exact unchanged code path. Proposed runtime
 scopes remain HOLD/REJECT; no merge, activation or combined-suite request.
 Contact reviewer retains SHED_PURSUE's intent/re-acquisition disposition.
 
+Follow-up reviewed`8d3c41f2`/runtime`76252fa9`, still on accepted`f4146275`:
+[response review](reviews/pr153-run-controller-response-review.md). Draw exclusion,
+TE overrun guard and under-center experiment guard supported; full flag/package
+activation remains held. Original F/RB identity failure is repaired, but a later
+RB picture can still be mislabeled QB after remembered mesh contradiction; one
+zero-step installed-zone-controller reproduction fails. Ten repair checks pass,
+both TE rollback checks fail as expected;27 witness hashes and15 manifest source
+hashes checked. No new native continuation, lab, game or shared-suite run.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

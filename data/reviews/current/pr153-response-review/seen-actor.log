@@ -1,0 +1,37 @@
+
+ RUN  v3.2.4 /workspace/perimeter-runs/out/pr153-response-review/snapshot
+
+stdout | test/pr153-seen-actor-review.test.ts > keeps current acquired RB identity after a remembered mesh contradiction
+{"control":{"retired":false,"flow":true,"vel":{"x":-4.865431253878448,"y":9.205838561829612}},"remembered":{"retired":true,"flow":false,"vel":{"x":-4.868513965514734,"y":-1.2171284913786802}}}
+
+ ❯ |core| test/pr153-seen-actor-review.test.ts (1 test | 1 failed) 1061ms
+   × keeps current acquired RB identity after a remembered mesh contradiction 1060ms
+     → expected false to be true // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  16:02:05
+   Duration  1.30s (transform 832ms, setup 0ms, collect 41ms, tests 1.06s, environment 0ms, prepare 65ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/pr153-seen-actor-review.test.ts > keeps current acquired RB identity after a remembered mesh contradiction
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/pr153-seen-actor-review.test.ts:32:58
+     30|  }
+     31|  const control=scene(false),remembered=scene(true);console.log(JSON.st…
+     32|  expect(control.flow).toBe(true);expect(remembered.flow).toBe(true);
+       |                                                          ^
+     33| });
+     34| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

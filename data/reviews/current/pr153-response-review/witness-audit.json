@@ -1,0 +1,553 @@
+{
+  "witnesses": 27,
+  "reviewedPinWitnesses": 6,
+  "errors": [],
+  "sourceChecks": [
+    {
+      "pin": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "actual": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "matched": true
+    },
+    {
+      "pin": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "actual": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "matched": true
+    }
+  ],
+  "rows": [
+    {
+      "name": "w1-gun-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 3.03,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.737913163,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w1-gun-side",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "1",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 8.57,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.7271291489999998,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w1-gun-tempo-side",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "1",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 13.04,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.884544692,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w1-gun-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 4.59,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.452414,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w2-uc-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 3.91,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.541658752,
+      "handoff": 1.5,
+      "keep": null
+    },
+    {
+      "name": "w2-uc-package-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 6.93,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.015775693,
+      "handoff": 1.25,
+      "keep": null
+    },
+    {
+      "name": "w2-uc-package",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 2.3,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.6067967799999998,
+      "handoff": 1.25,
+      "keep": null
+    },
+    {
+      "name": "w3-gunoz-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/gun_doubles_11/odd3/pair31/1",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 9.81,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.8762915179999997,
+      "handoff": 1,
+      "keep": null
+    },
+    {
+      "name": "w3-gunoz-side",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/gun_doubles_11/odd3/pair31/1",
+      "flags": {
+        "GUN_MESH_SIDE": "1",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": -1.18,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.242328438,
+      "handoff": 1,
+      "keep": null
+    },
+    {
+      "name": "w4-power-package-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "power/strong/i_pro_21/wide9/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 70,
+        "outcome": "touchdown"
+      },
+      "receiptSeconds": 2.9494285999999996,
+      "handoff": 1.35,
+      "keep": null
+    },
+    {
+      "name": "w4-power-package",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "power/strong/i_pro_21/wide9/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 3.3,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.023122404,
+      "handoff": 1.35,
+      "keep": null
+    },
+    {
+      "name": "w5-gunte-control-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/weak/gun_doubles_11/over3/pair11/1",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": -0.11,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.472716627,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w5-gunte-control-zonete",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/weak/gun_doubles_11/over3/pair11/1",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 2.33,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.39498427,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w5-gunte-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/odd3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 3.45,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.571058396,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w5-gunte-zonete",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "iz/strong/gun_doubles_11/odd3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": -0.87,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.873372542,
+      "handoff": 1.05,
+      "keep": null
+    },
+    {
+      "name": "w6-shed-control-pursue",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/over4/pair11/6",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "1",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 70,
+        "outcome": "touchdown"
+      },
+      "receiptSeconds": 2.695773066,
+      "handoff": 1.4,
+      "keep": null
+    },
+    {
+      "name": "w6-shed-control-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/over4/pair11/6",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 6.13,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.017551436,
+      "handoff": 1.4,
+      "keep": null
+    },
+    {
+      "name": "w6-shed-pursue",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/off1/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "1",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 8.68,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.754208368,
+      "handoff": 1.4,
+      "keep": null
+    },
+    {
+      "name": "w6-shed-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/off1/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "1",
+        "ZONE_TE": "1"
+      },
+      "result": {
+        "gain": 70,
+        "outcome": "touchdown"
+      },
+      "receiptSeconds": 2.5762763829999997,
+      "handoff": 1.4,
+      "keep": null
+    },
+    {
+      "name": "w7-1c5-oz-default",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "oz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 6.48,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.704831849,
+      "handoff": 1.55,
+      "keep": null
+    },
+    {
+      "name": "w7-1c5-oz-tempo",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "oz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 4.62,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.868187324,
+      "handoff": null,
+      "keep": 1.55
+    },
+    {
+      "name": "w7-1c5-power-default",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "power/weak/i_pro_21/over3/pair31/77",
+      "flags": {
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 4.93,
+        "outcome": "touchdown"
+      },
+      "receiptSeconds": 3.1545239769999998,
+      "handoff": 1.85,
+      "keep": null
+    },
+    {
+      "name": "w7-1c5-power-tempo",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "power/weak/i_pro_21/over3/pair31/77",
+      "flags": {
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": -0.17,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.276415189,
+      "handoff": null,
+      "keep": 1.6
+    },
+    {
+      "name": "w7-1c5-wz-default",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "wz/weak/ace_12/under3/pair31/3",
+      "flags": {
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 2.1,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.424628146,
+      "handoff": 1.6,
+      "keep": null
+    },
+    {
+      "name": "w7-1c5-wz-tempo",
+      "commit": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+      "source": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+      "case": "wz/weak/ace_12/under3/pair31/3",
+      "flags": {
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 4.75,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 2.022193072,
+      "handoff": null,
+      "keep": 1.6
+    },
+    {
+      "name": "w7-head-oz-default",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "0",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 6.48,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.811983545,
+      "handoff": 1.55,
+      "keep": null
+    },
+    {
+      "name": "w7-head-oz-tempo",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "source": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "case": "oz/strong/ace_12/over3/pair11/77",
+      "flags": {
+        "GUN_MESH_SIDE": "0",
+        "MESH_TEMPO": "1",
+        "SHED_PURSUE": "0",
+        "UC_MESH": "0",
+        "ZONE_TE": "0"
+      },
+      "result": {
+        "gain": 6.48,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.6741709900000001,
+      "handoff": 1.55,
+      "keep": null
+    }
+  ]
+}

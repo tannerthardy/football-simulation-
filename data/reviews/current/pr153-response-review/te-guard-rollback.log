@@ -1,0 +1,57 @@
+
+ RUN  v3.2.4 /workspace/perimeter-runs/out/pr153-response-review/snapshot
+
+ ❯ |core| test/run-game-flags.test.ts (22 tests | 2 failed | 20 skipped) 929ms
+   ↓ UC_MESH under-center exchange > is off by default: shallow inside mesh, QB stops on it, back does not ride
+   ↓ UC_MESH under-center exchange > sets the tracked depth, keeps the QB moving and times the exchange to his own body, flip=false
+   ↓ UC_MESH under-center exchange > sets the tracked depth, keeps the QB moving and times the exchange to his own body, flip=true
+   ↓ UC_MESH under-center exchange > leaves shotgun and pistol exchanges unchanged
+   ↓ ZONE_TE inline tight end runs the zone track > requests width first rather than a downhill sprint, flip=false
+   ↓ ZONE_TE inline tight end runs the zone track > requests width first rather than a downhill sprint, flip=true
+   ↓ ZONE_TE covered end takes a slanting man where he goes > runs the track against a shade and follows an inside slant, flip=false
+   ↓ ZONE_TE covered end takes a slanting man where he goes > runs the track against a shade and follows an inside slant, flip=true
+   × ZONE_TE end level with his man > does not reverse a full-speed width request across the man's shoulder line, flip=false 842ms
+     → expected true to be false // Object.is equality
+   × ZONE_TE end level with his man > does not reverse a full-speed width request across the man's shoulder line, flip=true 86ms
+     → expected true to be false // Object.is equality
+   ↓ LB_KEY backers key the back's first step > flows a backside backer toward the side the back stepped, flip=false
+   ↓ LB_KEY backers key the back's first step > flows a backside backer toward the side the back stepped, flip=true
+   ↓ LB_KEY backers key the back's first step > does not flow before the back has stepped
+   ↓ MESH_TEMPO back takes the handoff moving > under center: settles after the snap, then takes the ball at run tempo, flip=false
+   ↓ MESH_TEMPO back takes the handoff moving > under center: settles after the snap, then takes the ball at run tempo, flip=true
+   ↓ MESH_TEMPO back takes the handoff moving > shotgun: GUN_MESH_SIDE puts the spot on the back's own side; MESH_TEMPO alone keeps the installed spot, flip=false
+   ↓ MESH_TEMPO back takes the handoff moving > shotgun: GUN_MESH_SIDE puts the spot on the back's own side; MESH_TEMPO alone keeps the installed spot, flip=true
+   ↓ MESH_TEMPO back takes the handoff moving > shotgun: with the own-side spot the back takes the ball faster, flip=false
+   ↓ MESH_TEMPO back takes the handoff moving > shotgun: with the own-side spot the back takes the ball faster, flip=true
+   ↓ MESH_TEMPO back takes the handoff moving > under center, tempo engages only with UC_MESH and keeps the stretch exchange, flip=false
+   ↓ MESH_TEMPO back takes the handoff moving > under center, tempo engages only with UC_MESH and keeps the stretch exchange, flip=true
+   ↓ MESH_TEMPO back takes the handoff moving > leaves the draw back on his delayed timing
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 20 skipped (22)
+   Start at  15:57:06
+   Duration  1.33s (transform 731ms, setup 0ms, collect 226ms, tests 929ms, environment 0ms, prepare 55ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/run-game-flags.test.ts > ZONE_TE end level with his man > does not reverse a full-speed width request across the man's shoulder line, flip=false
+ FAIL  |core| test/run-game-flags.test.ts > ZONE_TE end level with his man > does not reverse a full-speed width request across the man's shoulder line, flip=true
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/run-game-flags.test.ts:141:22
+    139|     const reversed = inside.lateral * outside.lateral < 0
+    140|       && Math.min(Math.abs(inside.lateral), Math.abs(outside.lateral))…
+    141|     expect(reversed).toBe(false);
+       |                      ^
+    142|   });
+    143| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
