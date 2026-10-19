@@ -48,23 +48,16 @@ export function track(a: Agent, target: Vec2, targetVel: Vec2, opts: { facing?: 
   // Close on the target no faster than we could still brake to its speed on
   // arrival — a defender who sprints flat out at a slowing receiver overruns.
   const brakeClose = (dist: number) => Math.sqrt(2 * a.profile.brake * 0.5 * Math.max(0, dist - 0.3)) + 1;
-  let vx: number;
-  let vy: number;
-  if (d > 4) {
-    // Far away: run at a lead point.
-    const lead = Math.min(1.2, d / vmax);
-    const lx = ex + targetVel.x * lead;
-    const ly = ey + targetVel.y * lead;
-    const l = Math.hypot(lx, ly) || 1;
-    const close = Math.min(vmax, brakeClose(d));
-    vx = targetVel.x + (lx / l) * close;
-    vy = targetVel.y + (ly / l) * close;
-  } else {
-    const k = opts.gain ?? 2.2;
-    const close = Math.min(k * d, brakeClose(d));
-    vx = targetVel.x + (ex / (d || 1)) * close;
-    vy = targetVel.y + (ey / (d || 1)) * close;
-  }
+  // Lead the part of the approach outside the station-keeping region. The
+  // same moving objective then becomes direct offset closure at close range;
+  // crossing four yards must not abruptly rotate an unchanged responsibility.
+  const lead = Math.min(1.2, Math.max(0, d - 4) / Math.max(1e-9, vmax));
+  const lx = ex + targetVel.x * lead;
+  const ly = ey + targetVel.y * lead;
+  const l = Math.hypot(lx, ly) || 1;
+  const close = Math.min(vmax, (opts.gain ?? 2.2) * d, brakeClose(d));
+  let vx = targetVel.x + (lx / l) * close;
+  let vy = targetVel.y + (ly / l) * close;
   const sp = Math.hypot(vx, vy);
   if (sp > vmax) {
     vx *= vmax / sp;

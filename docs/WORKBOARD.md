@@ -977,3 +977,5 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-19, Catching / continuous track objective: independent accepted-f414 extraction on `codex/continuous-track-objective`; owns only `behaviors/common.ts:track` near/far lead-bearing continuity and directly affected contracts. Reuses #162's saved free-alley witnesses; no contact law, reach, capacities, perception, helper or run-fit policy edits. Parent movement-continuity owner owns native transfer checks and publication; this worker runs pure/contract checks only. Integration owns combined verification.
