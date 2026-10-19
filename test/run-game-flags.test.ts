@@ -110,6 +110,38 @@ describe('ZONE_TE covered end takes a slanting man where he goes', () => {
   });
 });
 
+describe('ZONE_TE end level with his man', () => {
+  /** The play-side end has run past his own target (the man stayed or
+   * slanted), whose playside shoulder is 0.4 yd inside or outside the end's
+   * own line; the end's next free request, play side + for lateral. */
+  async function request(across: number, flip: boolean) {
+    const s = await sim({ ZONE_TE: '1' }, 'ace_12', 'iz_strong', flip);
+    const { playSideSign, RunBlocker } = await import('../src/sim/behaviors/blocking.js');
+    const ps = playSideSign(s, RUN_BY_ID.iz_strong), dir = s.attackDir('O');
+    const y = ['Y', 'H'].map(k => s.slot(k)!).find(a => a.behavior instanceof RunBlocker
+      && !(a.behavior as InstanceType<typeof RunBlocker>).plan.combination && (a.pos.y - s.ballY) * ps > 0)!;
+    expect(y).toBeTruthy();
+    const target = (y.behavior as InstanceType<typeof RunBlocker>).plan.target!;
+    expect(target).toBeTruthy();
+    // As filmed (gun IZ, odd front): the end 1.6 yd past the line and moving
+    // out, his man still on it, beyond engage range of each other.
+    y.body.pos = { x: s.los + dir * 1.6, y: y.pos.y };
+    y.body.vel = { x: dir * 1.2, y: ps * 1.4 };
+    target.body.pos = { x: s.los, y: y.pos.y - ps * (.6 + across) };
+    target.body.vel = { x: -dir * .5, y: ps * .5 };
+    s.t = s.world.time = 1;
+    for (let k = 0; k < 30; k++) s.perception.record(s.agents);
+    return { lateral: y.behavior.update(y, s).vel.y * ps, vmax: y.profile.vmax };
+  }
+
+  it.each([false, true])('does not reverse a full-speed width request across the man\'s shoulder line, flip=%s', async flip => {
+    const inside = await request(.4, flip), outside = await request(-.4, flip);
+    const reversed = inside.lateral * outside.lateral < 0
+      && Math.min(Math.abs(inside.lateral), Math.abs(outside.lateral)) >= .5 * inside.vmax;
+    expect(reversed).toBe(false);
+  });
+});
+
 describe('LB_KEY backers key the back\'s first step', () => {
   /** Before the handoff, the back has visibly stepped `step` yd play side at
    * a walk (below the developed-speed flow cue). The backside insert backer's

@@ -1022,6 +1022,13 @@ export class RunBlocker implements Behavior {
     // meet, from his seen motion over our time to contact; never less than
     // the play's track tempo. The body's own limits decide what is achieved.
     const bodyContact = a.profile.radius + target.profile.radius;
+    // ZONE_TE: the track is the approach to a man still in front of him. An
+    // end already level with his man's near surface (he has run past a man
+    // who stayed or slanted) fits him with the ordinary engage, as an end
+    // without the flag does. The meeting time below assumes depth still to
+    // close; level, it collapses to its floor and his width request flips
+    // at full speed each time he crosses the man's shoulder line.
+    if (ZONE_TE && !isOL(a) && (seen.pos.x - a.pos.x) * dir < bodyContact) return null;
     const closing = Math.max(1, (a.vel.x - seen.vel.x) * dir + 1.5);
     const meet = clamp(Math.max(0, (seen.pos.x - a.pos.x) * dir - bodyContact) / closing, .15, .6);
     // A double's two players take the halves of the man nearest each, the
