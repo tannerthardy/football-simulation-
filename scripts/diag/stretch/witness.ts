@@ -8,7 +8,8 @@
  * seed and the resolved values of every profile flag are written into the
  * witness itself.
  * node --import tsx scripts/diag/stretch/witness.ts --case iz/strong/gun_doubles_11/over3/pair11/77
- *   --slots RB,QB [--from 0] [--to 2.5] --out data/reviews/current/x.json */
+ *   --slots RB,QB [--from 0] [--to 2.5] [--every 2: every 2nd native tick] --out data/reviews/current/x.json
+ * Values are rounded to 0.01 to keep the files small. */
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -17,16 +18,17 @@ import { makeSim, rosters } from '../zone-lab/lab.js';
 const arg = (n: string, d?: string) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : d; };
 const id = arg('--case')!, out = arg('--out')!;
 const [concept, dir, formation, look, roster, seedS] = id.split('/');
-const slots = arg('--slots', 'RB,QB')!.split(','), from = +arg('--from', '0')!, to = +arg('--to', '3')!;
+const slots = arg('--slots', 'RB,QB')!.split(','), from = +arg('--from', '0')!, to = +arg('--to', '3')!, every = +arg('--every', '2')!;
 const profile = JSON.parse(readFileSync('config/baseline.json', 'utf8')) as { flags: Record<string, string | null> };
 const sim = makeSim({ concept, dir: dir as 'strong' | 'weak', look, roster, seed: +seedS, formation }, rosters());
-const r2 = (v: number) => Math.round(v * 1000) / 1000;
+const r2 = (v: number) => Math.round(v * 100) / 100;
 const vec = (v: { x: number; y: number } | undefined) => v ? [r2(v.x), r2(v.y)] : null;
 const cmds = (sim as unknown as { cmds: { vel: { x: number; y: number } }[] }).cmds;
 const ticks: unknown[] = [];
+let n = 0;
 while (sim.phase === 'live' && sim.t < 20) {
   sim.tick();
-  if (sim.t < from - 1e-9 || sim.t > to + 1e-9) continue;
+  if (sim.t < from - 1e-9 || sim.t > to + 1e-9 || n++ % every !== 0) continue;
   ticks.push({ t: r2(sim.t), actors: Object.fromEntries(slots.map(slot => {
     const a = sim.slot(slot);
     if (!a) return [slot, null];
@@ -40,7 +42,7 @@ while (sim.phase === 'live' && sim.t < 20) {
 const result = sim.buildResult();
 const git = (args: string[]) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const witness = {
-  case: id, los: sim.los, ballY: sim.ballY, attackDir: sim.attackDir('O'), dt: sim.dt, window: [from, to], slots,
+  case: id, los: sim.los, ballY: sim.ballY, attackDir: sim.attackDir('O'), dt: sim.dt, sampleEvery: every, window: [from, to], slots,
   rosterPair: roster, seed: +seedS,
   flags: Object.fromEntries(Object.keys(profile.flags).map(k => [k, process.env[k] ?? null])),
   commit: git(['rev-parse', 'HEAD']), dirtyFiles: git(['diff', '--name-only', 'HEAD']).split('\n').filter(Boolean),
