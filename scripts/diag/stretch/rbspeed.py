@@ -8,12 +8,14 @@ from metrics import CONCEPT_FAMILY, Play  # noqa: E402
 fam = sys.argv[1]
 q = lambda v, f=.5: round(sorted(v)[int(f * (len(v) - 1))], 2) if v else None
 F = json.load(open('out/mechanics/nfl-formation.json'))
-for path in sys.argv[2:]:
+for path in [a for a in sys.argv[2:] if a.endswith(".gz")]:
     o = {}
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw) if 'common' in raw else raw
         if raw.get('kind') != 'run' or raw.get('carrier') is None or CONCEPT_FAMILY.get((raw.get('cell') or {}).get('concept')) != fam: continue
-        if raw.get('source') != 'sim' and F.get(raw['id']) not in ('SINGLEBACK', 'I_FORM'): continue
+        WANT = tuple(sys.argv[sys.argv.index('--nfl-forms') + 1].split(',')) if '--nfl-forms' in sys.argv else ('SINGLEBACK', 'I_FORM')
+        if raw.get('source') != 'sim' and F.get(raw['id']) not in WANT: continue
+        if raw.get('source') == 'sim' and '--sim-form' in sys.argv and not raw['id'].split('/')[2].startswith(sys.argv[sys.argv.index('--sim-form') + 1]): continue
         p = Play(raw); c = raw['carrier']; h = (raw.get('events') or {}).get('handoff')
         if h is None or raw['players'][c]['group'] != 'RB': continue
         end = min(p.frames - 1, int(p.end / p.dt + 1e-9)); kh = p.k(h)

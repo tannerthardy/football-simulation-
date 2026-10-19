@@ -1,0 +1,440 @@
+# Run game v3 part 3 receipts (2026-10-19). NFL = 2022 all-22 tracking (out/mechanics/nfl-plays.jsonl.gz); NFL60 = --ytg60.
+# Sim arms (zone lab, out/open-field/all/LABEL-common.jsonl.gz): d0 develop; mtr = UC_MESH MESH_TEMPO ZONE_TE STRETCH_FLAT LB_KEY;
+# mtrc = mtr + DEEP_CAP; sp = mtr + SHED_PURSUE; spc = sp + DEEP_CAP; sp0 = SHED_PURSUE alone; *tf = gun/pistol/I zone transfer.
+# mtrtf = mtr before the shotgun mesh-spot change; mt2tf = after it.
+
+## Mesh geometry (meshgeo.py), shotgun: NFL vs sim before/after the shotgun mesh spot
+nfl-plays.jsonl.gz   inside_zone: n 779 | handoff t 1.2 s | snap rel QB x -0.5 y 2.3 | handoff rel QB x 0.3/0.4/0.7 y 0.7 | closest 0.89 | crosses face 7%, passing x p25/50/75 0.7/0.8/1.0
+d0tf-common.jsonl.gz inside_zone: n 200 | handoff t 1.05 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.4/0.4/0.4 y 0.9 | closest 0.95 | crosses face 0%, passing x p25/50/75 None/None/None
+mtrtf-common.jsonl.g inside_zone: n 200 | handoff t 1.05 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.2/0.2/0.3 y 1.1 | closest 1.14 | crosses face 0%, passing x p25/50/75 None/None/None
+mt2tf-common.jsonl.g inside_zone: n 200 | handoff t 1.05 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.1/0.1/0.1 y 1.1 | closest 1.1 | crosses face 0%, passing x p25/50/75 None/None/None
+nfl-plays.jsonl.gz   outside_zone: n 232 | handoff t 1.1 s | snap rel QB x -0.3 y 2.3 | handoff rel QB x 0.4/0.5/0.7 y 0.4 | closest 0.72 | crosses face 28%, passing x p25/50/75 0.6/0.7/0.9
+d0tf-common.jsonl.gz outside_zone: n 400 | handoff t 1 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.5/0.5/0.7 y 0.8 | closest 1.03 | crosses face 0%, passing x p25/50/75 None/None/None
+mtrtf-common.jsonl.g outside_zone: n 400 | handoff t 1 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.2/0.3/0.4 y 1.1 | closest 1.14 | crosses face 0%, passing x p25/50/75 None/None/None
+mt2tf-common.jsonl.g outside_zone: n 400 | handoff t 1 s | snap rel QB x -0.2 y 1.6 | handoff rel QB x 0.1/0.1/0.2 y 1.0 | closest 1.02 | crosses face 0%, passing x p25/50/75 None/None/None
+
+## Mesh geometry, under center (NFL SINGLEBACK/I_FORM vs ace lab)
+nfl-plays.jsonl.gz   inside_zone: n 408 | handoff t 1.3 s | snap rel QB x -5.9 y 0.0 | handoff rel QB x -1.0/-0.6/-0.2 y 0.8 | closest 1.0 | crosses face 5%, passing x p25/50/75 -5.1/-4.5/-4.2
+d0-common.jsonl.gz   inside_zone: n 400 | handoff t 1.5 s | snap rel QB x -5.2 y 0.0 | handoff rel QB x -1.2/-1.1/-1.1 y 0.5 | closest 1.21 | crosses face 0%, passing x p25/50/75 None/None/None
+mtr-common.jsonl.gz  inside_zone: n 400 | handoff t 1.3 s | snap rel QB x -5.2 y 0.0 | handoff rel QB x -1.3/-1.0/-0.5 y 0.7 | closest 1.17 | crosses face 0%, passing x p25/50/75 None/None/None
+nfl-plays.jsonl.gz   outside_zone: n 1219 | handoff t 1.4 s | snap rel QB x -6.0 y -0.0 | handoff rel QB x -1.2/-0.7/-0.3 y 0.9 | closest 1.2 | crosses face 7%, passing x p25/50/75 -4.9/-3.9/-3.2
+d0-common.jsonl.gz   outside_zone: n 800 | handoff t 1.55 s | snap rel QB x -5.2 y 0.0 | handoff rel QB x -0.4/-0.3/-0.2 y 1.1 | closest 1.14 | crosses face 0%, passing x p25/50/75 None/None/None
+mtr-common.jsonl.gz  outside_zone: n 800 | handoff t 1.5 s | snap rel QB x -5.2 y 0.0 | handoff rel QB x -0.8/-0.6/-0.6 y 1.0 | closest 1.26 | crosses face 0%, passing x p25/50/75 None/None/None
+
+## Runner speed at the handoff (rbspeed.py), shotgun
+nfl-plays.jsonl.gz   inside_zone: n 779 | speed at handoff 3.82 | at -3 4.42 -1.5 4.6 LOS 4.6 +2 4.37 +4 4.25 yd/s | share of own peak at LOS 0.88 | handoff->LOS 1.1 s
+d0tf-common.jsonl.gz inside_zone: n 200 | speed at handoff 1.25 | at -3 3.64 -1.5 5.03 LOS 5.59 +2 5.46 +4 5.7 yd/s | share of own peak at LOS 0.9 | handoff->LOS 1.6 s
+mtrtf-common.jsonl.g inside_zone: n 200 | speed at handoff 1.95 | at -3 3.82 -1.5 5.0 LOS 5.7 +2 5.26 +4 5.85 yd/s | share of own peak at LOS 0.9 | handoff->LOS 1.4 s
+mt2tf-common.jsonl.g inside_zone: n 200 | speed at handoff 2.3 | at -3 3.95 -1.5 5.15 LOS 5.71 +2 5.15 +4 5.75 yd/s | share of own peak at LOS 0.92 | handoff->LOS 1.4 s
+nfl-plays.jsonl.gz   outside_zone: n 232 | speed at handoff 4.67 | at -3 5.32 -1.5 5.26 LOS 5.15 +2 4.92 +4 5.15 yd/s | share of own peak at LOS 0.86 | handoff->LOS 1.5 s
+d0tf-common.jsonl.gz outside_zone: n 400 | speed at handoff 1.95 | at -3 4.03 -1.5 5.55 LOS 6.17 +2 5.9 +4 6.37 yd/s | share of own peak at LOS 0.9 | handoff->LOS 1.9 s
+mtrtf-common.jsonl.g outside_zone: n 400 | speed at handoff 2.36 | at -3 3.89 -1.5 5.13 LOS 6.02 +2 6.02 +4 6.5 yd/s | share of own peak at LOS 0.89 | handoff->LOS 1.8 s
+mt2tf-common.jsonl.g outside_zone: n 400 | speed at handoff 2.5 | at -3 4.03 -1.5 5.32 LOS 6.02 +2 6.02 +4 6.6 yd/s | share of own peak at LOS 0.89 | handoff->LOS 1.9 s
+
+## Runner speed, pistol (NFL PISTOL)
+nfl-plays.jsonl.gz   inside_zone: n 31 | speed at handoff 4.03 | at -3 4.51 -1.5 4.27 LOS 3.35 +2 3.47 +4 2.93 yd/s | share of own peak at LOS 0.72 | handoff->LOS 1.4 s
+mt2tf-common.jsonl.g inside_zone: n 200 | speed at handoff 4.27 | at -3 5.06 -1.5 5.53 LOS 5.37 +2 5.52 +4 6.37 yd/s | share of own peak at LOS 0.87 | handoff->LOS 1.2 s
+nfl-plays.jsonl.gz   outside_zone: n 129 | speed at handoff 5.0 | at -3 5.71 -1.5 5.76 LOS 5.15 +2 5.0 +4 5.22 yd/s | share of own peak at LOS 0.83 | handoff->LOS 1.6 s
+mt2tf-common.jsonl.g outside_zone: n 400 | speed at handoff 4.25 | at -3 5.32 -1.5 6.05 LOS 6.73 +2 6.66 +4 6.02 yd/s | share of own peak at LOS 0.91 | handoff->LOS 1.5 s
+
+## Secondary by snap alignment group (dbgroups.py)
+nfl-plays.jsonl.gz     runs 2193, carrier crosses at p50 2.6 s
+  deep       n/run 1.29 | depth snap 13.2 h+.5 14.7 cross 13.0 | depth given up by crossing p25/50/75 -1.9/0.5/3.3
+  off-wide   n/run 1.15 | depth snap 7.2 h+.5 8.4 cross 8.3 | depth given up by crossing p25/50/75 -3.3/-1.1/1.0
+  mid-inside n/run 1.00 | depth snap 5.7 h+.5 4.2 cross 3.8 | depth given up by crossing p25/50/75 0.8/2.3/3.6
+d0-common.jsonl.gz     runs 1036, carrier crosses at p50 2.7 s
+  deep       n/run 1.21 | depth snap 12 h+.5 10.0 cross 7.3 | depth given up by crossing p25/50/75 3.8/5.3/6.0
+  off-wide   n/run 1.59 | depth snap 6 h+.5 6.8 cross 6.4 | depth given up by crossing p25/50/75 -0.9/-0.2/1.4
+  mid-inside n/run 1.28 | depth snap 5 h+.5 3.1 cross 2.7 | depth given up by crossing p25/50/75 2.6/3.5/3.8
+mtr-common.jsonl.gz    runs 1083, carrier crosses at p50 2.6 s
+  deep       n/run 1.20 | depth snap 12 h+.5 10.6 cross 8.4 | depth given up by crossing p25/50/75 2.9/4.4/5.3
+  off-wide   n/run 1.59 | depth snap 6 h+.5 6.7 cross 6.5 | depth given up by crossing p25/50/75 -1.0/-0.2/1.2
+  mid-inside n/run 1.28 | depth snap 5 h+.5 3.6 cross 3.1 | depth given up by crossing p25/50/75 2.1/3.3/3.7
+mtrc-common.jsonl.gz   runs 1088, carrier crosses at p50 2.6 s
+  deep       n/run 1.20 | depth snap 12 h+.5 11.4 cross 11.9 | depth given up by crossing p25/50/75 0.3/0.5/0.9
+  off-wide   n/run 1.59 | depth snap 6 h+.5 6.9 cross 7.0 | depth given up by crossing p25/50/75 -0.8/-0.3/0
+  mid-inside n/run 1.28 | depth snap 5 h+.5 3.6 cross 3.1 | depth given up by crossing p25/50/75 2.1/3.3/3.7
+
+## Deepest two defenders (dbdepth.py, REF 10)
+nfl-plays.jsonl.gz     runs 2633
+  deepest two at snap : depth p50 13.8 / 8.4  (p25 12.3 / 6.9)
+  deepest two at h+.5 : depth p50 15.4 / 8.8  (p25 13.1 / 5.9)
+  deepest two at cross: depth p50 13.8 / 7.7  (p25 10.6 / 4.3)
+  downhill speed at crossing: deepest 2.5 second 0.7 yd/s (p75 3.8 / 2.0)
+  at +10: n 347 defenders ahead p50 3 (p25 2), within 3 yd behind p50 3 | snap-deepest two still ahead p50 2, their x rel carrier p25/50/75 -0.3/1.5/4.2
+mtr-common.jsonl.gz    runs 1200
+  deepest two at snap : depth p50 13 / 7.5  (p25 12 / 6)
+  deepest two at h+.5 : depth p50 10.6 / 4.5  (p25 9.8 / 4.1)
+  deepest two at cross: depth p50 8.0 / 3.9  (p25 6.7 / 3.3)
+  downhill speed at crossing: deepest 4.0 second 1.5 yd/s (p75 4.7 / 2.5)
+  at +10: n 74 defenders ahead p50 1 (p25 0), within 3 yd behind p50 2 | snap-deepest two still ahead p50 0, their x rel carrier p25/50/75 -4.8/-3.1/-1.1
+mtrc-common.jsonl.gz   runs 1200
+  deepest two at snap : depth p50 13 / 7.5  (p25 12 / 6)
+  deepest two at h+.5 : depth p50 11.5 / 4.5  (p25 10.9 / 4.1)
+  deepest two at cross: depth p50 12.1 / 4.0  (p25 11.4 / 3.4)
+  downhill speed at crossing: deepest -0.3 second 0.5 yd/s (p75 0.0 / 1.5)
+  at +10: n 233 defenders ahead p50 2 (p25 1), within 3 yd behind p50 2 | snap-deepest two still ahead p50 1, their x rel carrier p25/50/75 -3.0/-0.1/0.5
+
+## Pursuit feasibility (pursuit.py) at +10 and +20
+nfl-plays.jsonl.gz       runs reaching 10 yd: 347
+  all       n  347 | defenders ahead p50 3 | can intercept within +20: p50 1  within +40: p50 2, none 20% | earliest feasible depth p50 10.3 | actual end p50 14.0
+  ended 40+ n   31 | defenders ahead p50 3 | can intercept within +20: p50 1  within +40: p50 2, none 13% | earliest feasible depth p50 22.5 | actual end p50 50.0
+  ended <40 n  316 | defenders ahead p50 3 | can intercept within +20: p50 2  within +40: p50 2, none 21% | earliest feasible depth p50 10.3 | actual end p50 13.6
+mtr-common.jsonl.gz      runs reaching 10 yd: 74
+  all       n   74 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 1, none 45% | earliest feasible depth p50 18.3 | actual end p50 16.4
+  ended 40+ n   31 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 0, none 71% | earliest feasible depth p50 52.6 | actual end p50 69.9
+  ended <40 n   43 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 26% | earliest feasible depth p50 10.3 | actual end p50 12.6
+mtrc-common.jsonl.gz     runs reaching 10 yd: 233
+  all       n  233 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 25% | earliest feasible depth p50 10.3 | actual end p50 13.0
+  ended 40+ n   39 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 31% | earliest feasible depth p50 23.9 | actual end p50 69.9
+  ended <40 n  194 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 24% | earliest feasible depth p50 10.2 | actual end p50 12.6
+sp-common.jsonl.gz       runs reaching 10 yd: 68
+  all       n   68 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 34% | earliest feasible depth p50 10.4 | actual end p50 15.9
+  ended 40+ n   26 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 0, none 69% | earliest feasible depth p50 54.6 | actual end p50 70.0
+  ended <40 n   42 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 12% | earliest feasible depth p50 10.2 | actual end p50 12.2
+spc-common.jsonl.gz      runs reaching 10 yd: 231
+  all       n  231 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 26% | earliest feasible depth p50 10.3 | actual end p50 13.1
+  ended 40+ n   33 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 27% | earliest feasible depth p50 24.6 | actual end p50 69.9
+  ended <40 n  198 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 26% | earliest feasible depth p50 10.2 | actual end p50 12.7
+nfl-plays.jsonl.gz       runs reaching 20 yd: 79
+  all       n   79 | defenders ahead p50 2 | can intercept within +20: p50 0  within +40: p50 1, none 43% | earliest feasible depth p50 23.1 | actual end p50 31.2
+  ended 40+ n   31 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 1, none 42% | earliest feasible depth p50 41.3 | actual end p50 50.0
+  ended <40 n   48 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 44% | earliest feasible depth p50 20.6 | actual end p50 24.6
+mtr-common.jsonl.gz      runs reaching 20 yd: 36
+  all       n   36 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 86% | earliest feasible depth p50 62.3 | actual end p50 69.8
+  ended 40+ n   31 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 90% | earliest feasible depth p50 62.6 | actual end p50 69.9
+  ended <40 n    5 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 0, none 60% | earliest feasible depth p50 20.0 | actual end p50 31.3
+mtrc-common.jsonl.gz     runs reaching 20 yd: 48
+  all       n   48 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 77% | earliest feasible depth p50 64.1 | actual end p50 69.9
+  ended 40+ n   39 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 87% | earliest feasible depth p50 65.7 | actual end p50 69.9
+  ended <40 n    9 | defenders ahead p50 0 | can intercept within +20: p50 1  within +40: p50 1, none 33% | earliest feasible depth p50 20.2 | actual end p50 29.7
+sp-common.jsonl.gz       runs reaching 20 yd: 30
+  all       n   30 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 87% | earliest feasible depth p50 61.3 | actual end p50 70.0
+  ended 40+ n   26 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 88% | earliest feasible depth p50 61.3 | actual end p50 70.0
+  ended <40 n    4 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 75% | earliest feasible depth p50 20.1 | actual end p50 27.5
+spc-common.jsonl.gz      runs reaching 20 yd: 39
+  all       n   39 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 74% | earliest feasible depth p50 61.7 | actual end p50 69.8
+  ended 40+ n   33 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 88% | earliest feasible depth p50 64.6 | actual end p50 69.9
+  ended <40 n    6 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 0% | earliest feasible depth p50 20.3 | actual end p50 22.2
+
+## Open-field encounters within 1 yd past +8 (openfield.py)
+nfl-plays.jsonl.gz     runs reaching 8: 470, encounters 882 (1.88/run)
+  carrier at 8-20  n  804 | ended   71% broken    9% slowed   20% | carrier speed p50 4.59 defender 3.91
+     behind  84% n  674 | ended   70% broken    9% | carrier speed p50 4.6 defender 4.19
+     side    13% n  105 | ended   71% broken    8% | carrier speed p50 4.3 defender 2.85
+     headon   3% n   25 | ended   84% broken    8% | carrier speed p50 4.14 defender 2.02
+  carrier at 20+   n   78 | ended   76% broken   19% slowed    5% | carrier speed p50 7.81 defender 7.81
+     behind  96% n   75 | ended   76% broken   20% | carrier speed p50 7.95 defender 7.83
+     side     4% n    3 | ended   67% broken    0% | carrier speed p50 4.01 defender 1.9
+d0-common.jsonl.gz     runs reaching 8: 156, encounters 156 (1.00/run)
+  carrier at 8-20  n  149 | ended   92% broken    8% slowed    0% | carrier speed p50 6.12 defender 5.86
+     behind  99% n  148 | ended   92% broken    8% | carrier speed p50 6.12 defender 5.86
+     side     1% n    1 | ended  100% broken    0% | carrier speed p50 3.68 defender 2.69
+  carrier at 20+   n    7 | ended   86% broken   14% slowed    0% | carrier speed p50 8.38 defender 9.58
+     behind 100% n    7 | ended   86% broken   14% | carrier speed p50 8.38 defender 9.58
+mtr-common.jsonl.gz    runs reaching 8: 118, encounters 119 (1.01/run)
+  carrier at 8-20  n  114 | ended   96% broken    4% slowed    1% | carrier speed p50 5.53 defender 5.66
+     behind  97% n  111 | ended   95% broken    4% | carrier speed p50 5.53 defender 5.67
+     side     3% n    3 | ended  100% broken    0% | carrier speed p50 5.7 defender 4.3
+  carrier at 20+   n    5 | ended  100% broken    0% slowed    0% | carrier speed p50 8.25 defender 10.04
+     behind 100% n    5 | ended  100% broken    0% | carrier speed p50 8.25 defender 10.04
+mtrc-common.jsonl.gz   runs reaching 8: 274, encounters 343 (1.25/run)
+  carrier at 8-20  n  330 | ended   91% broken    7% slowed    2% | carrier speed p50 6.29 defender 5.1
+     behind  87% n  288 | ended   94% broken    5% | carrier speed p50 6.5 defender 5.51
+     side     9% n   30 | ended   80% broken   13% | carrier speed p50 5.77 defender 2.57
+     headon   4% n   12 | ended   50% broken   42% | carrier speed p50 6.52 defender 0.71
+  carrier at 20+   n   13 | ended   92% broken    8% slowed    0% | carrier speed p50 8.39 defender 9.58
+     behind 100% n   13 | ended   92% broken    8% | carrier speed p50 8.39 defender 9.58
+sp-common.jsonl.gz     runs reaching 8: 115, encounters 123 (1.07/run)
+  carrier at 8-20  n  118 | ended   97% broken    3% slowed    1% | carrier speed p50 5.76 defender 5.7
+     behind  97% n  115 | ended   97% broken    3% | carrier speed p50 5.81 defender 5.7
+     side     3% n    3 | ended  100% broken    0% | carrier speed p50 5.66 defender 2.55
+  carrier at 20+   n    5 | ended  100% broken    0% slowed    0% | carrier speed p50 8.31 defender 9.62
+     behind 100% n    5 | ended  100% broken    0% | carrier speed p50 8.31 defender 9.62
+spc-common.jsonl.gz    runs reaching 8: 277, encounters 344 (1.24/run)
+  carrier at 8-20  n  337 | ended   92% broken    7% slowed    1% | carrier speed p50 6.5 defender 5.3
+     behind  86% n  291 | ended   94% broken    5% | carrier speed p50 6.56 defender 5.59
+     side    10% n   34 | ended   79% broken   21% | carrier speed p50 6.02 defender 2.06
+     headon   4% n   12 | ended   75% broken   17% | carrier speed p50 6.13 defender 0.9
+  carrier at 20+   n    7 | ended   86% broken   14% slowed    0% | carrier speed p50 8.49 defender 9.8
+     behind 100% n    7 | ended   86% broken   14% | carrier speed p50 8.49 defender 9.8
+
+## Carrier pace and crowd through the second level (carrierpace.py, runs reaching 10)
+nfl-plays.jsonl.gz     runs reaching 10: 347, own peak p50 7.77
+  at + 2: speed p25/50/75 6.01/6.77/7.62 | nearest defender p50 1.8 yd | within 3 yd p50 2 (p75 3)
+  at + 5: speed p25/50/75 6.01/7.08/7.85 | nearest defender p50 1.91 yd | within 3 yd p50 2 (p75 3)
+  at + 8: speed p25/50/75 5.53/6.86/7.98 | nearest defender p50 1.53 yd | within 3 yd p50 2 (p75 3)
+  at +12: speed p25/50/75 5.01/6.62/8.31 | nearest defender p50 1.3 yd | within 3 yd p50 2 (p75 3)
+mtr-common.jsonl.gz    runs reaching 10: 74, own peak p50 8.4
+  at + 2: speed p25/50/75 6.6/7.0/7.3 | nearest defender p50 2.28 yd | within 3 yd p50 2 (p75 3)
+  at + 5: speed p25/50/75 6.73/7.29/7.59 | nearest defender p50 1.46 yd | within 3 yd p50 2 (p75 2)
+  at + 8: speed p25/50/75 6.88/7.46/7.91 | nearest defender p50 1.9 yd | within 3 yd p50 1 (p75 2)
+  at +12: speed p25/50/75 7.06/7.72/8.22 | nearest defender p50 2.28 yd | within 3 yd p50 1 (p75 2)
+mtrc-common.jsonl.gz   runs reaching 10: 233, own peak p50 8.25
+  at + 2: speed p25/50/75 6.73/7.11/7.5 | nearest defender p50 2.2 yd | within 3 yd p50 2 (p75 3)
+  at + 5: speed p25/50/75 7.25/7.72/8.06 | nearest defender p50 2.11 yd | within 3 yd p50 1 (p75 2)
+  at + 8: speed p25/50/75 6.95/7.81/8.36 | nearest defender p50 1.82 yd | within 3 yd p50 1 (p75 2)
+  at +12: speed p25/50/75 5.7/7.27/8.14 | nearest defender p50 0.82 yd | within 3 yd p50 1 (p75 2)
+sp-common.jsonl.gz     runs reaching 10: 68, own peak p50 8.31
+  at + 2: speed p25/50/75 6.73/7.0/7.3 | nearest defender p50 2.33 yd | within 3 yd p50 2 (p75 2)
+  at + 5: speed p25/50/75 6.82/7.29/7.7 | nearest defender p50 1.46 yd | within 3 yd p50 2 (p75 2)
+  at + 8: speed p25/50/75 6.86/7.42/7.83 | nearest defender p50 1.52 yd | within 3 yd p50 1 (p75 2)
+  at +12: speed p25/50/75 6.52/7.65/8.28 | nearest defender p50 2.2 yd | within 3 yd p50 1 (p75 2)
+
+## Front-seven release around the crossing (release.py; tied up = an offensive player within 1.2 yd)
+nfl-plays.jsonl.gz     runs 1909 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 76% +0.5s 66% +1.0s 57% | 0.5 s after: free closing p50 -0.5 speed 3.64 (n 2090) | tied closing -0.46 speed 2.06
+  LB: tied up at crossing +0s 62% +0.5s 58% +1.0s 49% | 0.5 s after: free closing p50 0.83 speed 3.91 (n 2507) | tied closing 0.16 speed 2.3
+d0-common.jsonl.gz     runs 1036 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 82% +0.5s 79% +1.0s 78% | 0.5 s after: free closing p50 -2.28 speed 1.77 (n 821) | tied closing -2.05 speed 2.36
+  LB: tied up at crossing +0s 60% +0.5s 54% +1.0s 54% | 0.5 s after: free closing p50 -0.15 speed 3.09 (n 1531) | tied closing -1.36 speed 2.46
+mtr-common.jsonl.gz    runs 1083 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 81% +0.5s 80% +1.0s 83% | 0.5 s after: free closing p50 -2.11 speed 2.24 (n 818) | tied closing -2.34 speed 2.36
+  LB: tied up at crossing +0s 59% +0.5s 54% +1.0s 55% | 0.5 s after: free closing p50 -0.02 speed 3.72 (n 1610) | tied closing -1.35 speed 2.3
+sp-common.jsonl.gz     runs 1083 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 81% +0.5s 80% +1.0s 80% | 0.5 s after: free closing p50 -1.92 speed 2.15 (n 833) | tied closing -2.4 speed 2.24
+  LB: tied up at crossing +0s 59% +0.5s 54% +1.0s 55% | 0.5 s after: free closing p50 -0.0 speed 3.64 (n 1616) | tied closing -1.14 speed 2.3
+mtrc-common.jsonl.gz   runs 1088 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 81% +0.5s 80% +1.0s 83% | 0.5 s after: free closing p50 -2.18 speed 2.26 (n 820) | tied closing -2.47 speed 2.36
+  LB: tied up at crossing +0s 59% +0.5s 53% +1.0s 55% | 0.5 s after: free closing p50 -0.0 speed 3.76 (n 1627) | tied closing -1.34 speed 2.36
+spc-common.jsonl.gz    runs 1088 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 81% +0.5s 80% +1.0s 80% | 0.5 s after: free closing p50 -2.1 speed 2.15 (n 834) | tied closing -2.53 speed 2.24
+  LB: tied up at crossing +0s 59% +0.5s 53% +1.0s 55% | 0.5 s after: free closing p50 -0.0 speed 3.73 (n 1628) | tied closing -1.12 speed 2.3
+
+## Second level before the crossing (lbmotion.py)
+nfl-plays.jsonl.gz     runs 488 inside_zone
+  at hand : speed 2.26 | down 1.25 | lat 1.0 | depth 3.4 | dist 8.45
+  at h+.5 : speed 2.06 | down 0.75 | lat 0.75 | depth 2.8 | dist 5.94
+  at cross: speed 2.02 | down -0.25 | lat 1.0 | depth 2.6 | dist 3.59
+spc-common.jsonl.gz    runs 391 inside_zone
+  at hand : speed 2.55 | down 2.0 | lat 1.25 | depth 3.4 | dist 8.49
+  at h+.5 : speed 2.0 | down 1.0 | lat 1.25 | depth 2.6 | dist 5.54
+  at cross: speed 1.95 | down -0.0 | lat 1.25 | depth 2.5 | dist 3.4
+nfl-plays.jsonl.gz     runs 662 outside_zone
+  at hand : speed 4.01 | down 1.25 | lat 3.5 | depth 3.2 | dist 8.9
+  at h+.5 : speed 3.95 | down 0.75 | lat 3.5 | depth 2.6 | dist 6.71
+  at cross: speed 3.16 | down -0.5 | lat 2.75 | depth 2.6 | dist 3.76
+spc-common.jsonl.gz    runs 697 outside_zone
+  at hand : speed 3.34 | down 1.5 | lat 2.5 | depth 3.3 | dist 8.27
+  at h+.5 : speed 3.4 | down 1.0 | lat 3.25 | depth 2.6 | dist 5.82
+  at cross: speed 3.01 | down 0.25 | lat 2.75 | depth 2.1 | dist 3.19
+
+## Second level after the crossing: closest approach (lbpass2.py)
+nfl-plays.jsonl.gz     inside_zone
+  <10 runs  460 (460) second-level/run 2.79: contact 1.10  near 0.57  engaged 0.65  free-far 0.47
+  10+ runs   56 (56) second-level/run 2.75: contact 0.52  near 0.50  engaged 0.80  free-far 0.93
+sp-common.jsonl.gz     inside_zone
+  <10 runs  360 (360) second-level/run 3.33: contact 0.83  near 0.72  engaged 1.31  free-far 0.46
+  10+ runs   29 (29) second-level/run 2.62: contact 0.03  near 0.34  engaged 1.66  free-far 0.59
+spc-common.jsonl.gz    inside_zone
+  <10 runs  296 (296) second-level/run 3.40: contact 0.98  near 0.74  engaged 1.27  free-far 0.42
+  10+ runs   95 (95) second-level/run 2.89: contact 0.07  near 0.64  engaged 1.47  free-far 0.71
+nfl-plays.jsonl.gz     outside_zone
+  <10 runs  580 (580) second-level/run 2.72: contact 0.94  near 0.49  engaged 0.70  free-far 0.59
+  10+ runs   88 (88) second-level/run 2.84: contact 0.62  near 0.58  engaged 0.85  free-far 0.78
+sp-common.jsonl.gz     outside_zone
+  <10 runs  649 (649) second-level/run 3.26: contact 0.80  near 0.64  engaged 1.12  free-far 0.70
+  10+ runs   45 (45) second-level/run 3.11: contact 0.07  near 0.58  engaged 1.58  free-far 0.89
+spc-common.jsonl.gz    outside_zone
+  <10 runs  553 (553) second-level/run 3.28: contact 0.97  near 0.63  engaged 1.03  free-far 0.65
+  10+ runs  144 (144) second-level/run 3.15: contact 0.06  near 0.57  engaged 1.63  free-far 0.88
+
+## Second-level block episodes (lbblocks.py)
+nfl-plays.jsonl.gz     inside_zone runs 440, second-level defenders 1242: blocked by crossing+1s 74% | first block starts p50 2.0 s, lasts p25/50/75 0.9/1.5/2.2 s | on at crossing 67% at crossing+1s 63%
+spc-common.jsonl.gz    inside_zone runs 391, second-level defenders 1282: blocked by crossing+1s 74% | first block starts p50 1.8 s, lasts p25/50/75 0.7/1.0/1.5 s | on at crossing 72% at crossing+1s 64%
+nfl-plays.jsonl.gz     outside_zone runs 514, second-level defenders 1425: blocked by crossing+1s 71% | first block starts p50 2.0 s, lasts p25/50/75 0.8/1.4/2.1 s | on at crossing 69% at crossing+1s 53%
+spc-common.jsonl.gz    outside_zone runs 697, second-level defenders 2268: blocked by crossing+1s 62% | first block starts p50 2.3 s, lasts p25/50/75 0.6/1.0/1.5 s | on at crossing 69% at crossing+1s 49%
+
+## Crossing lanes (lanes.py); NFL all, NFL under center, NFL shotgun, sim
+nfl-plays.jsonl.gz     inside_zone runs crossing 488
+  cutback    11% | gain p50 4.0 | 4+  55% 10+   8% 40+  0.0%
+  middle     31% | gain p50 4.0 | 4+  53% 10+  10% 40+  0.7%
+  playside   46% | gain p50 4.0 | 4+  52% 10+  11% 40+  0.0%
+  outside    12% | gain p50 3.0 | 4+  44% 10+  14% 40+  0.0%
+d0-common.jsonl.gz     inside_zone runs crossing 385
+  middle      1% | gain p50 2.1 | 4+   0% 10+   0% 40+  0.0%
+  playside   74% | gain p50 4.3 | 4+  54% 10+  14% 40+  3.9%
+  outside    26% | gain p50 4.8 | 4+  67% 10+  16% 40+ 11.1%
+sp-common.jsonl.gz     inside_zone runs crossing 389
+  middle     11% | gain p50 2.6 | 4+  30% 10+   5% 40+  0.0%
+  playside   73% | gain p50 3.1 | 4+  39% 10+   7% 40+  1.1%
+  outside    16% | gain p50 4.2 | 4+  60% 10+  11% 40+  6.5%
+spc-common.jsonl.gz    inside_zone runs crossing 391
+  middle     11% | gain p50 2.6 | 4+  35% 10+  19% 40+  0.0%
+  playside   73% | gain p50 3.2 | 4+  40% 10+  22% 40+  1.1%
+  outside    16% | gain p50 5.3 | 4+  64% 10+  39% 40+  3.1%
+nfl-plays.jsonl.gz     outside_zone runs crossing 662
+  cutback     0% | gain p50 1.0 | 4+   0% 10+   0% 40+  0.0%
+  middle      1% | gain p50 1.0 | 4+  50% 10+  17% 40+ 16.7%
+  playside   12% | gain p50 4.0 | 4+  57% 10+  16% 40+  1.2%
+  outside    86% | gain p50 4.0 | 4+  54% 10+  13% 40+  1.2%
+d0-common.jsonl.gz     outside_zone runs crossing 651
+  playside    2% | gain p50 1.8 | 4+  13% 10+   0% 40+  0.0%
+  outside    98% | gain p50 3.2 | 4+  38% 10+  10% 40+  3.6%
+sp-common.jsonl.gz     outside_zone runs crossing 694
+  playside    0% | gain p50 3.5 | 4+   0% 10+   0% 40+  0.0%
+  outside   100% | gain p50 4.1 | 4+  53% 10+   6% 40+  2.7%
+spc-common.jsonl.gz    outside_zone runs crossing 697
+  playside    0% | gain p50 3.6 | 4+   0% 10+   0% 40+  0.0%
+  outside   100% | gain p50 4.5 | 4+  60% 10+  21% 40+  4.0%
+nfl-plays.jsonl.gz     inside_zone runs crossing 178
+  cutback     4% | gain p50 4.0 | 4+  62% 10+  12% 40+  0.0%
+  middle     26% | gain p50 4.0 | 4+  57% 10+  15% 40+  2.1%
+  playside   48% | gain p50 4.0 | 4+  51% 10+  13% 40+  0.0%
+  outside    21% | gain p50 3.0 | 4+  46% 10+  11% 40+  0.0%
+nfl-plays.jsonl.gz     inside_zone runs crossing 295
+  cutback    15% | gain p50 4.0 | 4+  53% 10+   7% 40+  0.0%
+  middle     35% | gain p50 4.0 | 4+  53% 10+   8% 40+  0.0%
+  playside   43% | gain p50 4.0 | 4+  54% 10+   9% 40+  0.0%
+  outside     7% | gain p50 2.0 | 4+  40% 10+  15% 40+  0.0%
+
+## Line openings as the runner reaches -2 yd, inside zone (lineholes.py); NFL under center
+nfl-plays.jsonl.gz     inside_zone plays 171 (runner at -2.0 yd, openings >= 1.0 yd)
+  cutback  opening  39% width p50 2.3 | runner took it when open   1% | crossed there overall   5%
+  middle   opening  33% width p50 1.9 | runner took it when open  32% | crossed there overall  26%
+  playside opening  49% width p50 1.9 | runner took it when open  57% | crossed there overall  49%
+  outside  opening  47% width p50 1.8 | runner took it when open  20% | crossed there overall  20%
+  by openings (P/p playside open/closed, M/m middle):
+    PM   9% of plays -> crossed cutback 6% middle 19% playside 75% outside 0%
+    Pm  40% of plays -> crossed cutback 1% middle 21% playside 53% outside 25%
+    pM  23% of plays -> crossed cutback 8% middle 38% playside 42% outside 12%
+    pm  27% of plays -> crossed cutback 6% middle 28% playside 38% outside 28%
+d0-common.jsonl.gz     inside_zone plays 351 (runner at -2.0 yd, openings >= 1.0 yd)
+  cutback  opening  77% width p50 2.9 | runner took it when open   0% | crossed there overall   0%
+  middle   opening  32% width p50 1.6 | runner took it when open   0% | crossed there overall   0%
+  playside opening  66% width p50 2.3 | runner took it when open  84% | crossed there overall  74%
+  outside  opening  36% width p50 2.2 | runner took it when open  37% | crossed there overall  26%
+  by openings (P/p playside open/closed, M/m middle):
+    PM  15% of plays -> crossed cutback 0% middle 0% playside 87% outside 13%
+    Pm  51% of plays -> crossed cutback 0% middle 1% playside 84% outside 16%
+    pM  17% of plays -> crossed cutback 0% middle 0% playside 46% outside 54%
+    pm  18% of plays -> crossed cutback 0% middle 0% playside 61% outside 39%
+sp-common.jsonl.gz     inside_zone plays 377 (runner at -2.0 yd, openings >= 1.0 yd)
+  cutback  opening  89% width p50 2.7 | runner took it when open   0% | crossed there overall   0%
+  middle   opening  38% width p50 1.7 | runner took it when open  10% | crossed there overall  11%
+  playside opening  76% width p50 2.0 | runner took it when open  80% | crossed there overall  72%
+  outside  opening  37% width p50 2.3 | runner took it when open  33% | crossed there overall  16%
+  by openings (P/p playside open/closed, M/m middle):
+    PM  26% of plays -> crossed cutback 0% middle 9% playside 82% outside 9%
+    Pm  50% of plays -> crossed cutback 0% middle 14% playside 79% outside 7%
+    pM  12% of plays -> crossed cutback 0% middle 11% playside 51% outside 38%
+    pm  12% of plays -> crossed cutback 0% middle 4% playside 48% outside 48%
+
+## Whole-distribution TVD vs NFL60 (shape.py)
+d0       n  1200 | TVD vs NFL60: all 0.161 iz 0.119 oz 0.223 wz 0.216
+sp0      n  1200 | TVD vs NFL60: all 0.166 iz 0.130 oz 0.221 wz 0.218
+mtr      n  1200 | TVD vs NFL60: all 0.160 iz 0.168 oz 0.175 wz 0.239
+sp       n  1200 | TVD vs NFL60: all 0.159 iz 0.171 oz 0.170 wz 0.252
+mtrc     n  1200 | TVD vs NFL60: all 0.140 iz 0.267 oz 0.166 wz 0.172
+spc      n  1200 | TVD vs NFL60: all 0.141 iz 0.274 oz 0.151 wz 0.172
+d0tf     n  1800 | TVD vs NFL60: all 0.145 iz 0.107 oz 0.174 wz 0.191
+mtrtf    n  1800 | TVD vs NFL60: all 0.160 iz 0.133 oz 0.153 wz 0.200
+mt2tf    n  1800 | TVD vs NFL60: all 0.142 iz 0.112 oz 0.134 wz 0.197
+mt3tf    n  1800 | TVD vs NFL60: all 0.160 iz 0.118 oz 0.175 wz 0.184
+sptf     n  1800 | TVD vs NFL60: all 0.135 iz 0.110 oz 0.140 wz 0.172
+
+## Front-seven state after the crossing, ace iz/oz, seeds 77,71001 (frontstate.ts); flags: UC_MESH=1 MESH_TEMPO=1 ZONE_TE=1 STRETCH_FLAT=1 LB_KEY=1, SHED_PURSUE off then on
+# SHED_PURSUE=0 lag .5
+plays 138, crossing + 0.5 s
+DL n 595: down 2% engaged 65% bonded 2% free 32%
+  engaged: requested speed p50 3.95 actual 2.34 | requested toward carrier p50 2.92 actual 0.85 | runner past him p50 1.03 yd, distance 4.62 | rush 385
+  free: requested speed p50 7.72 actual 2.48 | requested toward carrier p50 5.47 actual 1.41 | runner past him p50 2.56 yd, distance 7.07 | rush 185, pursuit 4
+LB n 370: down 17% engaged 30% bonded 15% free 38%
+  engaged: requested speed p50 4.64 actual 2.38 | requested toward carrier p50 2.74 actual 0.77 | runner past him p50 -0.97 yd, distance 3.19 | zone 80, man 26, blitz 5, rush 1
+  free: requested speed p50 6.89 actual 2.81 | requested toward carrier p50 4.88 actual 1.89 | runner past him p50 -0.35 yd, distance 2.78 | zone 78, man 52, rush 9, pursuit 1
+# SHED_PURSUE=0 lag 1
+plays 83, crossing + 1 s
+DL n 359: down 3% engaged 70% bonded 1% free 26%
+  engaged: requested speed p50 4.18 actual 2.64 | requested toward carrier p50 3.82 actual 2.17 | runner past him p50 3.04 yd, distance 7.22 | rush 250
+  free: requested speed p50 7.72 actual 3.02 | requested toward carrier p50 7.43 actual 2.28 | runner past him p50 3.78 yd, distance 7.53 | rush 89, pursuit 4
+LB n 222: down 14% engaged 35% bonded 9% free 42%
+  engaged: requested speed p50 4.64 actual 2.45 | requested toward carrier p50 3.81 actual 1.27 | runner past him p50 0.81 yd, distance 4.96 | zone 51, man 20, rush 4, blitz 2
+  free: requested speed p50 9 actual 3.79 | requested toward carrier p50 7.28 actual 3.18 | runner past him p50 1.08 yd, distance 4.61 | zone 50, man 34, blitz 6, rush 3
+# SHED_PURSUE=1 lag .5
+plays 138, crossing + 0.5 s
+DL n 595: down 2% engaged 59% bonded 2% free 37%
+  engaged: requested speed p50 4 actual 2.22 | requested toward carrier p50 2.88 actual 0.92 | runner past him p50 0.75 yd, distance 4.42 | rush 351
+  free: requested speed p50 7.72 actual 2.29 | requested toward carrier p50 5.77 actual 1.36 | runner past him p50 2.74 yd, distance 6.86 | rush 218, pursuit 4
+LB n 370: down 17% engaged 31% bonded 15% free 38%
+  engaged: requested speed p50 4.66 actual 2.49 | requested toward carrier p50 4.04 actual 0.9 | runner past him p50 -0.97 yd, distance 3.2 | zone 80, man 28, blitz 5
+  free: requested speed p50 6.89 actual 2.81 | requested toward carrier p50 4.88 actual 1.94 | runner past him p50 -0.38 yd, distance 2.78 | zone 78, man 49, rush 10, pursuit 1
+# SHED_PURSUE=1 lag 1
+plays 83, crossing + 1 s
+DL n 359: down 4% engaged 37% bonded 1% free 58%
+  engaged: requested speed p50 4.4 actual 2.77 | requested toward carrier p50 3.58 actual 2.19 | runner past him p50 1.99 yd, distance 6.85 | rush 132
+  free: requested speed p50 8.06 actual 2.91 | requested toward carrier p50 7.77 actual 2.33 | runner past him p50 3.98 yd, distance 7.48 | rush 204, pursuit 4
+LB n 222: down 14% engaged 27% bonded 9% free 50%
+  engaged: requested speed p50 4.77 actual 2.54 | requested toward carrier p50 3.93 actual 1.43 | runner past him p50 0.36 yd, distance 4.72 | zone 39, man 18, rush 2, blitz 2
+  free: requested speed p50 9 actual 3.63 | requested toward carrier p50 7.55 actual 3.17 | runner past him p50 1.32 yd, distance 4.67 | zone 61, man 37, blitz 6, rush 5
+
+## Rep ends and instant re-engagements after the crossing (relatch.ts); flags: UC_MESH=1 MESH_TEMPO=1 ZONE_TE=1 STRETCH_FLAT=1 LB_KEY=1
+# DL SHED_PURSUE=0
+plays 160, DL reps ended after the crossing: {
+  'runner passed defender': 644,
+  separation: 47,
+  'body down': 10,
+  leverage: 1
+}
+  re-engaged within a tick: 492 same blocker after 'runner passed defender', blocker in front
+  re-engaged within a tick: 2 same blocker after 'runner passed defender', blocker at his side
+  re-engaged within a tick: 2 other blocker after 'runner passed defender', blocker behind his back
+  re-engaged within a tick: 1 other blocker after 'separation', blocker at his side
+  re-engaged within a tick: 1 other blocker after 'runner passed defender', blocker at his side
+  re-engaged within a tick: 1 other blocker after 'runner passed defender', blocker in front
+# DL SHED_PURSUE=1
+plays 160, DL reps ended after the crossing: {
+  'runner passed defender': 360,
+  separation: 56,
+  'body down': 12,
+  leverage: 4
+}
+  re-engaged within a tick: 3 other blocker after 'runner passed defender', blocker at his side
+  re-engaged within a tick: 3 other blocker after 'runner passed defender', blocker behind his back
+  re-engaged within a tick: 1 other blocker after 'runner passed defender', blocker in front
+# LB SHED_PURSUE=0
+plays 160, LB reps ended after the crossing: {
+  separation: 44,
+  'runner passed defender': 109,
+  'body down': 12,
+  leverage: 2
+}
+  re-engaged within a tick: 79 same blocker after 'runner passed defender', blocker in front
+  re-engaged within a tick: 1 same blocker after 'runner passed defender', blocker at his side
+# LB SHED_PURSUE=1
+plays 160, LB reps ended after the crossing: {
+  separation: 45,
+  'body down': 13,
+  'runner passed defender': 50,
+  leverage: 3
+}
+
+## Inside-zone entry read inside 2.5 yd (bendread.ts); flags: UC_MESH=1 MESH_TEMPO=1 ZONE_TE=1 STRETCH_FLAT=1 LB_KEY=1 SHED_PURSUE=1
+reads 149, selected lane: [ [ 'playside', 106 ], [ 'middle', 26 ], [ 'outside', 17 ] ]
+not middle with a middle candidate: 123 | middle risk p25/50/75 10.04/10.81/11.5, chosen risk p50 7.43
+first defender expected at the best middle entry: [
+  [ 'DT engaged', 48 ],
+  [ 'LB free', 38 ],
+  [ 'NT engaged', 19 ],
+  [ 'LB engaged', 13 ],
+  [ 'DE engaged', 3 ],
+  [ 'DT free', 2 ]
+]
+  his margin (s, < 0 = there first) p25/50/75 -1.07/-0.8/-0.66, depth p50 1.56 yd
+
+## Who is around the carrier at +8 yd (crowd.py)
+nfl-plays.jsonl.gz runs reaching 8: 470  per run by group: near<3 / ahead (beyond 3) / behind 3-6 / far
+  DL: near<3 0.31  ahead 0.16  behind3-6 0.75  far 1.96
+  LB: near<3 0.73  ahead 0.48  behind3-6 0.71  far 1.21
+  DB: near<3 1.17  ahead 2.51  behind3-6 0.36  far 0.66
+mtr-common.jsonl.gz runs reaching 8: 118  per run by group: near<3 / ahead (beyond 3) / behind 3-6 / far
+  DL: near<3 0.01  ahead 0.05  behind3-6 0.28  far 3.38
+  LB: near<3 0.19  ahead 0.01  behind3-6 0.86  far 2.18
+  DB: near<3 1.41  ahead 1.02  behind3-6 0.85  far 0.76
+mtrc-common.jsonl.gz runs reaching 8: 274  per run by group: near<3 / ahead (beyond 3) / behind 3-6 / far
+  DL: near<3 0.01  ahead 0.04  behind3-6 0.30  far 3.47
+  LB: near<3 0.21  ahead 0.02  behind3-6 0.72  far 2.15
+  DB: near<3 1.29  ahead 1.42  behind3-6 0.51  far 0.86
+sp-common.jsonl.gz runs reaching 8: 115  per run by group: near<3 / ahead (beyond 3) / behind 3-6 / far
+  DL: near<3 0.01  ahead 0.05  behind3-6 0.30  far 3.39
+  LB: near<3 0.12  ahead 0.03  behind3-6 1.07  far 2.02
+  DB: near<3 1.43  ahead 1.03  behind3-6 0.78  far 0.78

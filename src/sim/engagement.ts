@@ -651,6 +651,14 @@ const DL_FLOW = process.env.DL_FLOW !== '0';
  * duties keep their landmark. Requests only: blocker, contact and World
  * decide what is achieved. */
 const BACK_CHASE = process.env.BACK_CHASE === '1', CHASE_TRAIL = 1, CHASE_STEP = .3;
+/** Experimental (SHED_PURSUE=1, off): once the runner a blocked defender sees
+ * is past the line, he works off the block toward the ball wherever the ball
+ * is, not only when it is within close range: the ball has left his gap and
+ * everyone pursues. Only the decision to work off changes; the hand fight,
+ * his feet and the blocker's body still decide whether he gets free. When
+ * the rep ends because the runner has passed him, the same blocker cannot
+ * re-latch him at once (the shed window); bodies still collide. */
+const SHED_PURSUE = process.env.SHED_PURSUE === '1';
 /** Experimental (RUN_LATERAL=1, off): in a run rep, lateral requests are
  * bounded by the body's own square lateral speed (vmax x shuffle, which the
  * World applies by facing), not by the pass-protection mirror trait that also
@@ -705,6 +713,10 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
       if (past > 2.5 && t - e.start > 0.4) {
         runContactObservers.get(sim)?.(e, 'end', { reason: 'runner passed defender', past });
         sim.disengage(e);
+        // SHED_PURSUE: he is off this block to pursue. The blocker's body can
+        // still be in his way (World contact), but his hands cannot re-latch
+        // the man on the next tick, the same window as a shed.
+        if (SHED_PURSUE) b.shedBy.set(d, t + 0.6);
         continue;
       }
     }
@@ -1032,7 +1044,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // First-level stack/shoulder and uncertain possession retain the old gate.
     const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
       && read.declared && read.threat.carrying === true;
-    if (dc < 3.5 || supportRunner) {
+    const pursue = SHED_PURSUE && read.threat.carrying === true
+      && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
+    if (dc < 3.5 || supportRunner || pursue) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);

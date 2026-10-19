@@ -13,7 +13,7 @@ import type { Gap, RunConcept } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
-import { goTo, stand } from './behaviors/common.js';
+import { goTo, runThrough, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
@@ -136,8 +136,9 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
+    const tempo = MESH_TEMPO && concept.scheme !== 'draw' && concept.scheme !== 'toss';
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.qbThrough);
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, tempo);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -220,7 +221,12 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     rb = { x: los - 4.9, y: by + ps * 0.95 };
   } else {
     qb = { x: los - 5.0, y: by };
-    rb = { x: los - 4.4, y: by + ps * 0.9 };
+    // MESH_TEMPO: an offset back takes the ball on his own side of the QB,
+    // a step in front of him, and crosses after the exchange (2022 tracking:
+    // own side on 93% of shotgun inside zone, a median 0.4 yd up and 0.7 yd
+    // over). A straight track to a far-side spot runs through the QB's body.
+    const side = Math.sign((sim.slot('RB')?.pos.y ?? by) - by);
+    rb = MESH_TEMPO && side ? { x: los - 4.6, y: by + side * 0.7 } : { x: los - 4.4, y: by + ps * 0.9 };
   }
   const underMesh = UC_MESH && qbType === 'under' && concept.scheme !== 'toss';
   if (underMesh) {
@@ -261,6 +267,15 @@ export class PlayActionFake implements Behavior {
   }
 }
 
+/** Experimental (MESH_TEMPO=1, off): the back takes the handoff moving. He
+ * settles until his own full-effort time to the mesh (the engine's reach
+ * law) uses up the time left to the exchange, then goes, so he arrives at
+ * the installed exchange time already at run tempo and rides through it
+ * (tracked backs take the ball at 4.4-5.5 yd/s; ours were arriving early
+ * and braking to 2-3). In shotgun the offset back meets the ball on his
+ * own side of the QB (see meshFor). Draw and toss timing are unchanged. */
+export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
+
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {
   readonly kind = 'mesh';
@@ -269,8 +284,10 @@ export class RunnerToMesh implements Behavior {
     readonly meshTime: number,
     readonly aim: Vec2,
     readonly ride = false,
+    readonly tempo = false,
   ) {}
   private passed = false;
+  private going = false;
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
       return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
@@ -281,6 +298,19 @@ export class RunnerToMesh implements Behavior {
     if (RUN_READ && run && READ_SCHEMES.has(run.scheme)) runRead(a, sim, run.scheme, playSideSign(sim, run), this.aim, false);
     const dt = this.meshTime - sim.t;
     const d = Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y);
+    if (this.tempo) {
+      const need = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, this.mesh, 0);
+      if (!this.going && d > .7 && dt > need + sim.dt) {
+        const qb = sim.see(a, sim.qb);
+        return { vel: { x: 0, y: 0 }, facing: Math.atan2(qb.pos.y - a.pos.y, qb.pos.x - a.pos.x) };
+      }
+      this.going = true;
+      if (d < .7 && sim.t >= this.meshTime - .15) this.passed = true;
+      if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
+      // Full effort, as the start time assumed: the gait's lag means a lower
+      // request also accelerates more slowly and arrives late and slow.
+      return runThrough(a, this.mesh, { speed: 1 });
+    }
     // Leave on the snap and get to the mesh on time: budget for the
     // acceleration it takes to get going, not just the distance.
     const tAcc = gaitLag(a.profile) * 0.9;

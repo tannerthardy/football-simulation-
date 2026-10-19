@@ -2,7 +2,8 @@
 
 Branch `claude/run-game-v3` from accepted develop `f414627`. Not integrated.
 Every change is a default-off flag; flags off, the zone lab is identical on
-1,200/1,200 plays (yards and every tracked position). 1,906 TS tests and
+1,200/1,200 plays (yards and every tracked position; rechecked after Part 3,
+`report-id0.txt`). 1,913 TS tests and
 typecheck pass on Node 22.23.3.
 
 ## Question
@@ -67,10 +68,13 @@ At 2.5 s, 51% of play-side ends are more than 0.5 yd in the backfield
 | `DEEP_CAP` | A deep-zone alley defender keeps installed depth until the runner he sees crosses the line, then ordinary chase (ported from `claude/open-field-tackling`) | `run-fits.ts` |
 | `BACK_CHASE` | An engaged first-level defender the ball has gone away from pursues down the line, a yard behind the ball, instead of holding his shoulder on the blocker. Flow comes from his own picture of the runner. He keeps his held depth and never pursues against the flow; lag duties stay home. | `runContactRead` and the defender request in `stepRunRep` (`engagement.ts`) |
 | `RUN_LATERAL` | Run-rep lateral requests are bounded by the body's square lateral speed (vmax × shuffle), not the pass-protection mirror trait | `stepRunRep` blocker mirror and defender flow bound |
+| `MESH_TEMPO` | The back takes the handoff moving: he settles until his own full-effort time to the mesh uses up the time left, then runs through it. In shotgun the offset back meets the ball on his own side of the QB (0.4 yd up, 0.7 yd over, as tracked) instead of crossing his face to a far-side spot. Draw and toss unchanged. | `RunnerToMesh` and `meshFor` (`assign.ts`) |
+| `SHED_PURSUE` | Once the runner a blocked defender sees is past the line, he works off the block toward the ball at any range, not only within 3.5 yd. When the rep ends because the runner has passed him, the same blocker cannot re-latch him for the shed window (0.6 s); bodies still collide. | Shed gate and rep end in `engagement.ts` |
 | `DEF_GETOFF` (diagnostic scale, default 1) | Defensive snap latency is an unfitted assumption; NFL box defenders and OL first move at the same median time | `agent.ts`; shared perception, owner decides |
 
 Contract tests: `test/stretch-flat.test.ts`, `test/run-game-flags.test.ts`,
-`test/back-chase.test.ts` and `test/deep-cap.test.ts`. They cover default-off behavior, both flips or
+`test/back-chase.test.ts`, `test/deep-cap.test.ts` and
+`test/shed-pursue.test.ts`. They cover default-off behavior, both flips or
 sides, and unaffected cases.
 
 ## Results
@@ -345,6 +349,180 @@ holds (grip 0.1–0.4) on a runner at 8+ yd/s. Approach and chase finishing have
 already had their two attempts (`claude/open-field-tackling`). What remains is
 tackle physics at speed.
 
+## Part 3 — the mesh, the secondary and getting off blocks (2026-10-19)
+
+Receipts: [part3.txt](run-game-v3/part3.txt) (every operator below, NFL and
+sim, with flags) and `report-LABEL.txt` for `mt2tf`, `sp`, `spc`, `sp0`,
+`sptf`, `spgap` and `id0`. Labels:
+
+- `mtr`: `rec2` + `MESH_TEMPO`.
+- `sp`: `mtr` + `SHED_PURSUE`.
+- `c` suffix: + `DEEP_CAP`.
+- `tf`: zone transfer; `gap`: gap schemes.
+- `mtrtf`: before the shotgun spot change; `mt2tf`: after it.
+
+Flags off, the ace lab (`id0`) reproduces develop's report byte for byte
+with 0 of 1,200 per-play gains changed.
+
+### Backs take the handoff standing still (`MESH_TEMPO`)
+
+Speed at the handoff (`rbspeed.py`, yd/s):
+
+| | NFL | Develop | `MESH_TEMPO` |
+|---|---|---|---|
+| Under center IZ | 4.43 | 2.24 | 4.37 |
+| Under center OZ | 5.48 | 4.37 | 4.95 |
+| Gap (power/counter/trap) | 4.61 | 2.14 | 4.04 |
+| Duo | 4.26 | 2.14 | 3.69 |
+| Shotgun IZ | 3.82 | 1.25 | 2.30 |
+| Shotgun OZ | 4.67 | 1.95 | 2.50 |
+
+Develop's back arrives early and brakes onto the spot. With the flag he
+settles, then runs through it on his own reach law.
+
+In shotgun the first version only reached 1.95 yd/s. The spacing layer
+correctly cut his 9.4 yd/s request to about 3, because his straight track to
+a far-side spot ran through the QB's body. Tracking puts the exchange on the
+back's own side on 93% of shotgun IZ (`meshgeo.py`: 0.4 yd in front of the
+QB and 0.7 yd over). The flag now uses that spot.
+
+The remaining shotgun shortfall is runway: sim backs align 1.6 yd beside the
+QB and 0.2 deep, NFL backs 2.3 and 0.5. That is a formation question, not
+changed here.
+
+Handing off only when the back reaches the spot, rather than at first arm's
+reach, was tried. It raised shotgun handoff speed only to 2.66, and shotgun
+IZ negatives rose from 4 to 8%. It was reverted
+(`superseded/report-mt3*-handoffgate.txt`).
+
+| Arm (neg / 4+ / 40+ / TVD) | Before `MESH_TEMPO` (`rec2*`) | With it (`mtr`, `mt2tf`, `mtrgap`) |
+|---|---|---|
+| Ace zone | 12.6 / 36.7 / 2.33 / 0.173 | 9.6 / 43.8 / 2.58 / 0.160 |
+| Zone transfer | 13.0 / 38.1 / 3.56 / 0.166 | 9.7 / 39.0 / 2.67 / 0.142 |
+| Gap schemes | 9.1 / 40.8 / 3.75 / 0.144 | 6.1 / 47.2 / 5.38 / 0.120 |
+
+NFL60 for reference: neg 8.6, 4+ 48.8, 40+ 1.18.
+
+Negatives and 4+ move toward NFL in all three sets. The adverse result is the
+gap-scheme tail: power 40+ is 10% (`report-mtrgap.txt`).
+
+`MESH_TEMPO` does not cover the stretch exposure that `UC_MESH` opens.
+With `UC_MESH` alone (`m1`), ace negatives are 17.5%; adding only
+`MESH_TEMPO` (`mt`) gives 18.0% (OZ 22%, WZ 30%). The stretch flags stay
+part of the package.
+
+### The secondary: `DEEP_CAP` fixes the deep man; the rest already matches
+
+Depth past the line by snap alignment group, and depth given up by the
+crossing (`dbgroups.py`):
+
+| Group | NFL60 | Develop | `DEEP_CAP` |
+|---|---|---|---|
+| Deep (10+ yd at the snap) | 13.2 → 13.0, gives 0.5 | 12 → 7.3, gives 5.3 | 12 → 11.9, gives 0.5 |
+| Off-wide (5–10 yd, > 8 yd out) | 7.2 → 8.3 | 6 → 6.4 | 6 → 7.0 |
+| Mid-inside (5–10 yd, inside) | 5.7 → 3.8 | 5 → 2.7 | 5 → 3.1 |
+
+The NFL deep man first gains depth (14.7 yd at handoff + 0.5 s).
+
+### What makes the 40+ tail: nobody arrives
+
+For runs reaching 10 yd (`carrierpace.py`), carrier speed is close to NFL
+(about 7.0–7.5 vs 6.8–7.1 yd/s). What differs is the crowd: NFL keeps 2
+defenders within 3 yd from +2 through +12, the sim drops to 1 by +8.
+
+At +8 yd (`crowd` rows in `part3.txt`), per run:
+
+| Within 6 yd of the carrier, or ahead of him | NFL | Sim (`mtrc`) |
+|---|---|---|
+| DL | 1.22 | 0.35 |
+| LB | 1.92 | 0.95 |
+
+Past +8 yd (`openfield.py`), sim runs get 1.0–1.25 encounters within a yard
+per run, against NFL's 1.9. An NFL encounter ends the play within 1 s 71% of
+the time and only slows the runner 20%. A sim encounter ends it 91–97%.
+
+### Engaged defenders were re-latched every tick (`SHED_PURSUE`)
+
+After the ball crosses, 81% of sim DL stay within 1.2 yd of a blocker for the
+next second; NFL's fall from 76 to 57% (`release.py`).
+
+The engagement log shows why (`relatch.ts`, ace IZ/OZ, 160 plays, `mtr`
+flags):
+
+- 644 DL reps ended "runner passed defender" after the crossing.
+- 492 were followed within a tick by a new rep from the same blocker, still
+  squarely in front of him. Linebackers: 79.
+- A defender also never tried to work off a block unless the runner was
+  within 3.5 yd.
+
+`SHED_PURSUE` gives the shed window to that rep end and lets him work off
+toward a runner past the line at any range. Results (`frontstate.ts`):
+
+- Instant re-latches fall to 0 (DL and LB).
+- DL still in a rep 1 s after the crossing: 70 → 37%.
+
+Outcome changes are within noise at these counts (40+ is 10–30 plays per
+arm):
+
+| | Without | With `SHED_PURSUE` |
+|---|---|---|
+| Ace package 40+ | 2.58 | 2.17 |
+| Ace with cap 40+ | 3.25 | 2.75 |
+| Zone transfer 40+ / TVD | 2.67 / 0.142 | 2.50 / 0.135 |
+| Gap schemes 40+ / TVD | 5.38 / 0.120 | 4.88 / 0.118 |
+| Alone on develop 40+ / TVD | 3.75 / 0.161 | 4.25 / 0.166 |
+
+Proximity tie-up does not change (DL 80%): the lineman is now free but still
+next to the blocker. Free DL request about 8 yd/s and move at 2.3–3.0 with
+full balance capacity:
+
+- Their tau is 1.2–1.5 s.
+- 22% are still turning more than 90° from their request.
+- 16% are touching a blocker's body.
+
+That start-up is the World's gait, not a request. It is the same start-up
+acceleration already handed off for the OL.
+
+### Inside zone never bends back (`lanes.py`, `lineholes.py`)
+
+Under center, NFL IZ runners cross:
+
+| Lane | NFL | Develop | `sp` |
+|---|---|---|---|
+| Cutback | 4% | 0% | 0% |
+| Middle (within 1 yd of the ball) | 26% | 1% | 11% |
+| Playside | 48% | 74% | 73% |
+| Outside | 21% | 26% | 16% |
+
+As the runner reaches −2 yd, a middle opening of at least 1 yd exists about
+as often in the sim (32–38%) as in NFL (33%). When the playside is closed
+and the middle open:
+
+- NFL backs bend to the middle 38% of the time and bounce 12%.
+- Sim backs bend 11% and bounce 38%.
+
+His read is not missing it (`bendread.ts`). In 67 of 123 reads, the first
+defender his threat model expects at the best middle entry is the
+double-teamed 1- or 3-technique. That defender is still engaged, 1.5 yd deep
+in the A gap, and is there 0.8 s before the back. Engaged DL depth at 3 s is
++0.2 yd in the sim against +1.0 for NFL. The bend waits on the double team
+moving its man, which is the contact handoff below. The read model was left
+alone: it deliberately does not credit blocks.
+
+Second-level block episodes otherwise match NFL (`lbblocks.py`: 74% vs 74%
+blocked on IZ, similar timing). Second-level motion before the crossing
+matches too (`lbmotion.py`).
+
+The second level differs after the crossing (`lbpass2.py`):
+
+| 10+ runs, per run | NFL | Sim |
+|---|---|---|
+| Second-level contacts within 1 yd | 0.52 | 0.07 |
+| Defenders blocked at closest approach | 0.80 | 1.47–1.66 |
+
+In NFL long runs a backer reaches the runner and is carried through. In the
+sim a reached runner is down. That is the held-carrier timing again.
+
 ## Handoffs (no edits made)
 
 - **Defensive snap latency** (`agent.ts`, perception): NFL box defenders and OL
@@ -352,9 +530,18 @@ tackle physics at speed.
   Halving the defensive scale (`DEF_GETOFF=0.5`) makes them equal (0.4/0.4).
   Inside zone then moves onto NFL (4+ 54.5 → 49.0, mean 8.45 → 6.82); the
   tail is unchanged.
-- **Engaged lateral race** (World contact and gait): engaged OL lateral speed
-  is 1.0 vs 3.0 yd/s. The OL's lateral acceleration from the stance is about
-  3.5 yd/s², and contact then halts it. This is the root of weaknesses 2 and 3.
+- **Engaged pairs do not move, and bodies start slowly** (World contact and
+  gait):
+  - Engaged OL lateral speed is 1.0 vs 3.0 yd/s. The OL's lateral
+    acceleration from the stance is about 3.5 yd/s², and contact then halts
+    it. This is the root of weaknesses 2 and 3.
+  - The double team does not move its man back either: engaged DL depth at
+    3 s is +0.2 vs +1.0 yd. That keeps the inside-zone bend closed (Part 3).
+  - A lineman freed after the crossing requests about 8 yd/s and reaches
+    2.3–3.0 half a second later (tau 1.2–1.5 s, full balance capacity).
+- **Shotgun back alignment** (formation owner): sim backs align 1.6 yd beside
+  the QB and 0.2 deep; tracked backs are 2.3 and 0.5. The short runway caps
+  the shotgun handoff speed even with `MESH_TEMPO` (2.3 vs 3.8 yd/s).
 - **Held carriers go down too fast** (tackle/support physics): falls come
   0.3 s after the first hold in 95–99% of holds at every depth. Contact to
   whistle is 0.8 vs 1.4 s, and yards after contact are 0.6–0.9 lower in every
@@ -367,21 +554,36 @@ tackle physics at speed.
 
 ## Next decision
 
-1. Review `rec2` (`UC_MESH ZONE_TE STRETCH_FLAT LB_KEY`) as the candidate,
-   weighing the under-center IZ and tail repair against the gun-doubles and
-   gap-scheme 4+ adverses above and the `ZONE_TE` caveat. Without `ZONE_TE`
-   (`rec`), the mesh exposure is uncovered: ace WZ negatives reach 26%.
-   `UC_MESH`, `STRETCH_FLAT` and `LB_KEY` each move their own mechanism toward
-   NFL. Their combined outcomes stay mixed until the line slides.
-2. Keep `DEEP_CAP` parked until the box holds without the collapsed safety.
+1. Review `sp` (`UC_MESH MESH_TEMPO ZONE_TE STRETCH_FLAT LB_KEY
+   SHED_PURSUE`) as the candidate. It replaces `rec2`.
+   - It is the first package closer to NFL60 than develop on all three play
+     sets by TVD: ace 0.159 vs 0.161, zone transfer 0.135 vs 0.145, gap
+     schemes 0.118 vs 0.125.
+   - Ace negatives 12.8 → 9.6% (NFL 8.6) and 40+ 3.75 → 2.17% (NFL 1.18).
+   - Weigh against: ace 10+ falls further below NFL (10.1 → 6.2%, NFL 13.1);
+     the gap-scheme tail rises (40+ 4.00 → 4.88%, power 8.25%); and the
+     `ZONE_TE` caveat.
+   - `SHED_PURSUE` is in the package as a repair to an engine artifact (the
+     re-latch loop). Its own outcome effect is within noise.
+2. Keep `DEEP_CAP` parked:
+   - With `sp` it gives the best ace shape (`spc` TVD 0.141).
+   - It overshoots 10+ (19.9%, NFL 13.1), mostly inside zone (23.8%).
+   - That box leak waits on the engaged-pair handoff below.
+
    Keep `BACK_CHASE` and `RUN_LATERAL` as mechanism candidates (flow toward
    NFL); they are not outcome improvements on their own.
 3. Physics owner, in order of consequence:
-   - held-carrier fall timing;
-   - the engaged lateral race and OL start-up acceleration;
+   - held-carrier fall timing. Part 3 adds that sim long runs see 0.07
+     second-level contacts per run against NFL's 0.52.
+   - engaged pairs that neither slide nor give ground, and start-up
+     acceleration;
    - open-field holds at speed.
 
    Perception owner: the defensive snap latency (`DEF_GETOFF=0.5` is the only
    arm that beats develop on the whole distribution).
-4. Controller, after those: the runner's cutback read against a pursuing
-   backside (the shelved `RUN_READ` is not it).
+4. Controller, after those:
+   - the inside-zone bend, once double teams move their man. It is closed by
+     the engaged 1/3-technique, not by the read.
+   - the runner's cutback read against a pursuing backside (the shelved
+     `RUN_READ` is not it).
+   - the gap-scheme tail under `MESH_TEMPO` (power).

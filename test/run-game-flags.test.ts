@@ -1,6 +1,7 @@
 /** Run-game controller candidates (experimental, all default-off):
  * UC_MESH (under-center exchange depth/timing), ZONE_TE (an inline tight end
- * runs the zone track) and LB_KEY (backers key the back's first step). */
+ * runs the zone track), LB_KEY (backers key the back's first step) and
+ * MESH_TEMPO (the back takes the handoff moving). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -139,5 +140,43 @@ describe('LB_KEY backers key the back\'s first step', () => {
   it('does not flow before the back has stepped', async () => {
     const on = await stage('1', 0, false);
     expect(on.lb.tags.has('fit-flow-read')).toBe(false);
+  });
+});
+
+describe('MESH_TEMPO back takes the handoff moving', () => {
+  /** The back's speed when the QB gives him the ball. */
+  async function handoffSpeed(flags: Record<string, string>, formationId: string, run: string, flip = false) {
+    const s = await sim(flags, formationId, run, flip);
+    const back = s.slot('RB')!, mesh = { ...runner(s).mesh };
+    let settled = 0;
+    while (s.phase === 'live' && s.handoffAt < 0 && s.t < 3) {
+      s.tick();
+      if (s.handoffAt < 0 && s.t > .1 && s.t < .3 && Math.hypot(s.intents[back.idx].vel.x, s.intents[back.idx].vel.y) === 0) settled++;
+    }
+    expect(s.handoffAt).toBeGreaterThan(0);
+    return { speed: Math.hypot(back.vel.x, back.vel.y), settled, mesh, sim: s };
+  }
+
+  it.each([false, true])('under center: settles after the snap, then takes the ball at run tempo, flip=%s', async flip => {
+    const off = await handoffSpeed({ UC_MESH: '1', MESH_TEMPO: '0' }, 'ace_11', 'iz_strong', flip);
+    const on = await handoffSpeed({ UC_MESH: '1', MESH_TEMPO: '1' }, 'ace_11', 'iz_strong', flip);
+    expect(on.settled).toBeGreaterThan(0);
+    expect(on.speed).toBeGreaterThan(off.speed + 1);
+  });
+
+  it.each([false, true])('shotgun: the offset back meets the ball on his own side and takes it faster, flip=%s', async flip => {
+    for (const run of ['iz_strong', 'iz_weak']) {
+      const off = await handoffSpeed({ MESH_TEMPO: '0' }, 'gun_doubles_11', run, flip);
+      const on = await handoffSpeed({ MESH_TEMPO: '1' }, 'gun_doubles_11', run, flip);
+      const back = on.sim.offAlign.spots[on.sim.slot('RB')!.slot]!.pos.y - on.sim.ballY;
+      expect(Math.sign(on.mesh.y - on.sim.ballY)).toBe(Math.sign(back));
+      expect(on.speed).toBeGreaterThan(off.speed + .5);
+    }
+  });
+
+  it('leaves the draw back on his delayed timing', async () => {
+    const { RunnerToMesh } = await import('../src/sim/assign.js');
+    const s = await sim({ MESH_TEMPO: '1' }, 'gun_doubles_11', 'draw');
+    expect((s.slot('RB')!.behavior as InstanceType<typeof RunnerToMesh>).tempo).toBe(false);
   });
 });
