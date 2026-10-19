@@ -49,6 +49,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
+| [RUN-009](#RUN-009) | Mesh tempo/geometry and repeated runner-passed re-grabs | Recorded mechanism changes; causal/football interpretation pending | Draft #153; not an accepted six-flag package | Independent Run/contact dispositions, Measurement semantics and author-published saved witnesses; [review packet](reviews/run-game-v3-review-intake.md) |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Cadence and observed passed-exchange secure/carry | Cadence63 / continuation136 accepted | Bounded scope resolved via151; initial spacing and broader recovery separate | Run; preserve real transfer-first reach/ordinary PA and source-qualified composed witness |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
@@ -82,6 +83,21 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [DATA-001](#DATA-001) | Capability mappings and contact-capacity calibration | Evidence gap | Deferred | Roster/audit owner, no active assignment claimed; one named trait/measurement question |
 | [REPO-001](#REPO-001) | GitHub default is still the old engine branch | Confirmed navigation problem | Open administrative item | Integration; separate reviewed default-branch decision |
 | [REPO-002](#REPO-002) | Legacy PR/branch retirement and external evidence preservation | Historical cleanup holds; current disposition needs recheck | Parked | Integration + affected owners; refreshed preservation manifest |
+
+<a id="RUN-009"></a>
+## RUN-009 — Run-game v3 mesh and block-lifecycle review
+
+Draft #153 preserves research head1c578afb/runtimec8d63808 directly on accepted
+f4146275. Recorded repeated re-grabs, mesh timing and achieved movement merit
+independent review; the new cooldown trigger and six-flag package are not
+accepted correctness repairs. Run/controller reviews tempo/geometry and older
+flags; contact reviewer adjudicates reachable re-acquisition with Run consulting;
+Measurement qualifies NFL contact/proxy/provenance claims. Author publishes
+existing selected witnesses, no recollection. Power/gun adverse cases and rejected
+trials remain. [Exact scopes, evidence pins and bounded prompts](reviews/run-game-v3-review-intake.md).
+No engine/flags/baseline changes or new simulation/suite. Return condition:
+nonauthor disposition of an isolated scope, then exact Integration verification
+if appropriate; parked Physics and other blocked items remain independent.
 
 ## Accepted70b4 saved-cohort additions — source-qualified audit
 

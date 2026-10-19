@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Completed #153 review preparation — 2026-10-19 UTC
+
+Integration owns only the #153 review packet, new hash inventory and current
+queue/status/issue metadata on `codex/integration-queue`; preparation boundary
+released after publication. No source/test/settings/committed receipt edits,
+runtime freeze, suite or simulation. Author's `claude/run-game-v3@1c578afb` and
+all original/rejected evidence remain untouched. Bounded review requests are
+for independent Run/controller, contact/Physics with Run consulting, and
+Measurement; no reviewer acceptance or new edit claim is assumed. Author
+supplies existing shared witnesses/provenance. Original owners retain their
+files; do not import this branch to simplify extraction. Acceptedf4146275 and
+other ready scopes continue independently. [Review packet](reviews/run-game-v3-review-intake.md).
+
 ## Completed #151 accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration completed only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; adopted asf4146275; assembly boundary released. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

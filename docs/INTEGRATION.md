@@ -1,6 +1,6 @@
 # Shared integration queue
 
-Updated **2026-10-17 (America/Phoenix)**. Integration in this chat owns queue
+Updated **2026-10-19 UTC**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
@@ -48,6 +48,23 @@ does not establish overall coverage, protection or statistical realism.
 
 <a id="accepted-development"></a>
 ## Accepted development reference
+
+### #153 run-game v3 — review intake, no promotion
+
+[Draft #153](https://github.com/tannerthardy/football-simulation-/pull/153) pins
+`claude/run-game-v3@1c578afb38f2eb6fc4886639e63fccc4e79c4354`, runtime checkpoint
+`c8d638086e69961de2ff45d41df0a9871947ca83`, directly on accepted `f4146275…`.
+The complete 140-file research branch is not integration-ready. Review mesh
+scheduling/shotgun geometry separately from UC_MESH, and acquired shed intent
+separately from the new trigger for the 0.6s re-grab prohibition. Earlier
+ZONE_TE/STRETCH_FLAT/LB_KEY require separate dispositions; parked flags/Physics
+stay separate. Preserve power 40+ tail, missing moderate runs and gun-TE costs.
+[Exact scopes, bounded reviewer prompts, provenance limits and next decision](reviews/run-game-v3-review-intake.md).
+Measurement qualifies contact/whistle/proximity/NFL claims; author supplies
+fetchable existing witnesses and producing settings, no recollection. Draft
+status is a review request, not independent acceptance or activation. No engine
+changes, simulations or repeated suite; accepted develop remains the #151 pin.
+Other review-ready work continues independently.
 
 ### Completed #151 and next queue
 

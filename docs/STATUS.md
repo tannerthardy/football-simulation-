@@ -1,9 +1,10 @@
 # Current project status
 
-Updated **2026-10-17 (America/Phoenix)**. The canonical accepted commit and
+Updated **2026-10-19 UTC**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
+- **#153 review intake only:** run-game v3 research head1c578afb starts at acceptedf4146275. Split mesh scheduling/geometry, UC_MESH and shed intent/re-grab eligibility for independent review; do not import the six-flag package or parked Physics. Preserve adverse power/gun cases and qualify NFL/contact claims. Shared witnesses/provenance still need author publication; no recollection/suite/games. [Bounded prompts and exact scope](reviews/run-game-v3-review-intake.md). Accepted code/settings/pin unchanged.
 - **Completed #151:** accepted developf4146275 includes126/132/133/134/135/136/138/140/143/146/147,38 protected files/16 source files. Freeze638b1d8 passes2113 TS/145 Python/typecheck/build in209.041s,44settings/components1,no drift/skips. One exact check, contributor evidence reused; no extra native/panel/game campaign or unchanged merge rerun. Six review/caller gates and tooling/experiments hold only themselves. [Actual pin/owners/risks](../data/reviews/current/pr151-merge.json).
 - **Both handbook resources adopted:** #144 moving run-game/pulling-guard chapter and #145/#108 HonestNFL source library, linked from the existing handbook/reference indexes and main README. Handbook-only adoption914f4d5 preserved the prior0000e560 runtime; current accepted code is the151 checkpoint above. Source/hash/link checks only, no suite or simulations. [Merged pins and documentation receipt](../data/reviews/current/pr145-merge.json). Proposed test catalogs remain optional under the cost policy.
 - **Completed #130 / #128 only:** freeze82fdc79 passes1988 TS/145 Python/typecheck/build in212.180s,44settings/components1, no drift/skips; adopted as0000e560. #126 held for Run/nonauthor adjudication of an existing double-command contract; initial failed219.553s receipt preserved, no assertion change. #127 stays held. [Exact receipt/cost/risks](../data/reviews/current/zone-force-integration/final-receipt.json).
