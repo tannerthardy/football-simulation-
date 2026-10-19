@@ -1,0 +1,475 @@
+{
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "code": "b242de8b29619a6f50cbdb65bedf5941ef32631b",
+  "candidateRuntimeSource": "c6eed919bec29229b9cda00c08b11e522bafa0795612c272ea0c585eabe718cc",
+  "branch": "codex/toss-box-assignments",
+  "latestClaudeAtIntake": "336e8fc940d08d119926276b7a4c7242eafb437a",
+  "latestClaudeAtHandoff": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+  "latestClaudeDelta": "Film tools only, no src changes after336e8fc; no runtime/evidence recollection.",
+  "reviewedOtherWork": {
+    "run153ResponseReview": "025bcf25be4c4695392b0940bf708b1c3a708411",
+    "contact153Review": "fed3de03f1d47d7964235cb8dfe7ee2c854deb11",
+    "freeBlocker152": "346421f9e47938cdb4e53f491c69d656a052783c",
+    "eligibility155": "2866f88232dd9e794469a46b084d51f735cbb7b9"
+  },
+  "change": "Count installed backfield F, split centered F half per side/one total; preserve offset side, noise, authority, call thresholds and all assignments.",
+  "protectedScope": {
+    "qbmindBeforeAndAfterLocalClosureUnchanged": true,
+    "unchangedSha256": {
+      "src/sim/behaviors/blocking.ts": "26565b3e0250f758e4952dc95cde02baab8459801b20d36d2fc3da8ad45767a8",
+      "src/sim/run-fits.ts": "c28b2f4dc1b4f3af5aa05ea705f26b16cc42030ecf1dc16ed2c4fe5de69309e2",
+      "src/sim/behaviors/qb.ts": "463d9ec563b703fd8b11d095382b2f0bc6a07b97ff4082dff28c874f5dfdba6c",
+      "src/sim/spacing.ts": "3ad8b3a61c8dcf9f2f54282101d7074c68b7214e1442787e1b71828397e09c02",
+      "src/sim/engagement.ts": "755292ded61c96b12935d2777838b869eb122894690c49b73e24b535c39c8ce1",
+      "src/playbook/concepts.ts": "0a49e54f35420cb8b4bca564a7e641283ad83bda4bf2830a4618cd23811714e9",
+      "src/physics/world.ts": "3bfea27d1c71e88bb9e9c9fd07c16e209991dd1ad0dfbc3fa8ad6fa80ea96da9",
+      "src/physics/kinematics.ts": "e2d4d9d750d643f8b823c900de7690e18112a40b858d569d0f060f3168896b8e"
+    }
+  },
+  "installations": {
+    "count": 34,
+    "nativeTicks": 0,
+    "initialUnownedRosterLBCases": 8,
+    "unownedOnlyInBear": true,
+    "cases": [
+      {
+        "id": "iz/strong/ace_12/over3/pair31/77",
+        "inputHash": "9d5fefcd91e348fff6e20de37f3cda67ef6bd1bf8c53a8425a31fb6714568400",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/ace_12/over3/pair31/77",
+        "inputHash": "518561aec03bc5ceb1a4a3216dab58beda41c051ed2dda783abb89df739ab2cf",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/ace_12/over3/pair31/77",
+        "inputHash": "0d14d3c979a522f09affa2872210731059ec0052eba40ce2b180489db4ee3c66",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/ace_12/over3/pair31/77",
+        "inputHash": "8b422df601841d66b24c2ca6433d1eb106fffe823f72427b463811f042539025",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/ace_12/under3/pair31/77",
+        "inputHash": "c5e5db7e55910e441bbc6a29adb886acae1323476161d6d172427d6520d8bb0b",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/ace_12/under3/pair31/77",
+        "inputHash": "f492c01bc73b953e06fbcf09a885b5c17c629a2a34a6340d7f3b5e112414aa69",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/ace_12/under3/pair31/77",
+        "inputHash": "5cd434ea845fb88ee0456998cd59c67a4f1ebbd0041d944dd31c4baceb1d79c4",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/ace_12/under3/pair31/77",
+        "inputHash": "eac7671ce5206fe0fcf4bf239c72108a00c67a9d8cd544e16525c5cbffae1ab0",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/ace_12/odd3/pair31/77",
+        "inputHash": "a8414ebcba380ffd003b86ccffc6aa29d99eeb452a1751397982b2700b30b6e1",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/ace_12/odd3/pair31/77",
+        "inputHash": "827c21e33ec1138a7842802dc38c91dcce8d23c3bb31c24900c87dd93fce562c",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/ace_12/odd3/pair31/77",
+        "inputHash": "8b71e1bb37b0e7fb819c523a74d3b71e5486e5e97c4e881ade831948673bbf2a",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/ace_12/odd3/pair31/77",
+        "inputHash": "d2e6b62a622447060aaed9ed505536a088d9747f97201dc4a782e3867a1b978a",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/ace_12/bear1/pair31/77",
+        "inputHash": "033cb92daca04c7feef77ae0ecc3ef6c9ba69b78b30f010fe1feb41f63e5eef1",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_S"
+        ]
+      },
+      {
+        "id": "oz/strong/ace_12/bear1/pair31/77",
+        "inputHash": "8285f224495f5814b5f0f3f166ea03e5622a16ce955cdb82f0779fb6f4c20d31",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_M",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "power/strong/ace_12/bear1/pair31/77",
+        "inputHash": "36c30c9122a2bfe0fd989a58cb2948346ccfa117ac7c41095110cda655ae2e37",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_M",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "counter/strong/ace_12/bear1/pair31/77",
+        "inputHash": "90b6363fd08f3dd8aede7bb9faeb746522d92d2f59d4a55a491685ece355aa59",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_W",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "iz/strong/i_pro_21/over3/pair31/77",
+        "inputHash": "48ebdcc8e90c795cab581b625b47e1e7cbd2d17fdcbd58afdb7520d4c2105349",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/i_pro_21/over3/pair31/77",
+        "inputHash": "cbd6c53e20280fc7a322c4842a9c0712dc7062f1a5179bf97f4b86b44d306750",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/i_pro_21/over3/pair31/77",
+        "inputHash": "948be48bd4841f3a96da6f9d9e817f1fc2ad9041a16cddc5667fca15e575ab04",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/i_pro_21/over3/pair31/77",
+        "inputHash": "9daddca94bfa6f792b6f8c76d1f4ef594f4775d5a2ce7b4ebec10e61bbbeca74",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/i_pro_21/under3/pair31/77",
+        "inputHash": "a01dd8696f76049ddafe1108a138c5c7b1dff180e54e20ca73f75c7d8b1aaa3a",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/i_pro_21/under3/pair31/77",
+        "inputHash": "00843b498bc933564c882f37b71d3ef662e76244727d6d9c0c6c3e46d47d89f0",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/i_pro_21/under3/pair31/77",
+        "inputHash": "e84d210132964633751605e5c73f812c1b374aca7c63d46a5a5a5a05df862d99",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/i_pro_21/under3/pair31/77",
+        "inputHash": "5da07a725e4669e8cd1edf698ad5d8691900dd3ab98ae38ddeb2304c92b619f8",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/i_pro_21/odd3/pair31/77",
+        "inputHash": "8808b06ad30975c2edc797b38d9bc6db0a9de07f3df6093b12fe381ff06d0597",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "oz/strong/i_pro_21/odd3/pair31/77",
+        "inputHash": "b0fdb07d5fbbf4ded91cfdb527f5ed09b8fc218b52d6671e983a77d8a229e0a4",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "power/strong/i_pro_21/odd3/pair31/77",
+        "inputHash": "fd7069d12743c6e22494444520a9f096396a8d819f39a80a1711968429474e69",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "counter/strong/i_pro_21/odd3/pair31/77",
+        "inputHash": "b9ab2cabac530f8ca0e383974e86b3b6b7de5a1a62c3b9a2bab17a37882a27a1",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "iz/strong/i_pro_21/bear1/pair31/77",
+        "inputHash": "e0be554c2fab8bdbdb4dedcf5eae3ef1f723080b50436f1523dac3720cf13af4",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_W",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "oz/strong/i_pro_21/bear1/pair31/77",
+        "inputHash": "9b4ccffc378b06157532fd3e7489d9ddf689a665d8c2f356413da9d6e1de66c3",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_W",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "power/strong/i_pro_21/bear1/pair31/77",
+        "inputHash": "de13ea0da6aee6b8938976a06f62b857041716e09aa3d5af679a34937982e320",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_W",
+          "LB_S"
+        ]
+      },
+      {
+        "id": "counter/strong/i_pro_21/bear1/pair31/77",
+        "inputHash": "d4e9ff78a8c4fd99c74d6539a772a7cc38d81c943f44e5417f9a625117084ec5",
+        "coreBlockers": 7,
+        "coreThreats": 9,
+        "unownedLBs": [
+          "LB_S"
+        ]
+      },
+      {
+        "id": "toss/strong/ace_12/over3/pair31/77",
+        "inputHash": "c8f1f3d4d515f48ce0f47f7a512b66eff5940c6da8236c285c1165f1ea16e9ff",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      },
+      {
+        "id": "toss/strong/ace_12/under3/pair31/77",
+        "inputHash": "216f3d0b34dfbb82f3ce371d39c6742b1cf36d421604d10d480c4b2b059e2cb7",
+        "coreBlockers": 7,
+        "coreThreats": 7,
+        "unownedLBs": []
+      }
+    ]
+  },
+  "continuations": [
+    {
+      "id": "iz/strong/ace_12/under3/pair31/77",
+      "t": 2.8,
+      "phase": "live",
+      "crossing": {
+        "t": 2.8,
+        "carrier": "RB",
+        "pos": {
+          "x": 40.165502923701844,
+          "y": 22.16400170229141
+        },
+        "nearby": [
+          {
+            "slot": "LB_M",
+            "pos": {
+              "x": 42.09384394817128,
+              "y": 24.881271833823845
+            },
+            "vel": {
+              "x": 0.8024741581043999,
+              "y": -0.29270688394024585
+            },
+            "engagedBy": "RG",
+            "installedOwners": [
+              "C",
+              "RG"
+            ],
+            "currentOwners": [
+              "RG"
+            ]
+          },
+          {
+            "slot": "LB_S",
+            "pos": {
+              "x": 42.39345302472768,
+              "y": 24.405095610063782
+            },
+            "vel": {
+              "x": 0.6827058834828135,
+              "y": 0.12187369661967401
+            },
+            "engagedBy": "Y",
+            "installedOwners": [
+              "Y"
+            ],
+            "currentOwners": [
+              "Y"
+            ]
+          }
+        ]
+      },
+      "inputHash": "c5e5db7e55910e441bbc6a29adb886acae1323476161d6d172427d6520d8bb0b"
+    },
+    {
+      "id": "oz/strong/ace_12/over3/pair31/77",
+      "t": 2.6,
+      "phase": "live",
+      "crossing": {
+        "t": 2.6,
+        "carrier": "RB",
+        "pos": {
+          "x": 40.028177066794015,
+          "y": 20.766468674976736
+        },
+        "nearby": [
+          {
+            "slot": "LB_S",
+            "pos": {
+              "x": 42.39897296903204,
+              "y": 21.823528887243047
+            },
+            "vel": {
+              "x": 1.5044512186258745,
+              "y": -2.381926349561204
+            },
+            "engagedBy": "RT",
+            "installedOwners": [
+              "RT",
+              "RG"
+            ],
+            "currentOwners": [
+              "RT"
+            ]
+          }
+        ]
+      },
+      "inputHash": "518561aec03bc5ceb1a4a3216dab58beda41c051ed2dda783abb89df739ab2cf"
+    },
+    {
+      "id": "iz/strong/ace_12/bear1/pair31/77",
+      "t": 2.65,
+      "phase": "live",
+      "crossing": {
+        "t": 2.65,
+        "carrier": "RB",
+        "pos": {
+          "x": 40.214498386131915,
+          "y": 23.969316308310407
+        },
+        "nearby": [
+          {
+            "slot": "LB_M",
+            "pos": {
+              "x": 41.475230599054,
+              "y": 22.90665622092474
+            },
+            "vel": {
+              "x": -0.2932310499240356,
+              "y": 0.8685967999048552
+            },
+            "engagedBy": null,
+            "installedOwners": [
+              "RT",
+              "RG"
+            ],
+            "currentOwners": [
+              "RG"
+            ]
+          },
+          {
+            "slot": "LB_S",
+            "pos": {
+              "x": 41.72227768302316,
+              "y": 26.374290077962357
+            },
+            "vel": {
+              "x": 0.15230739379420186,
+              "y": -1.0750949871405384
+            },
+            "engagedBy": null,
+            "installedOwners": [],
+            "currentOwners": []
+          }
+        ]
+      },
+      "inputHash": "033cb92daca04c7feef77ae0ecc3ef6c9ba69b78b30f010fe1feb41f63e5eef1"
+    }
+  ],
+  "interpretation": "Ordinary controls retain nearby LB ownership. Bear has9 geometric core threats versus7 core blockers; observed LB_S is unowned at install and2.65s crossing. This small sample does not prove every historical unassigned case is overload or that chosen unblocked identities are optimal.",
+  "Toss": "Current no-puller Toss installs ordinary reach. zoneFlow/zoneEligible/engagement stretch checks explicitly omit Toss. No acquired/achievable wrong request established here; leave technique expansion held. Outcome similarity is not NFL mechanism certification.",
+  "cost": {
+    "launcherChildSecondsByCommand": {
+      "installations-receipt.json": 0.7332998419999999,
+      "iz-under-receipt.json": 0.718757445,
+      "oz-over-receipt.json": 0.6770133439999999,
+      "iz-bear-receipt.json": 0.642679455,
+      "diagnostic-types-receipt.json": 3.7350580520000003,
+      "box-count-red-receipt.json": 1.981430541,
+      "box-count-red-corrected-receipt.json": 1.946798741,
+      "box-count-green-receipt.json": 2.056492487,
+      "side-count-green-receipt.json": 1.751801558,
+      "final-scope-types-receipt.json": 3.710758887
+    },
+    "totalLauncherChildSeconds": 17.954090352,
+    "newNativePrefixes": 3,
+    "newSimulatedSeconds": 8.05,
+    "newNativeEndings": 0,
+    "newGames": 0,
+    "freshDistinctFocusedGreenChecks": 8,
+    "scopedTypechecks": 2,
+    "fullSuiteRuns": 0
+  },
+  "failures": [
+    "Initial test fixture used nonexistent singleback_11:4 genuine F failures,1 fixture failure,1 positive control. Preserved.",
+    "Corrected canonical ace_11 fixture before runtime edit:4 failures,2 opposing controls pass.",
+    "Candidate6 focused checks pass; later2 side/flip checks pass with the prior6 deliberately unrun, same runtime."
+  ],
+  "limits": [
+    "No native yardage or global rushing benefit claim.",
+    "Claude climbing operator reads current mutable jobs and only crossing survivors, not initial counting failure. Its0.14\u20130.18 values mix family/flag arms.",
+    "All researched/native input audibles=false: this QB correction is inactive there and cannot explain or fix the reported unassigned-LB rate.",
+    "The new policy retains some I-form runs against two extra threats where old arithmetic checked to pass; true overloads and flips remain. Football outcome cost unmeasured.",
+    "Existing QB pre-snap defensive-position/noise/quick-check reads remain unchanged; no new private data access.",
+    "No #155/#137/#141/#152/experimental/Physics dependency or adoption."
+  ],
+  "nextDecision": "Recommend independent review of the two-file QB count correction; keep Toss technique unchanged and do not assign every extra defender. An additional counting repair requires one named unowned threat with a legitimately available blocker or a demonstrated lost current responsibility, using this ledger diagnostic."
+}

@@ -1,0 +1,70 @@
+{
+  "box-count-green-receipt.json": {
+    "bytes": 2438,
+    "sha256": "0fb2af8e13dc59fcf7d9849b2a9abb4cdac3ef8b379bb3e301b413035ae5a8a7"
+  },
+  "box-count-green.json": {
+    "bytes": 2837,
+    "sha256": "1840cf21c4f36a4a159f68c072d6b7722db12c47bf6a1581606bc337a2e7fd40"
+  },
+  "box-count-red-corrected-receipt.json": {
+    "bytes": 2391,
+    "sha256": "2ec0196f068aa775fdec50211bf912f1f88fbd9cc4fd9a30f2530ab742f4aee8"
+  },
+  "box-count-red-corrected.json": {
+    "bytes": 7114,
+    "sha256": "c4ae40416e3dddb15b59905da80589b267cedea7d873621355259459417d9464"
+  },
+  "box-count-red-receipt.json": {
+    "bytes": 2411,
+    "sha256": "543f049a504e95992f822eed5cda32586f0628e9c945395e1b3b3625da75b8f6"
+  },
+  "box-count-red.json": {
+    "bytes": 8123,
+    "sha256": "516abe2138311b0549b91f14bf24a0f995719185fc83bbb1408a86e1a601909b"
+  },
+  "continuations.json.gz": {
+    "bytes": 20014,
+    "sha256": "ae684f5ba887fcbb631653e19ae6b1aaff4a740e4c4d9f854fe0ddcca6d35d7b"
+  },
+  "diagnostic-types-receipt.json": {
+    "bytes": 2415,
+    "sha256": "8c5d6ee741bb7af9138a24a2ce5352beb6e9530d95a2576fd86eae94e897a87d"
+  },
+  "final-scope-types-receipt.json": {
+    "bytes": 2480,
+    "sha256": "13faaeb360587587a264334b72b4a59123270da849ada3af75497e43245532fb"
+  },
+  "installations-receipt.json": {
+    "bytes": 2245,
+    "sha256": "ea1ee37f529eb67948f7a1ae1afd32c98400b19a816f89c782f39d3bbc750f32"
+  },
+  "installations.json.gz": {
+    "bytes": 5058,
+    "sha256": "3c2bf93609fc984b4b15d7eba4d6aac7f2dcfe1bf4167e907a0311ba74d4c9ab"
+  },
+  "iz-bear-receipt.json": {
+    "bytes": 2332,
+    "sha256": "a31e482c12542d774c8d2cbb68dea00e3437f41968b6123aa43f995e283c7b0c"
+  },
+  "iz-under-receipt.json": {
+    "bytes": 2334,
+    "sha256": "289a6fe7f76cce9cfef3e876641b6665385b58102431411bf8261dac88b4af95"
+  },
+  "oz-over-receipt.json": {
+    "bytes": 2339,
+    "sha256": "649d5aa2b76af3a0a0314181b1aef09775f92d89caca505c2cf3ee8803f5ebff"
+  },
+  "side-count-green-receipt.json": {
+    "bytes": 2503,
+    "sha256": "1edb752b46d55da1a958530e2de7a7f8af7b8a4385f6f58713e1b1ae5e16baf0"
+  },
+  "side-count-green.json": {
+    "bytes": 3512,
+    "sha256": "f155d70f8b71b1e4923e3969e76fb0d066ce810c4ed0e656b33732721f938734"
+  },
+  "summary.json": {
+    "bytes": 16703,
+    "sha256": "550b4cdb9e824bfeedd5fd3854c3485fca556707f5fd2e6d10d8a3689f36e011"
+  }
+}
