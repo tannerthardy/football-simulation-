@@ -153,3 +153,21 @@ and the censored composed pass remain visible. Physics must decide the discrete
 attained-start-pose convention and the two motor/gait repairs independently;
 Integration owns exact combined verification. Path/controller jitter remains an
 open task, rather than a reason to tune this correction to yardage totals.
+
+## Fetchable evidence and continuation
+
+The [immutable common evidence packet](https://github.com/tannerthardy/football-simulation-/tree/e39866c0339163443065df1d456a064fe3a73d9c/data/reviews/movement-continuation-2026-10-19)
+is commit `e39866c0339163443065df1d456a064fe3a73d9c` on
+`codex/movement-continuation-evidence-2026-10-19`. It preserves this candidate's
+exact inputs, mechanical failures/passing receipts, native tapes, reduction and
+runtime patches alongside the separately scoped yaw/contact/preview diagnostics.
+Packet totals are not this candidate's test count or native budget. Eleven
+source patches were restored and verified; its combined 20 new prefixes cover
+seven inputs, 15 terminal and five censored, for 12.530 seconds case collection
+across all arms. This gait candidate remains two native prefixes and 49 focused
+checks; the composition remains diagnostic.
+
+The parent's [movement continuation memo](https://github.com/tannerthardy/football-simulation-/blob/abd2dd2/docs/reviews/movement-request-continuation-2026-10-19.md)
+links the independent yaw motor, gait and contact work. Contact draft #164 is
+not a dependency or imported correction here. Physics-owner review remains
+required, and Integration retains combined verification.
