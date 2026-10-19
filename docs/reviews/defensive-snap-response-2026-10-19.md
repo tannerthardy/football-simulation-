@@ -159,7 +159,7 @@ trigger a chase.
 | --- | --- | --- | --- |
 | 1.00s | (40.925,22.321) | (40.749,21.926) | Candidate initially gains outside width |
 | 2.00s | (39.863,20.972) | (39.310,21.313) | Candidate penetrates0.553yd farther but is0.341yd less wide |
-| 2.40s | (39.205,20.734) | (38.672,20.921) | Before tackle execution diverges, useful intersection already differs |
+| 2.40s | (39.205,20.734) | (38.672,20.921) | Different intersection, already developing before the first RNG divergence |
 
 RNG states remain equal through2.35s and first differ at2.40s, when the changed
 geometry admits an earlier tackle attempt. Both versions subsequently record a
@@ -169,6 +169,9 @@ first recorded carrier contact is CB_S at3.65s. It cannot diagnose a weak rear
 grip or justify more tackle strength. Baseline also finishes with CB_S,3.84yd;
 candidate finishes6.86yd with later assistance. A tackle after an unblocked
 secondary chase does not demonstrate a sound first-level edge.
+
+The complete World contact reports confirm one DE/RB body collision in baseline
+and zero in candidate, rather than inferring absence from the first-contact event.
 
 Hand loads, positions and final requests are preserved. They do not show one
 continuous grip episode, nor isolate every later hand-control draw. The initial
