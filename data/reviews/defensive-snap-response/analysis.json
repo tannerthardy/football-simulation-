@@ -1,0 +1,5524 @@
+{
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "researchScriptPin": "336e8fc940d08d119926276b7a4c7242eafb437a",
+  "arms": {
+    "baseline": {
+      "receipt": {
+        "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+        "arm": "baseline",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 3.097599142,
+        "rows": [
+          {
+            "id": "DUO",
+            "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 6.49,
+            "elapsedSeconds": 0.6457182970000002,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.9,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "TOSS",
+            "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 3.84,
+            "elapsedSeconds": 0.5119252799999999,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.5,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.8500000000000001,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "IZ",
+            "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 5.39,
+            "elapsedSeconds": 0.38692740100000017,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.17085006348340306,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.25590943593894255,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2604226790816688,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3079163885592883,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.15558521791414995,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.21240683100299848,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.15624379623359458,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "PA",
+            "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+            "phase": "live",
+            "outcome": null,
+            "gain": null,
+            "elapsedSeconds": 0.5305425819999996,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.45,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.9,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native current accepted source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "DUO",
+          "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 6.49,
+          "elapsedSeconds": 0.6457182970000002,
+          "fileSha256": "ba27ee7475e043cf9aed9326cb9e664fd8ef752d0a704562933be26059e83721",
+          "effectiveSnapGates": {
+            "DE_W": 0.18985604584849175,
+            "DE_S": 0.20966209079478632,
+            "DT_S": 0.23584636726986183,
+            "DT_W": 0.2192829381304175,
+            "LB_M": 0.16728639159095823,
+            "LB_W": 0.23307571521810916,
+            "LB_S": 0.1500430202828247,
+            "CB_S": 0.14992917876607043,
+            "CB_W": 0.15236676968002758,
+            "FS": 0.14249129914845737,
+            "SS": 0.19312692811276108
+          },
+          "tickCount": 76,
+          "lastCompletedTime": 3.8
+        },
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 3.84,
+          "elapsedSeconds": 0.5119252799999999,
+          "fileSha256": "95527c111590f62bd6517fe9c96be6b3c1e80d990f269b59945fe4888a92332d",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 85,
+          "lastCompletedTime": 4.25
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 5.39,
+          "elapsedSeconds": 0.38692740100000017,
+          "fileSha256": "53ac1ecfe75a19684231eee0e033f6ec189e75a1a9567ca15d102b5da33a9c9e",
+          "effectiveSnapGates": {
+            "DE_W": 0.17085006348340306,
+            "DE_S": 0.25590943593894255,
+            "DT_S": 0.2604226790816688,
+            "DT_W": 0.3079163885592883,
+            "LB_M": 0.15558521791414995,
+            "LB_W": 0.21240683100299848,
+            "LB_S": 0.15624379623359458,
+            "CB_S": 0.1584135440137243,
+            "CB_W": 0.13879668730291989,
+            "FS": 0.14807993308985673,
+            "SS": 0.18532836650741302
+          },
+          "tickCount": 77,
+          "lastCompletedTime": 3.8499999999999996
+        },
+        {
+          "id": "PA",
+          "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "live",
+          "outcome": null,
+          "gain": null,
+          "elapsedSeconds": 0.5305425819999996,
+          "fileSha256": "4ea3a0f4b9725a23565ffa41c4fa78330b529d7b96d3e8ad3e91a495f8417a9f",
+          "effectiveSnapGates": {
+            "DE_W": 0.18985604584849175,
+            "DE_S": 0.20966209079478632,
+            "DT_S": 0.23584636726986183,
+            "DT_W": 0.2192829381304175,
+            "LB_M": 0.16728639159095823,
+            "LB_W": 0.23307571521810916,
+            "LB_S": 0.1500430202828247,
+            "CB_S": 0.14992917876607043,
+            "CB_W": 0.15236676968002758,
+            "FS": 0.14249129914845737,
+            "SS": 0.19312692811276108
+          },
+          "tickCount": 120,
+          "lastCompletedTime": 6
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.25,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.25,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.5,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.525,
+          "crossed": 14,
+          "noncrossing": 2
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    },
+    "half": {
+      "receipt": {
+        "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+        "arm": "diagnostic-half",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 3.097173121,
+        "rows": [
+          {
+            "id": "DUO",
+            "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 3.5,
+            "elapsedSeconds": 0.6594552619999999,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.3,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.35,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.45,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "TOSS",
+            "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": -1.62,
+            "elapsedSeconds": 0.514805405,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.8,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "IZ",
+            "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 1.44,
+            "elapsedSeconds": 0.37966788900000004,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.17085006348340306,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.35,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.25590943593894255,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2604226790816688,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3079163885592883,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.15558521791414995,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.45,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.21240683100299848,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.15624379623359458,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.45,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "PA",
+            "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+            "phase": "live",
+            "outcome": null,
+            "gain": null,
+            "elapsedSeconds": 0.6658716600000002,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.3,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.35,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.45,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native current accepted source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "DUO",
+          "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 3.5,
+          "elapsedSeconds": 0.6594552619999999,
+          "fileSha256": "96fd21148310725b74618c1679f063f66f6bfc422fd79a7774625d915e3cef12",
+          "effectiveSnapGates": {
+            "DE_W": 0.07972193506131975,
+            "DE_S": 0.10614688879561929,
+            "DT_S": 0.12623920358806257,
+            "DT_W": 0.1051584899838119,
+            "LB_M": 0.09370105214905904,
+            "LB_W": 0.13866180434763853,
+            "LB_S": 0.07602752673846817,
+            "CB_S": 0.07959348530501253,
+            "CB_W": 0.08810362932184349,
+            "FS": 0.08211812130589176,
+            "SS": 0.11855483315232794
+          },
+          "tickCount": 68,
+          "lastCompletedTime": 3.4
+        },
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": -1.62,
+          "elapsedSeconds": 0.514805405,
+          "fileSha256": "53b4e93e73a3ab2a45c83bae18df4b166097eefc9290556e4cd5aedb710e607c",
+          "effectiveSnapGates": {
+            "DE_W": 0.1788485709343025,
+            "DE_S": 0.1584170572979231,
+            "DT_S": 0.19822681477921508,
+            "DT_W": 0.20209964633278865,
+            "LB_M": 0.11940850499458282,
+            "LB_W": 0.11749252527402616,
+            "LB_S": 0.11086861045118603,
+            "CB_S": 0.08792643214038864,
+            "CB_W": 0.0822745628439924,
+            "FS": 0.094999985227421,
+            "SS": 0.08406084485744993
+          },
+          "tickCount": 73,
+          "lastCompletedTime": 3.65
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 1.44,
+          "elapsedSeconds": 0.37966788900000004,
+          "fileSha256": "4a482a7090a87d5abfb175a2cb1f2986c067a45b86ea77d790e047e64b656a7c",
+          "effectiveSnapGates": {
+            "DE_W": 0.06071595269623106,
+            "DE_S": 0.15239423393977553,
+            "DT_S": 0.1508155153998695,
+            "DT_W": 0.19379194041268272,
+            "LB_M": 0.08199987847225075,
+            "LB_W": 0.11799292013252784,
+            "LB_S": 0.08222830268923804,
+            "CB_S": 0.0880778505526664,
+            "CB_W": 0.0745335469447358,
+            "FS": 0.08770675524729112,
+            "SS": 0.11075627154697988
+          },
+          "tickCount": 64,
+          "lastCompletedTime": 3.1999999999999997
+        },
+        {
+          "id": "PA",
+          "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "live",
+          "outcome": null,
+          "gain": null,
+          "elapsedSeconds": 0.6658716600000002,
+          "fileSha256": "22a01df9a32d0d3063759fea94b86fc071573ba43ef9a86f8e9217d7d4d240a2",
+          "effectiveSnapGates": {
+            "DE_W": 0.07972193506131975,
+            "DE_S": 0.10614688879561929,
+            "DT_S": 0.12623920358806257,
+            "DT_W": 0.1051584899838119,
+            "LB_M": 0.09370105214905904,
+            "LB_W": 0.13866180434763853,
+            "LB_S": 0.07602752673846817,
+            "CB_S": 0.07959348530501253,
+            "CB_W": 0.08810362932184349,
+            "FS": 0.08211812130589176,
+            "SS": 0.11855483315232794
+          },
+          "tickCount": 120,
+          "lastCompletedTime": 6
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.15,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.15,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.2,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.39999999999999997,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.5,
+          "crossed": 13,
+          "noncrossing": 3
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    },
+    "candidate": {
+      "receipt": {
+        "source": "7e99e521a256e856b03e8fcfb0e18014f302a0443c4a18738941beaf7899d96d",
+        "arm": "baseline",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 2.588342601,
+        "rows": [
+          {
+            "id": "DUO",
+            "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 5.29,
+            "elapsedSeconds": 0.557484038,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.09763447150446845,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.3,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.1272797501034077,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.17237214819447652,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.12255923967144206,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.12567173103285745,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.17082515295238654,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.10757804735487797,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.5,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "TOSS",
+            "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 4.29,
+            "elapsedSeconds": 0.498228841,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.19676110737745117,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.17954991860571148,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.24435975938562907,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.45,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.21950039602041882,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.15137918387838123,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.14965587387877416,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.14241913106759582,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.8,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "IZ",
+            "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 3.77,
+            "elapsedSeconds": 0.3310749969999999,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.07862848913937975,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.35,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.17352709524756396,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.45,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.19694846000628347,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.21119269010031289,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.11397055735604916,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.15015626873727583,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.11377882330564784,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.8,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "PA",
+            "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": -5.28,
+            "elapsedSeconds": 0.42757626600000004,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.09763447150446845,
+                "firstRequest": 0.1,
+                "firstIntent": 0.1,
+                "firstSpeed": 0.15000000000000002,
+                "displacement015": 0.3,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.1272797501034077,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.17237214819447652,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.12255923967144206,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.12567173103285745,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.17082515295238654,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.10757804735487797,
+                "firstRequest": 0.15,
+                "firstIntent": 0.15,
+                "firstSpeed": 0.2,
+                "displacement015": 0.5,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native current accepted source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "DUO",
+          "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+          "source": "7e99e521a256e856b03e8fcfb0e18014f302a0443c4a18738941beaf7899d96d",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 5.29,
+          "elapsedSeconds": 0.557484038,
+          "fileSha256": "819ef3f8e526a4f432bb96a5344e791c4b9a0a516f114ed6635a733755181d38",
+          "effectiveSnapGates": {
+            "DE_W": 0.09763447150446845,
+            "DE_S": 0.1272797501034077,
+            "DT_S": 0.17237214819447652,
+            "DT_W": 0.12255923967144206,
+            "LB_M": 0.12567173103285745,
+            "LB_W": 0.17082515295238654,
+            "LB_S": 0.10757804735487797,
+            "CB_S": 0.12710868730417954,
+            "CB_W": 0.13219034319106462,
+            "FS": 0.10541008298852397,
+            "SS": 0.14188194685495184
+          },
+          "tickCount": 73,
+          "lastCompletedTime": 3.65
+        },
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+          "source": "7e99e521a256e856b03e8fcfb0e18014f302a0443c4a18738941beaf7899d96d",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 4.29,
+          "elapsedSeconds": 0.498228841,
+          "fileSha256": "bc2d494ba15560d99eab43b1ba40a2839b333a6b9a39c0c770c197a2ef17569a",
+          "effectiveSnapGates": {
+            "DE_W": 0.19676110737745117,
+            "DE_S": 0.17954991860571148,
+            "DT_S": 0.24435975938562907,
+            "DT_W": 0.21950039602041882,
+            "LB_M": 0.15137918387838123,
+            "LB_W": 0.14965587387877416,
+            "LB_S": 0.14241913106759582,
+            "CB_S": 0.13544163413955565,
+            "CB_W": 0.12636127671321354,
+            "FS": 0.11829194691005321,
+            "SS": 0.10738795856007384
+          },
+          "tickCount": 80,
+          "lastCompletedTime": 4
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+          "source": "7e99e521a256e856b03e8fcfb0e18014f302a0443c4a18738941beaf7899d96d",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 3.77,
+          "elapsedSeconds": 0.3310749969999999,
+          "fileSha256": "edb2810d163157ca89f82fd41ad98cd74e40e46bd9ac3574cbee57b402316018",
+          "effectiveSnapGates": {
+            "DE_W": 0.07862848913937975,
+            "DE_S": 0.17352709524756396,
+            "DT_S": 0.19694846000628347,
+            "DT_W": 0.21119269010031289,
+            "LB_M": 0.11397055735604916,
+            "LB_W": 0.15015626873727583,
+            "LB_S": 0.11377882330564784,
+            "CB_S": 0.1355930525518334,
+            "CB_W": 0.11862026081395693,
+            "FS": 0.11099871692992333,
+            "SS": 0.13408338524960378
+          },
+          "tickCount": 69,
+          "lastCompletedTime": 3.4499999999999997
+        },
+        {
+          "id": "PA",
+          "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+          "source": "7e99e521a256e856b03e8fcfb0e18014f302a0443c4a18738941beaf7899d96d",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": -5.28,
+          "elapsedSeconds": 0.42757626600000004,
+          "fileSha256": "4762296f6d8ce44aa571a00b691c88cf73e4babfce0a5218836ac7daabd78e6b",
+          "effectiveSnapGates": {
+            "DE_W": 0.09763447150446845,
+            "DE_S": 0.1272797501034077,
+            "DT_S": 0.17237214819447652,
+            "DT_W": 0.12255923967144206,
+            "LB_M": 0.12567173103285745,
+            "LB_W": 0.17082515295238654,
+            "LB_S": 0.10757804735487797,
+            "CB_S": 0.12710868730417954,
+            "CB_W": 0.13219034319106462,
+            "FS": 0.10541008298852397,
+            "SS": 0.14188194685495184
+          },
+          "tickCount": 81,
+          "lastCompletedTime": 4.05
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.2,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.2,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.25,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.39999999999999997,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.5,
+          "crossed": 13,
+          "noncrossing": 3
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    },
+    "edge": {
+      "receipt": {
+        "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+        "arm": "baseline",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 2.970833184,
+        "rows": [
+          {
+            "id": "DUO",
+            "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 6.49,
+            "elapsedSeconds": 0.6242554109999999,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.45,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.9,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "TOSS",
+            "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 6.86,
+            "elapsedSeconds": 0.528432278,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.5,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "IZ",
+            "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 2.12,
+            "elapsedSeconds": 0.28509539200000017,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.17085006348340306,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.25590943593894255,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2604226790816688,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3079163885592883,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.65
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.15558521791414995,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.21240683100299848,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.15624379623359458,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "PA",
+            "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+            "phase": "live",
+            "outcome": null,
+            "gain": null,
+            "elapsedSeconds": 0.5787866909999998,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.18985604584849175,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.39999999999999997,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.20966209079478632,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.23584636726986183,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.45,
+                "firstRunRead": 0.6
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.2192829381304175,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.16728639159095823,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.23307571521810916,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.1500430202828247,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.9,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native current accepted source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "DUO",
+          "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 6.49,
+          "elapsedSeconds": 0.6242554109999999,
+          "fileSha256": "5676f1b16abd489577d0fcf73eeab7080999657420185d1f094cb593ccf837f3",
+          "effectiveSnapGates": {
+            "DE_W": 0.18985604584849175,
+            "DE_S": 0.20966209079478632,
+            "DT_S": 0.23584636726986183,
+            "DT_W": 0.2192829381304175,
+            "LB_M": 0.16728639159095823,
+            "LB_W": 0.23307571521810916,
+            "LB_S": 0.1500430202828247,
+            "CB_S": 0.14992917876607043,
+            "CB_W": 0.15236676968002758,
+            "FS": 0.14249129914845737,
+            "SS": 0.19312692811276108
+          },
+          "tickCount": 76,
+          "lastCompletedTime": 3.8
+        },
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 6.86,
+          "elapsedSeconds": 0.528432278,
+          "fileSha256": "363dd09394ff5eebea85c8bc3ce699f2124da03ff7da657663627d28bc54926b",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 89,
+          "lastCompletedTime": 4.45
+        },
+        {
+          "id": "IZ",
+          "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 2.12,
+          "elapsedSeconds": 0.28509539200000017,
+          "fileSha256": "9b5309552e3f4a0a736d0a46c7e4bf6a182d2891b91bc84eef6f16d12df44e0a",
+          "effectiveSnapGates": {
+            "DE_W": 0.17085006348340306,
+            "DE_S": 0.25590943593894255,
+            "DT_S": 0.2604226790816688,
+            "DT_W": 0.3079163885592883,
+            "LB_M": 0.15558521791414995,
+            "LB_W": 0.21240683100299848,
+            "LB_S": 0.15624379623359458,
+            "CB_S": 0.1584135440137243,
+            "CB_W": 0.13879668730291989,
+            "FS": 0.14807993308985673,
+            "SS": 0.18532836650741302
+          },
+          "tickCount": 66,
+          "lastCompletedTime": 3.3
+        },
+        {
+          "id": "PA",
+          "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "live",
+          "outcome": null,
+          "gain": null,
+          "elapsedSeconds": 0.5787866909999998,
+          "fileSha256": "402990755a03c40fbc9a62903a075dc82a6590c6592619da1ece688587b1951d",
+          "effectiveSnapGates": {
+            "DE_W": 0.18985604584849175,
+            "DE_S": 0.20966209079478632,
+            "DT_S": 0.23584636726986183,
+            "DT_W": 0.2192829381304175,
+            "LB_M": 0.16728639159095823,
+            "LB_W": 0.23307571521810916,
+            "LB_S": 0.1500430202828247,
+            "CB_S": 0.14992917876607043,
+            "CB_W": 0.15236676968002758,
+            "FS": 0.14249129914845737,
+            "SS": 0.19312692811276108
+          },
+          "tickCount": 120,
+          "lastCompletedTime": 6
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.25,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.25,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.5,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.525,
+          "crossed": 14,
+          "noncrossing": 2
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    },
+    "fresh-baseline": {
+      "receipt": {
+        "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+        "arm": "baseline",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 3.001075184,
+        "rows": [
+          {
+            "id": "PASS13",
+            "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 22.74,
+            "elapsedSeconds": 0.760297055,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              }
+            ]
+          },
+          {
+            "id": "PA13",
+            "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+            "phase": "dead",
+            "outcome": "incomplete",
+            "gain": 0,
+            "elapsedSeconds": 0.4167220789999999,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.65,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "FTOSS",
+            "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 9.15,
+            "elapsedSeconds": 0.581437731,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2543137937581259,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.2664802335987207,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2970509147804919,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3435274823107405,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.18700983980481015,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.19021880546443412,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.55,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.23252108858529683,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.8500000000000001,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "FTOSS-L",
+            "inputSha256": "b2d460404c9e2cad0d348bc8d6ea41d954cc246fa70b5b166bcb5ccc3b9880bb",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": -0.54,
+            "elapsedSeconds": 0.3234674530000002,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2543137937581259,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.2664802335987207,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2970509147804919,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3435274823107405,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.18700983980481015,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.7000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.19021880546443412,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.55,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.23252108858529683,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.8500000000000001,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native identified source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "PASS13",
+          "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 22.74,
+          "elapsedSeconds": 0.760297055,
+          "fileSha256": "b2bd72ab7d787883af1b096ebcf5f904efe3812da51c486034f3acfad7574d04",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 114,
+          "lastCompletedTime": 5.7
+        },
+        {
+          "id": "PA13",
+          "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "incomplete",
+          "gain": 0,
+          "elapsedSeconds": 0.4167220789999999,
+          "fileSha256": "be0a71ead653e3718a7dd72e6d5af253cfbc55ac0917742cb17663c700f9e9ac",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 75,
+          "lastCompletedTime": 3.75
+        },
+        {
+          "id": "FTOSS",
+          "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 9.15,
+          "elapsedSeconds": 0.581437731,
+          "fileSha256": "821ac0ca7b6943ab4178fda5e20d8bd0c098f5b9ae1192658703bee481853826",
+          "effectiveSnapGates": {
+            "DE_W": 0.2543137937581259,
+            "DE_S": 0.2664802335987207,
+            "DT_S": 0.2970509147804919,
+            "DT_W": 0.3435274823107405,
+            "LB_M": 0.18700983980481015,
+            "LB_W": 0.19021880546443412,
+            "LB_S": 0.23252108858529683,
+            "CB_S": 0.16900808099332765,
+            "CB_W": 0.17729019071904253,
+            "FS": 0.1924056070599127,
+            "SS": 0.16773248167544247
+          },
+          "tickCount": 98,
+          "lastCompletedTime": 4.8999999999999995
+        },
+        {
+          "id": "FTOSS-L",
+          "inputSha256": "b2d460404c9e2cad0d348bc8d6ea41d954cc246fa70b5b166bcb5ccc3b9880bb",
+          "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": -0.54,
+          "elapsedSeconds": 0.3234674530000002,
+          "fileSha256": "2bb3bdeeaaf5b319a7c5e9a93ecce3ee60516fc13be448bd235a27bd17e6001e",
+          "effectiveSnapGates": {
+            "DE_W": 0.2543137937581259,
+            "DE_S": 0.2664802335987207,
+            "DT_S": 0.2970509147804919,
+            "DT_W": 0.3435274823107405,
+            "LB_M": 0.18700983980481015,
+            "LB_W": 0.19021880546443412,
+            "LB_S": 0.23252108858529683,
+            "CB_S": 0.16900808099332765,
+            "CB_W": 0.17729019071904253,
+            "FS": 0.1924056070599127,
+            "SS": 0.16773248167544247
+          },
+          "tickCount": 69,
+          "lastCompletedTime": 3.4499999999999997
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.35,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.55,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.525,
+          "crossed": 10,
+          "noncrossing": 6
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    },
+    "fresh-edge": {
+      "receipt": {
+        "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+        "arm": "baseline",
+        "node": "v22.23.3",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "elapsedSeconds": 3.192274815,
+        "rows": [
+          {
+            "id": "PASS13",
+            "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 22.96,
+            "elapsedSeconds": 0.713207811,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.5,
+                "firstRunRead": null
+              }
+            ]
+          },
+          {
+            "id": "PA13",
+            "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+            "phase": "live",
+            "outcome": null,
+            "gain": null,
+            "elapsedSeconds": 0.5903070440000001,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2889826817214745,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": null
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.26193225929709013,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.30783397846101435,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.55,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.31622409447939426,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.65,
+                "firstRunRead": null
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.19299384443648201,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.2119064361444968,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.18488410399554256,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.75,
+                "firstRunRead": 0.35
+              }
+            ]
+          },
+          {
+            "id": "FTOSS",
+            "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": 8.04,
+            "elapsedSeconds": 0.4937319030000003,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2543137937581259,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.2664802335987207,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2970509147804919,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3435274823107405,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.18700983980481015,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.65,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.19021880546443412,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.55,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.23252108858529683,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.8500000000000001,
+                "firstRunRead": 0.4
+              }
+            ]
+          },
+          {
+            "id": "FTOSS-L",
+            "inputSha256": "b2d460404c9e2cad0d348bc8d6ea41d954cc246fa70b5b166bcb5ccc3b9880bb",
+            "phase": "dead",
+            "outcome": "tackle",
+            "gain": -0.52,
+            "elapsedSeconds": 0.3297636520000001,
+            "starts": [
+              {
+                "slot": "DE_W",
+                "ready": 0.2543137937581259,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.5
+              },
+              {
+                "slot": "DE_S",
+                "ready": 0.2664802335987207,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.55,
+                "firstRunRead": 0.45
+              },
+              {
+                "slot": "DT_S",
+                "ready": 0.2970509147804919,
+                "firstRequest": 0.3,
+                "firstIntent": 0.3,
+                "firstSpeed": 0.35,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.55
+              },
+              {
+                "slot": "DT_W",
+                "ready": 0.3435274823107405,
+                "firstRequest": 0.35,
+                "firstIntent": 0.35,
+                "firstSpeed": 0.39999999999999997,
+                "displacement015": 0.6000000000000001,
+                "firstRunRead": 0.7
+              },
+              {
+                "slot": "LB_M",
+                "ready": 0.18700983980481015,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.7000000000000001,
+                "firstRunRead": 0.35
+              },
+              {
+                "slot": "LB_W",
+                "ready": 0.19021880546443412,
+                "firstRequest": 0.2,
+                "firstIntent": 0.2,
+                "firstSpeed": 0.25,
+                "displacement015": 0.55,
+                "firstRunRead": 0.4
+              },
+              {
+                "slot": "LB_S",
+                "ready": 0.23252108858529683,
+                "firstRequest": 0.25,
+                "firstIntent": 0.25,
+                "firstSpeed": 0.3,
+                "displacement015": 0.8500000000000001,
+                "firstRunRead": 0.4
+              }
+            ]
+          }
+        ],
+        "qualification": "Native identified source; passive consumed cue/request/achieved movement. diagnostic-half is an explicit post-constructor sensitivity intervention, not an exact replay of research DEF_GETOFF or a candidate. Actual raw commands kept; completed physics timestamps distinct from tick entry. No NFL recollection or games."
+      },
+      "cases": [
+        {
+          "id": "PASS13",
+          "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 22.96,
+          "elapsedSeconds": 0.713207811,
+          "fileSha256": "da1409ad2e3c748123b4577428862cfb83a5fe3bab03891b308804f5a6e07b33",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 110,
+          "lastCompletedTime": 5.5
+        },
+        {
+          "id": "PA13",
+          "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "live",
+          "outcome": null,
+          "gain": null,
+          "elapsedSeconds": 0.5903070440000001,
+          "fileSha256": "ace46950e1823648b798fb863db316ad2cb30a4c58584425f1337087307a897c",
+          "effectiveSnapGates": {
+            "DE_W": 0.2889826817214745,
+            "DE_S": 0.26193225929709013,
+            "DT_S": 0.30783397846101435,
+            "DT_W": 0.31622409447939426,
+            "LB_M": 0.19299384443648201,
+            "LB_W": 0.2119064361444968,
+            "LB_S": 0.18488410399554256,
+            "CB_S": 0.15826212560144653,
+            "CB_W": 0.1465377032021765,
+            "FS": 0.1553731630699866,
+            "SS": 0.15863293981788307
+          },
+          "tickCount": 120,
+          "lastCompletedTime": 6
+        },
+        {
+          "id": "FTOSS",
+          "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": 8.04,
+          "elapsedSeconds": 0.4937319030000003,
+          "fileSha256": "5471a303c3496439d10d7130b2bca23f8fa4fe6b6f6b238580485f6ef40ad7c4",
+          "effectiveSnapGates": {
+            "DE_W": 0.2543137937581259,
+            "DE_S": 0.2664802335987207,
+            "DT_S": 0.2970509147804919,
+            "DT_W": 0.3435274823107405,
+            "LB_M": 0.18700983980481015,
+            "LB_W": 0.19021880546443412,
+            "LB_S": 0.23252108858529683,
+            "CB_S": 0.16900808099332765,
+            "CB_W": 0.17729019071904253,
+            "FS": 0.1924056070599127,
+            "SS": 0.16773248167544247
+          },
+          "tickCount": 95,
+          "lastCompletedTime": 4.75
+        },
+        {
+          "id": "FTOSS-L",
+          "inputSha256": "b2d460404c9e2cad0d348bc8d6ea41d954cc246fa70b5b166bcb5ccc3b9880bb",
+          "source": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+          "phase": "dead",
+          "outcome": "tackle",
+          "gain": -0.52,
+          "elapsedSeconds": 0.3297636520000001,
+          "fileSha256": "dcc6dd5c621b125e434fca58cfe93b7fce99f39054cd7cad40f619adb748671f",
+          "effectiveSnapGates": {
+            "DE_W": 0.2543137937581259,
+            "DE_S": 0.2664802335987207,
+            "DT_S": 0.2970509147804919,
+            "DT_W": 0.3435274823107405,
+            "LB_M": 0.18700983980481015,
+            "LB_W": 0.19021880546443412,
+            "LB_S": 0.23252108858529683,
+            "CB_S": 0.16900808099332765,
+            "CB_W": 0.17729019071904253,
+            "FS": 0.1924056070599127,
+            "SS": 0.16773248167544247
+          },
+          "tickCount": 70,
+          "lastCompletedTime": 3.5
+        }
+      ],
+      "boxOperators": {
+        "firstRequest": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstIntent": {
+          "median": 0.3,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstSpeed": {
+          "median": 0.35,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "displacement015": {
+          "median": 0.55,
+          "crossed": 16,
+          "noncrossing": 0
+        },
+        "firstRunRead": {
+          "median": 0.525,
+          "crossed": 10,
+          "noncrossing": 6
+        }
+      },
+      "qualification": "These are tiny selected examples, not an NFL-calibration sample. .15 displacement is a different event from sensory readiness. half initial/starts.ready snapshot precedes its explicit intervention: do not read it as effective half readiness."
+    }
+  },
+  "comparisons": [
+    {
+      "left": "baseline",
+      "right": "half",
+      "id": "DUO",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.35,
+        "rng": 0.35,
+        "shorterTickCount": 68,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "half",
+      "id": "TOSS",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.4,
+        "rng": 0.45,
+        "shorterTickCount": 73,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "half",
+      "id": "IZ",
+      "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.35,
+        "rng": 0.35,
+        "shorterTickCount": 64,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "half",
+      "id": "PA",
+      "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.3,
+        "rng": 0.3,
+        "shorterTickCount": 120,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "candidate",
+      "id": "DUO",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.35,
+        "rng": 0.35,
+        "shorterTickCount": 73,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "candidate",
+      "id": "TOSS",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "firstDifferences": {
+        "requests": 0.15,
+        "intents": 0.15,
+        "before": 0.2,
+        "after": 0.15,
+        "reps": 0.4,
+        "rng": 0.5,
+        "shorterTickCount": 80,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "candidate",
+      "id": "IZ",
+      "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.35,
+        "rng": 0.35,
+        "shorterTickCount": 69,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "candidate",
+      "id": "PA",
+      "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+      "firstDifferences": {
+        "requests": 0.1,
+        "intents": 0.1,
+        "before": 0.15,
+        "after": 0.1,
+        "reps": 0.3,
+        "rng": 0.3,
+        "shorterTickCount": 81,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "edge",
+      "id": "DUO",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "firstDifferences": {
+        "requests": null,
+        "intents": null,
+        "before": null,
+        "after": null,
+        "reps": null,
+        "rng": null,
+        "shorterTickCount": 76,
+        "fullTicksEqual": true
+      },
+      "completeResultEqual": true
+    },
+    {
+      "left": "baseline",
+      "right": "edge",
+      "id": "TOSS",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "firstDifferences": {
+        "requests": 0.3,
+        "intents": 0.3,
+        "before": 0.35,
+        "after": 0.3,
+        "reps": 0.4,
+        "rng": 2.4,
+        "shorterTickCount": 85,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "edge",
+      "id": "IZ",
+      "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+      "firstDifferences": {
+        "requests": 0.2,
+        "intents": 0.2,
+        "before": 0.25,
+        "after": 0.2,
+        "reps": 0.55,
+        "rng": 0.55,
+        "shorterTickCount": 66,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "baseline",
+      "right": "edge",
+      "id": "PA",
+      "inputSha256": "3c9da96c6926338e6ff85658f54418304f669b4fa17730828a961c0a6fd1aeab",
+      "firstDifferences": {
+        "requests": null,
+        "intents": null,
+        "before": null,
+        "after": null,
+        "reps": null,
+        "rng": null,
+        "shorterTickCount": 120,
+        "fullTicksEqual": true
+      },
+      "completeResultEqual": true
+    },
+    {
+      "left": "fresh-baseline",
+      "right": "fresh-edge",
+      "id": "PASS13",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "firstDifferences": {
+        "requests": 0.3,
+        "intents": 0.3,
+        "before": 0.35,
+        "after": 0.3,
+        "reps": 0.5,
+        "rng": 0.5,
+        "shorterTickCount": 110,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "fresh-baseline",
+      "right": "fresh-edge",
+      "id": "PA13",
+      "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+      "firstDifferences": {
+        "requests": 0.3,
+        "intents": 0.3,
+        "before": 0.35,
+        "after": 0.3,
+        "reps": 0.5,
+        "rng": 0.5,
+        "shorterTickCount": 75,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "fresh-baseline",
+      "right": "fresh-edge",
+      "id": "FTOSS",
+      "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+      "firstDifferences": {
+        "requests": 0.3,
+        "intents": 0.3,
+        "before": 0.35,
+        "after": 0.3,
+        "reps": 0.6,
+        "rng": 3.9,
+        "shorterTickCount": 95,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    },
+    {
+      "left": "fresh-baseline",
+      "right": "fresh-edge",
+      "id": "FTOSS-L",
+      "inputSha256": "b2d460404c9e2cad0d348bc8d6ea41d954cc246fa70b5b166bcb5ccc3b9880bb",
+      "firstDifferences": {
+        "requests": 0.3,
+        "intents": 0.3,
+        "before": 0.35,
+        "after": 0.3,
+        "reps": 0.6,
+        "rng": 0.6,
+        "shorterTickCount": 69,
+        "fullTicksEqual": false
+      },
+      "completeResultEqual": false
+    }
+  ],
+  "tossAdverse": {
+    "baseline": {
+      "defenderSlot": "DE_S",
+      "defenderPlayer": {
+        "id": "SD-DT1",
+        "firstName": "Kevin",
+        "lastName": "Ellis",
+        "jersey": 75,
+        "position": "DT",
+        "age": 28,
+        "experience": 5,
+        "measurables": {
+          "heightIn": 75.3,
+          "weightLb": 307,
+          "armIn": 32.2,
+          "handIn": 10.1,
+          "forty": 4.81,
+          "tenSplit": 1.58,
+          "shuttle": 4.69,
+          "threeCone": 7.69,
+          "vertical": 33.1,
+          "broad": 114,
+          "bench": 29
+        },
+        "ratings": {
+          "strength": 80,
+          "stamina": 68,
+          "balance": 75,
+          "toughness": 63,
+          "throwPower": 31,
+          "accShort": 30,
+          "accMid": 33,
+          "accDeep": 39,
+          "release": 39,
+          "throwOnRun": 34,
+          "touch": 25,
+          "pocketPresence": 25,
+          "vision": 42,
+          "elusiveness": 17,
+          "breakTackle": 31,
+          "ballSecurity": 20,
+          "patience": 36,
+          "routeRunning": 41,
+          "releaseVsPress": 38,
+          "hands": 48,
+          "contestedCatch": 36,
+          "ballTracking": 33,
+          "passBlock": 27,
+          "runBlock": 32,
+          "handTechnique": 24,
+          "leadBlock": 40,
+          "passRushPower": 92,
+          "passRushFinesse": 76,
+          "blockShedding": 76,
+          "tackling": 83,
+          "hitPower": 68,
+          "pursuit": 68,
+          "manCoverage": 43,
+          "zoneCoverage": 49,
+          "press": 38,
+          "ballSkills": 14,
+          "kickPower": 40,
+          "kickAccuracy": 23,
+          "puntPower": 36,
+          "puntAccuracy": 29,
+          "awareness": 81,
+          "playRecognition": 61,
+          "decisionMaking": 77,
+          "composure": 51,
+          "discipline": 41,
+          "anticipation": 31,
+          "consistency": 80,
+          "workRate": 65
+        },
+        "familiarity": {
+          "EDGE": 0.55
+        },
+        "archetype": "3-Tech Penetrator"
+      },
+      "runnerPlayer": {
+        "id": "SO-RB1",
+        "firstName": "Bryce",
+        "lastName": "Lockett",
+        "jersey": 22,
+        "position": "RB",
+        "age": 26,
+        "experience": 4,
+        "measurables": {
+          "heightIn": 70.4,
+          "weightLb": 219,
+          "armIn": 32.7,
+          "handIn": 9.8,
+          "forty": 4.55,
+          "tenSplit": 1.56,
+          "shuttle": 4.26,
+          "threeCone": 7.1,
+          "vertical": 30.7,
+          "broad": 117,
+          "bench": 28
+        },
+        "ratings": {
+          "strength": 60,
+          "stamina": 68,
+          "balance": 79,
+          "toughness": 66,
+          "throwPower": 30,
+          "accShort": 27,
+          "accMid": 37,
+          "accDeep": 28,
+          "release": 34,
+          "throwOnRun": 20,
+          "touch": 32,
+          "pocketPresence": 25,
+          "vision": 76,
+          "elusiveness": 68,
+          "breakTackle": 78,
+          "ballSecurity": 79,
+          "patience": 79,
+          "routeRunning": 69,
+          "releaseVsPress": 23,
+          "hands": 49,
+          "contestedCatch": 19,
+          "ballTracking": 59,
+          "passBlock": 56,
+          "runBlock": 28,
+          "handTechnique": 34,
+          "leadBlock": 25,
+          "passRushPower": 27,
+          "passRushFinesse": 20,
+          "blockShedding": 24,
+          "tackling": 41,
+          "hitPower": 20,
+          "pursuit": 29,
+          "manCoverage": 30,
+          "zoneCoverage": 50,
+          "press": 32,
+          "ballSkills": 36,
+          "kickPower": 20,
+          "kickAccuracy": 45,
+          "puntPower": 30,
+          "puntAccuracy": 39,
+          "awareness": 61,
+          "playRecognition": 60,
+          "decisionMaking": 66,
+          "composure": 74,
+          "discipline": 64,
+          "anticipation": 16,
+          "consistency": 72,
+          "workRate": 44
+        },
+        "familiarity": {
+          "FB": 0.55,
+          "WR": 0.4
+        },
+        "archetype": "Power Back"
+      },
+      "installedFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "edge",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack",
+        "partner": "SS"
+      },
+      "samples": [
+        {
+          "t": 0.3,
+          "defender": {
+            "pos": {
+              "x": 40.9,
+              "y": 22.64095692448914
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.246685200177666,
+              "y": 26.523019896889238
+            },
+            "vel": {
+              "x": 0.3612017227257009,
+              "y": -1.1113899160792142
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": -5.248707778323077,
+              "y": 6.123122762625204
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -5.248707778323077,
+              "y": 6.123122762625204
+            }
+          },
+          "loadSamples": [],
+          "lastConsumedRBCue": {
+            "t": 0.3,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.2,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 0,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 0.4,
+          "defender": {
+            "pos": {
+              "x": 40.87527685601479,
+              "y": 22.66616704203171
+            },
+            "vel": {
+              "x": -0.5302456627701763,
+              "y": 0.47331022528966066
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.28903360084863,
+              "y": 26.39271712559393
+            },
+            "vel": {
+              "x": 0.48424231134420104,
+              "y": -1.4899763425996164
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.6691700946696533
+            },
+            "facing": -3.0779955730831694,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.5707795032921058,
+              "control": -0.2418089891203745,
+              "normal": 0,
+              "tangent": -312.4736514569608
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 0.4,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.24618433722381,
+                "y": 26.524561013670347
+              },
+              "vel": {
+                "x": 0.15369199903237624,
+                "y": -0.472898458561158
+              },
+              "stance": null,
+              "facing": -0.3731279356515025,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 0.5,
+          "defender": {
+            "pos": {
+              "x": 40.81553105691357,
+              "y": 22.67727632939937
+            },
+            "vel": {
+              "x": -0.6629484998694436,
+              "y": -0.24937202263543856
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.343078312696235,
+              "y": 26.226425704524235
+            },
+            "vel": {
+              "x": 0.595140720195674,
+              "y": -1.831202216002166
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.6691700946696533
+            },
+            "facing": -2.9789196002245144,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.6338532265804795,
+              "control": -0.23516756696779317,
+              "normal": 371.505859351714,
+              "tangent": -47.73749751998648
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 0.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.304052507838215,
+                "y": 26.34650510408756
+              },
+              "vel": {
+                "x": 0.2950993365719591,
+                "y": -0.9079979586829308
+              },
+              "stance": null,
+              "facing": -1.213427241174024,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1,
+          "defender": {
+            "pos": {
+              "x": 40.92469088009947,
+              "y": 22.32073395959348
+            },
+            "vel": {
+              "x": 0.07714230229418831,
+              "y": -1.2536234491447364
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.6531146391062,
+              "y": 25.480283608783527
+            },
+            "vel": {
+              "x": 1.189650955587092,
+              "y": -1.1411554259338406
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.6691700946696533
+            },
+            "facing": -2.9860619509108486,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.6293062649123761,
+              "control": -0.21189788934471837,
+              "normal": 617.7111163700641,
+              "tangent": 297.3207747465847
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 1,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.64609695162213,
+                "y": 25.29406066166746
+              },
+              "vel": {
+                "x": 0.605731624244854,
+                "y": -1.863789613076811
+              },
+              "stance": null,
+              "facing": 0.25860749531761423,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1.5,
+          "defender": {
+            "pos": {
+              "x": 40.67611989519228,
+              "y": 21.58652586838284
+            },
+            "vel": {
+              "x": -1.1385526055670148,
+              "y": -1.8055923322666039
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 34.49727543321153,
+              "y": 24.54603139687298
+            },
+            "vel": {
+              "x": 2.2730778164657472,
+              "y": -2.355670782161586
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.036001593798474
+            },
+            "facing": 2.757044088792467,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.28548112459118236,
+              "control": -0.21957707150977007,
+              "normal": 624.0327750474947,
+              "tangent": 301.2110262403881
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 1.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 34.43668900755183,
+                "y": 24.67938802078137
+              },
+              "vel": {
+                "x": 1.71154960622099,
+                "y": -1.6640013337467705
+              },
+              "stance": null,
+              "facing": -0.8680587527898193,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2,
+          "defender": {
+            "pos": {
+              "x": 39.86317508842135,
+              "y": 20.97235257812275
+            },
+            "vel": {
+              "x": -1.658179243533542,
+              "y": -0.33309836442671714
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 35.96773677600951,
+              "y": 22.948137449797198
+            },
+            "vel": {
+              "x": 3.423290494493887,
+              "y": -4.022588625128113
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -0.9982966169381834
+            },
+            "facing": 1.3729435518174267,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 0.595664644191715,
+              "control": -0.183087759889568,
+              "normal": 593.9940328377949,
+              "tangent": 282.72564641903426
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 35.88623954722941,
+                "y": 23.10659885428181
+              },
+              "vel": {
+                "x": 2.9003023732505215,
+                "y": -3.0056857317463135
+              },
+              "stance": null,
+              "facing": -0.810587907863252,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.2,
+          "defender": {
+            "pos": {
+              "x": 39.538050193920846,
+              "y": 20.889271373937742
+            },
+            "vel": {
+              "x": -1.550805785759507,
+              "y": -0.27570700733062237
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 36.687800079489975,
+              "y": 22.092007610766316
+            },
+            "vel": {
+              "x": 3.830730347649188,
+              "y": -4.473602664250539
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": 0.9515529510929717,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 0.8639302325027558,
+              "control": -0.166196191407441,
+              "normal": 580.0885506946022,
+              "tangent": 274.1684266386081
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.2,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 36.61216805806319,
+                "y": 22.221839957586948
+              },
+              "vel": {
+                "x": 3.2627033627398387,
+                "y": -3.7103298797860935
+              },
+              "stance": null,
+              "facing": -0.9773724082561184,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.4,
+          "defender": {
+            "pos": {
+              "x": 39.20465086930958,
+              "y": 20.733830928017
+            },
+            "vel": {
+              "x": -1.7442034706841476,
+              "y": -0.9991889869097811
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 37.501885890437116,
+              "y": 21.1684926135773
+            },
+            "vel": {
+              "x": 4.306447274223578,
+              "y": -4.746571179271246
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": 0.5926299890617845,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.0924276868885483,
+              "control": -0.18576127956572042,
+              "normal": 0,
+              "tangent": 284.0800437611365
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.4,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 37.38902873057898,
+                "y": 21.23803184180916
+              },
+              "vel": {
+                "x": 3.571581986165038,
+                "y": -4.310951078305892
+              },
+              "stance": null,
+              "facing": -0.979174031274554,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.5,
+          "defender": {
+            "pos": {
+              "x": 39.03078322781132,
+              "y": 20.631056152604383
+            },
+            "vel": {
+              "x": -1.7606439422176685,
+              "y": -1.0336352924080308
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 37.943550258201014,
+              "y": 20.688112169968672
+            },
+            "vel": {
+              "x": 4.524638029886678,
+              "y": -4.859892144917645
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": 0.4432964094506183,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.187496396347445,
+              "control": -0.18565951009732995,
+              "normal": 0,
+              "tangent": 284.0284876425393
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 37.83701918378473,
+                "y": 20.749926811491154
+              },
+              "vel": {
+                "x": 3.830730347649188,
+                "y": -4.473602664250539
+              },
+              "stance": null,
+              "facing": -0.7096872467076067,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.55,
+          "defender": {
+            "pos": {
+              "x": 38.94213610283792,
+              "y": 20.578734590730637
+            },
+            "vel": {
+              "x": -1.7853452047466576,
+              "y": -1.0623428273826379
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 38.17265658484286,
+              "y": 20.444102494941813
+            },
+            "vel": {
+              "x": 4.639615035787192,
+              "y": -4.900494856157395
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": 0.37709987633489844,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.2296384181910978,
+              "control": -0.1811098639776792,
+              "normal": 0,
+              "tangent": 281.7236500657206
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.55,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 38.06819547546131,
+                "y": 20.501368534590675
+              },
+              "vel": {
+                "x": 3.952698883938785,
+                "y": -4.550150798675003
+              },
+              "stance": null,
+              "facing": -0.6628169360564977,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.65,
+          "defender": {
+            "pos": {
+              "x": 38.82553533736554,
+              "y": 20.48690807076896
+            },
+            "vel": {
+              "x": -0.8147736209772907,
+              "y": -0.8094203815754879
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 38.549643445271705,
+              "y": 19.92648646148484
+            },
+            "vel": {
+              "x": 3.145490266382447,
+              "y": -5.394469057363391
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": 0.26345868229699076,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.3019846492710905,
+              "control": -0.15284020652925887,
+              "normal": 0,
+              "tangent": 267.40232329494376
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.65,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 38.546627649743975,
+                "y": 19.998403632430104
+              },
+              "vel": {
+                "x": 4.1905561496816315,
+                "y": -4.686375493196273
+              },
+              "stance": null,
+              "facing": -0.7605936126935258,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.45,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 39.844897873631375,
+            "y": 22.555711781653656
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 40.85,
+            "y": 22.68
+          },
+          "note": "run; pPass=0.25 focus=0.85 urgency=0.80"
+        },
+        {
+          "t": 0.5,
+          "type": "pitch",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 38.33,
+            "y": 26.45
+          }
+        },
+        {
+          "t": 0.8,
+          "type": "pitch_catch",
+          "a": 6,
+          "b": 0,
+          "pos": {
+            "x": 33.53,
+            "y": 25.64
+          },
+          "note": "pitch received"
+        },
+        {
+          "t": 2.5,
+          "type": "missed_tackle",
+          "a": 12,
+          "b": 6,
+          "pos": {
+            "x": 38.94,
+            "y": 20.58
+          }
+        },
+        {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 38.4,
+            "y": 20.2
+          },
+          "note": "body collision"
+        },
+        {
+          "t": 3.6,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 44.02,
+            "y": 14.22
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.6,
+          "type": "hit",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 44.02,
+            "y": 14.22
+          }
+        },
+        {
+          "t": 3.75,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 38.14898513673561,
+            "y": 18.239816955658668
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.8,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 43.41,
+            "y": 13.6
+          },
+          "note": "legs"
+        },
+        {
+          "t": 4.25,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 37.55015628890778,
+            "y": 17.79631666724048
+          },
+          "note": "run"
+        },
+        {
+          "t": 4.2,
+          "type": "tackle",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 44.27,
+            "y": 12.25
+          }
+        }
+      ]
+    },
+    "edge": {
+      "defenderSlot": "DE_S",
+      "defenderPlayer": {
+        "id": "SD-DT1",
+        "firstName": "Kevin",
+        "lastName": "Ellis",
+        "jersey": 75,
+        "position": "DT",
+        "age": 28,
+        "experience": 5,
+        "measurables": {
+          "heightIn": 75.3,
+          "weightLb": 307,
+          "armIn": 32.2,
+          "handIn": 10.1,
+          "forty": 4.81,
+          "tenSplit": 1.58,
+          "shuttle": 4.69,
+          "threeCone": 7.69,
+          "vertical": 33.1,
+          "broad": 114,
+          "bench": 29
+        },
+        "ratings": {
+          "strength": 80,
+          "stamina": 68,
+          "balance": 75,
+          "toughness": 63,
+          "throwPower": 31,
+          "accShort": 30,
+          "accMid": 33,
+          "accDeep": 39,
+          "release": 39,
+          "throwOnRun": 34,
+          "touch": 25,
+          "pocketPresence": 25,
+          "vision": 42,
+          "elusiveness": 17,
+          "breakTackle": 31,
+          "ballSecurity": 20,
+          "patience": 36,
+          "routeRunning": 41,
+          "releaseVsPress": 38,
+          "hands": 48,
+          "contestedCatch": 36,
+          "ballTracking": 33,
+          "passBlock": 27,
+          "runBlock": 32,
+          "handTechnique": 24,
+          "leadBlock": 40,
+          "passRushPower": 92,
+          "passRushFinesse": 76,
+          "blockShedding": 76,
+          "tackling": 83,
+          "hitPower": 68,
+          "pursuit": 68,
+          "manCoverage": 43,
+          "zoneCoverage": 49,
+          "press": 38,
+          "ballSkills": 14,
+          "kickPower": 40,
+          "kickAccuracy": 23,
+          "puntPower": 36,
+          "puntAccuracy": 29,
+          "awareness": 81,
+          "playRecognition": 61,
+          "decisionMaking": 77,
+          "composure": 51,
+          "discipline": 41,
+          "anticipation": 31,
+          "consistency": 80,
+          "workRate": 65
+        },
+        "familiarity": {
+          "EDGE": 0.55
+        },
+        "archetype": "3-Tech Penetrator"
+      },
+      "runnerPlayer": {
+        "id": "SO-RB1",
+        "firstName": "Bryce",
+        "lastName": "Lockett",
+        "jersey": 22,
+        "position": "RB",
+        "age": 26,
+        "experience": 4,
+        "measurables": {
+          "heightIn": 70.4,
+          "weightLb": 219,
+          "armIn": 32.7,
+          "handIn": 9.8,
+          "forty": 4.55,
+          "tenSplit": 1.56,
+          "shuttle": 4.26,
+          "threeCone": 7.1,
+          "vertical": 30.7,
+          "broad": 117,
+          "bench": 28
+        },
+        "ratings": {
+          "strength": 60,
+          "stamina": 68,
+          "balance": 79,
+          "toughness": 66,
+          "throwPower": 30,
+          "accShort": 27,
+          "accMid": 37,
+          "accDeep": 28,
+          "release": 34,
+          "throwOnRun": 20,
+          "touch": 32,
+          "pocketPresence": 25,
+          "vision": 76,
+          "elusiveness": 68,
+          "breakTackle": 78,
+          "ballSecurity": 79,
+          "patience": 79,
+          "routeRunning": 69,
+          "releaseVsPress": 23,
+          "hands": 49,
+          "contestedCatch": 19,
+          "ballTracking": 59,
+          "passBlock": 56,
+          "runBlock": 28,
+          "handTechnique": 34,
+          "leadBlock": 25,
+          "passRushPower": 27,
+          "passRushFinesse": 20,
+          "blockShedding": 24,
+          "tackling": 41,
+          "hitPower": 20,
+          "pursuit": 29,
+          "manCoverage": 30,
+          "zoneCoverage": 50,
+          "press": 32,
+          "ballSkills": 36,
+          "kickPower": 20,
+          "kickAccuracy": 45,
+          "puntPower": 30,
+          "puntAccuracy": 39,
+          "awareness": 61,
+          "playRecognition": 60,
+          "decisionMaking": 66,
+          "composure": 74,
+          "discipline": 64,
+          "anticipation": 16,
+          "consistency": 72,
+          "workRate": 44
+        },
+        "familiarity": {
+          "FB": 0.55,
+          "WR": 0.4
+        },
+        "archetype": "Power Back"
+      },
+      "installedFit": {
+        "gap": "D",
+        "side": -1,
+        "kind": "edge",
+        "technique": "attack",
+        "edge": "box",
+        "pace": "stack",
+        "partner": "SS"
+      },
+      "samples": [
+        {
+          "t": 0.3,
+          "defender": {
+            "pos": {
+              "x": 40.9,
+              "y": 22.64095692448914
+            },
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.246685200177666,
+              "y": 26.523019896889238
+            },
+            "vel": {
+              "x": 0.3612017227257009,
+              "y": -1.1113899160792142
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": -6.824462243092588,
+              "y": -4.297473769671174
+            },
+            "cutSkill": 0.990767032967033
+          },
+          "final": {
+            "vel": {
+              "x": -6.824462243092588,
+              "y": -4.297473769671174
+            },
+            "cutSkill": 0.990767032967033
+          },
+          "loadSamples": [],
+          "lastConsumedRBCue": {
+            "t": 0.3,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.2,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 0,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 0.4,
+          "defender": {
+            "pos": {
+              "x": 40.868932903306685,
+              "y": 22.62139347342389
+            },
+            "vel": {
+              "x": -0.6170672333334022,
+              "y": -0.38857717354329047
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.28903360084863,
+              "y": 26.39271712559393
+            },
+            "vel": {
+              "x": 0.48424231134420104,
+              "y": -1.4899763425996164
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.6691700946696533
+            },
+            "facing": -3.1173950284606615,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.5456970309782802,
+              "control": -0.2418089891203745,
+              "normal": 0,
+              "tangent": -237.06250603425738
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 0.4,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.24618433722381,
+                "y": 26.524561013670347
+              },
+              "vel": {
+                "x": 0.15369199903237624,
+                "y": -0.472898458561158
+              },
+              "stance": null,
+              "facing": -0.3731279356515025,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 0.5,
+          "defender": {
+            "pos": {
+              "x": 40.813370935661595,
+              "y": 22.552119632260354
+            },
+            "vel": {
+              "x": -0.4490159950912873,
+              "y": -0.8759805846158335
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.343078312696235,
+              "y": 26.226425704524235
+            },
+            "vel": {
+              "x": 0.595140720195674,
+              "y": -1.831202216002166
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -2.6691700946696533
+            },
+            "facing": -3.113056465431535,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.5484590459862851,
+              "control": -0.23516756696779317,
+              "normal": 424.5781249733874,
+              "tangent": 309.10912618659506
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 0.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.304052507838215,
+                "y": 26.34650510408756
+              },
+              "vel": {
+                "x": 0.2950993365719591,
+                "y": -0.9079979586829308
+              },
+              "stance": null,
+              "facing": -1.213427241174024,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1,
+          "defender": {
+            "pos": {
+              "x": 40.74864856142458,
+              "y": 21.926348041651647
+            },
+            "vel": {
+              "x": -0.6416000971291976,
+              "y": -1.1729162132620399
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 33.653560390619425,
+              "y": 25.48069423416706
+            },
+            "vel": {
+              "x": 1.2074810161160796,
+              "y": -1.1247304105925318
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -0.09966930025616452
+            },
+            "facing": 2.43180156546476,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": -0.07842530342603983,
+              "control": -0.21189788934471837,
+              "normal": 617.7111163700641,
+              "tangent": 297.3207747465847
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 1,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 33.621242291463304,
+                "y": 25.37053653907986
+              },
+              "vel": {
+                "x": 0.5153510418491388,
+                "y": -1.5856955133953303
+              },
+              "stance": null,
+              "facing": 0.39871037559792855,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1.5,
+          "defender": {
+            "pos": {
+              "x": 40.11842085337184,
+              "y": 21.564866751031705
+            },
+            "vel": {
+              "x": -1.5612527893887838,
+              "y": -0.4928907837873529
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 34.51247969444116,
+              "y": 24.5587563758767
+            },
+            "vel": {
+              "x": 2.3427603149426615,
+              "y": -2.2910397625552243
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -0.7832311372359704
+            },
+            "facing": 1.338685925499215,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 0.6174737264602684,
+              "control": -0.21957707150977007,
+              "normal": 624.0327750474947,
+              "tangent": 301.2110262403881
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 1.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 34.441024329681596,
+                "y": 24.68038644199752
+              },
+              "vel": {
+                "x": 1.7147728719860573,
+                "y": -1.6682845093042864
+              },
+              "stance": null,
+              "facing": -0.8578897885988636,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2,
+          "defender": {
+            "pos": {
+              "x": 39.309787678390954,
+              "y": 21.313031242765952
+            },
+            "vel": {
+              "x": -1.6767153821127787,
+              "y": -1.0251694157884672
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 35.97019936033429,
+              "y": 22.963230130842756
+            },
+            "vel": {
+              "x": 3.1582184699267506,
+              "y": -4.1761237157525395
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -1.5,
+              "y": -1.133446864052808
+            },
+            "facing": 0.28090566391435645,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.2908775558053418,
+              "control": -0.183087759889568,
+              "normal": 0,
+              "tangent": 282.72564641903426
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 35.94362898338404,
+                "y": 23.15920222336366
+              },
+              "vel": {
+                "x": 2.9882330070778496,
+                "y": -2.922262510308434
+              },
+              "stance": null,
+              "facing": -0.7802799131725603,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.2,
+          "defender": {
+            "pos": {
+              "x": 39.009934216936415,
+              "y": 21.121129069476083
+            },
+            "vel": {
+              "x": -1.5383975327725299,
+              "y": -0.9264790492953787
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 36.61653106551313,
+              "y": 22.062016529436875
+            },
+            "vel": {
+              "x": 3.354761398715221,
+              "y": -4.786724112391474
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": -0.03834140383253337,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.4941165514033845,
+              "control": -0.166196191407441,
+              "normal": 0,
+              "tangent": 274.1684266386081
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.2,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 36.58885466996598,
+                "y": 22.22383207277962
+              },
+              "vel": {
+                "x": 3.1063755217627085,
+                "y": -3.79363062025183
+              },
+              "stance": null,
+              "facing": -1.2967747408405925,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.4,
+          "defender": {
+            "pos": {
+              "x": 38.67189582358623,
+              "y": 20.92146345575437
+            },
+            "vel": {
+              "x": -1.8480331757608486,
+              "y": -1.0964097523564376
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 37.31426990032716,
+              "y": 21.057205899317374
+            },
+            "vel": {
+              "x": 3.612647022814847,
+              "y": -5.252383230434062
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": -0.3233403839151845,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.6755525372285949,
+              "control": -0.16008232017466656,
+              "normal": 0,
+              "tangent": 271.0711571397196
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.4,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 37.250180831545656,
+                "y": 21.169582126548956
+              },
+              "vel": {
+                "x": 3.2058441045926727,
+                "y": -4.527591732163646
+              },
+              "stance": null,
+              "facing": -1.1737311378776474,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.5,
+          "defender": {
+            "pos": {
+              "x": 38.478753366243104,
+              "y": 20.806898912920346
+            },
+            "vel": {
+              "x": -2.0153214892550984,
+              "y": -1.19669447702872
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 37.68114547310987,
+              "y": 20.52141478207321
+            },
+            "vel": {
+              "x": 3.723770357244425,
+              "y": -5.461382531648158
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": -0.40101574815446345,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.7250022099291735,
+              "control": -0.16708466142376383,
+              "normal": 0,
+              "tangent": 274.61852298140997
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.5,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 37.622959485127694,
+                "y": 20.62599929571943
+              },
+              "vel": {
+                "x": 3.354761398715221,
+                "y": -4.786724112391474
+              },
+              "stance": null,
+              "facing": -0.9721322049841744,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.55,
+          "defender": {
+            "pos": {
+              "x": 38.37593210898574,
+              "y": 20.74586291123132
+            },
+            "vel": {
+              "x": -2.0978150705393306,
+              "y": -1.244995211479916
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 37.86847361851231,
+              "y": 20.245772240101868
+            },
+            "vel": {
+              "x": 3.7693554588531315,
+              "y": -5.564319147205544
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "final": {
+            "vel": {
+              "x": -2.3786295921539087,
+              "y": -1.3515140611952712
+            },
+            "facing": -0.4197791569060675,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.969570695970696
+          },
+          "loadSamples": [
+            {
+              "b": 7,
+              "d": 12,
+              "phi": 1.7369473669374595,
+              "control": -0.1740975298906682,
+              "normal": 0,
+              "tangent": 278.1712218812202
+            }
+          ],
+          "lastConsumedRBCue": {
+            "t": 2.55,
+            "a": 12,
+            "b": 6,
+            "consumer": null,
+            "picture": {
+              "pos": {
+                "x": 37.81350612013749,
+                "y": 20.3469730283492
+              },
+              "vel": {
+                "x": 3.4249415989430023,
+                "y": -4.908847379316575
+              },
+              "stance": null,
+              "facing": -0.9243428651013669,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        },
+        {
+          "t": 2.65,
+          "defender": {
+            "pos": {
+              "x": 38.165945913489985,
+              "y": 20.621223802447215
+            },
+            "vel": {
+              "x": -1.9462528355920272,
+              "y": -1.1529495710905253
+            }
+          },
+          "runner": {
+            "pos": {
+              "x": 38.24974827078157,
+              "y": 19.679541553916383
+            },
+            "vel": {
+              "x": 3.8552875541656464,
+              "y": -5.758377259292977
+            }
+          },
+          "raw": {
+            "vel": {
+              "x": 3.8087129260879586,
+              "y": -2.2578348105124366
+            },
+            "facing": 3.141592653589793
+          },
+          "final": {
+            "vel": {
+              "x": 3.8087129260879586,
+              "y": -2.2578348105124366
+            },
+            "facing": 3.141592653589793
+          },
+          "loadSamples": [],
+          "lastConsumedRBCue": {
+            "t": 2.65,
+            "a": 12,
+            "b": 6,
+            "consumer": 12,
+            "picture": {
+              "pos": {
+                "x": 38.20122540026343,
+                "y": 19.77458964917664
+              },
+              "vel": {
+                "x": 3.5537151836605148,
+                "y": -5.1415484760057755
+              },
+              "stance": null,
+              "facing": -1.02290774005838,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": true
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.45,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 39.845083030578856,
+            "y": 22.555609856968918
+          },
+          "note": "run"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 40.84,
+            "y": 22.59
+          },
+          "note": "run; pPass=0.25 focus=0.85 urgency=0.80"
+        },
+        {
+          "t": 0.5,
+          "type": "pitch",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 38.33,
+            "y": 26.45
+          }
+        },
+        {
+          "t": 0.8,
+          "type": "pitch_catch",
+          "a": 6,
+          "b": 0,
+          "pos": {
+            "x": 33.53,
+            "y": 25.64
+          },
+          "note": "pitch received"
+        },
+        {
+          "t": 2.45,
+          "type": "missed_tackle",
+          "a": 12,
+          "b": 6,
+          "pos": {
+            "x": 38.48,
+            "y": 20.81
+          }
+        },
+        {
+          "t": 3.45,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 38.47521793535798,
+            "y": 18.534878097229477
+          },
+          "note": "run"
+        },
+        {
+          "t": 3.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 43.63,
+            "y": 15.63
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 3.65,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 44.31,
+            "y": 14.59
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.65,
+          "type": "hit",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 44.31,
+            "y": 14.59
+          }
+        },
+        {
+          "t": 3.95,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 37.95284465664288,
+            "y": 18.332847985356768
+          },
+          "note": "run"
+        },
+        {
+          "t": 4,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 45.35,
+            "y": 15.47
+          },
+          "note": "legs"
+        },
+        {
+          "t": 4.05,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 46.79,
+            "y": 14.91
+          },
+          "note": "assist"
+        },
+        {
+          "t": 4.45,
+          "type": "block_contact",
+          "a": 7,
+          "b": 12,
+          "pos": {
+            "x": 38.3706065291248,
+            "y": 18.30632956265951
+          },
+          "note": "run"
+        },
+        {
+          "t": 4.4,
+          "type": "tackle",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 46.44,
+            "y": 15.08
+          }
+        }
+      ]
+    }
+  },
+  "cost": {
+    "nativePrefixes": 24,
+    "games": 0,
+    "fullSuiteRuns": 0,
+    "completedOutcomes": 20,
+    "livePrefixes": 4,
+    "nativeReceiptElapsedSeconds": 17.947298047,
+    "focused": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/defensive-snap-response",
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+      "validationSha256": "a043d14fdb25b375aa72a1dbed00173bf6237c2a9131e581dcc236ed1c1fbc9d",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/defense.ts"
+      ],
+      "startedAt": "2026-10-19T18:21:17.364Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/power-edge-entry.test.ts",
+            "test/snap-mesh-and-pull.test.ts",
+            "test/mind.test.ts",
+            "test/defensive-awareness-contact.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.4784605800000006
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-19T18:21:19.844Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/defensive-snap-response",
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "7c154e46a860b8fbc8152298865e10fbe57ae5605fa580485ba01529364d17ed",
+      "validationSha256": "a043d14fdb25b375aa72a1dbed00173bf6237c2a9131e581dcc236ed1c1fbc9d",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/defense.ts"
+      ],
+      "startedAt": "2026-10-19T18:25:40.454Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.46856243
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-19T18:25:51.925Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  }
+}
