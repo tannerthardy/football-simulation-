@@ -806,7 +806,9 @@ interface RunStackRead {
   hold?: { y: number; until: number };
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
-const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean }>();
+const runTargets = new WeakMap<Engagement, {
+  aim: Vec2; runner: boolean; flow: number; adoptedAt: number; predictionFor: number;
+}>();
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
@@ -884,15 +886,25 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   // A newly seen declaration cannot drop flow feedforward midway through it.
   // Support contacts hold the selected target mode too. A safety's acquired
   // runner aim must not keep being treated as an undeclared force landmark.
-  if (runTargets.get(e)?.aim !== aim)
-    runTargets.set(e, { aim, runner: declared && (!edge || advanced) });
+  if (runTargets.get(e)?.aim !== aim) {
+    const runner = declared && (!edge || advanced);
+    runTargets.set(e, { aim, runner, flow: runner ? 0 : stack?.flow ?? 0,
+      adoptedAt: sim.t, predictionFor: d.mind.decisionInterval });
+  }
+  const selected = runTargets.get(e)!;
+  // perceive() has already advanced a visual picture to the current time.
+  // Advance only time spent holding this selected action, using its own flow
+  // cue, for at most the existing decision beat. Position, motion and target
+  // mode must not acquire different ages midway through that action.
+  const lateralAimY = aim.y + selected.flow * clamp(sim.t - selected.adoptedAt, 0, selected.predictionFor);
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
   // advanced carrier supplies urgency even after an original pass read.
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
-  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired };
+  return { aim, lateralAimY, lateralFlow: selected.flow, reading, threat,
+    declared: selected.runner, stack, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1156,7 +1168,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
-    heldFlow: read.stack?.flow, fit: d.runFit });
+    heldFlow: read.stack?.flow, defensiveLateralAimY: read.lateralAimY,
+    selectedLateralFlow: read.lateralFlow, fit: d.runFit });
   // Follow acquired flow while preserving the chosen shoulder. Control/lag
   // replace feet toward their remembered contact depth; attack retains useful
   // forward intent. These are finite requests, not stronger ground support.
@@ -1176,7 +1189,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const capacity = d.body.support
     ? availability(d.body.support, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
   const flow = DL_FLOW
-    ? movingArrivalVelocity(d.body, { x: d.pos.x, y: read.aim.y }, { x: 0, y: held },
+    ? movingArrivalVelocity(d.body, { x: d.pos.x, y: read.lateralAimY }, { x: 0, y: read.lateralFlow },
       td.lateral, 0, 0, .8 + .4 * td.bend, capacity).y
     : clamp(held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender

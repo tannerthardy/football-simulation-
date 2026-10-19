@@ -5,7 +5,7 @@ import { runContactObservers } from '../src/sim/run-contact-observer.js';
 
 afterEach(() => vi.restoreAllMocks());
 
-function stage(side=1) {
+function stage(side=1,flow=0) {
   const f=contactFixture({type:'run',runBlock:60,passBlock:60,side});
   f.engagement.surfaceAxis={x:-1,y:0};f.engagement.drive={x:1,y:0};
   f.engagement.nextMoveAt=Infinity;
@@ -15,7 +15,7 @@ function stage(side=1) {
   for(let k=0;k<24;k++)f.sim.perception.record(f.sim.agents);
   // Fixed acquired picture. Hidden blocker changes below must not move it;
   // this is a controller contract, not a reconstructed NFL contact episode.
-  const see=f.sim.see.bind(f.sim),picture={pos:{...f.blocker.pos},vel:{x:0,y:0},
+  const see=f.sim.see.bind(f.sim),picture={pos:{...f.blocker.pos},vel:{x:0,y:flow},
     facing:0,pose:'up' as const,stance:'low' as const,age:.2};
   vi.spyOn(f.sim,'see').mockImplementation((a,b,...rest)=>a===f.defender&&b===f.blocker
     ? structuredClone(picture) : see(a,b,...rest));
@@ -25,8 +25,8 @@ function stage(side=1) {
   });
   contactCommands(f);
   if(!aim)throw new Error('No actual contact objective was selected');
-  f.sim.t+=.01;
-  return {...f,get aim(){return aim!;},picture};
+  const adoptedAt=f.sim.t;f.sim.t+=.01;
+  return {...f,get aim(){return aim!;},picture,adoptedAt};
 }
 
 describe('ordinary run-rep lateral arrival',()=>{
@@ -59,9 +59,39 @@ describe('ordinary run-rep lateral arrival',()=>{
   it('matches a personally acquired moving shoulder at zero offset',()=>{
     const f=stage();f.picture.vel.y=1.5;
     f.sim.t+=f.defender.mind.decisionInterval+.01;
-    contactCommands(f);f.defender.body.pos.y=f.aim.y;
-    f.sim.t+=.01;
+    contactCommands(f);f.sim.t+=.01;
+    f.defender.body.pos.y=f.aim.y+1.5*.01;
     expect(contactCommands(f)[f.defender.idx].vel.y).toBeCloseTo(1.5,10);
+  });
+
+  it('keeps the acquired shoulder moving during the held decision, rather than steering back to its old position',()=>{
+    const f=stage(1,-.45);f.sim.t=f.adoptedAt+.15;
+    // The frozen point is right of him, but its acquired motion has carried
+    // the selected shoulder left. No new sighting is needed to predict that.
+    f.defender.body.pos.y=f.aim.y-.04;
+    expect(contactCommands(f)[f.defender.idx].vel.y).toBeLessThan(0);
+  });
+
+  it('does not add picture age again or accumulate prediction when queried repeatedly',()=>{
+    const f=stage(1,-.45);f.sim.t=f.adoptedAt+.10;
+    f.defender.body.pos.y=f.aim.y-.045;
+    const before=contactCommands(f)[f.defender.idx];
+    f.picture.age=.8;
+    const after=contactCommands(f)[f.defender.idx];
+    expect(before.vel.y).toBeCloseTo(-.45,10);
+    expect(after.vel).toEqual(before.vel);
+  });
+
+  it('holds its selected flow with the point until the next ordinary adoption',()=>{
+    const unchanged=stage(1,-.45),changed=stage(1,-.45);
+    changed.picture.vel.y=1.5;
+    for(const f of [unchanged,changed]) {
+      f.sim.t=f.adoptedAt+.10;f.defender.body.pos.y=f.aim.y-.045;
+    }
+    expect(contactCommands(changed)[changed.defender.idx].vel)
+      .toEqual(contactCommands(unchanged)[unchanged.defender.idx].vel);
+    changed.sim.t+=changed.defender.mind.decisionInterval+.01;
+    expect(contactCommands(changed)[changed.defender.idx].vel.y).toBeGreaterThan(0);
   });
 
   it('responds to a real changed shoulder on the next existing decision',()=>{
