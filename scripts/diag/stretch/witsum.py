@@ -7,6 +7,9 @@ speed and depth are printed only inside the witness window.
 usage: witsum.py WITNESS.json|BUNDLE.json ... (a bundle from witnesses.sh)"""
 import json, math, sys
 
+# Flags printed are those differing from the pinned profile.
+PROFILE = json.load(open('config/baseline.json'))['flags']
+
 def witnesses(paths):
     for path in paths:
         data = json.load(open(path))
@@ -23,8 +26,7 @@ for name, w in witnesses(sys.argv[1:]):
         return row['actors'].get(slot)
     depth = lambda a: round((a['pos'][0] - los) * ad, 2)
     speed = lambda a: round(math.hypot(*a['vel']), 2)
-    flags = ' '.join(f'{k}={v}' for k, v in sorted(w['flags'].items())
-                     if v is not None and k in ('UC_MESH', 'ZONE_TE', 'STRETCH_FLAT', 'LB_KEY', 'MESH_TEMPO', 'GUN_MESH_SIDE', 'SHED_PURSUE') and v != '0')
+    flags = ' '.join(f'{k}={v}' for k, v in sorted(w['flags'].items()) if k in PROFILE and v != PROFILE[k])
     print(f"{name}  {w['case']}  {w['commit'][:8]}  [{flags or 'defaults'}]  gain {w['result']['gain']} {w['result']['outcome']}")
     hand = next((e for e in w['events'] if e['type'] == 'handoff'), None)
     if hand and ticks[0]['actors'].get('QB') and ticks[0]['actors'].get('RB'):
