@@ -955,12 +955,9 @@ export class World {
     // Pad level costs a little speed when he plays low.
     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);
     const cmd = low < 1 ? { ...intent, effort: (intent.effort ?? 1) * low } : intent;
-    const saved = b.facing;
-    // A turn-rate ceiling is not an achieved pose. Contact and the shared
-    // traction budget can prevent that turn; it cannot grant gait speed yet.
-    if (this.handContact === 'center') b.facing = facing;
+    // Gait starts from the attained pose. The yaw target below is a request:
+    // finite spin and shared traction may prevent reaching it this tick.
     const acc = locomotionAccel(b, cmd, dt, a);
-    b.facing = saved;
     return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
   }
 

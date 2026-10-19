@@ -257,10 +257,9 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   const turnRate = turnRateOf(body);
   const df = angleDiff(body.facing, commandFacing(body, cmd));
   const target = body.facing + clamp(df, -turnRate * dt, turnRate * dt);
-  const beforeFacing = body.facing;
-  body.facing = target;
+  // The requested turn is not yet an achieved gait pose. Use the current
+  // facing here, matching World's movement plan before its finite yaw motor.
   const a = locomotionAccel(body, cmd, dt);
-  body.facing = beforeFacing;
   const traction = supportParams(body.profile).traction;
   const force = Math.hypot(a.x,a.y) * body.profile.massKg;
   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }

@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Active achieved-pose gait consistency diagnostic — 2026-10-19
+
+Movement reviewer owns only the temporary facing swaps inside
+`World.plan` and `stepBody`, plus focused gait contracts, in
+`codex/gait-achieved-pose` from accepted
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7` (queue
+`9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`). Gait should use the attained
+pose rather than an unexecuted turn-rate ceiling. This independent correction
+retains the accepted yaw motor, controllers, contact laws and capacities; #162
+is a separate candidate. Parent coordinates any native composition and Physics
+review. No new native campaign or integration verification is assigned here.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
