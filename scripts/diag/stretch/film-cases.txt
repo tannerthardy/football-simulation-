@@ -5,8 +5,8 @@ power/strong/ace_12/under3/pair31/77	Selected witness (w8): strong backer comes 
 counter/strong/i_pro_21/tite4/pair31/77	Selected witness: middle backer comes off a separated climb
 power/weak/i_pro_21/under3/pair11/77	Selected witness (w9): guard leaving the 3-technique for the weak backer
 counter/weak/i_pro_21/wide9/pair11/77	Selected witness: counter vs wide 9, late kick-out (puller start-up, physics)
-counter/strong/ace_12/over2/pair31/3	Selected adverse control: 20.8 yd before, negative after
-duo/weak/i_pro_21/under3/pair31/77	Selected: duo big gain after (duo already above NFL)
+counter/strong/ace_12/over2/pair31/3	Selected adverse control: 20.8 yd on develop, negative with DRIVE_CONNECT
+duo/weak/i_pro_21/under3/pair31/77	Selected: duo that gained 13.7 yd with DRIVE_CONNECT alone (duo already runs above NFL)
 power/strong/i_pro_21/over4/pair31/1	Random ordinary
 power/weak/i_pro_21/over3/pair31/2	Random ordinary
 power/weak/i_pro_21/under3/pair31/1	Random ordinary
