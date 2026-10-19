@@ -1,0 +1,29 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate -- npx vitest run --project core test/receiver-eligibility-gh.test.ts test/counter-gh.test.ts --testNamePattern receiver eligibility respects|installs separate guard kick --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/eligibility-separation/gh-overlap-green.json
+
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 1fb942997be0411c5b54f809e5ff2f9433dad6cd7c0c121a2fcde33600d0842a
+Running npx vitest run --project core test/receiver-eligibility-gh.test.ts test/counter-gh.test.ts --testNamePattern receiver eligibility respects|installs separate guard kick --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/eligibility-separation/gh-overlap-green.json
+
+ RUN  v3.2.4 /workspace/receiver-eligibility-only
+
+ ✓ |core| test/receiver-eligibility-gh.test.ts (2 tests) 23ms
+ ✓ |core| test/counter-gh.test.ts (13 tests | 11 skipped) 21ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed | 11 skipped (15)
+   Start at  17:08:04
+   Duration  1.40s (transform 676ms, setup 0ms, collect 956ms, tests 44ms, environment 0ms, prepare 121ms)
+
+JSON report written to /workspace/receiver-eligibility-only/out/eligibility-separation/gh-overlap-green.json
+Validation receipt: out/baseline/run-1792429683881-1193.json; exit 0
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

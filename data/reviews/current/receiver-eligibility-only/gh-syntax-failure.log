@@ -1,0 +1,53 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate -- npx vitest run --project core test/receiver-eligibility-gh.test.ts test/counter-gh.test.ts --testNamePattern receiver eligibility respects|installs separate guard kick --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/eligibility-separation/gh-overlap.json
+
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 1fb942997be0411c5b54f809e5ff2f9433dad6cd7c0c121a2fcde33600d0842a
+Running npx vitest run --project core test/receiver-eligibility-gh.test.ts test/counter-gh.test.ts --testNamePattern receiver eligibility respects|installs separate guard kick --maxWorkers=1 --reporter=default --reporter=json --outputFile=out/eligibility-separation/gh-overlap.json
+
+ RUN  v3.2.4 /workspace/receiver-eligibility-only
+
+ ✓ |core| test/counter-gh.test.ts (13 tests | 11 skipped) 22ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 passed | 11 skipped (13)
+   Start at  17:07:40
+   Duration  1.23s (transform 645ms, setup 0ms, collect 816ms, tests 22ms, environment 0ms, prepare 121ms)
+
+JSON report written to /workspace/receiver-eligibility-only/out/eligibility-separation/gh-overlap.json
+Validation receipt: out/baseline/run-1792429659946-1025.json; exit 1
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/receiver-eligibility-gh.test.ts [ test/receiver-eligibility-gh.test.ts ]
+Error: Transform failed with 1 error:
+/workspace/receiver-eligibility-only/test/receiver-eligibility-gh.test.ts:9:5: ERROR: Expected ";" but found "{"
+  Plugin: vite:esbuild
+  File: /workspace/receiver-eligibility-only/test/receiver-eligibility-gh.test.ts:9:5
+  
+  Expected ";" but found "{"
+  7  |  
+  8  |  const inputs = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/counter-second-level-inputs.json.gz', import.me...
+  9  |    as { rows: { id: string; setup: PlaySetup }[] };
+     |       ^
+  10 |  
+  11 |  describe('receiver eligibility respects accepted manual GH ownership', () => {
+  
+ ❯ failureErrorWithLog ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:1752:15
+ ❯ ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:1019:50
+ ❯ responseCallbacks.<computed> ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:886:9
+ ❯ handleIncomingPacket ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:941:12
+ ❯ Socket.readFromStdout ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:864:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

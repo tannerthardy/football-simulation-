@@ -1,0 +1,34 @@
+{
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "code": "04958d4db99158ac5b1b047b6a2141772e057139",
+  "runtimeSource": "1fb942997be0411c5b54f809e5ff2f9433dad6cd7c0c121a2fcde33600d0842a",
+  "originalEligibility": "1cce4086494f8531b207d9090dc5ab0dfd8db3c1",
+  "historicalCombinedEvidence": "cdaeff43b4ce783abe5e8590caf551f2d5f97b41",
+  "originalControlsByteIdentical": {
+    "test/receiver-run-eligibility.test.ts": "75d312da506f707bcb4d3b04e0438d1fcf276d3fd6d8d86379dd9d024e97da8c",
+    "test/fixtures/receiver-run-assignment-g1-p018.json": "e9492ebf9908bed5505f0f5053195712fd8bf80c6a43d96e069a29f6f7d035fd"
+  },
+  "scope": {
+    "unchangedBeforeReceiverSelection": true,
+    "unchangedAfterReceiverSelection": true,
+    "closestPairGreedyLoopUnchanged": true,
+    "newRuntimeFiles": [
+      "src/sim/behaviors/blocking.ts"
+    ],
+    "nonRuntimeProtectedChangesExcluded": [
+      "src/sim/behaviors/qb.ts",
+      "src/sim/spacing.ts",
+      "src/physics",
+      "src/sim/behaviors/carrier.ts"
+    ]
+  },
+  "newValidation": {
+    "passed": 4,
+    "intentionallyUnrun": 11,
+    "newNativeTicks": 0,
+    "newGames": 0,
+    "outerCommandWallSeconds": 5.313782838000407,
+    "initialFailure": "New test TypeScript assertion newline failed transform; two existing constructor checks passed. Fixed test syntax only; retained failed receipt.",
+    "decision": "Current accepted GH H/backer reservation must survive restored eligibility in both flips."
+  }
+}
