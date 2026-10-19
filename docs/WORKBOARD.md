@@ -1,5 +1,15 @@
 # Current work ownership
 
+## #141 nonauthor contract adjudication — Flex / Do-It-All
+
+Review exact `055f78de` / runtime `61bf22e` against accepted `f4146275`, queue
+`9a6bb795`. Own review records and, only if needed, narrow contract assertions;
+no coverage runtime tuning. Reuse saved MOD/seam rescue, acquired #2-out,
+receiver-relative movement, P192 comeback and plant/ordinary controls.
+Preserve accepted #135 observer forecast, #132 acquired-QB and #128 force wrapper
+on any portable assembly. No new panel/game or shared-suite repeat.
+Coordination: #141 comment6272726674. Return explicit ACCEPT/HOLD with limits.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
