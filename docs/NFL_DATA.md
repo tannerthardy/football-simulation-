@@ -23,6 +23,18 @@ can see whether a number is stable across seasons before trusting it.
 
 ## Commands
 
+For routine football investigations, start with the
+[NFL evidence agent plan](reviews/nfl-agent-evidence-plan.md): reuse a relevant
+saved NFL comparison, inspect the native cause, and test the smallest correction
+with the same reference and opposing control. It maps existing operators to
+owners and identifies the data-host handoff. It proposes a practical loop,
+not a new mandatory benchmark or permission to activate experimental behavior.
+
+The commands below build archives/reference tables or collect a broad sim
+sample. They are **not required per investigation or patch**. Reuse existing
+converted rows and query where the verified data already lives; return the
+small result and its provenance rather than downloading another archive.
+
 ```sh
 npm run nfl:fetch                 # download + checksum + extract the archives (one-time, ~12 GB)
 npm run mech:nfl                  # re-measure all four NFL seasons (only when metrics.py changes; ~10 min)
@@ -59,8 +71,12 @@ report at the commit that added this system, so you can see what moved.
    watch or trace plays where it happens, find the wrong mechanism (a bad read,
    a bad request, or physics that did not deliver what was asked), and fix
    that. Never change a force, rating or timer just to move the metric.
-2. **Check the side effects.** Run the full report before and after a change.
-   A fix that moves one metric toward the NFL and two others away is not done.
+2. **Check the side effects.** Reuse the relevant NFL reference and compatible
+   saved sim evidence before and after a change; inspect an opposing control
+   and material adverse cases. Use a broader report only for a named unresolved
+   transfer question under [TESTING_COSTS](TESTING_COSTS.md). Moving metrics
+   toward NFL does not by itself establish an improvement, and a worse gain
+   does not by itself establish a regression.
 3. **The guard only protects what already matches.**
    `data/reviews/mechanics/guard.json` lists metrics that already match for an
    understood reason; `mech:report` fails if one of them goes `off`. Add a
