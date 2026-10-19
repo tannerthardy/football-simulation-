@@ -1,0 +1,480 @@
+{
+  "schema": "same-time-catch-caller-v1",
+  "date": "2026-10-19 America/Phoenix",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "originalPR131": "2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e",
+  "codeCommit": "8fa7e2044fdde7991a7d2a1d62a55f23537f610e",
+  "publicationBranch": "codex/catch-opportunity-physics",
+  "localBranch": "codex/catch-opportunity-caller",
+  "status": "Live caller completed; independent review and Integration combined verification remain. Not merged or self-approved.",
+  "sourceSha256": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+  "historicalSourceSha256": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+  "baselineSourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "scope": [
+    "unchanged src/physics/catch-opportunity.ts",
+    "src/sim/catching.ts",
+    "src/sim/playsim.ts"
+  ],
+  "evidence": {
+    "branch": "codex/catch-opportunity-caller-evidence",
+    "commit": "dfcd7a205040032e38689ead2d866f4e3ba0d353",
+    "tree": "e21596b6263798698b139fc24e832a2ff94a52ac"
+  },
+  "originalRestoration": {
+    "commit": "b5b4fba9eefa5e59e8db192e77a6502341d81989",
+    "archive": "evidence.tar.gz",
+    "sha256": "7fc78954d2240c86c5bc9092c6a9d1345d9a3acbe3af061cbd33d006bb93f97b",
+    "qualification": "Verify41 declared input/evidence members plus bundled manifest. Native scout Maps restored from original prior calls using the pinned reconstruct.ts. Observation/call hashes do not replace this complete restoration receipt."
+  },
+  "settings": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "checks": {
+    "sourceSha256": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+    "distinctPassingChecks": 38,
+    "reused25": {
+      "receipt": "common/caller-first-launch.json",
+      "qualification": "Helper10/reach2/readiness13 passed on same runtime; final caller fixture repair does not alter them."
+    },
+    "caller13": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/catch-caller-interval.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.730681621
+      }
+    ],
+    "typecheck": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.984490908
+      }
+    ],
+    "failedEvidence": [
+      "common/caller-first-launch.json: Agent callback graph clone in fixture; flight snapshot corrected, no engine/assertion weakening.",
+      "common/prepare-launch.json: fixture generation command succeeded; outer guard intentionally recorded validation input drift, not a passing check."
+    ]
+  },
+  "costs": {
+    "newNativeSnaps": 9,
+    "newGames": 0,
+    "fullSuiteRuns": 0,
+    "groups": [
+      {
+        "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+        "elapsedSeconds": 1.479882217,
+        "arm": "baseline",
+        "snaps": 3
+      },
+      {
+        "source": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+        "elapsedSeconds": 1.437892087,
+        "arm": "candidate",
+        "snaps": 3
+      },
+      {
+        "source": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+        "elapsedSeconds": 1.682949126,
+        "arm": "historical",
+        "snaps": 3
+      }
+    ],
+    "nativeLauncherSeconds": 5.728400085,
+    "focusedLauncherSeconds": 4.172601832,
+    "typecheckLauncherSeconds": 9.984490908
+  },
+  "currentComparisons": [
+    {
+      "id": "G1-P020",
+      "baselineSource": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "candidateSource": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+      "sourceQualifiedOriginalParity": {
+        "framesMatch": false,
+        "eventsMatch": false,
+        "telemetryMatch": false,
+        "statsMatch": false
+      },
+      "baselineOutcome": "incomplete",
+      "candidateOutcome": "incomplete",
+      "baselineGain": 0,
+      "candidateGain": 0,
+      "equal": {
+        "frames": true,
+        "events": true,
+        "telemetry": true,
+        "stats": true
+      },
+      "constructorAndInputMatch": true,
+      "firstAchievedDifference": null,
+      "opportunityDifferences": [
+        {
+          "t": 4.3,
+          "baseline": {
+            "actors": [
+              {
+                "i": 7,
+                "playerId": "A1-TE2",
+                "slot": "Y",
+                "body0": {
+                  "x": 40.19901946196382,
+                  "y": 45.88489726580457
+                },
+                "body1": {
+                  "x": 40.23490263191283,
+                  "y": 45.954001013111686
+                },
+                "reach": 1.3504166666666666,
+                "top": 3.6342222222222227,
+                "tracking": true,
+                "retry": 4.3,
+                "old": {
+                  "s": 0,
+                  "dh": 1.2669925481000355,
+                  "z": 1.7742667778023857
+                },
+                "corrected": {
+                  "s": 0,
+                  "dh": 1.3447192838438442,
+                  "z": 1.7742667778023857
+                }
+              }
+            ],
+            "chances": [
+              0.2001950364801605
+            ],
+            "draws": [
+              0.7423096515703946
+            ],
+            "events": []
+          },
+          "candidate": {
+            "actors": [
+              {
+                "i": 7,
+                "playerId": "A1-TE2",
+                "slot": "Y",
+                "body0": {
+                  "x": 40.19901946196382,
+                  "y": 45.88489726580457
+                },
+                "body1": {
+                  "x": 40.23490263191283,
+                  "y": 45.954001013111686
+                },
+                "reach": 1.3504166666666666,
+                "top": 3.6342222222222227,
+                "tracking": true,
+                "retry": 4.3,
+                "old": {
+                  "s": 0,
+                  "dh": 1.2669925481000355,
+                  "z": 1.7742667778023857
+                },
+                "corrected": {
+                  "s": 0,
+                  "dh": 1.3447192838438442,
+                  "z": 1.7742667778023857
+                }
+              }
+            ],
+            "chances": [
+              0.19092622198800413
+            ],
+            "draws": [
+              0.7423096515703946
+            ],
+            "events": []
+          }
+        }
+      ],
+      "candidateRealIntervals": true
+    },
+    {
+      "id": "G2-P107",
+      "baselineSource": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "candidateSource": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+      "sourceQualifiedOriginalParity": {
+        "framesMatch": false,
+        "eventsMatch": false,
+        "telemetryMatch": false,
+        "statsMatch": false
+      },
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineGain": 5.55,
+      "candidateGain": 5.55,
+      "equal": {
+        "frames": true,
+        "events": true,
+        "telemetry": true,
+        "stats": true
+      },
+      "constructorAndInputMatch": true,
+      "firstAchievedDifference": null,
+      "opportunityDifferences": [],
+      "candidateRealIntervals": true
+    },
+    {
+      "id": "G2-P143",
+      "baselineSource": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "candidateSource": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+      "sourceQualifiedOriginalParity": {
+        "framesMatch": false,
+        "eventsMatch": false,
+        "telemetryMatch": false,
+        "statsMatch": false
+      },
+      "baselineOutcome": "incomplete",
+      "candidateOutcome": "incomplete",
+      "baselineGain": 0,
+      "candidateGain": 0,
+      "equal": {
+        "frames": true,
+        "events": true,
+        "telemetry": true,
+        "stats": true
+      },
+      "constructorAndInputMatch": true,
+      "firstAchievedDifference": null,
+      "opportunityDifferences": [],
+      "candidateRealIntervals": true
+    }
+  ],
+  "historicalComparisons": [
+    {
+      "id": "G1-P020",
+      "cachedBaselineSource": "1b79ca653c71dd6f40cdd032037e658e38d616378581c545d4999765b43324a9",
+      "candidateSource": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+      "candidateOutcome": "incomplete",
+      "candidateGain": 0,
+      "originalParity": {
+        "framesMatch": false,
+        "eventsMatch": false,
+        "telemetryMatch": false,
+        "statsMatch": false
+      },
+      "P020RecordedFramesBefore4p55Exact": true,
+      "opportunityBodyEndpointsMatchCachedBaseline": true,
+      "changedAttempts": [
+        {
+          "t": 4.3,
+          "baseline": {
+            "chances": [
+              0.2208623463772779
+            ],
+            "draws": [
+              0.7423096515703946
+            ],
+            "events": []
+          },
+          "candidate": {
+            "chances": [
+              0.21474593952894952
+            ],
+            "draws": [
+              0.7423096515703946
+            ],
+            "events": []
+          },
+          "geometry": [
+            {
+              "slot": "Y",
+              "playerId": "A1-TE2",
+              "body0": {
+                "x": 40.82643724584713,
+                "y": 45.31186269896003
+              },
+              "body1": {
+                "x": 40.85290447954766,
+                "y": 45.366523940146934
+              },
+              "reach": 1.3504166666666666,
+              "top": 3.6342222222222227,
+              "old": {
+                "s": 0,
+                "dh": 1.0736049057116919,
+                "z": 1.84572770302769
+              },
+              "corrected": {
+                "s": 0,
+                "dh": 1.13427741264901,
+                "z": 1.84572770302769
+              }
+            }
+          ]
+        },
+        {
+          "t": 4.55,
+          "baseline": {
+            "chances": [
+              0.3112244897959184
+            ],
+            "draws": [
+              0.15203558700159192
+            ],
+            "events": [
+              {
+                "t": 4.55,
+                "type": "interception",
+                "a": 18,
+                "pos": {
+                  "x": 41.44,
+                  "y": 45.94
+                }
+              }
+            ]
+          },
+          "candidate": {
+            "chances": [],
+            "draws": [],
+            "events": [
+              {
+                "t": 4.55,
+                "type": "incomplete"
+              }
+            ]
+          },
+          "geometry": [
+            {
+              "slot": "NB",
+              "playerId": "H1-CB3",
+              "body0": {
+                "x": 41.405963364334546,
+                "y": 45.717232347093045
+              },
+              "body1": {
+                "x": 41.44325094010842,
+                "y": 45.93717259225044
+              },
+              "reach": 1.3173611111111112,
+              "top": 3.1975000000000002,
+              "old": {
+                "s": 0,
+                "dh": 1.2921492970646113,
+                "z": 0.15873048437398246
+              },
+              "corrected": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G2-P107",
+      "cachedBaselineSource": "1b79ca653c71dd6f40cdd032037e658e38d616378581c545d4999765b43324a9",
+      "candidateSource": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+      "candidateOutcome": "tackle",
+      "candidateGain": 0,
+      "originalParity": {
+        "framesMatch": true,
+        "eventsMatch": true,
+        "telemetryMatch": true,
+        "statsMatch": true
+      },
+      "P020RecordedFramesBefore4p55Exact": false,
+      "opportunityBodyEndpointsMatchCachedBaseline": true,
+      "changedAttempts": []
+    },
+    {
+      "id": "G2-P143",
+      "cachedBaselineSource": "1b79ca653c71dd6f40cdd032037e658e38d616378581c545d4999765b43324a9",
+      "candidateSource": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+      "candidateOutcome": "tackle",
+      "candidateGain": 8.47,
+      "originalParity": {
+        "framesMatch": true,
+        "eventsMatch": true,
+        "telemetryMatch": true,
+        "statsMatch": true
+      },
+      "P020RecordedFramesBefore4p55Exact": false,
+      "opportunityBodyEndpointsMatchCachedBaseline": true,
+      "changedAttempts": []
+    }
+  ],
+  "contracts": [
+    "same actual body/ball interval, including same-tick throws; no retained cross-tick state",
+    "explicit static fallback only when interval omitted; supplied missing actor endpoint rejects",
+    "eligibility/acquired readiness/tracking reach/leap/top/retry remain",
+    "increasing closest fraction; no earliest-entry change",
+    "difficulty/probability formulas unchanged; legitimate geometry inputs may differ",
+    "no World/flight/capacity/experimental default or lower-wrap changes"
+  ],
+  "limitations": [
+    "Endpoint-linear geometry; existing contest/facing/inbounds tick semantics remain.",
+    "Current source already differs from historical original: none of current three endings changes.",
+    "Historical invalid defensive win disappears; this is not YAC tuning or general football certification.",
+    "Pitch/loose-ball callers and separate Physics lower-wrap work remain outside scope."
+  ],
+  "nextOwnerDecision": "Independent reviewer accepts or identifies a specific caller/semantic blocker; Integration owns combined candidate verification/adoption. No new broad campaign requested."
+}

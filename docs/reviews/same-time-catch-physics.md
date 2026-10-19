@@ -1,5 +1,7 @@
 # Same-time catch geometry and retained lower-wrap evidence
 
+**Caller continuation,2026-10-19:** [live hookup, exact comparisons and review state](same-time-catch-caller.md). The component-only state and source-qualified evidence below remain historical; the same PR now includes the bounded Catching caller.
+
 2026-10-16 America/Phoenix. Physics component for Catching review, **not an
 integrated production fix**. [PR131](https://github.com/tannerthardy/football-simulation-/pull/131).
 Accepted/fetched base `70b4db6a3ef53acc1a0e90cd055f1087205daa30`, queue `c933dbc3`.

@@ -2,17 +2,24 @@
 
 ## Catching: #131 live same-time caller — 2026-10-19 America/Phoenix
 
-Start isolated `codex/catch-opportunity-caller` at accepted/fetched
-`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, queue `9a6bb79`.
-Normally merge unchanged #131 component `2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e`;
-retain its original Physics scope/evidence. Catching owns only PlaySim's body
-interval capture and resolveCatchOpportunities' same-time query, focused caller
-controls and three already-frozen native inputs. Preserve existing eligibility,
-acquired readiness, reach/top mapping, retry, increasing-fraction ordering and
-difficulty formulas; closest opportunity, not earliest entry. No World/flight
-integration/capacity/contact changes, new game campaign or combined-suite repeat.
-Complete this existing PR by fast-forward publication after reconciliation;
-original head/evidence remain ancestors. Integration owns combined verification.
+Completed on isolated `codex/catch-opportunity-caller` from accepted/fetched
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, queue `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`;
+both rechecked unchanged before handoff. Normally merged unchanged #131 component
+`2f9085f` as4d24f73; only WORKBOARD conflicted and both sections survive.
+Caller code `8fa7e2044fdde7991a7d2a1d62a55f23537f610e`, runtime `a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a`.
+PlaySim passes actual same-step body endpoints to the unchanged helper through
+resolveCatchOpportunities; no retained state, inferred velocity or extra sensing.
+38 distinct focused checks/typecheck pass. Three current-source pairs preserve
+all frames/events/telemetry/stats. Three historical counterfactual snaps reuse
+cached originals: P020 invalid INT becomes incomplete; P107 tip/P143 completion
+remain fully identical. Nine new snaps/zero games/full suites. Original component,
+failures, source-qualified evidence and lower-wrap holds remain preserved. This
+existing PR's branch is updated by fast-forward continuation; no force push or
+new Physics/default scope. [Review and exact pins](reviews/same-time-catch-caller.md),
+[focused receipt](../data/reviews/current/same-time-catch-caller.json).
+Ready for independent caller/controller review; Integration owns combined
+verification/adoption. The standalone-helper/no-live-effect blocker is resolved
+by this caller candidate, not a self-approval or a whole-catching certification.
 
 ## Same-time catch geometry / lower-wrap ledger — 2026-10-16 America/Phoenix
 
