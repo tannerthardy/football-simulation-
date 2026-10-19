@@ -33,7 +33,10 @@ export function runThrough(a: Agent, target: Vec2, opts: { speed?: number; facin
   const dy = target.y - a.pos.y;
   const d = Math.hypot(dx, dy) || 1;
   const s = a.profile.vmax * (opts.speed ?? 1);
-  return { vel: { x: (dx / d) * s, y: (dy / d) * s }, facing: opts.facing, cutSkill: opts.cutSkill };
+  // This waypoint is already chosen by the controller. Keep it with the
+  // command so traffic footwork can preserve that duty while yielding.
+  return withMovementObjective({ vel: { x: (dx / d) * s, y: (dy / d) * s }, facing: opts.facing, cutSkill: opts.cutSkill },
+    { kind: 'fixed', point: target });
 }
 
 /**
