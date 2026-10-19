@@ -351,9 +351,10 @@ tackle physics at speed.
 
 ## Part 3 — the mesh, the secondary and getting off blocks (2026-10-19)
 
-Receipts: [part3.txt](run-game-v3/part3.txt) (every operator below, NFL and
-sim, with flags) and `report-LABEL.txt` for `mt2tf`, `sp`, `spc`, `sp0`,
-`sptf`, `spgap` and `id0`. Labels:
+Receipts: [part3.txt](run-game-v3/part3.txt) and
+[part3-gap.txt](run-game-v3/part3-gap.txt) (every operator below, NFL and
+sim, with flags). Also `report-LABEL.txt` for `mt`, `mt2tf`, `sp`, `spc`,
+`sp0`, `sptf`, `spgap`, `spcgap`, the pull arms and `id0`. Labels:
 
 - `mtr`: `rec2` + `MESH_TEMPO`.
 - `sp`: `mtr` + `SHED_PURSUE`.
@@ -523,6 +524,66 @@ The second level differs after the crossing (`lbpass2.py`):
 In NFL long runs a backer reaches the runner and is carried through. In the
 sim a reached runner is down. That is the held-carrier timing again.
 
+### Gap schemes: the pull is late, and so is the read (`part3-gap.txt`)
+
+`MESH_TEMPO` gives power NFL-like backfield timing:
+
+- Handoff speed 4.04 vs 4.61 yd/s; handoff to the line 1.4 vs 1.5 s.
+- Power's body moves onto NFL: negatives 14.5 → 10.5% (NFL 8.0), 4+ 38 →
+  51% (57), 10+ 8.8 → 15.5% (14.3).
+
+Its tail does not: 40+ is 8–10% (NFL 1.3).
+
+`DEEP_CAP` is not the answer here. With it (`spcgap`), gap-scheme 10+ runs
+reach 31% (NFL60 13.1) and TVD 0.226: the box cannot hold power without the
+collapsed safety.
+
+The pull itself (`pullers.py`):
+
+| | NFL | Sim |
+|---|---|---|
+| Puller reaches 1.5 yd/s laterally | 0.4 s | 0.7–0.8 s |
+| Puller lateral yd at 0.6 / 1.0 / 1.4 s | 0.8 / 2.0 / 3.4 | 0.2 / 0.9 / 1.9 |
+| Second level toward the pull at 1.0 / 1.4 s | 1.5 / 2.0 yd/s | about 0 |
+
+Before the crossing, backers' lateral speed toward the play is 1.75–2.0 yd/s
+in the NFL and 0.5–1.5 in the sim (`lbmotion.py`). In sim 10+ runs,
+second-level defenders end up blocked (1.5 per run, NFL 1.0) or free but far
+(1.4, NFL 0.8).
+
+**The puller.** He drops straight back to a corner, so his request is capped
+at about 2.65 yd/s. When he turns, spacing trims him while he passes behind
+the center. Under the gait's lag, low requests also accelerate slowly. Two
+controller attempts did not repair it:
+
+- The existing `PULL_STEP` (open step), and `DL_FIGHT` with it. Puller
+  lateral is 0.3/0.9/1.9 yd; TVD 0.129/0.142 against 0.118.
+- `PULL_TEMPO`, new: run the first step through at full effort. Puller
+  lateral is 0.3/1.0/2.1 yd and power 4+ falls. It was reverted.
+
+`GAIT_STEP=0.3` (the World gait flag) with `PULL_STEP` puts the puller on
+tracked timing: 1.5 yd/s at 0.4 s and 0.6/1.6/3.1 yd. It also moves every
+other body: power negatives reach 25%, TVD 0.188. It is evidence for the
+physics owner, not a candidate.
+
+**The backers' read.** Backers read pulls from line departure (0.5 yd deep
+and 1 yd over) at 1.5 yd/s:
+
+- On the package, none have read the pull at 1.0 s; 32% have at 1.2 s
+  (`lbflow.ts`).
+- With the pull on tracked timing (`GAIT_STEP`), all have read it at 1.0 s,
+  and their median request is still only 1.5 yd/s toward it.
+- `PULL_KEY`, new: key the guard's pull step (a quarter yard deeper than his
+  stance, moving flat at 1 yd/s). It moves the read about 0.2 s earlier but
+  not the achieved flow (still about 0 at 1.4 s). Outcomes are mixed: power
+  and counter shapes better, trap worse, gap TVD 0.118 → 0.126. It was
+  reverted.
+
+The existing `PULL_CUE`/`PULL_PLAN` arms are neutral (TVD 0.113–0.119). That
+is the second attempt on this read after `PULL_PLAN`'s earlier rejection. A
+backer cannot key a pull that has not started; the read waits on the
+puller's start-up.
+
 ## Handoffs (no edits made)
 
 - **Defensive snap latency** (`agent.ts`, perception): NFL box defenders and OL
@@ -539,6 +600,9 @@ sim a reached runner is down. That is the held-carrier timing again.
     3 s is +0.2 vs +1.0 yd. That keeps the inside-zone bend closed (Part 3).
   - A lineman freed after the crossing requests about 8 yd/s and reaches
     2.3–3.0 half a second later (tau 1.2–1.5 s, full balance capacity).
+  - A pulling guard reaches 1.5 yd/s laterally at 0.7–0.8 s against tracked
+    0.4 s. `GAIT_STEP=0.3` fixes his timing but moves every body
+    (`part3-gap.txt`).
 - **Shotgun back alignment** (formation owner): sim backs align 1.6 yd beside
   the QB and 0.2 deep; tracked backs are 2.3 and 0.5. The short runway caps
   the shotgun handoff speed even with `MESH_TEMPO` (2.3 vs 3.8 yd/s).
@@ -586,4 +650,6 @@ sim a reached runner is down. That is the held-carrier timing again.
      the engaged 1/3-technique, not by the read.
    - the runner's cutback read against a pursuing backside (the shelved
      `RUN_READ` is not it).
-   - the gap-scheme tail under `MESH_TEMPO` (power).
+   - the gap-scheme tail under `MESH_TEMPO` (power). The backers' pull read
+     has had two attempts (`PULL_PLAN`, `PULL_KEY`); re-diagnose once
+     pullers start on time.

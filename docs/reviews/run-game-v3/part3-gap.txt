@@ -1,0 +1,100 @@
+# Run game v3 part 3, gap schemes (2026-10-19). Package F = UC_MESH MESH_TEMPO ZONE_TE STRETCH_FLAT LB_KEY SHED_PURSUE; gap set = power/counter/duo/trap, i_pro_21 + ace_12, seeds 77,71001,1,2,3 (1,600 plays).
+# Arms: spgap F; spcgap F+DEEP_CAP; pcgap F+PULL_CUE; ppgap F+PULL_PLAN; pbgap F+PULL_CUE+PULL_PLAN; psgap F+PULL_STEP; pfgap F+PULL_STEP+DL_FIGHT;
+# gsgap F+GAIT_STEP=0.3+PULL_STEP (physics evidence arm, not a candidate); superseded/ ptgap F+PULL_TEMPO+PULL_STEP and pkgap F+PULL_KEY (both tried and reverted).
+
+## Whole-distribution TVD vs NFL60 (shape.py)
+d0gap    n  1600 | TVD vs NFL60: all 0.125 counter 0.254 duo 0.227 power 0.178 trap 0.137
+rec2gap  n  1600 | TVD vs NFL60: all 0.144 counter 0.276 duo 0.172 power 0.242 trap 0.177
+mtrgap   n  1600 | TVD vs NFL60: all 0.120 counter 0.221 duo 0.162 power 0.187 trap 0.200
+spgap    n  1600 | TVD vs NFL60: all 0.118 counter 0.221 duo 0.150 power 0.190 trap 0.197
+spcgap   n  1600 | TVD vs NFL60: all 0.226 counter 0.214 duo 0.141 power 0.300 trap 0.315
+pcgap    n  1600 | TVD vs NFL60: all 0.119 counter 0.231 duo 0.152 power 0.195 trap 0.200
+ppgap    n  1600 | TVD vs NFL60: all 0.113 counter 0.221 duo 0.150 power 0.192 trap 0.197
+pbgap    n  1600 | TVD vs NFL60: all 0.114 counter 0.223 duo 0.152 power 0.192 trap 0.198
+psgap    n  1600 | TVD vs NFL60: all 0.129 counter 0.221 duo 0.150 power 0.196 trap 0.235
+pfgap    n  1600 | TVD vs NFL60: all 0.142 counter 0.210 duo 0.209 power 0.234 trap 0.168
+ptgap    n  1600 | TVD vs NFL60: all 0.120 counter 0.227 duo 0.150 power 0.223 trap 0.195
+pkgap    n  1600 | TVD vs NFL60: all 0.126 counter 0.197 duo 0.150 power 0.173 trap 0.238
+gsgap    n  1600 | TVD vs NFL60: all 0.188 counter 0.271 duo 0.154 power 0.325 trap 0.203
+
+## Pullers and second-level flow toward the pull (pullers.py)
+nfl-plays.jsonl.gz     gap_pull: plays with a puller 660
+  puller 0.6 yd over at p25/50/75 0.5/0.6/0.7 s (depth then -1.1) | 1.5 yd/s lateral at p50 0.4 s | depth at 1.0 s -1.2
+  puller lateral yd at 0.6/1.0/1.4 s: 0.8/2.0/3.4 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.5/1.5/2.0 yd/s
+d0gap-common.jsonl.gz  gap_pull: plays with a puller 948
+  puller 0.6 yd over at p25/50/75 0.8/0.9/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.8 s | depth at 1.0 s -0.9
+  puller lateral yd at 0.6/1.0/1.4 s: 0.2/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.0/-0.0/0.25 yd/s
+spgap-common.jsonl.gz  gap_pull: plays with a puller 952
+  puller 0.6 yd over at p25/50/75 0.8/0.9/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.7 s | depth at 1.0 s -0.9
+  puller lateral yd at 0.6/1.0/1.4 s: 0.2/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: -0.0/-0.0/-0.25 yd/s
+psgap-common.jsonl.gz  gap_pull: plays with a puller 1108
+  puller 0.6 yd over at p25/50/75 0.9/0.9/0.9 s (depth then -1.0) | 1.5 yd/s lateral at p50 0.8 s | depth at 1.0 s -1.0
+  puller lateral yd at 0.6/1.0/1.4 s: 0.3/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.0/-0.25/0.25 yd/s
+ptgap-common.jsonl.gz  gap_pull: plays with a puller 1170
+  puller 0.6 yd over at p25/50/75 0.8/0.8/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.7 s | depth at 1.0 s -1.1
+  puller lateral yd at 0.6/1.0/1.4 s: 0.3/1.0/2.1 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.0/0.0/0.5 yd/s
+gsgap-common.jsonl.gz  gap_pull: plays with a puller 1198
+  puller 0.6 yd over at p25/50/75 0.6/0.6/0.7 s (depth then -1.0) | 1.5 yd/s lateral at p50 0.4 s | depth at 1.0 s -1.3
+  puller lateral yd at 0.6/1.0/1.4 s: 0.6/1.6/3.1 | second level lateral toward the pull at 0.6/1.0/1.4 s: -0.0/-0.0/1.0 yd/s
+pkgap-common.jsonl.gz  gap_pull: plays with a puller 951
+  puller 0.6 yd over at p25/50/75 0.8/0.9/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.8 s | depth at 1.0 s -0.9
+  puller lateral yd at 0.6/1.0/1.4 s: 0.2/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: -0.0/0.0/-0.0 yd/s
+
+## Second level before the crossing on gap schemes (lbmotion.py)
+nfl-plays.jsonl.gz     runs 548 gap_pull
+  at hand : speed 2.85 | down 1.5 | lat 1.75 | depth 3.5 | dist 8.83
+  at h+.5 : speed 2.93 | down 1.0 | lat 2.0 | depth 2.8 | dist 6.61
+  at cross: speed 2.7 | down -0.5 | lat 2.0 | depth 2.5 | dist 3.54
+rec2gap-common.jsonl.g runs 1057 gap_pull
+  at hand : speed 2.5 | down 2.0 | lat 0.75 | depth 3.3 | dist 8.11
+  at h+.5 : speed 2.02 | down 1.25 | lat 1.0 | depth 2.5 | dist 6.26
+  at cross: speed 2.02 | down -0.0 | lat 1.25 | depth 2 | dist 3.69
+spgap-common.jsonl.gz  runs 1095 gap_pull
+  at hand : speed 2.37 | down 2.0 | lat 0.5 | depth 3.1 | dist 8.23
+  at h+.5 : speed 2.02 | down 1.0 | lat 1.25 | depth 2.4 | dist 6.0
+  at cross: speed 2.26 | down -0.0 | lat 1.5 | depth 2.1 | dist 3.71
+pbgap-common.jsonl.gz  runs 1088 gap_pull
+  at hand : speed 2.37 | down 2.0 | lat 0.5 | depth 3.1 | dist 8.23
+  at h+.5 : speed 2.06 | down 0.75 | lat 1.25 | depth 2.4 | dist 6.02
+  at cross: speed 2.26 | down -0.0 | lat 1.5 | depth 2.1 | dist 3.67
+
+## Second level after the crossing on gap schemes (lbpass2.py)
+nfl-plays.jsonl.gz     gap_pull
+  <10 runs  483 (483) second-level/run 2.77: contact 0.98  near 0.58  engaged 0.65  free-far 0.56
+  10+ runs  108 (108) second-level/run 2.81: contact 0.39  near 0.64  engaged 0.97  free-far 0.81
+rec2gap-common.jsonl.g gap_pull
+  <10 runs  970 (970) second-level/run 3.32: contact 0.63  near 0.56  engaged 1.22  free-far 0.90
+  10+ runs   88 (88) second-level/run 3.44: contact 0.07  near 0.42  engaged 1.65  free-far 1.31
+spgap-common.jsonl.gz  gap_pull
+  <10 runs  968 (968) second-level/run 3.32: contact 0.65  near 0.55  engaged 1.22  free-far 0.90
+  10+ runs  129 (129) second-level/run 3.35: contact 0.08  near 0.37  engaged 1.49  free-far 1.41
+pkgap-common.jsonl.gz  gap_pull
+  <10 runs  983 (983) second-level/run 3.31: contact 0.61  near 0.62  engaged 1.16  free-far 0.92
+  10+ runs  106 (106) second-level/run 3.37: contact 0.05  near 0.34  engaged 1.51  free-far 1.47
+
+## Handoff speed, gap schemes (rbspeed.py; NFL SINGLEBACK/I_FORM)
+nfl-plays.jsonl.gz   gap_pull: n 641 | speed at handoff 4.61 | at -3 5.53 -1.5 5.53 LOS 5.26 +2 5.06 +4 5.3 yd/s | share of own peak at LOS 0.84 | handoff->LOS 1.5 s
+d0gap-common.jsonl.g gap_pull: n 1196 | speed at handoff 2.14 | at -3 3.4 -1.5 4.61 LOS 5.41 +2 6.0 +4 5.8 yd/s | share of own peak at LOS 0.89 | handoff->LOS 1.6 s
+mtrgap-common.jsonl. gap_pull: n 1195 | speed at handoff 4.04 | at -3 4.14 -1.5 4.78 LOS 5.71 +2 6.4 +4 6.37 yd/s | share of own peak at LOS 0.88 | handoff->LOS 1.4 s
+nfl-plays.jsonl.gz   man_duo: n 718 | speed at handoff 4.26 | at -3 4.93 -1.5 5.01 LOS 4.7 +2 4.37 +4 4.43 yd/s | share of own peak at LOS 0.85 | handoff->LOS 1.2 s
+d0gap-common.jsonl.g man_duo: n 400 | speed at handoff 2.14 | at -3 4.14 -1.5 5.39 LOS 6.04 +2 6.49 +4 6.32 yd/s | share of own peak at LOS 0.89 | handoff->LOS 1.2 s
+mtrgap-common.jsonl. man_duo: n 400 | speed at handoff 3.69 | at -3 4.51 -1.5 5.15 LOS 5.77 +2 5.81 +4 5.76 yd/s | share of own peak at LOS 0.92 | handoff->LOS 1.1 s
+
+## Backers on power: requested/actual lateral and the puller read (lbflow.ts, seeds 77,71001); flags: UC_MESH=1 MESH_TEMPO=1 ZONE_TE=1 STRETCH_FLAT=1 LB_KEY=1 SHED_PURSUE=1
+backers (insert/force), lateral toward the play side, yd/s
+  t 0.4: n 416 requested p25/50/75 -0.51/0/0.4 actual p50 0 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 0.6: n 416 requested p25/50/75 -0.66/-0.1/0.41 actual p50 0 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 0.8: n 416 requested p25/50/75 -1.15/-0.45/0.35 actual p50 -0.12 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 1.0: n 416 requested p25/50/75 -2.34/-0.41/2.25 actual p50 -0.21 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 1.2: n 416 requested p25/50/75 -1.42/1.99/8.31 actual p50 0.06 | sees a pull 32% (toward play 100%), requested when seen p50 2.74
+  t 1.5: n 416 requested p25/50/75 0.07/3.47/9.21 actual p50 0.97 | sees a pull 84% (toward play 100%), requested when seen p50 3.19
+  t 1.8: n 416 requested p25/50/75 0.86/2.58/9 actual p50 1.5 | sees a pull 77% (toward play 100%), requested when seen p50 2.58
+# + GAIT_STEP=0.3 PULL_STEP=1 (puller on tracked timing)
+backers (insert/force), lateral toward the play side, yd/s
+  t 0.4: n 416 requested p25/50/75 -0.53/0/0.49 actual p50 0 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 0.6: n 416 requested p25/50/75 -0.99/-0.1/0.63 actual p50 -0.01 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 0.8: n 416 requested p25/50/75 -1.87/-0.71/0.57 actual p50 -0.18 | sees a pull 0% (toward play 0%), requested when seen p50 NaN
+  t 1.0: n 416 requested p25/50/75 -1.75/1.49/9 actual p50 -0.13 | sees a pull 100% (toward play 100%), requested when seen p50 1.49
+  t 1.2: n 416 requested p25/50/75 0/2.75/9.11 actual p50 0.55 | sees a pull 100% (toward play 100%), requested when seen p50 2.75
+  t 1.5: n 416 requested p25/50/75 0.25/2.37/9.1 actual p50 1.16 | sees a pull 70% (toward play 100%), requested when seen p50 3.1
+  t 1.8: n 416 requested p25/50/75 0/2.24/9 actual p50 1.3 | sees a pull 60% (toward play 100%), requested when seen p50 4.16
