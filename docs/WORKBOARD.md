@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Decision commitment and useful urgency — 2026-10-19 America/Phoenix
+
+Catching/Flex audits accepted `f4146275` in `codex/decision-commitment`: installed duty → acquired evidence → selected action → raw/final request → achieved movement, with stable/decisive and legitimate reread controls. Claim only `behaviors/common.ts:runThrough` own fixed-goal metadata and its focused test; no shared spacing algorithm, tracking law, Physics, capacities or flag changes. Independent receiver hidden-target effort correction uses `codex/receiver-route-effort`, `receiver.ts` only. Run-fit pull-range/depth and coverage-overload findings are diagnostic until a responsibility contract is established; Run/Flex retain their shared implementation boundaries. Physics/jitter drafts162/164/165 remain separate. Integration owns combined verification.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
