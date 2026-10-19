@@ -637,11 +637,17 @@ puller's start-up.
   speed band. A causal hypothesis for the stuffs at the line and the missing
   2–6 yd runs, not a ranked cause. The carrier's own request does not change
   it, and neither do the parked tackle flags (receipts in `holds.txt`).
-- **Open-field holds at speed break** (tackle physics): with the secondary at
+- **Open-field holds at speed break** (tackle physics; withdrawn as a ranked
+  cause in Part 4: per encounter near the line, sim DBs at 7+ yd/s are within
+  NFL's range): with the secondary at
   NFL depth (`DEEP_CAP`), 29 of 48 runs of 40+ had an open-field hold, and in
   18 every hold broke. The structure is otherwise close to NFL.
 
 ## Next decision
+
+Superseded by Part 4: after the independent review, no package is proposed
+and each scope is considered separately.
+
 
 1. Review `sp` (`UC_MESH MESH_TEMPO ZONE_TE STRETCH_FLAT LB_KEY
    SHED_PURSUE`) as the candidate. It replaces `rec2`.
@@ -678,3 +684,41 @@ puller's start-up.
    - the gap-scheme tail under `MESH_TEMPO` (power). The backers' pull read
      has had two attempts (`PULL_PLAN`, `PULL_KEY`); re-diagnose once
      pullers start on time.
+
+## Part 4 — review response (2026-10-19)
+
+The full response to the run/controller and measurement reviews of
+`1c578afb` is [here](run-game-v3-pr153-response.md). Selected witnesses
+(27, each with its candidate receipt) are
+[here](../../data/reviews/current/run-game-v3-witnesses.json). Reproduced
+arm reports and manifests are under [`run-game-v3/v5/`](run-game-v3/v5/).
+What changed in this report:
+
+- **Rejected defects repaired.** `UC_MESH` draw keeps its accepted QB
+  arrival. `LB_KEY` pairs the acquired actor with his own alignment. The
+  reviewer's contract checks are ported and pass.
+- **Under center, `MESH_TEMPO` engages only with `UC_MESH`.** At the
+  reviewed pin, tempo alone lost every under-center OZ/WZ exchange (800 of
+  800) and 11 of 400 power exchanges: the installed call precedes the QB's
+  achievable arrival.
+- **Shotgun spot split into `GUN_MESH_SIDE`.** In the 2×2 it is adverse on
+  outside zone (negatives 18 → 34 of 200, p=0.007). HOLD.
+- **Power tail.** The front seven are first to the back near the line in
+  38–53% of sim gap runs, against 75–77% in the NFL (`dbhits.py --first`).
+  Fast backs meet a DB first two to three times as often. Per encounter, sim
+  DBs at 7+ yd/s are within NFL's range. Not the mesh; do not cap the
+  runner.
+- **`ZONE_TE`.** An end level with his man no longer runs the track
+  (`76252fa9`); the old meeting time flipped his request at full speed. Gun
+  inside zone is still adverse: the rep's fixed drive line carries a reached
+  end away from his man. That is the next re-diagnosis target.
+- **Measurement corrections.**
+  - `release.py`/`lbblocks.py` admitted short recordings. Corrected:
+    second-level block durations 0.8/1.4/2.0 s vs NFL 0.9/1.5/2.2, censored
+    39% vs 36%. DL within 1.2 yd at +0/+0.5/+1.0 s: 81/81/81% vs NFL
+    76/66/57.
+  - The exporter labelled the RB as carrier on every play.
+- **Provenance.** Lab arms launch through `arm.mjs`, which binds commit,
+  patch, flags and checksums. `d0`, `mtr`, `sp`, `d0gap`, `rec2gap` and
+  `mtrgap` reproduce play for play at `92c1d0c1`.
+

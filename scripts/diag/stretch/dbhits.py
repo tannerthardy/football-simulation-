@@ -5,8 +5,11 @@ For runs, each defender's first frame within 1.0 yd of the carrier while the
 carrier is 0-10 yd past the line is an encounter. Outcome as in
 openfield.py: 'ended' if the play ends within 1.0 s, 'broken' if the carrier
 is still >= 4 yd/s 0.5 s later and gains >= 5 more yards, else 'slowed'.
-Rows by defender group and carrier speed at the encounter.
-usage: dbhits.py FILE [--ytg60] [--concept power]"""
+Rows by defender group and carrier speed at the encounter. 'broken' is a
+survivor-conditioned motion proxy, not a broken-tackle label. Sim plays end
+sooner after first contact than NFL plays, so later arrivals are undercounted
+in the sim; --first keeps only each run's earliest encounter (ties: all).
+usage: dbhits.py FILE [--ytg60] [--concept power] [--first]"""
 import gzip, json, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play  # noqa: E402
@@ -23,6 +26,7 @@ for line in gzip.open(path, 'rt'):
     if concept and not (str(raw['id']).startswith(concept + '/') or (raw.get('cell') or {}).get('concept') == concept.upper()): continue
     p = Play(raw); c = raw['carrier']; runs += 1
     end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
+    found = []
     for d in p.who('D'):
         k = next((k for k in range(end + 1) if 0 <= (p.pos(c, k)[0] or -99) < 10 and p.dist(c, d, k) <= 1.0), None)
         if k is None: continue
@@ -31,7 +35,10 @@ for line in gzip.open(path, 'rt'):
         if (end - k) * p.dt <= 1.0: out = 'ended'
         elif k5 <= end and p.speed(c, k5) >= 4 and max(p.pos(c, kk)[0] for kk in range(k, end + 1)) - cx >= 5: out = 'broken'
         else: out = 'slowed'
-        rows.append((raw['players'][d]['group'], next(n for top, n in BINS if cs < top), out))
+        found.append((k, (raw['players'][d]['group'], next(n for top, n in BINS if cs < top), out)))
+    if '--first' in sys.argv and found:
+        k0 = min(k for k, _ in found); found = [f for f in found if f[0] == k0]
+    rows += [r for _, r in found]
 print(f"{path.split('/')[-1][:24]:24s} runs {runs}, encounters {len(rows)}")
 for g in ('DL', 'LB', 'DB'):
     line = []

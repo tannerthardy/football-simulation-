@@ -1,0 +1,50 @@
+== v5gt: plays 600, errors 0, non-terminal at 20 s 0
+  sim   n   600 mean  6.48 p10   0.0 p50   3.5 p90  10.9 | neg  9.8% 4+ 44.8% 10+ 11.5% 20+  5.7% 40+ 3.17%
+  NFL60 n  2633 mean  5.00 p10   0.0 p50   3.0 p90  11.0 | neg  8.6% 4+ 48.8% 10+ 13.1% 20+  3.0% 40+ 1.18%
+  NFL   n  6223 mean  4.48 p10  -1.0 p50   3.0 p90  11.0 | neg 10.2% 4+ 45.6% 10+ 11.7% 20+  2.7% 40+ 0.67%
+  tail sim P(40+|10+) 19/69=0.28  P(40+|20+) 19/34=0.56  | NFL60 P(40+|10+) 31/344=0.09  P(40+|20+) 31/79=0.39
+    iz       n   200 mean  5.27 p10   0.0 p50   3.7 p90  10.1 | neg  8.5% 4+ 45.0% 10+ 10.5% 20+  2.0% 40+ 1.50%
+    NFL60    n   552 mean  4.51 p10   1.0 p50   3.0 p90   9.0 | neg  4.9% 4+ 49.5% 10+ 10.1% 20+  1.4% 40+ 0.18% inside zone
+    oz       n   200 mean  6.09 p10  -0.2 p50   3.3 p90   9.6 | neg 11.5% 4+ 44.5% 10+  8.5% 20+  6.5% 40+ 3.00%
+    NFL60    n   776 mean  4.68 p10   0.0 p50   3.0 p90  10.0 | neg  9.5% 4+ 46.4% 10+ 11.3% 20+  2.8% 40+ 1.16% outside zone
+    wz       n   200 mean  8.07 p10   0.0 p50   3.5 p90  16.4 | neg  9.5% 4+ 45.0% 10+ 15.5% 20+  8.5% 40+ 5.00%
+    NFL60    n   776 mean  4.68 p10   0.0 p50   3.0 p90  10.0 | neg  9.5% 4+ 46.4% 10+ 11.3% 20+  2.8% 40+ 1.16% outside zone
+run.yards_before_contact               sim n=594 mean=1.579 p10=-1.1 p50=1.2 p90=4.3
+                                       nfl n=5262 mean=1.166 p10=-2.1 p50=0.6 p90=4.7
+run.yards_after_contact                sim n=594 mean=4.419 p10=0.49 p50=2.13 p90=6.66
+                                       nfl n=5262 mean=3.246 p10=0.5 p50=2.4 p90=6.2
+run.engaged_dl_driven_back_2s          sim n=1684 mean=-0.464 p10=-1.5 p50=-0.8 p90=1.1
+                                       nfl n=13179 mean=-0.708 p10=-2.4 p50=-0.5 p90=0.7
+run.max_engaged_dl_driven_back_3s      sim n=556 mean=0.808 p10=-1.0 p50=0.4 p90=3.6
+                                       nfl n=4929 mean=0.819 p10=-1.1 p50=1.0 p90=2.5
+run.first_contact_s                    sim n=594 mean=3.056 p10=2.3 p50=2.95 p90=3.75
+                                       nfl n=5262 mean=2.889 p10=2.1 p50=2.7 p90=3.9
+run.carrier_cross_los_s                sim n=433 mean=2.735 p10=2.3 p50=2.7 p90=3.3
+                                       nfl n=3323 mean=2.591 p10=2.1 p50=2.5 p90=3.3
+contact.run.broke_contact              sim n=591 mean=0.142 p10=0.0 p50=0.0 p90=1.0
+                                       nfl n=5105 mean=0.125 p10=0.0 p50=0.0 p90=1.0
+  first contact (nearest defender): LB                40.9%   ybc median 1.2 | DL                29.5%   ybc median -0.6 | DB mid(5-10)      17.8%   ybc median 2.1 | DB deep(10+)       6.6%   ybc median 6.1 | DB shallow(<5)     5.2%   ybc median 2.5
+  secondary depth: t=1.0s (runner short of 5): deepest  13.7  2nd   8.1  defenders 8+ deep 2   n 600 | t=2.0s (runner short of 5): deepest  12.6  2nd   7.6  defenders 8+ deep 1   n 600 | t=2.5s (runner short of 5): deepest  11.1  2nd   7.6  defenders 8+ deep 1   n 600 | t=3.0s (runner short of 5): deepest   9.8  2nd   7.2  defenders 8+ deep 1   n 553
+  second level passed: all  passes 931: blocked 39%, free-near 34%, far 26%   per play 1.55 | 10+  passes 200: blocked 44%, free-near 29%, far 28%   per play 2.90 | <10  passes 731: blocked 38%, free-near 36%, far 26%   per play 1.38 | lateral of unblocked (+ = ahead of flow): far -6.55  free-near -1.44
+  == outside_zone: NFL 1639 runs, sim 395 runs   (median [p25, p75])
+  lat DL 1.0                         NFL +1.32 [+0.97,+1.63] n=1608 | sim +0.25 [+0.12,+0.33] n=395
+  lat DL 2.0                         NFL +4.45 [+3.55,+5.10] n=1608 | sim +1.52 [+1.15,+1.83] n=395
+  lat LB 2.0                         NFL +4.83 [+3.50,+5.73] n=1603 | sim +1.15 [+0.45,+1.80] n=395
+  lat OL 2.0                         NFL +4.94 [+4.24,+5.58] n=1608 | sim +2.36 [+1.76,+2.70] n=395
+  OL lat speed engaged               NFL +3.00 [+2.25,+3.50] n=94865 | sim +1.25 [+0.75,+1.75] n=28228
+  double duration s                  NFL +1.10 [+0.60,+1.90] n=3333 | sim +1.80 [+0.80,+2.50] n=958
+  doubles per play                   NFL               2.03 | sim               2.43
+  engaged DL depth 2.0               NFL +0.20 [-0.45,+0.87] n=1602 | sim +0.03 [-0.17,+0.20] n=395
+  engaged DL depth 3.0               NFL +1.03 [+0.00,+1.90] n=1509 | sim +0.10 [-0.30,+0.40] n=383
+  first block duration s             NFL +2.40 [+1.30,+3.30] n=6358 | sim +3.10 [+2.00,+3.80] n=1855
+  == inside_zone: NFL 1291 runs, sim 196 runs   (median [p25, p75])
+  lat DL 1.0                         NFL +0.67 [+0.20,+1.03] n=1229 | sim +0.07 [-0.08,+0.18] n=196
+  lat DL 2.0                         NFL +1.90 [+0.87,+2.70] n=1228 | sim +0.45 [-0.25,+0.95] n=196
+  lat LB 2.0                         NFL +1.45 [-0.10,+2.65] n=1213 | sim +0.30 [-0.33,+0.93] n=196
+  lat OL 2.0                         NFL +2.22 [+1.34,+2.90] n=1228 | sim +1.06 [-0.26,+1.46] n=196
+  OL lat speed engaged               NFL +1.25 [+0.50,+2.00] n=73870 | sim +0.25 [-0.25,+1.00] n=13790
+  double duration s                  NFL +1.50 [+0.90,+2.30] n=2639 | sim +1.60 [+0.80,+2.40] n=460
+  doubles per play                   NFL               2.04 | sim               2.35
+  engaged DL depth 2.0               NFL +0.65 [+0.05,+1.15] n=1225 | sim +1.35 [+0.87,+1.73] n=196
+  engaged DL depth 3.0               NFL +1.37 [+0.53,+2.20] n=1150 | sim +2.40 [+1.63,+2.97] n=165
+  first block duration s             NFL +2.60 [+1.70,+3.40] n=4796 | sim +2.50 [+1.30,+3.10] n=943
