@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Formations: shotgun RB spacing — 2026-10-19 America/Phoenix
+
+Measurement owns formation corrections per the user's new assignment, starting
+with offset shotgun RB spacing. Branch `codex/shotgun-rb-alignment` on accepted
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue `9a6bb795`.
+Bounded edit claim: `src/playbook/formations.ts` shotgun RB constants/slots,
+`test/shotgun-rb-alignment.test.ts`, focused diagnostic
+`scripts/diag/shotgun-rb-alignment.ts`, and its review/receipt. Alignment and
+exchange ownership remain distinct: no edits to assign/QBHandoff/physics,
+experimental flag activation, roster sweep, general collector or game campaign.
+Reuse saved #153 geometry; verify the spacing correction with native stored
+velocity and exchange/control evidence, without treating an NFL median as a
+speed target. Other formation findings require a named supported contract.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
