@@ -1,5 +1,15 @@
 # Current work ownership
 
+## CEO planning synthesis — 2026-10-19 America/Phoenix
+
+CEO owns only `docs/reviews/next-agent-plan-2026-10-19.md` on
+`codex/next-football-work-plan-2026-10-19`, based on accepted `f4146275`.
+Reuse existing Run/controller, Measurement and integration reviews; no new
+engine audit, simulations, source/default changes or implementation claims.
+The proposed assignments require each owner to claim its actual functions at
+the next clean checkpoint. Integration retains the canonical queue and exact
+combined verification. This planning document does not accept a candidate.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
