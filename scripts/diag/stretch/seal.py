@@ -10,10 +10,18 @@ past the line (and 0.5 s later), every defender within R yd of him is:
 Then whether he comes within 1 yd of the carrier within the next 1.5 s (his
 play on the ball; a proximity proxy, not a tackle label). Proximity and
 geometry only: not engagement, force or legal holds.
-usage: seal.py FILE [--ytg60] [--concept power] [--at 0|0.5] [--r 4]"""
+usage: seal.py FILE [--ytg60] [--concept power|toss (NFL: carrier > 2.5 yd from the QB at the exchange)] [--at 0|0.5] [--r 4]"""
 import gzip, json, math, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play  # noqa: E402
+
+def tossed(raw):
+    """NFL toss: the carrier is more than 2.5 yd from the QB at the exchange
+    (the provider labels pitches as handoffs; any concept)."""
+    ev = raw.get('events') or {}
+    if ev.get('handoff') is None: return False
+    p = Play(raw); qb = p.who('O', 'QB')
+    return bool(qb) and p.dist(qb[0], raw['carrier'], p.k(ev['handoff'])) > 2.5
 opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
 path = sys.argv[1]
 ytg = json.load(open('out/mechanics/nfl-ytg.json')) if '--ytg60' in sys.argv else None
@@ -26,7 +34,9 @@ for line in gzip.open(path, 'rt'):
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
     if concept:
         nfl = (raw.get('cell') or {}).get('concept')
-        if not (str(raw['id']).startswith(concept + '/') or nfl == LABEL.get(concept, concept.upper())): continue
+        if concept == 'toss' and raw.get('source') != 'sim':
+            if not tossed(raw): continue
+        elif not (str(raw['id']).startswith(concept + '/') or nfl == LABEL.get(concept, concept.upper())): continue
     p = Play(raw); c = raw['carrier']
     end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     kc = next((k for k in range(end + 1) if (p.pos(c, k)[0] if p.pos(c, k)[0] is not None else -99) >= 0), None)

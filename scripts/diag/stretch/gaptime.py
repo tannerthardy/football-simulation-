@@ -1,10 +1,18 @@
 """Timing and first contact of a run concept, one operator for NFL tracking
 and sim common plays: handoff, carrier crossing of the line, first contact
 (provider/sim first_contact label) with its depth and the nearest defender's
-group, and gain. Medians [p25, p75]. usage: gaptime.py FILE --concept C [--ytg60]"""
+group, and gain. Medians [p25, p75]. usage: gaptime.py FILE --concept C|toss [--ytg60]"""
 import gzip, json, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play  # noqa: E402
+
+def tossed(raw):
+    """NFL toss: the carrier is more than 2.5 yd from the QB at the exchange
+    (the provider labels pitches as handoffs; any concept)."""
+    ev = raw.get('events') or {}
+    if ev.get('handoff') is None: return False
+    p = Play(raw); qb = p.who('O', 'QB')
+    return bool(qb) and p.dist(qb[0], raw['carrier'], p.k(ev['handoff'])) > 2.5
 opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
 path, concept = sys.argv[1], opt('--concept')
 ytg = json.load(open('out/mechanics/nfl-ytg.json')) if '--ytg60' in sys.argv else None
@@ -16,7 +24,9 @@ for line in gzip.open(path, 'rt'):
     if raw.get('kind') != 'run' or raw.get('carrier') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
     nfl = (raw.get('cell') or {}).get('concept')
-    if concept and not (str(raw['id']).startswith(concept + '/') or nfl == LABEL.get(concept, concept.upper())): continue
+    if concept == 'toss' and raw.get('source') != 'sim':
+        if not tossed(raw): continue
+    elif concept and not (str(raw['id']).startswith(concept + '/') or nfl == LABEL.get(concept, concept.upper())): continue
     p = Play(raw); c = raw['carrier']; ev = raw.get('events') or {}; n += 1
     end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     if ev.get('handoff') is not None: h.append(ev['handoff'])

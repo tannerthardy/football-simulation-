@@ -741,6 +741,14 @@ const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
 
 /** Climbs and leads intercept flowing backers (CLIMB_INTERCEPT=0: short lead). */
 const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
+/** Experimental (DEPART_TEMPO=1, off): a climber leaving a double team keeps
+ * the climb's tempo around the old man's hip. Each read's exit is only the
+ * next point of a short arc around that body; tracked as a place to stop, it
+ * held him to about 1 yd/s for most of a second behind the line. The exit
+ * now moves on along the arc's chord at the speed his climb would carry to
+ * the backer (braking as he nears him), so a clear hip is crossed at climb
+ * speed. Same route, clearance and reads; the body decides what is achieved. */
+const DEPART_TEMPO = process.env.DEPART_TEMPO === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
@@ -767,7 +775,7 @@ export class RunBlocker implements Behavior {
   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
   private wrapTrafficAt = 0;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
-    flow: Vec2; backer: Perceived } | null = null;
+    flow: Vec2; backer: Perceived; from?: Vec2 } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
@@ -1105,7 +1113,7 @@ export class RunBlocker implements Behavior {
     if (!picture.exit) return;
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer), from: { ...a.pos } };
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
@@ -1119,7 +1127,7 @@ export class RunBlocker implements Behavior {
         + a.player.measurables.armIn / 36 * .45;
       const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
+        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer, from: { ...a.pos } };
       // Only a personally observed clear route ends the departure. A blocked
       // first step waits for another read; it cannot tunnel through the old DL.
       if (route && !route.exit) {
@@ -1131,9 +1139,18 @@ export class RunBlocker implements Behavior {
     const read = this.departureRead;
     if (!read?.exit) return stand();
     const dt = sim.t - read.at;
-    const goal = { x: read.exit.x + read.flow.x * dt,
-      y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
-    return track(a, goal, read.flow, { speed: 1, gain: 3,
+    let flow = read.flow;
+    if (DEPART_TEMPO && read.from) {
+      const chord = sub(read.exit, read.from), length = Math.hypot(chord.x, chord.y);
+      const toBacker = Math.hypot(read.backer.pos.x - a.pos.x, read.backer.pos.y - a.pos.y);
+      // The climb's own tempo toward the backer (track's far-approach close
+      // speed), carried along the arc instead of stopping on each exit.
+      const tempo = Math.min(a.profile.vmax, Math.sqrt(2 * a.profile.brake * .5 * Math.max(0, toBacker - .3)) + 1);
+      if (length > 1e-6) flow = { x: read.flow.x + chord.x / length * tempo, y: read.flow.y + chord.y / length * tempo };
+    }
+    const goal = { x: read.exit.x + flow.x * dt,
+      y: read.exit.y + flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
+    return track(a, goal, flow, { speed: 1, gain: 3,
       facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
   }
 

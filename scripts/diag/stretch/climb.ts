@@ -55,6 +55,15 @@ for (const formation of list('--formations', 'ace_12,i_pro_21')) for (const conc
           else if (bd <= 2) bump(key, `${grp} free: blocker within 2 yd`);
           else {
             bump(key, `${grp} free: blocker farther`);
+            // The late blocker: his plan, speed, heading relative to the man, and offset (depth +: man deeper; lateral +: man play side of him).
+            const p = (b.behavior as RunBlocker).plan;
+            bump(key, `  late: plan ${p.kind}${p.combination ? (p.combination.released ? ' (released)' : ' (combo on)') : ''}`);
+            const sp = Math.hypot(b.vel.x, b.vel.y), to = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), hd = Math.atan2(b.vel.y, b.vel.x);
+            const off = sp < .5 ? 'slow (<0.5 yd/s)' : Math.abs(Math.atan2(Math.sin(hd - to), Math.cos(hd - to))) < Math.PI / 4 ? 'heading at him' : 'heading elsewhere';
+            bump(key, `  late: ${off}`);
+            const ps = sim.offCall.run?.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+            const lat = (d.pos.y - b.pos.y) * ps;
+            bump(key, `  late: man ${lat > 1 ? 'play side of him' : lat < -1 ? 'back side of him' : 'level with him'}`);
             // Where is the late blocker: behind the backer's depth (has not climbed) or level/past?
             bump(key, `${grp} late blocker short of his depth`, (d.pos.x - b.pos.x) * dirO > 1 ? 1 : 0);
           }
