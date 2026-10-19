@@ -1,0 +1,14 @@
+import {createHash} from 'node:crypto';
+import {readdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {environment,profile} from './snapshot/scripts/baseline.mjs';
+const root=resolve('out/pr153-part5-review'),snapshot=resolve(root,'snapshot');
+const files=(d,p='')=>readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(resolve(d,e.name),p+e.name+'/'):[p+e.name]).sort();
+const hash=()=>{const h=createHash('sha256');for(const f of files(resolve(snapshot,'src')))h.update('src/'+f).update('\0').update(readFileSync(resolve(snapshot,'src',f))).update('\0');return h.digest('hex')};
+const source=hash(),results=[];
+const run=(name,args,flags={})=>{const start=performance.now();const r=spawnSync(process.execPath,args,{cwd:snapshot,env:environment(process.env,Object.entries(flags).map(([k,v])=>k+"="+v)),encoding:'utf8'});writeFileSync(resolve(root,name+'.log'),r.stdout+r.stderr);const result={name,sourceSha256:hash(),command:[process.execPath,...args],flags,seconds:(performance.now()-start)/1000,exitCode:r.status};results.push(result);console.log(JSON.stringify(result));console.log((r.stdout+r.stderr).slice(-3000));if(r.status!==0)throw Error(name+' failed')};
+run('drive-checks',[resolve(snapshot,'node_modules/vitest/vitest.mjs'),'run','--root',snapshot,'--project','core','--maxWorkers=1','test/drive-connect.test.ts','test/pr153-drive-review.test.ts']);
+run('native-off',['--import','tsx',resolve(snapshot,'pr153-native.ts'),resolve(root,'native-off.json')],{DRIVE_CONNECT:'0'});
+run('native-on',['--import','tsx',resolve(snapshot,'pr153-native.ts'),resolve(root,'native-on.json')],{DRIVE_CONNECT:'1'});
+writeFileSync(resolve(root,'checks.json'),JSON.stringify({submission:'336e8fc940d08d119926276b7a4c7242eafb437a',runtime:'4bde200',base:'f4146275ce7539816bf57b4ed55a0d2be10e48c7',node:process.version,flags:profile.flags,sourceSha256:source,sourceRestored:source===hash(),nativeContinuations:2,results},null,2)+'\n');

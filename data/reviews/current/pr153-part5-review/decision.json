@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-controller-review-not-activation",
+  "pullRequest": 153,
+  "submission": "336e8fc940d08d119926276b7a4c7242eafb437a",
+  "runtime": "4bde200b1123f9048d6d2fd8b29a4db3ce51bb1d",
+  "accepted": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+  "decisions": [
+    {
+      "scope": "UC_MESH draw exclusion",
+      "decision": "ACCEPT repair only; reused unchanged path"
+    },
+    {
+      "scope": "LB_KEY original fullback case",
+      "decision": "CLEARED for original reproduction"
+    },
+    {
+      "scope": "LB_KEY identity from persistent contradiction memory",
+      "decision": "REJECT inference; full feature HOLD",
+      "source": "src/sim/run-fits.ts:244",
+      "evidence": "../pr153-response-review/decision.json"
+    },
+    {
+      "scope": "MESH_TEMPO UC dependency gate",
+      "decision": "ACCEPT conservative guard; full features HOLD"
+    },
+    {
+      "scope": "DRIVE_CONNECT",
+      "decision": "Mechanism supported; adoption HOLD",
+      "patchCommit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "nextDecision": "Attribute one saved OZ pair among additional 40+ cases; trace first changed contact through meaningful runner encounter, no broad recollection."
+    },
+    {
+      "scope": "ZONE_TE/STRETCH_FLAT/GUN_MESH_SIDE",
+      "decision": "HOLD unchanged"
+    },
+    {
+      "scope": "DEPART_TEMPO",
+      "decision": "HOLD separate; no adoption review inferred"
+    }
+  ],
+  "newFocusedTests": 8,
+  "focusedTestsPass": 8,
+  "nativeContinuations": 2,
+  "nativeTicks": 174,
+  "games": 0,
+  "testNativeProcessSeconds": 4.349670039,
+  "auditErrors": [],
+  "sourceRestored": true,
+  "limits": [
+    "Power ending is coupled: first changed request is RT/DE_S at 0.60, then achieved state at 0.65, before LG encounter.",
+    "Gun v7gdc has ZONE_TE=0 and does not demonstrate transfer of the ZONE_TE-on adverse case.",
+    "Broad raw shards and per-play p-value recomputation unavailable; four manifests disclose non-runtime dirty diagnostic files.",
+    "No new typecheck/full-suite receipt; no source/default/Physics edits."
+  ],
+  "files": {
+    "audit.json": "9011a29102e11157b9cb9fd5c444c42c802cd9ff9db4bd1d87215cbd351ebe9d",
+    "audit.mjs": "2721917a6c7c91e78b4360847179659ff46bd5c902aef1257718ce078771efef",
+    "checks.json": "d4b63a8ece47bb4f2e20f13d60f1096fddf83a5ffaaeb268e409ed0d84817979",
+    "checks.mjs": "50444f5883957cba93a8bf1cc316480b8315db24ad89cb7087ad2efcbb2dc6dd",
+    "drive-checks.log": "858a961c9531f5b5575cbe05ae06e0198c816964cbda43d1f4663a58c10f804f",
+    "native-off.json.gz": "c9e55cd35c34e4386624eaf9d2217311b0ded4584eab1ce5e28678325312d69a",
+    "native-off.log": "55c48f2706ebacc9fcfaa01e8d0fe247f4fe8ea8ef75b18973fe8e9d524d1786",
+    "native-on.json.gz": "aa8f5fa1bc33ebebdaa033aff03fb85d8b28c3c9bbff3166fc1043928566e42b",
+    "native-on.log": "d01d9244fded276092b02d5e280c927416360a9f03e5a2ab76965f0b6806e769",
+    "pr153-drive-review.test.ts": "3530f3a3b03552898d61c46b5367acac896c7506829a2c051ceca37ff1609ef4",
+    "pr153-native.ts": "b6b59884d5d458c3a91d4554c3e5940f371a5a46c55dfdaac6591b48d5b44f1b",
+    "README.md": "ace7e493c61cc5b4692e809dd6edbcff4d8d7c2170835663fc0b467e7723b317"
+  },
+  "latestCheckedHead": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+  "latestHeadRuntimeSettingsTestsIdentical": true,
+  "latestHeadQualification": "Film tools and optional recording-level plumbing not reviewed; tests remain pinned to 336e8fc."
+}

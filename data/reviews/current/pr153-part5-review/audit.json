@@ -1,0 +1,1635 @@
+{
+  "submission": "336e8fc940d08d119926276b7a4c7242eafb437a",
+  "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+  "errors": [],
+  "witnesses": [
+    {
+      "name": "w8-power-lbsep-default",
+      "sha256": "7d8509961e567951d5d8f0ab4827af34a025df8fb4b8dd5d96ac162ef41c2480",
+      "commit": "3f0788aee8e9de0a85c980bbc768cacc5787f9ef",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DEPART_TEMPO": "0",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "DRIVE_CONNECT": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "GUN_MESH_SIDE": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "case": "power/strong/ace_12/under3/pair31/77",
+      "result": {
+        "gain": -0.38,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.4389791299999999
+    },
+    {
+      "name": "w8-power-lbsep-driveconnect",
+      "sha256": "37771c71cdaec7c2b4626972084b48ae8556291e92c78f2d6e453deff013c773",
+      "commit": "3f0788aee8e9de0a85c980bbc768cacc5787f9ef",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DEPART_TEMPO": "0",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "DRIVE_CONNECT": "1",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "GUN_MESH_SIDE": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "case": "power/strong/ace_12/under3/pair31/77",
+      "result": {
+        "gain": 5.42,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.376314041
+    },
+    {
+      "name": "w9-power-departure-departtempo",
+      "sha256": "2accde6dbce69026a8d310f182a8a2d9030a1493b51d89bedeee6cfac59ddecb",
+      "commit": "3f0788aee8e9de0a85c980bbc768cacc5787f9ef",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DEPART_TEMPO": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "DRIVE_CONNECT": "1",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "GUN_MESH_SIDE": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "case": "power/weak/i_pro_21/under3/pair11/77",
+      "result": {
+        "gain": 0.42,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.4664454329999999
+    },
+    {
+      "name": "w9-power-departure-driveconnect",
+      "sha256": "a93ddc2d1ddcbf4b36098f9b570cc0d8c70f3575271118ff505dfc0a9045e1ae",
+      "commit": "3f0788aee8e9de0a85c980bbc768cacc5787f9ef",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "BACK_CHASE": "0",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DEEP_CAP": "0",
+        "DEF_GETOFF": "1",
+        "DEPART_TEMPO": "0",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "DRIVE_CONNECT": "1",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "GUN_MESH_SIDE": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_KEY": "0",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "MESH_TEMPO": "0",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_LATERAL": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "SHED_PURSUE": "0",
+        "STALK_CLAIM": "1",
+        "STRETCH_FLAT": "0",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "UC_MESH": "0",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1",
+        "ZONE_TE": "0"
+      },
+      "case": "power/weak/i_pro_21/under3/pair11/77",
+      "result": {
+        "gain": -1.58,
+        "outcome": "tackle"
+      },
+      "receiptSeconds": 1.223426445
+    }
+  ],
+  "manifests": [
+    {
+      "file": "v7dc.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [],
+      "patchSha256": null,
+      "overrides": [
+        "DRIVE_CONNECT=1"
+      ],
+      "traceArgs": [],
+      "seconds": 107.005,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7dcgap.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [],
+      "patchSha256": null,
+      "overrides": [
+        "DRIVE_CONNECT=1"
+      ],
+      "traceArgs": [
+        "--formations",
+        "i_pro_21,ace_12",
+        "--concepts",
+        "power,counter,duo,trap",
+        "--seeds",
+        "77,71001,1,2,3"
+      ],
+      "seconds": 131.923,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7dt.manifest.json",
+      "commit": "4bde200b1123f9048d6d2fd8b29a4db3ce51bb1d",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [],
+      "patchSha256": null,
+      "overrides": [
+        "DRIVE_CONNECT=1",
+        "DEPART_TEMPO=1"
+      ],
+      "traceArgs": [],
+      "seconds": 115.64,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7dtgap.manifest.json",
+      "commit": "4bde200b1123f9048d6d2fd8b29a4db3ce51bb1d",
+      "sourceSha256": "4702192c48130bd8042207a569a0b6f3a981877a720f7ea64a57abc2c836a9b0",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [],
+      "patchSha256": null,
+      "overrides": [
+        "DRIVE_CONNECT=1",
+        "DEPART_TEMPO=1"
+      ],
+      "traceArgs": [
+        "--formations",
+        "i_pro_21,ace_12",
+        "--concepts",
+        "power,counter,duo,trap",
+        "--seeds",
+        "77,71001,1,2,3"
+      ],
+      "seconds": 139.233,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7gdc.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [
+        "scripts/diag/stretch/climb.ts",
+        "scripts/diag/stretch/gaptime.py",
+        "scripts/diag/stretch/seal.py"
+      ],
+      "patchSha256": "767e25bfda50edf82849be26aa830694736d8221b0c23d69497f358de29b9573",
+      "overrides": [
+        "DRIVE_CONNECT=1"
+      ],
+      "traceArgs": [
+        "--formations",
+        "gun_doubles_11",
+        "--concepts",
+        "iz,oz,wz",
+        "--seeds",
+        "77,71001,1,2,3"
+      ],
+      "seconds": 56.321,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7mtrdc.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [
+        "scripts/diag/stretch/climb.ts",
+        "scripts/diag/stretch/gaptime.py",
+        "scripts/diag/stretch/seal.py"
+      ],
+      "patchSha256": "767e25bfda50edf82849be26aa830694736d8221b0c23d69497f358de29b9573",
+      "overrides": [
+        "UC_MESH=1",
+        "ZONE_TE=1",
+        "STRETCH_FLAT=1",
+        "LB_KEY=1",
+        "MESH_TEMPO=1",
+        "DRIVE_CONNECT=1"
+      ],
+      "traceArgs": [],
+      "seconds": 103.254,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7toss.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [
+        "scripts/diag/stretch/climb.ts"
+      ],
+      "patchSha256": "bc729ba523e5e1cf8f3ca2f2fbc1bc8987ed6f07629b0d87163d29e1190fc1b9",
+      "overrides": [],
+      "traceArgs": [
+        "--formations",
+        "i_pro_21,ace_12",
+        "--concepts",
+        "toss",
+        "--seeds",
+        "77,71001,1,2,3"
+      ],
+      "seconds": 41.044,
+      "shards": 4,
+      "rawShardsAvailable": false
+    },
+    {
+      "file": "v7tossdc.manifest.json",
+      "commit": "ad633361f29185dbbcea2432788bc9e0d30345a9",
+      "sourceSha256": "dde14c914ea0edbbc98b8165e0319a2822d026b720e48d2241e2d5c884c4464c",
+      "sourceMatches": true,
+      "toolsMatch": true,
+      "trackedChanges": [
+        "scripts/diag/stretch/climb.ts"
+      ],
+      "patchSha256": "bc729ba523e5e1cf8f3ca2f2fbc1bc8987ed6f07629b0d87163d29e1190fc1b9",
+      "overrides": [
+        "DRIVE_CONNECT=1"
+      ],
+      "traceArgs": [
+        "--formations",
+        "i_pro_21,ace_12",
+        "--concepts",
+        "toss",
+        "--seeds",
+        "77,71001,1,2,3"
+      ],
+      "seconds": 51.581,
+      "shards": 4,
+      "rawShardsAvailable": false
+    }
+  ],
+  "unchangedFromResponse": [
+    {
+      "file": "src/sim/assign.ts",
+      "unchanged": true
+    },
+    {
+      "file": "src/sim/behaviors/carrier.ts",
+      "unchanged": true
+    },
+    {
+      "file": "src/sim/run-fits.ts",
+      "unchanged": true
+    }
+  ],
+  "native": {
+    "case": "power/strong/ace_12/under3/pair31/77",
+    "sameInitialBodiesAndProfiles": true,
+    "firstRequestDifference": {
+      "off": {
+        "t": 0.6,
+        "blocker": "RT",
+        "defender": "DE_S",
+        "blockerPos": {
+          "x": 39.75487452758498,
+          "y": 24.12453601572087
+        },
+        "defenderPos": {
+          "x": 40.6338387848884,
+          "y": 23.71767942371532
+        },
+        "blockerVel": {
+          "x": 1.4192556129195637,
+          "y": -0.2063476438694452
+        },
+        "defenderVel": {
+          "x": -1.0265531757091517,
+          "y": 0.9257728265255194
+        },
+        "drive": {
+          "x": 0.7071067811865475,
+          "y": 0.7071067811865475
+        },
+        "forward": 2.4,
+        "seal": 3.2611831002237563,
+        "anchored": false,
+        "command": {
+          "vel": {
+            "x": 4.0030609597069,
+            "y": -0.6089484100114722
+          },
+          "facing": -0.4335146767703807,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        }
+      },
+      "on": {
+        "t": 0.6,
+        "blocker": "RT",
+        "defender": "DE_S",
+        "blockerPos": {
+          "x": 39.75487452758498,
+          "y": 24.12453601572087
+        },
+        "defenderPos": {
+          "x": 40.6338387848884,
+          "y": 23.71767942371532
+        },
+        "blockerVel": {
+          "x": 1.4192556129195637,
+          "y": -0.2063476438694452
+        },
+        "defenderVel": {
+          "x": -1.0265531757091517,
+          "y": 0.9257728265255194
+        },
+        "drive": {
+          "x": 0.7071067811865475,
+          "y": 0.7071067811865475
+        },
+        "forward": 2.291439293468521,
+        "seal": 3.2611831002237563,
+        "anchored": false,
+        "command": {
+          "vel": {
+            "x": 3.9262969479480887,
+            "y": -0.6857124217702835
+          },
+          "facing": -0.4335146767703807,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        }
+      }
+    },
+    "firstAchievedDifference": 0.65,
+    "arms": [
+      {
+        "drive": "0",
+        "result": {
+          "gain": -0.38,
+          "outcome": "tackle"
+        },
+        "terminal": true,
+        "ticks": 77,
+        "lgLbStart": 2.2,
+        "lgLbEnd": [
+          {
+            "t": 3.2,
+            "b": "LG",
+            "d": "LB_S",
+            "start": 2.2,
+            "kind": "end",
+            "data": {
+              "reason": "separation",
+              "apart": 1.0278332223697835
+            }
+          }
+        ],
+        "samples": [
+          {
+            "t": 2.5,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 39.40317350834983,
+                "y": 22.84185019926911
+              },
+              "vel": {
+                "x": 1.7415783845558606,
+                "y": -2.0682669812981525
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.0585036773825367,
+                  "y": -1.5881224589237708
+                },
+                "facing": 0.6582387929894319,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.907724680880506,
+                "y": 23.357512039897685
+              },
+              "vel": {
+                "x": 0.07718855472974562,
+                "y": -0.8684567284217496
+              },
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -5.18469124125539
+                },
+                "facing": -2.4833538606003613,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 36.690917028332684,
+                "y": 24.928567333123777
+              },
+              "vel": {
+                "x": 1.60955881745743,
+                "y": -1.541362652271278
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.166287720794426,
+                  "y": -4.654477827867715
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 971.7855060865404,
+              "tangent": -624.4222909896811
+            }
+          },
+          {
+            "t": 2.75,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 39.93957302516125,
+                "y": 22.35054434568848
+              },
+              "vel": {
+                "x": 2.5530965746526686,
+                "y": -1.8406458374392436
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.69326258617149,
+                  "y": -1.697694786287085
+                },
+                "facing": 1.4150230533636092,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.928443421610666,
+                "y": 23.144954678933555
+              },
+              "vel": {
+                "x": -0.11655655965098574,
+                "y": -0.35917527731689086
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -1.726569600226184,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 37.14340515082494,
+                "y": 24.45316494954821
+              },
+              "vel": {
+                "x": 2.311753936751083,
+                "y": -1.8685775546642
+              },
+              "intent": {
+                "vel": {
+                  "x": 6.232585521881183,
+                  "y": 0.42070765977296576
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 964.4790039302254,
+              "tangent": -618.2398660881838
+            }
+          },
+          {
+            "t": 3,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.439745042623684,
+                "y": 21.94917832943765
+              },
+              "vel": {
+                "x": 1.2426991576282325,
+                "y": -1.6406837348915158
+              },
+              "intent": {
+                "vel": {
+                  "x": -0.4099654344284114,
+                  "y": -2.628663192467055
+                },
+                "facing": 2.024475874082265,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.83198664023548,
+                "y": 23.073598706645317
+              },
+              "vel": {
+                "x": -0.42326208499507223,
+                "y": -0.33620427530968183
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -1.1171167795075283,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.2
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 37.89239383777316,
+                "y": 24.055137074812745
+              },
+              "vel": {
+                "x": 3.5723420317788466,
+                "y": -1.5514467458519077
+              },
+              "intent": {
+                "vel": {
+                  "x": 8.757462598540759,
+                  "y": -3.7124562931428913
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": -190.59591747498686,
+              "tangent": -622.375554030715
+            }
+          },
+          {
+            "t": 3.25,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.56276390697703,
+                "y": 21.50368039279822
+              },
+              "vel": {
+                "x": 0.09648959531802705,
+                "y": -1.57816430440411
+              },
+              "intent": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "support": "up",
+              "rep": null
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.67264541398062,
+                "y": 23.050719533059205
+              },
+              "vel": {
+                "x": -0.7062874394534165,
+                "y": -0.03884186704698743
+              },
+              "intent": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "support": "up",
+              "rep": null
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 38.89313846116027,
+                "y": 23.60520960015761
+              },
+              "vel": {
+                "x": 4.238709792511934,
+                "y": -2.277783093414891
+              },
+              "intent": {
+                "vel": {
+                  "x": 5.160913710708123,
+                  "y": -7.990022062795661
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": null
+          },
+          {
+            "t": 3.5,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.46499361408625,
+                "y": 21.186762651391092
+              },
+              "vel": {
+                "x": -0.8627975315699026,
+                "y": -0.9272106054634921
+              },
+              "intent": {
+                "vel": {
+                  "x": -3.5935561361789303,
+                  "y": 1.2023288726145365
+                },
+                "facing": 1.9882408529462612
+              },
+              "support": "up",
+              "rep": null
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.81202106602968,
+                "y": 22.85644542500912
+              },
+              "vel": {
+                "x": 0.9326884565115167,
+                "y": -0.9380583849473465
+              },
+              "intent": {
+                "vel": {
+                  "x": 1.177360854586363,
+                  "y": -1.0674587313729598
+                },
+                "facing": 2.35060642671314,
+                "push": 1,
+                "posture": 0.7
+              },
+              "support": "up",
+              "rep": null
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 39.45170576692364,
+                "y": 23.220268703198897
+              },
+              "vel": {
+                "x": 0.9375030070017232,
+                "y": -0.93329080635668
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.541932018342012,
+                  "y": 8.357412065591607
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0,
+                "push": 1,
+                "posture": 0.5
+              },
+              "support": "falling",
+              "rep": null
+            },
+            "load": null
+          },
+          {
+            "t": 3.75,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.141543425698565,
+                "y": 21.051378101746423
+              },
+              "vel": {
+                "x": -1.6679778879948308,
+                "y": -0.11302971513606416
+              },
+              "intent": {
+                "vel": {
+                  "x": -3.6765886475233427,
+                  "y": 1.991325252844211
+                },
+                "facing": 1.922269817911548
+              },
+              "support": "up",
+              "rep": null
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.9521395795756,
+                "y": 22.68960036480557
+              },
+              "vel": {
+                "x": 0.3050756677759544,
+                "y": -0.4873887372302249
+              },
+              "intent": {
+                "vel": {
+                  "x": 0.3677059568201041,
+                  "y": -0.5323933866253077
+                },
+                "facing": 2.3543238445607275,
+                "push": 1,
+                "posture": 0.7
+              },
+              "support": "up",
+              "rep": null
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 39.58994693699561,
+                "y": 23.05247938597583
+              },
+              "vel": {
+                "x": 0.3030412101701923,
+                "y": -0.4894190168576886
+              },
+              "intent": {
+                "vel": {
+                  "x": 5.254319030390431,
+                  "y": -7.928910039861309
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0,
+                "push": 1,
+                "posture": 0.5
+              },
+              "support": "falling",
+              "rep": null
+            },
+            "load": null
+          }
+        ]
+      },
+      {
+        "drive": "1",
+        "result": {
+          "gain": 5.42,
+          "outcome": "tackle"
+        },
+        "terminal": true,
+        "ticks": 97,
+        "lgLbStart": 2.4,
+        "lgLbEnd": [],
+        "samples": [
+          {
+            "t": 2.5,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 39.19604320161509,
+                "y": 22.677434540814154
+              },
+              "vel": {
+                "x": 1.3846728278758262,
+                "y": -2.053647843806296
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.007355111953733,
+                  "y": -1.4176272408277582
+                },
+                "facing": -0.0519248429022396,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 39.99932707183827,
+                "y": 22.75478967514139
+              },
+              "vel": {
+                "x": -0.3799940197403431,
+                "y": -0.054734560127493684
+              },
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -5.18469124125539
+                },
+                "facing": 3.0896678106875535,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 36.850455501580875,
+                "y": 24.873997015567152
+              },
+              "vel": {
+                "x": 2.104277597233179,
+                "y": -0.9138785658460362
+              },
+              "intent": {
+                "vel": {
+                  "x": 5.537703550802654,
+                  "y": -2.890667155862512
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1118.4381371439576,
+              "tangent": -761.3404304417102
+            }
+          },
+          {
+            "t": 2.75,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 39.54480160003032,
+                "y": 22.254935300904307
+              },
+              "vel": {
+                "x": 1.2876353673873562,
+                "y": -1.5148855919976583
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.0585036773825367,
+                  "y": -1.5881224589237708
+                },
+                "facing": 0.35031043047687915,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 40.10352961095154,
+                "y": 22.461336920167522
+              },
+              "vel": {
+                "x": 1.2879010676661893,
+                "y": -1.5156048481457949
+              },
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -0.8770353244784442
+                },
+                "facing": -2.791282223112914,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 37.424249847341336,
+                "y": 24.527277225180896
+              },
+              "vel": {
+                "x": 2.664016821851754,
+                "y": -1.4979008519746961
+              },
+              "intent": {
+                "vel": {
+                  "x": 5.3008625302886365,
+                  "y": -3.304992232598519
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1114.2266524716965,
+              "tangent": -743.6834757521035
+            }
+          },
+          {
+            "t": 3,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 39.947897383791826,
+                "y": 21.965858819856443
+              },
+              "vel": {
+                "x": 1.8978895544368872,
+                "y": -0.757723487976801
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.9808917236469403,
+                  "y": -1.3294159464717823
+                },
+                "facing": 0.3536844738797753,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 40.50676421803179,
+                "y": 22.17219437730534
+              },
+              "vel": {
+                "x": 1.9041068798626057,
+                "y": -0.7554280300448566
+              },
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": 1.451872595583392
+                },
+                "facing": -2.787908179710018,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 38.21391210813932,
+                "y": 24.071733130859005
+              },
+              "vel": {
+                "x": 3.618868176815158,
+                "y": -2.133688378112115
+              },
+              "intent": {
+                "vel": {
+                  "x": 7.929581028432544,
+                  "y": -5.253306349991327
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1112.5524816987881,
+              "tangent": -658.744720835816
+            }
+          },
+          {
+            "t": 3.25,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.435321159979,
+                "y": 21.749555676584635
+              },
+              "vel": {
+                "x": 2.005092297286959,
+                "y": -0.9539786925451705
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.004776110932567,
+                  "y": -1.4090305707572033
+                },
+                "facing": 0.35367909506076817,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 40.99462934345125,
+                "y": 21.956054181688128
+              },
+              "vel": {
+                "x": 2.0128214983872508,
+                "y": -0.9511250449140096
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -2.787913558529025,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 39.21787545301518,
+                "y": 23.467874796389975
+              },
+              "vel": {
+                "x": 4.395904647832655,
+                "y": -2.6684580462639667
+              },
+              "intent": {
+                "vel": {
+                  "x": 8.090340688745211,
+                  "y": -5.002186565230266
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1110.0050741211119,
+              "tangent": -526.2029592770056
+            }
+          },
+          {
+            "t": 3.5,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 40.949365903334936,
+                "y": 21.49452566358263
+              },
+              "vel": {
+                "x": 2.101653342035336,
+                "y": -1.0824433466870804
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.0484915941348043,
+                  "y": -1.554748848097995
+                },
+                "facing": 0.3536790950607336,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 41.50980565896014,
+                "y": 21.701441949017056
+              },
+              "vel": {
+                "x": 2.10800483347918,
+                "y": -1.0800983541997742
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -2.7879135585290595,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 40.40098797654182,
+                "y": 22.74698155618135
+              },
+              "vel": {
+                "x": 5.0451542602938915,
+                "y": -3.091050953108422
+              },
+              "intent": {
+                "vel": {
+                  "x": 8.015801254693631,
+                  "y": -5.120782473273841
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1106.1607114807214,
+              "tangent": -513.7228342293317
+            }
+          },
+          {
+            "t": 3.75,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 41.48655233518636,
+                "y": 21.214036177536734
+              },
+              "vel": {
+                "x": 2.197879076235245,
+                "y": -1.1496243407319233
+              },
+              "intent": {
+                "vel": {
+                  "x": 3.0585036773825367,
+                  "y": -1.5881224589237708
+                },
+                "facing": 0.3536790950607089,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 42.046914636294154,
+                "y": 21.420923866496917
+              },
+              "vel": {
+                "x": 2.1840896787617714,
+                "y": -1.1547154337083787
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -2.7879135585290844,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 41.73931288375852,
+                "y": 21.950492253932335
+              },
+              "vel": {
+                "x": 5.751864293598482,
+                "y": -3.0054554292546425
+              },
+              "intent": {
+                "vel": {
+                  "x": 9.511860117418491,
+                  "y": 0
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1105.4036314900768,
+              "tangent": -488.21324412404726
+            }
+          },
+          {
+            "t": 4,
+            "blocker": {
+              "slot": "LG",
+              "pos": {
+                "x": 42.10307102920103,
+                "y": 20.90601495996771
+              },
+              "vel": {
+                "x": 2.5546195324320013,
+                "y": -0.6693632015394696
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.8769183088431936,
+                  "y": -0.9828378971259604
+                },
+                "facing": 0.25127049171749777,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9830894819466248
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "defender": {
+              "slot": "LB_S",
+              "pos": {
+                "x": 42.72220281666401,
+                "y": 21.087707537028916
+              },
+              "vel": {
+                "x": 1.9777864891737151,
+                "y": -0.3356342323087143
+              },
+              "intent": {
+                "vel": {
+                  "x": -5.1384422829700975,
+                  "y": -0.9151142943563961
+                },
+                "facing": -2.8903221618722954,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1117733124018838
+              },
+              "support": "up",
+              "rep": {
+                "b": "LG",
+                "d": "LB_S",
+                "start": 2.4
+              }
+            },
+            "runner": {
+              "slot": "RB",
+              "pos": {
+                "x": 43.016845073516386,
+                "y": 21.58900099601137
+              },
+              "vel": {
+                "x": 4.953782225991605,
+                "y": -0.696391352471561
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.315418416065798,
+                  "y": 1.028739796961362
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "support": "up",
+              "rep": null
+            },
+            "load": {
+              "normal": 1104.9687913792454,
+              "tangent": -410.3499744913397
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "rawChecksums": {
+    "off": "d8e8fd7b630ebcc141f54dc343857434e1c06540c34cbedbbe514023bdd036ae",
+    "on": "1b80f922e06b3df36e0e26fabc45ec7c6bb5ea274b3306e5dad1295339bdaada"
+  }
+}

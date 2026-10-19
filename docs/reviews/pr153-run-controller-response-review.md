@@ -1,5 +1,9 @@
 # PR153 author-response review
 
+For subsequent DRIVE_CONNECT/Part 5 findings at `336e8fc`, see the
+[next independent review](pr153-part5-controller-review.md). This document
+retains its original pin and receipts.
+
 Reviewed [response8d3c41f2](https://github.com/tannerthardy/football-simulation-/blob/8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055/docs/reviews/run-game-v3-pr153-response.md),
 runtime`76252fa98543b8c22c1560b153865b54655f46af`, against accepted
 `f4146275ce7539816bf57b4ed55a0d2be10e48c7`. Submission and runtime source/test/
