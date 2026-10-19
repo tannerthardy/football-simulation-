@@ -68,8 +68,8 @@ run, completion, tackle or YAC result.
   duty remains the installed eight-yard alley cap. At1.30–1.65 s, maximum
   request step falls 2.153→.700 yd/s and maximum heading step20.33→6.58 degrees.
   This includes legitimate cue updates, so reduced steps alone are not proof.
-  At1.50 s he is .30 yd closer to cap depth but .37 yd less wide; at1.90 s the
-  planned cap/observed-runner handover still occurs. No FS contact or
+  At1.50 s he is .30 yd closer to cap depth but .37 yd less wide. The cap
+  still holds through1.95 s before the existing observed-runner chase at2.00 s. No FS contact or
   engagement occurs in either prefix. The runner is unchanged; its first
   physical LB_S collision at3.15 s remains in both arms. This cannot establish
   a grip correction.
