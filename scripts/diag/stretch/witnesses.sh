@@ -47,14 +47,15 @@ run w6-shed-pursue oz/strong/ace_12/off1/pair11/77 $SS 0 5 4 $PKG MESH_TEMPO=1 S
 run w6-shed-control-tempo oz/strong/ace_12/over4/pair11/6 $SS 0 5 4 $PKG MESH_TEMPO=1
 run w6-shed-control-pursue oz/strong/ace_12/over4/pair11/6 $SS 0 5 4 $PKG MESH_TEMPO=1 SHED_PURSUE=1
 # MESH_TEMPO with UC_MESH off under center: now a no-op here; at the reviewed
-# commit the back runs past and the QB keeps.
+# commit the back runs past and the QB keeps (every OZ/WZ snap, and weak
+# I-formation power whose installed call precedes the QB's arrival).
 H=oz/strong/ace_12/over3/pair11/77
 run w7-head-oz-default $H $MS 0 4 1
 run w7-head-oz-tempo $H $MS 0 4 1 MESH_TEMPO=1
 WT=out/rgv3w/wt-1c578afb
 [ -d $WT ] || { git worktree add -q --detach $WT 1c578afb && ln -s "$PWD/node_modules" $WT/node_modules; }
 cp scripts/diag/stretch/witness.ts $WT/scripts/diag/stretch/witness.ts
-for c in oz:$H wz:wz/weak/ace_12/under3/pair31/3; do
+for c in oz:$H wz:wz/weak/ace_12/under3/pair31/3 power:power/weak/i_pro_21/over3/pair31/77; do
   for f in default tempo; do
     n=w7-1c5-${c%%:*}-$f; fl=(); [ $f = tempo ] && fl=(--flag MESH_TEMPO=1)
     (cd $WT && node scripts/baseline.mjs --candidate ${fl[@]+"${fl[@]}"} --receipt ../receipts/$n.json -- node --import tsx \
