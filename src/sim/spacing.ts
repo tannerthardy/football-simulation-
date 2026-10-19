@@ -239,6 +239,8 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
   const peer=peers.find(p=>p.key===passing!.peer)!,normal=passing.normal;
   const oldPath=chosen===raw?originalPath:forecast(chosen);
   const oldGaps=gaps(oldPath),previous=Math.min(...oldGaps);
+  const oldEnd=oldPath[oldPath.length-1];
+  const previousProgress=dot(oldEnd.pos.x-a.pos.x,oldEnd.pos.y-a.pos.y,forward);
   const error=(path:readonly MovementSample[])=>{
     const end=path[path.length-1];
     return Math.hypot(end.pos.x-goal.point.x-flow.x*end.t,end.pos.y-goal.point.y-flow.y*end.t);
@@ -258,7 +260,8 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
     // benchmark. During overlap demand useful progress plus material relief;
     // when the native action clears, improve the original goal without a hit.
     if(previous<0?Math.min(...next)>previous+TURN_MARGIN&&error(path)<stationaryError
-      :Math.min(...next)>=0&&error(path)<error(oldPath))return command;
+      :Math.min(...next)>=0&&error(path)<error(oldPath)
+        &&dot(end.pos.x-a.pos.x,end.pos.y-a.pos.y,forward)>=previousProgress+TURN_MARGIN)return command;
   }
   const adjusted=evaluate(chosen);
   if(adjusted)return adjusted;
