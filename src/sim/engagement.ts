@@ -665,6 +665,15 @@ const SHED_PURSUE = process.env.SHED_PURSUE === '1';
  * discounts agility. Zone linemen run the line with their hips open; the
  * World still decides what facing, traction and contact allow. */
 const RUN_LATERAL = process.env.RUN_LATERAL === '1';
+/** Experimental (DRIVE_CONNECT=1, off): a drive block drives through his man,
+ * not along a fixed line past him. The drive request (2.4 yd/s along the
+ * drive line) assumes the man stands in front of the blocker on that line.
+ * Once the blocker is level with or beyond him along it (a backer coming
+ * downhill under a climber, a man sliding off a down block), more drive only
+ * runs the blocker past him: he keeps connected instead, matching the man's
+ * motion along the line and closing what separates them, as a stretch reach
+ * does. Requests only; contact, the anchor and World decide what happens. */
+const DRIVE_CONNECT = process.env.DRIVE_CONNECT === '1';
 const runLateral = (a: Agent, trait: number) => RUN_LATERAL ? Math.max(trait, a.profile.vmax * a.profile.shuffle) : trait;
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
@@ -1129,7 +1138,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  if (DRIVE_CONNECT && !stretch) {
+    // How far the man still stands in front of him along the drive line:
+    // full drive with him there, connected tracking once level or past.
+    const ahead = (d.pos.x - b.pos.x) * drive.x + (d.pos.y - b.pos.y) * drive.y;
+    const w = clamp(ahead / (0.5 * sep), 0, 1);
+    forward = w * 2.4 + (1 - w) * clamp(along(d.vel) + gap * 3, -1, 2.4);
+  }
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).

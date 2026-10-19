@@ -16,6 +16,7 @@
     "DL_FIGHT": "0",
     "DL_FLOW": "1",
     "DL_HANDS": "0",
+    "DRIVE_CONNECT": "0",
     "FLOW_READ": "1",
     "FLOW_RELEASE": "1",
     "GAIT_STEP": "0",
