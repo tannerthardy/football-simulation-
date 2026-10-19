@@ -977,3 +977,5 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-19, Catching/movement: `codex/run-rep-arrival` directly on acceptedf4146275 (queue9a6bb795). Claim `stepRunRep` ordinary DL_FLOW lateral arrival only; existing movingArrivalVelocity machinery, same acquired/held target and flow/capacity. Preserve offensive zone deadlines, free run-fit planning, shed/CF/off-default fight, contact/hands/release/Physics. Contact ownership posted on #153. Diagnose with saved DT_W same-aim request flips and actual achieved shoulder/flow; native/NFL query reuse. #162 motor, free objective mode and track boundary remain independent.

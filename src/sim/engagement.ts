@@ -1167,15 +1167,18 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
-  // Keep the shoulder where it will need to be: the held flow cue carries it
-  // forward over a short horizon, and the request is planned with his own
-  // acceleration (the law the zone blockers plan with), so a lineman who is
-  // being reached works laterally to keep his gap instead of lagging it.
+  // Match the acquired shoulder's motion and close the remaining error with
+  // the braking this body can actually supply. A held contact objective is
+  // not a new deadline every tick: inverting the sprint lag over two reads
+  // amplifies tiny position/load changes into alternating saturated requests.
   // DL_FLOW=0 restores the proportional follow.
   const held = read.declared ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
-  const flow = clamp(DL_FLOW
-    ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
-    : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+  const capacity = d.body.support
+    ? availability(d.body.support, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const flow = DL_FLOW
+    ? movingArrivalVelocity(d.body, { x: d.pos.x, y: read.aim.y }, { x: 0, y: held },
+      td.lateral, 0, 0, .8 + .4 * td.bend, capacity).y
+    : clamp(held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
