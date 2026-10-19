@@ -176,6 +176,9 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 // A remembered contradiction belongs to this observer for this play. Losing
 // sight of the empty back later does not reinstall the expected exchange.
 const contradictedMesh = new WeakSet<Agent>();
+// A fit is one selected action: destination and lateral movement mode are
+// adopted on the same existing decision beat. Own-body feedback remains live.
+const fitActions = new WeakMap<Agent, { aim: Vec2; planned: boolean }>();
 
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
   if (a.engagement) return stand();
@@ -340,7 +343,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // beat. Do not amplify the still-held action away from that observed pull.
   const planPull = PULL_PLAN && job.kind === 'insert' && job.technique !== 'lag'
     && (aim.y - a.pos.y) * pullSide > 0;
-  if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
+  if (fitActions.get(a)?.aim !== aim)
+    fitActions.set(a, { aim, planned: LB_PLAN && (flowing || Math.abs(gap.vel) > 1 || planPull) });
+  if (!fitActions.get(a)!.planned) return fit;
   const horizon = 2 * a.mind.decisionInterval;
   const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
   return { ...fit, vel: { x: fit.vel.x, y: vy } };
