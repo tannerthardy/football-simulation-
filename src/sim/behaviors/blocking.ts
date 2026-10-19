@@ -931,7 +931,10 @@ export class RunBlocker implements Behavior {
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
         // The pull step opens the hips to the play side: he does not turn to
         // face his own backfield while he gains depth (PULL_STEP).
-        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
+        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined,
+          // Clear behind the wall with purposeful first steps. The corner
+          // still sets the speed target; World owns the achievable force.
+          ...(this.pullIdx === 0 ? { propulsion: 'full' as const } : {}) });
       }
     }
     if (!target) {
