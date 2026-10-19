@@ -979,3 +979,5 @@ Edit only your own rows and requests so board merges stay trivial.
   flag controls; a new baseline needs an explicit profile/pin and validation.
 
 - 2026-10-19, Catching free-defender request continuity: isolated `codex/free-fit-objective-continuity` from accepted `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423` verified by parent fetch. Own `executeRunFit` held aim / planner-mode coupling only and focused contracts. Reuse accepted passive tapes; no global smoothing, new cue acquisition, physical-law/capacity changes or new persistence timer. #159 facing-only correction remains independent. Parent owns run-rep contact law and serial native collection.
+
+- Free-fit checkpoint: code1885a34/runtime565ddbd, 81 focused checks/typecheck pass; two exact native3.2-s prefixes and saved-data smoothness reuse completed. Local mixed-age spikes improve; IZ first-grip geometry worsens under identical RNG, consistent with still-valid gap braking. Aggregate raw reversal counts do not establish general repair. HOLD promotion for arrival-contract review; no further variants/new simulations.

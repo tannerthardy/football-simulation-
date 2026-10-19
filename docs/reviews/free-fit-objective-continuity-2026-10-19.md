@@ -81,6 +81,92 @@ Each row records original tape path/hash, source/input hash, stable player ID,
 installed fit, consumed picture, point request/adoption, raw/final movement,
 achieved motion and actual contact/reps. Rounded film is not used as a checkpoint.
 
-Next decision: bounded native IZ plus OZ24, with their existing accepted tapes,
-then report achieved geometry and any costs before declaring readiness. The
-held-action contract itself is supported; football-transfer evidence is pending.
+## Two bounded native prefixes and the decision
+
+Parent collected exactly IZ and OZ24 through 3.2 s, using frozen input hashes
+`3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b`
+and `44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004`.
+Candidate initial players/profiles equal each saved accepted tape exactly.
+Native source is the code above, with all 44 settings unchanged. Parent launch
+receipt: `out/fit-continuity/native-launch.json`; collection receipt and full tapes:
+`out/fit-continuity/native/`. Native collector wall time 2.126 s; the per-case
+simulation totals 1.594 s. No additional simulation was requested.
+
+The first difference is IZ's SD-LB5 / LB_S at 0.85 s, held point y22.899
+unchanged to 0.911 s: raw vy −6.780 becomes −0.682. Own body, consumed picture,
+x request and facing agree before that step. OZ24's first difference is
+pair31D-LB3 / LB_M at 0.65 s: raw vy −9.206 becomes −1.128 while the same point
+y25.452 remains held to 0.666 s. Both are free, without direct contact.
+
+The selected IZ LB_W witness is repaired: at 2.05 s, raw/final vy +9.004 becomes
++0.367 against the same held point; at 2.20 s both adopt the leftward objective
+and request −9.004. Lateral request total variation over 2.00–2.20 s drops
+26.916→10.621 yd/s. Achieved change is modest: at 2.20 s vy −1.253→−1.320 and
+y27.551→27.546. Mike's 2.15–2.35 s request variation drops 21.488→7.515.
+
+**Adverse IZ finish geometry:** Mike still acquires a reach at 2.75 s, but
+defender-to-RB distance grows 1.377→1.550 yd, initial grip .444→.248 and leg
+share .247→.152. World-boundary RNG state agrees throughout both prefixes;
+the same acquired runner track reaches this contact. Changed entry geometry,
+rather than a changed global draw sequence, explains this cost.
+
+This cost does not automatically invalidate the corrected action. At 1.85 s,
+Mike still owns his A-gap/side− insertion; acquired run belief dates to 0.35 s.
+His consumed RB is carrying=true at (36.384,25.289), velocity(2.024,−1.208),
+age0.20 s. That runner is 3.616 yd behind LOS, below the existing declaration
+surface; no new immediate pursuit entitlement exists. Mike's own position is
+(41.882,25.008), velocity(−2.283,−1.931), with the held goal(41.5,24.405) until
+1.925 s. The current proposed point y24.688 has shifted only .283 yd.
+
+The acquired RG has just crossed the existing 1.5-yd surface-departure boundary.
+The gap now uses the existing interpolated vacancy, reducing its measured
+speed below the planner threshold. That does not invalidate the installed gap
+or transfer ownership to pursuit. The held goal is still in the acquired
+opening. It lies .603 yd laterally away; stopping at current lateral speed has
+a rough full-braking scale .275 yd before combined-axis limits. Some braking
+is physically reasonable. Holding the old planner yields vy −.207 instead of
+−1.809, giving up later contact access in exchange for holding the still-valid
+fit. The existing inverse law controls its magnitude; this candidate does not
+establish that law is an accurate arrival model. Treat this as a visible,
+plausible discipline/arrival tradeoff for owner review, not a mandatory tackle
+ending and not an unexplained assertion failure.
+
+OZ24 gains different access: LT contacts LB_W at 1.45 s rather than 3.40 in the
+longer baseline, while Mike acquires the RB at 2.80 versus 3.00 s. Candidate
+runner falls at 3.00 versus 3.65 in the longer baseline. Global RNG first differs
+at 1.40 s, so later physical execution cannot be treated as matched draws.
+**Both candidate prefixes are live at 3.20 s.** The original longer OZ24 tape's
+completed .37-yd tackle is retained as history, not compared against a missing
+candidate outcome. No terminal improvement/regression is claimed.
+
+## Same smoothness rule, including adverse aggregate counts
+
+`out/free-fit-continuity/compare-smooth.py` reuses the **unchanged `measure()`**
+from Claude's published `scripts/diag/stretch/smooth.py` for native displacement,
+with common 10 Hz samples and positions rounded to .01 yd. The same 5° turning
+and .5-yd/s lateral thresholds are also applied directly to 10 Hz raw requests;
+those request metrics are not NFL position metrics. The near-opponent proxy
+uses the original 1.2-yd threshold, which does not prove physical contact.
+
+| LB measurement over the 3.2-s prefix | IZ accepted→candidate | OZ24 accepted→candidate |
+| --- | --- | --- |
+| Native path turning reversals | 0→0 | 6→3 |
+| Free-proxy native turning reversals / player-s exposure | 0/7.2→0/7.4 | 5/9.0→1/8.0 |
+| Raw own-request turning reversals | 12→10 | 19→20 |
+| Free-proxy raw turning reversals / player-s exposure | 8/7.2→7/7.3 | 18/8.9→16/8.1 |
+| Raw lateral sign reversals | **11→13** | **9→11** |
+
+Output: `out/free-fit-continuity/smooth-comparison.json`. Exposure changes and
+OZ24's earlier block prevent attributing its aggregate native-path improvement
+solely to cleaner free movement. Local spike removal is demonstrated; these
+two cases do not demonstrate a general raw-request reversal cure.
+
+**Disposition: HOLD promotion, retain independently reviewable correction.**
+The mixed-age action contract is repaired, and the early braking can be a valid
+fit tradeoff. The remaining owner decision is whether that still-point arrival
+law is appropriate for a moving gap, given the directly measured loss of access
+and unchanged aggregate raw reversals. The smallest next action is review of
+this held objective/arrival-law contract alongside the already identified target
+threshold discontinuity, using these saved cues and bodies. More random plays
+or more selected variants cannot settle that question. No new variants, native
+runs or broad campaign were launched after the two prefixes.
