@@ -608,6 +608,15 @@ export class QBPass implements Behavior {
 }
 
 /** Run plays: open to the mesh point, hand off (or pitch), carry out the fake. */
+/** Experimental (QB_CARRYOUT=1, off): after the handoff the QB carries out
+ * his fake to the side away from the play. The side was taken from his offset
+ * to his own mesh spot, so a QB who had drifted even slightly play side of it
+ * (riding the back, or with no offset at all) backed up toward the play,
+ * across the back's first steps; the spacing layer then held the back to a
+ * fraction of his request. Tracked QBs are about 3 yd from the back half a
+ * second after the handoff; sim QBs were about 1 yd. */
+const QB_CARRYOUT = process.env.QB_CARRYOUT === '1';
+
 export class QBHandoff implements Behavior {
   readonly kind = 'qb-handoff';
   private handed = false;
@@ -625,7 +634,10 @@ export class QBHandoff implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
       // Carry out the fake away from the play.
-      const away = a.pos.y + Math.sign(a.pos.y - this.mesh.y || 1) * 4;
+      const run = sim.offCall.run;
+      const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
+      const side = QB_CARRYOUT && playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1);
+      const away = a.pos.y + side * 4;
       return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
     }
     if (this.keeper && sim.t >= this.meshTime) {
