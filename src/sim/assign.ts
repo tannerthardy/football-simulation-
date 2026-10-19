@@ -136,7 +136,13 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    const tempo = MESH_TEMPO && concept.scheme !== 'draw' && concept.scheme !== 'toss';
+    // Under center the tempo back needs an exchange the QB can make at that
+    // time and a QB still moving into it (UC_MESH's time and through-speed).
+    // The installed stretch call (1.15 s) is earlier than the QB can reach
+    // his spot, and a QB who stops on it is out of reach of a back running
+    // past: a waiting back hides both, a back at tempo loses the exchange.
+    const tempo = MESH_TEMPO && concept.scheme !== 'draw' && concept.scheme !== 'toss'
+      && (sim.offCall.formation.qb !== 'under' || UC_MESH);
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.qbThrough);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, tempo);
   }
@@ -277,11 +283,13 @@ export class PlayActionFake implements Behavior {
  * the installed exchange time already at run tempo and rides through it
  * (tracked backs take the ball at 4.4-5.5 yd/s; ours were arriving early
  * and braking to 2-3). Scheduling only: the installed spot, time and QB
- * are unchanged. Draw and toss timing are unchanged. */
+ * are unchanged. Under center it engages only with UC_MESH (see
+ * assignBehaviors). Draw and toss timing are unchanged. */
 export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
 /** Experimental (GUN_MESH_SIDE=1, off): the shotgun exchange spot is on the
  * offset back's own side of the QB (see meshFor). Geometry only. */
 export const GUN_MESH_SIDE = process.env.GUN_MESH_SIDE === '1';
+
 
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {

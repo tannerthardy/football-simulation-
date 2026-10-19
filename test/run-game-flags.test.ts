@@ -186,6 +186,21 @@ describe('MESH_TEMPO back takes the handoff moving', () => {
     }
   });
 
+  it.each([false, true])('under center, tempo engages only with UC_MESH and keeps the stretch exchange, flip=%s', async flip => {
+    for (const run of ['iz_strong', 'oz_strong']) {
+      const alone = await sim({ MESH_TEMPO: '1', UC_MESH: '0' }, 'ace_11', run, flip);
+      const off = await sim({ MESH_TEMPO: '0', UC_MESH: '0' }, 'ace_11', run, flip);
+      expect((alone.slot('RB')!.behavior as unknown as { tempo: boolean }).tempo).toBe(false);
+      expect(runner(alone).meshTime).toBe(runner(off).meshTime);
+      const pkg = await sim({ MESH_TEMPO: '1', UC_MESH: '1' }, 'ace_11', run, flip);
+      expect((pkg.slot('RB')!.behavior as unknown as { tempo: boolean }).tempo).toBe(true);
+      while (pkg.phase === 'live' && pkg.handoffAt < 0 && pkg.t < 3) pkg.tick();
+      expect(pkg.handoffAt).toBeGreaterThan(0);
+    }
+    const gun = await sim({ MESH_TEMPO: '1', UC_MESH: '0' }, 'gun_doubles_11', 'iz_strong', flip);
+    expect((gun.slot('RB')!.behavior as unknown as { tempo: boolean }).tempo).toBe(true);
+  });
+
   it('leaves the draw back on his delayed timing', async () => {
     const { RunnerToMesh } = await import('../src/sim/assign.js');
     const s = await sim({ MESH_TEMPO: '1' }, 'gun_doubles_11', 'draw');

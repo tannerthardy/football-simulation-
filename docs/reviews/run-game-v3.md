@@ -27,7 +27,8 @@ World, capacities or tackling?
   - Outcome rows use NFL runs with 60+ yd to the goal ("NFL60"), because lab
     plays start 70 yd out.
   - Concept rows use PFF's labels; sim OZ and WZ both compare with NFL outside
-    zone, and duo compares with "MAN".
+    zone, and sim duo compares with NFL PFF "MAN", a broader provider label
+    than verified duo.
 - **Receipts:** [per-arm reports](run-game-v3/) (`report-LABEL.txt`, labels
   below) and [mechanism comparisons](run-game-v3/mechanisms.txt).
 - **Raw traces:** these stay in ignored `out/open-field/all/`. Regenerate an
@@ -305,14 +306,26 @@ line. Median final gain by first-contact location (`aftercontact.py`):
 
 | Contact measure | Sim | NFL |
 |---|---|---|
-| Contact to whistle (median) | 0.8 s | 1.4 s |
-| Yards after contact, slow entry | 0.4 | 1.1 |
-| Yards after contact, mid entry | 1.4 | 2.3 |
-| Yards after contact, fast entry | 3.0 | 3.6 |
+| First contact to selected ending (median) | 0.8 s | 1.4 s |
+| Yards after contact, slow contact-centred speed | 0.4 | 1.1 |
+| Yards after contact, mid | 1.4 | 2.3 |
+| Yards after contact, fast | 3.0 | 3.6 |
+
+The interval runs from the first-contact event to the selected ending. NFL
+keeps the provider's first-contact label and the earliest ending label, or
+the last tracked frame when none exists. Sim first contact includes body
+collisions and grasps. Neither is a measured grip duration, and the two event
+systems are not certified equivalent. Speeds are contact-centred estimates
+over ±0.2 s of 0.1 yd positions, not clean entry speed.
 | Defenders within 2 yd at the end (median) | 2 | 3 |
 
-**Held carriers fall 0.3 s after the first hold** in 95–99% of holds at every
-depth (`bondend.ts`).
+**Held carriers are seen off their feet about 0.3 s after the first hold**
+(`bondend.ts`). The helper emits one row per play with a sampled
+post-handoff bond (357 rows). 95–98% of them show the carrier not up while
+bonded; the median from the first bond to that sample is 0.30/0.30/0.35 s
+across the three depth bands. Rows are plays, not independent holds: the
+start never resets after a release, and a later bond can supply the sample.
+There is no measured NFL fall time to compare with.
 
 - **The carrier's request does not matter.** Counterfactual requests while
   held were tried: no lean, keep current velocity, current speed north, and
@@ -322,21 +335,24 @@ depth (`bondend.ts`).
 - **The parked tackle flags do not change it.** `WRAP_BIND`, `TACKLE_ROLL`
   and `TACKLE_TOUCH` all leave it at 0.3–0.45 s.
 - **One traced hold** (`holdtrace.ts`) is a legitimate side tackle. A
-  linebacker crossing at about 5 yd/s tightens a grip to 0.5 yd. The pull
-  (over 2 body weights sideways) moves the runner's capture point out, and he
-  falls at 0.4 s. Whether nearly every hold should end that fast is a
+  linebacker crossing at about 5 yd/s tightens a grip to 0.5 yd. The
+  runner's aggregate felt force reaches −2.29 body weights laterally at
+  0.25 s (felt force from every source, not an isolated grip tension; the
+  helper sums joint capacity, not tension), and he falls at 0.4 s. Whether nearly every hold should end that fast is a
   tackle/support question.
 
 ### The 40+ tail: structure first, then execution
 
 Pursuit feasibility when the runner reaches 10 yd (`pursuit.py`): a straight
 intercept test of every defender against the runner's actual later path at
-his own peak speed, with 0.3 s to react.
+his own whole-play peak speed, with 0.3 s to react. A retrospective
+geometric proxy: it ignores blockers, acceleration, facing and contact, and an
+early tackle truncates the path; it is not proof of attainable support.
 
 | At 10 yd | NFL60 | Develop | `DEEP_CAP` |
 |---|---|---|---|
 | Defenders still ahead (median) | 3 | 1 | 2 |
-| No defender could intercept before +40 | 20% | 41% | 26% |
+| No defender intersects the path by 40 yd past this point (+50 from the line) | 20% | 41% | 26% |
 | Share of 10+ runs that went 40+ | 9% | 39% | 17% |
 
 With `DEEP_CAP` the structure is close to NFL. Of its 48 runs of 40+:
@@ -438,32 +454,38 @@ At +8 yd (`crowd` rows in `part3.txt`), per run:
 | DL | 1.22 | 0.35 |
 | LB | 1.92 | 0.95 |
 
-Past +8 yd (`openfield.py`), sim runs get 1.0–1.25 encounters within a yard
-per run, against NFL's 1.9. An NFL encounter ends the play within 1 s 71% of
-the time and only slows the runner 20%. A sim encounter ends it 91–97%.
+Past +8 yd (`openfield.py`), sim runs get 1.0–1.25 first approaches within
+a yard per defender per run, against NFL's 1.9. After an NFL approach the
+play ends within 1 s 71% of the time; 20% fall in the residual category
+(neither ended nor a motion-based escape, which requires no measured
+slowing). After a sim approach it ends within 1 s 91–97% of the time.
+Several defenders can count against the same ending.
 
 ### Engaged defenders were re-latched every tick (`SHED_PURSUE`)
 
-After the ball crosses, 81% of sim DL stay within 1.2 yd of a blocker for the
-next second; NFL's fall from 76 to 57% (`release.py`).
+After the ball crosses, 81% of sim DL stay within 1.2 yd of an offensive
+player for the next second; NFL's fall from 76 to 57% (`release.py`, a
+proximity proxy, not an engagement; corrected admission, see Part 4).
 
 The engagement log shows why (`relatch.ts`, ace IZ/OZ, 160 plays, `mtr`
 flags):
 
 - 644 DL reps ended "runner passed defender" after the crossing.
-- 492 were followed within a tick by a new rep from the same blocker, still
-  squarely in front of him. Linebackers: 79.
+- 492 were followed within two native ticks (< 0.105 s), counted per rep
+  event, by a new rep from the same blocker within 60° of the defender's
+  facing; two more from the side. Linebackers: 79.
 - A defender also never tried to work off a block unless the runner was
   within 3.5 yd.
 
 `SHED_PURSUE` gives the shed window to that rep end and lets him work off
 toward a runner past the line at any range. Results (`frontstate.ts`):
 
-- Instant re-latches fall to 0 (DL and LB).
+- Same-blocker repeats within two ticks fall to 0 (DL and LB). Seven
+  other-blocker DL repeats remain.
 - DL still in a rep 1 s after the crossing: 70 → 37%.
 
-Outcome changes are within noise at these counts (40+ is 10–30 plays per
-arm):
+Outcome changes are small-count differences; the paired tests in Part 4
+find none detectable (40+ counts below are per 1,200, 1,800 or 1,600):
 
 | | Without | With `SHED_PURSUE` |
 |---|---|---|
@@ -518,11 +540,13 @@ The second level differs after the crossing (`lbpass2.py`):
 
 | 10+ runs, per run | NFL | Sim |
 |---|---|---|
-| Second-level contacts within 1 yd | 0.52 | 0.07 |
-| Defenders blocked at closest approach | 0.80 | 1.47–1.66 |
+| Second-level approaches within 1 yd | 0.52 | 0.07 |
+| Defenders with an OL/TE within 1.5 yd at closest approach | 0.80 | 1.47–1.66 |
 
-In NFL long runs a backer reaches the runner and is carried through. In the
-sim a reached runner is down. That is the held-carrier timing again.
+These are closest approaches per outcome-selected 10+ run (NFL n 56, sim 95
+or 45), not labelled contacts or broken tackles. They are consistent with,
+but do not show, NFL backers being carried through where sim holds stop the
+runner.
 
 ### Gap schemes: the pull is late, and so is the read (`part3-gap.txt`)
 
@@ -607,10 +631,11 @@ puller's start-up.
   the QB and 0.2 deep; tracked backs are 2.3 and 0.5. The short runway caps
   the shotgun handoff speed even with `MESH_TEMPO` (2.3 vs 3.8 yd/s).
 - **Held carriers go down too fast** (tackle/support physics): falls come
-  0.3 s after the first hold in 95–99% of holds at every depth. Contact to
-  whistle is 0.8 vs 1.4 s, and yards after contact are 0.6–0.9 lower in every
-  entry-speed band. This is the largest single cause of the stuffs at the
-  line and the missing 2–6 yd runs. The carrier's own request does not change
+  the carrier is seen off his feet about 0.3 s after the first bond in
+  95–98% of 357 bonded plays. First contact to the selected ending is 0.8 vs
+  1.4 s, and yards after contact are 0.6–0.9 lower in every contact-centred
+  speed band. A causal hypothesis for the stuffs at the line and the missing
+  2–6 yd runs, not a ranked cause. The carrier's own request does not change
   it, and neither do the parked tackle flags (receipts in `holds.txt`).
 - **Open-field holds at speed break** (tackle physics): with the secondary at
   NFL depth (`DEEP_CAP`), 29 of 48 runs of 40+ had an open-field hold, and in
@@ -628,7 +653,7 @@ puller's start-up.
      the gap-scheme tail rises (40+ 4.00 → 4.88%, power 8.25%); and the
      `ZONE_TE` caveat.
    - `SHED_PURSUE` is in the package as a repair to an engine artifact (the
-     re-latch loop). Its own outcome effect is within noise.
+     re-latch loop). Paired tests find no detectable outcome effect.
 2. Keep `DEEP_CAP` parked:
    - With `sp` it gives the best ace shape (`spc` TVD 0.141).
    - It overshoots 10+ (19.9%, NFL 13.1), mostly inside zone (23.8%).

@@ -46,9 +46,12 @@ env.PATH = `${dirname(process.execPath)}${delimiter}${env.PATH ?? ''}`;
 const out = join(root, 'out/open-field');
 mkdirSync(out, { recursive: true });
 for (const name of readdirSync(out)) if (name.startsWith(`${label}-`) && /-\d+\.(jsonl\.gz|log)$/.test(name)) rmSync(join(out, name));
+// Provenance is captured at launch, before any shard starts.
 const patch = git(['diff', 'HEAD']);
 const untracked = git(['ls-files', '--others', '--exclude-standard', '--', 'src', 'scripts', 'config']).split('\n').filter(Boolean);
 const startedAt = new Date().toISOString();
+const commit = git(['rev-parse', 'HEAD']).trim(), branch = git(['branch', '--show-current']).trim();
+const trackedFiles = git(['diff', '--name-only', 'HEAD']).split('\n').filter(Boolean), sourceSha256 = digest(files('src'));
 const shards = await Promise.all([...Array(SHARDS).keys()].map(i => new Promise(resolve => {
   const file = `out/open-field/${label}-${i}.jsonl.gz`, log = `out/open-field/${label}-${i}.log`;
   const child = spawn(process.execPath, ['--import', 'tsx', 'scripts/diag/open-field/trace.ts', '--shard', `${i}/${SHARDS}`, '--out', file, ...traceArgs],
@@ -64,9 +67,9 @@ const shards = await Promise.all([...Array(SHARDS).keys()].map(i => new Promise(
 const hashOf = path => sha(readFileSync(join(root, path)));
 const manifest = {
   label, startedAt, finishedAt: new Date().toISOString(),
-  commit: git(['rev-parse', 'HEAD']).trim(), branch: git(['branch', '--show-current']).trim(),
-  dirty: { trackedFiles: git(['diff', '--name-only', 'HEAD']).split('\n').filter(Boolean), patchSha256: patch ? sha(patch) : null, untracked },
-  sourceSha256: digest(files('src')), node: process.version, baseline: profile.id,
+  commit, branch, dirty: { trackedFiles, patchSha256: patch ? sha(patch) : null, untracked },
+  sourceSha256, sourceUnchanged: sourceSha256 === digest(files('src')) && commit === git(['rev-parse', 'HEAD']).trim(),
+  node: process.version, baseline: profile.id,
   flags: Object.fromEntries(Object.keys(profile.flags).map(key => [key, env[key] ?? null])), overrides, diagnostic,
   traceArgs, shards,
   tools: Object.fromEntries(['scripts/diag/open-field/trace.ts', 'scripts/diag/zone-lab/lab.ts', 'scripts/diag/open-field/common.sh',

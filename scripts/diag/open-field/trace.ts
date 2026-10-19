@@ -36,12 +36,15 @@ function trace(c: LabCase, R: ReturnType<typeof rosters>) {
   let snap: any[] = [];
   const enc = new Map<Agent, any>();
   let movers: { d: Agent; m: Parameters<typeof timeToReach>[0] }[] = [];
+  // The play's actual last offensive ball carrier (a kept ball stays the QB's).
+  let runner: Agent | null = null;
   while (sim.phase === 'live' && sim.t < 20) {
     const before = new Map(sim.defense.map(d => [d, d.nextTackleAt]));
     sim.tick();
     if (++ticks % 2 === 0) frame();
     const car = sim.carrier;
     if (!car || car.team !== 'O') continue;
+    runner = car;
     if (openAt < 0 && depth(car) > OPEN) {
       openAt = sim.t; nEv0.n = sim.events.length;
       // Each defender at the moment the runner reaches the open field.
@@ -118,6 +121,7 @@ function trace(c: LabCase, R: ReturnType<typeof rosters>) {
     }
   }
   const res = sim.buildResult();
+  const rc = runner ?? sim.slot('RB')!;
   // Oracle: earliest point of the runner's actual later path each defender
   // could have reached from his open-field state (engine reach model, arm
   // reach, 0.3 s to react). The outcome is in hand; diagnostic only.
@@ -132,13 +136,13 @@ function trace(c: LabCase, R: ReturnType<typeof rosters>) {
     .map(e => ({ t: e.t, type: e.type, a: e.a !== undefined ? sim.agents[e.a].slot : null, b: e.b !== undefined ? sim.agents[e.b].slot : null, note: e.note }));
   const H = [...holds.values()].map(h => ({ ...h, capMax: r2(h.capMax), minDist: r2(h.minDist), csMin: r2(h.csMin) }));
   return { id: caseId(c), ...c, gain: r2(res.offenseYards), outcome: res.outcome, t: r2(sim.t), terminal: sim.phase !== 'live', openAt: openAt >= 0 ? r2(openAt) : null,
-    common: { id: caseId(c), source: 'sim', kind: 'run', yards: r2(res.offenseYards), dt: .1, xy, carrier: sim.slot('RB')!.idx,
+    common: { id: caseId(c), source: 'sim', kind: 'run', yards: r2(res.offenseYards), dt: .1, xy, carrier: rc.idx,
       ball_y: r2(dir > 0 ? sim.ballY : W - sim.ballY),
       players: sim.agents.map(a => ({ side: a.team, group: ({ QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' } as Record<string, string>)[a.player.position] ?? 'OTHER' })),
       events: { handoff: sim.handoffAt >= 0 ? r2(sim.handoffAt) : undefined, end: r2(sim.t),
         // Same first-contact definition as scripts/mechanics/sim-export.ts.
-        first_contact: sim.events.find(e => (e.type === 'carrier_contact' && (e.a === sim.slot('RB')!.idx || e.b === sim.slot('RB')!.idx))
-          || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === sim.slot('RB')!.idx))?.t } },
+        first_contact: sim.events.find(e => (e.type === 'carrier_contact' && (e.a === rc.idx || e.b === rc.idx))
+          || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === rc.idx))?.t } },
     events: ev, holds: H, enc: [...enc.values()].map(({ n, ...e }) => e), snap, path: path.filter((_, i) => i % 2 === 0), dir, los: sim.los,
     approach: [...approach.entries()].map(([d, a]) => ({ d: d.slot, min: r2(a.min), t: r2(a.t), inRange: a.inRange, attempts: a.attempts, ...a.rel }))
       .filter(a => a.min < 4).sort((x, y) => x.t - y.t) };
