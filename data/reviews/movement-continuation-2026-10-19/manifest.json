@@ -1,0 +1,2425 @@
+{
+  "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "baseSource": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "status": "immutable continuation evidence; candidates retain individual dispositions",
+  "sources": [
+    {
+      "name": "accepted",
+      "sourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "patch": "sources/accepted.patch",
+      "patchSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "kind": "accepted",
+      "pin": "f4146275ce7539816bf57b4ed55a0d2be10e48c7"
+    },
+    {
+      "name": "yaw-native",
+      "sourceSha256": "365e4a9d907fd00e6bc1239a632ecadf46c87ebca93da6d81e1ada3db4c04957",
+      "patch": "sources/yaw-native.patch",
+      "patchSha256": "66e17da01b4e0fb63a62d45ef7121de892e17c60d1be43b63d339e888019b052",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "365e4a9d907fd00e6bc1239a632ecadf46c87ebca93da6d81e1ada3db4c04957",
+      "kind": "reused #162 native producer",
+      "pin": null
+    },
+    {
+      "name": "yaw-publication",
+      "sourceSha256": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "patch": "sources/yaw-publication.patch",
+      "patchSha256": "3556938f7d2e39aaf21f9d60e28dde0d17f7a24aeebdaa6dd1fef6bda5d50ce9",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "kind": "#162 reviewed reference; not accepted develop",
+      "pin": "f3f4b4224e076cc750468dc930e229e95ce0e307"
+    },
+    {
+      "name": "free-fit",
+      "sourceSha256": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "patch": "sources/free-fit.patch",
+      "patchSha256": "75005639ae44572c72b24d140a0345f96744614f77f84dca1e0aeb9a55396054",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "kind": "held independent controller candidate",
+      "pin": "1885a34b5da24e870ab8719cbb45feea83fa9c8d"
+    },
+    {
+      "name": "track-first",
+      "sourceSha256": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "patch": "sources/track-first.patch",
+      "patchSha256": "864f90a1ab9063f6a20f487fdc7fc6c2b090da3f069362e4f706e1f3bfda4323",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "kind": "rejected native arm",
+      "pin": "9da3b499d8af97d5f3a6c90146a119ef0965e999"
+    },
+    {
+      "name": "track-second",
+      "sourceSha256": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "patch": "sources/track-second.patch",
+      "patchSha256": "e5a5526fa76f6370c47b6551407cc4585bb37f1b2955852e892bb40755c33fc8",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "kind": "rejected pure-contract arm; zero native",
+      "pin": null
+    },
+    {
+      "name": "track-first-far-cap-failure",
+      "sourceSha256": "91982c1e7aa350145f03758aeb6366b639b46ba8cd659c528693ee93b56e34be",
+      "patch": "sources/track-first-far-cap-failure.patch",
+      "patchSha256": "b6e8121e8428c6560c8b41d19629e46923176a22cfbcc69c3a539fab7d6ad4e7",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "91982c1e7aa350145f03758aeb6366b639b46ba8cd659c528693ee93b56e34be",
+      "kind": "reconstructed exact failed source, full digest matched",
+      "pin": null
+    },
+    {
+      "name": "gait-achieved-pose",
+      "sourceSha256": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "patch": "sources/gait-achieved-pose.patch",
+      "patchSha256": "45f3c4a8b9b8faa7e40321265d6ebf1a3eed56592a24a60c59022cdefb4a56a7",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "kind": "independent physics candidate",
+      "pin": "36a77d17444658675f886c3914572faa181bd5a4"
+    },
+    {
+      "name": "yaw-plus-gait",
+      "sourceSha256": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "patch": "sources/yaw-plus-gait.patch",
+      "patchSha256": "4ef17912c5176cf8a75e71412bff9fd475dcbbedf2604086a699d224776f467d",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "kind": "diagnostic uncommitted interaction on #162; no production candidate",
+      "pin": null
+    },
+    {
+      "name": "contact-arrival-superseded",
+      "sourceSha256": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "patch": "sources/contact-arrival-superseded.patch",
+      "patchSha256": "8b08017f8c212c4b4f113744bc044e7bf7a5be359276ed60172b98117b929f8a",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "kind": "superseded acquired-reference mismatch preserved",
+      "pin": "bd18bc9e30e2f3e209f9d2bb8fe17c9ff143cf5a"
+    },
+    {
+      "name": "contact-arrival-final",
+      "sourceSha256": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "patch": "sources/contact-arrival-final.patch",
+      "patchSha256": "a520f67fdb02bc6898d66a6a27cca89553e48a0bd7856c9590d0bc0d22ab220c",
+      "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "restoredSha256": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "kind": "final isolated acquired-reference/controller candidate",
+      "pin": "f2cd4dba1ebdc52dc32560f6407a20ea8d40e2f0"
+    }
+  ],
+  "archives": {
+    "common": {
+      "file": "common.tar.gz",
+      "sha256": "d7485e37e2661047d7f817cd3430b34262d9cb9a152064a29f52c32600ef3374",
+      "bytes": 415311,
+      "members": [
+        {
+          "path": "root/low-speed-audit/MEMO.md",
+          "bytes": 4272,
+          "sha256": "68bf8e5ee6bf680725d9d5555b6612e71add64f5139dbcd6002c7837ecff9af5",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/MEMO.md"
+        },
+        {
+          "path": "root/low-speed-audit/launch-receipt.json",
+          "bytes": 2231,
+          "sha256": "ebf4e9d07e7bed07f33562eef180b2b3a0e66ff7f86624b1f9545115653bfbd2",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/launch-receipt.json"
+        },
+        {
+          "path": "root/low-speed-audit/probe.log",
+          "bytes": 13051,
+          "sha256": "42c145451bca8c7cd0a5a9e6848af9aada75150fd4627da02e9c60d4717877be",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/probe.log"
+        },
+        {
+          "path": "root/low-speed-audit/probe.ts",
+          "bytes": 3166,
+          "sha256": "65cd993c0d415a5ecb1872e847a8e0d239f00bf30077f4e7891257d4388f33d5",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/probe.ts"
+        },
+        {
+          "path": "root/low-speed-audit/results.json",
+          "bytes": 1769993,
+          "sha256": "02113c121e0b7d1478c85afe126c24c4de0374bb8c9453e9d0039e476102e571",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/results.json"
+        },
+        {
+          "path": "root/low-speed-audit/reuse-failure.txt",
+          "bytes": 213,
+          "sha256": "3cf799fd198582bd2f067cda4df5e66cf6cd7809cb0345ce19823170ed457ccf",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/reuse-failure.txt"
+        },
+        {
+          "path": "root/low-speed-audit/reuse.log",
+          "bytes": 2167,
+          "sha256": "03495a144da607324fa2af4effdb30b5a1741ebe62786ae02dd7999b53bc5faa",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/reuse.log"
+        },
+        {
+          "path": "root/low-speed-audit/reuse.py",
+          "bytes": 1989,
+          "sha256": "5764bd1a5a0e4c841ef84e077837850dd8afd7f3a06d3e928a95eec35a3cc970",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/reuse.py"
+        },
+        {
+          "path": "root/low-speed-audit/reused-evidence.json",
+          "bytes": 41199,
+          "sha256": "78a8b4c51f6deff536b0706e424394ea53e37b6ca939d3934009079ede995015",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/reused-evidence.json"
+        },
+        {
+          "path": "root/low-speed-audit/summary.json",
+          "bytes": 1041,
+          "sha256": "41a7d1ef5ff6ced2c3f8b65bc5854df601918960ed4b332837e3ce3a1f404715",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/low-speed-audit/summary.json"
+        },
+        {
+          "path": "root/motor-cost-receipt.json",
+          "bytes": 2213,
+          "sha256": "5ef9649f16314d411bf50a06cfff3fce727a6f7bcf5acaa0c4602108d0937697",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/motor-cost-receipt.json"
+        },
+        {
+          "path": "root/motor-cost.json",
+          "bytes": 8661,
+          "sha256": "c29a1a0b6c4697eaa727a99ed9d236e71025e46e3beb703f41e46d3d85d5022b",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/motor-cost.json"
+        },
+        {
+          "path": "root/motor-cost.mjs",
+          "bytes": 2717,
+          "sha256": "b254a9e9e78e1d647e1b290151847ba02aeee8b62a2f894573b8b24f346018ae",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/motor-cost.mjs"
+        },
+        {
+          "path": "root/nfl-reference-aggregate.txt",
+          "bytes": 1239,
+          "sha256": "880f047b398afe8d8f9f62c973e7fe33f282a6aead87bb0967d902b334743fbe",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/smooth-nfl.txt"
+        },
+        {
+          "path": "root/nfl-reference-receipt-aggregate.json",
+          "bytes": 1995,
+          "sha256": "18ec8815fa3192b7249eb9a89d0bb8fee6665d1edc1131240ddfc84f26a92c27",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/nfl-reference-receipt-aggregate.json"
+        },
+        {
+          "path": "root/physics-summary.json",
+          "bytes": 6680,
+          "sha256": "06be8c6bb005e24e15801a628a7511a1559ccace2d9cc99c26127714631fa791",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/physics-summary.json"
+        },
+        {
+          "path": "root/physics-summary.log",
+          "bytes": 3428,
+          "sha256": "f788d2eee9db2093ff6cee19a36ece232deb85d08e1acadeda7134b5fce69592",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/physics-summary.log"
+        },
+        {
+          "path": "root/physics-summary.py",
+          "bytes": 1987,
+          "sha256": "1d956644a8495883b31d98f37d7f5cd0760093db1b0551eb5e1f6419e805a632",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/physics-summary.py"
+        },
+        {
+          "path": "root/preview-audit/analysis.json",
+          "bytes": 42897,
+          "sha256": "7e49a5eb4cbf4cbd893b9201b9fd221585e99d16a831e88621e78d34bc7a115d",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/analysis.json"
+        },
+        {
+          "path": "root/preview-audit/analyze.py",
+          "bytes": 4861,
+          "sha256": "d31171a5a74d1cb470c5c59dce1d203824f760ad1b084167ae4e1bda53cbec5b",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/analyze.py"
+        },
+        {
+          "path": "root/preview-audit/continuous-track.patch",
+          "bytes": 1789,
+          "sha256": "864f90a1ab9063f6a20f487fdc7fc6c2b090da3f069362e4f706e1f3bfda4323",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/continuous-track.patch"
+        },
+        {
+          "path": "root/preview-audit/contracts/baseline-contract.json",
+          "bytes": 2262,
+          "sha256": "6deb6db2f84d96a10d3459a0320327bfa2d765387c474e506750045e5f8b4814",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/baseline-contract.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/baseline-contract.log",
+          "bytes": 4030,
+          "sha256": "5d712fb1dbc282dc9d46827ca8c6118ada2440132471b0fcb416d1cc611c7dcf",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/baseline-contract.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/candidate-contract-fixed.json",
+          "bytes": 2299,
+          "sha256": "dd4ba7daab9b69a94ad4b08b2c2d3151642769dc659427fc959fee0dae5b2760",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/candidate-contract-fixed.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/candidate-contract-fixed.log",
+          "bytes": 835,
+          "sha256": "713c6b0cf7169b7404bd1566532f0ee2dc1dca0b26b4fab28825ca44681c168f",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/candidate-contract-fixed.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/candidate-contract.json",
+          "bytes": 2292,
+          "sha256": "24def4f9577869ead8ae32346b10e2e1b5d653485e317bb21f416f736c9fcdbe",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/candidate-contract.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/candidate-contract.log",
+          "bytes": 2966,
+          "sha256": "65bf29bf52a299ef4fface162c128ed4534735891247985d80c750bf86cabdd5",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/candidate-contract.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/focused.json",
+          "bytes": 2380,
+          "sha256": "dcb39dcc589629b263f41de2c9efa0af9ec833e17aaeee84f3db44973fbfa71c",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/focused.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/focused.log",
+          "bytes": 1013,
+          "sha256": "f805d6f07a9c005c3c02c59b5fc573d2fa07626ecd32eb3ab3cdefb7c446b138",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/focused.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/near-join-adverse.json",
+          "bytes": 2346,
+          "sha256": "8b44524a318bdc92228a0e427b55245f01c6dff7f334a243fe2f2868e75fcbcf",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/near-join-adverse.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/near-join-adverse.log",
+          "bytes": 2929,
+          "sha256": "cd26c4d4010124d1f7718845abca03fca57e730993c926ef65bc4c1c01d0a7be",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/near-join-adverse.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/near-join-contract.json",
+          "bytes": 2292,
+          "sha256": "b7cf89f0c8a9d0b01bc0fcda4d9f8862edd1e1adcc2bd9a1f76ecae054fdc0f5",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/near-join-contract.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/near-join-contract.log",
+          "bytes": 829,
+          "sha256": "cec693c29bfb8991de949b36bf1fda7b2e3f65364153d21712422a99fa9ca214",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/near-join-contract.log"
+        },
+        {
+          "path": "root/preview-audit/contracts/typecheck.json",
+          "bytes": 2214,
+          "sha256": "f37a298313d6dc626322513d7699b56c6a297baa4714165f4cf6030a4cd66ca3",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/typecheck.json"
+        },
+        {
+          "path": "root/preview-audit/contracts/typecheck.log",
+          "bytes": 527,
+          "sha256": "9302eb8a157d39223cf6e8c04c18183d4f7b97f7c56c25430423d3b54dd74fd1",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/contracts/typecheck.log"
+        },
+        {
+          "path": "root/preview-audit/incidence.json",
+          "bytes": 2389,
+          "sha256": "5647c4cbf10a255a28abea798246c399916c6490e924753aee8eb7c79f1a70ca",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/incidence.json"
+        },
+        {
+          "path": "root/preview-audit/oz24-fs-input.json",
+          "bytes": 559770,
+          "sha256": "906d362941da3aa1debe821755bfaf5d5568930bea5e4fbecb47e3afc869580a",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/oz24-fs-input.json"
+        },
+        {
+          "path": "root/preview-audit/probe.log",
+          "bytes": 9220,
+          "sha256": "b5667906524928353895550131359379175f6f7308088962ee41d064fc875bde",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/probe.log"
+        },
+        {
+          "path": "root/preview-audit/probe.ts",
+          "bytes": 3875,
+          "sha256": "28efb3ecab58a4ff1cc64bd44d5ead2bcd74bb658abc07633c8c5f2d200aed63",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/probe.ts"
+        },
+        {
+          "path": "root/preview-audit/receipt.json",
+          "bytes": 2229,
+          "sha256": "e3e4730e8fb61a1e9264d7ce9160620e3f98d8cb9419bf37ac156a7cd3e6583f",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/receipt.json"
+        },
+        {
+          "path": "root/preview-audit/result.json",
+          "bytes": 31800,
+          "sha256": "2e7cbbe09f6de3a01f94dd638498063ae241c97a00e3d35e32bfc8cd09d8fe25",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/result.json"
+        },
+        {
+          "path": "root/preview-audit/second-arm/near-singularity-receipt.json",
+          "bytes": 2314,
+          "sha256": "a570624bdf49daf3dd17f4c56a706e004dd46c120d3813b7f52008ae7aa38523",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/near-singularity-receipt.json"
+        },
+        {
+          "path": "root/preview-audit/second-arm/near-singularity.json",
+          "bytes": 2270,
+          "sha256": "0337adad07ded2b02973871233b50e141f5e0f6f653fa4ca0b964acd890b2597",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/near-singularity.json"
+        },
+        {
+          "path": "root/preview-audit/second-arm/near-singularity.log",
+          "bytes": 2578,
+          "sha256": "b86d082cc5eb01b2ab7d7330e6e969e0cf986495ec5114ff089cafd593fd8656",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/near-singularity.log"
+        },
+        {
+          "path": "root/preview-audit/second-arm/near-singularity.ts",
+          "bytes": 1478,
+          "sha256": "55880e81646f0f315f2a720d52874b37015fc6129474f00ed287bfbd073e520e",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/near-singularity.ts"
+        },
+        {
+          "path": "root/preview-audit/second-arm/rejected-near-join-contract.test.ts",
+          "bytes": 4719,
+          "sha256": "ea1083b06765b76f422e80e59756ba21f63e9ddde412db75d945af22ae3532ca",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/rejected-near-join-contract.test.ts"
+        },
+        {
+          "path": "root/preview-audit/second-arm/rejected-near-join-opposing-contract.patch",
+          "bytes": 1175,
+          "sha256": "efaa05dad06bbd5772f459cbb3663a80b88d61ec05b2780d81e65d6a14a75866",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/rejected-near-join-opposing-contract.patch"
+        },
+        {
+          "path": "root/preview-audit/second-arm/rejected-near-join-source.patch",
+          "bytes": 1813,
+          "sha256": "e5a5526fa76f6370c47b6551407cc4585bb37f1b2955852e892bb40755c33fc8",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/preview-audit/second-arm/rejected-near-join-source.patch"
+        },
+        {
+          "path": "root/review/held-yaw-receipt.json",
+          "bytes": 2276,
+          "sha256": "bca47e08988d8d712119605f249d3694270d79b825c9f37eb105b0ba1e3945ce",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/held-yaw-receipt.json"
+        },
+        {
+          "path": "root/review/held-yaw.log",
+          "bytes": 678,
+          "sha256": "103c92c888ebba21ddfae73cf66bae5fda4d231a18acf6b8de8279c2e325cad2",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/held-yaw.log"
+        },
+        {
+          "path": "root/review/virtual-pose-receipt.json",
+          "bytes": 2229,
+          "sha256": "15c9e89f4ead2469d9ccd4e07577ce91f90526a3487c88e2226611fb521d2b34",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/virtual-pose-receipt.json"
+        },
+        {
+          "path": "root/review/virtual-pose.json",
+          "bytes": 20614,
+          "sha256": "fe77b5ed5b31b0e7942c9a23ab9330edde25586198a89904a718a8f40b8860fc",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/virtual-pose.json"
+        },
+        {
+          "path": "root/review/virtual-pose.log",
+          "bytes": 5971,
+          "sha256": "40234e9498fd3bbb82f5a2a5c5dc89fd402a8eb84962ad5f01217c9ebf051f81",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/virtual-pose.log"
+        },
+        {
+          "path": "root/review/virtual-pose.ts",
+          "bytes": 2988,
+          "sha256": "607af5d6e6a26ebf92733d562d7469311de2f56e100780ad4cbb2463e7d78156",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/review/virtual-pose.ts"
+        },
+        {
+          "path": "sources/accepted.patch",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/accepted.patch"
+        },
+        {
+          "path": "sources/contact-arrival-final.patch",
+          "bytes": 5163,
+          "sha256": "a520f67fdb02bc6898d66a6a27cca89553e48a0bd7856c9590d0bc0d22ab220c",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/contact-arrival-final.patch"
+        },
+        {
+          "path": "sources/contact-arrival-superseded.patch",
+          "bytes": 2014,
+          "sha256": "8b08017f8c212c4b4f113744bc044e7bf7a5be359276ed60172b98117b929f8a",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/contact-arrival-superseded.patch"
+        },
+        {
+          "path": "sources/free-fit.patch",
+          "bytes": 1625,
+          "sha256": "75005639ae44572c72b24d140a0345f96744614f77f84dca1e0aeb9a55396054",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/free-fit.patch"
+        },
+        {
+          "path": "sources/gait-achieved-pose.patch",
+          "bytes": 1868,
+          "sha256": "45f3c4a8b9b8faa7e40321265d6ebf1a3eed56592a24a60c59022cdefb4a56a7",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/gait-achieved-pose.patch"
+        },
+        {
+          "path": "sources/track-first-far-cap-failure.patch",
+          "bytes": 1602,
+          "sha256": "b6e8121e8428c6560c8b41d19629e46923176a22cfbcc69c3a539fab7d6ad4e7",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/track-first-far-cap-failure.patch"
+        },
+        {
+          "path": "sources/track-first.patch",
+          "bytes": 1789,
+          "sha256": "864f90a1ab9063f6a20f487fdc7fc6c2b090da3f069362e4f706e1f3bfda4323",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/track-first.patch"
+        },
+        {
+          "path": "sources/track-second.patch",
+          "bytes": 1813,
+          "sha256": "e5a5526fa76f6370c47b6551407cc4585bb37f1b2955852e892bb40755c33fc8",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/track-second.patch"
+        },
+        {
+          "path": "sources/yaw-native.patch",
+          "bytes": 3516,
+          "sha256": "66e17da01b4e0fb63a62d45ef7121de892e17c60d1be43b63d339e888019b052",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/yaw-native.patch"
+        },
+        {
+          "path": "sources/yaw-plus-gait.patch",
+          "bytes": 4927,
+          "sha256": "4ef17912c5176cf8a75e71412bff9fd475dcbbedf2604086a699d224776f467d",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/yaw-plus-gait.patch"
+        },
+        {
+          "path": "sources/yaw-publication.patch",
+          "bytes": 4165,
+          "sha256": "3556938f7d2e39aaf21f9d60e28dde0d17f7a24aeebdaa6dd1fef6bda5d50ce9",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/sources/yaw-publication.patch"
+        },
+        {
+          "path": "tooling/build.py",
+          "bytes": 18720,
+          "sha256": "860fbc7a5ce777f10472e85dcfa89228ccff6bb84f74ad58a7cb643a89b28ff9",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/build.py"
+        },
+        {
+          "path": "tooling/final-config.json",
+          "bytes": 138,
+          "sha256": "6bdca1a39145e78d99aeb9251ed50a525110945e72435b76dde0f4a0b32f72e8",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/final-config.json"
+        }
+      ]
+    },
+    "baselines": {
+      "file": "baselines.tar.gz",
+      "sha256": "d2735ef63daba773c6d4478138844360f48b955a93676886500cb3f4bea46286",
+      "bytes": 12710677,
+      "members": [
+        {
+          "path": "inputs/run-flow-inputs.json.gz",
+          "bytes": 12013,
+          "sha256": "44d4d771b31ebc96babb90d63cfa4fc9f330d65f4be662018bf6dc9fbd3571cd",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/transfer-inputs.json.gz"
+        },
+        {
+          "path": "inputs/yaw-pilot-inputs.json.gz",
+          "bytes": 14231,
+          "sha256": "4b801adb17aba664e81a761bb0888723061af238d6fc5e588b2c65cf3d689105",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/pilot-inputs.json.gz"
+        },
+        {
+          "path": "native/DUO.json.gz",
+          "bytes": 1102209,
+          "sha256": "ba27ee7475e043cf9aed9326cb9e664fd8ef752d0a704562933be26059e83721",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/baseline/DUO.json.gz"
+        },
+        {
+          "path": "native/FTOSS.json.gz",
+          "bytes": 1506368,
+          "sha256": "821ac0ca7b6943ab4178fda5e20d8bd0c098f5b9ae1192658703bee481853826",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/fresh-baseline/FTOSS.json.gz"
+        },
+        {
+          "path": "native/IZ-enriched.json.gz",
+          "bytes": 997891,
+          "sha256": "28b5773d345d26dd4127b73162515a22a3b28c8cfb38769d1613b4810a762204",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/enriched/IZ.json.gz"
+        },
+        {
+          "path": "native/OZ24.json.gz",
+          "bytes": 1345120,
+          "sha256": "94c6affb3252f682451e8c43d42740762abe1474f156a6e4a7ed2bfd6dd27200",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/extra-baseline/OZ24.json.gz"
+        },
+        {
+          "path": "native/PA13.json.gz",
+          "bytes": 951812,
+          "sha256": "be0a71ead653e3718a7dd72e6d5af253cfbc55ac0917742cb17663c700f9e9ac",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/fresh-baseline/PA13.json.gz"
+        },
+        {
+          "path": "native/PASS13.json.gz",
+          "bytes": 1482475,
+          "sha256": "b2bd72ab7d787883af1b096ebcf5f904efe3812da51c486034f3acfad7574d04",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/fresh-baseline/PASS13.json.gz"
+        },
+        {
+          "path": "native/TOSS-completed.json.gz",
+          "bytes": 1275882,
+          "sha256": "95527c111590f62bd6517fe9c96be6b3c1e80d990f269b59945fe4888a92332d",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/baseline/TOSS.json.gz"
+        },
+        {
+          "path": "native/TOSS-enriched.json.gz",
+          "bytes": 1004236,
+          "sha256": "7ea5b4b46d05acb4d4b67e06222073a6ff8f237f4d61a826985588ae424258df",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/enriched/TOSS.json.gz"
+        },
+        {
+          "path": "native/yaw-PASS13.json.gz",
+          "bytes": 1562735,
+          "sha256": "0882dabecad93579038086e98c763c9a39ba7726a89e68ca719e0a5c3907ec12",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/pilot/PASS13.json.gz"
+        },
+        {
+          "path": "native/yaw-TOSS.json.gz",
+          "bytes": 1871211,
+          "sha256": "7cb68a1c031093d6b37e5d43794909a0c7b37088e769c43e1eb175eddfc2dd6f",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/pilot/TOSS.json.gz"
+        },
+        {
+          "path": "receipts/enriched.json",
+          "bytes": 855,
+          "sha256": "a411b8679b774034dff7c62c3effd2a135ac35a8b7852120f7c22f43407b946a",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/enriched/receipt.json"
+        },
+        {
+          "path": "receipts/extra.json",
+          "bytes": 852,
+          "sha256": "08eeb873bc483488047306673fe65b0af0f23a7e961d321d0ed467a7bed705f8",
+          "originalPath": "/workspace/football-linebacker-run-flow/out/run-flow/extra-baseline/receipt.json"
+        },
+        {
+          "path": "receipts/fresh.json",
+          "bytes": 9988,
+          "sha256": "b3d3260599555adea87b4cfd3aade5699e06690c8c22b9cf062faeca19c5014b",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/fresh-baseline/receipt.json"
+        },
+        {
+          "path": "receipts/original.json",
+          "bytes": 9890,
+          "sha256": "28750ca6d842c0b636dc85e3214b736457a27c950d38c4e1cb11ea78f3ac3036",
+          "originalPath": "/workspace/football-defensive-snap-response/out/defensive-snap-response/baseline/receipt.json"
+        },
+        {
+          "path": "receipts/yaw-pilot.json",
+          "bytes": 1328,
+          "sha256": "27f6d6c068ab646c74e4c367e6228df8f03fc7f5b977b017007745383621b94d",
+          "originalPath": "/workspace/football-movement-continuity/out/movement-continuity/pilot/receipt.json"
+        }
+      ]
+    },
+    "contact": {
+      "file": "contact.tar.gz",
+      "sha256": "c56f8cb6d4dbda753d6b3a6c7237111ef0a2bfe7e9dc9ccab0df5551e695cec5",
+      "bytes": 8853824,
+      "members": [
+        {
+          "path": "checked-sources/test/run-contact-flow.test.ts",
+          "bytes": 16503,
+          "sha256": "215d723b5d5fead1f8223daa338985b9c5154b493034209900a10d8cb82554f3",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/checked-contact54/test/run-contact-flow.test.ts"
+        },
+        {
+          "path": "checked-sources/test/run-rep-lateral-arrival.test.ts",
+          "bytes": 3874,
+          "sha256": "ad9ccba4dce3a5c68f8822e0beef32f807944d4c57caeb0bb5072f2a805387b6",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/checked-contact54/test/run-rep-lateral-arrival.test.ts"
+        },
+        {
+          "path": "superseded/arrival-common.jsonl.gz",
+          "bytes": 21882,
+          "sha256": "f9548812085393a55f26e5d7e1de3a3746739b83c70ca70a9fb5455bbc017eaa",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/arrival-common.jsonl.gz"
+        },
+        {
+          "path": "superseded/baseline-common.jsonl.gz",
+          "bytes": 24493,
+          "sha256": "2be55591e4f69c6bcbcf6ec69b5d254e43e910544925dc71386d16fa63724866",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/baseline-common.jsonl.gz"
+        },
+        {
+          "path": "superseded/capture.mjs",
+          "bytes": 4370,
+          "sha256": "06fbd94609ad23bb31ef6566ac3be99ca6961aa10f9d6ed3141ffb2790d8fd71",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/capture.mjs"
+        },
+        {
+          "path": "superseded/common-conversion.json",
+          "bytes": 1744,
+          "sha256": "c3b795c21d40d0f843cb70874824bd028c6f5033407bdaacf9f89b692a56135e",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/common-conversion.json"
+        },
+        {
+          "path": "superseded/contracts-fixture-failure-receipt.json",
+          "bytes": 2430,
+          "sha256": "e02eb9fc8608ca56b5a4efc0c961e7802a0a3d0e2c75a641d8891f61b2f30528",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/contracts-fixture-failure-receipt.json"
+        },
+        {
+          "path": "superseded/contracts-fixture-failure.log",
+          "bytes": 5282,
+          "sha256": "e7d39a3d94e2a77be3335a2f6bda346c0cd29ac955c0b93901e5311ac95934ef",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/contracts-fixture-failure.log"
+        },
+        {
+          "path": "superseded/contracts-receipt.json",
+          "bytes": 2296,
+          "sha256": "102ae977e963631446080a52661721a5f9d54a29d0ef861b06d8f48303d8a975",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/contracts-receipt.json"
+        },
+        {
+          "path": "superseded/contracts.log",
+          "bytes": 812,
+          "sha256": "9f1afa0f0e23328a5b8de47a036a3b1790c15bed19d52b23a011756acce6c471",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/contracts.log"
+        },
+        {
+          "path": "superseded/debug-receipt.json",
+          "bytes": 2255,
+          "sha256": "29ba400672b728949b02f21bc6b25edc7a561d4e04f5bbb0e7a2006feede25ee",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/debug-receipt.json"
+        },
+        {
+          "path": "superseded/debug.ts",
+          "bytes": 1233,
+          "sha256": "98ab157f14425a56320b54cf514fe78be0b34f1265c541a3e5f0477e94f8917b",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/debug.ts"
+        },
+        {
+          "path": "superseded/export-common.py",
+          "bytes": 3422,
+          "sha256": "69fc94467495dc86c19b5ecbd8077f4a5dc723bc2c665908668b93fee2e35300",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/export-common.py"
+        },
+        {
+          "path": "superseded/final-contracts-receipt.json",
+          "bytes": 2304,
+          "sha256": "b636a8a28f4faf194929eace8761404eda3caaa176dcf303e52e6dd431620965",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/final-contracts-receipt.json"
+        },
+        {
+          "path": "superseded/final-contracts.log",
+          "bytes": 818,
+          "sha256": "f79317a7216c40fb7cfffd86879ba95fc67e00297523d5079233516cf5e5c874",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/final-contracts.log"
+        },
+        {
+          "path": "superseded/inactive-controls.json",
+          "bytes": 575,
+          "sha256": "7b4e668444b12f3cf6e1add8087f45355657377d4c3baf9b75fcae025e7fd076",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/inactive-controls.json"
+        },
+        {
+          "path": "superseded/inputs.json.gz",
+          "bytes": 6676,
+          "sha256": "14d3595311a637df02bba4f8f882bec4e5456b25b6696890f4ec8b721cf4bc25",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/inputs.json.gz"
+        },
+        {
+          "path": "superseded/law-probe-receipt.json",
+          "bytes": 2237,
+          "sha256": "6fbc50e584edc6be6cad891fe1d18dc081484cd1cd788d402a7f742f8e4e7bf7",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/law-probe-receipt.json"
+        },
+        {
+          "path": "superseded/law-probe.json",
+          "bytes": 166344,
+          "sha256": "15376b9b1f383f500de54400fded680134c40ecca1258c73433c01faa7659aec",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/law-probe.json"
+        },
+        {
+          "path": "superseded/law-probe.ts",
+          "bytes": 2404,
+          "sha256": "2b9dbcade17bfb7fbceeb9df1d17a9bc55865ded141c7cbea058af4e1ed086ef",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/law-probe.ts"
+        },
+        {
+          "path": "superseded/pilot-launch.json",
+          "bytes": 2371,
+          "sha256": "06af4a132de5013f7737d85dabbdea737533b19418a9911990c2e0fcabcdd46a",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/pilot-launch.json"
+        },
+        {
+          "path": "superseded/pilot/OZ24.json.gz",
+          "bytes": 1128826,
+          "sha256": "21bba07b2ce998b014f8c5786c7afd23049ed9645e26f141979aa450eacb1f04",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/pilot/OZ24.json.gz"
+        },
+        {
+          "path": "superseded/pilot/TOSS.json.gz",
+          "bytes": 1259092,
+          "sha256": "fc4437a704e210a27b259b9010cbd4ed2d2bc1739c0dd5bca5aa286fff97d9ce",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/pilot/TOSS.json.gz"
+        },
+        {
+          "path": "superseded/pilot/receipt.json",
+          "bytes": 852,
+          "sha256": "cc7c669af474eefa1debd9621718060ca301b547fba9addcac83ed2f51196a12",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/pilot/receipt.json"
+        },
+        {
+          "path": "superseded/smooth-arrival.txt",
+          "bytes": 1121,
+          "sha256": "c67ec608a0125417d7ac7aa1831ee2813ba582b93bc01cefc258a48c5f151d95",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/smooth-arrival.txt"
+        },
+        {
+          "path": "superseded/smooth-baseline.txt",
+          "bytes": 1121,
+          "sha256": "4d298410cadf809f7fbbf0720f90897d71cfe371f81a66ff6af8b4c645df6592",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/smooth-baseline.txt"
+        },
+        {
+          "path": "superseded/smooth-nfl.txt",
+          "bytes": 1239,
+          "sha256": "880f047b398afe8d8f9f62c973e7fe33f282a6aead87bb0967d902b334743fbe",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/smooth-nfl.txt"
+        },
+        {
+          "path": "superseded/smooth.py",
+          "bytes": 5361,
+          "sha256": "45694f7c35bbb493861eb640ad30c4aa01c27519ad5076ddcce2bd704c538f8a",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/smooth.py"
+        },
+        {
+          "path": "superseded/transfer-inputs.json.gz",
+          "bytes": 10650,
+          "sha256": "8af40814760d5912286401bec6cfed00735a454c85b1fa379137f15657439b1f",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer-inputs.json.gz"
+        },
+        {
+          "path": "superseded/transfer-launch.json",
+          "bytes": 2388,
+          "sha256": "b94151365bc20fdac9008e4061500785ed14e45f6713d065148a221d5c1c7bf7",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer-launch.json"
+        },
+        {
+          "path": "superseded/transfer/DUO.json.gz",
+          "bytes": 1703574,
+          "sha256": "1af31cae0199630b6cfe72179ccc9d253dabd05dfd9158c8d4db98a586d29a2d",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer/DUO.json.gz"
+        },
+        {
+          "path": "superseded/transfer/FTOSS.json.gz",
+          "bytes": 1754758,
+          "sha256": "e3f68897924c6321f49bfa3c42e35acf7bb8c2265899fed5a6470c3f3d1d10ab",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer/FTOSS.json.gz"
+        },
+        {
+          "path": "superseded/transfer/PA13.json.gz",
+          "bytes": 1136844,
+          "sha256": "b11456565e43c3de832a249c833eee677150ba11f88b620e2b991d34d092f8fe",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer/PA13.json.gz"
+        },
+        {
+          "path": "superseded/transfer/PASS13.json.gz",
+          "bytes": 1978478,
+          "sha256": "bcca8c92858fd1b9d8fa34ee939c0893a552271f778fc5a724b378883da1cbc9",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer/PASS13.json.gz"
+        },
+        {
+          "path": "superseded/transfer/receipt.json",
+          "bytes": 1322,
+          "sha256": "e5d5ebcf42743cedf4c5405dc8383f908a1f845456373a00c25a0e77f5f2c980",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/transfer/receipt.json"
+        },
+        {
+          "path": "superseded/typecheck-fixture-failure-receipt.json",
+          "bytes": 2221,
+          "sha256": "37e6d8548e48abfbec399d57c307e49e56b3da72b474e23e1f7adbe0845c57ad",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/typecheck-fixture-failure-receipt.json"
+        },
+        {
+          "path": "superseded/typecheck-fixture-failure.log",
+          "bytes": 745,
+          "sha256": "14ac19c01bb2ab32a791825bc8246c76ec6420969fa5ce1a091cb3ed208a8704",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/typecheck-fixture-failure.log"
+        },
+        {
+          "path": "superseded/typecheck-receipt.json",
+          "bytes": 2215,
+          "sha256": "bc9387f80031fea32200b58a384239a0d93ca47a2ac7e2c7bba529abb8533be5",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/typecheck-receipt.json"
+        },
+        {
+          "path": "superseded/typecheck.log",
+          "bytes": 534,
+          "sha256": "ae33d0a2ba6dd534e8f628ec2ae33a8158b23942ed8b209bed352f34c69cb794",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/typecheck.log"
+        }
+      ]
+    },
+    "contact-final": {
+      "file": "contact-final.tar.gz",
+      "sha256": "b0ad8215622666a0708af3be655dd300ee22ae902b4ca7791031e8b74ef1884f",
+      "bytes": 8862821,
+      "members": [
+        {
+          "path": "checked-sources/docs/reviews/run-rep-lateral-arrival-2026-10-19.md",
+          "bytes": 8359,
+          "sha256": "2bf241040c9a573c428bbcac47c2389035cf98fc543347af9a218251bc403fd4",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/movement-evidence/stage/checked-contact-final/docs/reviews/run-rep-lateral-arrival-2026-10-19.md"
+        },
+        {
+          "path": "checked-sources/test/run-contact-flow.test.ts",
+          "bytes": 16746,
+          "sha256": "7b82efca12587ea7a773485f72d19e68443ed01ff0107fa847061e9a82518f11",
+          "originalPath": "/workspace/football-run-rep-arrival/test/run-contact-flow.test.ts"
+        },
+        {
+          "path": "checked-sources/test/run-rep-lateral-arrival.test.ts",
+          "bytes": 5353,
+          "sha256": "ee8bcb53defaa4a54175d60d4482902b74f145857e18d3f46cc0cd0d5699d8a7",
+          "originalPath": "/workspace/football-run-rep-arrival/test/run-rep-lateral-arrival.test.ts"
+        },
+        {
+          "path": "final/analyze-reference.py",
+          "bytes": 4872,
+          "sha256": "b6ee932c7922020796dd4662265ede5edd9415cbd1a6a1d8b2e76edfa9356c67",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/analyze-reference.py"
+        },
+        {
+          "path": "final/reference-analysis.json",
+          "bytes": 10797,
+          "sha256": "b420edc6442944f2a5b7018daab8aacd21207722823eafd071ae4a489c7bd7cd",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-analysis.json"
+        },
+        {
+          "path": "final/reference-analysis.log",
+          "bytes": 3350,
+          "sha256": "1ed974b150147c38c60bb689ca46d3d2383c9fc6dd9c61b5aa699892b206aae2",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-analysis.log"
+        },
+        {
+          "path": "final/reference-baseline-common.jsonl.gz",
+          "bytes": 24433,
+          "sha256": "3cf87bae5bb43cfae1dd83ff90db862dd97391103d2039979d4be30b2ed6781f",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-baseline-common.jsonl.gz"
+        },
+        {
+          "path": "final/reference-candidate-common.jsonl.gz",
+          "bytes": 21923,
+          "sha256": "268d5198eb60e33a7563f8522934a31def847e724c121b5107d6b8b734ad0999",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-candidate-common.jsonl.gz"
+        },
+        {
+          "path": "final/reference-final-focused-receipt.json",
+          "bytes": 2622,
+          "sha256": "23f49fda2e74114509cd9c21b59e2acc470e01431a4cefab795a741a98f9f4f3",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-final-focused-receipt.json"
+        },
+        {
+          "path": "final/reference-final-focused.log",
+          "bytes": 1392,
+          "sha256": "cf962e059b2c7e387f0acf88282e05062fb89bfe6bb2171f1372c35974dcc2ca",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-final-focused.log"
+        },
+        {
+          "path": "final/reference-focused-receipt.json",
+          "bytes": 2485,
+          "sha256": "e38a6c378538fa51a35e6e123760e3402d5c11791a199e8daa4bf1ba71a881bd",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-focused-receipt.json"
+        },
+        {
+          "path": "final/reference-focused.log",
+          "bytes": 3967,
+          "sha256": "fca69f08bd5603da70bf38c5001a3e07d39c25a936d051b7dbd0d227f7bb3cfe",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-focused.log"
+        },
+        {
+          "path": "final/reference-old-contracts-receipt.json",
+          "bytes": 2273,
+          "sha256": "a840b669e82770840bf49887c4606aac51c0230cacc0dcf95a375cb75d5a9bc5",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-old-contracts-receipt.json"
+        },
+        {
+          "path": "final/reference-old-contracts.log",
+          "bytes": 4506,
+          "sha256": "2a28d50fec5e0aa9324d56b601933cc86d11fa5e460ec0ede4ff0aac2b681d0c",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-old-contracts.log"
+        },
+        {
+          "path": "final/reference-pilot-launch.json",
+          "bytes": 2437,
+          "sha256": "3bdd9d8a8c91970aac08602b68b2f8f18c0cd5f9f3f6e7d21626ac0a9977fee8",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-pilot-launch.json"
+        },
+        {
+          "path": "final/reference-pilot/OZ24.json.gz",
+          "bytes": 1233605,
+          "sha256": "0c4e93b10f53a566fab1246f3e0b009ca6972a661869152177f06adedcd58a78",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-pilot/OZ24.json.gz"
+        },
+        {
+          "path": "final/reference-pilot/TOSS.json.gz",
+          "bytes": 1258083,
+          "sha256": "50c4e9dd2b8ed51b05d2f3dadb9e5ab41a530ecbebf67e3dc0e7558dfd84ff3f",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-pilot/TOSS.json.gz"
+        },
+        {
+          "path": "final/reference-pilot/receipt.json",
+          "bytes": 851,
+          "sha256": "74a3ccd5224da3fd9d0b4127c3a92c54654ba427275174f3aee6fe119bea9331",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-pilot/receipt.json"
+        },
+        {
+          "path": "final/reference-smooth-baseline.txt",
+          "bytes": 1121,
+          "sha256": "70a4d472f8cfc6591ad1c368efad529223e72a1b9f67e7ef85001818ad8b875a",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-smooth-baseline.txt"
+        },
+        {
+          "path": "final/reference-smooth-candidate.txt",
+          "bytes": 1121,
+          "sha256": "477c65a0bc0512aa6ced0ba67b618ad7443c8628a91cacc397dad6c7369fced1",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-smooth-candidate.txt"
+        },
+        {
+          "path": "final/reference-transfer-launch.json",
+          "bytes": 2454,
+          "sha256": "349ec05c9e9455e7152c7a1ae94f630d87a566b8abd6c95e329afc09fbe36dc6",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer-launch.json"
+        },
+        {
+          "path": "final/reference-transfer/DUO.json.gz",
+          "bytes": 1695266,
+          "sha256": "1ae574eca556a14b0397a5b6052945f7b025b61645b8c137875a151d012b00fe",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer/DUO.json.gz"
+        },
+        {
+          "path": "final/reference-transfer/FTOSS.json.gz",
+          "bytes": 1714828,
+          "sha256": "da8652aa178030ef519cf8440cf11b343f3f4f6bbc991345ce9dfb714522d498",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer/FTOSS.json.gz"
+        },
+        {
+          "path": "final/reference-transfer/PA13.json.gz",
+          "bytes": 1136845,
+          "sha256": "7b3e3cb1535e56bd2ebc4c8742d190b662e8a7ad518c2cb1f6a1f7b26713c72d",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer/PA13.json.gz"
+        },
+        {
+          "path": "final/reference-transfer/PASS13.json.gz",
+          "bytes": 1978519,
+          "sha256": "9993d3b0e50250fd1594580a1d816761503122d2ea4b5b5563be1b71452c9273",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer/PASS13.json.gz"
+        },
+        {
+          "path": "final/reference-transfer/receipt.json",
+          "bytes": 1329,
+          "sha256": "7d42012e7d280eae062df2a5115812f5ff33f7c181898890654ae93f6dfb81dc",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-transfer/receipt.json"
+        },
+        {
+          "path": "final/reference-typecheck-receipt.json",
+          "bytes": 2272,
+          "sha256": "2e112de92fbe52007e4645efb609a37c733f7f01aada1ff9341e46c5504c7794",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-typecheck-receipt.json"
+        },
+        {
+          "path": "final/reference-typecheck.log",
+          "bytes": 544,
+          "sha256": "3786930b6dd6a1a6d9f92d33cbb80173e75496b156e66de5f2f9be1a1ff26efb",
+          "originalPath": "/workspace/football-run-rep-arrival/out/run-rep-arrival/reference-typecheck.log"
+        }
+      ]
+    },
+    "free-fit": {
+      "file": "free-fit.tar.gz",
+      "sha256": "5f4e9caf03d36437ab5c24ec75783114129799420dc9b1b909d2a299fb66265e",
+      "bytes": 2255471,
+      "members": [
+        {
+          "path": "checked-sources/docs/reviews/free-fit-objective-continuity-2026-10-19.md",
+          "bytes": 11486,
+          "sha256": "c2596e0b838db7bc6a1b42e938108a4eaf96d727bef4e5e5bff142539a3b8134",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/docs/reviews/free-fit-objective-continuity-2026-10-19.md"
+        },
+        {
+          "path": "checked-sources/test/run-fit-objective-continuity.test.ts",
+          "bytes": 4803,
+          "sha256": "c544631bc596f93dc133ccbaa58de05fb9f960329703439c51b84b4481c1ac8f",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/test/run-fit-objective-continuity.test.ts"
+        },
+        {
+          "path": "free-fit/accepted-witnesses.json",
+          "bytes": 51657,
+          "sha256": "823bfa513ed92ee4ee8ca2be13331702231c92ccb26b0beebba793b82c5481ab",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/accepted-witnesses.json"
+        },
+        {
+          "path": "free-fit/compare-smooth.py",
+          "bytes": 3744,
+          "sha256": "3161d1b93e793fdde5c3c111d6d5e76bc63a394513ed80f670de476da51e848d",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/compare-smooth.py"
+        },
+        {
+          "path": "free-fit/contact-final-reference-review.json",
+          "bytes": 1510,
+          "sha256": "1d8775fd6ef5a3aacc0533512214c620780b9b6a3878e38c1cb9fa0f8d8c1046",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/contact-final-reference-review.json"
+        },
+        {
+          "path": "free-fit/contact-independent-review.json",
+          "bytes": 1625,
+          "sha256": "fbda266711f7860f5b04610306a9e0f30538b0ad2b454bad05a2e7058d4037d3",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/contact-independent-review.json"
+        },
+        {
+          "path": "free-fit/diagnose.py",
+          "bytes": 1987,
+          "sha256": "3ae23ef15d3473a7db87cb96ae915519957e9b793e3b6ca7c4c139128fe88d0a",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/diagnose.py"
+        },
+        {
+          "path": "free-fit/focused-receipt.json",
+          "bytes": 2509,
+          "sha256": "cd84094005013cf0bfa927f9f1bb401fbfc781975e82593faf97769a50057e13",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/focused-receipt.json"
+        },
+        {
+          "path": "free-fit/focused.log",
+          "bytes": 1025,
+          "sha256": "4765076a30b9c0721160bd70f98ca79e88f5be7c6d0de5e60229eb11c30b99ad",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/focused.log"
+        },
+        {
+          "path": "free-fit/initial-contract-receipt.json",
+          "bytes": 2319,
+          "sha256": "ba89d32804432025a69a241bd454b0f2858751acc51f8831985ceb26601facdf",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/initial-contract-receipt.json"
+        },
+        {
+          "path": "free-fit/initial-contract.log",
+          "bytes": 6050,
+          "sha256": "17d6642c027a7f870cf544deab455871e4b071472b32d0667d3af8ef2c76a7ff",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/initial-contract.log"
+        },
+        {
+          "path": "free-fit/smooth-comparison.json",
+          "bytes": 7443,
+          "sha256": "a53ab8043fec56a821de2a36a8bbd079afb76d18d19283146ea6b7925c34552e",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/smooth-comparison.json"
+        },
+        {
+          "path": "free-fit/smooth-reference.py",
+          "bytes": 5361,
+          "sha256": "45694f7c35bbb493861eb640ad30c4aa01c27519ad5076ddcce2bd704c538f8a",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/smooth-reference.py"
+        },
+        {
+          "path": "free-fit/typecheck-receipt.json",
+          "bytes": 2233,
+          "sha256": "56d9f76f1eebd38bf2daa15d968ba6cd160874711fa2ccd6dc1bc1701e194994",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/typecheck-receipt.json"
+        },
+        {
+          "path": "free-fit/typecheck.log",
+          "bytes": 538,
+          "sha256": "3cb4c00c0a4e30f5955167a4009e710a355ceac9e41121a8026b3868802f464f",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/free-fit-continuity/typecheck.log"
+        },
+        {
+          "path": "native/capture.mjs",
+          "bytes": 4260,
+          "sha256": "bc8a15e4ec115eed5464afd2bd12470221933e68c15b1caf42fff5767f56d9df",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/capture.mjs"
+        },
+        {
+          "path": "native/inputs.json.gz",
+          "bytes": 6663,
+          "sha256": "c71027d746b6d02f2be005b774df52b6e120fd8bfc45eb4071fdfe69fac991b4",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/inputs.json.gz"
+        },
+        {
+          "path": "native/native-launch.json",
+          "bytes": 2334,
+          "sha256": "4ef178dda422d579e700b73a44df6be5feb56a437f8f8a9e62f642705e2431a4",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/native-launch.json"
+        },
+        {
+          "path": "native/native/IZ.json.gz",
+          "bytes": 1133780,
+          "sha256": "f304654eb0aef3504da3d81151697efefd6b8f60cbab68e5cb6c29fbf66ea7b7",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/native/IZ.json.gz"
+        },
+        {
+          "path": "native/native/OZ24.json.gz",
+          "bytes": 1150957,
+          "sha256": "01f94904a3383e7afd32c96c988ea6805876cc694697dac84dda289524a77079",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/native/OZ24.json.gz"
+        },
+        {
+          "path": "native/native/receipt.json",
+          "bytes": 854,
+          "sha256": "61379372ad81b94859541ade0e00ac909c228f86373b31e497ed66cacc19e7c1",
+          "originalPath": "/workspace/football-free-fit-objective-continuity/out/fit-continuity/native/receipt.json"
+        }
+      ]
+    },
+    "track": {
+      "file": "track.tar.gz",
+      "sha256": "3cbc874e10a9be08eb36325ec046c715c2898b20cc5e6978b2e77fdb6cb69e60",
+      "bytes": 2097628,
+      "members": [
+        {
+          "path": "checked-sources/docs/reviews/track-objective-continuity-2026-10-19.md",
+          "bytes": 8598,
+          "sha256": "bb431b46a7e4ce9720add5a652802cb0decfabf3661e82ace4e59ed9a2dfc1d1",
+          "originalPath": "/workspace/football-continuous-track-objective/docs/reviews/track-objective-continuity-2026-10-19.md"
+        },
+        {
+          "path": "checked-sources/test/track-objective-continuity.test.ts",
+          "bytes": 4105,
+          "sha256": "6c19901a84cee31c0a05b62ccd9b4d669abbbb4d07ba485186f36a4253d92350",
+          "originalPath": "/workspace/football-continuous-track-objective/test/track-objective-continuity.test.ts"
+        },
+        {
+          "path": "contracts/baseline-contract.json",
+          "bytes": 2262,
+          "sha256": "6deb6db2f84d96a10d3459a0320327bfa2d765387c474e506750045e5f8b4814",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/baseline-contract.json"
+        },
+        {
+          "path": "contracts/baseline-contract.log",
+          "bytes": 4030,
+          "sha256": "5d712fb1dbc282dc9d46827ca8c6118ada2440132471b0fcb416d1cc611c7dcf",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/baseline-contract.log"
+        },
+        {
+          "path": "contracts/candidate-contract-fixed.json",
+          "bytes": 2299,
+          "sha256": "dd4ba7daab9b69a94ad4b08b2c2d3151642769dc659427fc959fee0dae5b2760",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/candidate-contract-fixed.json"
+        },
+        {
+          "path": "contracts/candidate-contract-fixed.log",
+          "bytes": 835,
+          "sha256": "713c6b0cf7169b7404bd1566532f0ee2dc1dca0b26b4fab28825ca44681c168f",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/candidate-contract-fixed.log"
+        },
+        {
+          "path": "contracts/candidate-contract.json",
+          "bytes": 2292,
+          "sha256": "24def4f9577869ead8ae32346b10e2e1b5d653485e317bb21f416f736c9fcdbe",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/candidate-contract.json"
+        },
+        {
+          "path": "contracts/candidate-contract.log",
+          "bytes": 2966,
+          "sha256": "65bf29bf52a299ef4fface162c128ed4534735891247985d80c750bf86cabdd5",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/candidate-contract.log"
+        },
+        {
+          "path": "contracts/focused.json",
+          "bytes": 2380,
+          "sha256": "dcb39dcc589629b263f41de2c9efa0af9ec833e17aaeee84f3db44973fbfa71c",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/focused.json"
+        },
+        {
+          "path": "contracts/focused.log",
+          "bytes": 1013,
+          "sha256": "f805d6f07a9c005c3c02c59b5fc573d2fa07626ecd32eb3ab3cdefb7c446b138",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/focused.log"
+        },
+        {
+          "path": "contracts/near-join-adverse.json",
+          "bytes": 2346,
+          "sha256": "8b44524a318bdc92228a0e427b55245f01c6dff7f334a243fe2f2868e75fcbcf",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-join-adverse.json"
+        },
+        {
+          "path": "contracts/near-join-adverse.log",
+          "bytes": 2929,
+          "sha256": "cd26c4d4010124d1f7718845abca03fca57e730993c926ef65bc4c1c01d0a7be",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-join-adverse.log"
+        },
+        {
+          "path": "contracts/near-join-contract.json",
+          "bytes": 2292,
+          "sha256": "b7cf89f0c8a9d0b01bc0fcda4d9f8862edd1e1adcc2bd9a1f76ecae054fdc0f5",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-join-contract.json"
+        },
+        {
+          "path": "contracts/near-join-contract.log",
+          "bytes": 829,
+          "sha256": "cec693c29bfb8991de949b36bf1fda7b2e3f65364153d21712422a99fa9ca214",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-join-contract.log"
+        },
+        {
+          "path": "contracts/near-singularity-receipt.json",
+          "bytes": 2314,
+          "sha256": "a570624bdf49daf3dd17f4c56a706e004dd46c120d3813b7f52008ae7aa38523",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-singularity-receipt.json"
+        },
+        {
+          "path": "contracts/near-singularity.json",
+          "bytes": 2270,
+          "sha256": "0337adad07ded2b02973871233b50e141f5e0f6f653fa4ca0b964acd890b2597",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-singularity.json"
+        },
+        {
+          "path": "contracts/near-singularity.log",
+          "bytes": 2578,
+          "sha256": "b86d082cc5eb01b2ab7d7330e6e969e0cf986495ec5114ff089cafd593fd8656",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-singularity.log"
+        },
+        {
+          "path": "contracts/near-singularity.ts",
+          "bytes": 1478,
+          "sha256": "55880e81646f0f315f2a720d52874b37015fc6129474f00ed287bfbd073e520e",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/near-singularity.ts"
+        },
+        {
+          "path": "contracts/rejected-near-join-contract.test.ts",
+          "bytes": 4719,
+          "sha256": "ea1083b06765b76f422e80e59756ba21f63e9ddde412db75d945af22ae3532ca",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/rejected-near-join-contract.test.ts"
+        },
+        {
+          "path": "contracts/rejected-near-join-opposing-contract.patch",
+          "bytes": 1175,
+          "sha256": "efaa05dad06bbd5772f459cbb3663a80b88d61ec05b2780d81e65d6a14a75866",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/rejected-near-join-opposing-contract.patch"
+        },
+        {
+          "path": "contracts/rejected-near-join-source.patch",
+          "bytes": 1813,
+          "sha256": "e5a5526fa76f6370c47b6551407cc4585bb37f1b2955852e892bb40755c33fc8",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/rejected-near-join-source.patch"
+        },
+        {
+          "path": "contracts/typecheck.json",
+          "bytes": 2214,
+          "sha256": "f37a298313d6dc626322513d7699b56c6a297baa4714165f4cf6030a4cd66ca3",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/typecheck.json"
+        },
+        {
+          "path": "contracts/typecheck.log",
+          "bytes": 527,
+          "sha256": "9302eb8a157d39223cf6e8c04c18183d4f7b97f7c56c25430423d3b54dd74fd1",
+          "originalPath": "/workspace/football-continuous-track-objective/out/continuous-track/typecheck.log"
+        },
+        {
+          "path": "native/analysis.json",
+          "bytes": 42897,
+          "sha256": "7e49a5eb4cbf4cbd893b9201b9fd221585e99d16a831e88621e78d34bc7a115d",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/analysis.json"
+        },
+        {
+          "path": "native/analyze.py",
+          "bytes": 4861,
+          "sha256": "d31171a5a74d1cb470c5c59dce1d203824f760ad1b084167ae4e1bda53cbec5b",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/analyze.py"
+        },
+        {
+          "path": "native/capture.mjs",
+          "bytes": 4260,
+          "sha256": "bc8a15e4ec115eed5464afd2bd12470221933e68c15b1caf42fff5767f56d9df",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/capture.mjs"
+        },
+        {
+          "path": "native/inputs.json.gz",
+          "bytes": 6720,
+          "sha256": "299321687549a1f98e5b9d641f2116c9049f45e95b0ea3982fa88d26f7d81ed4",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/inputs.json.gz"
+        },
+        {
+          "path": "native/native-launch.json",
+          "bytes": 2330,
+          "sha256": "2223922a41b0f6daed93c35fdb33f487bea49eb8e24050acadc191caada10630",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/native-launch.json"
+        },
+        {
+          "path": "native/native/OZ24.json.gz",
+          "bytes": 1131382,
+          "sha256": "935f2577aebbad27c777e0fa0ce85712030cf06baebb48666ad8961456c11f0e",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/native/OZ24.json.gz"
+        },
+        {
+          "path": "native/native/PASS13.json.gz",
+          "bytes": 998862,
+          "sha256": "4f99664d280da717cc6cacb657df6c31b15d3e38e55ed3d6d81221985ac36321",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/native/PASS13.json.gz"
+        },
+        {
+          "path": "native/native/receipt.json",
+          "bytes": 852,
+          "sha256": "5de86e614d027e2d34a3aa6186a95bd44fad93f4e5ea18d9e8f7d86d376acfbe",
+          "originalPath": "/workspace/football-continuous-track-objective/out/track-continuity/native/receipt.json"
+        }
+      ]
+    },
+    "gait": {
+      "file": "gait.tar.gz",
+      "sha256": "95d823af3c56a2961db5e1c717f1d87814409f90dc639c0b9939fe0c9df383f0",
+      "bytes": 3115920,
+      "members": [
+        {
+          "path": "checked-sources/test/gait-achieved-pose.test.ts",
+          "bytes": 3315,
+          "sha256": "1193bf6c75c57f56ed8475e328a036b30849dad0071c09b2b825202492d1c322",
+          "originalPath": "/workspace/football-gait-achieved-pose/test/gait-achieved-pose.test.ts"
+        },
+        {
+          "path": "gait/baseline-contract-receipt.json",
+          "bytes": 2266,
+          "sha256": "9db43761ca42487477438f945210069caa90a467155d2c2cb0945c6fdbfd1c87",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/baseline-contract-receipt.json"
+        },
+        {
+          "path": "gait/baseline-contract.log",
+          "bytes": 1663,
+          "sha256": "13f8ed36d67f2c32b3fa13a5ec9b4dfe0b06eeb6b8ce604574ef38fe13006a60",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/baseline-contract.log"
+        },
+        {
+          "path": "gait/capture.mjs",
+          "bytes": 4260,
+          "sha256": "bc8a15e4ec115eed5464afd2bd12470221933e68c15b1caf42fff5767f56d9df",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/capture.mjs"
+        },
+        {
+          "path": "gait/focused-receipt.json",
+          "bytes": 2440,
+          "sha256": "f7d48657f418c146fbc4e8b490a81aeac85a4a50f793f4e1e0894ec188a9e286",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/focused-receipt.json"
+        },
+        {
+          "path": "gait/focused.log",
+          "bytes": 848,
+          "sha256": "07603109aace2b6d5e11dd834e7658cf2a09d1778d88dbf85173c59ea82b93cc",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/focused.log"
+        },
+        {
+          "path": "gait/inputs.json.gz",
+          "bytes": 6367,
+          "sha256": "f2cfe0447886fdbbe0950f1774fee0f640a95ff2bc42082b14e6e42c7b84f555",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/inputs.json.gz"
+        },
+        {
+          "path": "gait/native-launch.json",
+          "bytes": 2333,
+          "sha256": "25e33b6832fdaf56955dfd8f9c5123eb748972c1d39e0fc1e7d0e2d8293aa9ed",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native-launch.json"
+        },
+        {
+          "path": "gait/native-review.json",
+          "bytes": 31457,
+          "sha256": "10524cdb9b26001317e59638a8e11bd9ee126a0e2d5e2c35389b0c0da5ac3855",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native-review.json"
+        },
+        {
+          "path": "gait/native-review.log",
+          "bytes": 13489,
+          "sha256": "2c6dc6cd7db953eebac57f5009cbd56093f666a5cc129d9caf3defc6c1544701",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native-review.log"
+        },
+        {
+          "path": "gait/native/PASS13.json.gz",
+          "bytes": 1604853,
+          "sha256": "20d7fc615d24f3cfa2154218d72352607d284bc12ec679587158aa310ac29790",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native/PASS13.json.gz"
+        },
+        {
+          "path": "gait/native/TOSS.json.gz",
+          "bytes": 1585609,
+          "sha256": "bc56d689505cf648437f78d9aefa5c68c75bb8d5cd4192381b9276173c224e50",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native/TOSS.json.gz"
+        },
+        {
+          "path": "gait/native/receipt.json",
+          "bytes": 865,
+          "sha256": "481f966cb698030da0d2a0764e610f3289a60c889594d97b0815a28e62b3bf1d",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/native/receipt.json"
+        },
+        {
+          "path": "gait/pr-body.md",
+          "bytes": 3750,
+          "sha256": "dfd9f7812d6627d968fbbcc645a0e6192a6dd149a85f3253521ba18e3cec0287",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/pr-body.md"
+        },
+        {
+          "path": "gait/review-native.py",
+          "bytes": 3022,
+          "sha256": "1ce16e76a8a869da05332d1403f97dffc805db851f781a0f7bfa886feddd0806",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/review-native.py"
+        },
+        {
+          "path": "gait/source.patch",
+          "bytes": 1868,
+          "sha256": "45f3c4a8b9b8faa7e40321265d6ebf1a3eed56592a24a60c59022cdefb4a56a7",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/source.patch"
+        },
+        {
+          "path": "gait/typecheck-receipt.json",
+          "bytes": 2251,
+          "sha256": "dda55da623ad76bf4558796e5984fcd18aedd58a13c21c623af1087c3c5d681b",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/typecheck-receipt.json"
+        },
+        {
+          "path": "gait/typecheck.log",
+          "bytes": 329,
+          "sha256": "5027755f70145c61d1d17e7780436f2bb226a04942f439a8667054a930e3bdbc",
+          "originalPath": "/workspace/football-gait-achieved-pose/out/gait-achieved-pose/typecheck.log"
+        }
+      ]
+    },
+    "interaction": {
+      "file": "interaction.tar.gz",
+      "sha256": "978aca853011840b4f60ee7f7dc0d9cf05e0a1e8486584041fd7cb782fd995dc",
+      "bytes": 3737481,
+      "members": [
+        {
+          "path": "checked-sources/test/gait-achieved-pose.test.ts",
+          "bytes": 3315,
+          "sha256": "1193bf6c75c57f56ed8475e328a036b30849dad0071c09b2b825202492d1c322",
+          "originalPath": "/workspace/football-movement-physics-interaction/test/gait-achieved-pose.test.ts"
+        },
+        {
+          "path": "interaction/capture.mjs",
+          "bytes": 4260,
+          "sha256": "bc8a15e4ec115eed5464afd2bd12470221933e68c15b1caf42fff5767f56d9df",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/capture.mjs"
+        },
+        {
+          "path": "interaction/focused-receipt.json",
+          "bytes": 2442,
+          "sha256": "e4521093c785825b3f850015659a3792996f8071fc23e949f4ad5303eede0484",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/focused-receipt.json"
+        },
+        {
+          "path": "interaction/focused.log",
+          "bytes": 1084,
+          "sha256": "2edbcce6c0295f805347534a06ddc97e6bfff4063d4c48bc9bca3e70a8c8dd41",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/focused.log"
+        },
+        {
+          "path": "interaction/inputs.json.gz",
+          "bytes": 6367,
+          "sha256": "f2cfe0447886fdbbe0950f1774fee0f640a95ff2bc42082b14e6e42c7b84f555",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/inputs.json.gz"
+        },
+        {
+          "path": "interaction/native-launch.json",
+          "bytes": 2409,
+          "sha256": "777d68dcd6b3eca062e79f33aa3a085d194b08f4a3a09721ecbba05054348273",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/native-launch.json"
+        },
+        {
+          "path": "interaction/native/PASS13.json.gz",
+          "bytes": 1766511,
+          "sha256": "f702e27d3f4f951730b93ed8a081ca025cd506cd4199a02bda0ac25539233af7",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/native/PASS13.json.gz"
+        },
+        {
+          "path": "interaction/native/TOSS.json.gz",
+          "bytes": 2072165,
+          "sha256": "7f77ba52d5f78cce72cb067060cfb2fb8adbfd3539ed9bd75ed264381b22ff97",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/native/TOSS.json.gz"
+        },
+        {
+          "path": "interaction/native/receipt.json",
+          "bytes": 866,
+          "sha256": "b9db1554270567fc728b4028ff55c19f3c4ac3bed1bdcfd585f8c4104e32411b",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/native/receipt.json"
+        },
+        {
+          "path": "interaction/typecheck-receipt.json",
+          "bytes": 2236,
+          "sha256": "675b1d3b4f11d9c29b796e891825c6fbc091850e01ab24d5e593136f65a97599",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/typecheck-receipt.json"
+        },
+        {
+          "path": "interaction/typecheck.log",
+          "bytes": 538,
+          "sha256": "e4a1eacbc0e087dc8aacfc01d0c77489e1df7798a6ba6e078bd8dac1e8b8203e",
+          "originalPath": "/workspace/football-movement-physics-interaction/out/physics-interaction/typecheck.log"
+        }
+      ]
+    }
+  },
+  "native": [
+    {
+      "archive": "baselines",
+      "path": "native/DUO.json.gz",
+      "id": "DUO",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 6.49,
+      "end": 3.8,
+      "elapsedSeconds": 0.6457182970000002,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/FTOSS.json.gz",
+      "id": "FTOSS",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 9.15,
+      "end": 4.8999999999999995,
+      "elapsedSeconds": 0.581437731,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/IZ-enriched.json.gz",
+      "id": "IZ",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 0.43451169200000006,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/OZ24.json.gz",
+      "id": "OZ24",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 0.37,
+      "end": 4.1,
+      "elapsedSeconds": 1.026650599,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/PA13.json.gz",
+      "id": "PA13",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+      "phase": "dead",
+      "outcome": "incomplete",
+      "gain": 0,
+      "end": 3.75,
+      "elapsedSeconds": 0.4167220789999999,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 22.74,
+      "end": 5.7,
+      "elapsedSeconds": 0.760297055,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/TOSS-completed.json.gz",
+      "id": "TOSS",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 3.84,
+      "end": 4.25,
+      "elapsedSeconds": 0.5119252799999999,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/TOSS-enriched.json.gz",
+      "id": "TOSS",
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 0.543523794,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/yaw-PASS13.json.gz",
+      "id": "PASS13",
+      "source": "365e4a9d907fd00e6bc1239a632ecadf46c87ebca93da6d81e1ada3db4c04957",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 16.13,
+      "end": 5.25,
+      "elapsedSeconds": 0.4005616719999998,
+      "cached": true
+    },
+    {
+      "archive": "baselines",
+      "path": "native/yaw-TOSS.json.gz",
+      "id": "TOSS",
+      "source": "365e4a9d907fd00e6bc1239a632ecadf46c87ebca93da6d81e1ada3db4c04957",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 2.1,
+      "end": 5.05,
+      "elapsedSeconds": 0.9282005820000002,
+      "cached": true
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/pilot/OZ24.json.gz",
+      "id": "OZ24",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": -1.72,
+      "end": 2.9,
+      "elapsedSeconds": 0.464422106,
+      "cached": false
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/pilot/TOSS.json.gz",
+      "id": "TOSS",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": -1.39,
+      "end": 3.05,
+      "elapsedSeconds": 0.532055201,
+      "cached": false
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/transfer/DUO.json.gz",
+      "id": "DUO",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 5.87,
+      "end": 3.75,
+      "elapsedSeconds": 0.596970638,
+      "cached": false
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/transfer/FTOSS.json.gz",
+      "id": "FTOSS",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 6.98,
+      "end": 4.6,
+      "elapsedSeconds": 0.930048628,
+      "cached": false
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/transfer/PA13.json.gz",
+      "id": "PA13",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+      "phase": "dead",
+      "outcome": "incomplete",
+      "gain": 0,
+      "end": 3.75,
+      "elapsedSeconds": 0.531272132,
+      "cached": false
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/transfer/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 22.74,
+      "end": 5.7,
+      "elapsedSeconds": 0.5039642819999999,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-pilot/OZ24.json.gz",
+      "id": "OZ24",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 0.06,
+      "end": 3.0999999999999996,
+      "elapsedSeconds": 0.549431991,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-pilot/TOSS.json.gz",
+      "id": "TOSS",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": -1.31,
+      "end": 3.05,
+      "elapsedSeconds": 0.549508652,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-transfer/DUO.json.gz",
+      "id": "DUO",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "0154d50a194364f945e1aae6bc8c533bd62ae91c30b96f50dd411ea2000aa2e8",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 5.79,
+      "end": 3.75,
+      "elapsedSeconds": 0.537385131,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-transfer/FTOSS.json.gz",
+      "id": "FTOSS",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "959aab7dc63dabf59a133b25378c8a46e6e57097a57f4ef397ae9d86aa337db3",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 6.9,
+      "end": 4.55,
+      "elapsedSeconds": 0.784761016,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-transfer/PA13.json.gz",
+      "id": "PA13",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+      "phase": "dead",
+      "outcome": "incomplete",
+      "gain": 0,
+      "end": 3.75,
+      "elapsedSeconds": 0.40501269699999964,
+      "cached": false
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-transfer/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 22.74,
+      "end": 5.7,
+      "elapsedSeconds": 0.4280493420000003,
+      "cached": false
+    },
+    {
+      "archive": "free-fit",
+      "path": "native/native/IZ.json.gz",
+      "id": "IZ",
+      "source": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "inputSha256": "3b95b219293f058f0137b59820edb58bac0b21b8a8a7b9a9c1742821deb8220b",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 1.0833665420000003,
+      "cached": false
+    },
+    {
+      "archive": "free-fit",
+      "path": "native/native/OZ24.json.gz",
+      "id": "OZ24",
+      "source": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "inputSha256": "44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 0.5110946159999998,
+      "cached": false
+    },
+    {
+      "archive": "track",
+      "path": "native/native/OZ24.json.gz",
+      "id": "OZ24",
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "inputSha256": "44c4666b3d3980fafbbeea8318f37d72400e5f185460d23e3dfdfcce4f83a004",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 0.604536248,
+      "cached": false
+    },
+    {
+      "archive": "track",
+      "path": "native/native/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 3.1999999999999997,
+      "elapsedSeconds": 0.38367972400000006,
+      "cached": false
+    },
+    {
+      "archive": "gait",
+      "path": "gait/native/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 19.11,
+      "end": 5.45,
+      "elapsedSeconds": 0.6502118740000004,
+      "cached": false
+    },
+    {
+      "archive": "gait",
+      "path": "gait/native/TOSS.json.gz",
+      "id": "TOSS",
+      "source": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 4.49,
+      "end": 4.45,
+      "elapsedSeconds": 0.8161614930000001,
+      "cached": false
+    },
+    {
+      "archive": "interaction",
+      "path": "interaction/native/PASS13.json.gz",
+      "id": "PASS13",
+      "source": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+      "phase": "live",
+      "outcome": null,
+      "gain": null,
+      "end": 6,
+      "elapsedSeconds": 0.7216530520000001,
+      "cached": false
+    },
+    {
+      "archive": "interaction",
+      "path": "interaction/native/TOSS.json.gz",
+      "id": "TOSS",
+      "source": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+      "phase": "dead",
+      "outcome": "tackle",
+      "gain": 1.3,
+      "end": 5.6,
+      "elapsedSeconds": 0.9468348529999999,
+      "cached": false
+    }
+  ],
+  "receipts": [
+    {
+      "archive": "common",
+      "path": "root/low-speed-audit/launch-receipt.json",
+      "sha256": "ebf4e9d07e7bed07f33562eef180b2b3a0e66ff7f86624b1f9545115653bfbd2",
+      "elapsedSeconds": 0.42689889799999997,
+      "exitCode": 0,
+      "source": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "startedAt": "2026-10-19T22:48:39.099Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/motor-cost-receipt.json",
+      "sha256": "5ef9649f16314d411bf50a06cfff3fce727a6f7bcf5acaa0c4602108d0937697",
+      "elapsedSeconds": 2.334467261,
+      "exitCode": 0,
+      "source": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "startedAt": "2026-10-19T22:47:11.445Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/motor-cost.json",
+      "sha256": "c29a1a0b6c4697eaa727a99ed9d236e71025e46e3beb703f41e46d3d85d5022b",
+      "elapsedSeconds": 0,
+      "exitCode": null,
+      "source": null,
+      "startedAt": null
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/baseline-contract.json",
+      "sha256": "6deb6db2f84d96a10d3459a0320327bfa2d765387c474e506750045e5f8b4814",
+      "elapsedSeconds": 1.1073342309999998,
+      "exitCode": 1,
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "startedAt": "2026-10-19T22:33:04.840Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/candidate-contract-fixed.json",
+      "sha256": "dd4ba7daab9b69a94ad4b08b2c2d3151642769dc659427fc959fee0dae5b2760",
+      "elapsedSeconds": 1.4120115759999998,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:22.751Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/candidate-contract.json",
+      "sha256": "24def4f9577869ead8ae32346b10e2e1b5d653485e317bb21f416f736c9fcdbe",
+      "elapsedSeconds": 2.170030045,
+      "exitCode": 1,
+      "source": "91982c1e7aa350145f03758aeb6366b639b46ba8cd659c528693ee93b56e34be",
+      "startedAt": "2026-10-19T22:33:15.286Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/focused.json",
+      "sha256": "dcb39dcc589629b263f41de2c9efa0af9ec833e17aaeee84f3db44973fbfa71c",
+      "elapsedSeconds": 3.007591163,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:41.330Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/near-join-adverse.json",
+      "sha256": "8b44524a318bdc92228a0e427b55245f01c6dff7f334a243fe2f2868e75fcbcf",
+      "elapsedSeconds": 1.1633281430000002,
+      "exitCode": 1,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:39:40.596Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/near-join-contract.json",
+      "sha256": "b7cf89f0c8a9d0b01bc0fcda4d9f8862edd1e1adcc2bd9a1f76ecae054fdc0f5",
+      "elapsedSeconds": 1.483309591,
+      "exitCode": 0,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:39:14.230Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/contracts/typecheck.json",
+      "sha256": "f37a298313d6dc626322513d7699b56c6a297baa4714165f4cf6030a4cd66ca3",
+      "elapsedSeconds": 10.635141862000001,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:41.331Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/receipt.json",
+      "sha256": "e3e4730e8fb61a1e9264d7ce9160620e3f98d8cb9419bf37ac156a7cd3e6583f",
+      "elapsedSeconds": 0.36386267099999997,
+      "exitCode": 0,
+      "source": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "startedAt": "2026-10-19T22:31:44.234Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/preview-audit/second-arm/near-singularity-receipt.json",
+      "sha256": "a570624bdf49daf3dd17f4c56a706e004dd46c120d3813b7f52008ae7aa38523",
+      "elapsedSeconds": 0.22824529999999998,
+      "exitCode": 0,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:40:32.128Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/review/held-yaw-receipt.json",
+      "sha256": "bca47e08988d8d712119605f249d3694270d79b825c9f37eb105b0ba1e3945ce",
+      "elapsedSeconds": 2.1508840109999996,
+      "exitCode": 0,
+      "source": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "startedAt": "2026-10-19T22:31:34.483Z"
+    },
+    {
+      "archive": "common",
+      "path": "root/review/virtual-pose-receipt.json",
+      "sha256": "15c9e89f4ead2469d9ccd4e07577ce91f90526a3487c88e2226611fb521d2b34",
+      "elapsedSeconds": 0.19367040100000002,
+      "exitCode": 0,
+      "source": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "startedAt": "2026-10-19T22:31:17.151Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/contracts-fixture-failure-receipt.json",
+      "sha256": "e02eb9fc8608ca56b5a4efc0c961e7802a0a3d0e2c75a641d8891f61b2f30528",
+      "elapsedSeconds": 2.274862599,
+      "exitCode": 1,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:34:16.928Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/contracts-receipt.json",
+      "sha256": "102ae977e963631446080a52661721a5f9d54a29d0ef861b06d8f48303d8a975",
+      "elapsedSeconds": 1.78916304,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:35:17.953Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/debug-receipt.json",
+      "sha256": "29ba400672b728949b02f21bc6b25edc7a561d4e04f5bbb0e7a2006feede25ee",
+      "elapsedSeconds": 0.306090777,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:35:01.216Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/final-contracts-receipt.json",
+      "sha256": "b636a8a28f4faf194929eace8761404eda3caaa176dcf303e52e6dd431620965",
+      "elapsedSeconds": 1.6831082019999999,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:43:28.483Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/law-probe-receipt.json",
+      "sha256": "6fbc50e584edc6be6cad891fe1d18dc081484cd1cd788d402a7f742f8e4e7bf7",
+      "elapsedSeconds": 0.5456389420000001,
+      "exitCode": 0,
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "startedAt": "2026-10-19T22:32:21.650Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/pilot-launch.json",
+      "sha256": "06af4a132de5013f7737d85dabbdea737533b19418a9911990c2e0fcabcdd46a",
+      "elapsedSeconds": 1.641708151,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:36:17.122Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/transfer-launch.json",
+      "sha256": "b94151365bc20fdac9008e4061500785ed14e45f6713d065148a221d5c1c7bf7",
+      "elapsedSeconds": 3.9498372770000008,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:39:19.128Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/typecheck-fixture-failure-receipt.json",
+      "sha256": "37e6d8548e48abfbec399d57c307e49e56b3da72b474e23e1f7adbe0845c57ad",
+      "elapsedSeconds": 9.268669971000001,
+      "exitCode": 1,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:40:44.756Z"
+    },
+    {
+      "archive": "contact",
+      "path": "superseded/typecheck-receipt.json",
+      "sha256": "bc9387f80031fea32200b58a384239a0d93ca47a2ac7e2c7bba529abb8533be5",
+      "elapsedSeconds": 9.360075882,
+      "exitCode": 0,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:43:30.267Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-final-focused-receipt.json",
+      "sha256": "23f49fda2e74114509cd9c21b59e2acc470e01431a4cefab795a741a98f9f4f3",
+      "elapsedSeconds": 2.9417564819999997,
+      "exitCode": 0,
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "startedAt": "2026-10-19T22:54:33.543Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-focused-receipt.json",
+      "sha256": "e38a6c378538fa51a35e6e123760e3402d5c11791a199e8daa4bf1ba71a881bd",
+      "elapsedSeconds": 2.292001303,
+      "exitCode": 1,
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "startedAt": "2026-10-19T22:54:08.988Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-old-contracts-receipt.json",
+      "sha256": "a840b669e82770840bf49887c4606aac51c0230cacc0dcf95a375cb75d5a9bc5",
+      "elapsedSeconds": 1.8801107380000004,
+      "exitCode": 1,
+      "source": "54a5bfc9ace7b92bc46d74e02cdad436cd5343478234fb3bdfe220ef921d00cb",
+      "startedAt": "2026-10-19T22:55:06.600Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-pilot-launch.json",
+      "sha256": "3bdd9d8a8c91970aac08602b68b2f8f18c0cd5f9f3f6e7d21626ac0a9977fee8",
+      "elapsedSeconds": 1.811788103,
+      "exitCode": 0,
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "startedAt": "2026-10-19T22:55:16.550Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-transfer-launch.json",
+      "sha256": "349ec05c9e9455e7152c7a1ae94f630d87a566b8abd6c95e329afc09fbe36dc6",
+      "elapsedSeconds": 3.4447114460000003,
+      "exitCode": 0,
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "startedAt": "2026-10-19T22:55:23.367Z"
+    },
+    {
+      "archive": "contact-final",
+      "path": "final/reference-typecheck-receipt.json",
+      "sha256": "2e112de92fbe52007e4645efb609a37c733f7f01aada1ff9341e46c5504c7794",
+      "elapsedSeconds": 10.048712754,
+      "exitCode": 0,
+      "source": "39b5ab53243d954e0b71bc09703f0e1d11295aed52841330a6305e66d50b419e",
+      "startedAt": "2026-10-19T22:54:49.637Z"
+    },
+    {
+      "archive": "free-fit",
+      "path": "free-fit/focused-receipt.json",
+      "sha256": "cd84094005013cf0bfa927f9f1bb401fbfc781975e82593faf97769a50057e13",
+      "elapsedSeconds": 2.198203946,
+      "exitCode": 0,
+      "source": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "startedAt": "2026-10-19T22:32:26.763Z"
+    },
+    {
+      "archive": "free-fit",
+      "path": "free-fit/initial-contract-receipt.json",
+      "sha256": "ba89d32804432025a69a241bd454b0f2858751acc51f8831985ceb26601facdf",
+      "elapsedSeconds": 1.5019700740000002,
+      "exitCode": 1,
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "startedAt": "2026-10-19T22:32:17.016Z"
+    },
+    {
+      "archive": "free-fit",
+      "path": "free-fit/typecheck-receipt.json",
+      "sha256": "56d9f76f1eebd38bf2daa15d968ba6cd160874711fa2ccd6dc1bc1701e194994",
+      "elapsedSeconds": 9.100485240999998,
+      "exitCode": 0,
+      "source": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "startedAt": "2026-10-19T22:32:34.969Z"
+    },
+    {
+      "archive": "free-fit",
+      "path": "native/native-launch.json",
+      "sha256": "4ef178dda422d579e700b73a44df6be5feb56a437f8f8a9e62f642705e2431a4",
+      "elapsedSeconds": 2.8265103780000005,
+      "exitCode": 0,
+      "source": "565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523",
+      "startedAt": "2026-10-19T22:33:15.575Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/baseline-contract.json",
+      "sha256": "6deb6db2f84d96a10d3459a0320327bfa2d765387c474e506750045e5f8b4814",
+      "elapsedSeconds": 1.1073342309999998,
+      "exitCode": 1,
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "startedAt": "2026-10-19T22:33:04.840Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/candidate-contract-fixed.json",
+      "sha256": "dd4ba7daab9b69a94ad4b08b2c2d3151642769dc659427fc959fee0dae5b2760",
+      "elapsedSeconds": 1.4120115759999998,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:22.751Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/candidate-contract.json",
+      "sha256": "24def4f9577869ead8ae32346b10e2e1b5d653485e317bb21f416f736c9fcdbe",
+      "elapsedSeconds": 2.170030045,
+      "exitCode": 1,
+      "source": "91982c1e7aa350145f03758aeb6366b639b46ba8cd659c528693ee93b56e34be",
+      "startedAt": "2026-10-19T22:33:15.286Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/focused.json",
+      "sha256": "dcb39dcc589629b263f41de2c9efa0af9ec833e17aaeee84f3db44973fbfa71c",
+      "elapsedSeconds": 3.007591163,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:41.330Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/near-join-adverse.json",
+      "sha256": "8b44524a318bdc92228a0e427b55245f01c6dff7f334a243fe2f2868e75fcbcf",
+      "elapsedSeconds": 1.1633281430000002,
+      "exitCode": 1,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:39:40.596Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/near-join-contract.json",
+      "sha256": "b7cf89f0c8a9d0b01bc0fcda4d9f8862edd1e1adcc2bd9a1f76ecae054fdc0f5",
+      "elapsedSeconds": 1.483309591,
+      "exitCode": 0,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:39:14.230Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/near-singularity-receipt.json",
+      "sha256": "a570624bdf49daf3dd17f4c56a706e004dd46c120d3813b7f52008ae7aa38523",
+      "elapsedSeconds": 0.22824529999999998,
+      "exitCode": 0,
+      "source": "5d25bd245d0cfaf46738bda6c36f7207d160188bdcdf872ebf671f06d3008a07",
+      "startedAt": "2026-10-19T22:40:32.128Z"
+    },
+    {
+      "archive": "track",
+      "path": "contracts/typecheck.json",
+      "sha256": "f37a298313d6dc626322513d7699b56c6a297baa4714165f4cf6030a4cd66ca3",
+      "elapsedSeconds": 10.635141862000001,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:33:41.331Z"
+    },
+    {
+      "archive": "track",
+      "path": "native/native-launch.json",
+      "sha256": "2223922a41b0f6daed93c35fdb33f487bea49eb8e24050acadc191caada10630",
+      "elapsedSeconds": 1.726066354,
+      "exitCode": 0,
+      "source": "4e78e876ee1cd7af00be1b5fe79a3968d5d2fb2b63f95dba21fa9e02a3eb8ca3",
+      "startedAt": "2026-10-19T22:35:19.778Z"
+    },
+    {
+      "archive": "gait",
+      "path": "gait/baseline-contract-receipt.json",
+      "sha256": "9db43761ca42487477438f945210069caa90a467155d2c2cb0945c6fdbfd1c87",
+      "elapsedSeconds": 1.065485596,
+      "exitCode": 1,
+      "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "startedAt": "2026-10-19T22:32:58.452Z"
+    },
+    {
+      "archive": "gait",
+      "path": "gait/focused-receipt.json",
+      "sha256": "f7d48657f418c146fbc4e8b490a81aeac85a4a50f793f4e1e0894ec188a9e286",
+      "elapsedSeconds": 2.147306932,
+      "exitCode": 0,
+      "source": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "startedAt": "2026-10-19T22:33:07.911Z"
+    },
+    {
+      "archive": "gait",
+      "path": "gait/native-launch.json",
+      "sha256": "25e33b6832fdaf56955dfd8f9c5123eb748972c1d39e0fc1e7d0e2d8293aa9ed",
+      "elapsedSeconds": 2.4263759969999996,
+      "exitCode": 0,
+      "source": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "startedAt": "2026-10-19T22:38:22.233Z"
+    },
+    {
+      "archive": "gait",
+      "path": "gait/typecheck-receipt.json",
+      "sha256": "dda55da623ad76bf4558796e5984fcd18aedd58a13c21c623af1087c3c5d681b",
+      "elapsedSeconds": 11.451345277,
+      "exitCode": 0,
+      "source": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "startedAt": "2026-10-19T22:33:13.301Z"
+    },
+    {
+      "archive": "interaction",
+      "path": "interaction/focused-receipt.json",
+      "sha256": "e4521093c785825b3f850015659a3792996f8071fc23e949f4ad5303eede0484",
+      "elapsedSeconds": 1.5972191429999998,
+      "exitCode": 0,
+      "source": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "startedAt": "2026-10-19T22:43:03.560Z"
+    },
+    {
+      "archive": "interaction",
+      "path": "interaction/native-launch.json",
+      "sha256": "777d68dcd6b3eca062e79f33aa3a085d194b08f4a3a09721ecbba05054348273",
+      "elapsedSeconds": 2.8101687259999997,
+      "exitCode": 0,
+      "source": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "startedAt": "2026-10-19T22:43:14.712Z"
+    },
+    {
+      "archive": "interaction",
+      "path": "interaction/typecheck-receipt.json",
+      "sha256": "675b1d3b4f11d9c29b796e891825c6fbc091850e01ab24d5e593136f65a97599",
+      "elapsedSeconds": 11.243167339,
+      "exitCode": 0,
+      "source": "0eca9aa8931e5ca7f6dc07b24508bedbd80c6831d4a9a0013a1671f3e3167b70",
+      "startedAt": "2026-10-19T22:46:47.461Z"
+    }
+  ],
+  "costs": {
+    "uniqueCommandReceipts": 41,
+    "recordedUniqueCommandWallSeconds": 130.009315823,
+    "nativeNewPrefixes": 20,
+    "nativeNewCompleted": 15,
+    "nativeNewCensored": 5,
+    "nativeNewUniqueInputs": 7,
+    "nativeNewCaseWallSeconds": 12.530420218,
+    "cachedSelectedTapes": 10,
+    "qualification": "Original historical compatible receipts are reused and deduplicated by content SHA. This sum includes pure probes/checks/typechecks/mixed-time motor timing, not new game cost and not a performance pass."
+  },
+  "reusedOriginalEvidence": {
+    "pin": "55d672c90a68aa6d830fc0019d863b191bf39c80",
+    "path": "data/reviews/defensive-snap-response",
+    "note": "Broader original8 baselines used only by low-speed saved-data audit are reusable here; selected native comparisons needed by this continuation are also packaged."
+  },
+  "security": {
+    "NFLTrajectoriesIncluded": false,
+    "newNFLDownloads": 0,
+    "newNFLQueries": 0,
+    "newSimulationsByPackager": 0,
+    "includes": "Allowlisted sim tapes, synthetic/pure results, aggregate NFL text/receipt, original failures, tests/operators, exact source patches."
+  }
+}
