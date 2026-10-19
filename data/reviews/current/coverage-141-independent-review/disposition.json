@@ -1,0 +1,95 @@
+{
+  "role": "nonauthor coverage/controller review, no runtime tuning or adoption",
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "authorHead": "055f78ded6821336ce90c708b892e881ea9b7f08",
+  "authorRuntime": "61bf22e2f3684064c90d73d013cfc23b35f05741",
+  "portableCode": "12487de7e4237369fe12a6232b6673d5fe950e51",
+  "portableSource": "c94b8161276fba5dd7d6434ff929f1f5dd43a6b1e7e96369d57884801c63a05a",
+  "decision": "ACCEPT minimal runtime scope with independently clarified tests for Integration combined verification",
+  "contracts": {
+    "MOD": "ACCEPT ordered carry-then-release; later rescue of another uncapped vertical remains legal. Assert carry exists before looking for release.",
+    "acquired2Out": "ACCEPT cause-qualified rule mode; native H remains vertical. Do not forbid legal emergency X help. Separately acquired out must choose mode one/help X.",
+    "receiverRelative": "ACCEPT acquired-target objective below empty landmark plus achieved one-step bound. Request magnitude is not achieved speed.",
+    "P192": "ACCEPT bounded roof/comeback tradeoff; larger comeback space remains adverse, no comparable throw to Z. Actual braking follows acquired plant, no ignored-stop veto needed."
+  },
+  "newValidation": {
+    "passed": 4,
+    "intentionallyUnrun": 24,
+    "launcherChildWallSeconds": 2.94626916,
+    "newNativePanelCases": 0,
+    "newGames": 0,
+    "shortFrozenBallPrefixesInsideContractTests": 4,
+    "purpose": "Nonauthor assertion tightening and current accepted 128/132/135 composition, not repetition of the published 107-check campaign."
+  },
+  "sourceQualifiedReuse": {
+    "checks": 107,
+    "typecheck": true,
+    "measuredNativeSource": "690db3ead3b065d7df3a22df930eb0c6e6052f586b282dbed8d45deac1a649d4",
+    "finalAuthorSource": "c9614df969c8bef376a50747b14ad57ed0aa186374093a40d6910998ea455090",
+    "finalAgeGuardInactiveOnRecordedInputs": {
+      "proof": "Only expiry handling differs; its cue.age>.4 predicate is false for every recorded RouteObservation read, a superset of planner inputs.",
+      "cases": [
+        {
+          "id": "G1-P012",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G1-P027",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G1-P043",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G1-P049",
+          "maximumAcquiredImageAge": 0.30000000000000004
+        },
+        {
+          "id": "G1-P185",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G1-P187",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G1-P192",
+          "maximumAcquiredImageAge": 0.30000000000000004
+        },
+        {
+          "id": "G2-P067",
+          "maximumAcquiredImageAge": 0.4
+        },
+        {
+          "id": "G3-P089",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "G4-P156",
+          "maximumAcquiredImageAge": 0.25
+        },
+        {
+          "id": "F-QUARTERS-VERTICALS",
+          "maximumAcquiredImageAge": 0.35000000000000003
+        },
+        {
+          "id": "F-COVER2-SMASH",
+          "maximumAcquiredImageAge": 0.25
+        }
+      ],
+      "patch": "diff --git a/src/sim/coverage-leverage.ts b/src/sim/coverage-leverage.ts\nindex e393c9e..cbbb8e1 100644\n--- a/src/sim/coverage-leverage.ts\n+++ b/src/sim/coverage-leverage.ts\n@@ -34,14 +34,17 @@ export class DeepCoverage {\n     // correction twice. Continue it briefly from the consumed picture, stopping\n     // at zero rather than inventing a reverse route. Positive burst prediction\n     // also supplies the missing correction to constant-velocity dead reckoning.\n-    const age = this.acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);\n-    const burst = this.acceleration < 0 ? Math.min(.25, seen.vel.x / -this.acceleration) : .25;\n+    // Re-querying an aging picture cannot renew its transient plant/burst.\n+    // Use the same .4 s image-age bound as RouteObservation's correction.\n+    const acceleration = (cue.age ?? 0) > .4 ? 0 : this.acceleration;\n+    const age = acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);\n+    const burst = acceleration < 0 ? Math.min(.25, seen.vel.x / -acceleration) : .25;\n     const extra = (t: number) => {\n       const h = Math.min(t, burst);\n-      return this.acceleration * (h * h * .5 + h * Math.max(0, t - burst));\n+      return acceleration * (h * h * .5 + h * Math.max(0, t - burst));\n     };\n     const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);\n-    const targetV = clamp(seen.vel.x + this.acceleration * burst, 0, receiver.vmax);\n+    const targetV = clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);\n     const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));\n     const heading = Math.atan2(seen.vel.y, Math.max(.1, targetV));\n     const tau = a.profile.tau / fatigueFactor(a.body.energy);\n"
+    },
+    "historicalReceiptCommandSubtotalSeconds": 112.267762647,
+    "historicalPRProseCommandSeconds": 121.34,
+    "costLimitation": "Published summary receipts subtotal112.268s; PR prose121.34s not reconciled here. New review cost is separately exact. No current-base broad benefit/typecheck claim."
+  },
+  "limitations": [
+    "No current-base native panel; historical leverage/outcomes remain labeled to their measured source.",
+    "P192 arms both stop live at5s and throw X, not Z; no comeback or final-result causal comparison.",
+    "Legacy cap width/6yd gate and opponent profile knowledge remain inherited limits; no policy broadening.",
+    "P185 final permits legitimate completion unlike accepted baseline; G4P156 checkdown still9.31YAC; P105 held; fresh Smash incomparable.",
+    "Only Integration may verify/adopt the exact combined candidate."
+  ]
+}

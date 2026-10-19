@@ -1,0 +1,2660 @@
+{
+  "archiveCommit": "cd5c47eb9fb244ad4a7136b207009ce740bbb319",
+  "archiveSha256": "de56edc8ab23fa6dc4c72816c0e90344a34b0ea6313647aa2600366617a573e5",
+  "inputs": {
+    "contractBase": {
+      "path": "out/vertical-roof/hosts/base/out/catch-opportunity-physics/contracts.json",
+      "sha256": "a98ddcbeaec4aa7a2f79687d45d14f6a4080c55e1eadfad4b5747f1f79f6c142"
+    },
+    "contractFinal": {
+      "path": "out/vertical-roof/hosts/final/out/catch-opportunity-physics/contracts.json",
+      "sha256": "2575e38f8115af69c1147a97220aa9052957830b8bacfcab842ea66aec9d2f3f"
+    },
+    "comebackBase": {
+      "path": "out/flex-three-probes/hosts/base/out/catch-opportunity-physics/G1-P192-base.json.gz",
+      "sha256": "b3b206c593f127701730b017ad411f961f28bae68b75b00e91b46cad276ae905"
+    },
+    "comebackPlant": {
+      "path": "out/vertical-roof/hosts/plant-aware/out/catch-opportunity-physics/G1-P192.json.gz",
+      "sha256": "a995b8060918b5f358b0aa3035b47c4bc9012252d7ca1dd069477dc07089cf2f"
+    }
+  },
+  "contracts": {
+    "contractBase": {
+      "under": [
+        {
+          "t": 0,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 0.2,
+          "slot": "CB_W",
+          "job": "man:X",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0.2,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 39.4,
+                  "y": 44.66666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.8,
+                  "y": 28.26666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -5.200000000000003,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 39.4,
+                  "y": 22.76666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 38.8,
+                  "y": 8.666666666666668
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 38.8,
+                  "y": 35.266666666666666
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 1.65,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.65,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 43.98656089586831,
+                  "y": 43.518584444800034
+                },
+                "velocity": {
+                  "x": 3.5299530917137187,
+                  "y": -3.163711947256295
+                },
+                "depth": 3.9865608958683083,
+                "outward": -1.1480822218666376,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 35.16275054903888,
+                  "y": 28.13250112009227
+                },
+                "velocity": {
+                  "x": -1.1342149771278898,
+                  "y": 0.1684086949371089
+                },
+                "depth": -4.837249450961117,
+                "outward": -0.1341655465743976,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 43.77224905705519,
+                  "y": 22.186650724569102
+                },
+                "velocity": {
+                  "x": 5.021963963435611,
+                  "y": -0.6476171024365972
+                },
+                "depth": 3.772249057055191,
+                "outward": 0.5800159420975675,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 45.87468367838472,
+                  "y": 7.992426471573553
+                },
+                "velocity": {
+                  "x": 6.6663833876197955,
+                  "y": 0.022760090824057735
+                },
+                "depth": 5.87468367838472,
+                "outward": 0.6742401950931152,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 44.58742496140621,
+                  "y": 34.82148358891319
+                },
+                "velocity": {
+                  "x": 5.781557272577739,
+                  "y": -0.4446800931602531
+                },
+                "depth": 4.587424961406207,
+                "outward": -0.44518307775347665,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 2.0500000000000003,
+          "slot": "CB_W",
+          "job": "man:H",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "protect-vertical:H",
+            "readTick": 2.05,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 45.33469579719972,
+                  "y": 41.65200254007362
+                },
+                "velocity": {
+                  "x": 3.434907650159739,
+                  "y": -4.360318244593626
+                },
+                "depth": 5.334695797199721,
+                "outward": -3.014664126593054,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.28926445053331,
+                  "y": 28.11443780586557
+                },
+                "velocity": {
+                  "x": -2.04388111409348,
+                  "y": 0.11914650147753046
+                },
+                "depth": -5.7107355494666905,
+                "outward": -0.15222886080109888,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 46.39244565242446,
+                  "y": 22.100628448376114
+                },
+                "velocity": {
+                  "x": 6.353307407025942,
+                  "y": -0.07811369451495719
+                },
+                "depth": 6.392445652424463,
+                "outward": 0.6660382182905558,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 48.91143953783353,
+                  "y": 7.961380341450957
+                },
+                "velocity": {
+                  "x": 7.4619580001910215,
+                  "y": -0.1600406780327862
+                },
+                "depth": 8.91143953783353,
+                "outward": 0.7052863252157104,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 47.33764986452485,
+                  "y": 34.821118298424224
+                },
+                "velocity": {
+                  "x": 6.72988433399348,
+                  "y": -0.11001489798789202
+                },
+                "depth": 7.337649864524849,
+                "outward": -0.4455483682424415,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        },
+        {
+          "t": 2.25,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 2.25,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 46.08544722561592,
+                  "y": 40.696407855337995
+                },
+                "velocity": {
+                  "x": 3.631699700538005,
+                  "y": -4.584904587578505
+                },
+                "depth": 6.085447225615923,
+                "outward": -3.9702588113286765,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 33.790059782356806,
+                  "y": 28.07801013604834
+                },
+                "velocity": {
+                  "x": -2.2941621276078576,
+                  "y": -0.004436088070266005
+                },
+                "depth": -6.209940217643194,
+                "outward": -0.18865653061832788,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 47.83040790143879,
+                  "y": 22.074912605216838
+                },
+                "velocity": {
+                  "x": 6.827556482141664,
+                  "y": -0.08200967296571297
+                },
+                "depth": 7.8304079014387895,
+                "outward": 0.6917540614498314,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": true
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 50.50831887663217,
+                  "y": 7.93143001389609
+                },
+                "velocity": {
+                  "x": 7.758029344540244,
+                  "y": -0.1502356019155554
+                },
+                "depth": 10.508318876632167,
+                "outward": 0.7352366527705776,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 48.814418331841026,
+                  "y": 34.79370294014792
+                },
+                "velocity": {
+                  "x": 7.100992145390738,
+                  "y": -0.13462742741672704
+                },
+                "depth": 8.814418331841026,
+                "outward": -0.4729637265187492,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        },
+        {
+          "t": 0,
+          "slot": "FS",
+          "job": "zone:quarter_w_in",
+          "rule": {
+            "rule": "q_safety",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 2.0500000000000003,
+          "slot": "FS",
+          "job": "man:H",
+          "rule": {
+            "rule": "q_safety",
+            "mode": "two",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 2.05,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 45.33469251037162,
+                  "y": 41.6519999504753
+                },
+                "velocity": {
+                  "x": 3.434907650159739,
+                  "y": -4.360318244593626
+                },
+                "depth": 5.334692510371617,
+                "outward": -3.014666716191371,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 47.33765062009693,
+                  "y": 34.82116294354644
+                },
+                "velocity": {
+                  "x": 6.72988433399348,
+                  "y": -0.11001489798789202
+                },
+                "depth": 7.33765062009693,
+                "outward": -0.44550372312022546,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 0.95,
+                "climbed": true
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.28926445053331,
+                  "y": 28.11443780586557
+                },
+                "velocity": {
+                  "x": -2.04388111409348,
+                  "y": 0.11914650147753046
+                },
+                "depth": -5.7107355494666905,
+                "outward": -0.15222886080109888,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 46.39245047958691,
+                  "y": 22.100923906131523
+                },
+                "velocity": {
+                  "x": 6.353307407025942,
+                  "y": -0.07811369451495719
+                },
+                "depth": 6.392450479586913,
+                "outward": 0.6657427605351458,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 48.91143771370877,
+                  "y": 7.96129094949485
+                },
+                "velocity": {
+                  "x": 7.4619580001910215,
+                  "y": -0.1600406780327862
+                },
+                "depth": 8.911437713708771,
+                "outward": 0.705375717171818,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        }
+      ],
+      "out": [
+        {
+          "t": 0,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 0.2,
+          "slot": "CB_W",
+          "job": "man:X",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0.2,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 39.4,
+                  "y": 44.66666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.8,
+                  "y": 28.26666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -5.200000000000003,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 39.4,
+                  "y": 22.76666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 38.8,
+                  "y": 8.666666666666668
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 38.8,
+                  "y": 35.266666666666666
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 0,
+          "slot": "FS",
+          "job": "zone:quarter_w_in",
+          "rule": {
+            "rule": "q_safety",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 2.2,
+          "slot": "FS",
+          "job": "man:X",
+          "rule": {
+            "rule": "q_safety",
+            "mode": null,
+            "cut": null,
+            "judgment": "protect-vertical:X",
+            "readTick": 2.2,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 49.33954391954269,
+                  "y": 45.3716918968881
+                },
+                "velocity": {
+                  "x": 7.029413801387829,
+                  "y": 0.12893128566640177
+                },
+                "depth": 9.339543919542692,
+                "outward": 0.7050252302214304,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 0.9,
+                "climbed": true
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 45.65363895690438,
+                  "y": 35.47451640238069
+                },
+                "velocity": {
+                  "x": 2.9871272209541795,
+                  "y": 1.0889641179867722
+                },
+                "depth": 5.653638956904381,
+                "outward": 0.20784973571402077,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.05,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 33.91520000315017,
+                  "y": 28.062179210082327
+                },
+                "velocity": {
+                  "x": -2.2477971746613066,
+                  "y": -0.0757815563792723
+                },
+                "depth": -6.084799996849831,
+                "outward": -0.2044874565843422,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 47.46428578753485,
+                  "y": 22.080097114512217
+                },
+                "velocity": {
+                  "x": 6.717069126033308,
+                  "y": -0.11176855280361626
+                },
+                "depth": 7.464285787534848,
+                "outward": 0.6865695521544524,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": true
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 50.10496410913072,
+                  "y": 7.939241040190491
+                },
+                "velocity": {
+                  "x": 7.689348010838963,
+                  "y": -0.14890557482832456
+                },
+                "depth": 10.10496410913072,
+                "outward": 0.7274256264761769,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "contractFinal": {
+      "under": [
+        {
+          "t": 0,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 0.2,
+          "slot": "CB_W",
+          "job": "man:X",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0.2,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 39.4,
+                  "y": 44.66666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.8,
+                  "y": 28.26666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -5.200000000000003,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 39.4,
+                  "y": 22.76666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 38.8,
+                  "y": 8.666666666666668
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 38.8,
+                  "y": 35.266666666666666
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 1.65,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 1.65,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 43.98661019747323,
+                  "y": 43.518644853848606
+                },
+                "velocity": {
+                  "x": 3.5303684599491922,
+                  "y": -3.163248433479013
+                },
+                "depth": 3.986610197473233,
+                "outward": -1.1480218128180653,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 35.16275054903888,
+                  "y": 28.13250112009227
+                },
+                "velocity": {
+                  "x": -1.1342149771278898,
+                  "y": 0.1684086949371089
+                },
+                "depth": -4.837249450961117,
+                "outward": -0.1341655465743976,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 43.77224875640518,
+                  "y": 22.18664848184697
+                },
+                "velocity": {
+                  "x": 5.021963963435611,
+                  "y": -0.6476171024365972
+                },
+                "depth": 3.772248756405183,
+                "outward": 0.5800181848196999,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 45.874683202069086,
+                  "y": 7.99240860743182
+                },
+                "velocity": {
+                  "x": 6.6663833876197955,
+                  "y": 0.022760090824057735
+                },
+                "depth": 5.874683202069086,
+                "outward": 0.6742580592348482,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 44.587424961218446,
+                  "y": 34.82148358647216
+                },
+                "velocity": {
+                  "x": 5.781557272577739,
+                  "y": -0.4446800931602531
+                },
+                "depth": 4.587424961218446,
+                "outward": -0.4451830801945036,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 2.0500000000000003,
+          "slot": "CB_W",
+          "job": "man:H",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": "zoned",
+            "cut": null,
+            "judgment": "protect-vertical:H",
+            "readTick": 2.05,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 45.33469582941798,
+                  "y": 41.65200256545747
+                },
+                "velocity": {
+                  "x": 3.434907650159739,
+                  "y": -4.360318244593626
+                },
+                "depth": 5.334695829417981,
+                "outward": -3.014664101209199,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.28926445053331,
+                  "y": 28.11443780586557
+                },
+                "velocity": {
+                  "x": -2.04388111409348,
+                  "y": 0.11914650147753046
+                },
+                "depth": -5.7107355494666905,
+                "outward": -0.15222886080109888,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 46.392445605107476,
+                  "y": 22.10062555222952
+                },
+                "velocity": {
+                  "x": 6.353307407025942,
+                  "y": -0.07811369451495719
+                },
+                "depth": 6.392445605107476,
+                "outward": 0.6660411144371494,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 48.91143955571403,
+                  "y": 7.961381217691992
+                },
+                "velocity": {
+                  "x": 7.4619580001910215,
+                  "y": -0.1600406780327862
+                },
+                "depth": 8.911439555714033,
+                "outward": 0.705285448974676,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 47.33764985711855,
+                  "y": 34.821117860802204
+                },
+                "velocity": {
+                  "x": 6.72988433399348,
+                  "y": -0.11001489798789202
+                },
+                "depth": 7.337649857118549,
+                "outward": -0.4455488058644619,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        },
+        {
+          "t": 0,
+          "slot": "FS",
+          "job": "zone:quarter_w_in",
+          "rule": {
+            "rule": "q_safety",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 2.0500000000000003,
+          "slot": "FS",
+          "job": "man:H",
+          "rule": {
+            "rule": "q_safety",
+            "mode": "two",
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 2.05,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 45.33469253891001,
+                  "y": 41.65199997295989
+                },
+                "velocity": {
+                  "x": 3.434907650159739,
+                  "y": -4.360318244593626
+                },
+                "depth": 5.334692538910012,
+                "outward": -3.014666693706779,
+                "release": "under",
+                "first": "vertical",
+                "since": 1.65,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 47.33765061353655,
+                  "y": 34.82116255590819
+                },
+                "velocity": {
+                  "x": 6.72988433399348,
+                  "y": -0.11001489798789202
+                },
+                "depth": 7.337650613536553,
+                "outward": -0.4455041107584776,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 0.95,
+                "climbed": true
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.28926445053331,
+                  "y": 28.11443780586557
+                },
+                "velocity": {
+                  "x": -2.04388111409348,
+                  "y": 0.11914650147753046
+                },
+                "depth": -5.7107355494666905,
+                "outward": -0.15222886080109888,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 46.39245043767432,
+                  "y": 22.100921340773386
+                },
+                "velocity": {
+                  "x": 6.353307407025942,
+                  "y": -0.07811369451495719
+                },
+                "depth": 6.39245043767432,
+                "outward": 0.6657453258932833,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1.4,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 48.91143772954702,
+                  "y": 7.96129172565448
+                },
+                "velocity": {
+                  "x": 7.4619580001910215,
+                  "y": -0.1600406780327862
+                },
+                "depth": 8.911437729547018,
+                "outward": 0.7053749410121881,
+                "release": "vertical",
+                "first": "vertical",
+                "since": 1,
+                "climbed": true
+              }
+            ]
+          }
+        }
+      ],
+      "out": [
+        {
+          "t": 0,
+          "slot": "CB_W",
+          "job": "zone:quarter_w_out",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        },
+        {
+          "t": 0.2,
+          "slot": "CB_W",
+          "job": "man:X",
+          "rule": {
+            "rule": "q_corner_mod",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0.2,
+            "reads": [
+              {
+                "target": 8,
+                "slot": "X",
+                "position": {
+                  "x": 39.4,
+                  "y": 44.66666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 6,
+                "slot": "RB",
+                "position": {
+                  "x": 34.8,
+                  "y": 28.26666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -5.200000000000003,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 7,
+                "slot": "Y",
+                "position": {
+                  "x": 39.4,
+                  "y": 22.76666666666667
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -0.6000000000000014,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 9,
+                "slot": "Z",
+                "position": {
+                  "x": 38.8,
+                  "y": 8.666666666666668
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              },
+              {
+                "target": 10,
+                "slot": "H",
+                "position": {
+                  "x": 38.8,
+                  "y": 35.266666666666666
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0
+                },
+                "depth": -1.2000000000000028,
+                "outward": 0,
+                "release": "none",
+                "first": "none",
+                "since": 0,
+                "climbed": false
+              }
+            ]
+          }
+        },
+        {
+          "t": 0,
+          "slot": "FS",
+          "job": "zone:quarter_w_in",
+          "rule": {
+            "rule": "q_safety",
+            "mode": null,
+            "cut": null,
+            "judgment": "rule",
+            "readTick": 0,
+            "reads": []
+          }
+        }
+      ]
+    }
+  },
+  "comeback": {
+    "comebackBase": {
+      "source": "43715700da54cedbdd3e771af3ff90372ccb7a65839fb647985cf5c6af3b797c",
+      "inputHash": "cded8134ad2ba820c50f150d7fab77abbefc38352711bf27e1208699a971b7cf",
+      "nativeHash": "953046ed41bed4a9b01691fbe0adb2734a66c91625447bc44eb7a6da2d334879",
+      "horizon": 5,
+      "censored": true,
+      "events": [
+        {
+          "t": 3.4,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 52.6,
+            "y": 29.5
+          }
+        },
+        {
+          "t": 4.55,
+          "type": "catch",
+          "a": 8,
+          "pos": {
+            "x": 75.67,
+            "y": 49.83
+          }
+        }
+      ],
+      "firstAcquiredPlant": null,
+      "rows": [
+        {
+          "t": 2.7,
+          "longitudinalLead": 2.69920553182007,
+          "lateralOffset": 2.9418321081053325,
+          "gap": 3.9925038077987516,
+          "defenderVelocity": {
+            "x": 4.169821708097461,
+            "y": -2.408451762237254
+          },
+          "receiverVelocity": {
+            "x": 6.586096408212678,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 6.1875454751011585,
+              "y": -5.456044639323404
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 77.05983704231748,
+              "y": 14.5645945105781
+            },
+            "vel": {
+              "x": 4.080820602062055,
+              "y": -2.681052138852186
+            },
+            "facing": 4.241307273679439,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18730182452024158,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.6491374001676509,
+                "y": -4.94216011181704
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9359283370200476
+          }
+        },
+        {
+          "t": 2.75,
+          "longitudinalLead": 2.5833294651181404,
+          "lateralOffset": 2.8145945105780967,
+          "gap": 3.8204101068241263,
+          "defenderVelocity": {
+            "x": 4.080820602062055,
+            "y": -2.681052138852186
+          },
+          "receiverVelocity": {
+            "x": 6.299588570024218,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 5.688756800547107,
+              "y": -5.371725359559314
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 77.26312874947102,
+              "y": 14.424559269531219
+            },
+            "vel": {
+              "x": 4.050847684079657,
+              "y": -2.9203575030230517
+            },
+            "facing": 4.670751718123883,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18718566740400955,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -0.9001964399204594,
+                "y": -4.830817167317437
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9352350090505319
+          }
+        },
+        {
+          "t": 2.8,
+          "longitudinalLead": 2.4788192928878345,
+          "lateralOffset": 2.6745592695312155,
+          "gap": 3.646616565122839,
+          "defenderVelocity": {
+            "x": 4.050847684079657,
+            "y": -2.9203575030230517
+          },
+          "receiverVelocity": {
+            "x": 6.012486605329479,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 5.114936342115731,
+              "y": -5.271711077029592
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 77.46377749274194,
+              "y": 14.272280237919631
+            },
+            "vel": {
+              "x": 3.9751020467569114,
+              "y": -3.170803761440502
+            },
+            "facing": 5.100196162568327,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.1870470018101064,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.3387935759246128,
+                "y": -4.957896371694281
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.934577141486603
+          }
+        },
+        {
+          "t": 2.95,
+          "longitudinalLead": 2.228659017098181,
+          "lateralOffset": 2.18040670040614,
+          "gap": 3.117866962150409,
+          "defenderVelocity": {
+            "x": 3.7347507904120554,
+            "y": -3.664143291437798
+          },
+          "receiverVelocity": {
+            "x": 5.1469467515930205,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 4.348518489794667,
+              "y": -4.915411253015646
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 78.0326579197775,
+              "y": 13.741320896652184
+            },
+            "vel": {
+              "x": 3.571445302572374,
+              "y": -3.899288858720593
+            },
+            "facing": 5.965807020219455,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18666397391019424,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -3.0366888644126364,
+                "y": -4.762160560374263
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9327262446899915
+          }
+        },
+        {
+          "t": 3.1,
+          "longitudinalLead": 2.0435363612734534,
+          "lateralOffset": 1.63589107970774,
+          "gap": 2.617666992670019,
+          "defenderVelocity": {
+            "x": 3.3853701796076288,
+            "y": -4.143485611613973
+          },
+          "receiverVelocity": {
+            "x": 4.352490831507988,
+            "y": -0.6441234496706992
+          },
+          "request": {
+            "vel": {
+              "x": 3.4484351848726966,
+              "y": -4.4180900286840155
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 78.5452551577297,
+              "y": 13.127249625350586
+            },
+            "vel": {
+              "x": 3.2944510319996256,
+              "y": -4.229622863205502
+            },
+            "facing": 5.606754955187926,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18633656403679622,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.7275476530254186,
+                "y": -1.8314026578546936
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9312175990532134
+          }
+        },
+        {
+          "t": 3.4,
+          "longitudinalLead": 1.8447885491012386,
+          "lateralOffset": 0.6290767087765747,
+          "gap": 1.9490978160216126,
+          "defenderVelocity": {
+            "x": 2.0128093990647975,
+            "y": -4.796943377513741
+          },
+          "receiverVelocity": {
+            "x": 2.553973620846475,
+            "y": -1.6657511538378182
+          },
+          "request": {
+            "vel": {
+              "x": 1.5825868464880557,
+              "y": -4.331936499148407
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 79.31688904702614,
+              "y": 11.740514149001992
+            },
+            "vel": {
+              "x": 1.805716343354126,
+              "y": -4.573106447556472
+            },
+            "facing": 5.099038601802639,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18577275085534195,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -4.639930302684499,
+                "y": 3.1014621339412125
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9284638962733737
+          }
+        },
+        {
+          "t": 3.8,
+          "longitudinalLead": 1.902083971476415,
+          "lateralOffset": 0.15985405335123737,
+          "gap": 1.9087893422062876,
+          "defenderVelocity": {
+            "x": 0.7211971988430014,
+            "y": -3.2576418710606445
+          },
+          "receiverVelocity": {
+            "x": -0.04438487263435936,
+            "y": -2.3332235310127576
+          },
+          "request": {
+            "vel": {
+              "x": -1.042136510145081,
+              "y": 9.047831150043407
+            }
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 79.82139231414897,
+              "y": 10.209778894173803
+            },
+            "vel": {
+              "x": 0.6743605203421122,
+              "y": -2.955808304482746
+            },
+            "facing": 4.108122530942122,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18520976420314758,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.3148258859189759,
+                "y": 5.752057862619901
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9257573353539623
+          }
+        }
+      ]
+    },
+    "comebackPlant": {
+      "source": "690db3ead3b065d7df3a22df930eb0c6e6052f586b282dbed8d45deac1a649d4",
+      "inputHash": "cded8134ad2ba820c50f150d7fab77abbefc38352711bf27e1208699a971b7cf",
+      "nativeHash": "953046ed41bed4a9b01691fbe0adb2734a66c91625447bc44eb7a6da2d334879",
+      "horizon": 5,
+      "censored": true,
+      "events": [
+        {
+          "t": 3.1,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 52.33,
+            "y": 29.59
+          }
+        },
+        {
+          "t": 4.25,
+          "type": "catch",
+          "a": 8,
+          "pos": {
+            "x": 77.29,
+            "y": 48.45
+          }
+        }
+      ],
+      "firstAcquiredPlant": {
+        "t": 2.75,
+        "acquiredAt": 2.6,
+        "previousCue": {
+          "pos": {
+            "x": 74.20287220824652,
+            "y": 11.750000000000004
+          },
+          "vel": {
+            "x": 7.316087400930055,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.15000000000000002,
+          "pose": "up",
+          "carrying": false
+        },
+        "cue": {
+          "pos": {
+            "x": 74.54048989678559,
+            "y": 11.750000000000004
+          },
+          "vel": {
+            "x": 7.155020649459029,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.15000000000000002,
+          "pose": "up",
+          "carrying": false
+        },
+        "seen": {
+          "pos": {
+            "x": 74.52451557528005,
+            "y": 11.750000000000004
+          },
+          "vel": {
+            "x": 6.78607679185345,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.15000000000000002,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "rows": [
+        {
+          "t": 2.7,
+          "longitudinalLead": 4.510677313162702,
+          "lateralOffset": 1.749742783314158,
+          "gap": 4.838161802920679,
+          "defenderVelocity": {
+            "x": 5.495490867565609,
+            "y": -4.323329406874446
+          },
+          "receiverVelocity": {
+            "x": 6.586096408212678,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 7.339386494717889,
+              "y": -3.7677506656274002
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 78.94425465269045,
+              "y": 13.287379046084084
+            },
+            "vel": {
+              "x": 5.672984603807484,
+              "y": -4.171220082328643
+            },
+            "facing": 5.807188698192828,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18553519928860301,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 3.4200840499179495,
+                "y": 2.69150478379073
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.926906636500125
+          }
+        },
+        {
+          "t": 2.75,
+          "longitudinalLead": 4.467747075491104,
+          "lateralOffset": 1.5373790460840802,
+          "gap": 4.724859602347747,
+          "defenderVelocity": {
+            "x": 5.672984603807484,
+            "y": -4.171220082328643
+          },
+          "receiverVelocity": {
+            "x": 6.299588570024218,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 5.980743034498318,
+              "y": -3.504653569135341
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 79.2309213572726,
+              "y": 13.085353516493779
+            },
+            "vel": {
+              "x": 5.7936835794788,
+              "y": -3.909801101283559
+            },
+            "facing": 5.79466650652949,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.185381327300025,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 2.7022332892739724,
+                "y": 4.5015528110354825
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9263282641450412
+          }
+        },
+        {
+          "t": 2.8,
+          "longitudinalLead": 4.446611900689419,
+          "lateralOffset": 1.3353535164937753,
+          "gap": 4.642792953531856,
+          "defenderVelocity": {
+            "x": 5.7936835794788,
+            "y": -3.909801101283559
+          },
+          "receiverVelocity": {
+            "x": 6.012486605329479,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 4.808790920908345,
+              "y": -3.2242208156435943
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 79.51433787716003,
+              "y": 12.894226356684673
+            },
+            "vel": {
+              "x": 5.542977216017917,
+              "y": -3.735285291080702
+            },
+            "facing": 5.716576565669691,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18526565282900825,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -2.8033529549070293,
+                "y": 3.780040342717061
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9257801008087009
+          }
+        },
+        {
+          "t": 2.95,
+          "longitudinalLead": 4.42288541462419,
+          "lateralOffset": 0.7890566536469397,
+          "gap": 4.492719198164949,
+          "defenderVelocity": {
+            "x": 5.0573148424141126,
+            "y": -3.364917859029471
+          },
+          "receiverVelocity": {
+            "x": 5.1469467515930205,
+            "y": 0
+          },
+          "request": {
+            "vel": {
+              "x": 3.9195896902913385,
+              "y": -2.4429733998082686
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 80.29116397957091,
+              "y": 12.375617032446632
+            },
+            "vel": {
+              "x": 4.820067741266436,
+              "y": -3.172666988982968
+            },
+            "facing": 5.729170145258134,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.1849537726186945,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -4.721471325673348,
+                "y": 3.8156259358866276
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9243030012413714
+          }
+        },
+        {
+          "t": 3.1,
+          "longitudinalLead": 4.414894277241999,
+          "lateralOffset": 0.3770988710364449,
+          "gap": 4.43096998836159,
+          "defenderVelocity": {
+            "x": 4.3491851433530275,
+            "y": -2.783739479164734
+          },
+          "receiverVelocity": {
+            "x": 4.352490831507988,
+            "y": -0.6441234496706992
+          },
+          "request": {
+            "vel": {
+              "x": 3.0382017942300195,
+              "y": -1.7067694945232617
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 80.96117721279438,
+              "y": 11.94344465318857
+            },
+            "vel": {
+              "x": 4.11320163209977,
+              "y": -2.589879535283619
+            },
+            "facing": 5.765283445247747,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.1846887871492086,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -4.716330927212011,
+                "y": 3.8796023280059937
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9230480416853037
+          }
+        },
+        {
+          "t": 3.4,
+          "longitudinalLead": 4.431667294004143,
+          "lateralOffset": 0.016525606967364936,
+          "gap": 4.431698105741369,
+          "defenderVelocity": {
+            "x": 2.6325275845328986,
+            "y": -2.346908983195263
+          },
+          "receiverVelocity": {
+            "x": 2.575726633467357,
+            "y": -1.5718969683172455
+          },
+          "request": {
+            "vel": {
+              "x": 1.5146821804688575,
+              "y": -2.024148915690025
+            },
+            "cutSkill": 1.05
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 81.93371981407769,
+              "y": 11.22960268434465
+            },
+            "vel": {
+              "x": 2.337665718058645,
+              "y": -2.261772312612773
+            },
+            "facing": 5.307031262130044,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.1842664453612965,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -5.966748662436678,
+                "y": 1.2312850851106323
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9210306959951345
+          }
+        },
+        {
+          "t": 3.8,
+          "longitudinalLead": 4.7205365880514165,
+          "lateralOffset": 0.21665402499215247,
+          "gap": 4.725505755543782,
+          "defenderVelocity": {
+            "x": 1.596073608293274,
+            "y": -0.2517993223385242
+          },
+          "receiverVelocity": {
+            "x": -0.014235786549932072,
+            "y": -2.282908457570982
+          },
+          "request": {
+            "vel": {
+              "x": -1.3085033717985217,
+              "y": 9.01316348190052
+            }
+          },
+          "achieved": {
+            "i": 21,
+            "pos": {
+              "x": 82.69420063428358,
+              "y": 10.781526838859847
+            },
+            "vel": {
+              "x": 1.5029249998281358,
+              "y": 0.04468120765708877
+            },
+            "facing": 8.087354479733891,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": null,
+              "posture": 0.18383809574387655,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 0,
+                "y": 0
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.868473399561869,
+                "y": 5.91429430156638
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "energy": 0.9189491257419868
+          }
+        }
+      ]
+    }
+  }
+}

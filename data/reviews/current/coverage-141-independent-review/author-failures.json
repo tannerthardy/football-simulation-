@@ -1,0 +1,32 @@
+[
+  {
+    "receipt": "constructor-receipt.json",
+    "issue": "P105 missing original pre-constructor staged state; G4 capsule files absent locally",
+    "disposition": "P105 stays held. Reused restored G4 observations and original metadata, then constructor verified; no approximate reconstruction."
+  },
+  {
+    "receipt": "final-pair-receipt.json",
+    "issue": "An unrelated optional diagnostic import changed during launcher execution; inputsUnchanged=false",
+    "disposition": "Isolated source/runner preserved. Superseded by frozen native-candidate and plant-native receipts; not claimed green."
+  },
+  {
+    "receipt": "focused-contracts-receipt.json",
+    "issue": "97 pass, 4 fail: final MOD zone job, safety quick-out attribution, command ceiling, new hard-coded query count",
+    "disposition": "Paired native contract diagnosis and explicit acquired-out test reconcile the first three supported contracts. Query count is compared with actual legacy behavior. Red evidence retained."
+  },
+  {
+    "receipt": "plant-red-receipt.json",
+    "issue": "P185 raw acquired plant asks3.628849 while body moves3.402407; no actual braking",
+    "disposition": "Keep bounded acquired deceleration in forecast, clipped at zero; exact steering parameters retained in final fixture and green check."
+  },
+  {
+    "receipt": "stale-red-receipt.json",
+    "issue": "Repeated aged image keeps expired plant request2.00565 rather than current picture3.62885",
+    "disposition": "Transient acceleration expires above the inherited .4s image bound. Final13 information/behavior checks pass."
+  },
+  {
+    "receipt": "evidence-analysis-receipt.json",
+    "issue": "Initial Python hash operator used Path-component ordering rather than Node full path-string ordering",
+    "disposition": "No native data affected. Original summary retained; corrected reduction asserts equality with final Node launcher source hash."
+  }
+]

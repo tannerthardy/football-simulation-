@@ -1,0 +1,28 @@
+{
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "authorHead": "055f78ded6821336ce90c708b892e881ea9b7f08",
+  "runtimePaths": [
+    "src/playbook/coverages.ts",
+    "src/playbook/types.ts",
+    "src/sim/assign.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/coverage-leverage.ts",
+    "src/sim/coverage/defender.ts"
+  ],
+  "authorRuntimePatchSha256": "2463d32cea62c5d2afb7354d20028fa65b4cd302bdb54f2492bb8933d554a9e9",
+  "reverseRuntimeProjectionEqualsAcceptedBase": true,
+  "protectedUnchangedBlobs": {
+    "src/sim/behaviors/qb.ts": "463d9ec563b703fd8b11d095382b2f0bc6a07b97ff4082dff28c874f5dfdba6c",
+    "src/sim/behaviors/blocking.ts": "26565b3e0250f758e4952dc95cde02baab8459801b20d36d2fc3da8ad45767a8",
+    "src/sim/coverage/rules.ts": "abdb69b54f990db10b636be95622968a2551b97616a3c54c88796409b7c75220",
+    "src/sim/coverage/judgment.ts": "375f4c3853dbad824d88c448b79bd7a3ad8afe2080558449e8115de9977ec882",
+    "src/sim/spacing.ts": "3ad8b3a61c8dcf9f2f54282101d7074c68b7214e1442787e1b71828397e09c02",
+    "src/sim/behaviors/carrier.ts": "59a3dc45c3b298d0c7904f03e9445d8d290e8456c288baac0bd4d8fb0eaac354",
+    "src/physics/world.ts": "3bfea27d1c71e88bb9e9c9fd07c16e209991dd1ad0dfbc3fa8ad6fa80ea96da9",
+    "src/physics/kinematics.ts": "e2d4d9d750d643f8b823c900de7690e18112a40b858d569d0f060f3168896b8e",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "assembledRuntimeSource": "c94b8161276fba5dd7d6434ff929f1f5dd43a6b1e7e96369d57884801c63a05a",
+  "portableCode": "12487de7e4237369fe12a6232b6673d5fe950e51",
+  "selectedFilesMatchPublishedManifest": true
+}
