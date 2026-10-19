@@ -104,8 +104,8 @@ stay accepted. Take the minimal diff, not a full file from the old source host.
 [Machine-readable disposition](../../../data/reviews/current/coverage-141-independent-review/disposition.json),
 [saved-data reduction](../../../data/reviews/current/coverage-141-independent-review/saved-reduction.json),
 [fresh four-test receipt](../../../data/reviews/current/coverage-141-independent-review/current-contracts-receipt.json).
-New test-command wall cost **2.946s**, Node22.23.3, components1, other44 settings
-and native World defaults. Four short frozen-ball prefixes inside the contract
+New test-command wall cost **2.946s**, Node22.23.3, 44 accepted settings
+(components1, CF_FLOW unset) and native World defaults. Four short frozen-ball prefixes inside the contract
 checks; **zero new native-panel cases or games**, no broad suite/typecheck repeat.
 24 other tests deliberately unrun. Integration owns exact combined verification.
 
