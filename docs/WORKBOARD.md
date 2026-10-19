@@ -2,7 +2,7 @@
 
 ## Catching/Awareness: acquired first-level lateral run flow — 2026-10-19 America/Phoenix
 
-Separate `codex/dl-acquired-run-flow` from accepted/fetched f4146275, canonical queue9a6bb795. Own only `runContactRead` acquired lateral target/held target-flow metadata, coordinated on #153 before editing. Require acquired RB carrying and noncontradictory QB evidence; preserve installed frontside box/spill, lag/cutback, PA/keeper uncertainty, own depth and actual hands. No shed/re-grab/release, Physics, capacities, movement bounds, latency or offensive blocking edits. Test DL-only against unchanged accepted source; LB crossover is independent and uncombined until each works. Integration owns combined verification.
+Separate `codex/dl-acquired-run-flow` from accepted/fetched f4146275, canonical queue9a6bb795. Own only interior `runContactRead` acquired lateral target/held target-flow metadata, coordinated on #153 before editing. Retained code c5c852b/runtime5b1b4a5b;16 final new/43 compatible existing checks and typecheck pass. Edge-inclusive prototype rejected by contract; all edges keep existing box/spill. Native transfer, adverse toss execution and four final interactions are published in [report/evidence](reviews/run-flow-2026-10-19.md). Require acquired RB carrying and noncontradictory QB evidence; preserve installed frontside box/spill, lag/cutback, PA/keeper uncertainty, own depth and actual hands. No shed/re-grab/release, Physics, capacities, movement bounds, latency or offensive blocking edits. Test DL-only against unchanged accepted source; LB crossover is independent and uncombined until each works. Integration owns combined verification.
 
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
