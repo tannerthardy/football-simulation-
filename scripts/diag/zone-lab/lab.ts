@@ -17,6 +17,7 @@ import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import type { DefensivePlayCall, OffensivePlayCall } from '../../../src/playbook/types.js';
 import { RunBlocker } from '../../../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import type { ReplayLevel } from '../../../src/sim/types.js';
 
 const arg = (n: string, d: string) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : d; };
 const list = (n: string, d: string) => arg(n, d).split(',').filter(Boolean);
@@ -48,14 +49,15 @@ export function look(id: string): DefensivePlayCall {
 export interface LabCase { concept: string; dir: 'strong' | 'weak'; look: string; roster: string; seed: number; formation: string }
 export const caseId = (c: LabCase) => [c.concept, c.dir, c.formation, c.look, c.roster, c.seed].join('/');
 
-export function makeSim(c: LabCase, R = rosters(), record = false): PlaySim {
+export function makeSim(c: LabCase, R = rosters(), record = false, recordLevel?: ReplayLevel): PlaySim {
   const formation = structuredClone(FORMATION_BY_ID[c.formation]);
   const run = structuredClone(RUN_BY_ID[`${CONCEPT[c.concept] ?? c.concept}_${c.dir}`] ?? RUN_BY_ID[c.concept]);
   run.direction = c.dir;
   const offCall: OffensivePlayCall = { formation, flip: false, kind: 'run', run, label: c.concept };
   const defCall = look(c.look), r = R[c.roster];
   return new PlaySim({ offense: structuredClone(r.offense[formation.personnel]), defense: structuredClone(r.defense[defCall.personnel]),
-    offCall, defCall, los: 40, ballY: 26.67, firstDownX: 50, down: 1, seed: c.seed, audibles: false, hurry: false, record });
+    offCall, defCall, los: 40, ballY: 26.67, firstDownX: 50, down: 1, seed: c.seed, audibles: false, hurry: false, record,
+    ...(recordLevel ? { recordLevel } : {}) });
 }
 
 const r2 = (x: number) => Math.round(x * 100) / 100;

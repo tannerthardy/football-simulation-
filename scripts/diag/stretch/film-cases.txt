@@ -1,0 +1,28 @@
+# Film cases for the Part 4/5 review page. Selected witnesses first (labelled), then a random
+# ordinary sample drawn with Python random.Random(20261019) before any outcome was looked at.
+# The same cases run in every arm.
+power/strong/ace_12/under3/pair31/77	Selected witness (w8): strong backer comes off a climb that runs past him
+counter/strong/i_pro_21/tite4/pair31/77	Selected witness: middle backer comes off a separated climb
+power/weak/i_pro_21/under3/pair11/77	Selected witness (w9): guard leaving the 3-technique for the weak backer
+counter/weak/i_pro_21/wide9/pair11/77	Selected witness: counter vs wide 9, late kick-out (puller start-up, physics)
+counter/strong/ace_12/over2/pair31/3	Selected adverse control: 20.8 yd before, negative after
+duo/weak/i_pro_21/under3/pair31/77	Selected: duo big gain after (duo already above NFL)
+power/strong/i_pro_21/over4/pair31/1	Random ordinary
+power/weak/i_pro_21/over3/pair31/2	Random ordinary
+power/weak/i_pro_21/under3/pair31/1	Random ordinary
+power/weak/i_pro_21/wide9/pair31/1	Random ordinary
+counter/weak/ace_12/odd3/pair11/71001	Random ordinary
+counter/weak/ace_12/wide9/pair11/1	Random ordinary
+counter/weak/i_pro_21/bear1/pair31/2	Random ordinary
+counter/weak/i_pro_21/tite4/pair11/2	Random ordinary
+duo/weak/ace_12/mike1/pair11/77	Random ordinary
+duo/weak/ace_12/under3/pair31/77	Random ordinary
+trap/strong/ace_12/off1/pair11/3	Random ordinary
+trap/strong/ace_12/over4/pair11/1	Random ordinary
+toss/weak/ace_12/tite4/pair31/3	Random ordinary
+toss/weak/i_pro_21/bear1/pair11/3	Random ordinary
+toss/weak/i_pro_21/off1/pair11/2	Random ordinary
+iz/weak/ace_12/odd3/pair11/71001	Random ordinary
+iz/weak/ace_12/tite4/pair11/2	Random ordinary
+oz/strong/ace_12/over3/pair31/71001	Random ordinary
+oz/weak/ace_12/tite4/pair31/71001	Random ordinary
