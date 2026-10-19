@@ -1,0 +1,501 @@
+# Part 5 receipts (run-game-v3). Python operators on NFL 2022 tracking (out/mechanics/nfl-plays.jsonl.gz) and sim common files of the bound arms in run-game-v3/v5 and v7; sim-side TS diagnostics run through scripts/baseline.mjs --candidate (receipts listed).
+
+## seal.py (leverage at the crossing, within 4 yd)
+nfl-plays.jsonl.gz       iz runs crossing 1228 (at crossing+0s, within 4 yd)
+  DL  n 2.34/run (<2.5 yd 1.50) | free 0.28/run reach  48% | walled 1.43/run reach  38% | outside 0.63/run reach  49%
+  LB  n 1.69/run (<2.5 yd 0.76) | free 0.52/run reach  59% | walled 0.81/run reach  38% | outside 0.36/run reach  53%
+  DB  n 0.47/run (<2.5 yd 0.21) | free 0.25/run reach  60% | walled 0.12/run reach  35% | outside 0.10/run reach  52%
+nfl-plays.jsonl.gz       oz runs crossing 1406 (at crossing+0s, within 4 yd)
+  DL  n 2.14/run (<2.5 yd 1.33) | free 0.46/run reach  47% | walled 1.01/run reach  35% | outside 0.67/run reach  43%
+  LB  n 1.79/run (<2.5 yd 0.91) | free 0.63/run reach  57% | walled 0.70/run reach  33% | outside 0.46/run reach  49%
+  DB  n 0.49/run (<2.5 yd 0.22) | free 0.26/run reach  57% | walled 0.14/run reach  30% | outside 0.09/run reach  49%
+nfl-plays.jsonl.gz       power runs crossing 518 (at crossing+0s, within 4 yd)
+  DL  n 2.01/run (<2.5 yd 1.20) | free 0.23/run reach  44% | walled 1.26/run reach  31% | outside 0.53/run reach  41%
+  LB  n 1.87/run (<2.5 yd 1.01) | free 0.50/run reach  53% | walled 0.96/run reach  34% | outside 0.42/run reach  46%
+  DB  n 0.62/run (<2.5 yd 0.25) | free 0.28/run reach  44% | walled 0.20/run reach  30% | outside 0.14/run reach  64%
+nfl-plays.jsonl.gz       counter runs crossing 336 (at crossing+0s, within 4 yd)
+  DL  n 2.06/run (<2.5 yd 1.11) | free 0.29/run reach  40% | walled 1.25/run reach  25% | outside 0.51/run reach  42%
+  LB  n 1.88/run (<2.5 yd 1.07) | free 0.57/run reach  42% | walled 0.90/run reach  24% | outside 0.41/run reach  47%
+  DB  n 0.56/run (<2.5 yd 0.24) | free 0.26/run reach  54% | walled 0.19/run reach  20% | outside 0.11/run reach  47%
+nfl-plays.jsonl.gz       duo runs crossing 937 (at crossing+0s, within 4 yd)
+  DL  n 2.12/run (<2.5 yd 1.33) | free 0.22/run reach  45% | walled 1.28/run reach  37% | outside 0.61/run reach  45%
+  LB  n 1.79/run (<2.5 yd 0.89) | free 0.43/run reach  58% | walled 0.91/run reach  38% | outside 0.44/run reach  53%
+  DB  n 0.89/run (<2.5 yd 0.45) | free 0.43/run reach  54% | walled 0.27/run reach  34% | outside 0.18/run reach  54%
+nfl-plays.jsonl.gz       toss runs crossing 411 (at crossing+0s, within 4 yd)
+  DL  n 1.22/run (<2.5 yd 0.73) | free 0.50/run reach  48% | walled 0.42/run reach  31% | outside 0.30/run reach  47%
+  LB  n 1.45/run (<2.5 yd 0.71) | free 0.66/run reach  47% | walled 0.44/run reach  29% | outside 0.36/run reach  47%
+  DB  n 0.82/run (<2.5 yd 0.39) | free 0.43/run reach  51% | walled 0.23/run reach  27% | outside 0.16/run reach  41%
+v5d0-common.jsonl.gz     iz runs crossing 387 (at crossing+0s, within 4 yd)
+  DL  n 1.72/run (<2.5 yd 0.83) | free 0.16/run reach  27% | walled 1.02/run reach  16% | outside 0.55/run reach  27%
+  LB  n 1.60/run (<2.5 yd 0.69) | free 0.62/run reach  42% | walled 0.65/run reach  17% | outside 0.34/run reach  45%
+  DB  n 0.18/run (<2.5 yd 0.02) | free 0.13/run reach  27% | walled 0.04/run reach  13% | outside 0.01/run reach  50%
+v7dc-common.jsonl.gz     iz runs crossing 387 (at crossing+0s, within 4 yd)
+  DL  n 1.71/run (<2.5 yd 0.80) | free 0.03/run reach  45% | walled 1.09/run reach  14% | outside 0.59/run reach  25%
+  LB  n 1.57/run (<2.5 yd 0.68) | free 0.58/run reach  47% | walled 0.68/run reach  13% | outside 0.31/run reach  40%
+  DB  n 0.18/run (<2.5 yd 0.02) | free 0.13/run reach  37% | walled 0.04/run reach   0% | outside 0.01/run reach  33%
+v5d0-common.jsonl.gz     oz runs crossing 342 (at crossing+0s, within 4 yd)
+  DL  n 1.82/run (<2.5 yd 1.01) | free 0.20/run reach  18% | walled 0.93/run reach   3% | outside 0.70/run reach  20%
+  LB  n 2.26/run (<2.5 yd 1.33) | free 0.95/run reach  41% | walled 0.76/run reach  18% | outside 0.55/run reach  32%
+  DB  n 0.38/run (<2.5 yd 0.04) | free 0.26/run reach  25% | walled 0.11/run reach   6% | outside 0.01/run reach  50%
+v7dc-common.jsonl.gz     oz runs crossing 340 (at crossing+0s, within 4 yd)
+  DL  n 1.81/run (<2.5 yd 1.01) | free 0.18/run reach  23% | walled 0.96/run reach   5% | outside 0.67/run reach  19%
+  LB  n 2.27/run (<2.5 yd 1.34) | free 0.86/run reach  41% | walled 0.80/run reach  19% | outside 0.61/run reach  30%
+  DB  n 0.39/run (<2.5 yd 0.05) | free 0.29/run reach  29% | walled 0.09/run reach   9% | outside 0.01/run reach  60%
+v5d0gap-common.jsonl.gz  power runs crossing 326 (at crossing+0s, within 4 yd)
+  DL  n 1.36/run (<2.5 yd 0.48) | free 0.38/run reach  18% | walled 0.68/run reach   4% | outside 0.30/run reach  21%
+  LB  n 1.56/run (<2.5 yd 0.65) | free 0.67/run reach  33% | walled 0.54/run reach  19% | outside 0.35/run reach  35%
+  DB  n 0.21/run (<2.5 yd 0.03) | free 0.18/run reach  52% | walled 0.02/run reach   0% | outside 0.01/run reach  25%
+v7dcgap-common.jsonl.gz  power runs crossing 343 (at crossing+0s, within 4 yd)
+  DL  n 1.27/run (<2.5 yd 0.39) | free 0.16/run reach  11% | walled 0.75/run reach   5% | outside 0.36/run reach  12%
+  LB  n 1.52/run (<2.5 yd 0.62) | free 0.54/run reach  41% | walled 0.60/run reach  14% | outside 0.38/run reach  28%
+  DB  n 0.24/run (<2.5 yd 0.04) | free 0.21/run reach  58% | walled 0.01/run reach   0% | outside 0.02/run reach  12%
+v5d0gap-common.jsonl.gz  counter runs crossing 330 (at crossing+0s, within 4 yd)
+  DL  n 0.95/run (<2.5 yd 0.43) | free 0.26/run reach  13% | walled 0.35/run reach   5% | outside 0.34/run reach  28%
+  LB  n 1.60/run (<2.5 yd 0.74) | free 0.65/run reach  31% | walled 0.62/run reach  21% | outside 0.32/run reach  40%
+  DB  n 0.39/run (<2.5 yd 0.05) | free 0.33/run reach  43% | walled 0.04/run reach   8% | outside 0.02/run reach  43%
+v7dcgap-common.jsonl.gz  counter runs crossing 352 (at crossing+0s, within 4 yd)
+  DL  n 0.91/run (<2.5 yd 0.37) | free 0.13/run reach   4% | walled 0.45/run reach  11% | outside 0.34/run reach  19%
+  LB  n 1.58/run (<2.5 yd 0.72) | free 0.59/run reach  29% | walled 0.64/run reach  15% | outside 0.35/run reach  31%
+  DB  n 0.35/run (<2.5 yd 0.05) | free 0.28/run reach  49% | walled 0.03/run reach  18% | outside 0.03/run reach  25%
+v5d0gap-common.jsonl.gz  duo runs crossing 385 (at crossing+0s, within 4 yd)
+  DL  n 1.20/run (<2.5 yd 0.43) | free 0.33/run reach  31% | walled 0.70/run reach  10% | outside 0.17/run reach  27%
+  LB  n 1.38/run (<2.5 yd 0.62) | free 0.63/run reach  45% | walled 0.45/run reach  14% | outside 0.29/run reach  19%
+  DB  n 0.13/run (<2.5 yd 0.01) | free 0.10/run reach  39% | walled 0.01/run reach  33% | outside 0.02/run reach  11%
+v7dcgap-common.jsonl.gz  duo runs crossing 392 (at crossing+0s, within 4 yd)
+  DL  n 0.91/run (<2.5 yd 0.26) | free 0.02/run reach  12% | walled 0.76/run reach   9% | outside 0.14/run reach  21%
+  LB  n 1.28/run (<2.5 yd 0.55) | free 0.45/run reach  48% | walled 0.53/run reach  10% | outside 0.30/run reach  18%
+  DB  n 0.13/run (<2.5 yd 0.01) | free 0.08/run reach  48% | walled 0.01/run reach   0% | outside 0.04/run reach  20%
+v7toss-common.jsonl.gz   toss runs crossing 330 (at crossing+0s, within 4 yd)
+  DL  n 1.12/run (<2.5 yd 0.59) | free 0.32/run reach  19% | walled 0.37/run reach   3% | outside 0.43/run reach  24%
+  LB  n 1.06/run (<2.5 yd 0.35) | free 0.58/run reach  29% | walled 0.28/run reach  18% | outside 0.20/run reach  18%
+  DB  n 0.22/run (<2.5 yd 0.06) | free 0.14/run reach  35% | walled 0.05/run reach   0% | outside 0.03/run reach  18%
+v7tossdc-common.jsonl.gz toss runs crossing 343 (at crossing+0s, within 4 yd)
+  DL  n 1.01/run (<2.5 yd 0.54) | free 0.08/run reach  28% | walled 0.45/run reach   4% | outside 0.48/run reach  25%
+  LB  n 1.06/run (<2.5 yd 0.36) | free 0.50/run reach  31% | walled 0.30/run reach  17% | outside 0.27/run reach  12%
+  DB  n 0.21/run (<2.5 yd 0.05) | free 0.15/run reach  27% | walled 0.04/run reach  23% | outside 0.02/run reach  38%
+
+## lbblocks.py (second-level block episodes) by family
+nfl-plays.jsonl.gz     inside_zone runs 1026, second-level defenders 3028: blocked by crossing+1s 73% | first block starts p50 2.0 s, lasts p25/50/75 0.9/1.5/2.2 s | on at crossing 67% at crossing+1s 63% | episodes still on at the ending (duration is a lower bound) 37%
+nfl-plays.jsonl.gz     outside_zone runs 1063, second-level defenders 3023: blocked by crossing+1s 71% | first block starts p50 2.0 s, lasts p25/50/75 0.8/1.5/2.1 s | on at crossing 67% at crossing+1s 52% | episodes still on at the ending (duration is a lower bound) 29%
+nfl-plays.jsonl.gz     gap_pull runs 1109, second-level defenders 3101: blocked by crossing+1s 73% | first block starts p50 2.1 s, lasts p25/50/75 0.7/1.4/2.1 s | on at crossing 63% at crossing+1s 55% | episodes still on at the ending (duration is a lower bound) 29%
+v5d0-common.jsonl.gz   inside_zone runs 238, second-level defenders 750: blocked by crossing+1s 80% | first block starts p50 1.8 s, lasts p25/50/75 0.7/1.2/2.0 s | on at crossing 64% at crossing+1s 45% | episodes still on at the ending (duration is a lower bound) 34%
+v5d0-common.jsonl.gz   outside_zone runs 343, second-level defenders 1092: blocked by crossing+1s 73% | first block starts p50 2.2 s, lasts p25/50/75 0.7/1.1/1.8 s | on at crossing 67% at crossing+1s 45% | episodes still on at the ending (duration is a lower bound) 32%
+v7dc-common.jsonl.gz   inside_zone runs 247, second-level defenders 784: blocked by crossing+1s 76% | first block starts p50 1.8 s, lasts p25/50/75 0.9/1.6/2.3 s | on at crossing 73% at crossing+1s 61% | episodes still on at the ending (duration is a lower bound) 49%
+v7dc-common.jsonl.gz   outside_zone runs 355, second-level defenders 1124: blocked by crossing+1s 73% | first block starts p50 2.2 s, lasts p25/50/75 0.8/1.4/2.1 s | on at crossing 72% at crossing+1s 59% | episodes still on at the ending (duration is a lower bound) 46%
+v7dt-common.jsonl.gz   inside_zone runs 258, second-level defenders 822: blocked by crossing+1s 77% | first block starts p50 1.8 s, lasts p25/50/75 0.9/1.7/2.4 s | on at crossing 72% at crossing+1s 61% | episodes still on at the ending (duration is a lower bound) 50%
+v7dt-common.jsonl.gz   outside_zone runs 376, second-level defenders 1191: blocked by crossing+1s 77% | first block starts p50 2.2 s, lasts p25/50/75 0.8/1.5/2.2 s | on at crossing 74% at crossing+1s 61% | episodes still on at the ending (duration is a lower bound) 48%
+v5d0gap-common.jsonl.g gap_pull runs 672, second-level defenders 2270: blocked by crossing+1s 76% | first block starts p50 2.0 s, lasts p25/50/75 0.6/1.0/1.8 s | on at crossing 47% at crossing+1s 32% | episodes still on at the ending (duration is a lower bound) 24%
+v7dcgap-common.jsonl.g gap_pull runs 778, second-level defenders 2595: blocked by crossing+1s 69% | first block starts p50 2.0 s, lasts p25/50/75 0.6/1.3/2.3 s | on at crossing 60% at crossing+1s 46% | episodes still on at the ending (duration is a lower bound) 39%
+v7dtgap-common.jsonl.g gap_pull runs 773, second-level defenders 2571: blocked by crossing+1s 70% | first block starts p50 2.0 s, lasts p25/50/75 0.6/1.3/2.3 s | on at crossing 60% at crossing+1s 46% | episodes still on at the ending (duration is a lower bound) 39%
+
+## gaptime.py (concept timing and first contact)
+nfl-plays.jsonl.gz     iz: runs 1343 | handoff  1.20 [ 1.10, 1.30] | crosses line  2.40 [ 2.20, 2.70] (n 1228, 91%) | first contact  2.60 [ 2.30, 2.90] at depth  0.80 [-0.40, 2.20] | nearest at contact DB 18% DL 51% LB 31%
+nfl-plays.jsonl.gz     oz: runs 1641 | handoff  1.30 [ 1.20, 1.40] | crosses line  2.70 [ 2.50, 3.10] (n 1406, 86%) | first contact  2.80 [ 2.50, 3.30] at depth  0.30 [-1.10, 2.10] | nearest at contact DB 20% DL 43% LB 37%
+nfl-plays.jsonl.gz     power: runs 589 | handoff  1.20 [ 1.10, 1.30] | crosses line  2.50 [ 2.30, 2.80] (n 518, 88%) | first contact  2.70 [ 2.40, 3.30] at depth  0.80 [-0.50, 2.50] | nearest at contact DB 28% DL 34% LB 39%
+nfl-plays.jsonl.gz     counter: runs 396 | handoff  1.30 [ 1.20, 1.40] | crosses line  2.80 [ 2.50, 3.10] (n 336, 85%) | first contact  2.90 [ 2.50, 3.50] at depth  0.50 [-1.00, 2.70] | nearest at contact DB 26% DL 32% LB 42%
+nfl-plays.jsonl.gz     duo: runs 1059 | handoff  1.30 [ 1.20, 1.40] | crosses line  2.50 [ 2.30, 2.80] (n 937, 88%) | first contact  2.70 [ 2.30, 3.10] at depth  0.50 [-0.60, 2.00] | nearest at contact DB 27% DL 40% LB 33%
+nfl-plays.jsonl.gz     toss: runs 509 | handoff  1.30 [ 1.20, 1.40] | crosses line  3.40 [ 3.00, 3.70] (n 411, 81%) | first contact  3.50 [ 3.00, 4.00] at depth  0.40 [-1.50, 2.80] | nearest at contact DB 36% DL 26% LB 38%
+v5d0-common.jsonl.gz   iz: runs 400 | handoff  1.50 [ 1.50, 1.50] | crosses line  2.70 [ 2.70, 2.80] (n 387, 97%) | first contact  3.00 [ 2.70, 3.35] at depth  1.30 [ 0.20, 3.10] | nearest at contact DB 31% DL 30% LB 39%
+v5d0-common.jsonl.gz   oz: runs 400 | handoff  1.55 [ 1.55, 1.60] | crosses line  2.60 [ 2.50, 2.80] (n 342, 86%) | first contact  2.75 [ 2.45, 3.15] at depth  0.50 [-0.70, 1.60] | nearest at contact DB 23% DL 33% LB 44%
+v5d0gap-common.jsonl.g power: runs 400 | handoff  1.50 [ 1.50, 1.55] | crosses line  3.20 [ 3.10, 3.40] (n 326, 82%) | first contact  3.40 [ 3.05, 3.75] at depth  0.90 [-1.00, 2.60] | nearest at contact DB 31% DL 31% LB 37%
+v5d0gap-common.jsonl.g counter: runs 400 | handoff  1.50 [ 1.50, 1.55] | crosses line  3.20 [ 3.10, 3.40] (n 330, 82%) | first contact  3.35 [ 2.95, 3.75] at depth  0.70 [-1.10, 2.40] | nearest at contact DB 36% DL 35% LB 29%
+v5d0gap-common.jsonl.g duo: runs 400 | handoff  1.55 [ 1.50, 1.65] | crosses line  2.70 [ 2.70, 3.20] (n 385, 96%) | first contact  3.20 [ 2.85, 3.55] at depth  1.60 [ 0.20, 3.90] | nearest at contact DB 35% DL 27% LB 38%
+v7toss-common.jsonl.gz toss: runs 400 | handoff  0.85 [ 0.80, 1.00] | crosses line  3.00 [ 2.90, 3.20] (n 330, 82%) | first contact  3.30 [ 2.75, 3.60] at depth  1.50 [-0.80, 3.00] | nearest at contact DB 46% DL 37% LB 18%
+
+## lbreps-d0 (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '0', 'DRIVE_CONNECT': '0'})
+iz separations n 115: relative motion along the rep axis p25/50/75 -2.93/-2.40/-1.95 | across 0.24/0.65/1.49 | backer's lateral 0.56/1.36/2.42 vs blocker's mirror cap 2.18/2.62/3.44, blocker's achieved lateral 0.66/1.52/2.04 | blocker downfield of backer (yd) 1.29/1.50/1.61 | stretch reps 0%
+oz separations n 67: relative motion along the rep axis p25/50/75 -2.90/-2.47/-1.89 | across 0.38/0.60/1.05 | backer's lateral 1.55/2.06/2.84 vs blocker's mirror cap 2.18/2.47/3.55, blocker's achieved lateral 1.21/1.82/2.15 | blocker downfield of backer (yd) 1.37/1.51/1.60 | stretch reps 0%
+power separations n 104: relative motion along the rep axis p25/50/75 -3.17/-2.36/-1.67 | across 0.34/0.74/1.41 | backer's lateral 0.71/1.31/1.77 vs blocker's mirror cap 2.68/3.75/4.13, blocker's achieved lateral 0.64/1.14/1.85 | blocker downfield of backer (yd) 1.22/1.47/1.57 | stretch reps 0%
+counter separations n 84: relative motion along the rep axis p25/50/75 -3.12/-2.73/-1.92 | across 0.28/0.63/1.36 | backer's lateral 0.76/1.38/1.88 vs blocker's mirror cap 2.68/3.55/4.13, blocker's achieved lateral 0.61/1.24/1.94 | blocker downfield of backer (yd) 1.21/1.46/1.58 | stretch reps 0%
+iz separations, at rep start: blocker downfield of backer -0.97/-0.80/-0.27 yd -> at end 1.29/1.50/1.61 | backer downhill speed at start 0.55/1.25/2.35 yd/s | drive line upfield component 0.93/1.00/1.00
+oz separations, at rep start: blocker downfield of backer -0.99/-0.71/-0.08 yd -> at end 1.37/1.51/1.60 | backer downhill speed at start 0.70/1.25/2.17 yd/s | drive line upfield component 0.93/0.93/1.00
+power separations, at rep start: blocker downfield of backer -0.84/-0.41/0.16 yd -> at end 1.22/1.47/1.57 | backer downhill speed at start 0.25/1.31/2.34 yd/s | drive line upfield component 0.89/0.89/1.00
+counter separations, at rep start: blocker downfield of backer -0.92/-0.55/0.16 yd -> at end 1.21/1.46/1.58 | backer downhill speed at start 0.27/1.20/1.87 yd/s | drive line upfield component 0.89/1.00/1.00
+iz: LB reps 422
+  runner passed defender              31%  duration p25/50/75 0.40/0.45/1.05 s
+  censored (on at the end)            29%  duration p25/50/75 0.30/1.00/1.90 s
+  separation                          27%  duration p25/50/75 0.70/0.90/1.35 s
+  body down                           13%  duration p25/50/75 0.25/0.25/0.50 s
+  leverage                             0%  duration p25/50/75 0.00/0.00/0.00 s
+oz: LB reps 290
+  runner passed defender              38%  duration p25/50/75 0.40/0.45/0.85 s
+  censored (on at the end)            34%  duration p25/50/75 0.30/0.80/1.55 s
+  separation                          23%  duration p25/50/75 0.60/0.90/1.30 s
+  body down                            6%  duration p25/50/75 0.45/1.25/1.70 s
+power: LB reps 352
+  censored (on at the end)            30%  duration p25/50/75 0.25/0.95/2.25 s
+  separation                          30%  duration p25/50/75 0.75/0.90/1.20 s
+  runner passed defender              29%  duration p25/50/75 0.40/0.45/0.60 s
+  body down                            8%  duration p25/50/75 0.20/0.30/0.55 s
+  leverage                             3%  duration p25/50/75 0.00/0.00/0.00 s
+counter: LB reps 307
+  censored (on at the end)            38%  duration p25/50/75 0.45/1.45/2.10 s
+  separation                          27%  duration p25/50/75 0.75/0.95/1.35 s
+  runner passed defender              24%  duration p25/50/75 0.45/0.45/1.35 s
+  body down                            8%  duration p25/50/75 0.20/0.25/0.85 s
+  leverage                             2%  duration p25/50/75 0.00/0.00/0.00 s
+
+## lbreps-dc (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '0', 'DRIVE_CONNECT': '1'})
+iz separations n 31: relative motion along the rep axis p25/50/75 -1.03/-0.48/0.00 | across 0.54/1.16/1.59 | backer's lateral 1.31/1.89/3.37 vs blocker's mirror cap 2.17/2.68/3.44, blocker's achieved lateral 0.95/1.67/2.13 | blocker downfield of backer (yd) 0.02/1.29/1.49 | stretch reps 0%
+oz separations n 10: relative motion along the rep axis p25/50/75 -0.96/0.04/0.50 | across 0.17/1.52/1.70 | backer's lateral 2.45/3.57/3.65 vs blocker's mirror cap 2.19/2.62/3.55, blocker's achieved lateral 1.93/2.14/2.33 | blocker downfield of backer (yd) 0.48/0.95/1.41 | stretch reps 0%
+power separations n 25: relative motion along the rep axis p25/50/75 -1.11/-0.95/-0.30 | across 0.64/1.31/2.24 | backer's lateral 0.95/1.59/1.87 vs blocker's mirror cap 3.55/4.13/4.13, blocker's achieved lateral 0.65/0.92/1.67 | blocker downfield of backer (yd) 0.40/0.74/1.48 | stretch reps 0%
+counter separations n 20: relative motion along the rep axis p25/50/75 -1.39/-0.76/-0.46 | across 0.62/1.23/2.33 | backer's lateral 1.58/1.95/3.32 vs blocker's mirror cap 3.13/3.55/4.13, blocker's achieved lateral 0.66/1.43/2.14 | blocker downfield of backer (yd) 0.29/0.50/0.94 | stretch reps 0%
+iz separations, at rep start: blocker downfield of backer -1.00/-0.83/-0.74 yd -> at end 0.02/1.29/1.49 | backer downhill speed at start 0.45/1.47/2.33 yd/s | drive line upfield component 0.93/1.00/1.00
+oz separations, at rep start: blocker downfield of backer -1.08/-0.73/-0.50 yd -> at end 0.48/0.95/1.41 | backer downhill speed at start 1.20/2.35/2.67 yd/s | drive line upfield component 0.93/0.93/1.00
+power separations, at rep start: blocker downfield of backer -0.98/-0.57/0.16 yd -> at end 0.40/0.74/1.48 | backer downhill speed at start 0.30/1.20/2.16 yd/s | drive line upfield component 0.89/0.89/1.00
+counter separations, at rep start: blocker downfield of backer -0.92/-0.77/-0.03 yd -> at end 0.29/0.50/0.94 | backer downhill speed at start 0.92/1.49/2.15 yd/s | drive line upfield component 0.89/1.00/1.00
+iz: LB reps 522
+  runner passed defender              49%  duration p25/50/75 0.45/0.45/1.15 s
+  censored (on at the end)            32%  duration p25/50/75 0.25/0.65/1.95 s
+  body down                           12%  duration p25/50/75 0.25/0.30/0.50 s
+  separation                           6%  duration p25/50/75 0.85/1.15/1.90 s
+  leverage                             1%  duration p25/50/75 0.00/0.00/0.05 s
+oz: LB reps 308
+  runner passed defender              50%  duration p25/50/75 0.45/0.45/1.25 s
+  censored (on at the end)            41%  duration p25/50/75 0.25/0.95/1.75 s
+  body down                            6%  duration p25/50/75 0.45/1.05/1.50 s
+  separation                           3%  duration p25/50/75 1.00/1.45/1.55 s
+power: LB reps 373
+  runner passed defender              46%  duration p25/50/75 0.40/0.45/1.70 s
+  censored (on at the end)            38%  duration p25/50/75 0.35/1.20/2.45 s
+  body down                            9%  duration p25/50/75 0.20/0.35/1.80 s
+  separation                           7%  duration p25/50/75 0.55/0.95/2.05 s
+  leverage                             1%  duration p25/50/75 0.00/0.00/0.00 s
+counter: LB reps 386
+  runner passed defender              48%  duration p25/50/75 0.40/0.45/1.10 s
+  censored (on at the end)            38%  duration p25/50/75 0.40/1.50/2.20 s
+  body down                            8%  duration p25/50/75 0.20/0.45/1.45 s
+  separation                           5%  duration p25/50/75 0.75/1.50/2.20 s
+  leverage                             1%  duration p25/50/75 0.00/0.00/0.00 s
+
+## climb-d0 (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '0', 'DRIVE_CONNECT': '0'})
+iz: runs crossing 147
+    late: heading at him                   0.13/run
+    late: heading elsewhere                0.18/run
+    late: man back side of him             0.03/run
+    late: man level with him               0.09/run
+    late: man play side of him             0.22/run
+    late: plan climb                       0.25/run
+    late: plan combo (combo on)            0.01/run
+    late: plan drive (combo on)            0.02/run
+    late: plan lead                        0.04/run
+    late: plan stalk                       0.01/run
+    late: slow (<0.5 yd/s)                 0.03/run
+  DB free: blocker farther                 0.03/run
+  DB free: blocker still on DE             0.01/run
+  DB free: blocker within 2 yd             0.03/run
+  DB free: none assigned                   0.13/run
+  DB in rep                                0.01/run
+  DB late blocker short of his depth       0.00/run
+  DB                                       0.21/run
+  LB free: blocker farther                 0.31/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker within 2 yd             0.40/run
+  LB free: none assigned                   0.13/run
+  LB in rep                                0.54/run
+  LB late blocker short of his depth       0.05/run
+  LB                                       1.39/run
+oz: runs crossing 132
+    late: heading at him                   0.50/run
+    late: heading elsewhere                0.45/run
+    late: man back side of him             0.15/run
+    late: man level with him               0.09/run
+    late: man play side of him             0.73/run
+    late: plan climb                       0.48/run
+    late: plan combo (combo on)            0.09/run
+    late: plan lead                        0.28/run
+    late: plan reach (combo on)            0.08/run
+    late: plan stalk                       0.03/run
+    late: slow (<0.5 yd/s)                 0.02/run
+  DB free: blocker farther                 0.10/run
+  DB free: blocker still on DE             0.01/run
+  DB free: blocker within 2 yd             0.06/run
+  DB free: none assigned                   0.19/run
+  DB in rep                                0.08/run
+  DB late blocker short of his depth       0.05/run
+  DB                                       0.44/run
+  LB free: blocker farther                 0.87/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker still on DT             0.02/run
+  LB free: blocker within 2 yd             0.45/run
+  LB free: none assigned                   0.20/run
+  LB in rep                                0.56/run
+  LB late blocker short of his depth       0.50/run
+  LB                                       2.11/run
+power: runs crossing 135
+    late: heading at him                   0.14/run
+    late: heading elsewhere                0.24/run
+    late: man back side of him             0.18/run
+    late: man level with him               0.07/run
+    late: man play side of him             0.21/run
+    late: plan climb                       0.22/run
+    late: plan combo (combo on)            0.04/run
+    late: plan down                        0.01/run
+    late: plan lead                        0.01/run
+    late: plan pull                        0.12/run
+    late: plan stalk                       0.06/run
+    late: slow (<0.5 yd/s)                 0.07/run
+  DB free: blocker farther                 0.08/run
+  DB free: blocker within 2 yd             0.02/run
+  DB free: none assigned                   0.05/run
+  DB late blocker short of his depth       0.01/run
+  DB                                       0.16/run
+  LB free: blocker farther                 0.37/run
+  LB free: blocker still on DT             0.02/run
+  LB free: blocker within 2 yd             0.28/run
+  LB free: none assigned                   0.13/run
+  LB in rep                                0.44/run
+  LB late blocker short of his depth       0.18/run
+  LB                                       1.24/run
+counter: runs crossing 134
+    late: heading at him                   0.51/run
+    late: heading elsewhere                0.23/run
+    late: man back side of him             0.19/run
+    late: man level with him               0.20/run
+    late: man play side of him             0.39/run
+    late: plan climb                       0.22/run
+    late: plan combo (combo on)            0.01/run
+    late: plan down                        0.01/run
+    late: plan drive                       0.02/run
+    late: plan lead                        0.09/run
+    late: plan pull                        0.28/run
+    late: plan stalk                       0.14/run
+    late: slow (<0.5 yd/s)                 0.04/run
+  DB free: blocker farther                 0.17/run
+  DB free: blocker within 2 yd             0.05/run
+  DB free: none assigned                   0.08/run
+  DB in rep                                0.04/run
+  DB late blocker short of his depth       0.02/run
+  DB                                       0.35/run
+  LB free: blocker farther                 0.60/run
+  LB free: blocker still on DT             0.01/run
+  LB free: blocker within 2 yd             0.34/run
+  LB free: none assigned                   0.06/run
+  LB in rep                                0.43/run
+  LB late blocker short of his depth       0.40/run
+  LB                                       1.46/run
+
+## climb-dc (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '0', 'DRIVE_CONNECT': '1'})
+iz: runs crossing 149
+    late: heading at him                   0.12/run
+    late: heading elsewhere                0.13/run
+    late: man back side of him             0.04/run
+    late: man level with him               0.03/run
+    late: man play side of him             0.23/run
+    late: plan climb                       0.20/run
+    late: plan combo (combo on)            0.02/run
+    late: plan drive                       0.02/run
+    late: plan lead                        0.05/run
+    late: plan stalk                       0.01/run
+    late: slow (<0.5 yd/s)                 0.05/run
+  DB free: blocker farther                 0.04/run
+  DB free: blocker within 2 yd             0.03/run
+  DB free: none assigned                   0.15/run
+  DB in rep                                0.03/run
+  DB late blocker short of his depth       0.01/run
+  DB                                       0.25/run
+  LB free: blocker farther                 0.26/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker within 2 yd             0.37/run
+  LB free: none assigned                   0.14/run
+  LB in rep                                0.55/run
+  LB late blocker short of his depth       0.07/run
+  LB                                       1.33/run
+oz: runs crossing 138
+    late: heading at him                   0.49/run
+    late: heading elsewhere                0.43/run
+    late: man back side of him             0.14/run
+    late: man level with him               0.08/run
+    late: man play side of him             0.72/run
+    late: plan climb                       0.42/run
+    late: plan combo (combo on)            0.09/run
+    late: plan lead                        0.29/run
+    late: plan reach (combo on)            0.09/run
+    late: plan reach                       0.01/run
+    late: plan stalk                       0.04/run
+    late: slow (<0.5 yd/s)                 0.02/run
+  DB free: blocker farther                 0.10/run
+  DB free: blocker still on DE             0.01/run
+  DB free: blocker within 2 yd             0.06/run
+  DB free: none assigned                   0.17/run
+  DB in rep                                0.09/run
+  DB late blocker short of his depth       0.04/run
+  DB                                       0.43/run
+  LB free: blocker farther                 0.83/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker still on DT             0.01/run
+  LB free: blocker within 2 yd             0.47/run
+  LB free: none assigned                   0.20/run
+  LB in rep                                0.59/run
+  LB late blocker short of his depth       0.51/run
+  LB                                       2.11/run
+power: runs crossing 143
+    late: heading at him                   0.16/run
+    late: heading elsewhere                0.22/run
+    late: man back side of him             0.21/run
+    late: man level with him               0.05/run
+    late: man play side of him             0.17/run
+    late: plan climb                       0.15/run
+    late: plan combo (combo on)            0.03/run
+    late: plan cutoff (combo on)           0.01/run
+    late: plan lead                        0.01/run
+    late: plan pull                        0.14/run
+    late: plan stalk                       0.08/run
+    late: slow (<0.5 yd/s)                 0.05/run
+  DB free: blocker farther                 0.11/run
+  DB free: blocker within 2 yd             0.01/run
+  DB free: none assigned                   0.06/run
+  DB late blocker short of his depth       0.02/run
+  DB                                       0.19/run
+  LB free: blocker farther                 0.31/run
+  LB free: blocker still on DT             0.02/run
+  LB free: blocker within 2 yd             0.13/run
+  LB free: none assigned                   0.14/run
+  LB in rep                                0.64/run
+  LB late blocker short of his depth       0.21/run
+  LB                                       1.24/run
+counter: runs crossing 142
+    late: heading at him                   0.39/run
+    late: heading elsewhere                0.19/run
+    late: man back side of him             0.13/run
+    late: man level with him               0.17/run
+    late: man play side of him             0.32/run
+    late: plan climb                       0.13/run
+    late: plan combo (combo on)            0.02/run
+    late: plan down (combo on)             0.01/run
+    late: plan down                        0.01/run
+    late: plan drive                       0.02/run
+    late: plan lead                        0.06/run
+    late: plan pull                        0.27/run
+    late: plan stalk                       0.09/run
+    late: slow (<0.5 yd/s)                 0.04/run
+  DB free: blocker farther                 0.12/run
+  DB free: blocker within 2 yd             0.02/run
+  DB free: none assigned                   0.07/run
+  DB in rep                                0.04/run
+  DB late blocker short of his depth       0.03/run
+  DB                                       0.25/run
+  LB free: blocker farther                 0.50/run
+  LB free: blocker within 2 yd             0.32/run
+  LB free: none assigned                   0.04/run
+  LB in rep                                0.45/run
+  LB late blocker short of his depth       0.39/run
+  LB                                       1.31/run
+
+## climb-dt (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '1', 'DRIVE_CONNECT': '1'})
+iz: runs crossing 149
+    late: heading at him                   0.17/run
+    late: heading elsewhere                0.10/run
+    late: man back side of him             0.05/run
+    late: man level with him               0.01/run
+    late: man play side of him             0.23/run
+    late: plan climb                       0.18/run
+    late: plan combo (combo on)            0.02/run
+    late: plan drive                       0.02/run
+    late: plan lead                        0.05/run
+    late: plan stalk                       0.02/run
+    late: slow (<0.5 yd/s)                 0.03/run
+  DB free: blocker farther                 0.06/run
+  DB free: blocker within 2 yd             0.02/run
+  DB free: none assigned                   0.13/run
+  DB in rep                                0.03/run
+  DB late blocker short of his depth       0.01/run
+  DB                                       0.24/run
+  LB free: blocker farther                 0.23/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker within 2 yd             0.29/run
+  LB free: none assigned                   0.15/run
+  LB in rep                                0.54/run
+  LB late blocker short of his depth       0.05/run
+  LB                                       1.22/run
+oz: runs crossing 141
+    late: heading at him                   0.44/run
+    late: heading elsewhere                0.36/run
+    late: man back side of him             0.11/run
+    late: man level with him               0.04/run
+    late: man play side of him             0.66/run
+    late: plan climb                       0.35/run
+    late: plan combo (combo on)            0.07/run
+    late: plan lead                        0.27/run
+    late: plan reach (combo on)            0.09/run
+    late: plan stalk                       0.04/run
+    late: slow (<0.5 yd/s)                 0.01/run
+  DB free: blocker farther                 0.09/run
+  DB free: blocker still on DE             0.01/run
+  DB free: blocker within 2 yd             0.03/run
+  DB free: none assigned                   0.16/run
+  DB in rep                                0.11/run
+  DB late blocker short of his depth       0.02/run
+  DB                                       0.38/run
+  LB free: blocker farther                 0.73/run
+  LB free: blocker still on DE             0.01/run
+  LB free: blocker still on DT             0.01/run
+  LB free: blocker within 2 yd             0.34/run
+  LB free: none assigned                   0.18/run
+  LB in rep                                0.77/run
+  LB late blocker short of his depth       0.41/run
+  LB                                       2.04/run
+power: runs crossing 143
+    late: heading at him                   0.16/run
+    late: heading elsewhere                0.22/run
+    late: man back side of him             0.19/run
+    late: man level with him               0.04/run
+    late: man play side of him             0.17/run
+    late: plan climb                       0.14/run
+    late: plan combo (combo on)            0.03/run
+    late: plan cutoff (combo on)           0.01/run
+    late: plan lead                        0.01/run
+    late: plan pull                        0.14/run
+    late: plan stalk                       0.07/run
+    late: slow (<0.5 yd/s)                 0.02/run
+  DB free: blocker farther                 0.09/run
+  DB free: blocker within 2 yd             0.01/run
+  DB free: none assigned                   0.06/run
+  DB late blocker short of his depth       0.01/run
+  DB                                       0.16/run
+  LB free: blocker farther                 0.31/run
+  LB free: blocker still on DT             0.02/run
+  LB free: blocker within 2 yd             0.15/run
+  LB free: none assigned                   0.14/run
+  LB in rep                                0.64/run
+  LB late blocker short of his depth       0.20/run
+  LB                                       1.26/run
+counter: runs crossing 142
+    late: heading at him                   0.40/run
+    late: heading elsewhere                0.18/run
+    late: man back side of him             0.13/run
+    late: man level with him               0.18/run
+    late: man play side of him             0.35/run
+    late: plan climb                       0.15/run
+    late: plan combo (combo on)            0.02/run
+    late: plan down (combo on)             0.01/run
+    late: plan down                        0.02/run
+    late: plan drive                       0.02/run
+    late: plan lead                        0.06/run
+    late: plan pull                        0.27/run
+    late: plan stalk                       0.11/run
+    late: slow (<0.5 yd/s)                 0.07/run
+  DB free: blocker farther                 0.16/run
+  DB free: blocker within 2 yd             0.01/run
+  DB free: none assigned                   0.06/run
+  DB in rep                                0.04/run
+  DB late blocker short of his depth       0.04/run
+  DB                                       0.27/run
+  LB free: blocker farther                 0.49/run
+  LB free: blocker within 2 yd             0.27/run
+  LB free: none assigned                   0.05/run
+  LB in rep                                0.44/run
+  LB late blocker short of his depth       0.39/run
+  LB                                       1.26/run
+
+## departure-dc (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '0', 'DRIVE_CONNECT': '1'})
+iz: departures 148 | duration p25/50/75 0.75/1.10/1.60 s | mean speed 0.80/1.07/1.45 yd/s, upfield 0.47/0.78/1.30 | to backer at start 3.25/3.66/3.98 -> end 1.25/2.07/2.74 yd
+oz: departures 103 | duration p25/50/75 0.50/0.95/1.50 s | mean speed 0.68/1.07/1.39 yd/s, upfield -0.03/0.26/0.54 | to backer at start 3.59/3.92/4.40 -> end 2.23/2.96/3.83 yd
+power: departures 81 | duration p25/50/75 0.40/0.75/1.25 s | mean speed 0.71/1.01/1.51 yd/s, upfield 0.17/0.56/0.97 | to backer at start 1.88/3.38/4.29 -> end 1.53/2.44/4.21 yd
+counter: departures 59 | duration p25/50/75 0.50/1.00/1.50 s | mean speed 0.66/0.90/1.21 yd/s, upfield 0.08/0.43/0.96 | to backer at start 2.24/3.30/4.21 -> end 1.23/2.48/4.01 yd
+
+## departure-dt (commit e95db586 source 4702192c48 exit 0 flags {'DEPART_TEMPO': '1', 'DRIVE_CONNECT': '1'})
+iz: departures 149 | duration p25/50/75 0.50/0.75/1.25 s | mean speed 1.43/1.81/2.07 yd/s, upfield 0.72/1.39/1.77 | to backer at start 3.17/3.64/3.97 -> end 1.13/1.88/2.61 yd
+oz: departures 103 | duration p25/50/75 0.25/0.60/1.00 s | mean speed 1.17/1.65/2.17 yd/s, upfield 0.73/1.10/1.59 | to backer at start 3.59/3.91/4.40 -> end 2.06/2.89/3.61 yd
+power: departures 81 | duration p25/50/75 0.30/0.50/0.75 s | mean speed 1.23/1.57/2.12 yd/s, upfield 0.48/0.85/1.52 | to backer at start 1.88/3.38/4.29 -> end 1.46/2.38/3.92 yd
+counter: departures 59 | duration p25/50/75 0.50/0.75/1.00 s | mean speed 1.08/1.58/1.99 yd/s, upfield 0.12/0.74/1.53 | to backer at start 2.24/3.29/4.20 -> end 1.22/2.57/3.96 yd

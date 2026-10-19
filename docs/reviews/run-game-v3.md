@@ -722,3 +722,181 @@ What changed in this report:
   patch, flags and checksums. `d0`, `mtr`, `sp`, `d0gap`, `rec2gap` and
   `mtrgap` reproduce play for play at `92c1d0c1`.
 
+
+## Part 5 — second-level blocking, counter and toss (2026-10-19)
+
+The question: how well do blockers get to the second level, win leverage and
+seal defenders off from the back, and how do counter and toss (sweep) run?
+
+Arms are under [`run-game-v3/v7/`](run-game-v3/v7/), with reports and
+bound manifests. The sim-side diagnostics and their receipts are in
+`part5.txt`. Witnesses (4, with candidate receipts) are
+[here](../../data/reviews/current/run-game-v3-part5-witnesses.json).
+
+The NFL side is 2022 tracking measured with the same code. Proximity
+operators are not engagement labels: "walled" means a blocker within 1.2 yd
+of the defender stands between him and the carrier.
+
+### What is weakest
+
+**Leverage at the crossing** (`seal.py`, defenders within 4 yd of the
+carrier as he crosses the line). Sim columns are develop:
+
+| | IZ NFL | IZ sim | OZ NFL | OZ sim | Power NFL | Power sim | Counter NFL | Counter sim |
+|---|---|---|---|---|---|---|---|---|
+| LBs walled | 48% | 41% | 39% | 34% | 51% | 35% | 48% | 39% |
+| LBs free, per run | 0.52 | 0.62 | 0.63 | 0.95 | 0.50 | 0.67 | 0.57 | 0.65 |
+| DL near, per run | 2.34 | 1.72 | 2.14 | 1.82 | 2.01 | 1.36 | 2.06 | 0.95 |
+| DL walled | 61% | 59% | 47% | 51% | 63% | 50% | 61% | 37% |
+
+**Second-level blocks do not last** (`lbblocks.py`: an OL/TE within 1 yd of
+a defender 2–8 yd deep, the same player within 1.5 yd). They start on time,
+at a median 2.0 s:
+
+| | Gap NFL | Gap sim | IZ NFL | IZ sim | OZ NFL | OZ sim |
+|---|---|---|---|---|---|---|
+| Median length | 1.4 s | 1.0 s | 1.5 s | 1.2 s | 1.5 s | 1.1 s |
+| On at the crossing | 63% | 47% | 67% | 64% | 67% | 67% |
+| On 1 s later | 55% | 32% | 63% | 45% | 52% | 45% |
+
+**Why they come apart** (`lbreps.ts`, sim reps). 23–30% of linebacker
+reps end in separation:
+
+- At the end, the blocker is 1.5 yd downfield of the backer (quartiles
+  1.2–1.6).
+- At the start, the blocker was 0.4–0.8 yd short of the backer. The backer
+  was coming downhill at about 1.25 yd/s, and the drive line was at least
+  0.89 upfield.
+- The rep requests 2.4 yd/s along that line whether or not the man is still
+  in front of the blocker. So the blocker runs past the backer.
+- This is the same mechanism as the `ZONE_TE` gun loss in Part 4.
+
+**Who was meant to block the free backers** (`climb.ts`, sim). A climber
+still stuck on a down lineman is almost never the cause (≤0.02 per run).
+Assigned climbers more than 2 yd from a free backer at the crossing, per
+run:
+
+| Concept | Late climbers | ...not yet up to the backer's depth | Mostly |
+|---|---|---|---|
+| OZ | 0.87 | 0.50 | climbers chasing a backer who flowed playside of them |
+| Counter | 0.60 | 0.40 | the wrapping puller (0.28) |
+| Power | 0.37 | 0.18 | |
+| IZ | 0.31 | 0.05 | |
+
+**Departures off double teams crawl** (`departure.ts`). The median takes
+0.75–1.1 s, at about 1 yd/s mean speed and 0.3–0.8 upfield. Each read's
+exit is only the next point of a short arc around the old down man, and it
+was tracked as a place to stop.
+
+**Counter and power are the worst concepts.**
+
+- Counter: negatives 16.5% (NFL60 8.1), 4+ 40% (55).
+- Power: negatives 17.8% (NFL60 8.0), 4+ 43% (57).
+
+The gap-set back crosses the line at 3.2 s against NFL's 2.5–2.8. Counter
+fails against wide 9 (20 of 40 runs negative) and tite (12 of 40). The
+filmed wide-9 loss: the backside guard reaches the crashing end only at
+1.9 s, 0.4 yd behind the line, and logs him; the end tackles 2.2 yd deep.
+That is puller start-up, already handed off.
+
+**Toss is close to NFL tosses.** NFL tosses are identified by the carrier
+being more than 2.5 yd from the QB at the exchange; 509 runs, mostly
+"PULL LEAD" and "OUTSIDE ZONE".
+
+| | Negative | 4+ | 10+ | 20+ |
+|---|---|---|---|---|
+| NFL tosses | 17.1% | 48.5% | 14.7% | 3.7% |
+| Sim toss (400) | 17.0% | 57.0% | 11.2% | 7.2% |
+
+The sim back crosses earlier (3.0 vs 3.4 s), with fewer defenders around
+him (LB 1.06 vs 1.45, DB 0.22 vs 0.82 within 4 yd). That is defensive
+arrival, not a toss blocking defect. Toss OL plan reach blocks but use
+neither the zone track nor the stretch-reach contact technique (both
+cover OZ/WZ only). Nothing here shows that this hurts, and it was left
+alone.
+
+### Repairs (default-off)
+
+| Flag | What changes | Where |
+|---|---|---|
+| `DRIVE_CONNECT` | A drive block drives fully while his man is in front of him on the drive line. Once level or past, he keeps connected: the man's motion along the line plus the closing gap, as a stretch reach does. | `stepRunRep` (`engagement.ts`) |
+| `DEPART_TEMPO` | A climber leaving a double team carries the climb's tempo along the arc around the old man's hip, instead of stopping on each exit. Same route, clearance and reads. | `leaveCombination` (`blocking.ts`) |
+
+**`DRIVE_CONNECT`** (develop `v5` → `v7dc`/`v7dcgap`, paired on the same
+cases).
+
+Mechanism:
+
+- Linebacker separations fall from 23–30% to 3–7%. Most reps now last until
+  the runner passes.
+- Second-level blocks come onto NFL:
+
+  | | Gap | IZ | OZ |
+  |---|---|---|---|
+  | Median length (NFL) | 1.0 → 1.3 s (1.4) | 1.2 → 1.6 (1.5) | 1.1 → 1.4 (1.5) |
+  | On at the crossing (NFL) | 47 → 60% (63) | | |
+  | On 1 s later (NFL) | 32 → 46% (55) | 45 → 61 (63) | 45 → 59 (52) |
+
+- Walled backers rise a little: power 35 → 39%, counter 39 → 41%.
+- Line mechanics are otherwise unchanged. Engaged DL depth at 3 s on gap
+  plays is 0.70 → 0.43 yd (NFL 1.00).
+
+Outcomes:
+
+- Gap set: negatives 11.0 → 7.9% (NFL60 8.6), 4+ 48.6 → 57.3%, 10+
+  7.8 → 12.1% (13.1).
+- Power: negatives 71 → 56 of 400 (p=0.058); 4+ 172 → 205 (p=0.002).
+- Counter: negatives 66 → 48 (p=0.027). Against wide 9, negatives
+  20 → 6 of 40; against tite, 12 → 4.
+- Trap: 4+ 193 → 249 (p<0.001).
+- Duo: 4+ 252 → 291 (p<0.001). Duo was already above the NFL's broad MAN
+  family (45%).
+- Ace zone, shotgun zone (`v7gdc`) and the ace package (`v7mtrdc`): no
+  detectable change, except outside-zone 40+ 10 → 22 of 400 (p=0.004).
+- The gap-set 40+ rises 4.00 → 5.38%. Counter's is 22 → 28 (p=0.31).
+
+Witness `w8`: power, ace, under front. Without the flag, the pulling guard
+meets the strong backer at 2.25 s. His request then carries him upfield and
+outside past the backer (intent 3.06, −1.59), the backer comes free and
+tackles for −0.38. With it, the guard stays on the backer and drives him
+1.6 yd back: +5.42.
+
+**`DEPART_TEMPO`** (`v7dt`/`v7dtgap` against `DRIVE_CONNECT` alone):
+
+- Departures take 0.5–0.75 s at 1.6–1.8 yd/s (upfield 0.75–1.4). Start-up
+  from near standstill is the remaining limit, which is the World gait.
+- Outside-zone backers in a rep at the crossing go 0.59 → 0.77 per run.
+  Late climbers short of the backer's depth go 0.51 → 0.41.
+- No outcome change is detectable in any concept (all p > 0.05).
+
+Witness `w9` shows why: the guard now leaves the 3-technique at tempo, but
+around its inside. The backer stacked behind it flows outside, so the
+route's geometry, not its speed, decides that play.
+
+### Duo and the rest of the gap
+
+Duo is too effective. At the crossing, against the NFL MAN family:
+
+- DL near the back: 1.20 vs 2.12 per run;
+- linebackers: 1.38 vs 1.79;
+- DBs: 0.13 vs 0.89.
+
+The box and the safeties do not converge. That is the same defensive-arrival
+gap as the tails (Part 4: the front seven reach the back first in 38–53% of
+sim gap runs, 75–77% in the NFL), not a duo blocking defect. MAN is a
+provider family, not verified Duo.
+
+### Next decision
+
+1. Review `DRIVE_CONNECT` independently as a run-rep request repair. It is
+   the largest change here. The gap-scheme tail it exposes is defensive
+   arrival, not a reason to keep the blocker running past his man.
+2. Keep `DEPART_TEMPO` as a coherence repair with no outcome claim.
+3. Owners, in order of consequence:
+   - **Defensive arrival at the back** (perception latency, owner decides):
+     the front seven first, the duo crease, toss edge force. `DEF_GETOFF`
+     is the only arm that has moved the whole distribution.
+   - **Physics:**
+     - engaged pairs' lateral motion (outside zone);
+     - start-up acceleration (pullers and departures);
+     - held-carrier fall timing.
