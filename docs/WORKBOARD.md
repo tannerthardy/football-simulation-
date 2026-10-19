@@ -1,5 +1,17 @@
 # Current work ownership
 
+## #137 eligibility/policy separation — Flex / Do-It-All
+
+Start accepted `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, queue `9a6bb795`.
+Own only the final receiver candidate eligibility/reservation hunk in
+`planRunBlocking`, its original six controls and one focused manual-GH overlap
+control. Keep the accepted explicit H/backer and acquired work-reference ledger;
+retain greedy allocation unchanged. Publish a separate current-base eligibility
+PR; original #137 becomes a historical joint-policy-only diff against its
+eligibility parent. No policy adoption, new panel/game or shared suite.
+Coordination: #137 comment6272725676. Run's movement/Counter/free-work changes
+remain accepted and untouched. #141 independent review is a separate branch.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

@@ -688,12 +688,22 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
   const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
+  // Alignment class is not ownership: shallow press/apex bodies can be in dl
+  // without an inline job. Keep actual current/future assignments reserved,
+  // including the explicitly installed GH H/backer, before restoring free dl.
+  const reserved = new Set<Agent>();
+  for (const p of plans.values()) {
+    if (p.target) reserved.add(p.target);
+    if (p.climbTo) reserved.add(p.climbTo);
+    if (p.combination?.backer) reserved.add(p.combination.backer);
+  }
+  const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
   const stalkTargets = new Map<Agent, Agent | null>();
   if (STALK_CLAIM) {
     // Receivers share one ledger: closest unclaimed pairs first, skipping
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
-    const open = [...db, ...lb.filter((l) => !claimedLB.has(l))];
+    const open = stalkPool.filter(d => !reserved.has(d));
     const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
@@ -703,7 +713,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     let best: Agent | null = stalkTargets.get(a) ?? null;
     if (!best) {
       let bd = Infinity;
-      for (const d of [...db, ...lb]) {
+      for (const d of stalkPool) {
         const dd = near(a, d);
         if (dd < bd) {
           bd = dd;
