@@ -97,7 +97,10 @@ export class PassRusher implements Behavior {
     const gy = gapY(sim.offAlign, this.gap, this.gapSign);
     const edge = this.gap === 'C' || this.gap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
-    if (this.plan === 'power') {
+    // Power describes how to rush, not permission to cross the installed
+    // outside gap before reaching the line. Enter that lane first like the
+    // other edge plans; retain the ordinary power pursuit once through it.
+    if (this.plan === 'power' && (!edge || a.pos.x <= sim.los - 0.5)) {
       const p = pursuitPoint(sim, a, qb, 1.5);
       return runThrough(a, p, { speed: 1 });
     }
