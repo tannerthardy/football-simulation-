@@ -1,0 +1,305 @@
+{
+  "schema": "catch-caller-evidence-v1",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "originalPR131": "2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e",
+  "codeCommit": "8fa7e2044fdde7991a7d2a1d62a55f23537f610e",
+  "baselineSourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "sources": {
+    "candidate": {
+      "sourceSha256": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+      "baseSourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "changedFiles": [
+        "src/physics/catch-opportunity.ts",
+        "src/sim/catching.ts",
+        "src/sim/playsim.ts"
+      ],
+      "patch": "candidate.patch",
+      "patchSha256": "8a3f0d32737d1b21da0410a2a29c75bf6a8775d8a9fda9930159c159737da07e"
+    },
+    "historical": {
+      "sourceSha256": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+      "baseSourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+      "changedFiles": [
+        "src/physics/catch-opportunity.ts",
+        "src/sim/catching.ts",
+        "src/sim/playsim.ts"
+      ],
+      "patch": "historical.patch",
+      "patchSha256": "8a3f0d32737d1b21da0410a2a29c75bf6a8775d8a9fda9930159c159737da07e"
+    }
+  },
+  "archives": [
+    {
+      "path": "native.tar.gz",
+      "bytes": 5197621,
+      "sha256": "6f469768f136814af81ed08600ce15688fbdd3bcadf0e505262cbcbdd346df2f",
+      "members": [
+        {
+          "path": "baseline/G1-P020.json.gz",
+          "bytes": 615023,
+          "sha256": "bc60dbb930450182c4dc31a7bdc38b872f032d7b65d4cda961d8640433479469"
+        },
+        {
+          "path": "baseline/G2-P107.json.gz",
+          "bytes": 623097,
+          "sha256": "1eb253a11d6adbf3b378b9dec0036cae215724e33e8ee30ab337f3ca274a5710"
+        },
+        {
+          "path": "baseline/G2-P143.json.gz",
+          "bytes": 470912,
+          "sha256": "5c489da3bf2bed9667290927173e7e49ca48b61a5eb77f1be255c336f629442a"
+        },
+        {
+          "path": "baseline/receipt.json",
+          "bytes": 20884,
+          "sha256": "8c7c088f5b7a5d13d1bbceb50f8404c45101aaa77c01be46efbe00c3f25d8a79"
+        },
+        {
+          "path": "candidate/G1-P020.json.gz",
+          "bytes": 615030,
+          "sha256": "860eff231d74859f268c05f882329c28b38f0678b02829668fe0814ca485eb59"
+        },
+        {
+          "path": "candidate/G2-P107.json.gz",
+          "bytes": 623103,
+          "sha256": "54286c94ec24cb04b29ac3a3e049f525df70677d837190df335e53bb32825879"
+        },
+        {
+          "path": "candidate/G2-P143.json.gz",
+          "bytes": 470916,
+          "sha256": "f68945d436165e599fbc071eebc5270103852756487ee9fc406dd3bda7ad144c"
+        },
+        {
+          "path": "candidate/receipt.json",
+          "bytes": 20876,
+          "sha256": "94918b118010238f03b613df8553befba847d68a627ef1cf1b2b6a480e109d4f"
+        },
+        {
+          "path": "historical/G1-P020.json.gz",
+          "bytes": 615609,
+          "sha256": "9dc134918ce52194c69a06693ae38710cce79e6e6e9c9032dc7321046cc8e777"
+        },
+        {
+          "path": "historical/G2-P107.json.gz",
+          "bytes": 760477,
+          "sha256": "7a5938981caf6272c483e3f92ac4aee239d202ff3d0bad351e898ba7b2356891"
+        },
+        {
+          "path": "historical/G2-P143.json.gz",
+          "bytes": 573800,
+          "sha256": "c54544a9818ea93ed9e06a339b11ba19a1a3e5a69f298b1671bc58f96b9062be"
+        },
+        {
+          "path": "historical/receipt.json",
+          "bytes": 21382,
+          "sha256": "987b8063b1408bdc06afec8d67a4d2fc8105ad1ccef5647c8dbc747bef101be5"
+        }
+      ]
+    },
+    {
+      "path": "common.tar.gz",
+      "bytes": 66459,
+      "sha256": "66cbc86de1164633340a940928e1d9e2c0acab5d8b500247085a36eef1827eef",
+      "members": [
+        {
+          "path": ".nvmrc",
+          "bytes": 8,
+          "sha256": "6d07ac247e81cd42c2c20abf8dfe504413d6b2422e4aba9b2c975a776f155921"
+        },
+        {
+          "path": "baseline-launch.json",
+          "bytes": 2383,
+          "sha256": "2d2458d9462769258e56e5fb3c386a1b44f710c0eb61da81be95b8013afca5ef"
+        },
+        {
+          "path": "baseline.json",
+          "bytes": 1971,
+          "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4"
+        },
+        {
+          "path": "baseline.log",
+          "bytes": 9465,
+          "sha256": "38de9a55a88e2df93bbd58f6dd9d9c0b523405476132c3ac9dd52cbd1fdf8fcc"
+        },
+        {
+          "path": "baseline.mjs",
+          "bytes": 7522,
+          "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+        },
+        {
+          "path": "caller-final-launch.json",
+          "bytes": 2303,
+          "sha256": "5e0b56aa8f3c903a739a5d6ad639d5a2dfc71863daae9fc8539e4acbf2d9e54c"
+        },
+        {
+          "path": "caller-final.log",
+          "bytes": 833,
+          "sha256": "102709a34fb1d119180891343d3c6aa5948299d1bfae60668d21f6f1031e2d4e"
+        },
+        {
+          "path": "caller-first-launch.json",
+          "bytes": 2439,
+          "sha256": "1a273574702b6042737f2401ddbe4cd3964929b6fdd55c2059808e6b282ad5f6"
+        },
+        {
+          "path": "caller-first.log",
+          "bytes": 3660,
+          "sha256": "d5c085a2b28e79113298ed54236e24f6fffe1574d5782432086da3b4219b80cd"
+        },
+        {
+          "path": "caller-first.test.ts",
+          "bytes": 9451,
+          "sha256": "72f8e9699f83566c3e55c666420b8dc254c66b768f4e72ecd138260006c1edbf"
+        },
+        {
+          "path": "caller-from-accepted.patch",
+          "bytes": 4842,
+          "sha256": "df74edf9729041ad1e51420c45428cfb95637ac14035dea63dee317aa0e5a4d5"
+        },
+        {
+          "path": "candidate-code-tests.patch",
+          "bytes": 34644,
+          "sha256": "f7197addc054770516584c195d6eb03c9b7ce20fda347e4879389d6e61323568"
+        },
+        {
+          "path": "candidate-launch.json",
+          "bytes": 2384,
+          "sha256": "092a12ab501180f51078d483adeb6c2a7d2d94ff855f9ab16bcac20f4374da21"
+        },
+        {
+          "path": "candidate.log",
+          "bytes": 9459,
+          "sha256": "ac6ad8bc439f119434760ba41c637057d6acdce8c13a75775e7d03d852286104"
+        },
+        {
+          "path": "candidate.patch",
+          "bytes": 6387,
+          "sha256": "8a3f0d32737d1b21da0410a2a29c75bf6a8775d8a9fda9930159c159737da07e"
+        },
+        {
+          "path": "capture.ts",
+          "bytes": 6384,
+          "sha256": "b833a90fa492c770dbfe3c639f752b65b6f16720f2f1ab1becac30dcfb1823cf"
+        },
+        {
+          "path": "compare-historical.py",
+          "bytes": 1862,
+          "sha256": "5f9467c9e5d9f528509acac7e64d37a815f445ed8dc701243c32fb166f74a17b"
+        },
+        {
+          "path": "compare.py",
+          "bytes": 1477,
+          "sha256": "b1485e13fdeb461734dda86f4016e74fd0eda84e5106064342f4251f2fa41d24"
+        },
+        {
+          "path": "comparison.json",
+          "bytes": 4322,
+          "sha256": "6fa2b8e9460dfacca85ab1e48836458c51562a944e70d88f1326c76e12f35d52"
+        },
+        {
+          "path": "historical-comparison.json",
+          "bytes": 4000,
+          "sha256": "0d13cd3ae839040b29eab771e9488447981368de4eb5d9c6822a7af9b6d51114"
+        },
+        {
+          "path": "historical-launch.json",
+          "bytes": 2321,
+          "sha256": "58ee83bcb5ef01557befa7c964007454b4ac288fd24eb847e7a64e13fda93aae"
+        },
+        {
+          "path": "historical.log",
+          "bytes": 9571,
+          "sha256": "367fb0132d994fcfbef86ac6e136f96d1ac0f9e791d2520e41ac458d7ba3609a"
+        },
+        {
+          "path": "historical.patch",
+          "bytes": 6387,
+          "sha256": "8a3f0d32737d1b21da0410a2a29c75bf6a8775d8a9fda9930159c159737da07e"
+        },
+        {
+          "path": "package-lock.json",
+          "bytes": 70134,
+          "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+        },
+        {
+          "path": "package.py",
+          "bytes": 5752,
+          "sha256": "57ce4eda8f7e507ff5a7bd82fb4af54471302174ff71fbb42b3847ad7d10bea5"
+        },
+        {
+          "path": "prepare-historical.py",
+          "bytes": 1844,
+          "sha256": "850989644d47563ef0735543ff8ccdbf90fb3aafecd496fd6c9f2affde86c9e2"
+        },
+        {
+          "path": "prepare-hosts.py",
+          "bytes": 1311,
+          "sha256": "d8ff36ee4f24b557e9c0978d1e0ef8cd30a74e58eb48b1abee96f22201e7c53b"
+        },
+        {
+          "path": "prepare-launch.json",
+          "bytes": 2275,
+          "sha256": "5da7d48056695418c177c92ff0f6d325ecb7ebe1ce35ea3f9b7068e533293349"
+        },
+        {
+          "path": "prepare.ts",
+          "bytes": 1373,
+          "sha256": "a3294044cb49b10ee3a1aa24a6f97b116616ea87a6af1c51bbe0172330a8ff2f"
+        },
+        {
+          "path": "run-native.py",
+          "bytes": 666,
+          "sha256": "ef5aab7fe0b854e8bd0608713d5b0412865f74403f75f2e80837f1d8bf51024d"
+        },
+        {
+          "path": "source-version.ts",
+          "bytes": 607,
+          "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+        },
+        {
+          "path": "typecheck-launch.json",
+          "bytes": 2223,
+          "sha256": "d1d22e3513410193f864898f292180758e90d84aa4d35f08f08bd30d7b7d463e"
+        },
+        {
+          "path": "typecheck.log",
+          "bytes": 542,
+          "sha256": "7cd466b74229e06cf17a96461aabefca42c86d6584bf2549449b05153fa65688"
+        }
+      ]
+    }
+  ],
+  "originalInputs": {
+    "commit": "b5b4fba9eefa5e59e8db192e77a6502341d81989",
+    "archive": "evidence.tar.gz",
+    "sha256": "7fc78954d2240c86c5bc9092c6a9d1345d9a3acbe3af061cbd33d006bb93f97b",
+    "qualification": "Verify41 declared input/evidence members plus bundled manifest. Native scout Maps restored from original prior calls using the pinned reconstruct.ts. Observation/call hashes do not replace this complete restoration receipt."
+  },
+  "costs": {
+    "newNativeSnaps": 9,
+    "newGames": 0,
+    "fullSuiteRuns": 0,
+    "groups": [
+      {
+        "source": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+        "elapsedSeconds": 1.479882217,
+        "arm": "baseline",
+        "snaps": 3
+      },
+      {
+        "source": "a28e1e3aea855c6c7bc3ed1f8c2a126e52315cc91a7bcb01e2d37573e0a9012a",
+        "elapsedSeconds": 1.437892087,
+        "arm": "candidate",
+        "snaps": 3
+      },
+      {
+        "source": "3b41687cae5c59de8d730489fc16b8003c258ff556e5d8adfcc6e3bc97b775fb",
+        "elapsedSeconds": 1.682949126,
+        "arm": "historical",
+        "snaps": 3
+      }
+    ]
+  },
+  "restoration": "Both source patches independently applied outside parent checkout and full src digest matched. Every archive member verified. No new World ticks in packaging. Historical baseline is reused from original native-parity capture; current baseline is actual accepted f414 source. Archived hosts inherit outer HEAD; canonical source + patches identify runtime."
+}
