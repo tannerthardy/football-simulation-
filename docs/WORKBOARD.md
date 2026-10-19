@@ -977,3 +977,7 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-19, Catching / movement continuity: isolated `codex/movement-continuity` on accepted f4146275 (queue9a6bb795). Diagnose repeated free-motion speed pulsing/heading reversal using existing accepted native tapes and verified local BDB2025 weeks, 10Hz/.01yd shared operator. Initial ownership is diagnostic scripts/tests; proposed shared steering/aim or spacing hunk will be coordinated before editing. #159/#160 remain independent. Physics, capacities, information acquisition and experimental defaults unchanged. No broad games or duplicate NFL download.
+
+- Movement continuity checkpoint: isolated existing bounded yaw-response extraction in `World.plan` requested facing / yaw call and `stepBody` preview motor only. Existing response/traction/inertia/rate limits; no patch-contact activation or changes to contacts/capacities/controllers. Posted exact scope to Physics on #77; production promotion requires Physics disposition. Old intermediate-target-only extraction rejected for artificial turn delay. Other movement-modifier work is untouched.

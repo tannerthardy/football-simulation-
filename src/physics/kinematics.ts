@@ -15,7 +15,7 @@ import { angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Support } from './support.js';
 import { supportParams } from './support.js';
-import { turnBody } from './actuation.js';
+import { turnBodyResponse } from './actuation.js';
 
 export interface Body {
   pos: Vec2;
@@ -264,7 +264,9 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   const traction = supportParams(body.profile).traction;
   const force = Math.hypot(a.x,a.y) * body.profile.massKg;
   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }
-  turnBody(body,target,dt,dt,turnRate,1,Math.min(force,traction));
+  // Preview the same bounded motor used by World, toward the actual requested
+  // facing. `target` above remains the existing gait estimate for this step.
+  turnBodyResponse(body,commandFacing(body,cmd),dt,turnRate,1,Math.min(force,traction));
   const nvx = body.vel.x + a.x * dt;
   const nvy = body.vel.y + a.y * dt;
   body.pos = { x: body.pos.x + 0.5 * (body.vel.x + nvx) * dt, y: body.pos.y + 0.5 * (body.vel.y + nvy) * dt };
