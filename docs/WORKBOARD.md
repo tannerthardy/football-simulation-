@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Completed Physics review/interface follow-up — 2026-10-19 America/Phoenix
+
+Physics continued `codex/shed-pursue-review` from accepted `f4146275`, changing
+only its independent SHED_PURSUE review/receipt, a new
+`docs/reviews/catch-query-interface-handoff.md` and this entry. Independently HOLD
+work-off as implemented (unique-acquisition/held-mode failures) separately from
+runner-passed re-grab prohibition at #153 `8d3c41f2`. Four saved `w6-shed-*`
+hashes verified: first sampled intent reversals occur within original H/DE_W
+rep, while later re-grab validity remains unproved; original focused failures
+and all source qualifications retained. Catching support is the helper author's
+interface handoff, without self-acceptance or edits to the caller branch/PR head.
+Catching owns its caller; independent reviewers and Integration own adoption.
+No runtime/test/settings edit, new test/native collection, broad suite or
+experimental activation. Documentation/receipt checks pass; boundary released.
+
 ## Completed SHED_PURSUE independent contact review — 2026-10-19 UTC
 
 Physics reviewed only `docs/reviews/shed-pursue-independent-review.md`, its compact

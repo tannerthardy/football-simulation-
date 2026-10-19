@@ -574,5 +574,606 @@
       "sha256": "c164ca672bbbf30d05c9591ba1ce142fc9116aaceeb70b9f2e53dbff020de93a",
       "bytes": 31858
     }
-  ]
+  ],
+  "followup": {
+    "recordedAtUtc": "2026-10-19T17:13:33.804930+00:00",
+    "reviewedHead": "8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055",
+    "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+    "packet": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+    "unchangedReviewedBlobs": {
+      "src/sim/engagement.ts": "cd2a29872e2ada9011914ce1a6350eb9a6f726f4",
+      "test/shed-pursue.test.ts": "b35a78b786c538d63501cb63ade745eb9a9da25c",
+      "test/support-work-off.test.ts": "122c47dd50bd812206c8c96b22e93cbbe6556ee1"
+    },
+    "checksReusedFrom": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+    "newTests": 0,
+    "newWorldSteps": 0,
+    "newNativeSnaps": 0,
+    "newGames": 0,
+    "witnessPacket": {
+      "commit": "8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055",
+      "path": "data/reviews/current/run-game-v3-witnesses.json",
+      "sha256": "9845bde2f4ec48db46f04ced43fb90d140a22d5a1a8b0079babf4b76a91e8d75",
+      "bytes": 1018681
+    },
+    "witnessHashMethod": "SHA256 of original compact JSON.stringify(witness) + newline; four reconstructed hashes match",
+    "selectedWitnesses": [
+      {
+        "name": "w6-shed-control-pursue",
+        "sha256": "a0735cfd1b5daf634c6e4758b6b9ebcd1a531fb5dbf03cb86918131c3f3f3e78",
+        "hashMatches": true,
+        "source": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+        "sourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+        "case": "oz/strong/ace_12/over4/pair11/6",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "BACK_CHASE": "0",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DEEP_CAP": "0",
+          "DEF_GETOFF": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "GUN_MESH_SIDE": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_KEY": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "MESH_TEMPO": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_LATERAL": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "SHED_PURSUE": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_FLAT": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "UC_MESH": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1",
+          "ZONE_TE": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "recordedCommandSeconds": 2.695773066,
+        "window": [
+          0,
+          5
+        ],
+        "sampleEvery": 4,
+        "dt": 0.05,
+        "result": {
+          "gain": 70,
+          "outcome": "touchdown"
+        },
+        "slots": [
+          "RB",
+          "DE_W",
+          "DE_S",
+          "DT_S",
+          "DT_W",
+          "LB_M",
+          "LB_W",
+          "LB_S",
+          "FS",
+          "SS"
+        ]
+      },
+      {
+        "name": "w6-shed-control-tempo",
+        "sha256": "da286d5ef7999fa5d2df89cfbdebced6166be30fecb4450b76a4fb92648e2b24",
+        "hashMatches": true,
+        "source": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+        "sourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+        "case": "oz/strong/ace_12/over4/pair11/6",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "BACK_CHASE": "0",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DEEP_CAP": "0",
+          "DEF_GETOFF": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "GUN_MESH_SIDE": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_KEY": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "MESH_TEMPO": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_LATERAL": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "SHED_PURSUE": "0",
+          "STALK_CLAIM": "1",
+          "STRETCH_FLAT": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "UC_MESH": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1",
+          "ZONE_TE": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "recordedCommandSeconds": 2.017551436,
+        "window": [
+          0,
+          5
+        ],
+        "sampleEvery": 4,
+        "dt": 0.05,
+        "result": {
+          "gain": 6.13,
+          "outcome": "tackle"
+        },
+        "slots": [
+          "RB",
+          "DE_W",
+          "DE_S",
+          "DT_S",
+          "DT_W",
+          "LB_M",
+          "LB_W",
+          "LB_S",
+          "FS",
+          "SS"
+        ]
+      },
+      {
+        "name": "w6-shed-pursue",
+        "sha256": "82502a55654a6126067609728b12dbc5d180083b062f3eb0c20e9c6d2aa84c9c",
+        "hashMatches": true,
+        "source": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+        "sourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+        "case": "oz/strong/ace_12/off1/pair11/77",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "BACK_CHASE": "0",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DEEP_CAP": "0",
+          "DEF_GETOFF": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "GUN_MESH_SIDE": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_KEY": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "MESH_TEMPO": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_LATERAL": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "SHED_PURSUE": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_FLAT": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "UC_MESH": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1",
+          "ZONE_TE": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "recordedCommandSeconds": 1.754208368,
+        "window": [
+          0,
+          5
+        ],
+        "sampleEvery": 4,
+        "dt": 0.05,
+        "result": {
+          "gain": 8.68,
+          "outcome": "tackle"
+        },
+        "slots": [
+          "RB",
+          "DE_W",
+          "DE_S",
+          "DT_S",
+          "DT_W",
+          "LB_M",
+          "LB_W",
+          "LB_S",
+          "FS",
+          "SS"
+        ]
+      },
+      {
+        "name": "w6-shed-tempo",
+        "sha256": "745fb5f91fcafbba28c4a1193f49e068264f5ca4aefeaf41c909782c63ce3b98",
+        "hashMatches": true,
+        "source": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+        "sourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+        "case": "oz/strong/ace_12/off1/pair11/77",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "BACK_CHASE": "0",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DEEP_CAP": "0",
+          "DEF_GETOFF": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "GUN_MESH_SIDE": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_KEY": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "MESH_TEMPO": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_LATERAL": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "SHED_PURSUE": "0",
+          "STALK_CLAIM": "1",
+          "STRETCH_FLAT": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "UC_MESH": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1",
+          "ZONE_TE": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "recordedCommandSeconds": 2.5762763829999997,
+        "window": [
+          0,
+          5
+        ],
+        "sampleEvery": 4,
+        "dt": 0.05,
+        "result": {
+          "gain": 70,
+          "outcome": "touchdown"
+        },
+        "slots": [
+          "RB",
+          "DE_W",
+          "DE_S",
+          "DT_S",
+          "DT_W",
+          "LB_M",
+          "LB_W",
+          "LB_S",
+          "FS",
+          "SS"
+        ]
+      }
+    ],
+    "firstSampledDifferences": [
+      {
+        "names": [
+          "w6-shed-tempo",
+          "w6-shed-pursue"
+        ],
+        "flagsDiffer": [
+          "SHED_PURSUE"
+        ],
+        "firstByField": {
+          "command": {
+            "t": 2.85,
+            "slot": "DE_S",
+            "off": [
+              5.95,
+              -0.68
+            ],
+            "on": [
+              5.9,
+              -1.18
+            ]
+          },
+          "intent": {
+            "t": 2.45,
+            "slot": "DE_W",
+            "off": [
+              -1.5,
+              3.91
+            ],
+            "on": [
+              -0.6,
+              -3.91
+            ]
+          },
+          "rep": {
+            "t": 3.05,
+            "slot": "DE_W",
+            "off": {
+              "role": "defender",
+              "opponent": "H",
+              "start": 2.95,
+              "type": "run"
+            },
+            "on": null
+          },
+          "pos": {
+            "t": 2.45,
+            "slot": "DE_W",
+            "off": [
+              39.52,
+              32.42
+            ],
+            "on": [
+              39.53,
+              32.41
+            ]
+          },
+          "vel": {
+            "t": 2.45,
+            "slot": "DE_W",
+            "off": [
+              -0.76,
+              2.08
+            ],
+            "on": [
+              -0.69,
+              1.84
+            ]
+          },
+          "facing": {
+            "t": 2.65,
+            "slot": "DE_W",
+            "off": 2.79,
+            "on": 2.71
+          },
+          "support": {
+            "t": 3.85,
+            "slot": "RB",
+            "off": "up",
+            "on": "falling"
+          }
+        }
+      },
+      {
+        "names": [
+          "w6-shed-control-tempo",
+          "w6-shed-control-pursue"
+        ],
+        "flagsDiffer": [
+          "SHED_PURSUE"
+        ],
+        "firstByField": {
+          "command": {
+            "t": 3.05,
+            "slot": "DE_W",
+            "off": [
+              0,
+              0
+            ],
+            "on": [
+              4.08,
+              -6.47
+            ]
+          },
+          "intent": {
+            "t": 2.65,
+            "slot": "DE_W",
+            "off": [
+              -1.5,
+              3.91
+            ],
+            "on": [
+              -0.6,
+              -3.91
+            ]
+          },
+          "rep": {
+            "t": 3.05,
+            "slot": "DE_W",
+            "off": {
+              "role": "defender",
+              "opponent": "H",
+              "start": 2.9,
+              "type": "run"
+            },
+            "on": null
+          },
+          "pos": {
+            "t": 2.65,
+            "slot": "DE_W",
+            "off": [
+              39.02,
+              33.75
+            ],
+            "on": [
+              39.02,
+              33.74
+            ]
+          },
+          "vel": {
+            "t": 2.65,
+            "slot": "DE_W",
+            "off": [
+              -1.28,
+              3.76
+            ],
+            "on": [
+              -1.28,
+              3.38
+            ]
+          },
+          "facing": {
+            "t": 2.65,
+            "slot": "DT_W",
+            "off": 3.13,
+            "on": 3.12
+          },
+          "support": {
+            "t": 4.05,
+            "slot": "RB",
+            "off": "falling",
+            "on": "up"
+          }
+        }
+      }
+    ],
+    "nativeCollectionCommandSecondsReused": 9.043809253,
+    "limitations": [
+      "Both effects toggle together; native results do not isolate their outcome effects.",
+      "Samples every0.2s and values rounded0.01; no exact all22 first divergence.",
+      "No OL body/request, acquired-cue, hand-force or administrative-end observer data in these records."
+    ],
+    "decisions": {
+      "workOffIntent": "HOLD as implemented, independent of cooldown; preserve unique acquisition and held mode",
+      "runnerPassedRegrab": "HOLD independently; administrative exit does not establish earned hand-refit exclusion"
+    },
+    "catchSupport": {
+      "role": "helper author interface support, not independent acceptance",
+      "componentHead": "2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e",
+      "callerOwner": "Catching",
+      "callerBranch": "codex/catch-opportunity-caller",
+      "interfaceDoc": "docs/reviews/catch-query-interface-handoff.md",
+      "productionApproval": false
+    }
+  }
 }

@@ -12,6 +12,53 @@ head `1c578afb38f2eb6fc4886639e63fccc4e79c4354`; runtime checkpoint
 `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`. Fetched refs and actual merge base
 agree with the accepted pin. [Focused receipt, settings and logs](../../data/reviews/current/shed-pursue-independent-review.json).
 
+## Follow-up at #153 `8d3c41f2` — 2026-10-19 America/Phoenix
+
+Freshly fetched research head `8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055`;
+accepted develop and the canonical packet remain the pins above. The
+`engagement.ts` blob is still `cd2a29872e2ada9011914ce1a6350eb9a6f726f4`,
+and the direct test blob is still `b35a78b786c538d63501cb63ade745eb9a9da25c`.
+The exact two runtime hunks and their controls have not changed. **The two
+separate HOLD decisions remain; no old failure is relabeled as a new run.**
+
+The author has now [published native witnesses](https://github.com/tannerthardy/football-simulation-/blob/8d3c41f2bbfc0bbcc923f3fa583ad9be0df44055/data/reviews/current/run-game-v3-witnesses.json).
+I inspected only the four `w6-shed-*` records, not a new panel. Each compact
+witness plus newline reproduces its recorded SHA256; receipt/witness settings
+agree. Their producing source is `b5577605bb10b6d1e35b618d9ba78d75e6f65106`,
+source fingerprint `cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c`.
+This is package-source evidence, not an accepted-develop or intent-only result.
+Within each pair, only `SHED_PURSUE` differs in resolved settings; both flag
+effects are enabled together. Original collector command cost totals9.044s,
+reused rather than incurred again.
+
+| Saved pair | First sampled DE_W work-off change | Engagement at that sample | Recorded endings, off → on |
+| --- | --- | --- | --- |
+| `oz/strong/ace_12/off1/pair11/77`, `w6-shed-tempo` / `w6-shed-pursue` | At2.45s, final intent `(−1.5,+3.91)` → `(−0.6,−3.91)`yd/s | Both still H/DE_W, original start0.65s | 70yd touchdown → 8.68yd tackle |
+| Opposing `oz/strong/ace_12/over4/pair11/6`, `w6-shed-control-tempo` / `w6-shed-control-pursue` | At2.65s, the same intent change | Both still H/DE_W, original start0.65s | 6.13yd tackle → 70yd touchdown |
+
+This provides a useful distinction: the recorded work-off request changes
+**during the continuing original block**, before the later sampled absence of
+the on-arm engagement and off-arm re-acquisition. The author's statement that
+both witnesses diverge only after release is too broad. These are the first
+**sampled** changes for the selected defender, not an exact all22 first
+divergence: the samples are0.2s apart and rounded to0.01. The witnesses omit OL
+bodies/requests, acquired possession pictures, hand loads and end-reason
+callbacks. They cannot establish whether the later reachable re-grab is invalid
+or which hunk explains either ending. Preserve both football outcomes without
+using either as a validity verdict.
+
+**Intent remains HOLD as implemented**, for the independently reproduced
+acquisition and held-mode conflicts below, while an informed intent-only
+revision remains a sound next proposal. **The administrative re-grab
+prohibition remains a separate HOLD.** The missing observation is now narrowed
+to the paired hand/reach/command state at the administrative end→re-grab
+transition; native witnesses generally are no longer missing. No new fixture,
+test, World step or native simulation was run for this follow-up. The original
+6.739s focused receipt and its two failed contracts remain intact.
+
+The [catch-query interface handoff](catch-query-interface-handoff.md) is a
+separate author-support task. It is not independent approval of authored #131.
+
 ## Exact disposition
 
 Line numbers below refer to the pinned PR head, not a later branch tip.
