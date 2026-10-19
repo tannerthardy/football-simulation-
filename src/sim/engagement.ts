@@ -642,6 +642,22 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
+/** Experimental (BACK_CHASE=1, off): a first-level defender the ball has gone
+ * away from pursues down the line instead of holding his shoulder on the
+ * blocker. Flow is declared from his own picture of the runner (developed
+ * lateral speed, or the back's first step from his public alignment); he
+ * aims a yard behind the ball's projected lateral position (cutback-ready),
+ * keeps the depth he holds, and never pursues against the flow. Lag/cutback
+ * duties keep their landmark. Requests only: blocker, contact and World
+ * decide what is achieved. */
+const BACK_CHASE = process.env.BACK_CHASE === '1', CHASE_TRAIL = 1, CHASE_STEP = .3;
+/** Experimental (RUN_LATERAL=1, off): in a run rep, lateral requests are
+ * bounded by the body's own square lateral speed (vmax x shuffle, which the
+ * World applies by facing), not by the pass-protection mirror trait that also
+ * discounts agility. Zone linemen run the line with their hips open; the
+ * World still decides what facing, traction and contact allow. */
+const RUN_LATERAL = process.env.RUN_LATERAL === '1';
+const runLateral = (a: Agent, trait: number) => RUN_LATERAL ? Math.max(trait, a.profile.vmax * a.profile.shuffle) : trait;
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
@@ -833,8 +849,8 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const carrierCue = acquired?.cue ?? (enemy ? sim.see(d, enemy) : null);
   // Read through the mesh instead of working toward a stationary QB. This
   // uses only the observed depth; a QB draw/scramble can declare at the surface.
-  const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
-    ? backPicture ?? sim.see(d, back) : carrierCue;
+  const meshBack = !!(enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back);
+  const runnerCue = meshBack ? backPicture ?? sim.see(d, back!) : carrierCue;
   const advanced = !!(enemy && carrierCue &&
     (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
   const reading = d.recog?.read === 'run' || advanced;
@@ -884,6 +900,19 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   let desired = { x: d.pos.x, y };
   if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
   else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
+  let chasing = false;
+  if (BACK_CHASE && stack && job!.technique !== 'lag' && reading && runnerCue && !declared) {
+    // The ball's flow from the runner he sees. A back's first step from his
+    // alignment shows it before it is fast; a QB keeper needs real speed.
+    const isBack = meshBack || (!!back && enemy === back);
+    const home = isBack ? sim.offAlign.spots[back!.slot]?.pos : undefined;
+    const step = home ? runnerCue.pos.y - home.y : 0;
+    const f = Math.abs(runnerCue.vel.y) > 1.5 ? Math.sign(runnerCue.vel.y) : Math.abs(step) > CHASE_STEP ? Math.sign(step) : 0;
+    if (f && (d.pos.y - runnerCue.pos.y) * f < -CHASE_TRAIL) {
+      const trail = runnerCue.pos.y + runnerCue.vel.y * 2 * d.mind.decisionInterval - f * CHASE_TRAIL;
+      if ((trail - desired.y) * f > 0) { desired = { x: d.pos.x, y: trail }; chasing = true; }
+    }
+  }
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
@@ -897,7 +926,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   // advanced carrier supplies urgency even after an original pass read.
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
-  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired };
+  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired, chasing };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1071,7 +1100,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const lead = 0.15 + 0.15 * tb.read;
   const offset = (b.pos.x - d.pos.x - d.vel.x * lead) * lat.x + (b.pos.y - d.pos.y - d.vel.y * lead) * lat.y;
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
-  const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
+  const mirror = runLateral(b, tb.lateral * (0.75 + 0.35 * tb.feet)) * (e.helpers.length ? 1.3 : 1);
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
   const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
   const seal = clamp(dLat + feedback + correction, -mirror, mirror);
@@ -1169,7 +1198,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A declared runner can redirect the fit on the existing decision cadence.
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
   const legacy = { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work };
-  const recover = d.runFit?.technique !== 'attack';
+  const recover = d.runFit?.technique !== 'attack' || read.chasing;
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
@@ -1178,10 +1207,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // acceleration (the law the zone blockers plan with), so a lineman who is
   // being reached works laterally to keep his gap instead of lagging it.
   // DL_FLOW=0 restores the proportional follow.
-  const held = read.declared ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
+  const held = read.declared || read.chasing ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
   const flow = clamp(DL_FLOW
     ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
-    : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+    : held + (read.aim.y - d.pos.y) * 3, -runLateral(d, td.lateral), runLateral(d, td.lateral));
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.

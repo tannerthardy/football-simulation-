@@ -1,0 +1,189 @@
+# Part 2 receipts: same operators on 2022 NFL tracking (NFL60 where noted) and sim common plays. Generated 2026-10-19T00:04:00Z on dcb47f96 + working tree.
+## Whole-distribution distance to NFL60 (shape.py)
+d0       n  1200 | TVD vs NFL60: all 0.161 iz 0.119 oz 0.223 wz 0.216
+m1       n  1200 | TVD vs NFL60: all 0.160 iz 0.133 oz 0.203 wz 0.249
+rec      n  1200 | TVD vs NFL60: all 0.199 iz 0.194 oz 0.170 wz 0.254
+rec2     n  1200 | TVD vs NFL60: all 0.173 iz 0.152 oz 0.189 wz 0.206
+cap      n  1200 | TVD vs NFL60: all 0.200 iz 0.263 oz 0.224 wz 0.202
+bc       n  1200 | TVD vs NFL60: all 0.197 iz 0.161 oz 0.265 wz 0.247
+rl       n   800 | TVD vs NFL60: all 0.237 oz 0.220 wz 0.212
+rlc      n   800 | TVD vs NFL60: all 0.304 oz 0.281 wz 0.278
+r3       n  1200 | TVD vs NFL60: all 0.235 iz 0.237 oz 0.251 wz 0.278
+r3c      n  1200 | TVD vs NFL60: all 0.248 iz 0.340 oz 0.223 wz 0.241
+r3cr     n  1200 | TVD vs NFL60: all 0.345 iz 0.357 oz 0.342 wz 0.367
+g5       n  1200 | TVD vs NFL60: all 0.154 iz 0.137 oz 0.147 wz 0.195
+d0gap    n  1600 | TVD vs NFL60: all 0.125 counter 0.254 duo 0.227 power 0.178 trap 0.137
+rec2gap  n  1600 | TVD vs NFL60: all 0.144 counter 0.276 duo 0.172 power 0.242 trap 0.177
+d0tf     n  1800 | TVD vs NFL60: all 0.145 iz 0.107 oz 0.174 wz 0.191
+rec2tf   n  1800 | TVD vs NFL60: all 0.166 iz 0.101 oz 0.190 wz 0.215
+## Box DL flow by alignment with BACK_CHASE (dldepth.py)
+outside_zone: plays nfl-plays.jsonl.gz 1608 | d0-common.jsonl.gz 800 | bc-common.jsonl.gz 800
+  play end    1.0s nfl-plays. depth p25/50/75 -0.2/+0.2/+0.5 <-0.5  10% flow +1.1 | d0-common. depth p25/50/75 +0.4/+0.4/+0.5 <-0.5   0% flow +0.4 | bc-common. depth p25/50/75 +0.4/+0.4/+0.5 <-0.5   0% flow +0.4
+  play end    1.5s nfl-plays. depth p25/50/75 -0.7/-0.1/+0.5 <-0.5  30% flow +2.4 | d0-common. depth p25/50/75 -0.1/+0.1/+0.3 <-0.5   0% flow +1.3 | bc-common. depth p25/50/75 -0.1/+0.1/+0.3 <-0.5   0% flow +1.3
+  play end    2.0s nfl-plays. depth p25/50/75 -0.9/-0.1/+0.7 <-0.5  35% flow +3.9 | d0-common. depth p25/50/75 -0.6/-0.3/+0.2 <-0.5  29% flow +2.5 | bc-common. depth p25/50/75 -0.6/-0.3/+0.2 <-0.5  27% flow +2.5
+  play end    2.5s nfl-plays. depth p25/50/75 -0.9/+0.1/+1.1 <-0.5  33% flow +5.2 | d0-common. depth p25/50/75 -1.1/-0.6/+0.5 <-0.5  51% flow +3.1 | bc-common. depth p25/50/75 -1.1/-0.5/+0.5 <-0.5  49% flow +3.1
+  play inside 1.0s nfl-plays. depth p25/50/75 -0.3/+0.1/+0.4 <-0.5  14% flow +1.1 | d0-common. depth p25/50/75 +0.2/+0.3/+0.4 <-0.5   0% flow +0.2 | bc-common. depth p25/50/75 +0.2/+0.3/+0.4 <-0.5   0% flow +0.2
+  play inside 1.5s nfl-plays. depth p25/50/75 -1.0/-0.3/+0.4 <-0.5  41% flow +2.4 | d0-common. depth p25/50/75 -0.0/+0.1/+0.2 <-0.5   0% flow +0.8 | bc-common. depth p25/50/75 +0.1/+0.2/+0.5 <-0.5   0% flow +0.8
+  play inside 2.0s nfl-plays. depth p25/50/75 -1.3/-0.4/+0.5 <-0.5  43% flow +4.0 | d0-common. depth p25/50/75 -0.2/+0.0/+0.2 <-0.5   6% flow +1.4 | bc-common. depth p25/50/75 +0.1/+0.4/+0.6 <-0.5   0% flow +1.7
+  play inside 2.5s nfl-plays. depth p25/50/75 -1.1/-0.1/+0.8 <-0.5  37% flow +5.6 | d0-common. depth p25/50/75 -0.3/-0.1/+0.2 <-0.5  17% flow +2.5 | bc-common. depth p25/50/75 -0.0/+0.4/+0.7 <-0.5   3% flow +2.7
+  backside    1.0s nfl-plays. depth p25/50/75 +0.0/+0.4/+0.8 <-0.5   8% flow +1.5 | d0-common. depth p25/50/75 +0.3/+0.4/+0.6 <-0.5   0% flow +0.2 | bc-common. depth p25/50/75 +0.5/+0.6/+0.8 <-0.5   0% flow +0.2
+  backside    1.5s nfl-plays. depth p25/50/75 -0.4/+0.3/+0.9 <-0.5  21% flow +3.1 | d0-common. depth p25/50/75 -0.0/+0.2/+0.6 <-0.5   1% flow +0.5 | bc-common. depth p25/50/75 +0.6/+0.7/+0.9 <-0.5   0% flow +1.0
+  backside    2.0s nfl-plays. depth p25/50/75 -0.5/+0.5/+1.3 <-0.5  23% flow +4.9 | d0-common. depth p25/50/75 -0.2/+0.1/+0.6 <-0.5  12% flow +0.9 | bc-common. depth p25/50/75 +0.6/+0.7/+0.9 <-0.5   0% flow +2.1
+  backside    2.5s nfl-plays. depth p25/50/75 -0.3/+0.8/+1.8 <-0.5  21% flow +6.6 | d0-common. depth p25/50/75 -0.6/+0.0/+0.5 <-0.5  27% flow +1.5 | bc-common. depth p25/50/75 +0.5/+0.6/+0.8 <-0.5   0% flow +3.3
+inside_zone: plays nfl-plays.jsonl.gz 1229 | d0-common.jsonl.gz 400 | bc-common.jsonl.gz 400
+  play end    1.0s nfl-plays. depth p25/50/75 +0.0/+0.3/+0.8 <-0.5   6% flow +0.4 | d0-common. depth p25/50/75 +0.7/+0.8/+0.9 <-0.5   0% flow +0.3 | bc-common. depth p25/50/75 +0.7/+0.8/+0.9 <-0.5   0% flow +0.3
+  play end    1.5s nfl-plays. depth p25/50/75 -0.4/+0.2/+0.8 <-0.5  20% flow +0.8 | d0-common. depth p25/50/75 +0.7/+1.1/+1.5 <-0.5   0% flow +0.9 | bc-common. depth p25/50/75 +0.7/+1.1/+1.5 <-0.5   0% flow +0.9
+  play end    2.0s nfl-plays. depth p25/50/75 -0.4/+0.4/+1.1 <-0.5  21% flow +1.1 | d0-common. depth p25/50/75 +0.8/+1.3/+1.8 <-0.5   2% flow +1.5 | bc-common. depth p25/50/75 +0.7/+1.3/+1.8 <-0.5   2% flow +1.5
+  play end    2.5s nfl-plays. depth p25/50/75 -0.2/+0.7/+1.5 <-0.5  20% flow +1.2 | d0-common. depth p25/50/75 +0.8/+1.5/+2.0 <-0.5  11% flow +2.3 | bc-common. depth p25/50/75 +0.8/+1.4/+2.0 <-0.5  11% flow +2.3
+  play inside 1.0s nfl-plays. depth p25/50/75 +0.1/+0.5/+0.8 <-0.5   4% flow +0.4 | d0-common. depth p25/50/75 +0.5/+0.6/+0.7 <-0.5   0% flow +0.1 | bc-common. depth p25/50/75 +0.5/+0.6/+0.7 <-0.5   0% flow +0.1
+  play inside 1.5s nfl-plays. depth p25/50/75 -0.1/+0.4/+0.9 <-0.5  14% flow +0.9 | d0-common. depth p25/50/75 +0.8/+1.0/+1.3 <-0.5   0% flow +0.6 | bc-common. depth p25/50/75 +0.8/+1.0/+1.3 <-0.5   0% flow +0.6
+  play inside 2.0s nfl-plays. depth p25/50/75 -0.2/+0.5/+1.2 <-0.5  18% flow +1.1 | d0-common. depth p25/50/75 +1.0/+1.4/+2.1 <-0.5   0% flow +1.0 | bc-common. depth p25/50/75 +1.0/+1.5/+2.1 <-0.5   0% flow +1.0
+  play inside 2.5s nfl-plays. depth p25/50/75 -0.3/+0.7/+1.6 <-0.5  17% flow +1.1 | d0-common. depth p25/50/75 +1.1/+1.8/+2.9 <-0.5   0% flow +1.6 | bc-common. depth p25/50/75 +1.1/+1.8/+2.8 <-0.5   0% flow +1.6
+  backside    1.0s nfl-plays. depth p25/50/75 +0.2/+0.6/+0.9 <-0.5   4% flow +0.9 | d0-common. depth p25/50/75 +0.6/+0.7/+0.8 <-0.5   0% flow +0.1 | bc-common. depth p25/50/75 +0.6/+0.7/+0.8 <-0.5   0% flow +0.1
+  backside    1.5s nfl-plays. depth p25/50/75 -0.0/+0.6/+1.1 <-0.5  12% flow +1.7 | d0-common. depth p25/50/75 +0.7/+1.1/+1.4 <-0.5   0% flow +0.1 | bc-common. depth p25/50/75 +0.8/+1.2/+1.5 <-0.5   0% flow +0.4
+  backside    2.0s nfl-plays. depth p25/50/75 +0.0/+0.7/+1.5 <-0.5  14% flow +2.5 | d0-common. depth p25/50/75 +0.5/+1.4/+2.0 <-0.5   2% flow +0.2 | bc-common. depth p25/50/75 +0.9/+1.5/+2.0 <-0.5   0% flow +1.1
+  backside    2.5s nfl-plays. depth p25/50/75 +0.1/+1.1/+1.9 <-0.5  15% flow +3.1 | d0-common. depth p25/50/75 +0.3/+1.4/+2.6 <-0.5   3% flow +0.5 | bc-common. depth p25/50/75 +0.8/+1.4/+2.3 <-0.5   0% flow +1.9
+gap_pull: plays nfl-plays.jsonl.gz 1519 | d0gap-common.jsonl.gz 1180
+  play end    1.0s nfl-plays. depth p25/50/75 -0.0/+0.4/+0.8 <-0.5  10% flow -0.3 | d0gap-comm depth p25/50/75 +0.4/+0.6/+0.8 <-0.5   0% flow -0.1
+  play end    1.5s nfl-plays. depth p25/50/75 -0.5/+0.2/+0.8 <-0.5  25% flow -0.5 | d0gap-comm depth p25/50/75 +0.3/+0.4/+1.1 <-0.5   1% flow -0.3
+  play end    2.0s nfl-plays. depth p25/50/75 -0.8/+0.3/+1.1 <-0.5  30% flow -0.3 | d0gap-comm depth p25/50/75 -0.2/+0.2/+1.1 <-0.5   7% flow -0.6
+  play end    2.5s nfl-plays. depth p25/50/75 -0.8/+0.5/+1.4 <-0.5  29% flow +0.3 | d0gap-comm depth p25/50/75 -0.4/-0.1/+1.0 <-0.5  18% flow -0.4
+  play inside 1.0s nfl-plays. depth p25/50/75 -0.1/+0.3/+0.7 <-0.5   9% flow -0.3 | d0gap-comm depth p25/50/75 +0.4/+0.5/+0.6 <-0.5   0% flow -0.2
+  play inside 1.5s nfl-plays. depth p25/50/75 -0.7/+0.1/+0.7 <-0.5  30% flow -0.4 | d0gap-comm depth p25/50/75 +0.3/+0.5/+1.2 <-0.5   0% flow -0.6
+  play inside 2.0s nfl-plays. depth p25/50/75 -1.0/+0.1/+0.9 <-0.5  37% flow +0.0 | d0gap-comm depth p25/50/75 +0.2/+0.5/+1.7 <-0.5   1% flow -0.9
+  play inside 2.5s nfl-plays. depth p25/50/75 -1.3/+0.2/+1.2 <-0.5  35% flow +0.6 | d0gap-comm depth p25/50/75 +0.2/+0.7/+2.1 <-0.5   3% flow -1.0
+  backside    1.0s nfl-plays. depth p25/50/75 -0.1/+0.3/+0.8 <-0.5  10% flow +0.6 | d0gap-comm depth p25/50/75 +0.3/+0.5/+0.7 <-0.5   0% flow +0.0
+  backside    1.5s nfl-plays. depth p25/50/75 -0.6/+0.1/+0.7 <-0.5  27% flow +1.1 | d0gap-comm depth p25/50/75 -0.0/+0.4/+0.7 <-0.5   3% flow -0.5
+  backside    2.0s nfl-plays. depth p25/50/75 -0.9/+0.2/+1.0 <-0.5  30% flow +1.7 | d0gap-comm depth p25/50/75 -0.3/+0.3/+0.7 <-0.5  18% flow -1.0
+  backside    2.5s nfl-plays. depth p25/50/75 -0.8/+0.6/+1.4 <-0.5  29% flow +2.4 | d0gap-comm depth p25/50/75 -0.8/+0.2/+0.8 <-0.5  30% flow -1.3
+man_duo: plays nfl-plays.jsonl.gz 977 | d0gap-common.jsonl.gz 398
+  play end    1.0s nfl-plays. depth p25/50/75 +0.2/+0.5/+0.8 <-0.5   4% flow -0.5 | d0gap-comm depth p25/50/75 +0.7/+0.8/+0.9 <-0.5   0% flow +0.3
+  play end    1.5s nfl-plays. depth p25/50/75 -0.1/+0.5/+1.0 <-0.5  13% flow -0.9 | d0gap-comm depth p25/50/75 +0.7/+1.2/+1.5 <-0.5   1% flow +0.8
+  play end    2.0s nfl-plays. depth p25/50/75 -0.1/+0.7/+1.4 <-0.5  18% flow -1.0 | d0gap-comm depth p25/50/75 +0.4/+1.6/+2.2 <-0.5   1% flow +1.5
+  play end    2.5s nfl-plays. depth p25/50/75 -0.0/+1.0/+1.7 <-0.5  18% flow -1.0 | d0gap-comm depth p25/50/75 +0.3/+1.6/+2.9 <-0.5   6% flow +2.2
+  play inside 1.0s nfl-plays. depth p25/50/75 +0.2/+0.6/+0.9 <-0.5   2% flow -0.5 | d0gap-comm depth p25/50/75 +0.7/+0.8/+0.8 <-0.5   0% flow +0.0
+  play inside 1.5s nfl-plays. depth p25/50/75 -0.0/+0.6/+1.1 <-0.5  10% flow -0.7 | d0gap-comm depth p25/50/75 +1.3/+1.5/+1.7 <-0.5   0% flow -0.2
+  play inside 2.0s nfl-plays. depth p25/50/75 -0.1/+0.7/+1.3 <-0.5  17% flow -0.8 | d0gap-comm depth p25/50/75 +1.7/+2.2/+2.6 <-0.5   0% flow -0.6
+  play inside 2.5s nfl-plays. depth p25/50/75 -0.1/+0.8/+1.6 <-0.5  18% flow -0.7 | d0gap-comm depth p25/50/75 +2.1/+3.0/+3.5 <-0.5   0% flow -1.1
+  backside    1.0s nfl-plays. depth p25/50/75 +0.0/+0.4/+0.8 <-0.5   6% flow +0.0 | d0gap-comm depth p25/50/75 +0.7/+0.8/+0.9 <-0.5   0% flow -0.1
+  backside    1.5s nfl-plays. depth p25/50/75 -0.3/+0.3/+0.8 <-0.5  18% flow +0.1 | d0gap-comm depth p25/50/75 +1.0/+1.3/+1.6 <-0.5   0% flow -0.3
+  backside    2.0s nfl-plays. depth p25/50/75 -0.4/+0.5/+1.2 <-0.5  22% flow +0.3 | d0gap-comm depth p25/50/75 +1.3/+1.8/+2.4 <-0.5   0% flow -0.9
+  backside    2.5s nfl-plays. depth p25/50/75 -0.2/+0.8/+1.6 <-0.5  20% flow +0.8 | d0gap-comm depth p25/50/75 +1.4/+2.1/+3.2 <-0.5   3% flow -1.5
+## Trench timeline with RUN_LATERAL (+BACK_CHASE), OZ/WZ (timeline.py)
+# rl
+  lat DL 1.0                         NFL +1.32 [+0.97,+1.63] n=1608 | sim +0.24 [+0.17,+0.30] n=800
+  lat DL 2.0                         NFL +4.45 [+3.55,+5.10] n=1608 | sim +1.55 [+1.22,+1.82] n=800
+  lat LB 1.0                         NFL +1.25 [+0.73,+1.65] n=1603 | sim +0.27 [+0.17,+0.37] n=800
+  lat LB 2.0                         NFL +4.83 [+3.50,+5.73] n=1603 | sim +2.93 [+2.10,+3.30] n=800
+  lat OL 1.0                         NFL +1.86 [+1.54,+2.10] n=1608 | sim +0.74 [+0.54,+0.86] n=800
+  lat OL 2.0                         NFL +4.94 [+4.24,+5.58] n=1608 | sim +2.22 [+1.78,+2.66] n=800
+  OL lat speed engaged               NFL +3.00 [+2.25,+3.50] n=94865 | sim +1.25 [+0.75,+1.75] n=58247
+  lat DL 1.0                         NFL +0.67 [+0.20,+1.03] n=1229 | sim                  - n=0
+  lat DL 2.0                         NFL +1.90 [+0.87,+2.70] n=1228 | sim                  - n=0
+  lat LB 1.0                         NFL +0.40 [-0.15,+0.83] n=1214 | sim                  - n=0
+  lat LB 2.0                         NFL +1.45 [-0.10,+2.65] n=1213 | sim                  - n=0
+  lat OL 1.0                         NFL +0.94 [+0.56,+1.24] n=1229 | sim                  - n=0
+  lat OL 2.0                         NFL +2.22 [+1.34,+2.90] n=1228 | sim                  - n=0
+  OL lat speed engaged               NFL +1.25 [+0.50,+2.00] n=73870 | sim                  - n=0
+  lat DL 1.0                         NFL +0.15 [-0.25,+0.73] n=1519 | sim                  - n=0
+  lat DL 2.0                         NFL +0.78 [-0.20,+2.67] n=1519 | sim                  - n=0
+  lat LB 1.0                         NFL +0.50 [+0.05,+1.10] n=1500 | sim                  - n=0
+  lat LB 2.0                         NFL +2.45 [+1.05,+4.13] n=1500 | sim                  - n=0
+  lat OL 1.0                         NFL +0.30 [-0.04,+1.30] n=1519 | sim                  - n=0
+  lat OL 2.0                         NFL +1.28 [+0.38,+4.00] n=1519 | sim                  - n=0
+  OL lat speed engaged               NFL +0.50 [-0.50,+2.00] n=79250 | sim                  - n=0
+  lat DL 1.0                         NFL -0.20 [-0.60,+0.30] n=977 | sim                  - n=0
+  lat DL 2.0                         NFL -0.30 [-1.23,+0.78] n=976 | sim                  - n=0
+  lat LB 1.0                         NFL -0.07 [-0.40,+0.35] n=974 | sim                  - n=0
+  lat LB 2.0                         NFL +0.13 [-0.77,+1.20] n=973 | sim                  - n=0
+  lat OL 1.0                         NFL -0.40 [-0.72,+0.24] n=977 | sim                  - n=0
+  lat OL 2.0                         NFL -0.64 [-1.42,+0.64] n=976 | sim                  - n=0
+  OL lat speed engaged               NFL -0.25 [-1.00,+0.50] n=63431 | sim                  - n=0
+# rlc
+  lat DL 1.0                         NFL +1.32 [+0.97,+1.63] n=1608 | sim +0.28 [+0.20,+0.40] n=798
+  lat DL 2.0                         NFL +4.45 [+3.55,+5.10] n=1608 | sim +2.33 [+1.96,+2.65] n=798
+  lat LB 1.0                         NFL +1.25 [+0.73,+1.65] n=1603 | sim +0.27 [+0.17,+0.37] n=798
+  lat LB 2.0                         NFL +4.83 [+3.50,+5.73] n=1603 | sim +2.95 [+2.23,+3.30] n=798
+  lat OL 1.0                         NFL +1.86 [+1.54,+2.10] n=1608 | sim +0.74 [+0.58,+0.88] n=798
+  lat OL 2.0                         NFL +4.94 [+4.24,+5.58] n=1608 | sim +2.38 [+2.02,+2.86] n=798
+  OL lat speed engaged               NFL +3.00 [+2.25,+3.50] n=94865 | sim +1.25 [+0.75,+2.00] n=58766
+  lat DL 1.0                         NFL +0.67 [+0.20,+1.03] n=1229 | sim                  - n=0
+  lat DL 2.0                         NFL +1.90 [+0.87,+2.70] n=1228 | sim                  - n=0
+  lat LB 1.0                         NFL +0.40 [-0.15,+0.83] n=1214 | sim                  - n=0
+  lat LB 2.0                         NFL +1.45 [-0.10,+2.65] n=1213 | sim                  - n=0
+  lat OL 1.0                         NFL +0.94 [+0.56,+1.24] n=1229 | sim                  - n=0
+  lat OL 2.0                         NFL +2.22 [+1.34,+2.90] n=1228 | sim                  - n=0
+  OL lat speed engaged               NFL +1.25 [+0.50,+2.00] n=73870 | sim                  - n=0
+  lat DL 1.0                         NFL +0.15 [-0.25,+0.73] n=1519 | sim                  - n=0
+  lat DL 2.0                         NFL +0.78 [-0.20,+2.67] n=1519 | sim                  - n=0
+  lat LB 1.0                         NFL +0.50 [+0.05,+1.10] n=1500 | sim                  - n=0
+  lat LB 2.0                         NFL +2.45 [+1.05,+4.13] n=1500 | sim                  - n=0
+  lat OL 1.0                         NFL +0.30 [-0.04,+1.30] n=1519 | sim                  - n=0
+  lat OL 2.0                         NFL +1.28 [+0.38,+4.00] n=1519 | sim                  - n=0
+  OL lat speed engaged               NFL +0.50 [-0.50,+2.00] n=79250 | sim                  - n=0
+  lat DL 1.0                         NFL -0.20 [-0.60,+0.30] n=977 | sim                  - n=0
+  lat DL 2.0                         NFL -0.30 [-1.23,+0.78] n=976 | sim                  - n=0
+  lat LB 1.0                         NFL -0.07 [-0.40,+0.35] n=974 | sim                  - n=0
+  lat LB 2.0                         NFL +0.13 [-0.77,+1.20] n=973 | sim                  - n=0
+  lat OL 1.0                         NFL -0.40 [-0.72,+0.24] n=977 | sim                  - n=0
+  lat OL 2.0                         NFL -0.64 [-1.42,+0.64] n=976 | sim                  - n=0
+  OL lat speed engaged               NFL -0.25 [-1.00,+0.50] n=63431 | sim                  - n=0
+## Open-field pursuit feasibility at 10 yd (pursuit.py)
+nfl-plays.jsonl.gz       runs reaching 10 yd: 347
+  all       n  347 | defenders ahead p50 3 | can intercept within +20: p50 1  within +40: p50 2, none 20% | earliest feasible depth p50 10.3 | actual end p50 14.0
+  ended 40+ n   31 | defenders ahead p50 3 | can intercept within +20: p50 1  within +40: p50 2, none 13% | earliest feasible depth p50 22.5 | actual end p50 50.0
+  ended <40 n  316 | defenders ahead p50 3 | can intercept within +20: p50 2  within +40: p50 2, none 21% | earliest feasible depth p50 10.3 | actual end p50 13.6
+d0-common.jsonl.gz       runs reaching 10 yd: 114
+  all       n  114 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 1, none 41% | earliest feasible depth p50 17.6 | actual end p50 19.8
+  ended 40+ n   45 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 0, none 62% | earliest feasible depth p50 52.8 | actual end p50 70.0
+  ended <40 n   69 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 28% | earliest feasible depth p50 10.4 | actual end p50 13.8
+cap-common.jsonl.gz      runs reaching 10 yd: 282
+  all       n  282 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 26% | earliest feasible depth p50 10.3 | actual end p50 13.2
+  ended 40+ n   48 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 27% | earliest feasible depth p50 26.9 | actual end p50 69.9
+  ended <40 n  234 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 25% | earliest feasible depth p50 10.2 | actual end p50 12.4
+rec2-common.jsonl.gz     runs reaching 10 yd: 83
+  all       n   83 | defenders ahead p50 1 | can intercept within +20: p50 0  within +40: p50 1, none 40% | earliest feasible depth p50 10.5 | actual end p50 17.1
+  ended 40+ n   28 | defenders ahead p50 0 | can intercept within +20: p50 0  within +40: p50 0, none 61% | earliest feasible depth p50 50.8 | actual end p50 70.0
+  ended <40 n   55 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 1, none 29% | earliest feasible depth p50 10.3 | actual end p50 13.6
+r3c-common.jsonl.gz      runs reaching 10 yd: 213
+  all       n  213 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 30% | earliest feasible depth p50 10.3 | actual end p50 13.2
+  ended 40+ n   33 | defenders ahead p50 1 | can intercept within +20: p50 1  within +40: p50 2, none 15% | earliest feasible depth p50 26.6 | actual end p50 69.9
+  ended <40 n  180 | defenders ahead p50 2 | can intercept within +20: p50 1  within +40: p50 1, none 33% | earliest feasible depth p50 10.2 | actual end p50 12.6
+## Final gain by first-contact location (aftercontact.py)
+nfl-plays.jsonl.gz runs with first contact 2488
+  contact at [-99, -2)  9.6% of runs | final p25/50/75 -2.0/-1.0/1.0 | 4+  10%  <1  71%
+  contact at [ -2, -1)  9.6% of runs | final p25/50/75 0.0/1.0/2.0 | 4+  13%  <1  44%
+  contact at [ -1,  0) 16.5% of runs | final p25/50/75 1.0/2.0/3.0 | 4+  19%  <1  16%
+  contact at [  0,  1) 18.9% of runs | final p25/50/75 2.0/3.0/4.0 | 4+  36%  <1   3%
+  contact at [  1,  2) 15.5% of runs | final p25/50/75 3.0/4.0/5.0 | 4+  62%  <1   1%
+  contact at [  2,  4) 15.4% of runs | final p25/50/75 4.0/6.0/7.0 | 4+  87%  <1   0%
+  contact at [  4, 99) 14.4% of runs | final p25/50/75 8.0/10.0/15.0 | 4+  97%  <1   1%
+d0-common.jsonl.gz runs with first contact 1191
+  contact at [-99, -2)  1.0% of runs | final p25/50/75 -1.7/-1.6/-0.6 | 4+   0%  <1 100%
+  contact at [ -2, -1) 16.9% of runs | final p25/50/75 -1.2/-0.6/0.5 | 4+   3%  <1  84%
+  contact at [ -1,  0) 12.4% of runs | final p25/50/75 0.6/1.1/2.0 | 4+   9%  <1  43%
+  contact at [  0,  1) 28.0% of runs | final p25/50/75 1.9/2.7/3.4 | 4+  15%  <1   7%
+  contact at [  1,  2) 14.2% of runs | final p25/50/75 3.1/4.0/5.6 | 4+  49%  <1   0%
+  contact at [  2,  4) 18.7% of runs | final p25/50/75 4.7/5.8/7.4 | 4+  88%  <1   0%
+  contact at [  4, 99)  8.8% of runs | final p25/50/75 7.7/9.1/12.5 | 4+ 100%  <1   0%
+r3c-common.jsonl.gz runs with first contact 1194
+  contact at [-99, -2)  3.4% of runs | final p25/50/75 -1.4/-1.0/-0.4 | 4+   5%  <1  88%
+  contact at [ -2, -1) 12.8% of runs | final p25/50/75 -0.8/-0.1/0.8 | 4+   6%  <1  80%
+  contact at [ -1,  0) 19.8% of runs | final p25/50/75 0.1/0.6/1.5 | 4+   7%  <1  64%
+  contact at [  0,  1) 26.0% of runs | final p25/50/75 1.6/2.5/3.5 | 4+  14%  <1  10%
+  contact at [  1,  2) 14.0% of runs | final p25/50/75 3.3/4.3/5.2 | 4+  57%  <1   0%
+  contact at [  2,  4)  9.0% of runs | final p25/50/75 4.5/5.7/7.6 | 4+  86%  <1   0%
+  contact at [  4, 99) 15.0% of runs | final p25/50/75 10.8/12.8/16.1 | 4+ 100%  <1   0%
+## Contact to whistle and yards after contact by entry speed (mech.py, all NFL runs)
+contact.run.contact_to_whistle_s       sim n=1191 mean=1.129 p10=0.6 p50=0.8 p90=1.5
+                                       nfl n=5262 mean=1.626 p10=0.7 p50=1.4 p90=2.9
+contact.run.carrier_speed_0_5s_after   sim n=1189 mean=3.797 p10=1.581 p50=3.682 p90=6.374
+                                       nfl n=5105 mean=3.454 p10=1.414 p50=3.25 p90=5.815
+contact.run.yards_after_contact@slow   sim n=33 mean=0.668 p10=-0.07 p50=0.38 p90=1.46
+                                       nfl n=715 mean=1.343 p10=-0.1 p50=1.1 p90=3.0
+contact.run.yards_after_contact@mid    sim n=504 mean=1.997 p10=0.43 p50=1.4 p90=3.03
+                                       nfl n=3125 mean=2.747 p10=0.6 p50=2.3 p90=5.0
+contact.run.yards_after_contact@fast   sim n=654 mean=6.944 p10=1.41 p50=2.97 p90=10.93
+                                       nfl n=1422 mean=5.297 p10=1.1 p50=3.6 p90=10.6
+run.defenders_within_2yd_at_end        sim n=1200 mean=2.4 p10=1 p50=2 p90=4
+                                       nfl n=5462 mean=3.223 p10=1 p50=3 p90=5

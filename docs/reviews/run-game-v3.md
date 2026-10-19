@@ -2,7 +2,7 @@
 
 Branch `claude/run-game-v3` from accepted develop `f414627`. Not integrated.
 Every change is a default-off flag; flags off, the zone lab is identical on
-1,200/1,200 plays (yards and every tracked position). 1,901 TS tests and
+1,200/1,200 plays (yards and every tracked position). 1,906 TS tests and
 typecheck pass on Node 22.23.3.
 
 ## Question
@@ -65,10 +65,12 @@ At 2.5 s, 51% of play-side ends are more than 0.5 yd in the backfield
 | `STRETCH_FLAT` | A stretch reach blocker never asks his feet to retreat; felt load still takes ground, and the existing anchor answers it | `stepRunRep` blocker request |
 | `LB_KEY` | A backer keys the back's first step: 0.3 yd from his public alignment, in the backer's own delayed picture. Previously he waited for a developed 1.5 yd/s lateral speed. | `run-fits.ts` flow read |
 | `DEEP_CAP` | A deep-zone alley defender keeps installed depth until the runner he sees crosses the line, then ordinary chase (ported from `claude/open-field-tackling`) | `run-fits.ts` |
+| `BACK_CHASE` | An engaged first-level defender the ball has gone away from pursues down the line, a yard behind the ball, instead of holding his shoulder on the blocker. Flow comes from his own picture of the runner. He keeps his held depth and never pursues against the flow; lag duties stay home. | `runContactRead` and the defender request in `stepRunRep` (`engagement.ts`) |
+| `RUN_LATERAL` | Run-rep lateral requests are bounded by the body's square lateral speed (vmax × shuffle), not the pass-protection mirror trait | `stepRunRep` blocker mirror and defender flow bound |
 | `DEF_GETOFF` (diagnostic scale, default 1) | Defensive snap latency is an unfitted assumption; NFL box defenders and OL first move at the same median time | `agent.ts`; shared perception, owner decides |
 
-Contract tests: `test/stretch-flat.test.ts`, `test/run-game-flags.test.ts`
-and `test/deep-cap.test.ts`. They cover default-off behavior, both flips or
+Contract tests: `test/stretch-flat.test.ts`, `test/run-game-flags.test.ts`,
+`test/back-chase.test.ts` and `test/deep-cap.test.ts`. They cover default-off behavior, both flips or
 sides, and unaffected cases.
 
 ## Results
@@ -187,6 +189,162 @@ back meets an end who has already penetrated.
 - **`ZONE_TE`** has had two attempts: the track, then following a slant. Its
   gun-doubles regression is documented above, not tuned further.
 
+## Part 2 — backside pursuit, the tail and contact (2026-10-19)
+
+Receipts: [part2.txt](run-game-v3/part2.txt), [holds.txt](run-game-v3/holds.txt)
+and the per-arm `report-LABEL.txt` files for `bc`, `rl`, `rlc`, `r3`, `r3c`
+and `r3cr`.
+
+### Backside defensive line does not pursue (`BACK_CHASE`)
+
+Box defenders aligned backside of the ball; lateral flow at 2.5 s, + toward
+the runner's side (`dldepth.py`):
+
+| Scheme | NFL | Sim develop |
+|---|---|---|
+| Outside zone | +6.6 yd | +1.5 |
+| Inside zone | +3.1 | +0.5 |
+| Power/counter/trap | +2.4 | −1.3 |
+| Duo | +0.8 | −1.5 |
+
+An engaged lineman aims at a fixed shoulder offset on his blocker. A cutoff
+blocker matches the lineman's speed, so neither side leads.
+
+`BACK_CHASE` changes the lineman's choice. Once the ball has visibly gone
+away from him (lateral speed, or the back's first step from his alignment),
+he pursues down the line, a yard behind the ball. He holds his depth and
+never pursues against the flow; lag duties stay home.
+
+| Backside flow at 2.0 / 2.5 s | NFL | Develop | `BACK_CHASE` |
+|---|---|---|---|
+| Outside zone | 4.9 / 6.6 yd | 0.9 / 1.5 | 2.1 / 3.3 |
+| Inside zone | 2.5 / 3.1 | 0.2 / 0.5 | 1.1 / 1.9 |
+
+Outcomes (`bc`, ace lab):
+
+| | Develop | `BACK_CHASE` | NFL60 |
+|---|---|---|---|
+| IZ mean | 8.45 | 7.49 | 4.51 |
+| OZ negatives | 14.2% | 17.8% | 9.5% |
+| WZ negatives | 20.8% | 17.8% | 9.5% |
+| 40+ overall | 3.75% | 4.50% | 1.18% |
+
+On film (`iz/strong/ace_12/over3/pair11/7`), the backside tackle crosses the
+center by 2.0 s, as NFL backside linemen do. The back keeps his designed
+B-gap track into him rather than cutting back behind the overflow.
+
+`RUN_READ=1` re-tested on top of this package is much worse (negatives 19.2%,
+4+ 26.0%), so the existing press-and-read is not the answer to the cutback.
+
+### Run-rep lateral bound (`RUN_LATERAL`)
+
+Engaged lateral requests were capped by the pass-protection mirror trait:
+square shuffle speed discounted by agility, about 2.6 yd/s for OL and 3.0
+for DL. NFL engaged OL lateral speed is 3.0 yd/s at the median.
+
+Lifting the cap to the body's own square lateral speed barely moves flow:
+
+- DL lateral at 2.0 s: 1.45 → 1.55 yd.
+- Engaged OL lateral speed: 1.0 → 1.25 yd/s.
+- Wide-zone negatives: 20.8 → 14.5%.
+
+The first second is unchanged: OL lateral at 1.0 s stays 0.74 yd vs NFL 1.86.
+
+### Combined arms
+
+| Arm | Neg | 4+ | 10+ | 20+ | 40+ | Mean |
+|---|---|---|---|---|---|---|
+| `rec2` + `BACK_CHASE RUN_LATERAL` (`r3`) | 14.8 | 30.2 | 7.0 | 3.9 | 2.92 | 5.00 |
+| `r3` + `DEEP_CAP` (`r3c`) | 13.8 | 37.2 | 18.2 | 3.7 | 2.75 | 5.89 |
+| NFL60 | 8.6 | 48.8 | 13.1 | 3.0 | 1.18 | 5.00 |
+
+P(40+ \| 10+) is 0.42 for `r3` and 0.15 for `r3c` (NFL60 0.09).
+
+**Whole-distribution check** (`shape.py`: total variation distance over gain
+bins, NFL60; 0 = identical shape):
+
+| Arm | Distance |
+|---|---|
+| Develop | 0.161 |
+| `DEF_GETOFF=0.5` | 0.154 |
+| `rec2` | 0.173 |
+| `bc` | 0.197 |
+| `r3` | 0.235 |
+| `r3c` | 0.248 |
+
+No controller package beats develop on the whole distribution. Each flag
+moves its own mechanism toward NFL; a more realistic defense mostly exposes
+the two physical limits below.
+
+### Where ordinary runs go wrong: stuffs and the missing middle
+
+Share of runs by gain:
+
+| Gain | NFL60 | Develop | `r3c` |
+|---|---|---|---|
+| −2 or worse | 3.2% | 0.1% | 0.1% |
+| −2 to 0 | 5.4% | 12.7% | 13.8% |
+| 0 to 1 | 6.6% | 9.3% | 14.4% |
+| 6 to 10 | 16.6% | 12.8% | 6.1% |
+| 10 to 20 | 10.1% | 5.1% | 14.5% |
+
+The medians of yards before and after first contact match NFL (0.5 vs 0.6,
+2.2 vs 2.4). The difference is in what happens after a contact near the
+line. Median final gain by first-contact location (`aftercontact.py`):
+
+| First contact at | NFL60 | Develop |
+|---|---|---|
+| −2 to −1 yd | +1.0 (44% under 1) | −0.6 (84%) |
+| −1 to 0 | +2.0 (16%) | +1.1 (43%) |
+| 0 to 1 | +3.0 | +2.7 |
+| 1 yd or more | about equal | |
+
+| Contact measure | Sim | NFL |
+|---|---|---|
+| Contact to whistle (median) | 0.8 s | 1.4 s |
+| Yards after contact, slow entry | 0.4 | 1.1 |
+| Yards after contact, mid entry | 1.4 | 2.3 |
+| Yards after contact, fast entry | 3.0 | 3.6 |
+| Defenders within 2 yd at the end (median) | 2 | 3 |
+
+**Held carriers fall 0.3 s after the first hold** in 95–99% of holds at every
+depth (`bondend.ts`).
+
+- **The carrier's request does not matter.** Counterfactual requests while
+  held were tried: no lean, keep current velocity, current speed north, and
+  vmax north. Hold to fall stays 0.3–0.35 s, and yards after the hold move by
+  0.1–0.3. A held-runner "get north" flag was tried and removed for that
+  reason.
+- **The parked tackle flags do not change it.** `WRAP_BIND`, `TACKLE_ROLL`
+  and `TACKLE_TOUCH` all leave it at 0.3–0.45 s.
+- **One traced hold** (`holdtrace.ts`) is a legitimate side tackle. A
+  linebacker crossing at about 5 yd/s tightens a grip to 0.5 yd. The pull
+  (over 2 body weights sideways) moves the runner's capture point out, and he
+  falls at 0.4 s. Whether nearly every hold should end that fast is a
+  tackle/support question.
+
+### The 40+ tail: structure first, then execution
+
+Pursuit feasibility when the runner reaches 10 yd (`pursuit.py`): a straight
+intercept test of every defender against the runner's actual later path at
+his own peak speed, with 0.3 s to react.
+
+| At 10 yd | NFL60 | Develop | `DEEP_CAP` |
+|---|---|---|---|
+| Defenders still ahead (median) | 3 | 1 | 2 |
+| No defender could intercept before +40 | 20% | 41% | 26% |
+| Share of 10+ runs that went 40+ | 9% | 39% | 17% |
+
+With `DEEP_CAP` the structure is close to NFL. Of its 48 runs of 40+:
+
+- 29 had an open-field hold (18 where every hold broke).
+- 7 were missed attempts.
+
+The breaks are the earlier finding: flat-footed DBs (1–2.5 yd/s) taking arm
+holds (grip 0.1–0.4) on a runner at 8+ yd/s. Approach and chase finishing have
+already had their two attempts (`claude/open-field-tackling`). What remains is
+tackle physics at speed.
+
 ## Handoffs (no edits made)
 
 - **Defensive snap latency** (`agent.ts`, perception): NFL box defenders and OL
@@ -197,6 +355,15 @@ back meets an end who has already penetrated.
 - **Engaged lateral race** (World contact and gait): engaged OL lateral speed
   is 1.0 vs 3.0 yd/s. The OL's lateral acceleration from the stance is about
   3.5 yd/s², and contact then halts it. This is the root of weaknesses 2 and 3.
+- **Held carriers go down too fast** (tackle/support physics): falls come
+  0.3 s after the first hold in 95–99% of holds at every depth. Contact to
+  whistle is 0.8 vs 1.4 s, and yards after contact are 0.6–0.9 lower in every
+  entry-speed band. This is the largest single cause of the stuffs at the
+  line and the missing 2–6 yd runs. The carrier's own request does not change
+  it, and neither do the parked tackle flags (receipts in `holds.txt`).
+- **Open-field holds at speed break** (tackle physics): with the secondary at
+  NFL depth (`DEEP_CAP`), 29 of 48 runs of 40+ had an open-field hold, and in
+  18 every hold broke. The structure is otherwise close to NFL.
 
 ## Next decision
 
@@ -207,7 +374,14 @@ back meets an end who has already penetrated.
    `UC_MESH`, `STRETCH_FLAT` and `LB_KEY` each move their own mechanism toward
    NFL. Their combined outcomes stay mixed until the line slides.
 2. Keep `DEEP_CAP` parked until the box holds without the collapsed safety.
-3. Physics owner: the engaged lateral race. Perception owner: the defensive
-   snap latency.
-4. Controller: backside DL pursuit (0.9 vs 4.9 yd at 2.0 s on outside zone),
-   then open-field pursuit for the 40+ tail.
+   Keep `BACK_CHASE` and `RUN_LATERAL` as mechanism candidates (flow toward
+   NFL); they are not outcome improvements on their own.
+3. Physics owner, in order of consequence:
+   - held-carrier fall timing;
+   - the engaged lateral race and OL start-up acceleration;
+   - open-field holds at speed.
+
+   Perception owner: the defensive snap latency (`DEF_GETOFF=0.5` is the only
+   arm that beats develop on the whole distribution).
+4. Controller, after those: the runner's cutback read against a pursuing
+   backside (the shelved `RUN_READ` is not it).
