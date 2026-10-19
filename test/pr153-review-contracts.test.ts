@@ -1,0 +1,85 @@
+/** PR #153 independent run/controller review contracts (ported from
+ * data/reviews/current/pr153-run-controller-review/contracts.test.ts.txt at
+ * 26614a6): UC_MESH must leave the under-center draw QB arrival unchanged;
+ * MESH_TEMPO alone leaves draw/toss/QB-draw installations unchanged; a failed
+ * exchange is still secured and carried with any QB through-speed. */
+import {afterEach,expect,it,vi} from 'vitest';
+afterEach(()=>{vi.unstubAllEnvs();vi.resetModules();});
+async function scene(uc:string,tempo:string,scheme='draw',flip=false){
+ vi.stubEnv('UC_MESH',uc);vi.stubEnv('MESH_TEMPO',tempo);vi.resetModules();
+ const {Rng}=await import('../src/core/rng.js');
+ const {generateTeam,pickOffense,pickDefense}=await import('../src/league/team.js');
+ const {FORMATION_BY_ID}=await import('../src/playbook/formations.js');
+ const {RUN_BY_ID}=await import('../src/playbook/concepts.js');
+ const {FRONT_BY_ID,COVERAGE_BY_ID}=await import('../src/playbook/defense.js');
+ const {PlaySim}=await import('../src/sim/playsim.js');
+ const formation=FORMATION_BY_ID.ace_11;
+ const run=scheme==='qbDraw'?{...RUN_BY_ID.draw,id:'review-keep',scheme:'qbDraw' as const}:RUN_BY_ID[scheme];
+ const s=new PlaySim({offense:pickOffense(generateTeam(new Rng(51),'O','O',{strength:.55}),formation.personnel),defense:pickDefense(generateTeam(new Rng(52),'D','D',{strength:.55}),'base43'),offCall:{formation,kind:'run',run,flip,label:'PR153 review'},defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over'},los:40,ballY:26.67,firstDownX:50,seed:5,record:false});
+ const h=s.qb.behavior as any,r=s.slot('RB')!.behavior as any;
+ return{s,h,r};
+}
+it.each([false,true])('preserves the under-center draw QB arrival command, flip=%s',async flip=>{
+ const off=await scene('0','0','draw',flip),on=await scene('1','0','draw',flip);
+ const read=(f:typeof off)=>{f.s.t=1;f.s.qb.body.pos={x:f.h.mesh.x+.1,y:f.h.mesh.y};f.s.qb.body.vel={x:0,y:0};return{mesh:f.h.mesh,time:f.h.meshTime,through:f.h.through,tempo:f.r.tempo,ride:f.r.ride,command:f.h.update(f.s.qb,f.s)};};
+ const a=read(off),b=read(on);
+ expect(b.command.vel).toEqual(a.command.vel);
+ expect(b.time).toBe(a.time);expect(b.through).toBe(a.through);
+});
+it.each(['draw','toss','qbDraw'])('MESH_TEMPO alone preserves installed %s, UC off',async scheme=>{
+ const off=await scene('0','0',scheme),on=await scene('0','1',scheme);
+ const view=(f:typeof off)=>({qbKind:f.h.kind,rbKind:f.r.kind,qbMesh:f.h.mesh,meshTime:f.h.meshTime,through:f.h.through,keeper:f.h.keeper,rbMesh:f.r.mesh,ride:f.r.ride,tempo:f.r.tempo,pitch:f.h.pitchRange});
+ expect(view(on)).toEqual(view(off));
+ if(scheme==='qbDraw'){
+  off.s.t=on.s.t=1;
+  off.h.update(off.s.qb,off.s);on.h.update(on.s.qb,on.s);
+  expect(off.s.qb.behavior.kind).toBe('carrier');expect(on.s.qb.behavior.kind).toBe('carrier');
+ }
+});
+it('retains acquired failed-exchange recovery with both zero and positive QB through speed',async()=>{
+ for(const through of [0,3]){
+  const f=await scene('0','0','oz_strong');
+  const {QBHandoff}=await import('../src/sim/behaviors/qb.js');
+  const qb=f.s.qb,rb=f.s.slot('RB')!,mesh={x:35.6,y:28.77};
+  qb.body.pos={...mesh};qb.body.vel={x:0,y:0};rb.body.pos={x:20,y:20};
+  let picture={pos:{x:mesh.x-2,y:mesh.y+1},vel:{x:3,y:0},facing:0,stance:null,age:.05,pose:'up' as const,carrying:false};
+  const see=f.s.see.bind(f.s);f.s.see=(a,b,d)=>a===qb&&b===rb?structuredClone(picture):see(a,b,d);
+  qb.behavior=new QBHandoff(mesh,1.15,rb,0,false,through);
+  f.s.t=1.2;qb.behavior.update(qb,f.s);
+  picture={...picture,pos:{x:mesh.x+2,y:mesh.y+1}};f.s.t=1.8;qb.behavior.update(qb,f.s);
+  expect(qb.behavior.kind).toBe('carrier');expect(f.s.carrier).toBe(qb);expect(f.s.handoffAt).toBe(-1);expect(f.s.stats.scramble).toBe(false);
+ }
+});
+
+/** Reused LB_KEY identity control (reused-lb.test.ts.txt at 26614a6): a keyed
+ * fullback who has not moved from his own alignment must not read as a
+ * first step measured from the unrelated RB alignment. */
+async function lbScene(flag:string, side:number) {
+  vi.stubEnv('LB_KEY',flag);vi.resetModules();
+  const {Rng}=await import('../src/core/rng.js');
+  const {generateTeam,pickOffense,pickDefense}=await import('../src/league/team.js');
+  const {FORMATION_BY_ID}=await import('../src/playbook/formations.js');
+  const {PASS_BY_ID}=await import('../src/playbook/concepts.js');
+  const {COVERAGE_BY_ID,FRONT_BY_ID}=await import('../src/playbook/defense.js');
+  const {PlaySim}=await import('../src/sim/playsim.js');
+  const {ManCoverage}=await import('../src/sim/behaviors/defense.js');
+  const formation=FORMATION_BY_ID.offset_i_21;
+  const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(31),'O','O',{strength:.55}),formation.personnel),defense:pickDefense(generateTeam(new Rng(32),'D','D',{strength:.55}),'base43'),offCall:{formation,flip:side<0,kind:'pass',pass:PASS_BY_ID.four_verts,label:'Review identity control'},defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover1_off,pressure:null,label:'Off man'},los:40,ballY:26.67,firstDownX:50,seed:3,record:false});
+  const a=sim.slot('LB_M')!, f=sim.slot('F')!;
+  const home={...sim.offAlign.spots.F.pos};
+  f.body.pos={...home};f.body.vel={x:0,y:0};
+  sim.t=1.2;a.body.pos={x:44.1,y:sim.ballY};a.body.vel={x:0,y:0};
+  a.runFit={gap:'A',side,kind:'insert',technique:'attack',edge:'spill',pace:'stack'};
+  a.recog!.read='run';Object.defineProperty(a.mind,'placementError',{get:()=>0});
+  const see=sim.see.bind(sim);
+  sim.see=(observer,target,delay)=>target===f?{pos:{...home},vel:{x:0,y:0},stance:'low',facing:0,pose:'up',age:.2,carrying:true}:see(observer,target,delay);
+  const behavior=new ManCoverage(a,sim,f,false,'A',side);a.behavior=behavior;
+  const command=behavior.update(a,sim);
+  return {flow:a.tags.has('fit-flow-read'),command};
+}
+it.each([-1,1])('LB_KEY does not invent a fullback first step from the unrelated RB alignment, side=%s',async side=>{
+  const off=await lbScene('0',side),on=await lbScene('1',side);
+  expect(off.flow).toBe(false);
+  expect(on.flow).toBe(false);
+  expect(on.command.vel).toEqual(off.command.vel);
+});

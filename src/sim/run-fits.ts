@@ -239,6 +239,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     }
     if (contradictedMesh.has(a)) { premesh = false; seen = qb; }
   }
+  // Whose picture `seen` is: the keyed player, the expected back at a deep
+  // mesh, or the carrier (the QB once the mesh expectation is retired).
+  const seenActor = keyed ? keyed.target : premesh ? back! : contradictedMesh.has(a) ? sim.qb : c;
   if (!premesh && isRunCap(a, sim) && sim.catchAt < 0 && (c !== sim.qb || !sim.scrambled)) return capFit(a, sim, c, seen, job.side);
   if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
@@ -315,8 +318,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // a deep mesh or uncertain possession still requires the original flow cue.
   const shallowRunner = job.kind === 'insert' && !premesh && seen.carrying === true
     && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
-  const keyHome = LB_KEY && job.kind === 'insert' && back && sim.offAlign.spots[back.slot]?.pos;
-  const keyStep = keyHome && (premesh || c === back) ? seen.pos.y - keyHome.y : 0;
+  // A first step is measured from the same backfield player's own public
+  // alignment, never from another player's (a keyed fullback is not the RB).
+  const keyHome = LB_KEY && job.kind === 'insert' && seenActor !== sim.qb && sim.offAlign.spots[seenActor.slot]?.backfield
+    && sim.offAlign.spots[seenActor.slot]?.pos;
+  const keyStep = keyHome ? seen.pos.y - keyHome.y : 0;
   const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
     : shallowRunner ? Math.sign(seen.pos.y - gy)
       : Math.abs(keyStep) > KEY_STEP ? Math.sign(keyStep) : 0;

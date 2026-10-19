@@ -3,9 +3,13 @@ plays. For runs reaching REF yd past the line, at that frame every defender
 gets a straight-line intercept test against the runner's actual later path:
 he can be there if dist <= V * (dt - REACT) + REACH, where V is his own peak
 speed observed in the play (floor FLOOR yd/s). Reported: how many defenders
-could intercept before the runner reaches +20 / +40 yd past REF, the earliest
+could intercept before the runner is 20 / 40 yd past REF (that is, REF+20 /
+REF+40 yd from the line: +30/+50 at REF 10), the earliest
 feasible intercept depth, and where the run actually ended; split by whether
-the run went 40+. Ignores blockers, cuts and tackling: a placement measure.
+the run went 40+. A retrospective geometric proxy: it ignores blockers,
+acceleration, facing and contact, uses whole-play peak speed, and stops at the
+observed ending (an early tackle truncates the path). It is not proof of
+attainable support or adequate structure.
 usage: pursuit.py FILE.jsonl.gz [REF=10] [--ytg60]"""
 import gzip, json, math, sys
 sys.path.insert(0, 'scripts/mechanics')

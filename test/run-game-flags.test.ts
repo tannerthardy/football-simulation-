@@ -1,7 +1,8 @@
 /** Run-game controller candidates (experimental, all default-off):
  * UC_MESH (under-center exchange depth/timing), ZONE_TE (an inline tight end
- * runs the zone track), LB_KEY (backers key the back's first step) and
- * MESH_TEMPO (the back takes the handoff moving). */
+ * runs the zone track), LB_KEY (backers key a back's first step from his own
+ * alignment), MESH_TEMPO (the back takes the handoff moving) and
+ * GUN_MESH_SIDE (the shotgun exchange on the back's own side). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -164,12 +165,23 @@ describe('MESH_TEMPO back takes the handoff moving', () => {
     expect(on.speed).toBeGreaterThan(off.speed + 1);
   });
 
-  it.each([false, true])('shotgun: the offset back meets the ball on his own side and takes it faster, flip=%s', async flip => {
+  it.each([false, true])('shotgun: GUN_MESH_SIDE puts the spot on the back\'s own side; MESH_TEMPO alone keeps the installed spot, flip=%s', async flip => {
     for (const run of ['iz_strong', 'iz_weak']) {
-      const off = await handoffSpeed({ MESH_TEMPO: '0' }, 'gun_doubles_11', run, flip);
-      const on = await handoffSpeed({ MESH_TEMPO: '1' }, 'gun_doubles_11', run, flip);
-      const back = on.sim.offAlign.spots[on.sim.slot('RB')!.slot]!.pos.y - on.sim.ballY;
-      expect(Math.sign(on.mesh.y - on.sim.ballY)).toBe(Math.sign(back));
+      const off = await sim({ MESH_TEMPO: '0', GUN_MESH_SIDE: '0' }, 'gun_doubles_11', run, flip);
+      const tempo = await sim({ MESH_TEMPO: '1', GUN_MESH_SIDE: '0' }, 'gun_doubles_11', run, flip);
+      const side = await sim({ MESH_TEMPO: '0', GUN_MESH_SIDE: '1' }, 'gun_doubles_11', run, flip);
+      expect(runner(tempo).mesh).toEqual(runner(off).mesh);
+      expect(handoff(side).mesh).toEqual(handoff(off).mesh);
+      expect(handoff(side).meshTime).toBe(handoff(off).meshTime);
+      const back = side.offAlign.spots[side.slot('RB')!.slot]!.pos.y - side.ballY;
+      expect(Math.sign(runner(side).mesh.y - side.ballY)).toBe(Math.sign(back));
+    }
+  });
+
+  it.each([false, true])('shotgun: with the own-side spot the back takes the ball faster, flip=%s', async flip => {
+    for (const run of ['iz_strong', 'iz_weak']) {
+      const off = await handoffSpeed({ MESH_TEMPO: '0', GUN_MESH_SIDE: '0' }, 'gun_doubles_11', run, flip);
+      const on = await handoffSpeed({ MESH_TEMPO: '1', GUN_MESH_SIDE: '1' }, 'gun_doubles_11', run, flip);
       expect(on.speed).toBeGreaterThan(off.speed + .5);
     }
   });

@@ -1,6 +1,7 @@
 /** Block reps of front-seven defenders after the carrier crosses the line
  * (observation only): how each rep ended (run-contact observer reasons) and
- * how often a new rep on the same defender started within one tick, by
+ * how often a new rep on the same defender started within two native ticks
+ * (< 0.105 s at dt 0.05), counted per rep event, by
  * whom and from where (blocker in front of him, at his side, behind his back).
  * node --import tsx scripts/diag/stretch/relatch.ts [--group DL|LB] [--seeds 77,71001] */
 import { LOOK_SPECS, makeSim, rosters } from '../zone-lab/lab.js';
@@ -42,4 +43,4 @@ for (const concept of arg('--concepts', 'iz,oz').split(',')) for (const dir of [
     }
   }
 console.log(`plays ${plays}, ${arg('--group', 'DL')} reps ended after the crossing:`, reasons);
-for (const [k, v] of Object.entries(again).sort((a, b) => b[1] - a[1])) console.log(`  re-engaged within a tick: ${v} ${k}`);
+for (const [k, v] of Object.entries(again).sort((a, b) => b[1] - a[1])) console.log(`  re-engaged within two ticks: ${v} ${k}`);

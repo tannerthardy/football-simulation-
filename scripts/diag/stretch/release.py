@@ -1,6 +1,7 @@
 """Front-seven release and pursuit around the carrier's crossing, one operator
 for NFL tracking and sim common plays. A defender counts as tied up when an
-offensive player other than the carrier is within TIE yd of him. For DL and
+offensive player other than the carrier is within TIE yd of him (a
+proximity proxy, not an engagement or force). For DL and
 LB: share tied up at the crossing and 0.5/1.0 s later, and their speed and
 closing rate toward the carrier 0.5 s after the crossing (tied-up vs free).
 usage: release.py FILE [--ytg60]"""
@@ -17,17 +18,20 @@ for line in gzip.open(path, 'rt'):
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
     p = Play(raw); c = raw['carrier']; end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     kx = next((k for k in range(end + 1) if (p.pos(c, k)[0] or -99) >= 0), None)
-    if kx is None or p.k(kx * p.dt + 1.0) > end: continue
+    # Admit only plays live for a full second after the crossing; an index
+    # past the recording must not clamp onto its final frame.
+    ahead = lambda lag: kx + int(round(lag / p.dt))
+    if kx is None or ahead(1.0) > end: continue
     runs += 1
     O = [i for i in p.who('O') if i != c]
     for d in p.who('D'):
         g = raw['players'][d]['group']
         if g not in ('DL', 'LB'): continue
         for lag in (0, .5, 1.0):
-            k = p.k(kx * p.dt + lag)
+            k = ahead(lag)
             tied = any(p.dist(d, i, k) <= TIE for i in O)
             o.setdefault((g, lag), []).append(1 if tied else 0)
-        k = p.k(kx * p.dt + .5); k0, k1 = max(0, k - 2), min(end, k + 2)
+        k = ahead(.5); k0, k1 = max(0, k - 2), min(end, k + 2)
         if p.pos(d, k0)[0] is None or p.pos(d, k1)[0] is None: continue
         d0, d1 = p.dist(d, c, k0), p.dist(d, c, k1)
         tied = any(p.dist(d, i, k) <= TIE for i in O)

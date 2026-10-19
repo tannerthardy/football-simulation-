@@ -221,14 +221,18 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     rb = { x: los - 4.9, y: by + ps * 0.95 };
   } else {
     qb = { x: los - 5.0, y: by };
-    // MESH_TEMPO: an offset back takes the ball on his own side of the QB,
-    // a step in front of him, and crosses after the exchange (2022 tracking:
-    // own side on 93% of shotgun inside zone, a median 0.4 yd up and 0.7 yd
-    // over). A straight track to a far-side spot runs through the QB's body.
+    // GUN_MESH_SIDE: an offset back takes the ball on his own side of the
+    // QB, a step in front of him, and crosses after the exchange (2022
+    // tracking, shotgun: own side on 93% of IZ, 72% OZ, 84% gap, 99% duo; a
+    // median 0.4 yd up and 0.7 yd over). The default far-side spot is kept
+    // when off; its straight track passes about 0.3 yd from the QB's centre,
+    // inside contact distance, where tracked backs that do cross his face
+    // pass about 0.7 yd in front of him.
     const side = Math.sign((sim.slot('RB')?.pos.y ?? by) - by);
-    rb = MESH_TEMPO && side ? { x: los - 4.6, y: by + side * 0.7 } : { x: los - 4.4, y: by + ps * 0.9 };
+    rb = GUN_MESH_SIDE && side ? { x: los - 4.6, y: by + side * 0.7 } : { x: los - 4.4, y: by + ps * 0.9 };
   }
-  const underMesh = UC_MESH && qbType === 'under' && concept.scheme !== 'toss';
+  // Inside handoffs only: a draw keeps its installed QB arrival and stop.
+  const underMesh = UC_MESH && qbType === 'under' && concept.scheme !== 'toss' && concept.scheme !== 'draw';
   if (underMesh) {
     // The exchange is timed to when the QB can actually be on the mesh:
     // his snap reaction, the pivot, and his own sprint law to the spot.
@@ -272,9 +276,12 @@ export class PlayActionFake implements Behavior {
  * law) uses up the time left to the exchange, then goes, so he arrives at
  * the installed exchange time already at run tempo and rides through it
  * (tracked backs take the ball at 4.4-5.5 yd/s; ours were arriving early
- * and braking to 2-3). In shotgun the offset back meets the ball on his
- * own side of the QB (see meshFor). Draw and toss timing are unchanged. */
+ * and braking to 2-3). Scheduling only: the installed spot, time and QB
+ * are unchanged. Draw and toss timing are unchanged. */
 export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
+/** Experimental (GUN_MESH_SIDE=1, off): the shotgun exchange spot is on the
+ * offset back's own side of the QB (see meshFor). Geometry only. */
+export const GUN_MESH_SIDE = process.env.GUN_MESH_SIDE === '1';
 
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {
