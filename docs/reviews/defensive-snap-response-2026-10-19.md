@@ -191,8 +191,13 @@ Each baseline runs once and is reused against the unchanged edge runtime.
 | --- | --- | --- |
 | Four verts13 | tackle22.74→22.96yd; throw2.80/catch3.80 in both | No lost coverage assignment demonstrated; not proof pressure is unchanged |
 | PA13 | pressure2.25/throwaway2.40/incomplete → throw4.30/catch5.15, still live at6s | Material pressure cost, censored candidate outcome |
-| Fresh toss13 | tackle9.15→8.04yd | Small transfer; primary finish changes LB_S→CB_S |
+| Fresh toss13 | tackle9.15→8.04yd | Backside entry transfer; primary finish changes LB_S→CB_S |
 | Fresh mirrored toss13 | tackle−0.54→−0.52yd | Defensive backfield finish preserved; no required reversal |
+
+In both fresh tosses the selected power end is DE_W, opposite the strong-side
+run. These test fresh **backside** entry and preservation of a playside finish;
+they do not establish fresh-player playside containment. That transfer remains
+open, and is not a reason to expand this held candidate's panel automatically.
 
 PA13 retains initial run belief in both at0.50s; the end later reads pass at
 0.85→0.90s. Baseline turns the RT's corner at1.90s; candidate remains blocked
