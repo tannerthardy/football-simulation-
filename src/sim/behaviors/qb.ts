@@ -614,13 +614,36 @@ export class QBPass implements Behavior {
  * (riding the back, or with no offset at all) backed up toward the play,
  * across the back's first steps; the spacing layer then held the back to a
  * fraction of his request. Tracked QBs are about 3 yd from the back half a
- * second after the handoff; sim QBs were about 1 yd. */
+ * second after the handoff; sim QBs were about 1 yd.
+ *
+ * Under center with a moving exchange (UC_MESH's through speed), the QB also
+ * keeps his drop. Tracked under-center QBs move straight back at about
+ * 4 yd/s just before the handoff and are still moving straight back at about
+ * 4 yd/s 0.25 and 0.5 s after it (turning 3-18 degrees; singleback/I-form,
+ * gap, duo, inside and outside zone). The sim QB instead stepped across
+ * toward the back's lead point to ride him, stood still on the handoff tick
+ * and then restarted toward a spot 1.6 yd deeper, at about 1 yd/s: the back
+ * ran into him, and the spacing layer cut the back's request. With this, he
+ * rides to the tracked pocket beside the back's track rather than to the
+ * back's own lead point, does not stop on the handoff tick, and carries out
+ * straight back at the exchange speed, bending away from the play.
+ * (Continuing his stance-to-spot line, a straight drop with only lateral
+ * pocket tracking, or a pocket offset only across the field, failed the
+ * exchange on stretch and some power meshes: he left the back's reach.) */
 const QB_CARRYOUT = process.env.QB_CARRYOUT === '1';
+/** QB_CARRYOUT: depth behind the line where the under-center carry-out ends. */
+const CARRY_DEPTH = 8;
+/** QB_CARRYOUT: the QB's offset beside the back's track at the exchange
+ * (tracked under center: 0.8-0.9 yd, gap and duo, scripts/diag/stretch/meshgeo.py). */
+const MESH_POCKET = .8;
 
 export class QBHandoff implements Behavior {
   readonly kind = 'qb-handoff';
   private handed = false;
   private exchangeClosing = false;
+  /** QB_CARRYOUT under center with a moving exchange: carry out at speed. */
+  private drop = false;
+  private pocketSide: number | undefined;
   constructor(
     private readonly mesh: Vec2,
     private readonly meshTime: number,
@@ -631,15 +654,23 @@ export class QBHandoff implements Behavior {
     private readonly through = 0,
   ) {}
 
-  update(a: Agent, sim: PlaySim): MoveCommand {
-    if (this.handed || sim.carrier !== a) {
-      // Carry out the fake away from the play.
-      const run = sim.offCall.run;
-      const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
-      const side = QB_CARRYOUT && playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1);
-      const away = a.pos.y + side * 4;
-      return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
+  /** Carry out the fake away from the play. */
+  private carryOut(a: Agent, sim: PlaySim): MoveCommand {
+    const run = sim.offCall.run;
+    const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
+    const side = QB_CARRYOUT && playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1);
+    if (this.drop) {
+      // Keep dropping: straight back, bending away from the play.
+      const go = Math.max(0, a.pos.x - (sim.los - CARRY_DEPTH));
+      return goTo(a, { x: a.pos.x - go, y: a.pos.y + .3 * side * go }, { speed: this.through / a.profile.vmax });
     }
+    const away = a.pos.y + side * 4;
+    return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
+  }
+
+  update(a: Agent, sim: PlaySim): MoveCommand {
+    if (this.handed || sim.carrier !== a) return this.carryOut(a, sim);
+    this.drop = QB_CARRYOUT && this.through > 0;
     if (this.keeper && sim.t >= this.meshTime) {
       a.behavior = new BallCarrier({ aim: { x: sim.los + 1, y: sim.ballY }, aimUntil: sim.t + 0.8 }, a);
       sim.stats.rusher = a.player.id;
@@ -654,7 +685,7 @@ export class QBHandoff implements Behavior {
       }
       if (d <= handoffReach(a, rb)) {
         this.handed = sim.handoff(a, rb);
-        return stand();
+        return this.handed && this.drop ? this.carryOut(a, sim) : stand();
       }
       if (this.pitchRange <= handoffReach(a, rb)) {
         const seen = sim.see(a, rb), dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
@@ -680,6 +711,17 @@ export class QBHandoff implements Behavior {
     // and riding past, ride with him: put the ball where he is going.
     if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
       const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
+      if (this.drop) {
+        // Ride to a pocket beside the back's track, not into it: the ball,
+        // not the body, goes to him. The side is the one he rides from.
+        // Beside means across his own motion: lateral on an inside run,
+        // upfield of a stretch track.
+        const v = Math.hypot(seen.vel.x, seen.vel.y);
+        const n = v > .5 ? { x: -seen.vel.y / v, y: seen.vel.x / v } : { x: 0, y: 1 };
+        this.pocketSide ??= Math.sign((a.pos.x - lead.x) * n.x + (a.pos.y - lead.y) * n.y) || 1;
+        const pocket = { x: lead.x + n.x * this.pocketSide * MESH_POCKET, y: lead.y + n.y * this.pocketSide * MESH_POCKET };
+        return goTo(a, pocket, { speed: 1, facing: angleTo(a.pos, lead), through: this.through });
+      }
       return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: this.through });
     }
     const facing = angleTo(a.pos, this.mesh);

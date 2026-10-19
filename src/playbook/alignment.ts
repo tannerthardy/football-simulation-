@@ -14,10 +14,26 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
 import { sideSign } from './types.js';
 
-export const OL_OFFSET: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
-const OL_DEPTH = 0.55;
-const INLINE_OFFSET = 3.9;
-const WING_OFFSET = 4.8;
+/** Experimental (OL_ALIGN=1, off): the line aligns as tracked. 2022 tracking
+ * at the snap (body centres, scripts/diag/stretch/olalign.py, 5,880 runs):
+ * the center 0.29 yd behind the ball, guards 0.83, tackles 0.98 and an inline
+ * end 1.19 (heads still on the line: they break the center's waist), with
+ * splits of 1.54 (center-guard), 1.56 (guard-tackle) and 1.52 (tackle-end),
+ * a 6.2 yd tackle-to-tackle surface. The sim line stood flat at 0.55 with
+ * 1.3 yd splits (5.2 yd). Defensive techniques and gap landmarks are then
+ * placed from these actual splits instead of the 1.3 yd table. */
+const OL_ALIGN = process.env.OL_ALIGN === '1';
+const SPLIT_CG = OL_ALIGN ? 1.54 : 1.3, SPLIT_GT = OL_ALIGN ? 1.56 : 1.3, SPLIT_TTE = OL_ALIGN ? 1.52 : 1.3;
+const TACKLE_OFFSET = OL_ALIGN ? SPLIT_CG + SPLIT_GT : 2.6;
+export const OL_OFFSET: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = OL_ALIGN
+  ? { LT: TACKLE_OFFSET, LG: SPLIT_CG, C: 0, RG: -SPLIT_CG, RT: -TACKLE_OFFSET }
+  : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
+const OL_DEPTH: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = OL_ALIGN
+  ? { LT: .98, LG: .83, C: .29, RG: .83, RT: .98 } : { LT: .55, LG: .55, C: .55, RG: .55, RT: .55 };
+const INLINE_OFFSET = OL_ALIGN ? TACKLE_OFFSET + SPLIT_TTE : 3.9;
+const WING_OFFSET = OL_ALIGN ? INLINE_OFFSET + .9 : 4.8;
+/** OL_ALIGN: an inline end's tracked depth (formations install 0.6). */
+const INLINE_DEPTH = 1.19;
 
 export interface OffSpot {
   slot: OffSlot;
@@ -57,7 +73,7 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
   const fside = (s: Side | 'C'): Side | 'C' => (s === 'C' ? 'C' : flip ? (s === 'L' ? 'R' : 'L') : s);
 
   for (const [slot, off] of Object.entries(OL_OFFSET)) {
-    spots[slot] = { slot: slot as OffSlot, pos: { x: los - OL_DEPTH, y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
+    spots[slot] = { slot: slot as OffSlot, pos: { x: los - OL_DEPTH[slot as keyof typeof OL_DEPTH], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
   }
   // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
   const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? 4.0 : 5.0;
@@ -96,7 +112,7 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     const backfield = a.depth >= 3 && Math.abs(off) < 3.5;
     spots[slot] = {
       slot,
-      pos: { x: los - a.depth, y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
+      pos: { x: los - (OL_ALIGN && a.split === 'inline' ? INLINE_DEPTH : a.depth), y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
       side,
       backfield,
       inline: a.split === 'inline',
@@ -147,8 +163,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
 
   const strongSign = sideSign(strong);
   const coreEdge = {
-    S: ballY + strongSign * (teSide(strong) ? INLINE_OFFSET : 2.6),
-    W: ballY - strongSign * (teSide(weak) ? INLINE_OFFSET : 2.6),
+    S: ballY + strongSign * (teSide(strong) ? INLINE_OFFSET : TACKLE_OFFSET),
+    W: ballY - strongSign * (teSide(weak) ? INLINE_OFFSET : TACKLE_OFFSET),
   };
 
   return {
@@ -167,8 +183,39 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
 
 // ------------------------------------------------------------------ defense
 
+/** A landmark installed against the legacy line (1.3 yd splits, inline end
+ * at 3.9 yd from the ball) placed on the actual line: interpolated between
+ * the center, guard, tackle and (with one) inline end, and carried with the
+ * outermost of them beyond it. The identity unless OL_ALIGN is on. */
+export function lineOffset(offset: number, hasTE: boolean): number {
+  if (!OL_ALIGN) return offset;
+  const d = Math.abs(offset), from = [0, 1.3, 2.6, 3.9], to = [0, SPLIT_CG, TACKLE_OFFSET, INLINE_OFFSET];
+  const last = hasTE ? 3 : 2;
+  for (let i = 1; i <= last; i++)
+    if (d <= from[i]) return Math.sign(offset) * (to[i - 1] + (d - from[i - 1]) * (to[i] - to[i - 1]) / (from[i] - from[i - 1]));
+  return Math.sign(offset) * (to[last] + d - from[last]);
+}
+
 /** y offset (absolute, ≥ 0) of a technique from the ball on a side. */
 function techniqueOffset(tech: Technique, hasTE: boolean): number {
+  if (OL_ALIGN) {
+    // The same shoulders and gaps, placed from the actual splits.
+    const G = SPLIT_CG, T = TACKLE_OFFSET, E = INLINE_OFFSET;
+    switch (tech) {
+      case '0': return 0;
+      case '1': return G / 2;
+      case '2i': return G - .3;
+      case '2': return G;
+      case '3': return G + SPLIT_GT / 2;
+      case '4i': return T - .3;
+      case '4': return T;
+      case '5': return T + .65;
+      case '6': return hasTE ? E : T + 1.0;
+      case '7': return hasTE ? E - .45 : T + .8;
+      case '9': return hasTE ? E + .7 : T + 1.6;
+      case 'w9': return hasTE ? E + 1.6 : T + 2.3;
+    }
+  }
   switch (tech) {
     case '0':
       return 0;
@@ -219,6 +266,14 @@ export function techniqueGap(tech: Technique): Gap {
 export function gapY(off: OffenseAlignment, gap: Gap, sign: number): number {
   const b = off.ballY;
   const hasTE = sign === off.strongSign ? off.hasTE.S : off.hasTE.W;
+  if (OL_ALIGN) {
+    switch (gap) {
+      case 'A': return b + sign * SPLIT_CG / 2;
+      case 'B': return b + sign * (SPLIT_CG + SPLIT_GT / 2);
+      case 'C': return b + sign * (TACKLE_OFFSET + .65);
+      case 'D': return b + sign * (hasTE ? INLINE_OFFSET + .7 : TACKLE_OFFSET + 1.6);
+    }
+  }
   switch (gap) {
     case 'A':
       return b + sign * 0.65;

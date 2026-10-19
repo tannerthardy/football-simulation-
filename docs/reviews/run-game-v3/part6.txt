@@ -1,0 +1,310 @@
+# Part 6 receipts (run-game-v3): the mesh, the back's first second, and the line's alignment. Python operators on NFL 2022 tracking (out/mechanics/nfl-plays.jsonl.gz, NFL60 via --ytg60 where noted) and sim common files of the bound arms in run-game-v3/v5 (develop: v5d0, v5d0gap) and v11; sim-side TS diagnostics run through scripts/baseline.mjs --candidate with the flags shown.
+
+## meshflow.py (exchange and the back's first second; NFL60, under-center and shotgun together)
+NFL nfl-plays.jsonl.gz       POWER runs 216 | v@h 3.55/4.07/4.37 -> +0.5s 4.45/4.98/5.41 -> +1.0s 4.16/4.93/5.71 yd/s | up1s 2.80/3.60/4.40 yd | QB at +0.5 s 2.60/3.32/4.18 yd, closest to +0.8 s 0.85/1.08/1.26, within 1.2 yd 63%, QB speed +0.25 s 1.52/2.61/4.01 
+v5d0gap-common.jsonl.gz  power runs 398 | v@h 1.82/2.02/2.30 -> +0.5s 2.02/2.50/2.85 -> +1.0s 2.66/3.04/3.75 yd/s | up1s 1.70/1.90/2.30 yd | QB at +0.5 s 0.76/0.95/1.39 yd, closest to +0.8 s 0.67/0.82/0.94, within 1.2 yd 100%, QB speed +0.25 s 0.71/0.90/1.06 
+v11plgap-common.jsonl.gz power runs 398 | v@h 4.25/4.47/4.59 -> +0.5s 3.91/5.00/5.51 -> +1.0s 3.75/5.34/6.56 yd/s | up1s 3.40/3.90/4.30 yd | QB at +0.5 s 2.78/2.97/3.41 yd, closest to +0.8 s 0.90/1.00/1.10, within 1.2 yd 96%, QB speed +0.25 s 2.26/2.51/2.76 
+NFL nfl-plays.jsonl.gz       COUNTER runs 151 | v@h 3.34/3.72/3.95 -> +0.5s 4.26/4.80/5.22 -> +1.0s 4.10/5.10/5.64 yd/s | up1s 2.90/3.60/4.20 yd | QB at +0.5 s 2.72/3.47/4.16 yd, closest to +0.8 s 0.81/1.00/1.27, within 1.2 yd 67%, QB speed +0.25 s 1.80/3.25/4.07 
+v5d0gap-common.jsonl.gz  counter runs 398 | v@h 1.90/2.14/2.24 -> +0.5s 2.36/2.83/3.36 -> +1.0s 2.70/3.61/4.80 yd/s | up1s 1.80/2.20/2.40 yd | QB at +0.5 s 0.80/1.00/1.36 yd, closest to +0.8 s 0.71/0.85/0.92, within 1.2 yd 100%, QB speed +0.25 s 0.56/0.79/1.06 
+v11plgap-common.jsonl.gz counter runs 397 | v@h 3.69/4.04/4.14 -> +0.5s 3.47/4.00/4.37 -> +1.0s 3.25/4.03/5.39 yd/s | up1s 3.10/3.40/3.70 yd | QB at +0.5 s 2.30/2.64/2.91 yd, closest to +0.8 s 0.73/0.80/0.82, within 1.2 yd 100%, QB speed +0.25 s 2.06/2.30/2.80 
+NFL nfl-plays.jsonl.gz       MAN runs 394 | v@h 3.58/4.12/4.47 -> +0.5s 4.25/4.78/5.26 -> +1.0s 3.81/4.67/5.46 yd/s | up1s 3.40/4.10/4.70 yd | QB at +0.5 s 3.00/3.67/4.34 yd, closest to +0.8 s 0.85/1.06/1.30, within 1.2 yd 64%, QB speed +0.25 s 2.50/4.00/4.28 
+v5d0gap-common.jsonl.gz  duo runs 399 | v@h 1.46/2.14/2.24 -> +0.5s 2.14/3.88/4.16 -> +1.0s 4.07/5.39/5.83 yd/s | up1s 2.00/3.30/3.60 yd | QB at +0.5 s 0.78/0.86/1.12 yd, closest to +0.8 s 0.67/0.76/0.85, within 1.2 yd 100%, QB speed +0.25 s 0.56/0.90/1.06 
+v11plgap-common.jsonl.gz duo runs 399 | v@h 3.58/3.82/4.37 -> +0.5s 4.32/4.85/5.39 -> +1.0s 4.81/5.71/6.27 yd/s | up1s 4.10/4.40/4.60 yd | QB at +0.5 s 2.41/2.69/3.12 yd, closest to +0.8 s 0.82/0.91/1.00, within 1.2 yd 99%, QB speed +0.25 s 2.30/2.51/2.75 
+NFL nfl-plays.jsonl.gz       TRAP runs 48 | v@h 3.54/4.28/4.72 -> +0.5s 4.53/4.93/5.41 -> +1.0s 3.54/4.74/6.05 yd/s | up1s 3.80/4.20/4.80 yd | QB at +0.5 s 2.89/3.49/4.27 yd, closest to +0.8 s 0.91/1.17/1.49, within 1.2 yd 52%, QB speed +0.25 s 1.80/2.55/4.26 
+v5d0gap-common.jsonl.gz  trap runs 395 | v@h 1.90/2.14/2.36 -> +0.5s 3.01/3.89/4.14 -> +1.0s 4.03/5.15/5.76 yd/s | up1s 2.40/3.00/3.40 yd | QB at +0.5 s 0.81/1.02/1.46 yd, closest to +0.8 s 0.72/0.81/0.92, within 1.2 yd 100%, QB speed +0.25 s 0.56/0.90/1.06 
+v11plgap-common.jsonl.gz trap runs 397 | v@h 3.40/3.61/3.81 -> +0.5s 3.88/4.37/4.95 -> +1.0s 4.04/5.20/6.15 yd/s | up1s 3.20/3.50/3.80 yd | QB at +0.5 s 2.28/2.55/2.91 yd, closest to +0.8 s 0.91/0.95/1.00, within 1.2 yd 100%, QB speed +0.25 s 2.51/2.51/2.76 
+v11cogap-common.jsonl.gz power runs 398 | back speed at handoff 4.25/4.47/4.59 -> +0.5s 3.26/3.95/5.48 -> +1.0s 2.85/4.10/6.54 yd/s | upfield in 1 s 2.90/3.40/4.10 yd | QB at +0.5 s 2.64/2.83/3.28 yd, closest to +0.8 s 0.90/1.00/1.10, within 1.2 yd 97%, QB speed +0.25 s 2.26/2.51/2.76 
+v11cogap-common.jsonl.gz counter runs 397 | back speed at handoff 3.69/4.04/4.14 -> +0.5s 3.26/3.89/4.37 -> +1.0s 2.70/3.69/5.39 yd/s | upfield in 1 s 3.10/3.30/3.60 yd | QB at +0.5 s 2.30/2.64/2.91 yd, closest to +0.8 s 0.73/0.80/0.82, within 1.2 yd 100%, QB speed +0.25 s 2.06/2.30/2.80 
+v11cogap-common.jsonl.gz duo runs 399 | back speed at handoff 3.58/3.82/4.37 -> +0.5s 4.32/4.85/5.39 -> +1.0s 4.81/5.71/6.27 yd/s | upfield in 1 s 4.10/4.40/4.60 yd | QB at +0.5 s 2.41/2.69/3.12 yd, closest to +0.8 s 0.82/0.91/1.00, within 1.2 yd 99%, QB speed +0.25 s 2.30/2.51/2.75 
+v11cogap-common.jsonl.gz trap runs 397 | back speed at handoff 3.40/3.61/3.75 -> +0.5s 3.51/4.24/4.95 -> +1.0s 3.72/5.00/6.10 yd/s | upfield in 1 s 3.10/3.40/3.70 yd | QB at +0.5 s 2.27/2.47/2.91 yd, closest to +0.8 s 0.91/0.95/1.00, within 1.2 yd 100%, QB speed +0.25 s 2.51/2.51/2.76 
+
+## qbcarry.py (QB velocity through the exchange; NFL singleback/I-form; x upfield, y toward the back)
+nfl-plays.jsonl.gz     gap_pull n 106 | QB v pre x -4.00/-4.00/-4.00 y -1.00/0.00/0.00 speed 4.00/4.12/4.47 | +0.25 x -5.00/-4.00/-4.00 y -1.00/-0.00/0.00 speed 4.00/4.12/5.00 | +0.5 x -4.00/-4.00/-3.00 y -2.00/-0.50/-0.00 speed 3.54/4.12/4.53 | turn 0.00/11.31/14.04 deg
+v5d0gap-common.jsonl.g gap_pull n 302 | QB v pre x -1.00/-1.00/-1.00 y 0.00/0.00/1.00 speed 1.00/1.12/1.41 | +0.25 x -1.00/-0.50/0.00 y -0.50/0.50/1.00 speed 0.71/1.00/1.41 | +0.5 x -1.00/-1.00/0.00 y -1.00/0.00/1.00 speed 1.41/1.41/2.24 | turn 45.00/63.43/90.00 deg
+v11plgap-common.jsonl. gap_pull n 668 | QB v pre x -3.00/-2.00/-2.00 y -0.00/-0.00/1.00 speed 2.00/2.24/3.00 | +0.25 x -3.00/-2.50/-2.00 y -1.00/-0.50/0.00 speed 2.06/2.55/3.00 | +0.5 x -3.00/-3.00/-2.00 y -1.00/-1.00/-0.50 speed 2.24/3.00/3.16 | turn 14.04/18.43/27.90 deg
+nfl-plays.jsonl.gz     man_duo n 139 | QB v pre x -4.00/-4.00/-4.00 y 0.00/0.00/1.00 speed 4.00/4.12/4.27 | +0.25 x -4.00/-4.00/-4.00 y 0.00/-0.00/-0.00 speed 4.00/4.00/4.47 | +0.5 x -4.00/-3.50/-3.00 y -0.50/-0.00/0.50 speed 3.50/3.81/4.12 | turn 0.00/2.73/14.04 deg
+v5d0gap-common.jsonl.g man_duo n 107 | QB v pre x -1.00/-1.00/-1.00 y -0.00/0.50/1.00 speed 1.00/1.12/1.41 | +0.25 x -0.50/0.00/0.00 y -0.50/1.00/1.00 speed 0.71/1.00/1.41 | +0.5 x -1.00/-1.00/0.00 y -1.00/1.00/1.00 speed 1.00/1.41/2.00 | turn 45.00/63.43/90.00 deg
+v11plgap-common.jsonl. man_duo n 148 | QB v pre x -2.00/-2.00/-2.00 y 1.00/1.00/2.00 speed 2.24/2.24/2.83 | +0.25 x -3.00/-3.00/-2.50 y -0.50/0.00/0.00 speed 2.55/3.00/3.04 | +0.5 x -3.00/-3.00/-3.00 y -1.00/-1.00/0.00 speed 3.00/3.00/3.16 | turn 27.90/36.03/45.00 deg
+nfl-plays.jsonl.gz     inside_zone n 98 | QB v pre x -4.00/-4.00/-4.00 y 0.00/1.00/1.00 speed 4.00/4.12/4.47 | +0.25 x -5.00/-4.00/-4.00 y -1.00/0.00/1.00 speed 4.00/4.12/5.00 | +0.5 x -4.50/-4.00/-3.50 y -1.50/-0.50/0.50 speed 3.91/4.12/4.61 | turn 2.73/14.04/19.65 deg
+v5d0-common.jsonl.gz   inside_zone n 60 | QB v pre x -2.00/-1.00/-1.00 y 0.00/1.00/1.00 speed 1.00/1.41/2.00 | +0.25 x -1.00/-0.50/-0.50 y -0.50/0.00/0.50 speed 0.71/0.71/1.00 | +0.5 x -1.00/-1.00/-1.00 y -1.50/-1.00/1.00 speed 1.41/1.41/1.80 | turn 26.57/45.00/90.00 deg
+v11co-common.jsonl.gz  inside_zone n 159 | QB v pre x -2.00/-2.00/-2.00 y 1.00/2.00/2.00 speed 2.24/2.83/2.83 | +0.25 x -3.00/-3.00/-3.00 y -0.50/-0.00/-0.00 speed 3.00/3.00/3.04 | +0.5 x -3.00/-3.00/-3.00 y -1.00/-1.00/-1.00 speed 3.16/3.16/3.16 | turn 36.03/45.00/45.00 deg
+nfl-plays.jsonl.gz     outside_zone n 252 | QB v pre x -4.00/-4.00/-4.00 y 2.00/2.00/2.50 speed 4.12/4.47/5.00 | +0.25 x -5.00/-4.00/-4.00 y -0.00/1.00/1.00 speed 4.00/4.12/5.00 | +0.5 x -4.50/-4.00/-3.50 y -1.50/-0.50/0.50 speed 3.81/4.12/4.53 | turn 12.53/18.43/26.57 deg
+v5d0-common.jsonl.gz   outside_zone n 373 | QB v pre x -0.50/-0.50/-0.50 y 3.00/3.00/3.00 speed 3.04/3.04/3.16 | +0.25 x -2.00/-2.00/-1.50 y 2.00/2.00/3.00 speed 2.83/2.83/3.61 | +0.5 x -1.00/-1.00/-1.00 y 3.00/3.00/3.00 speed 3.16/3.16/3.16 | turn 24.23/24.23/35.54 deg
+v11co-common.jsonl.gz  outside_zone n 359 | QB v pre x -2.00/-2.00/-2.00 y 3.00/3.00/3.00 speed 3.61/3.61/3.61 | +0.25 x -2.50/-2.00/-2.00 y 2.00/2.00/2.00 speed 2.83/2.83/3.20 | +0.5 x -3.00/-3.00/-3.00 y 1.00/1.00/1.00 speed 3.16/3.16/3.16 | turn 11.31/11.31/17.65 deg
+
+## QB keeps (exchange did not happen: the QB is the carrier)
+v5d0 {'iz': '0/400', 'oz': '0/400', 'wz': '1/400'}
+v5d0gap {'power': '1/400', 'counter': '2/400', 'duo': '0/400', 'trap': '2/400'}
+v11co {'iz': '0/400', 'oz': '0/400', 'wz': '0/400'}
+v11cogap {'power': '1/400', 'counter': '2/400', 'duo': '0/400', 'trap': '0/400'}
+v11plgap {'power': '1/400', 'counter': '2/400', 'duo': '0/400', 'trap': '0/400'}
+v11ol {'iz': '0/400', 'oz': '0/400', 'wz': '0/400'}
+v11olgap {'power': '0/400', 'counter': '0/400', 'duo': '0/400', 'trap': '0/400'}
+
+## behind.py (puller relative to the back; NFL60)
+nfl-plays.jsonl.gz     POWER n 215
+  +0.25s puller rel back: upfield 2.40/2.70/3.30 toward play 0.50/1.30/1.90 | back v upfield 3.00/3.00/5.00 toward play 1.00/2.00/4.00
+  +0.50s puller rel back: upfield 1.60/2.20/2.70 toward play 0.70/1.40/1.90 | back v upfield 3.00/3.50/4.50 toward play 1.50/3.00/3.50
+  +0.75s puller rel back: upfield 1.10/1.60/2.20 toward play 0.50/1.20/1.90 | back v upfield 3.00/4.00/5.00 toward play 2.00/3.00/4.00
+  +1.00s puller rel back: upfield 0.20/1.10/1.70 toward play 0.10/1.00/1.70 | back v upfield 3.00/4.00/4.00 toward play 1.00/3.00/4.00
+v11plgap-common.jsonl. power n 291
+  +0.25s puller rel back: upfield 2.50/2.60/3.40 toward play -4.20/-0.70/-0.40 | back v upfield 4.00/4.00/4.00 toward play 1.00/3.00/3.00
+  +0.50s puller rel back: upfield 1.60/1.90/2.20 toward play -5.40/-0.70/-0.20 | back v upfield 3.00/4.00/4.00 toward play 1.00/3.00/4.00
+  +0.75s puller rel back: upfield 0.80/1.10/1.50 toward play -6.80/-1.00/-0.20 | back v upfield 3.00/4.00/5.00 toward play 1.00/3.00/4.00
+  +1.00s puller rel back: upfield -0.30/0.20/0.80 toward play -8.60/-1.80/-0.20 | back v upfield 3.00/4.00/5.00 toward play 2.00/3.00/4.00
+nfl-plays.jsonl.gz     COUNTER n 147
+  +0.25s puller rel back: upfield 2.50/3.00/3.50 toward play 1.20/2.00/2.50 | back v upfield 3.00/4.00/4.00 toward play 1.00/3.00/3.00
+  +0.50s puller rel back: upfield 1.70/2.10/2.80 toward play 1.40/1.90/2.60 | back v upfield 3.00/4.00/4.50 toward play 1.50/3.00/3.50
+  +0.75s puller rel back: upfield 0.80/1.50/2.20 toward play 1.10/1.90/2.50 | back v upfield 3.00/4.00/5.00 toward play 2.00/3.00/4.00
+  +1.00s puller rel back: upfield -0.20/0.60/1.60 toward play 0.80/1.50/2.30 | back v upfield 3.00/4.00/5.00 toward play 2.00/3.00/4.00
+v11plgap-common.jsonl. counter n 324
+  +0.25s puller rel back: upfield 2.90/3.20/4.20 toward play -3.90/0.00/0.30 | back v upfield 3.00/4.00/4.00 toward play 1.00/1.00/2.00
+  +0.50s puller rel back: upfield 1.80/2.20/3.30 toward play -5.30/0.50/1.10 | back v upfield 3.00/3.00/4.00 toward play -0.00/2.00/3.00
+  +0.75s puller rel back: upfield 1.20/1.60/2.60 toward play -6.30/0.50/1.60 | back v upfield 3.00/3.00/4.00 toward play 1.00/2.00/3.00
+  +1.00s puller rel back: upfield 0.70/1.10/1.90 toward play -7.60/0.20/1.90 | back v upfield 2.00/3.00/4.00 toward play 1.00/2.00/3.00
+
+## pullers.py (NFL60, develop, package, OL_ALIGN)
+nfl-plays.jsonl.gz     gap_pull: plays with a puller 660
+  puller 0.6 yd over at p25/50/75 0.5/0.6/0.7 s (depth then -1.1) | 1.5 yd/s lateral at p50 0.4 s | depth at 1.0 s -1.2
+  puller lateral yd at 0.6/1.0/1.4 s: 0.8/2.0/3.4 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.5/1.5/2.0 yd/s
+v5d0gap-common.jsonl.g gap_pull: plays with a puller 948
+  puller 0.6 yd over at p25/50/75 0.8/0.9/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.8 s | depth at 1.0 s -0.9
+  puller lateral yd at 0.6/1.0/1.4 s: 0.2/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: 0.0/-0.0/0.25 yd/s
+v11plgap-common.jsonl. gap_pull: plays with a puller 952
+  puller 0.6 yd over at p25/50/75 0.8/0.9/0.9 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.7 s | depth at 1.0 s -0.9
+  puller lateral yd at 0.6/1.0/1.4 s: 0.2/0.9/1.9 | second level lateral toward the pull at 0.6/1.0/1.4 s: -0.0/0.0/0.0 yd/s
+v11olgap-common.jsonl. gap_pull: plays with a puller 1200
+  puller 0.6 yd over at p25/50/75 0.7/0.7/0.8 s (depth then -0.9) | 1.5 yd/s lateral at p50 0.5 s | depth at 1.0 s -1.0
+  puller lateral yd at 0.6/1.0/1.4 s: 0.5/1.5/2.8 | second level lateral toward the pull at 0.6/1.0/1.4 s: -0.0/-0.25/-1.0 yd/s
+
+## olalign.py (line at the snap; NFL vs develop vs OL_ALIGN)
+nfl-plays.jsonl.gz       runs 5880
+  C                         0.29 [ 0.04, 0.45]  (n 5880)
+  G                         0.83 [ 0.54, 1.02]  (n 11760)
+  T                         0.98 [ 0.69, 1.19]  (n 11760)
+  split C-G                 1.54 [ 1.41, 1.67]  (n 11760)
+  split G-T                 1.56 [ 1.43, 1.68]  (n 11760)
+  TE depth                  1.19 [ 0.83, 1.76]  (n 6529)
+  split T-TE                1.52 [ 1.31, 1.73]  (n 6529)
+  DL depth                  0.92 [ 0.72, 1.22]  (n 19173)
+  width tackle-to-tackle    6.18 [ 5.95, 6.45]  (n 5880)
+v5d0gap-common.jsonl.gz  runs 1600
+  C                         0.55 [ 0.55, 0.55]  (n 1600)
+  G                         0.55 [ 0.55, 0.55]  (n 3200)
+  T                         0.55 [ 0.55, 0.55]  (n 3200)
+  split C-G                 1.30 [ 1.30, 1.30]  (n 3200)
+  split G-T                 1.30 [ 1.30, 1.30]  (n 3200)
+  TE depth                  0.60 [ 0.60, 0.60]  (n 2400)
+  split T-TE                1.30 [ 1.30, 1.30]  (n 2400)
+  DL depth                  0.90 [ 0.90, 0.90]  (n 6080)
+  width tackle-to-tackle    5.20 [ 5.20, 5.20]  (n 1600)
+v11olgap-common.jsonl.gz runs 1600
+  C                         0.29 [ 0.29, 0.29]  (n 1600)
+  G                         0.83 [ 0.83, 0.83]  (n 3200)
+  T                         0.98 [ 0.98, 0.98]  (n 3200)
+  split C-G                 1.54 [ 1.54, 1.54]  (n 3200)
+  split G-T                 1.56 [ 1.56, 1.56]  (n 3200)
+  TE depth                  1.19 [ 1.19, 1.19]  (n 2400)
+  split T-TE                1.52 [ 1.52, 1.52]  (n 2400)
+  DL depth                  0.90 [ 0.90, 0.90]  (n 6080)
+  width tackle-to-tackle    6.20 [ 6.20, 6.20]  (n 1600)
+
+## layers.ts (back's and QB's speed by layer: request -> after contact -> after spacing -> achieved; i_pro_21+ace_12, seeds 77,71001)
+### develop (candidate profile)
+Profile candidate: run-game-2026-10-13, commit 26a6b6d0d8532e29c9890c912eb387227d96fa77, source b3fb18ac270a19b371abc6b75d3cb857b19d01c82c635d9dfe2faa697f33522a
+median speed yd/s: request -> after contact -> after spacing -> achieved | ticks with 10%+ cut by contact / spacing (nearest teammate) | pacing a lead (his speed along the request)
+counter QB 0..0.25     3.45 -> 3.45 -> 1.61 -> 0.66 | n 800 contact 0% spacing 42% (RB 336) | paced 0% lead -
+counter QB 0.25..0.5   3.59 -> 3.59 -> 3.45 -> 1.05 | n 800 contact 0% spacing 31% (RB 248) | paced 0% lead -
+counter QB 0.5..1.0    3.59 -> 3.59 -> 3.45 -> 1.77 | n 1600 contact 0% spacing 4% (RB 62) | paced 0% lead -
+counter RB -0.4..0     2.86 -> 2.86 -> 2.67 -> 2.15 | n 1280 contact 0% spacing 10% (QB 123, F 2) | paced 0% lead -
+counter RB 0..0.25     6.25 -> 6.25 -> 6.08 -> 2.24 | n 800 contact 0% spacing 35% (QB 277, RG 2) | paced 1% lead 2.14
+counter RB 0.25..0.5   6.25 -> 6.25 -> 6.08 -> 2.96 | n 800 contact 0% spacing 29% (QB 153, RG 28, RT 13) | paced 4% lead 0.34
+counter RB 0.5..1.0    9.42 -> 9.42 -> 6.08 -> 3.27 | n 1600 contact 0% spacing 24% (LT 166, F 52, RG 51) | paced 22% lead 1.56
+duo QB 0..0.25         3.45 -> 3.45 -> 1.63 -> 0.72 | n 800 contact 0% spacing 50% (RB 400) | paced 0% lead -
+duo QB 0.25..0.5       3.59 -> 3.59 -> 3.45 -> 1.10 | n 800 contact 0% spacing 46% (RB 367) | paced 0% lead -
+duo QB 0.5..1.0        3.59 -> 3.59 -> 3.45 -> 1.77 | n 1600 contact 0% spacing 16% (RB 258) | paced 0% lead -
+duo RB -0.4..0         2.47 -> 2.47 -> 2.34 -> 2.08 | n 1280 contact 0% spacing 7% (QB 90) | paced 0% lead -
+duo RB 0..0.25         9.42 -> 9.42 -> 9.42 -> 2.17 | n 800 contact 0% spacing 29% (QB 232) | paced 0% lead -
+duo RB 0.25..0.5       9.42 -> 9.42 -> 9.42 -> 3.40 | n 800 contact 0% spacing 27% (QB 214) | paced 0% lead -
+duo RB 0.5..1.0        9.42 -> 9.42 -> 9.42 -> 4.65 | n 1600 contact 0% spacing 19% (QB 237, RT 25, LT 13) | paced 0% lead -
+power QB 0..0.25       3.45 -> 3.45 -> 1.63 -> 0.68 | n 800 contact 0% spacing 40% (RB 323) | paced 0% lead -
+power QB 0.25..0.5     3.59 -> 3.59 -> 3.45 -> 1.10 | n 800 contact 0% spacing 44% (RB 354) | paced 0% lead -
+power QB 0.5..1.0      3.59 -> 3.59 -> 3.45 -> 1.77 | n 1600 contact 0% spacing 14% (RB 230) | paced 0% lead -
+power RB -0.4..0       2.72 -> 2.72 -> 2.62 -> 2.15 | n 1280 contact 0% spacing 7% (QB 93) | paced 0% lead -
+power RB 0..0.25       6.08 -> 6.08 -> 2.90 -> 2.00 | n 800 contact 0% spacing 37% (QB 288, RG 6) | paced 18% lead 1.84
+power RB 0.25..0.5     6.08 -> 6.08 -> 2.90 -> 2.47 | n 800 contact 0% spacing 26% (QB 197, RG 11) | paced 40% lead 1.86
+power RB 0.5..1.0      6.08 -> 6.08 -> 5.03 -> 2.80 | n 1600 contact 0% spacing 13% (QB 150, RG 32, LG 23) | paced 42% lead 1.11
+trap QB 0..0.25        3.45 -> 3.45 -> 1.61 -> 0.67 | n 800 contact 0% spacing 43% (RB 346) | paced 0% lead -
+trap QB 0.25..0.5      3.59 -> 3.59 -> 3.45 -> 1.10 | n 800 contact 0% spacing 25% (RB 201) | paced 0% lead -
+trap QB 0.5..1.0       3.59 -> 3.59 -> 3.45 -> 1.82 | n 1600 contact 0% spacing 4% (RB 69) | paced 0% lead -
+trap RB -0.4..0        2.78 -> 2.78 -> 2.62 -> 2.15 | n 1280 contact 0% spacing 9% (QB 106, F 4) | paced 0% lead -
+trap RB 0..0.25        9.42 -> 9.42 -> 9.42 -> 2.38 | n 800 contact 0% spacing 20% (QB 160, LG 1, RG 1) | paced 1% lead 1.75
+trap RB 0.25..0.5      9.42 -> 9.42 -> 9.42 -> 3.54 | n 800 contact 0% spacing 20% (QB 91, RG 61, LG 6) | paced 1% lead 1.52
+trap RB 0.5..1.0       9.42 -> 9.42 -> 9.42 -> 4.78 | n 1600 contact 0% spacing 15% (RG 102, LG 69, QB 55) | paced 0% lead -
+Validation receipt: out/baseline/part6-layers-d0.json; exit 0
+### package: UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD
+Profile candidate: run-game-2026-10-13, commit 26a6b6d0d8532e29c9890c912eb387227d96fa77, source b3fb18ac270a19b371abc6b75d3cb857b19d01c82c635d9dfe2faa697f33522a
+median speed yd/s: request -> after contact -> after spacing -> achieved | ticks with 10%+ cut by contact / spacing (nearest teammate) | pacing a lead (his speed along the request)
+counter QB 0..0.25     4.04 -> 4.04 -> 4.04 -> 2.28 | n 800 contact 0% spacing 0% (RB 3) | paced 0% lead -
+counter QB 0.25..0.5   4.04 -> 4.04 -> 4.04 -> 2.56 | n 800 contact 0% spacing 0% () | paced 0% lead -
+counter QB 0.5..1.0    3.88 -> 3.88 -> 3.88 -> 2.93 | n 1600 contact 0% spacing 0% () | paced 0% lead -
+counter RB -0.4..0     9.42 -> 9.42 -> 9.42 -> 3.79 | n 1280 contact 0% spacing 13% (QB 156, F 6) | paced 0% lead -
+counter RB 0..0.25     6.25 -> 6.25 -> 6.08 -> 3.96 | n 800 contact 0% spacing 38% (QB 217, RG 37, F 36) | paced 0% lead -
+counter RB 0.25..0.5   6.25 -> 6.25 -> 6.08 -> 3.97 | n 800 contact 0% spacing 39% (RG 129, LG 121, F 60) | paced 0% lead -
+counter RB 0.5..1.0    6.25 -> 6.25 -> 6.25 -> 4.07 | n 1600 contact 0% spacing 36% (RG 159, LG 147, F 135) | paced 0% lead -
+duo QB 0..0.25         4.04 -> 4.04 -> 4.04 -> 2.44 | n 800 contact 0% spacing 0% () | paced 0% lead -
+duo QB 0.25..0.5       4.04 -> 4.04 -> 4.04 -> 2.74 | n 800 contact 0% spacing 0% () | paced 0% lead -
+duo QB 0.5..1.0        3.88 -> 3.88 -> 3.88 -> 3.03 | n 1600 contact 0% spacing 0% () | paced 0% lead -
+duo RB -0.4..0         5.23 -> 5.23 -> 5.23 -> 4.03 | n 1280 contact 0% spacing 32% (QB 381, F 27) | paced 0% lead -
+duo RB 0..0.25         6.25 -> 6.25 -> 6.25 -> 3.98 | n 800 contact 0% spacing 7% (QB 40, F 16) | paced 0% lead -
+duo RB 0.25..0.5       9.42 -> 9.42 -> 6.25 -> 4.68 | n 800 contact 0% spacing 9% (F 39, C 15, RG 12) | paced 0% lead -
+duo RB 0.5..1.0        9.42 -> 9.42 -> 9.42 -> 5.23 | n 1600 contact 0% spacing 22% (RG 94, F 71, C 59) | paced 0% lead -
+power QB 0..0.25       4.04 -> 4.04 -> 4.04 -> 2.47 | n 800 contact 0% spacing 0% () | paced 0% lead -
+power QB 0.25..0.5     4.04 -> 4.04 -> 4.04 -> 2.76 | n 800 contact 0% spacing 0% () | paced 0% lead -
+power QB 0.5..1.0      3.88 -> 3.88 -> 3.88 -> 3.05 | n 1600 contact 0% spacing 0% () | paced 0% lead -
+power RB -0.4..0       9.42 -> 9.42 -> 9.42 -> 4.34 | n 1280 contact 0% spacing 0% (QB 1) | paced 0% lead -
+power RB 0..0.25       6.25 -> 6.25 -> 6.08 -> 4.64 | n 800 contact 0% spacing 19% (LG 93, RG 32, QB 18) | paced 0% lead -
+power RB 0.25..0.5     6.25 -> 6.25 -> 6.25 -> 4.83 | n 800 contact 0% spacing 23% (LG 131, RG 49) | paced 0% lead -
+power RB 0.5..1.0      9.42 -> 9.42 -> 9.42 -> 5.23 | n 1600 contact 0% spacing 17% (LG 206, RG 41, LT 6) | paced 0% lead -
+trap QB 0..0.25        4.04 -> 4.04 -> 4.04 -> 2.62 | n 800 contact 0% spacing 0% () | paced 0% lead -
+trap QB 0.25..0.5      4.04 -> 4.04 -> 4.04 -> 2.93 | n 800 contact 0% spacing 0% () | paced 0% lead -
+trap QB 0.5..1.0       3.88 -> 3.88 -> 3.88 -> 3.15 | n 1600 contact 0% spacing 0% () | paced 0% lead -
+trap RB -0.4..0        5.23 -> 5.23 -> 5.23 -> 3.90 | n 1280 contact 0% spacing 39% (QB 488, F 7) | paced 0% lead -
+trap RB 0..0.25        6.25 -> 6.25 -> 6.25 -> 3.55 | n 800 contact 0% spacing 24% (QB 160, LG 18, RG 10) | paced 0% lead -
+trap RB 0.25..0.5      6.25 -> 6.25 -> 6.25 -> 4.13 | n 800 contact 0% spacing 16% (LG 62, RG 44, F 23) | paced 0% lead -
+trap RB 0.5..1.0       9.42 -> 9.42 -> 9.42 -> 4.85 | n 1600 contact 0% spacing 16% (LG 118, RG 61, RT 38) | paced 0% lead -
+Validation receipt: out/baseline/part6-layers-pl.json; exit 0
+
+## deblock.ts (who blocks the play-side end; the 8 counter plays OL_ALIGN turned negative with the largest drop)
+### OL_ALIGN=0
+Profile candidate: run-game-2026-10-13, commit 26a6b6d0d8532e29c9890c912eb387227d96fa77, source b3fb18ac270a19b371abc6b75d3cb857b19d01c82c635d9dfe2faa697f33522a
+counter/strong/ace_12/over2/pair31/1 DE DE_S at y 4.0 | kick LG->DE_S | 0.05 free | 2.25 LG | 3.20 free
+counter/strong/ace_12/off1/pair31/1 DE DE_S at y 4.2 | kick LG->DE_S | 0.05 free | 2.25 LG
+counter/weak/i_pro_21/bear1/pair31/77 DE DE_W at y 2.5 | kick RG->DE_W | 0.05 free | 1.80 RG | 3.15 free
+counter/strong/ace_12/under3/pair11/77 DE DE_S at y 2.7 | kick LG->LB_S | 0.05 free | 0.55 RT+Y | 1.10 RT
+counter/strong/ace_12/over2/pair31/3 DE DE_S at y 3.4 | kick LG->DE_S | 0.05 free | 2.20 LG | 3.00 free
+counter/weak/ace_12/tite4/pair11/2 DE DE_W at y 3.2 | kick RG->DE_W | 0.05 free | 2.05 RG
+counter/strong/ace_12/off1/pair31/3 DE DE_S at y 3.8 | kick LG->DE_S | 0.05 free | 2.25 LG
+counter/weak/i_pro_21/tite4/pair11/71001 DE DE_W at y 2.9 | kick RG->DE_W | 0.05 free | 2.05 RG
+Validation receipt: out/baseline/run-1792445799548-1478.json; exit 0
+### OL_ALIGN=1
+Profile candidate: run-game-2026-10-13, commit 26a6b6d0d8532e29c9890c912eb387227d96fa77, source b3fb18ac270a19b371abc6b75d3cb857b19d01c82c635d9dfe2faa697f33522a
+counter/strong/ace_12/over2/pair31/1 DE DE_S at y 4.1 | kick LG->DE_S | 0.05 free | 2.10 LG | 2.70 free
+counter/strong/ace_12/off1/pair31/1 DE DE_S at y 5.0 | kick LG->DE_S | 0.05 free | 2.15 LG | 3.10 free
+counter/weak/i_pro_21/bear1/pair31/77 DE DE_W at y 3.8 | kick RG->DE_W | 0.05 free | 2.15 RG | 3.05 free
+counter/strong/ace_12/under3/pair11/77 DE DE_S at y 3.7 | kick LG->LB_S | 0.05 free | 0.70 Y | 0.75 Y+RT | 1.00 Y | 1.65 free
+counter/strong/ace_12/over2/pair31/3 DE DE_S at y 4.2 | kick LG->DE_S | 0.05 free | 2.05 LG | 3.00 free
+counter/weak/ace_12/tite4/pair11/2 DE DE_W at y 4.3 | kick RG->DE_W | 0.05 free | 1.90 RG | 2.85 free
+counter/strong/ace_12/off1/pair31/3 DE DE_S at y 4.3 | kick LG->DE_S | 0.05 free | 2.05 LG | 2.65 free
+counter/weak/i_pro_21/tite4/pair11/71001 DE DE_W at y 4.9 | kick RG->DE_W | 0.05 free | 1.85 RG | 2.65 free
+Validation receipt: out/baseline/run-1792445802358-1517.json; exit 0
+
+## paired.py (exact McNemar on the same case ids)
+v5d0gap vs v11plgap power: paired 400 (only in v5d0gap: 0, only in v11plgap: 0)
+  >= 4  : v5d0gap  172 -> v11plgap  208 | both 88, only v5d0gap 84, only v11plgap 120 | McNemar exact p 0.014
+  >= 10 : v5d0gap   32 -> v11plgap   54 | both 6, only v5d0gap 26, only v11plgap 48 | McNemar exact p 0.014
+  >= 20 : v5d0gap   21 -> v11plgap   34 | both 4, only v5d0gap 17, only v11plgap 30 | McNemar exact p 0.079
+  >= 40 : v5d0gap   17 -> v11plgap   27 | both 3, only v5d0gap 14, only v11plgap 24 | McNemar exact p 0.143
+  < 0   : v5d0gap   71 -> v11plgap   34 | both 7, only v5d0gap 64, only v11plgap 27 | McNemar exact p 0.000
+v5d0gap vs v11plgap counter: paired 400 (only in v5d0gap: 0, only in v11plgap: 0)
+  >= 4  : v5d0gap  161 -> v11plgap  174 | both 95, only v5d0gap 66, only v11plgap 79 | McNemar exact p 0.319
+  >= 10 : v5d0gap   31 -> v11plgap   42 | both 8, only v5d0gap 23, only v11plgap 34 | McNemar exact p 0.185
+  >= 20 : v5d0gap   25 -> v11plgap   30 | both 7, only v5d0gap 18, only v11plgap 23 | McNemar exact p 0.533
+  >= 40 : v5d0gap   22 -> v11plgap   27 | both 7, only v5d0gap 15, only v11plgap 20 | McNemar exact p 0.500
+  < 0   : v5d0gap   66 -> v11plgap   29 | both 15, only v5d0gap 51, only v11plgap 14 | McNemar exact p 0.000
+v5d0gap vs v11plgap duo: paired 400 (only in v5d0gap: 0, only in v11plgap: 0)
+  >= 4  : v5d0gap  252 -> v11plgap  216 | both 168, only v5d0gap 84, only v11plgap 48 | McNemar exact p 0.002
+  >= 10 : v5d0gap   34 -> v11plgap   51 | both 10, only v5d0gap 24, only v11plgap 41 | McNemar exact p 0.046
+  >= 20 : v5d0gap   15 -> v11plgap   18 | both 2, only v5d0gap 13, only v11plgap 16 | McNemar exact p 0.711
+  >= 40 : v5d0gap   11 -> v11plgap   13 | both 1, only v5d0gap 10, only v11plgap 12 | McNemar exact p 0.832
+  < 0   : v5d0gap   16 -> v11plgap    7 | both 4, only v5d0gap 12, only v11plgap 3 | McNemar exact p 0.035
+v5d0gap vs v11plgap trap: paired 400 (only in v5d0gap: 0, only in v11plgap: 0)
+  >= 4  : v5d0gap  193 -> v11plgap  182 | both 129, only v5d0gap 64, only v11plgap 53 | McNemar exact p 0.355
+  >= 10 : v5d0gap   28 -> v11plgap   36 | both 5, only v5d0gap 23, only v11plgap 31 | McNemar exact p 0.341
+  >= 20 : v5d0gap   20 -> v11plgap   23 | both 5, only v5d0gap 15, only v11plgap 18 | McNemar exact p 0.728
+  >= 40 : v5d0gap   14 -> v11plgap   20 | both 3, only v5d0gap 11, only v11plgap 17 | McNemar exact p 0.345
+  < 0   : v5d0gap   23 -> v11plgap   23 | both 4, only v5d0gap 19, only v11plgap 19 | McNemar exact p 1.000
+v5d0 vs v11co iz: paired 400 (only in v5d0: 0, only in v11co: 0)
+  >= 4  : v5d0  218 -> v11co  170 | both 126, only v5d0 92, only v11co 44 | McNemar exact p 0.000
+  >= 10 : v5d0   55 -> v11co   43 | both 13, only v5d0 42, only v11co 30 | McNemar exact p 0.195
+  >= 20 : v5d0   28 -> v11co   12 | both 1, only v5d0 27, only v11co 11 | McNemar exact p 0.014
+  >= 40 : v5d0   22 -> v11co   10 | both 1, only v5d0 21, only v11co 9 | McNemar exact p 0.043
+  < 0   : v5d0   13 -> v11co    9 | both 2, only v5d0 11, only v11co 7 | McNemar exact p 0.481
+v5d0 vs v11co oz: paired 400 (only in v5d0: 0, only in v11co: 0)
+  >= 4  : v5d0  119 -> v11co  124 | both 55, only v5d0 64, only v11co 69 | McNemar exact p 0.729
+  >= 10 : v5d0   39 -> v11co   13 | both 4, only v5d0 35, only v11co 9 | McNemar exact p 0.000
+  >= 20 : v5d0   16 -> v11co   10 | both 3, only v5d0 13, only v11co 7 | McNemar exact p 0.263
+  >= 40 : v5d0   10 -> v11co    8 | both 2, only v5d0 8, only v11co 6 | McNemar exact p 0.791
+  < 0   : v5d0   57 -> v11co   91 | both 32, only v5d0 25, only v11co 59 | McNemar exact p 0.000
+v5d0 vs v11co wz: paired 400 (only in v5d0: 0, only in v11co: 0)
+  >= 4  : v5d0  124 -> v11co  117 | both 54, only v5d0 70, only v11co 63 | McNemar exact p 0.603
+  >= 10 : v5d0   27 -> v11co   10 | both 2, only v5d0 25, only v11co 8 | McNemar exact p 0.005
+  >= 20 : v5d0   16 -> v11co    6 | both 1, only v5d0 15, only v11co 5 | McNemar exact p 0.041
+  >= 40 : v5d0   13 -> v11co    4 | both 1, only v5d0 12, only v11co 3 | McNemar exact p 0.035
+  < 0   : v5d0   83 -> v11co  116 | both 49, only v5d0 34, only v11co 67 | McNemar exact p 0.001
+v11cogap vs v11plgap power: paired 400 (only in v11cogap: 0, only in v11plgap: 0)
+  >= 4  : v11cogap  199 -> v11plgap  208 | both 167, only v11cogap 32, only v11plgap 41 | McNemar exact p 0.349
+  >= 10 : v11cogap   58 -> v11plgap   54 | both 36, only v11cogap 22, only v11plgap 18 | McNemar exact p 0.636
+  >= 20 : v11cogap   39 -> v11plgap   34 | both 22, only v11cogap 17, only v11plgap 12 | McNemar exact p 0.458
+  >= 40 : v11cogap   36 -> v11plgap   27 | both 19, only v11cogap 17, only v11plgap 8 | McNemar exact p 0.108
+  < 0   : v11cogap   42 -> v11plgap   34 | both 24, only v11cogap 18, only v11plgap 10 | McNemar exact p 0.185
+v11cogap vs v11plgap counter: paired 400 (only in v11cogap: 0, only in v11plgap: 0)
+  >= 4  : v11cogap  168 -> v11plgap  174 | both 154, only v11cogap 14, only v11plgap 20 | McNemar exact p 0.392
+  >= 10 : v11cogap   40 -> v11plgap   42 | both 35, only v11cogap 5, only v11plgap 7 | McNemar exact p 0.774
+  >= 20 : v11cogap   30 -> v11plgap   30 | both 26, only v11cogap 4, only v11plgap 4 | McNemar exact p 1.000
+  >= 40 : v11cogap   26 -> v11plgap   27 | both 23, only v11cogap 3, only v11plgap 4 | McNemar exact p 1.000
+  < 0   : v11cogap   34 -> v11plgap   29 | both 23, only v11cogap 11, only v11plgap 6 | McNemar exact p 0.332
+v11cogap vs v11plgap duo: paired 400 (only in v11cogap: 0, only in v11plgap: 0)
+  >= 4  : v11cogap  216 -> v11plgap  216 | both 216, only v11cogap 0, only v11plgap 0 | McNemar exact p 1.000
+  >= 10 : v11cogap   51 -> v11plgap   51 | both 51, only v11cogap 0, only v11plgap 0 | McNemar exact p 1.000
+  >= 20 : v11cogap   18 -> v11plgap   18 | both 18, only v11cogap 0, only v11plgap 0 | McNemar exact p 1.000
+  >= 40 : v11cogap   13 -> v11plgap   13 | both 13, only v11cogap 0, only v11plgap 0 | McNemar exact p 1.000
+  < 0   : v11cogap    7 -> v11plgap    7 | both 7, only v11cogap 0, only v11plgap 0 | McNemar exact p 1.000
+v11cogap vs v11plgap trap: paired 400 (only in v11cogap: 0, only in v11plgap: 0)
+  >= 4  : v11cogap  177 -> v11plgap  182 | both 170, only v11cogap 7, only v11plgap 12 | McNemar exact p 0.359
+  >= 10 : v11cogap   32 -> v11plgap   36 | both 30, only v11cogap 2, only v11plgap 6 | McNemar exact p 0.289
+  >= 20 : v11cogap   21 -> v11plgap   23 | both 18, only v11cogap 3, only v11plgap 5 | McNemar exact p 0.727
+  >= 40 : v11cogap   19 -> v11plgap   20 | both 16, only v11cogap 3, only v11plgap 4 | McNemar exact p 1.000
+  < 0   : v11cogap   30 -> v11plgap   23 | both 20, only v11cogap 10, only v11plgap 3 | McNemar exact p 0.092
+v5d0 vs v11ol iz: paired 400 (only in v5d0: 0, only in v11ol: 0)
+  >= 4  : v5d0  218 -> v11ol  193 | both 131, only v5d0 87, only v11ol 62 | McNemar exact p 0.049
+  >= 10 : v5d0   55 -> v11ol   35 | both 13, only v5d0 42, only v11ol 22 | McNemar exact p 0.017
+  >= 20 : v5d0   28 -> v11ol   14 | both 1, only v5d0 27, only v11ol 13 | McNemar exact p 0.038
+  >= 40 : v5d0   22 -> v11ol   14 | both 1, only v5d0 21, only v11ol 13 | McNemar exact p 0.229
+  < 0   : v5d0   13 -> v11ol   11 | both 0, only v5d0 13, only v11ol 11 | McNemar exact p 0.839
+v5d0 vs v11ol oz: paired 400 (only in v5d0: 0, only in v11ol: 0)
+  >= 4  : v5d0  119 -> v11ol  125 | both 49, only v5d0 70, only v11ol 76 | McNemar exact p 0.679
+  >= 10 : v5d0   39 -> v11ol   30 | both 10, only v5d0 29, only v11ol 20 | McNemar exact p 0.253
+  >= 20 : v5d0   16 -> v11ol   16 | both 2, only v5d0 14, only v11ol 14 | McNemar exact p 1.000
+  >= 40 : v5d0   10 -> v11ol   15 | both 1, only v5d0 9, only v11ol 14 | McNemar exact p 0.405
+  < 0   : v5d0   57 -> v11ol   51 | both 9, only v5d0 48, only v11ol 42 | McNemar exact p 0.598
+v5d0 vs v11ol wz: paired 400 (only in v5d0: 0, only in v11ol: 0)
+  >= 4  : v5d0  124 -> v11ol  116 | both 42, only v5d0 82, only v11ol 74 | McNemar exact p 0.575
+  >= 10 : v5d0   27 -> v11ol   28 | both 6, only v5d0 21, only v11ol 22 | McNemar exact p 1.000
+  >= 20 : v5d0   16 -> v11ol   12 | both 2, only v5d0 14, only v11ol 10 | McNemar exact p 0.541
+  >= 40 : v5d0   13 -> v11ol   10 | both 2, only v5d0 11, only v11ol 8 | McNemar exact p 0.648
+  < 0   : v5d0   83 -> v11ol   49 | both 14, only v5d0 69, only v11ol 35 | McNemar exact p 0.001
+v5d0gap vs v11olgap power: paired 400 (only in v5d0gap: 0, only in v11olgap: 0)
+  >= 4  : v5d0gap  172 -> v11olgap  163 | both 79, only v5d0gap 93, only v11olgap 84 | McNemar exact p 0.548
+  >= 10 : v5d0gap   32 -> v11olgap   37 | both 6, only v5d0gap 26, only v11olgap 31 | McNemar exact p 0.597
+  >= 20 : v5d0gap   21 -> v11olgap   26 | both 4, only v5d0gap 17, only v11olgap 22 | McNemar exact p 0.522
+  >= 40 : v5d0gap   17 -> v11olgap   19 | both 4, only v5d0gap 13, only v11olgap 15 | McNemar exact p 0.851
+  < 0   : v5d0gap   71 -> v11olgap   66 | both 17, only v5d0gap 54, only v11olgap 49 | McNemar exact p 0.694
+v5d0gap vs v11olgap counter: paired 400 (only in v5d0gap: 0, only in v11olgap: 0)
+  >= 4  : v5d0gap  161 -> v11olgap  146 | both 66, only v5d0gap 95, only v11olgap 80 | McNemar exact p 0.290
+  >= 10 : v5d0gap   31 -> v11olgap   39 | both 8, only v5d0gap 23, only v11olgap 31 | McNemar exact p 0.341
+  >= 20 : v5d0gap   25 -> v11olgap   27 | both 4, only v5d0gap 21, only v11olgap 23 | McNemar exact p 0.880
+  >= 40 : v5d0gap   22 -> v11olgap   25 | both 4, only v5d0gap 18, only v11olgap 21 | McNemar exact p 0.749
+  < 0   : v5d0gap   66 -> v11olgap  125 | both 33, only v5d0gap 33, only v11olgap 92 | McNemar exact p 0.000
+v5d0gap vs v11olgap duo: paired 400 (only in v5d0gap: 0, only in v11olgap: 0)
+  >= 4  : v5d0gap  252 -> v11olgap  245 | both 180, only v5d0gap 72, only v11olgap 65 | McNemar exact p 0.608
+  >= 10 : v5d0gap   34 -> v11olgap   58 | both 14, only v5d0gap 20, only v11olgap 44 | McNemar exact p 0.004
+  >= 20 : v5d0gap   15 -> v11olgap   22 | both 4, only v5d0gap 11, only v11olgap 18 | McNemar exact p 0.265
+  >= 40 : v5d0gap   11 -> v11olgap   18 | both 3, only v5d0gap 8, only v11olgap 15 | McNemar exact p 0.210
+  < 0   : v5d0gap   16 -> v11olgap    9 | both 0, only v5d0gap 16, only v11olgap 9 | McNemar exact p 0.230
+v5d0gap vs v11olgap trap: paired 400 (only in v5d0gap: 0, only in v11olgap: 0)
+  >= 4  : v5d0gap  193 -> v11olgap  154 | both 85, only v5d0gap 108, only v11olgap 69 | McNemar exact p 0.004
+  >= 10 : v5d0gap   28 -> v11olgap   25 | both 7, only v5d0gap 21, only v11olgap 18 | McNemar exact p 0.749
+  >= 20 : v5d0gap   20 -> v11olgap   15 | both 5, only v5d0gap 15, only v11olgap 10 | McNemar exact p 0.424
+  >= 40 : v5d0gap   14 -> v11olgap   11 | both 3, only v5d0gap 11, only v11olgap 8 | McNemar exact p 0.648
+  < 0   : v5d0gap   23 -> v11olgap   35 | both 4, only v5d0gap 19, only v11olgap 31 | McNemar exact p 0.119

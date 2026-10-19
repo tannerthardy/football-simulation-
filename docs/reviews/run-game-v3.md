@@ -900,3 +900,173 @@ provider family, not verified Duo.
      - engaged pairs' lateral motion (outside zone);
      - start-up acceleration (pullers and departures);
      - held-carrier fall timing.
+
+## Part 6 — the mesh, the back's first second, and the line (2026-10-19)
+
+The film review raised three points. The under-center mesh looked janky,
+with the QB and back running into each other. The back looked jittery and
+slow after the handoff, though he ran well through big gaps. And NFL lines
+stand staggered behind the center with wider splits.
+
+Arms are under [`run-game-v3/v11/`](run-game-v3/v11/), with reports and
+bound manifests. Develop is `v5` (`v5d0`, `v5d0gap`). The v11 arms ran on
+`26a6b6d0` plus the Part 6 patch (manifest `patchSha256 23c11132…`). The
+committed source differs from it only by extracting `leadPace` (the same
+arithmetic), and by diagnostics and tests. Receipts are in `part6.txt`:
+`meshflow.py`, `qbcarry.py`, `behind.py`, `pullers.py` and `olalign.py` on
+NFL tracking and sim common files; `layers.ts` and `deblock.ts` on sim
+internals; and `paired.py`.
+
+### What was wrong
+
+Our back is not limited by speed. His request after the handoff is 6–9
+yd/s. `layers.ts` splits it into four layers: the behavior's request, after
+contact, after teammate spacing, and achieved. Contact never cuts it.
+Spacing and his own pace do.
+
+**The QB and the back yield to each other** (develop, first 0.5 s after the
+handoff):
+
+- Spacing cuts the back's request in 20–37% of ticks, with the QB the
+  nearest teammate in front of him.
+- It cuts the QB's request in 25–50% of ticks, with the back the nearest.
+
+The QB did three things that tracked QBs do not:
+
+- He stepped toward the back's lead point to ride him.
+- He stood still on the handoff tick.
+- He then restarted toward a spot 1.6 yd deeper at 0.4 × top speed.
+
+Tracked under-center QBs move straight back at about 4 yd/s just before the
+handoff, and are still moving straight back at about 4 yd/s 0.25 and 0.5 s
+after it (`qbcarry.py`; turning 3–18°; gap, duo, inside and outside zone).
+Develop QBs move at about 1 yd/s.
+
+**The back paced the puller at a fixed speed.** While a lead blocker was
+entering the hole ahead of him, the designed press asked for a fixed 28–40%
+of top speed, about 2.6–3.7 yd/s. That fired in 18–42% of power ticks in the
+first second. The puller there is crossing the back's track: his speed
+along it is about 1–2 yd/s. Tracked backs stay at about 5 yd/s, 2–3 yd
+behind the puller (`behind.py`, `pullers.py`).
+
+The path shape was already close to NFL: heading change in the first 1.5 s
+is 44–54° against 44–47°, with a median of 0 lateral reversals. The jitter
+is the speed pulsing from these two sources.
+
+### Repairs (default-off)
+
+| Flag | What changes | Where |
+|---|---|---|
+| `QB_CARRYOUT` (revised) | With UC_MESH's moving exchange, the QB rides to a pocket 0.8 yd beside the back's track. That is the tracked offset at the handoff, measured across the back's own motion: lateral on an inside run, upfield of a stretch track. He no longer rides into the back's lead point. He does not stop on the handoff tick. He carries out straight back at the exchange speed, bending away from the play. The side-only carry-out of Part 5 is unchanged elsewhere (shotgun, or without UC_MESH). | `QBHandoff` (`qb.ts`) |
+| `PACE_LEAD` | The pace behind a lead blocker comes from the lead's observed motion. A lead who will be out of the back's track by the time he gets there costs nothing. One the back is actually following is closed on no faster than the back could still brake to the lead's speed at body contact, the same arrival law as `track()`. | `leadPace`, designed press (`carrier.ts`) |
+| `OL_ALIGN` | The line stands as tracked: C 0.29 yd behind the ball, guards 0.83, tackles 0.98, an inline end 1.19, with splits of 1.54, 1.56 and 1.52 yd. Techniques and gap landmarks are placed from those splits. Legacy landmarks (the pullers' hole, the C-gap and edge aims) map onto the actual line through `lineOffset`. With the flag off, everything is literally unchanged, verified by matching trajectory hashes over 60 plays. | `alignment.ts`, `assign.ts`, `blocking.ts` |
+
+Tried and stopped (`QB_CARRYOUT`), each counted in the arms or a 5-seed
+check before any outcome was read:
+
+- **Continuing the stance-to-spot line through the exchange.** The QB left
+  the back's reach. QB keeps were 220/400 on OZ and WZ and 57/400 on power,
+  and those runs became QB runs.
+- **A straight drop with only lateral pocket tracking.** Stretch handoffs
+  failed.
+- **A lateral-only pocket.** Stretch failed 100/400.
+
+With the final version, QB keeps match develop: 0–2 of 400 per concept.
+
+### Results (package `UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD`)
+
+The exchange and the back's first second (`meshflow.py`, medians; NFL60
+gap/MAN runs):
+
+| | NFL | Develop | Package |
+|---|---|---|---|
+| Power back speed at handoff / +0.5 s / +1.0 s | 4.07 / 4.98 / 4.93 | 2.02 / 2.50 / 3.04 | 4.47 / 5.00 / 5.34 |
+| Counter | 3.72 / 4.80 / 5.10 | 2.14 / 2.83 / 3.61 | 4.04 / 4.00 / 4.03 |
+| Duo (NFL MAN) | 4.12 / 4.78 / 4.67 | 2.14 / 3.88 / 5.39 | 3.82 / 4.85 / 5.71 |
+| Trap | 4.28 / 4.93 / 4.74 | 2.14 / 3.89 / 5.15 | 3.61 / 4.37 / 5.20 |
+| Power upfield in 1 s | 3.6 yd | 1.9 | 3.9 |
+| QB from the back at +0.5 s (power / duo) | 3.3 / 3.7 yd | 0.95 / 0.86 | 2.97 / 2.69 |
+| QB speed 0.25 s after the handoff | 2.6–4.0 yd/s | 0.8–0.9 | 2.3–2.5 |
+
+In the package, spacing no longer cuts the QB at all. In the first 0.5 s
+after the handoff, spacing cuts the power back in 19–23% of ticks, by the
+puller ahead rather than the QB.
+
+Outcomes, paired on the same 400 cases each:
+
+- Power: negatives 71 → 34 (p<0.001); 4+ 172 → 208 (p=0.014).
+- Counter: negatives 66 → 29 (p<0.001).
+- Duo: negatives 16 → 7 (p=0.035); 4+ 252 → 216 (p=0.002). Duo was above
+  the NFL's MAN family.
+- Trap: no detectable change.
+- `PACE_LEAD`'s own share (package with and without it):
+  - power 40+ 36 → 26 (p=0.08);
+  - trap 4+ 159 → 176 (p=0.04);
+  - trap negatives 29 → 19 (p=0.05);
+  - duo identical (no lead).
+- Ace zone (`v11co`) matches the earlier `UC_MESH MESH_TEMPO` arms (neg
+  18.0 vs 18.1%). This is the stretch exposure the stretch flags already
+  cover (Part 1).
+
+### The line's alignment (`OL_ALIGN`)
+
+`olalign.py` measures the line at the snap (body centres, yd):
+
+| | NFL | Develop | `OL_ALIGN` |
+|---|---|---|---|
+| Center / guard / tackle / inline end depth | 0.29 / 0.83 / 0.98 / 1.19 | 0.55 / 0.55 / 0.55 / 0.60 | as NFL |
+| Splits C–G / G–T / T–TE | 1.54 / 1.56 / 1.52 | 1.30 each | as NFL |
+| DL depth | 0.92 | 0.90 | 0.90 |
+
+The deeper guard pulls without first dropping straight back (`pullers.py`):
+
+- 0.6 yd over at 0.9 → 0.7 s (NFL 0.6);
+- lateral 0.9 / 1.9 → 1.5 / 2.8 yd at 1.0 / 1.4 s (NFL 2.0 / 3.4).
+
+Outcomes, alone against develop (`v11olgap`, `v11ol`):
+
+- Better: duo 10+ 34 → 58 (p=0.004); wide-zone negatives 83 → 49
+  (p=0.001).
+- Worse, material: counter negatives 66 → 125 (p<0.001); trap 4+ 193 → 154
+  (p=0.004).
+
+Diagnostic:
+
+- The extra counter losses are almost all the play-side end, the kick-out
+  target: first tackler 53 → 101.
+- On the eight largest flips (`deblock.ts`), the kick engages a little
+  earlier (about 2.1 vs 2.2 s). The end then sheds it after about 0.6 s,
+  where develop's kick holds 1 s or more.
+- Mapping the legacy hole landmark onto the actual line (`lineOffset`) did
+  not change it (116 → 125, p=0.28).
+
+This is kick-out contact under realistic geometry, not a landmark constant.
+It belongs to the blocking/contact owners. `OL_ALIGN` stays off. Pass
+protection under it is not measured.
+
+### Remaining
+
+- **Counter's back is still slow** (+0.5 s: 4.0 vs NFL 4.8). Tracked backs
+  run 1.4–1.9 yd inside the puller's hip. Ours run 0.5–0.7 yd off it, or
+  outside it on power. The pullers start late (above) and the back's track
+  follows them closely.
+- **Before the handoff, spacing still cuts the duo and trap back** in
+  32–39% of the last 0.4 s, with the QB nearest. He still takes the ball at
+  3.8–4.0 yd/s (NFL 4.1). QB speed after the handoff is 2.3–2.5 against
+  NFL 2.6–4.0.
+- **Linebackers do not flow with the pull:** about 0 yd/s toward it at
+  1.0–1.4 s, against NFL 1.5–2.0. This is the second-level read that
+  #159/#160 address.
+- **The gap-scheme 40+ tail stays high** (power 6.75%). That is defensive
+  arrival (Parts 4–5).
+
+### Next decision
+
+1. Review `UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD` as one mesh package.
+   It fixes the exchange and the back's first second on power and duo
+   without new failure modes, and the QB-keep count is unchanged.
+2. Hand `OL_ALIGN`'s counter adverse to the blocking/contact owner. The
+   question is the kick-out shed under the tracked alignment. Re-run
+   `v11olgap` after their change.
+3. Next here: the counter back's track relative to the pullers, and the
+   #159/#160 linebacker flow with these flags.

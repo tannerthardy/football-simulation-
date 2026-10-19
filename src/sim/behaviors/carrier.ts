@@ -173,6 +173,27 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
 
+/** Experimental (PACE_LEAD=1, off): following a lead blocker through the
+ * hole sets the back's pace from the lead's observed motion instead of a
+ * fixed 28-40% of top speed. A lead crossing the back's track who will be out
+ * of it by the time the back gets there costs nothing; one the back is
+ * actually following is closed on no faster than the back could still brake
+ * to the lead's own speed at body contact (the same arrival law as track()).
+ * Pullers on counter/power cross the track at about 2-3 yd/s and only ~1 yd/s
+ * along it; the fixed pace held the back near 2.5 yd/s for most of a second
+ * after the handoff, where tracked backs stay at about 5 yd/s, 2-3 yd behind
+ * the puller (2022 tracking, power/counter, handoff +0.5 to +1.0 s). */
+const PACE_LEAD = process.env.PACE_LEAD === '1';
+
+/** PACE_LEAD's pace behind a lead `ahead` yd up the back's track and
+ * `across` yd off it, moving `alongV` / `acrossV` yd/s in that frame. */
+export function leadPace(press: number, ahead: number, across: number, alongV: number, acrossV: number, contact: number, brake: number): number {
+  const room = Math.max(0, ahead - contact), closing = press - Math.max(0, alongV);
+  // Out of the track when the back would reach him: no wait.
+  if (closing <= 0 || Math.abs(across + acrossV * room / closing) > contact) return press;
+  return Math.min(press, Math.max(0, alongV) + Math.sqrt(2 * brake * .5 * room));
+}
+
 export class BallCarrier implements Behavior {
   readonly kind = 'carrier';
   private heading: number | null = null;
@@ -258,6 +279,13 @@ export class BallCarrier implements Behavior {
           // Keep pressing the designed side. Following the guard's current
           // lateral position while he is flat-pulling sends the back into
           // the vacated backside gap.
+          if (PACE_LEAD) {
+            const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
+            const alongV = seen.vel.x * Math.cos(h) + seen.vel.y * Math.sin(h);
+            const acrossV = -seen.vel.x * Math.sin(h) + seen.vel.y * Math.cos(h);
+            const pace = leadPace(press, ahead, across, alongV, acrossV, a.profile.radius + lead.profile.radius, a.profile.brake);
+            return this.command(a, sim, h, pace, cutSkill);
+          }
           return this.command(a, sim, h, a.profile.vmax * (0.28 + 0.12 * (1 - a.r('patience'))), cutSkill);
         }
       }

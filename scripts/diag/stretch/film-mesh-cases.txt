@@ -1,0 +1,18 @@
+# Film cases for the mesh review (Part 6). One selected case first (labelled), then a random
+# ordinary under-center sample drawn with Python random.Random(20261020) before any outcome was
+# looked at. The same cases run in every arm.
+duo/weak/i_pro_21/under3/pair31/77	Selected: AFTER-06 on the previous page (QB and back ran into each other)
+power/weak/ace_12/tite4/pair31/77	Random ordinary
+power/strong/ace_12/wide9/pair11/1	Random ordinary
+power/strong/i_pro_21/tite4/pair31/77	Random ordinary
+counter/strong/i_pro_21/wide9/pair11/77	Random ordinary
+counter/strong/i_pro_21/odd3/pair31/2	Random ordinary
+counter/strong/ace_12/over4/pair11/1	Random ordinary
+duo/strong/i_pro_21/mike1/pair11/3	Random ordinary
+duo/weak/i_pro_21/tite4/pair31/1	Random ordinary
+trap/weak/i_pro_21/mike1/pair11/77	Random ordinary
+trap/weak/i_pro_21/under3/pair11/77	Random ordinary
+iz/weak/ace_12/tite4/pair11/3	Random ordinary
+iz/weak/ace_12/off1/pair31/3	Random ordinary
+oz/strong/ace_12/wide9/pair31/2	Random ordinary
+oz/weak/ace_12/over4/pair31/2	Random ordinary

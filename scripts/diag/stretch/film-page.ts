@@ -3,7 +3,8 @@
  * format) of the same concept families, for side-by-side review.
  * NFL clips are tracking dots: no facing (taken from motion), no ball track
  * (the ball rides with the QB until the labelled handoff, then the carrier).
- * node --import tsx scripts/diag/stretch/film-page.ts OUT.html ARM.json.gz ... [--nfl-seed 20261019] */
+ * node --import tsx scripts/diag/stretch/film-page.ts OUT.html ARM.json.gz ... [--nfl-seed 20261019]
+ *   [--nfl-forms SINGLEBACK,I_FORM] [--nfl-families counter,power,...] */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -19,6 +20,9 @@ import { compactReplayPlays } from '../../replay-telemetry-packing.js';
 const args = process.argv.slice(2);
 const opt = (n: string, d: string) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 2)[1] : d; };
 const nflSeed = Number(opt('--nfl-seed', '20261019'));
+// Optional: only NFL runs from these tracked formations / of these families.
+const nflForms = opt('--nfl-forms', '').split(',').filter(Boolean), nflFamilies = opt('--nfl-families', '').split(',').filter(Boolean);
+const nflForm = nflForms.length ? JSON.parse(readFileSync('out/mechanics/nfl-formation.json', 'utf8')) as Record<string, string> : {};
 const [out, ...armPaths] = args;
 const sha = (b: Buffer | string) => createHash('sha256').update(b).digest('hex');
 type Arm = { label: string; changed: string[]; commit: string; dirtyFiles: string[]; casesSha256: string; plays: Array<Record<string, unknown>> };
@@ -30,7 +34,8 @@ type Common = { id: string; yards: number; players: { side: 'O' | 'D'; group: st
 const ytg = JSON.parse(readFileSync('out/mechanics/nfl-ytg.json', 'utf8')) as Record<string, number>;
 const nflRows: Common[] = gunzipSync(readFileSync('out/mechanics/nfl-plays.jsonl.gz')).toString().split('\n').filter(Boolean)
   .map(l => JSON.parse(l)).filter((r: Common & { kind: string }) => r.kind === 'run' && r.carrier !== null
-    && r.events?.handoff !== undefined && r.players[r.carrier!]?.group === 'RB' && (ytg[r.id] ?? 0) >= 60);
+    && r.events?.handoff !== undefined && r.players[r.carrier!]?.group === 'RB' && (ytg[r.id] ?? 0) >= 60
+    && (!nflForms.length || nflForms.includes(nflForm[r.id])));
 const qbOf = (r: Common) => r.players.findIndex(p => p.side === 'O' && p.group === 'QB');
 const at = (r: Common, i: number, k: number): [number, number] | null => {
   const row = r.xy[Math.min(k, r.xy.length - 1)], x = row[2 * i], y = row[2 * i + 1];
@@ -48,7 +53,7 @@ const families: Array<[string, string, (r: Common) => boolean, number]> = [
 ];
 const rng = new Rng(nflSeed);
 const weight: Record<string, number> = { QB: 220, OL: 312, TE: 250, WR: 200, RB: 215, DL: 300, LB: 240, DB: 198 };
-const nflPlays = families.flatMap(([scheme, name, pick, n]) => {
+const nflPlays = families.filter(([scheme]) => !nflFamilies.length || nflFamilies.includes(scheme)).flatMap(([scheme, name, pick, n]) => {
   const pool = nflRows.filter(pick).sort((a, b) => a.id < b.id ? -1 : 1), chosen: Common[] = [];
   while (chosen.length < n && pool.length) chosen.push(pool.splice(Math.floor(rng.next() * pool.length), 1)[0]);
   return chosen.map((r) => {

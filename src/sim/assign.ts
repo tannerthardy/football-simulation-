@@ -7,7 +7,7 @@ import { timeToReach } from '../physics/reach.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
-import { gapY } from '../playbook/alignment.js';
+import { gapY, lineOffset } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
@@ -190,13 +190,13 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
       aimY = gapY(sim.offAlign, 'B', ps);
       break;
     case 'C':
-      aimY = by + ps * (teOnPlayside ? 4.3 : 3.4);
+      aimY = by + ps * lineOffset(teOnPlayside ? 4.3 : 3.4, teOnPlayside);
       break;
     case 'D':
       aimY = gapY(sim.offAlign, 'D', ps);
       break;
     case 'edge':
-      aimY = by + ps * 8;
+      aimY = by + ps * lineOffset(8, teOnPlayside);
       break;
   }
   const aim = { x: los + 0.6, y: aimY };
