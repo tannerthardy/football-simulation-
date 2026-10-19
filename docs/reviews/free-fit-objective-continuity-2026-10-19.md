@@ -23,7 +23,7 @@ reversal directly to the NFL's 10 Hz position-derived heading measurement.
 
 | Witness | Installed duty and acquired information | First incorrect request |
 | --- | --- | --- |
-| IZ, SD-OLB1 / LB_W, 2.05 s | Conditional outside support executing its inside B-gap insertion. Acquired carrying RB moves left at −1.527 yd/s. Current desired fit is y25.081; old selected point y27.902 is held until 2.163 s. | The newly active lateral planner requests **+9.004 yd/s** against the old point. Raw and final requests agree. At 2.20 s adoption changes the request to **−9.004**. No engagement or direct contact exists at this interval. |
+| IZ, SD-LB1 / LB_W, 2.05 s | Conditional outside support executing its inside B-gap insertion. Acquired carrying RB moves left at −1.527 yd/s. Current desired fit is y25.081; old selected point y27.902 is held until 2.163 s. | The newly active lateral planner requests **+9.004 yd/s** against the old point. Raw and final requests agree. At 2.20 s adoption changes the request to **−9.004**. No engagement or direct contact exists at this interval. |
 | COUNTER2, pair31D-LB1 / LB_W, 0.95 s | Conditional force executing its inside C-gap action. Newly requested point moves right to y31.435, but y29.107 remains selected until 1.091 s. | Planner activates against the old point and requests **−9.004**; adoption at 1.10 requests **+9.004**. This is a second play/assignment geometry with the same mixed-age action. |
 | TOSS, SD-LB3 / LB_M, 1.50–2.40 s | Installed insertion follows consistently acquired left flow. | Sustained negative request is useful flow, not jitter to erase. A mode correction must retain it. |
 
@@ -62,7 +62,8 @@ Initial failures remain in the receipts; no test or accepted assertion was remov
 Candidate code `1885a34b5da24e870ab8719cbb45feea83fa9c8d`; runtime
 `565ddbd0351efa3c4cbeeb6a1c517a7624c643e6d5b5001f7857199463c5f523`.
 Receipts/logs are under ignored `out/free-fit-continuity/` on the worktree.
-Focused command cost is recorded in `focused-receipt.json`; native collection
+Focused checks: 2.198 s; initial failing contract: 1.502 s; typecheck: 9.100 s.
+Native collection
 is serialized by the parent. No full suite, game, roster sweep or NFL download.
 
 **Separate adverse cause:** OZ24's LB_W still loses its flowing target when the
