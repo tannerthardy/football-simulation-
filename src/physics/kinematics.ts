@@ -43,6 +43,10 @@ export interface MoveCommand {
   facing?: number;
   /** 0–1 fraction of max effort (top speed scaling). */
   effort?: number;
+  /** Use available propulsion toward the requested speed, without the ordinary
+   * moderate-speed easing. Drive/cutting/traction limits still apply; this
+   * requests an action, not more capacity or a guaranteed acceleration. */
+  propulsion?: 'full';
   /** Multiplier on cutting ability from technique (route running, elusiveness). */
   cutSkill?: number;
   /** 0–1 demand to turn shoulders through a narrow opening. */
@@ -142,6 +146,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const effort = clamp(cmd.effort ?? 1, 0, 1) * (1 - 0.08 * squeeze);
   const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * squeeze);
   const speed = len(body.vel);
+  const fullDrive = cmd.propulsion === 'full';
 
   // --- desired velocity clamped by directional cap ---
   const dv0 = cmd.vel;
@@ -162,7 +167,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
+    const amax = Math.max(driveAccel(p, speed, GAIT_STEP || fullDrive ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
     ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     const a = Math.hypot(ax, ay);
@@ -196,7 +201,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // GAIT_STEP (experimental, off by default): he pushes as hard as the
     // force-velocity curve allows and levels off over about two steps,
     // instead of approaching every wanted speed on the sprint time constant.
-    const ease = GAIT_STEP
+    // A requested short clearance step can use the same propulsion as a
+    // sprint while retaining a lower speed target and its braking geometry.
+    const ease = fullDrive ? driveAccel(p, speed, p.vmax * fat) * fat * capacity : GAIT_STEP
       ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
       : driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
     if (at > ease) {

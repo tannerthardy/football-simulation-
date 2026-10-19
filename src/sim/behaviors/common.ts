@@ -16,7 +16,7 @@ export function stand(facing?: number): MoveCommand {
 }
 
 /** Move toward a point, arriving at `through` speed (0 = stop). */
-export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: number; facing?: number; cutSkill?: number; effort?: number } = {}): MoveCommand {
+export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: number; facing?: number; cutSkill?: number; effort?: number; propulsion?: 'full' } = {}): MoveCommand {
   const vmax = a.profile.vmax * (opts.speed ?? 1);
   const t = { x: target.x, y: clamp(target.y, 0.3, FIELD_WIDTH - 0.3) };
   return {
@@ -24,6 +24,7 @@ export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: n
     facing: opts.facing,
     cutSkill: opts.cutSkill,
     effort: opts.effort,
+    ...(opts.propulsion ? { propulsion: opts.propulsion } : {}),
   };
 }
 
