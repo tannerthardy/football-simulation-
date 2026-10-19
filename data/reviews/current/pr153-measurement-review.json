@@ -1,0 +1,1189 @@
+{
+  "schema": "pr153-measurement-review-v1",
+  "reviewedHead": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queue": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "packetFilesHashVerified": 140,
+  "sourceHashes": {
+    "f4146275ce7539816bf57b4ed55a0d2be10e48c7": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+    "ee7fb77ad12aa47ccaaf900fd366fbe3ff534f51": "74547446ff76d826d02b248f015333d06792e69853df9474f78c3db5feece3df",
+    "afdd134b1f59f8a08a74a74f19da93bb28208c13": "17908c0c6108b419dc8bcc72756107d90d8a338eb7b18192f9035073ba2d248c",
+    "c8d638086e69961de2ff45d41df0a9871947ca83": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+    "1c578afb38f2eb6fc4886639e63fccc4e79c4354": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8"
+  },
+  "profileFlagsHashes": {
+    "f4146275ce7539816bf57b4ed55a0d2be10e48c7": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "ee7fb77ad12aa47ccaaf900fd366fbe3ff534f51": "cd51f42bb3a58e2d253afd14cdd16b1f578337ba77926c8962e4f64e8378c54f",
+    "afdd134b1f59f8a08a74a74f19da93bb28208c13": "db8206474d60d38aef1bd4c756bb2125a9ded22346073b5b4f5f7f769420c405",
+    "c8d638086e69961de2ff45d41df0a9871947ca83": "bb2ef1a0ece9007c386b74218bc7e55dd4bb53145b15aed59f6c2071e6499dd8",
+    "1c578afb38f2eb6fc4886639e63fccc4e79c4354": "bb2ef1a0ece9007c386b74218bc7e55dd4bb53145b15aed59f6c2071e6499dd8"
+  },
+  "reports": [
+    {
+      "label": "bc",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-bc.txt",
+      "sha256": "1b4e344418a06fe4c2358e2a42e14a208706e2d5e44ccf4836e11d841c2fc888",
+      "fortyPlus": 54,
+      "tenPlus": 112,
+      "twentyPlus": 64
+    },
+    {
+      "label": "cap",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-cap.txt",
+      "sha256": "51f536dd95e137225607e701bba8150e12e18efc9a7928620423775ed41b0322",
+      "fortyPlus": 48,
+      "tenPlus": 286,
+      "twentyPlus": 75
+    },
+    {
+      "label": "d0",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-d0.txt",
+      "sha256": "26cdf1c7a8b2eb124823ae6d97c0f915b23e2fdae75c85509db4d2d12e944c98",
+      "fortyPlus": 45,
+      "tenPlus": 121,
+      "twentyPlus": 60
+    },
+    {
+      "label": "d0gap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-d0gap.txt",
+      "sha256": "7a5a75eef0f7a697551c7bee29a55e6e204f79e2e609c230c5e6a677c3dcb5d6",
+      "fortyPlus": 64,
+      "tenPlus": 125,
+      "twentyPlus": 81
+    },
+    {
+      "label": "d0tf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-d0tf.txt",
+      "sha256": "a462a66023e1b676863e5111595d32af990c254df4adeecfafabcf0e98ee6fdf",
+      "fortyPlus": 80,
+      "tenPlus": 178,
+      "twentyPlus": 105
+    },
+    {
+      "label": "fl",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-fl.txt",
+      "sha256": "406b916b0e3877d73f6be0a62bb533f0cb58aae145bf62f9ec20a28e91bc5c1f",
+      "fortyPlus": 32,
+      "tenPlus": 73,
+      "twentyPlus": 42
+    },
+    {
+      "label": "g5",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-g5.txt",
+      "sha256": "caac0d766a30971f7f408d796ec8bb20fef8c4c59ea0e81852881ca30118f838",
+      "fortyPlus": 44,
+      "tenPlus": 127,
+      "twentyPlus": 56
+    },
+    {
+      "label": "gsgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-gsgap.txt",
+      "sha256": "59ecd754a395cf4c02bb2c7110896a21ec69dea20d52d4b4392219adccf5b6d8",
+      "fortyPlus": 98,
+      "tenPlus": 191,
+      "twentyPlus": 130
+    },
+    {
+      "label": "id0",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-id0.txt",
+      "sha256": "852922a5b4dc76b8aac9b648d85bc0a1f4b00f4360b23006d3a151070f7f8cbd",
+      "fortyPlus": 45,
+      "tenPlus": 121,
+      "twentyPlus": 60
+    },
+    {
+      "label": "m1",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-m1.txt",
+      "sha256": "52c955814e087ffd0b0640c1bde3e8c889deaa02d974499d0a7a47be734c3e28",
+      "fortyPlus": 38,
+      "tenPlus": 90,
+      "twentyPlus": 46
+    },
+    {
+      "label": "mt",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mt.txt",
+      "sha256": "49ec072b2595861f6389bd620b9d210a46af1baf82df197e08c9d7930a44afa4",
+      "fortyPlus": 21,
+      "tenPlus": 61,
+      "twentyPlus": 25
+    },
+    {
+      "label": "mt2tf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mt2tf.txt",
+      "sha256": "3f334764cc9661210394cc41eb9cad627a7d43944765924217048992b2b35b9d",
+      "fortyPlus": 48,
+      "tenPlus": 166,
+      "twentyPlus": 76
+    },
+    {
+      "label": "mtr",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mtr.txt",
+      "sha256": "16cf0694a6d7db2618f504f76cef4fad5fa33506d675b86227e18fdab2631a6a",
+      "fortyPlus": 31,
+      "tenPlus": 75,
+      "twentyPlus": 36
+    },
+    {
+      "label": "mtrc",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mtrc.txt",
+      "sha256": "a6f5769ee957cbdcc223b0f91baf1998b2d3459657d592c36c2a912bd96d43fe",
+      "fortyPlus": 39,
+      "tenPlus": 237,
+      "twentyPlus": 50
+    },
+    {
+      "label": "mtrgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mtrgap.txt",
+      "sha256": "a388f99b22c5030cbe37a07eb57a43f061325c7b40385683c939d7be1a9d30fd",
+      "fortyPlus": 86,
+      "tenPlus": 164,
+      "twentyPlus": 104
+    },
+    {
+      "label": "mtrtf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-mtrtf.txt",
+      "sha256": "8456403b10c23b402c220069c7f3f9513cf9ae08e85fc821fd5ab0582fab9bae",
+      "fortyPlus": 62,
+      "tenPlus": 160,
+      "twentyPlus": 77
+    },
+    {
+      "label": "pbgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-pbgap.txt",
+      "sha256": "236339b3a7fbbba5d313f322b921f0031c77a02f2d6a7d881847eba281c9ac69",
+      "fortyPlus": 80,
+      "tenPlus": 164,
+      "twentyPlus": 98
+    },
+    {
+      "label": "pcgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-pcgap.txt",
+      "sha256": "142995305f80cb210c90a44e9bd7aff973211e330d8abc417bffca67d376253d",
+      "fortyPlus": 81,
+      "tenPlus": 165,
+      "twentyPlus": 99
+    },
+    {
+      "label": "pfgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-pfgap.txt",
+      "sha256": "0566ded6907d831e7689eb5e2813af086e4b6428a0dce9f235bf01d0e0e25b23",
+      "fortyPlus": 85,
+      "tenPlus": 160,
+      "twentyPlus": 98
+    },
+    {
+      "label": "ppgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-ppgap.txt",
+      "sha256": "39417c4ee56119de26ef2d81383d114b217e2e094657abd73cc26cf95b1b81c8",
+      "fortyPlus": 77,
+      "tenPlus": 160,
+      "twentyPlus": 94
+    },
+    {
+      "label": "psgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-psgap.txt",
+      "sha256": "d14d3ea3c3855d2c5ec61af6fbdbf17bc68ac32a95509dae4ec544941daabb43",
+      "fortyPlus": 72,
+      "tenPlus": 146,
+      "twentyPlus": 87
+    },
+    {
+      "label": "r3",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-r3.txt",
+      "sha256": "5dfa7dc3dd5acad52ac9db091f679eabcdee0757430cab59774dca9ffae255c2",
+      "fortyPlus": 35,
+      "tenPlus": 84,
+      "twentyPlus": 47
+    },
+    {
+      "label": "r3c",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-r3c.txt",
+      "sha256": "2776b947941471c65616ea1a5c5327dbd11a03ac3e5e9dbe6c83786fc47d5196",
+      "fortyPlus": 33,
+      "tenPlus": 218,
+      "twentyPlus": 44
+    },
+    {
+      "label": "r3cr",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-r3cr.txt",
+      "sha256": "ed94cd519bc48934b1cbf9009a0f3e8a33289f1e8aff7ba48cabc8308e3d6790",
+      "fortyPlus": 31,
+      "tenPlus": 157,
+      "twentyPlus": 41
+    },
+    {
+      "label": "rec",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rec.txt",
+      "sha256": "7130db7b9650ccd95b0d040ee21a76cfcdd151f831c77de7270ccfa8e5337bb9",
+      "fortyPlus": 33,
+      "tenPlus": 80,
+      "twentyPlus": 45
+    },
+    {
+      "label": "rec2",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rec2.txt",
+      "sha256": "87a4c3ec431e460e82d74a41cfbc138471e1ebd92ba040257c0990855483d955",
+      "fortyPlus": 28,
+      "tenPlus": 84,
+      "twentyPlus": 37
+    },
+    {
+      "label": "rec2gap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rec2gap.txt",
+      "sha256": "73ffaa29bb248a8d5928f143907c56bcbb41d99b012e2f2ac418c5a9bec5f836",
+      "fortyPlus": 60,
+      "tenPlus": 119,
+      "twentyPlus": 81
+    },
+    {
+      "label": "rec2tf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rec2tf.txt",
+      "sha256": "f1a6c523df3e2d8089a304e2e6366aab6913c3a11394a293f1538d82f7339917",
+      "fortyPlus": 64,
+      "tenPlus": 144,
+      "twentyPlus": 80
+    },
+    {
+      "label": "recgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-recgap.txt",
+      "sha256": "c7b19be27194262e5f3c1cd6828aff47cc219633c8e64d358884eef3078b62fd",
+      "fortyPlus": 60,
+      "tenPlus": 119,
+      "twentyPlus": 81
+    },
+    {
+      "label": "rectf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rectf.txt",
+      "sha256": "9b458c6cdb3027392b0d7ef5657d704b1f664a4db43b35d6d860afc10838df61",
+      "fortyPlus": 55,
+      "tenPlus": 142,
+      "twentyPlus": 77
+    },
+    {
+      "label": "rl",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rl.txt",
+      "sha256": "aa1ea5c6a0eea92d5766f787f3aac894f4d3c372145d70e42cf10c6b9178dfdb",
+      "fortyPlus": 35,
+      "tenPlus": 68,
+      "twentyPlus": 38
+    },
+    {
+      "label": "rlc",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-rlc.txt",
+      "sha256": "4282c2e4895a8ac4b8490418d735b6ebc6001de01156a2ef3089386adc4a4e30",
+      "fortyPlus": 39,
+      "tenPlus": 73,
+      "twentyPlus": 41
+    },
+    {
+      "label": "sp",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-sp.txt",
+      "sha256": "bbc3b9280976c8e2fc022849ac3310ac3208d8e0f078ebdb16de2d06367624a3",
+      "fortyPlus": 26,
+      "tenPlus": 74,
+      "twentyPlus": 30
+    },
+    {
+      "label": "sp0",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-sp0.txt",
+      "sha256": "25de8a39a5abc779e9b4dd67f6f250c65046e385991c471db850c779a5be48ca",
+      "fortyPlus": 51,
+      "tenPlus": 127,
+      "twentyPlus": 61
+    },
+    {
+      "label": "spc",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-spc.txt",
+      "sha256": "8bd411ff43e3417bef375ff99aeb07a63fba14038add606960eed82e4ec08f72",
+      "fortyPlus": 33,
+      "tenPlus": 239,
+      "twentyPlus": 43
+    },
+    {
+      "label": "spcgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-spcgap.txt",
+      "sha256": "12eb9c0bde9da3a63a784bdb3fcc38494f74a6438f8e383b9aeaca2f785898d9",
+      "fortyPlus": 101,
+      "tenPlus": 498,
+      "twentyPlus": 155
+    },
+    {
+      "label": "spgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-spgap.txt",
+      "sha256": "ec5054293618d3d223a727bf7225977bcd68385c4a0aa4365dfc6dbfee27514f",
+      "fortyPlus": 78,
+      "tenPlus": 163,
+      "twentyPlus": 95
+    },
+    {
+      "label": "sptf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-sptf.txt",
+      "sha256": "78e0fc657c861f0b054d5314d94ee9e4a4843a1b40e1af450757f3958178eff8",
+      "fortyPlus": 45,
+      "tenPlus": 150,
+      "twentyPlus": 71
+    },
+    {
+      "label": "te2",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/report-te2.txt",
+      "sha256": "b5397d0da42a4ba28917b67c00364c1c2000b6a8f37b78c9d5bb34e1dabebe0d",
+      "fortyPlus": 27,
+      "tenPlus": 74,
+      "twentyPlus": 30
+    },
+    {
+      "label": "ck",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-ck.txt",
+      "sha256": "210abbad95c9fb06e41895c53f51bb2e56f491e5bf88c48ce58169ec4603df59",
+      "fortyPlus": 49,
+      "tenPlus": 234,
+      "twentyPlus": 66
+    },
+    {
+      "label": "ctf",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-ctf.txt",
+      "sha256": "f39321ba6159d1e1c76255477d6dbef38512840396fd61205ffefa084d6c685c",
+      "fortyPlus": 45,
+      "tenPlus": 272,
+      "twentyPlus": 63
+    },
+    {
+      "label": "full",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-full.txt",
+      "sha256": "1b6abfeb13dc90529a881ae621fe3ced320a5aaf4ec44374404e6c67c2f5c620",
+      "fortyPlus": 45,
+      "tenPlus": 248,
+      "twentyPlus": 66
+    },
+    {
+      "label": "fullg",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-fullg.txt",
+      "sha256": "f4849340d05c677ed877f01c1938517b3a1fea2d2eea8d6d0a2a57e99963fae8",
+      "fortyPlus": 47,
+      "tenPlus": 236,
+      "twentyPlus": 70
+    },
+    {
+      "label": "gc5",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-gc5.txt",
+      "sha256": "4216575b3f8bf153cabe92ef8126993b74a5a8d6a30ee0fa09d43067a85dcb1f",
+      "fortyPlus": 50,
+      "tenPlus": 264,
+      "twentyPlus": 63
+    },
+    {
+      "label": "mt3",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-mt3-handoffgate.txt",
+      "sha256": "2039a9a81d110476bfa73f81787553aabb99921d97d77a3a17b4aeb33cab0d69",
+      "fortyPlus": 31,
+      "tenPlus": 75,
+      "twentyPlus": 36
+    },
+    {
+      "label": "mt3tf",
+      "attempted": 1800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-mt3tf-handoffgate.txt",
+      "sha256": "e57bc6373f2f822d00d4a2543bf9b36546a834c4965eacb593e4e285e170eeb6",
+      "fortyPlus": 54,
+      "tenPlus": 161,
+      "twentyPlus": 80
+    },
+    {
+      "label": "nocap",
+      "attempted": 1200,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-nocap.txt",
+      "sha256": "926c5e291371cef7c62a7e5c8613acd71705ff8992fb99f0f8eeb27da7a7eb4d",
+      "fortyPlus": 42,
+      "tenPlus": 97,
+      "twentyPlus": 54
+    },
+    {
+      "label": "pkgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-pkgap.txt",
+      "sha256": "7fd762388ecb83c7d5ae5357eaaeeaea48aea1a28ed7b5d39df2dba76ef73d88",
+      "fortyPlus": 73,
+      "tenPlus": 140,
+      "twentyPlus": 86
+    },
+    {
+      "label": "ptgap",
+      "attempted": 1600,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-ptgap.txt",
+      "sha256": "6690a998aec6ed81d7d9619a9c8dab84efce1a3cf9a4fa53dfbba0c3532b8af3",
+      "fortyPlus": 66,
+      "tenPlus": 149,
+      "twentyPlus": 82
+    },
+    {
+      "label": "rtf",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-rtf.txt",
+      "sha256": "ef38febc98744055546b8ea6325f1526772e20674ed9bedf2c5888ab10c33f09",
+      "fortyPlus": 24,
+      "tenPlus": 69,
+      "twentyPlus": 29
+    },
+    {
+      "label": "te",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-te.txt",
+      "sha256": "2164b85a8a45750feb7b7d06a8c1ab3fd4145900521efaba153e321bd3ed7462",
+      "fortyPlus": 29,
+      "tenPlus": 77,
+      "twentyPlus": 36
+    },
+    {
+      "label": "tf",
+      "attempted": 800,
+      "errors": 0,
+      "nonterminal": 0,
+      "path": "docs/reviews/run-game-v3/superseded/report-tf.txt",
+      "sha256": "c48253d9c0883129753fb4dc876253cc17402ae1a1310f7bee77f19e7df9028d",
+      "fortyPlus": 18,
+      "tenPlus": 68,
+      "twentyPlus": 25
+    }
+  ],
+  "d0Id0FullTextByteIdentity": false,
+  "rawAccess": [
+    {
+      "path": "out/mechanics/nfl-plays.jsonl.gz",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/mechanics/nfl-ytg.json",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/mechanics/nfl-formation.json",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/open-field/all/d0.jsonl.gz",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/open-field/all/sp.jsonl.gz",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/open-field/all/mt2tf.jsonl.gz",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    },
+    {
+      "path": "out/open-field/all/spgap.jsonl.gz",
+      "researchCheckout": false,
+      "originalMeasurementCheckout": false,
+      "acceptedReviewCheckout": false
+    }
+  ],
+  "operators": [
+    {
+      "path": "scripts/mechanics/nfl_bdb2025.py",
+      "sha256": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+    },
+    {
+      "path": "scripts/mechanics/metrics.py",
+      "sha256": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0"
+    },
+    {
+      "path": "scripts/diag/open-field/trace.ts",
+      "sha256": "760c8ee85aeab5b2ae25f0530b7e4d24da77c742b4c862be94dc09a4f6b9a275"
+    },
+    {
+      "path": "scripts/diag/open-field/report.py",
+      "sha256": "ec570ccc96db8b3ab66b4c0c0e5bc1c089bbb5fc7bb42b2f022edce69b8bac1e"
+    },
+    {
+      "path": "scripts/diag/open-field/mech.py",
+      "sha256": "2162daf1e4571f07ef4ba3b0d5c372dd6b84581aba41399966851953b3ace13b"
+    },
+    {
+      "path": "scripts/diag/open-field/run.sh",
+      "sha256": "8303f2bdd4432c173f3eff33795f4558dab0bd225a0c04d03e550274c5af84d7"
+    },
+    {
+      "path": "scripts/diag/open-field/common.sh",
+      "sha256": "1288e16e5be97513bbe962ce7a8fe0d66d7bd6ccd2f0d10d3b6074dc3bf1c171"
+    },
+    {
+      "path": "scripts/diag/zone-lab/lab.ts",
+      "sha256": "bfbb1c6a20faddab93fd39a7db47beb201b6f41a94b2ab1b84c3aa0e1846afbf"
+    },
+    {
+      "path": "scripts/diag/stretch/shape.py",
+      "sha256": "851de5f754df936753bd13ba53b52f2f91777dbe8ab07bbb1fa0145d3733ed5f"
+    },
+    {
+      "path": "scripts/diag/stretch/release.py",
+      "sha256": "349cb35eb424b575d3de4866d04d4d5a9a93d5d5168b060a6e8610dec4779f2b"
+    },
+    {
+      "path": "scripts/diag/stretch/lbblock.py",
+      "sha256": "42342c6ed16eb29c31d33427408bd5f47a8cebb4d73de7e8bc8215c667efa66a"
+    },
+    {
+      "path": "scripts/diag/stretch/lbblocks.py",
+      "sha256": "424ea654cbc4d89b8bfdd6ca0834ebb7ea3bf517362aa3f28e5d2b0c9ec1b825"
+    },
+    {
+      "path": "scripts/diag/stretch/lbpass2.py",
+      "sha256": "dfc2fe297e11160fa0eaf89235c696b14a17ef35d65d3fb57c69cb73c6f8c54c"
+    },
+    {
+      "path": "scripts/diag/stretch/dlconvert.py",
+      "sha256": "49af006addbe9097c89467ef78afc02355f88a8b9b38310fc0257af2a6039bbc"
+    },
+    {
+      "path": "scripts/diag/stretch/openfield.py",
+      "sha256": "0eb56325f46b3b2bba4d0560783fa47515ea389e4cc28f3c5e0e1d8e001ae07e"
+    },
+    {
+      "path": "scripts/diag/stretch/pursuit.py",
+      "sha256": "5cca408d4e4b8a90657a9a8cb2990350e31f7be93a853011d78f9d7bd1c3f514"
+    },
+    {
+      "path": "scripts/diag/stretch/bondend.ts",
+      "sha256": "fef170c00863b207d0adb987cc65580ce1aa9cc10ce6fafb4e110e28c9abdcf9"
+    },
+    {
+      "path": "scripts/diag/stretch/rbspeed.py",
+      "sha256": "5e64f3baba7983ef303cec41714754075fc4b53512003a5de298b5f6f21703c8"
+    },
+    {
+      "path": "scripts/diag/stretch/meshgeo.py",
+      "sha256": "f302931fb07075a03400d5287768c7496d04b00c8b87d23f7ba7bc0286d00c7e"
+    },
+    {
+      "path": "scripts/diag/stretch/frontstate.ts",
+      "sha256": "2326f2058fb904a58ace75c86518465b894844e3ae8044158dacaf0cffab9bc9"
+    },
+    {
+      "path": "scripts/diag/stretch/relatch.ts",
+      "sha256": "e16d066472e1e84a6360853522c1deeb61ed626eb7cf2f477d5a499b5e4b32f8"
+    },
+    {
+      "path": "scripts/baseline.mjs",
+      "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+    }
+  ],
+  "committedNFLReference": {
+    "sha256": "fba67b1fa09b2576e01df303bd74e3e64040dba547882d100e343cfac6b893c4",
+    "plays": {
+      "run": 5462,
+      "pass": 9713,
+      "air": 0
+    },
+    "contactElapsed": {
+      "n": 5262,
+      "mean": 1.626,
+      "p10": 0.7,
+      "p25": 0.9,
+      "p50": 1.4,
+      "p75": 2.1,
+      "p90": 2.9
+    },
+    "archive": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3"
+  },
+  "newEngineTicks": 0,
+  "newStudies": 0,
+  "rawNFLDownloaded": false,
+  "d0Id0EqualAfterHeaderLabelNormalization": true,
+  "populationAccounting": {
+    "NFLAllOutcomeRows": 6223,
+    "NFL60OutcomeRows": 2633,
+    "NFLRBHandoffMechanismRows": 5462,
+    "NFLContactedRBHandoffRows": 5262,
+    "NFL60ConceptRowsPrinted": {
+      "INSIDE ZONE": 552,
+      "OUTSIDE ZONE": 776,
+      "COUNTER": 172,
+      "MAN": 413,
+      "POWER": 237,
+      "TRAP": 50
+    },
+    "NFL60ZoneLabelsCombined": 1328,
+    "NFL60GapComparisonLabelsCombined": 872,
+    "NFL60OutsideSixPrintedConceptLabels": 433,
+    "note": "Counts taken from saved report-d0/report-spgap and committed reference. Raw membership and sidecar joins unavailable; not independently remeasured.",
+    "NFLShotgunMeshProxyRows": {
+      "insideZone": 779,
+      "outsideZone": 232,
+      "crossFacePercent": {
+        "insideZone": 7,
+        "outsideZone": 28
+      },
+      "qualification": "Geometry proxy in selected labeled formation/concept cohorts, not universal own-side mesh requirement."
+    }
+  },
+  "keyArmTailCounts": [
+    {
+      "label": "d0",
+      "attempted": 1200,
+      "fortyPlus": 45,
+      "tenPlus": 121,
+      "twentyPlus": 60
+    },
+    {
+      "label": "id0",
+      "attempted": 1200,
+      "fortyPlus": 45,
+      "tenPlus": 121,
+      "twentyPlus": 60
+    },
+    {
+      "label": "mt2tf",
+      "attempted": 1800,
+      "fortyPlus": 48,
+      "tenPlus": 166,
+      "twentyPlus": 76
+    },
+    {
+      "label": "mtr",
+      "attempted": 1200,
+      "fortyPlus": 31,
+      "tenPlus": 75,
+      "twentyPlus": 36
+    },
+    {
+      "label": "mtrc",
+      "attempted": 1200,
+      "fortyPlus": 39,
+      "tenPlus": 237,
+      "twentyPlus": 50
+    },
+    {
+      "label": "mtrgap",
+      "attempted": 1600,
+      "fortyPlus": 86,
+      "tenPlus": 164,
+      "twentyPlus": 104
+    },
+    {
+      "label": "sp",
+      "attempted": 1200,
+      "fortyPlus": 26,
+      "tenPlus": 74,
+      "twentyPlus": 30
+    },
+    {
+      "label": "sp0",
+      "attempted": 1200,
+      "fortyPlus": 51,
+      "tenPlus": 127,
+      "twentyPlus": 61
+    },
+    {
+      "label": "spc",
+      "attempted": 1200,
+      "fortyPlus": 33,
+      "tenPlus": 239,
+      "twentyPlus": 43
+    },
+    {
+      "label": "spcgap",
+      "attempted": 1600,
+      "fortyPlus": 101,
+      "tenPlus": 498,
+      "twentyPlus": 155
+    },
+    {
+      "label": "spgap",
+      "attempted": 1600,
+      "fortyPlus": 78,
+      "tenPlus": 163,
+      "twentyPlus": 95
+    },
+    {
+      "label": "sptf",
+      "attempted": 1800,
+      "fortyPlus": 45,
+      "tenPlus": 150,
+      "twentyPlus": 71
+    }
+  ],
+  "algorithmFacts": {
+    "speedHalfWindowSeconds": 0.2,
+    "positionQuantizationYards": 0.1,
+    "proximityReleaseRadiusYards": 1.2,
+    "secondLevelEpisodeStartYards": 1,
+    "secondLevelEpisodeKeepYards": 1.5,
+    "refPursuitYards": 10,
+    "pursuitFortyWindowMaxDepth": 50,
+    "relatchThresholdDtMultiplier": 2.1,
+    "nativeDtSeconds": 0.05,
+    "relatchThresholdSeconds": 0.105,
+    "shortWindowAdmissionIssue": "release.py/lbblocks.py compare k(cross+1) after k clamps to recording; can admit an unavailable +1s sample. pullers.py checks clamped k15>=frames, which cannot reject truncated recordings. Existing raw affected counts unknown."
+  },
+  "reviewDateUTC": "2026-10-19",
+  "reviewBranch": "codex/measurement-pr153-review",
+  "reviewScope": "Measurement validity and existing artifact provenance only; no controller/physics approval.",
+  "disposition": {
+    "descriptiveEvidence": "usable with explicit corrections and reported-versus-verified distinctions",
+    "NFLLabelEquivalence": "not established",
+    "continuousHoldComparison": "not established",
+    "dominantCauseRanking": "not established",
+    "perArmReproducibility": "incomplete",
+    "behaviorVerdict": "not given"
+  },
+  "packet": {
+    "commit": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+    "path": "data/reviews/current/run-game-v3-review-intake.json",
+    "checkedFileCount": 140
+  },
+  "evidenceClasses": {
+    "sourceConfirmed": "Definitions and static identities from pinned accessible source",
+    "textChecked": "Saved report headers, printed ratios, text equality and committed reference values; no new raw membership census",
+    "authorReported": "Per-play flags-off equality, actual producing settings, test execution, mechanism cells without shared raw rows",
+    "unsupportedInference": "Event equivalence, physical force attribution, continuous NFL hold duration, dominant causal ranking, statistical equivalence"
+  },
+  "supportedObservations": [
+    {
+      "claim": "Committed NFL aggregate contact-to-selected-ending median 1.4 s",
+      "n": 5262,
+      "evidenceClass": "textChecked",
+      "notEstablished": "Continuous grip duration or equivalence with sim events"
+    },
+    {
+      "claim": "Pooled selected-grid TVD changes",
+      "ace": [
+        0.161,
+        0.159
+      ],
+      "zoneTransfer": [
+        0.145,
+        0.135
+      ],
+      "gap": [
+        0.125,
+        0.118
+      ],
+      "evidenceClass": "textChecked",
+      "notEstablished": "Representative NFL mixture or causal football improvement"
+    },
+    {
+      "claim": "All saved report headers state zero errors and nonterminal cases",
+      "reportCount": 52,
+      "evidenceClass": "textChecked",
+      "notEstablished": "Complete unique attempted-case and censor census"
+    },
+    {
+      "claim": "d0/id0 text equal after first header label normalization",
+      "evidenceClass": "textChecked",
+      "notEstablished": "Per-case position or outcome equality without raw rows"
+    },
+    {
+      "claim": "Named package handoff motion estimates",
+      "underCenterIZSim": [
+        2.24,
+        4.37
+      ],
+      "underCenterIZNFL": 4.43,
+      "shotgunIZSim": [
+        1.25,
+        2.3
+      ],
+      "shotgunIZNFL": 3.82,
+      "evidenceClass": "textChecked",
+      "notEstablished": "Isolated effect of each mesh hunk or clean stored-velocity measurement"
+    }
+  ],
+  "wordingCorrections": [
+    {
+      "id": "M1",
+      "reportLines": [
+        295,
+        350,
+        610,
+        616
+      ],
+      "replace": "contact to whistle / NFL hold timing",
+      "with": "Elapsed time from source-specific first contact to selected endpoint; NFL fallback frame is not a known ending. Sim body collision and grasp emissions do not validate provider-label equivalence."
+    },
+    {
+      "id": "M2",
+      "operator": "scripts/diag/stretch/bondend.ts:32",
+      "replace": "95-99% of holds fall after 0.3 s / continuous hold duration",
+      "with": "One row per selected play with a sampled bond; baseline 357 rows, 95-98% non-up while bonded by depth, conditional first-bond-to-non-up medians .30/.30/.35 s. Start is not reset after release; terminal/censor counts missing."
+    },
+    {
+      "id": "M3",
+      "operator": "scripts/mechanics/metrics.py:248",
+      "replace": "clean entry velocity / identified first tackler",
+      "with": "Centered differentiated motion from .1yd positions over +/- .2s, including post-contact data; nearest defender is a stand-in. Not stored native velocity or provider speed."
+    },
+    {
+      "id": "M4",
+      "operators": [
+        "scripts/diag/stretch/release.py",
+        "scripts/diag/stretch/lbblocks.py",
+        "scripts/diag/trench/timeline.py"
+      ],
+      "replace": "NFL actual engagement/block success",
+      "with": "Radius-defined proximity or same-player proximity episode, with operator-specific membership, duration and censoring; distinct from native sim reps."
+    },
+    {
+      "id": "M5",
+      "reportLines": [
+        462,
+        463
+      ],
+      "replace": "all instant re-latches vanish, within one tick",
+      "with": "Specific same-blocker categories disappear; seven other-blocker DL repeats remain. Event criterion is <.105s at dt .05, not strictly one tick."
+    },
+    {
+      "id": "M6",
+      "operators": [
+        "scripts/diag/stretch/openfield.py",
+        "scripts/diag/stretch/lbpass2.py"
+      ],
+      "replace": "actual contacts, broken holds, slowing or being carried through",
+      "with": "Per-defender distance encounters/closest approaches and endpoint/motion classifications; slowed is a residual without a deceleration requirement."
+    },
+    {
+      "id": "M7",
+      "operator": "scripts/diag/stretch/pursuit.py:38",
+      "replace": "intercept before +40 from LOS proves adequate structure",
+      "with": "At REF10 test extends to +50 from LOS under a retrospective straight-line proxy with whole-play peak speed and ending-truncated future path."
+    },
+    {
+      "id": "M8",
+      "operator": "scripts/diag/stretch/shape.py:10",
+      "replace": "NFL Duo and whole-sim realism improvement",
+      "with": "Duo vs PFF MAN family; pooled TVD compares a fixed selected lab mix to all NFL60 rows. Preserve concept-specific adverse distances."
+    },
+    {
+      "id": "M9",
+      "reportLines": [
+        465,
+        466,
+        631
+      ],
+      "replace": "within noise / 10-30 events per arm",
+      "with": "Show actual tail counts. Uncertainty and paired transitions not estimated; several arms have 40-100 tail events, while NFL concept tails have 1-4."
+    },
+    {
+      "id": "M10",
+      "reportLines": [
+        595,
+        616,
+        641,
+        648
+      ],
+      "replace": "physics is root/largest cause, controller read excluded, structure matches",
+      "with": "Selected observations motivate hypotheses; packages, proximity, survivor conditioning and all-body counterfactuals do not isolate or rank causes."
+    },
+    {
+      "id": "M11",
+      "operator": "scripts/diag/stretch/bondend.ts:40",
+      "replace": "grasp capacity or aggregate felt force equals actual grip tension",
+      "with": "Capacity is a bound; felt is aggregate. No isolated per-joint realized force attribution or NFL force measurement."
+    }
+  ],
+  "sampleValidity": {
+    "crossPlusOneAdmission": "release.py:20 and lbblocks.py:24 test already-clamped frame index; short sim recording can be reused as +1s. Affected counts unknown without old raw rows.",
+    "NFLMissingness": "Initial missing sample rejected; later player gaps forward-filled with no validity mask in common output.",
+    "identity": "NFL indices stable within play, IDs omitted from common players; original NFL ID/index map needed for identity joins; nearest defender not labeled tackler.",
+    "censoring": "NFL fallback last frame not flagged as unknown ending; lbblocks ongoing episodes duration lower bounds without censor marker; bondend cap lacks terminal counts. Main report headers separately report zero 20s nonterminals.",
+    "time": "NFL100ms common frames; native sim50ms, common100ms may omit final50ms. Provider frame label and sim interval emission not validated equivalents.",
+    "positionGroups": "NFL OLB maps to LB, sim EDGE to DL; alignment and role labels not interchangeable."
+  },
+  "perConceptTVD": {
+    "aceIZ": [
+      0.119,
+      0.171
+    ],
+    "aceOZ": [
+      0.223,
+      0.17
+    ],
+    "aceWZ": [
+      0.216,
+      0.252
+    ],
+    "gapPower": [
+      0.178,
+      0.19
+    ],
+    "gapTrap": [
+      0.137,
+      0.197
+    ]
+  },
+  "tailQualifications": {
+    "NFL60FortyGivenTwenty": [
+      31,
+      79
+    ],
+    "spFortyGivenTwenty": [
+      26,
+      30
+    ],
+    "NFLConceptFortyEventsInferredFromRoundedRates": {
+      "INSIDE ZONE": 1,
+      "POWER": 3,
+      "TRAP": 2,
+      "MAN": 4
+    },
+    "pairedTransitionCountsAccessible": false,
+    "formalUncertaintyAccessible": false
+  },
+  "provenanceGaps": [
+    {
+      "arms": [
+        "d0",
+        "id0"
+      ],
+      "available": "1200-row aggregate reports; equal normalized printed text",
+      "missing": [
+        "producing source and dirty patch",
+        "resolved environment",
+        "per-case identity and position hashes"
+      ]
+    },
+    {
+      "arms": [
+        "rec2",
+        "mtr",
+        "sp",
+        "mtrc",
+        "spc",
+        "sp0",
+        "mtrgap",
+        "spgap",
+        "mt2tf",
+        "sptf"
+      ],
+      "available": "named flag recipes, static code checkpoints, aggregate reports",
+      "missing": [
+        "arm-to-producing-source binding",
+        "resolved flags and World/dt settings",
+        "ordered case/input/roster/seed hashes",
+        "exporter and measurement version binding",
+        "raw trace URLs/checksums"
+      ]
+    },
+    {
+      "arms": [
+        "mtrtf",
+        "mt2tf"
+      ],
+      "available": "report states before versus after shotgun spot code revision",
+      "missing": [
+        "separate producing source snapshots and receipts"
+      ],
+      "constraint": "Same nominal flags do not mean same code."
+    },
+    {
+      "arms": [
+        "superseded ZONE_TE",
+        "mt3-handoffgate",
+        "mt3tf-handoffgate",
+        "ptgap",
+        "pkgap"
+      ],
+      "available": "historical reports; README explicitly records absent/reverted producing code",
+      "missing": [
+        "original commit or patch snapshot"
+      ],
+      "constraint": "Final branch cannot reproduce these arms as-is."
+    },
+    {
+      "arms": [
+        "DEF_GETOFF=.5",
+        "GAIT_STEP/PULL diagnostics",
+        "BOND_ARM diagnostics"
+      ],
+      "available": "source supports research path, selected text receipts",
+      "missing": [
+        "actual raw-launcher command and resolved settings",
+        "diagnostic/helper version",
+        "terminal/censor accounting where not emitted"
+      ],
+      "constraint": "Raw scripts inherit ambient settings; unchanged baseline override parser rejects DEF_GETOFF=.5."
+    },
+    {
+      "arms": [
+        "NFL reference"
+      ],
+      "available": "aggregate and original archive SHA256",
+      "missing": [
+        "converted-row hash",
+        "ytg/formation sidecar generation and hashes",
+        "join coverage/exclusions",
+        "producing extractor and measurement pins"
+      ]
+    }
+  ],
+  "minimumExistingArtifactHandoff": [
+    "Manifest per reused arm: producing commit/dirty patch, relevant resolved settings, runtime/World/dt, exact ordered case IDs and input hashes/seeds, shard/error/censor counts, operator hashes, artifact URLs/sizes/SHA256s.",
+    "Existing selected mesh and re-latch witness/control, plus adverse power/gun examples, with stable identities, stored velocities, event reasons and known-ending/censor status.",
+    "Recover recorded intermediate code/receipts where available; otherwise state unavailable. No recollection or rerun requested."
+  ],
+  "staticVerificationRecipe": {
+    "packet": "For each packet.files entry at reviewedHead, assert byte length and SHA256.",
+    "sourceFingerprint": "For each listed pin, git archive PIN src; sort file paths; SHA256 of path + NUL + bytes + NUL for each file.",
+    "flagFingerprint": "SHA256 of config/baseline.json flags encoded as sorted compact JSON. These are static config hashes, not resolved-run hashes.",
+    "reports": "Parse report header counts and explicit 40+/10+,40+/20+ numerators/denominators; verify displayed two-decimal arithmetic. No simulation or common-row operator execution."
+  }
+}
