@@ -1,0 +1,138 @@
+{
+  "label": "v12aggap",
+  "startedAt": "2026-10-19T21:56:09.549Z",
+  "finishedAt": "2026-10-19T21:58:13.163Z",
+  "commit": "f0ed18e86679a9250fc661d5095a45dd4799dff0",
+  "branch": "claude/run-game-v3",
+  "dirty": {
+    "trackedFiles": [
+      "config/baseline.json",
+      "src/sim/agent.ts",
+      "src/sim/mind.ts"
+    ],
+    "patchSha256": "dfa2244ae7d98d58170b55e39c8c42d2047988073ddbfd9da15465c9d657dcdf",
+    "untracked": [
+      "scripts/diag/stretch/smooth.py"
+    ]
+  },
+  "sourceSha256": "34e5c5bdc0fc06a02d63e5a4da0092690dfbe209df849cfccc813d710d9ea51b",
+  "sourceUnchanged": true,
+  "node": "v22.23.3",
+  "baseline": "run-game-2026-10-13",
+  "flags": {
+    "AIM_GLIDE": "1",
+    "ANCHOR_SPLIT": "1",
+    "BACK_CHASE": "0",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DEEP_CAP": "0",
+    "DEF_GETOFF": "1",
+    "DEPART_TEMPO": "0",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "DRIVE_CONNECT": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "GUN_MESH_SIDE": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_KEY": "0",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "MESH_TEMPO": "1",
+    "OL_ALIGN": "0",
+    "PACE_LEAD": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "QB_CARRYOUT": "1",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_LATERAL": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "SHED_PURSUE": "0",
+    "STALK_CLAIM": "1",
+    "STRETCH_FLAT": "0",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "UC_MESH": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1",
+    "ZONE_TE": "0"
+  },
+  "overrides": [
+    "UC_MESH=1",
+    "MESH_TEMPO=1",
+    "QB_CARRYOUT=1",
+    "PACE_LEAD=1",
+    "AIM_GLIDE=1"
+  ],
+  "diagnostic": {},
+  "traceArgs": [
+    "--formations",
+    "i_pro_21,ace_12",
+    "--concepts",
+    "power,counter,duo,trap",
+    "--seeds",
+    "77,71001,1,2,3"
+  ],
+  "shards": [
+    {
+      "shard": 0,
+      "exitCode": 0,
+      "file": "out/open-field/v12aggap-0.jsonl.gz",
+      "sha256": "2e6c8bc31ef180138a37339dbbec4ecc4a81a2e10d2676b6d4c55b7f7b10e360",
+      "summary": "400 plays in 122.4 s -> out/open-field/v12aggap-0.jsonl.gz"
+    },
+    {
+      "shard": 1,
+      "exitCode": 0,
+      "file": "out/open-field/v12aggap-1.jsonl.gz",
+      "sha256": "0257f0203e7966ee308c030ef5d03b90c1947b60a14731657611af3c63911c28",
+      "summary": "400 plays in 119.5 s -> out/open-field/v12aggap-1.jsonl.gz"
+    },
+    {
+      "shard": 2,
+      "exitCode": 0,
+      "file": "out/open-field/v12aggap-2.jsonl.gz",
+      "sha256": "7cdc40fd98c6a08f0727269f02d38c510e37c2c8b0594bbb98ee9939d1f35cf0",
+      "summary": "400 plays in 120.7 s -> out/open-field/v12aggap-2.jsonl.gz"
+    },
+    {
+      "shard": 3,
+      "exitCode": 0,
+      "file": "out/open-field/v12aggap-3.jsonl.gz",
+      "sha256": "4f8c2898caf0144de21d470b36e2c273a9bdcaa60e6fa2b7606afad840fd9461",
+      "summary": "400 plays in 123.1 s -> out/open-field/v12aggap-3.jsonl.gz"
+    }
+  ],
+  "tools": {
+    "scripts/diag/open-field/trace.ts": "10ded44027e47f8ecb08aa4251db6653a9d1e46c16fbe263beb1a39f0be39a8d",
+    "scripts/diag/zone-lab/lab.ts": "1bf84ff9733a37d007fd9824cb23a5e0d5b71b32f6731d3a7ec798f0f62a1ecf",
+    "scripts/diag/open-field/common.sh": "1288e16e5be97513bbe962ce7a8fe0d66d7bd6ccd2f0d10d3b6074dc3bf1c171",
+    "scripts/diag/open-field/report.py": "ec570ccc96db8b3ab66b4c0c0e5bc1c089bbb5fc7bb42b2f022edce69b8bac1e",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0"
+  }
+}

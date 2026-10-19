@@ -1070,3 +1070,128 @@ protection under it is not measured.
    `v11olgap` after their change.
 3. Next here: the counter back's track relative to the pullers, and the
    #159/#160 linebacker flow with these flags.
+
+## Part 7 — why the film looks jittery, the fullback, and #159/#160 (2026-10-19)
+
+The film review asked whether our film looks jittery because the viewer
+shows more than the NFL clips. It also flagged the QB still running into
+the fullback (ARM2-08), and asked for improvements to #159/#160. Receipts
+are in `part7.txt`. Arms are in [`v12/`](run-game-v3/v12/) and
+[`m3/`](run-game-v3/m3/).
+
+### It is mostly not the viewer
+
+`smooth.py` measures NFL tracking and sim plays the same way: 10 Hz
+positions at 0.01 yd, counted with one operator.
+
+- **Pulses** are speed swings of at least 0.5 yd/s, per second.
+- **Wobble** is left/right turn reversals per second (turns of at least 5°
+  per 0.1 s, above 2 yd/s).
+
+Gap runs, NFL60 against the package:
+
+| | Pulses NFL | Pulses sim | Wobble NFL | Wobble sim | Speed p90 NFL | Speed p90 sim |
+|---|---|---|---|---|---|---|
+| DL | 0.07 | 0.54 | 0.01 | 0.04 | 3.1 | 2.4 |
+| LB | 0.14 | 0.33 | 0.02 | 0.21 | 3.8 | 3.2 |
+| DB | 0.10 | 0.24 | 0.02 | 0.17 | 4.8 | 5.7 |
+| OL | 0.05 | 0.15 | 0.01 | 0.10 | 3.0 | 2.7 |
+| TE | 0.16 | 0.98 | 0.02 | 0.15 | 3.9 | 2.9 |
+| FB (non-carrier back) | 0.26 | 0.57 | 0.03 | 0.39 | 5.9 | 3.9 |
+| Carrier after the handoff | 0.05 | 0.12 | 0.07 | 0.24 | 6.2 | 6.9 |
+
+On zone runs, NFL linemen and linebackers move much faster than ours. DL
+p90 is 4.3 yd/s against 2.7, OL 4.1 against 2.9, and LB 4.9 against 3.9.
+
+The viewer does add one thing: NFL clip facing is derived from motion,
+while sim facing is the body's own yaw. The trajectories themselves still
+pulse and wobble several times more.
+
+**Where it comes from** (`jitter.ts`, the same counting at each layer of
+the velocity):
+
+| | Request | After contact | After spacing | Achieved |
+|---|---|---|---|---|
+| DL pulses / wobble | 0.78 / 0.16 | 2.53 / 0.86 | 2.63 / 0.87 | 0.83 / 0.07 |
+| TE | 0.80 / 0.12 | 1.49 / 1.06 | 1.68 / 1.12 | 1.10 / 0.28 |
+| LB | 1.48 / 1.32 | 1.60 / 1.38 | 2.00 / 1.39 | 0.41 / 0.38 |
+| DB | 1.15 / 0.95 | 1.16 / 0.93 | 1.33 / 0.94 | 0.40 / 0.35 |
+
+The bodies filter much of it. The requests are what jitter.
+
+- **For engaged players**, the contact controllers triple it. The run-rep
+  lateral law (`requestToCover`) asks the body, whose speed lag is about
+  1.3 s, to close the error exactly within two decision beats (about 0.4 s).
+  That is roughly 18 × the position error minus 6 × the velocity, so it
+  saturates and flips sign.
+- **For free defenders**, the behaviors' own requests reverse direction
+  1–1.5 times a second.
+
+**Tried and stopped: `AIM_GLIDE`.** It advanced the decision layer's held
+point with the trend of the last two decisions, instead of holding it
+still for a beat. No group's pulsing or wobble changed (DL 0.54 → 0.55, LB
+free wobble 0.24 → 0.26), and outcomes did not change. The code was
+removed.
+
+### The fullback and the QB (`FB_TRACK`, off)
+
+`qbfb.py`, I-formation runs. NFL fullbacks line up 4.6 yd deep, 3.2 behind
+the QB.
+
+| | NFL | Develop / package | `FB_TRACK` |
+|---|---|---|---|
+| Fullback lateral toward the run at 0.6 / 0.9 s | 0.8 / 1.7 yd | 0.1 / 0.1 | 0.8 / 1.6 |
+| Closest QB–fullback distance | 1.50 yd at 1.0 s | 0.85–0.89 at 1.0 s | 1.52 at 0.9 s |
+| Handoff to first contact (power / counter / trap) | 1.4 / 1.4–1.7 / 1.1 s | 1.55 / 1.80 / 1.40 (package) | 1.30 / 1.40 / 1.20 |
+
+Ours ran straight up the QB's drop line at his man's intercept point. The
+QB and fullback met head-on and both stalled in the spacing layer for up to
+a second. With the flag, the fullback flows flat to his lane first, then
+turns up.
+
+Outcomes on I-formation gap runs get worse: negatives rise on power 34 →
+57, counter 29 → 67 and trap 23 → 54 (all p<0.005).
+
+- The new tackles for loss are the play-side end's (26–35 of each set).
+- The back now meets the defense at NFL timing. The pullers and kick-outs
+  are about 0.3 s late at the start (Part 6), so the end is not yet blocked.
+- The old jam had been holding the back until the kick-out arrived.
+
+The flag stays off, and it should come with the puller start-up fix
+(physics: start-up acceleration; or `OL_ALIGN`'s deeper guard, once its
+kick-out shed is fixed).
+
+### #159 and #160 with these flags
+
+They were merged locally only, into `c19a12e8`, and never pushed
+(`m3/combination-src.patch`). One conflict in `runContactRead` was
+resolved by keeping both changes: #160's flow is used when `BACK_CHASE` is
+not chasing.
+
+Outcomes on the same cases (develop flags; and with the package):
+
+- Gap, inside zone and duo: no detectable change. Most plays are identical.
+- Toss 40+: 21 → 9 of 400 (p=0.008), matching their toss claim.
+- Wide zone 10+: 27 → 40 (p=0.03).
+
+The second-level medians do not move (`lbmotion.py`). On gap runs, NFL
+linebackers move laterally toward the carrier's side at 1.75–2.0 yd/s at
+the handoff and +0.5 s. Ours move at −0.25 to +0.25 with or without these
+PRs, and "toward the pull" stays about 0 yd/s (NFL 1.5–2.0). Both PRs act
+after a flow decision has been made, and on gap runs it is not made.
+
+The improvement they need is the read itself: linebackers keying the pull
+and the back's first steps, and committing to flow. `LB_KEY` (Part 1) is
+this branch's off-by-default cue for that.
+
+### Next decision
+
+1. **Jitter** (owners: contact and controller):
+   - Replace the deadbeat `requestToCover` in the run-rep lateral law with
+     an arrival law that cannot saturate and flip on a 1.3 s lag.
+   - Find why free defenders' requests reverse 1–1.5 times a second.
+   - Use `smooth.py`/`jitter.ts` as the shared check: NFL achieved values
+     are under 0.15 pulses and 0.03 wobble per second for every group.
+2. **Puller start-up** before `FB_TRACK` (and `OL_ALIGN`).
+3. **Linebacker flow on gap runs:** a read of the pull, then #159/#160's
+   execution.

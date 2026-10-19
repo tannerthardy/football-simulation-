@@ -416,6 +416,8 @@ export interface RunBlockPlan {
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
+  /** FB_TRACK: the lane a backfield lead flows to before turning up. */
+  lane?: Vec2;
   /** The old surface must be cleared before the new linebacker approach. */
   departure?: { defender: Agent; keeper: Agent; backer: Agent };
 }
@@ -672,7 +674,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (p === h && concept.pullers.includes('H') && bsg && emlos) plans.get(p)!.pullSurface = { blocker: bsg, defender: emlos };
     }
     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
-      plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
+      plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }),
+        lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * lineOffset(1.95, false) } : undefined });
       claimedDL.add(emlos);
     }
   }
@@ -685,7 +688,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // Fullback lead (zone/iso) and receivers stalking.
   const fb = sim.slot('F');
   if (fb && sim.offAlign.spots.F?.backfield && !plans.has(fb)) {
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5), drive: up(0) });
+    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5), drive: up(0),
+      lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * 1.5 } : undefined });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
@@ -751,6 +755,14 @@ const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
  * the backer (braking as he nears him), so a clear hip is crossed at climb
  * speed. Same route, clearance and reads; the body decides what is achieved. */
 const DEPART_TEMPO = process.env.DEPART_TEMPO === '1';
+/** Experimental (FB_TRACK=1, off): an I-formation fullback leading from
+ * behind the QB first flows flat to his lane, then turns up to his man.
+ * Tracked I-formation fullbacks (4.6 yd deep, 3.2 behind the QB) are 0.8 yd
+ * over toward the run at 0.6 s and 1.7 at 0.9 s while gaining only 0.2/0.7
+ * yd, and pass the QB about 1.5 yd away (scripts/diag/stretch/qbfb.py). The
+ * sim fullback ran straight up the QB's drop line at his man's intercept, so
+ * the two met head-on 0.85 yd apart and both stalled in the spacing layer. */
+const FB_TRACK = process.env.FB_TRACK === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
@@ -784,6 +796,7 @@ export class RunBlocker implements Behavior {
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
+  private laneDone = false;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
   /** The called track he is running this tick (known to teammates). */
@@ -1289,6 +1302,11 @@ export class RunBlocker implements Behavior {
             placementError, contact, bodyContact, fit, sim.t);
         return fit;
       }
+    }
+    if (plan.lane && !this.laneDone) {
+      // Flow flat to the lane, keeping speed through it, then turn up.
+      if (a.pos.x < plan.lane.x - .25 && Math.abs(a.pos.y - plan.lane.y) > .3) return runThrough(a, plan.lane, { speed: 1 });
+      this.laneDone = true;
     }
     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
