@@ -1,5 +1,45 @@
 # Current work ownership
 
+## Catching: #131 live same-time caller — 2026-10-19 America/Phoenix
+
+Start isolated `codex/catch-opportunity-caller` at accepted/fetched
+`f4146275ce7539816bf57b4ed55a0d2be10e48c7`, queue `9a6bb79`.
+Normally merge unchanged #131 component `2f9085f1e3dc8e5a19c07fc8f561dc1689413a5e`;
+retain its original Physics scope/evidence. Catching owns only PlaySim's body
+interval capture and resolveCatchOpportunities' same-time query, focused caller
+controls and three already-frozen native inputs. Preserve existing eligibility,
+acquired readiness, reach/top mapping, retry, increasing-fraction ordering and
+difficulty formulas; closest opportunity, not earliest entry. No World/flight
+integration/capacity/contact changes, new game campaign or combined-suite repeat.
+Complete this existing PR by fast-forward publication after reconciliation;
+original head/evidence remain ancestors. Integration owns combined verification.
+
+## Same-time catch geometry / lower-wrap ledger — 2026-10-16 America/Phoenix
+
+Physics starts `codex/catch-opportunity-physics` from accepted/fetched
+`70b4db6a3ef53acc1a0e90cd055f1087205daa30`, queue `c933dbc3`.
+Own only `src/physics/catch-opportunity.ts`, its pure geometry tests and
+diagnostic evidence. Catching retains `catching.ts`/PlaySim caller ownership:
+eligibility, capability mapping, retry, order and difficulty are unchanged.
+Select closest simultaneous opportunity on a common legal height interval;
+earliest reach is a separate choice. Coordinate through audit #129. Exact
+native capture, if decision-relevant, is limited to G1-P020/G2-P107/G2-P143.
+Then retain one complete short force/moment/recovery ledger for G1-P167/P036
+versus G1-P130/G3-P069. No World behavior, capacity, recovery/LEG_BRACE or solver
+changes; existing angular-law/support-history research remains separate.
+Helper published in #131 (`659dee9`), source `1b79ca6`:10 focused geometry
+checks/typecheck pass. Three exact-input catch reproductions match all saved
+frames/events/telemetry/stats; P020 exposes a false opportunity, P107/P143 retain
+reach. P020 achieved-substep query also rejects it by.19113yd. P124/P150 untraced.
+Three complete short wrap/impact ledgers close momentum/work; P167 is explicitly
+held for missing pre-constructor staged context.47.839s launcher cost, no games
+or full suite. Catching owns minimal caller hookup/semantic review; helper alone
+is not a production fix. [Portable evidence, limits and ready criteria](reviews/same-time-catch-physics.md).
+Reconciled accepted0000e56 by normal merge; only this workboard conflicted,
+both sections preserved. Current source840a677 includes accepted128 only beyond
+the original70b4 host; original native captures are not relabeled.
+
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
