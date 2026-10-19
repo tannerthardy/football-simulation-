@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Formation-only alignment correction, not controller or NFL speed calibration",
+  "acceptedPin": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "producingCommit": "d52c7aa781553ec4d48718ecf4b0ebf5f3fdc075",
+  "sourceSha256": "113971550edb4f1058c892610e168a20382507b7d39b9296c59e6396feed3217",
+  "fixture": {
+    "path": "config/roster-screen.json",
+    "sha256": "80d5f4e834cb27ac09d204d6acda44f35965de04b3878af04544e41d059c8787",
+    "matchup": "ordinary",
+    "seed": 71001,
+    "QB": "S88O-QB2",
+    "RB": "S88O-RB2"
+  },
+  "measurement": "shotgun-rb-alignment-v1",
+  "collectorSha256": "bc023b6f88a114b1f392b57c7ee2283523b6e9d24f134e5b2d1f76a492871af8",
+  "helperSha256": "79af58b00062891c300ccbce0e6e01bea969cf36dba61418f6a2cc7c57ac1828",
+  "dependencySha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "oldGeometry": {
+    "split": 1.6,
+    "behindQB": 0.2
+  },
+  "newGeometry": {
+    "split": 2.3,
+    "behindQB": 0.5
+  },
+  "status": "complete",
+  "accounting": {
+    "planned": 16,
+    "attempted": 16,
+    "failed": 0,
+    "terminal": 0,
+    "intentionalPrefixes": 16,
+    "unrun": []
+  },
+  "method": "Accepted geometry reconstructed only in frozen formation input under exact same current code, players, calls, seed, flags and native dt. Only src/playbook/formations.ts differs from accepted source. Native stored velocity observed at handoff call before subsequent physics. Nonterminal prefixes are explicitly censored.",
+  "checks": {
+    "focusedTestsPassed": 31,
+    "testLauncherSeconds": 2.505656816,
+    "nativeLauncherSeconds": 1.436671912,
+    "nativeObservationSeconds": 1.1848847150000001,
+    "inputsUnchanged": true,
+    "typecheck": "passed before freeze; same source/test/diagnostic bytes",
+    "newFullGames": 0,
+    "NFLQueries": 0,
+    "fullSuite": false
+  },
+  "NFLReference": {
+    "researchPin": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+    "path": "docs/reviews/run-game-v3/part3.txt",
+    "population": "Saved 2022 weeks1-9 shotgun RB handoff rows, not all NFL football",
+    "shotgunIZ": {
+      "n": 779,
+      "medianLateral": 2.3,
+      "medianBehindQB": 0.5,
+      "centeredHandoffSpeed": 3.82
+    },
+    "shotgunOZ": {
+      "n": 232,
+      "medianLateral": 2.3,
+      "medianBehindQB": 0.3
+    },
+    "limits": "Saved aggregate geometry only; no new raw NFL joins or missingness audit. NFL speeds use rounded-position centered differentiation, unlike native stored velocity here."
+  },
+  "remainingQuestions": [
+    "Handoff scheduling/geometry remains independent Run/controller scope; do not imply MESH_TEMPO or UC_MESH accepted.",
+    "Own-side IZ exchange .15s later; all observed transfers reachable. Profiles, fronts and endings not broadly certified.",
+    "No RB contact/load in the selected quick-outs prefix, so this does not establish blitz pickup quality.",
+    "Broader formation-specific variation needs evidence; do not impose these defaults on empty, pistol or under-center."
+  ],
+  "artifacts": [
+    {
+      "path": "checks.json",
+      "bytes": 2371,
+      "sha256": "d04bbff0d60f1bf3cda07f62514ce14c7ad0a99a6bc56ac1dff66c5d2716c27d",
+      "originalPath": "out/shotgun-rb-alignment/checks.json"
+    },
+    {
+      "path": "launcher.json",
+      "bytes": 2294,
+      "sha256": "bd110d7e642a508c83893dc282be0982411aa5f857b2fa775239ce1e82f1764f",
+      "originalPath": "out/shotgun-rb-alignment/launcher.json"
+    },
+    {
+      "path": "prefixes.json.gz",
+      "bytes": 149625,
+      "sha256": "32b8fc45e8c034fd3cfdb37af23146b2a28a618125d2afdd4f8e22b02b64e04f",
+      "originalPath": "out/shotgun-rb-alignment/result-traces.json.gz"
+    },
+    {
+      "path": "observations.json.gz",
+      "bytes": 10554,
+      "sha256": "f8a4533af0a0be0b850863b29d407145ba8c1690d09de74a9bbe306bdb5440e8",
+      "uncompressedSha256": "0fcd41a37efcf99e8221e4e57bf97cab381b6ef57200e9d803947ed76d175136",
+      "originalPath": "out/shotgun-rb-alignment/result.json"
+    }
+  ],
+  "rows": [
+    {
+      "id": "pistol-control/accepted-geometry",
+      "inputSha256": "b41e179ad7ce5a089712c9da37c5760c9d6ae3ab6fec7f4f1196aa7166135131",
+      "seed": 71001,
+      "formation": "pistol_11",
+      "call": "iz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 0,
+        "behind": 3.1999999999999993
+      },
+      "handoff": {
+        "t": 1.3,
+        "storedRBVelocity": {
+          "x": 2.212928624392663,
+          "y": -0.9140357361621725
+        },
+        "speed": 2.3942669908842515,
+        "separation": 1.2449999217836025,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.55,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "05bd33eab70048ace39f5adb70ae6cc4123fe94794c4158e637548f17c70f868"
+    },
+    {
+      "id": "pistol-control/corrected-geometry",
+      "inputSha256": "b41e179ad7ce5a089712c9da37c5760c9d6ae3ab6fec7f4f1196aa7166135131",
+      "seed": 71001,
+      "formation": "pistol_11",
+      "call": "iz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 0,
+        "behind": 3.1999999999999993
+      },
+      "handoff": {
+        "t": 1.3,
+        "storedRBVelocity": {
+          "x": 2.212928624392663,
+          "y": -0.9140357361621725
+        },
+        "speed": 2.3942669908842515,
+        "separation": 1.2449999217836025,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.55,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": true,
+      "observedStateSha256": "05bd33eab70048ace39f5adb70ae6cc4123fe94794c4158e637548f17c70f868"
+    },
+    {
+      "id": "under-control/accepted-geometry",
+      "inputSha256": "7a65d225ee2e6285fe756c58c8aec6c103ef87c0735517edc40d7ef8b9b9911e",
+      "seed": 71001,
+      "formation": "ace_11",
+      "call": "oz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 0,
+        "behind": 5.199999999999999
+      },
+      "handoff": {
+        "t": 1.6,
+        "storedRBVelocity": {
+          "x": 3.9874066325955377,
+          "y": -1.6297984530246554
+        },
+        "speed": 4.307627496795475,
+        "separation": 1.2301976488084971,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.85,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "3f7823e321fd1c0d324f380ffd3e7ef546d0409f82536b50b4880641fc3d73dc"
+    },
+    {
+      "id": "under-control/corrected-geometry",
+      "inputSha256": "7a65d225ee2e6285fe756c58c8aec6c103ef87c0735517edc40d7ef8b9b9911e",
+      "seed": 71001,
+      "formation": "ace_11",
+      "call": "oz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 0,
+        "behind": 5.199999999999999
+      },
+      "handoff": {
+        "t": 1.6,
+        "storedRBVelocity": {
+          "x": 3.9874066325955377,
+          "y": -1.6297984530246554
+        },
+        "speed": 4.307627496795475,
+        "separation": 1.2301976488084971,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.85,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": true,
+      "observedStateSha256": "3f7823e321fd1c0d324f380ffd3e7ef546d0409f82536b50b4880641fc3d73dc"
+    },
+    {
+      "id": "empty-control/accepted-geometry",
+      "inputSha256": "807c62fcabf2f610a7f6443af33854320c836c394c2dbe33968a4287e1ac5070",
+      "seed": 71001,
+      "formation": "gun_empty_11",
+      "call": "mesh",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 5.332000000000001,
+        "behind": -3.799999999999997
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "route",
+      "finalRBBehavior": "route",
+      "controlIdentical": null,
+      "observedStateSha256": "02455c3b81a13dc86df0dbd2deb3c1ab7ef6e051ff97a1c429d69510ff158ab3"
+    },
+    {
+      "id": "empty-control/corrected-geometry",
+      "inputSha256": "807c62fcabf2f610a7f6443af33854320c836c394c2dbe33968a4287e1ac5070",
+      "seed": 71001,
+      "formation": "gun_empty_11",
+      "call": "mesh",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 5.332000000000001,
+        "behind": -3.799999999999997
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "route",
+      "finalRBBehavior": "route",
+      "controlIdentical": true,
+      "observedStateSha256": "02455c3b81a13dc86df0dbd2deb3c1ab7ef6e051ff97a1c429d69510ff158ab3"
+    },
+    {
+      "id": "gun-iz-across/accepted-geometry",
+      "inputSha256": "073d7c6896d698a6b7312f038101ac4fbeac8c9956357dd56e2a4d6430edc816",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "iz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 1.6000000000000014,
+        "behind": 0.1999999999999993
+      },
+      "handoff": {
+        "t": 1.05,
+        "storedRBVelocity": {
+          "x": 1.0708443246478072,
+          "y": -1.0905418710984136
+        },
+        "speed": 1.5283943013009593,
+        "separation": 0.8887437064209095,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.3,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "c1f66857c0f562d7dd8ab99d092c14b1bbe870473d4de68a21b30b8b0330a3f7"
+    },
+    {
+      "id": "gun-iz-across/corrected-geometry",
+      "inputSha256": "b0b8e0a8b0324a1c9e27d3d9d39ef5278cad75590bd0d3d3cb04d678c5b0510d",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "iz_strong",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 2.3000000000000007,
+        "behind": 0.5
+      },
+      "handoff": {
+        "t": 1.05,
+        "storedRBVelocity": {
+          "x": 1.3435368614448295,
+          "y": -1.5488138909111302
+        },
+        "speed": 2.0503452798834387,
+        "separation": 1.025617237699237,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.3,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "afa3cd1252dc5b61c8bdeef08eaf7b0e59113994436092cba3d08a9726864659"
+    },
+    {
+      "id": "gun-iz-own-side/accepted-geometry",
+      "inputSha256": "790cc5786df152db613a8dc345bb45ff949c996ec19d707bd34a5ce5dfef29fb",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "iz_weak",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 1.6000000000000014,
+        "behind": 0.1999999999999993
+      },
+      "handoff": {
+        "t": 1.05,
+        "storedRBVelocity": {
+          "x": 0.7890331771631705,
+          "y": -0.6904040300177742
+        },
+        "speed": 1.0484422155412243,
+        "separation": 1.093400926179686,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.3,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "efcad1cd86ecb44fdb17f1400903c14d20192b6ae7576b8a68daf5c3fd6b6c3e"
+    },
+    {
+      "id": "gun-iz-own-side/corrected-geometry",
+      "inputSha256": "0512b2de2bd69e94b51cb15d2ee96455e5f21fed2d61285e480721e65c51be13",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "iz_weak",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 2.3000000000000007,
+        "behind": 0.5
+      },
+      "handoff": {
+        "t": 1.2,
+        "storedRBVelocity": {
+          "x": 1.169221580168698,
+          "y": -1.4881001929419726
+        },
+        "speed": 1.892490762927556,
+        "separation": 1.258013706113532,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.45,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "a2e045eba55df0ae90c93951c41b4d17d6b7ae147b28b674e39b94fdb03caff5"
+    },
+    {
+      "id": "gun-oz-flipped/accepted-geometry",
+      "inputSha256": "7b9a859cc98e88d0233f2cf9ac715c931c2dd3bc37dc45ed4652cbb856add46e",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "oz_strong",
+      "flip": true,
+      "initialQBToRB": {
+        "lateral": 1.6000000000000014,
+        "behind": 0.1999999999999993
+      },
+      "handoff": {
+        "t": 1,
+        "storedRBVelocity": {
+          "x": 1.3953420741284241,
+          "y": 1.1800614528199072
+        },
+        "speed": 1.8274366025294673,
+        "separation": 0.9955026507845602,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.25,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "7fe4112984ee509a83a17554ac7e0c0fdfa69d30137f9873a1cb2d0f63cc1024"
+    },
+    {
+      "id": "gun-oz-flipped/corrected-geometry",
+      "inputSha256": "4f1db518c68ba341f5a30b19c8a09142b360a9f719ad5e4b9d069c9cadf5649c",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "oz_strong",
+      "flip": true,
+      "initialQBToRB": {
+        "lateral": 2.3000000000000007,
+        "behind": 0.5
+      },
+      "handoff": {
+        "t": 1,
+        "storedRBVelocity": {
+          "x": 1.7014819921308895,
+          "y": 1.412583523387655
+        },
+        "speed": 2.2114323819850297,
+        "separation": 1.0638489311643147,
+        "reach": 1.2855555555555556
+      },
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 1.25,
+      "censorReason": "handoff-plus-.25s prefix",
+      "initialRBBehavior": "mesh",
+      "finalRBBehavior": "carrier",
+      "controlIdentical": null,
+      "observedStateSha256": "fd33caa6847a8041e9182c067da0ef263e495e3fb1b2fbf5b50929a69ce7bf0c"
+    },
+    {
+      "id": "gun-swing/accepted-geometry",
+      "inputSha256": "c220449f703ba670316acc7c1e341d37b80dba874f4547c4ae1c15aee6d454a1",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "mesh",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 1.6000000000000014,
+        "behind": 0.1999999999999993
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "route",
+      "finalRBBehavior": "route",
+      "controlIdentical": null,
+      "observedStateSha256": "20e2913d7df439cbed7591742e29327635acddcd8f56ebeca9d7e9773154c298"
+    },
+    {
+      "id": "gun-swing/corrected-geometry",
+      "inputSha256": "7f85c57b173bd0137c9594562962c80892e4b3c96934ba46728671dbbb31b5a4",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "mesh",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 2.3000000000000007,
+        "behind": 0.5
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "route",
+      "finalRBBehavior": "route",
+      "controlIdentical": null,
+      "observedStateSha256": "52c6907995873285f8ea33265332901c1480abec4a3b30197a8bba9ae5283604"
+    },
+    {
+      "id": "gun-protection/accepted-geometry",
+      "inputSha256": "e1afd01cf12c9bdeb3d62266c0e8604f940826c2636e15fa9b47eddc21f7e6b9",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "quick_outs",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 1.6000000000000014,
+        "behind": 0.1999999999999993
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "pass-pro",
+      "finalRBBehavior": "pass-pro",
+      "controlIdentical": null,
+      "observedStateSha256": "a7130725847a1b40b5f3c1dac75b6859578988ad64cace5c22b4271c8bd2c426"
+    },
+    {
+      "id": "gun-protection/corrected-geometry",
+      "inputSha256": "fd127ace33ebe3f92cd0eb3f21431b31eb0fb16720c7fded221e3b38a75a04ac",
+      "seed": 71001,
+      "formation": "gun_doubles_11",
+      "call": "quick_outs",
+      "flip": false,
+      "initialQBToRB": {
+        "lateral": 2.3000000000000007,
+        "behind": 0.5
+      },
+      "handoff": null,
+      "status": "observed",
+      "terminal": false,
+      "observedThrough": 2.5,
+      "censorReason": "2.5s prefix",
+      "initialRBBehavior": "pass-pro",
+      "finalRBBehavior": "pass-pro",
+      "controlIdentical": null,
+      "observedStateSha256": "75cb0f2405b3e37d80ec983ef442ebf6d8be98fe7ef6a6d72a5160aa69742804"
+    }
+  ]
+}

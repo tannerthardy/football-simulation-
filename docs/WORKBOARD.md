@@ -5,9 +5,13 @@
 Measurement owns formation corrections per the user's new assignment, starting
 with offset shotgun RB spacing. Branch `codex/shotgun-rb-alignment` on accepted
 `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue `9a6bb795`.
-Bounded edit claim: `src/playbook/formations.ts` shotgun RB constants/slots,
+Published scope: `src/playbook/formations.ts` shotgun RB constants/slots,
 `test/shotgun-rb-alignment.test.ts`, focused diagnostic
-`scripts/diag/shotgun-rb-alignment.ts`, and its review/receipt. Alignment and
+`scripts/diag/shotgun-rb-alignment.ts`, `docs/reviews/shotgun-rb-alignment.md`
+and `data/reviews/current/shotgun-rb-alignment/`. Tested runtime `d52c7aa7`;
+31 focused checks and 16 native prefixes completed, no failures/unrun tail.
+Three unchanged geometry controls match; own-side IZ exchange is .15s later.
+Formation boundary is ready for independent review; ownership continues. Alignment and
 exchange ownership remain distinct: no edits to assign/QBHandoff/physics,
 experimental flag activation, roster sweep, general collector or game campaign.
 Reuse saved #153 geometry; verify the spacing correction with native stored
