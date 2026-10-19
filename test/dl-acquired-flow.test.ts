@@ -59,6 +59,10 @@ describe('first-level acquired lateral runner objective',()=>{
   expect(cmd(near)).toEqual(cmd(unknown));
   const stopped=stage(),control=stage();stopped.backCue.vel.y=0;control.backCue.carrying=false;expect(cmd(stopped)).toEqual(cmd(control));
  });
+ it.each(['box','spill']as const)('does not replace the installed %s edge contract with an inside trail',edge=>{
+  const f=stage(1,'edge'),control=stage(1,'edge');f.defender.runFit!.edge=control.defender.runFit!.edge=edge;control.backCue.carrying=false;
+  expect(cmd(f)).toEqual(cmd(control));
+ });
  it('holds acquired target and motion together within a decision, then answers contradictory evidence',()=>{
   const f=stage(),control=stage();expect(cmd(f)).toEqual(cmd(control));f.backCue.carrying=false;f.backCue.vel.y=-3;
   f.sim.t+=.01;control.sim.t+=.01;expect(cmd(f)).toEqual(cmd(control));next(f);next(control);expect(cmd(f).vel.y).toBeLessThan(cmd(control).vel.y);
