@@ -1,5 +1,26 @@
 # Current work ownership
 
+## Puller start-up — 2026-10-19 America/Phoenix
+
+Physics owns `codex/puller-startup`, accepted `f4146275` / queue `9a6bb795`,
+reviewing Claude Part7 `bdadfedb`. Initial claim: focused request/execution
+probe and tests; `locomotionAccel` only after a demonstrated mechanical failure.
+Separate request speed, start-up, facing, spacing, contact and support. Keep
+FB_TRACK/OL_ALIGN/GAIT_STEP and other experimental defaults unchanged; capacities,
+recovery, shared contact laws and #162 yaw proposal stay separate. OL_ALIGN's
+late kick-out shed is a distinct hold. Reuse saved evidence and NFL reference;
+no broad lab/game campaign or contributor full-suite rerun.
+
+Puller checkpoint: explicit optional propulsion API at `f62527c`; first-step
+caller at `9606280` is HOLD, not integration-ready. Existing moderate-speed
+easing explains the empty-space lag; capacities remain fixed.94 distinct focused
+contracts pass across compatible runs/typecheck. Faster initial steps do not
+clear FB_TRACK (two native adverse endings), and OL_ALIGN skips that waypoint
+(two exact state identities). Shared report `docs/reviews/puller-startup.md`,
+receipt `data/reviews/current/puller-startup.json`;26 bounded four-second prefixes,
+no full suite/games/NFL scan. Next: Run/Physics review strong-counter kick shoulder
+exchange at2.2–2.8s through runner arrival. No further acceleration retune.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

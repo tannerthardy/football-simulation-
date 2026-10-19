@@ -72,4 +72,20 @@ describe('explicit propulsion toward a bounded speed',()=>{
     expect(results[0].pos.x).toBeCloseTo(results[1].pos.x,10);
     expect(results[0].pos.y).toBeCloseTo(-results[1].pos.y,10);
   });
+
+  it('does not bypass contact or shared ground accounting when the clearance is blocked',()=>{
+    const a=body(),b=body();b.pos.x=.8;b.facing=Math.PI;
+    const w=new World([a,b]);let contacts=0;
+    for(let k=0;k<20;k++){
+      const momentum=(a.vel.x+b.vel.x)*profile.massKg;
+      const r=w.step([{vel:{x:2.65,y:0},propulsion:'full'},{vel:{x:0,y:0},push:1}],.05);
+      contacts+=r.contacts.length;
+      expect((a.vel.x+b.vel.x)*profile.massKg-momentum).toBeCloseTo(r.groundImpulse[0].x+r.groundImpulse[1].x,8);
+      expect(Math.abs(r.work.residual)).toBeLessThan(1e-7);
+      for(const impulse of r.groundImpulse)
+        expect(Math.hypot(impulse.x,impulse.y)).toBeLessThanOrEqual(supportParams(profile).traction*.05+1e-8);
+    }
+    expect(contacts).toBeGreaterThan(0);
+    expect(a.pos.x).toBeLessThan(b.pos.x);
+  });
 });
