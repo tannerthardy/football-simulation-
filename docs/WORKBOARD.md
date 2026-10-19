@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Independent #153 Run/controller review — 2026-10-18 America/Phoenix
+
+Run owns only [this scoped review](reviews/pr153-run-controller-review.md) and
+its small portable evidence packet. Reviewed submission1c578afb/runtimec8d63808
+on acceptedf4146275; no runtime, shared movement, Physics or settings edits.
+MESH_TEMPO scheduling/shotgun geometry and UC_MESH depth/time/QB movement are
+separate decisions. Preserve power-tail and gun-TE adverses. New zero-World-step
+contract check:4 pass,2 mirrored UC draw-command failures; previous LB identity
+and diagnostic evidence reused by exact unchanged code path. Proposed runtime
+scopes remain HOLD/REJECT; no merge, activation or combined-suite request.
+Contact reviewer retains SHED_PURSUE's intent/re-acquisition disposition.
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-run-controller-review-not-promotion",
+  "pullRequest": 153,
+  "submission": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+  "runtime": "c8d638086e69961de2ff45d41df0a9871947ca83",
+  "accepted": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "packet": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "runtimeSourceSha256": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+  "newCodeScopesAcceptedForPromotion": [],
+  "decisions": [
+    {
+      "scope": "MESH_TEMPO scheduling",
+      "disposition": "HOLD",
+      "reason": "No hard UC_MESH/block/shedding dependency; independent saved football evidence and power adverse attribution missing."
+    },
+    {
+      "scope": "MESH_TEMPO shotgun geometry",
+      "disposition": "HOLD",
+      "reason": "Separate installed own-side style; intermediate source/settings and selected actual request/spacing evidence needed."
+    },
+    {
+      "scope": "UC_MESH ordinary depth",
+      "disposition": "HOLD",
+      "reason": "Not a scheduling prerequisite; geometry effect remains bundled."
+    },
+    {
+      "scope": "UC_MESH ordinary timing",
+      "disposition": "HOLD",
+      "reason": "Approximate forecast, not executed pivot/guaranteed meeting; no demonstrated dependency."
+    },
+    {
+      "scope": "UC_MESH ordinary QB-through/RB-ride",
+      "disposition": "HOLD",
+      "reason": "Optional movement policy. QB-through API/use hunks depend on each other if retained, not on MESH_TEMPO."
+    },
+    {
+      "scope": "UC_MESH draw inclusion",
+      "disposition": "REJECT",
+      "reason": "Changes accepted draw QB arrival; two mirrored production-controller checks fail."
+    },
+    {
+      "scope": "ZONE_TE",
+      "disposition": "HOLD",
+      "reason": "Known gun-doubles useful-protection cost is unadjudicated; loss-conditioned separation rows do not prove a universal controller error."
+    },
+    {
+      "scope": "STRETCH_FLAT",
+      "disposition": "HOLD",
+      "reason": "Global-x clip changes surface normal and tangent requests; no useful recovery/runoff opposing case established."
+    },
+    {
+      "scope": "LB_KEY",
+      "disposition": "REJECT",
+      "reason": "Observed keyed F can be compared with unrelated RB starting alignment; unchanged production path reuses prior mirrored failures."
+    }
+  ],
+  "acceptedPreservedContracts": [
+    "MESH_TEMPO excludes draw and toss; qbDraw keeper bypass remains, UC off",
+    "Real transfer reach/pitch law unchanged",
+    "Acquired failed-exchange secure-and-carry retained with zero and positive QB through values"
+  ],
+  "outOfScope": [
+    "SHED_PURSUE intent and re-acquisition trigger: Physics/contact reviewer",
+    "DEEP_CAP",
+    "BACK_CHASE",
+    "RUN_LATERAL",
+    "DEF_GETOFF nonidentity",
+    "shared gait/laws/capacities/defaults"
+  ],
+  "newVerification": {
+    "tests": 6,
+    "passed": 4,
+    "failed": 2,
+    "worldSteps": 0,
+    "nativeContinuations": 0,
+    "games": 0,
+    "labArms": 0,
+    "sharedSuiteRuns": 0,
+    "node": "v22.23.3",
+    "seconds": 2.207432758,
+    "sourceUnchanged": true,
+    "expectedFailures": "Two mirrored UC draw QB arrival preservation checks at the reviewed pin",
+    "explicitTestArms": [
+      {
+        "scope": "UC draw",
+        "off": {
+          "UC_MESH": "0",
+          "MESH_TEMPO": "0"
+        },
+        "on": {
+          "UC_MESH": "1",
+          "MESH_TEMPO": "0"
+        },
+        "mirrors": [
+          false,
+          true
+        ],
+        "nearMeshOffset": {
+          "x": 0.1,
+          "y": 0
+        },
+        "t": 1.0,
+        "offRequest": {
+          "x": 0,
+          "y": 0
+        },
+        "onRequest": {
+          "x": -3.8663803486639146,
+          "y": 0
+        }
+      },
+      {
+        "scope": "MESH draw/toss/qbDraw installation controls",
+        "UC_MESH": "0",
+        "MESH_TEMPO": [
+          "0",
+          "1"
+        ]
+      },
+      {
+        "scope": "Acquired failed-exchange controller states",
+        "UC_MESH": "0",
+        "MESH_TEMPO": "0",
+        "through": [
+          0,
+          3
+        ],
+        "readTimes": [
+          1.2,
+          1.8
+        ]
+      }
+    ]
+  },
+  "reusedEvidence": {
+    "lbPin": "dcb47f96c5fb8c27d74897d307a5f49fa7eb2da9",
+    "sourceSha256": "74547446ff76d826d02b248f015333d06792e69853df9474f78c3db5feece3df",
+    "testSource": "reused-lb.test.ts.txt",
+    "tests": 2,
+    "failed": 2,
+    "nativeContinuations": 0,
+    "originalSeconds": 1.4973063690000001,
+    "compatibility": "git diff --quiet dcb47f9 1c578afb -- src/sim/run-fits.ts src/sim/behaviors/defense.ts src/sim/behaviors/blocking.ts succeeds; these production paths unchanged",
+    "prior20FocusedChecks": "Original prior review receipt only; not rerun or asserted as complete current-tree validation"
+  },
+  "adverseEvidence": {
+    "powerReported40PlusCounts": {
+      "rec2gap": [
+        18,
+        400
+      ],
+      "mtrgap": [
+        40,
+        400
+      ],
+      "spgap": [
+        33,
+        400
+      ],
+      "d0gap": [
+        17,
+        400
+      ]
+    },
+    "notAFailureByOutcomeAlone": true,
+    "provenance": "Reported named arms, intermediate source/settings and portable saved native cases not yet established"
+  },
+  "noMerge": true,
+  "noActivation": true,
+  "noSourceEdits": true,
+  "artifacts": [
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/contracts.json",
+      "sha256": "b653d72c6ec1a8a4ce82fbb0073c0f1cee48f833f4f734a9b1ed19ecfbdf1291",
+      "bytes": 2441
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/contracts.log",
+      "sha256": "55eac5e540be1a26ec54d102ab40af6f987603c01526db6e8acd89fdd784087b",
+      "bytes": 2484
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/contracts.test.ts.txt",
+      "sha256": "355642f01ae1e6ee097b3b1d92e47bf8f47605d73deb1f69ca44d0f01da40b1d",
+      "bytes": 3480
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/reused-lb-receipt.json",
+      "sha256": "a6a22112a17f6e1194f475bc1b647f8ebd0c14dae25098742b5680f36ef4a43c",
+      "bytes": 2567
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/reused-lb.log",
+      "sha256": "d3aaf0eefee04c1c53744f6b152bcbd5019d74a19e3d8ac852dbe6a78b49bc1a",
+      "bytes": 2248
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/reused-lb.test.ts.txt",
+      "sha256": "9dc75a780085733ca829c9b03632a80482dd7babd7c0e273f77e3092af49343f",
+      "bytes": 2566
+    },
+    {
+      "path": "data/reviews/current/pr153-run-controller-review/run-contracts.mjs.txt",
+      "sha256": "2616bffd2e6ed167ca14b5abb90c81ba8070a11a93d585f2d4b47c843e01083e",
+      "bytes": 1797
+    }
+  ]
+}

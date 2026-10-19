@@ -1,0 +1,35 @@
+import { afterEach, expect, it, vi } from 'vitest';
+afterEach(()=>{vi.unstubAllEnvs();vi.resetModules();});
+async function scene(flag:string, side:number) {
+  vi.stubEnv('LB_KEY',flag);vi.resetModules();
+  const {Rng}=await import('../src/core/rng.js');
+  const {generateTeam,pickOffense,pickDefense}=await import('../src/league/team.js');
+  const {FORMATION_BY_ID}=await import('../src/playbook/formations.js');
+  const {PASS_BY_ID}=await import('../src/playbook/concepts.js');
+  const {COVERAGE_BY_ID,FRONT_BY_ID}=await import('../src/playbook/defense.js');
+  const {PlaySim}=await import('../src/sim/playsim.js');
+  const {ManCoverage}=await import('../src/sim/behaviors/defense.js');
+  const formation=FORMATION_BY_ID.offset_i_21;
+  const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(31),'O','O',{strength:.55}),formation.personnel),defense:pickDefense(generateTeam(new Rng(32),'D','D',{strength:.55}),'base43'),offCall:{formation,flip:side<0,kind:'pass',pass:PASS_BY_ID.four_verts,label:'Review identity control'},defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover1_off,pressure:null,label:'Off man'},los:40,ballY:26.67,firstDownX:50,seed:3,record:false});
+  const a=sim.slot('LB_M')!, f=sim.slot('F')!, rb=sim.slot('RB')!;
+  // Actual Strong Offset I geometry, plus a staged interpreted carrying
+  // picture. No claim these cues arose in a native play. Crucially, F has
+  // made zero lateral displacement from his own installed 1.5 yd offset.
+  const home={...sim.offAlign.spots.F.pos};
+  f.body.pos={...home};f.body.vel={x:0,y:0};
+  sim.t=1.2;a.body.pos={x:44.1,y:sim.ballY};a.body.vel={x:0,y:0};
+  a.runFit={gap:'A',side,kind:'insert',technique:'attack',edge:'spill',pace:'stack'};
+  a.recog!.read='run';Object.defineProperty(a.mind,'placementError',{get:()=>0});
+  const see=sim.see.bind(sim);
+  sim.see=(observer,target,delay)=>target===f?{pos:{...home},vel:{x:0,y:0},stance:'low',facing:0,pose:'up',age:.2,carrying:true}:see(observer,target,delay);
+  const behavior=new ManCoverage(a,sim,f,false,'A',side);a.behavior=behavior;
+  const command=behavior.update(a,sim);
+  return {flow:a.tags.has('fit-flow-read'),command,home:home.y,rbHome:sim.offAlign.spots[rb.slot].pos.y};
+}
+it.each([-1,1])('does not invent a fullback first step from the unrelated RB alignment, side=%s',async side=>{
+  const off=await scene('0',side),on=await scene('1',side);
+  console.log(JSON.stringify({side,off,on}));
+  expect(off.flow).toBe(false);
+  expect(on.flow).toBe(false);
+  expect(on.command.vel).toEqual(off.command.vel);
+});

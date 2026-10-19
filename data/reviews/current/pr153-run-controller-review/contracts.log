@@ -1,0 +1,45 @@
+
+ RUN  v3.2.4 /workspace/perimeter-runs/out/pr153-review/snapshot
+
+stdout | test/pr153-review-contracts.test.ts > preserves the under-center draw QB arrival command, flip=false
+{"case":"UC draw","flip":false,"off":{"mesh":{"x":34.5,"y":26.67},"time":1.45,"through":0,"tempo":false,"ride":false,"command":{"vel":{"x":0,"y":0},"facing":3.141592653589793}},"on":{"mesh":{"x":34.5,"y":26.67},"time":1.45,"through":3.8663803486639146,"tempo":false,"ride":false,"command":{"vel":{"x":-3.8663803486639146,"y":0},"facing":3.141592653589793}}}
+
+stdout | test/pr153-review-contracts.test.ts > preserves the under-center draw QB arrival command, flip=true
+{"case":"UC draw","flip":true,"off":{"mesh":{"x":34.5,"y":26.67},"time":1.45,"through":0,"tempo":false,"ride":false,"command":{"vel":{"x":0,"y":0},"facing":3.141592653589793}},"on":{"mesh":{"x":34.5,"y":26.67},"time":1.45,"through":3.8663803486639146,"tempo":false,"ride":false,"command":{"vel":{"x":-3.8663803486639146,"y":0},"facing":3.141592653589793}}}
+
+ ❯ |core| test/pr153-review-contracts.test.ts (6 tests | 2 failed) 1569ms
+   × preserves the under-center draw QB arrival command, flip=false 1003ms
+     → expected { x: -3.8663803486639146, y: +0 } to deeply equal { x: -0, y: +0 }
+   × preserves the under-center draw QB arrival command, flip=true 138ms
+     → expected { x: -3.8663803486639146, y: +0 } to deeply equal { x: -0, y: +0 }
+   ✓ MESH_TEMPO alone preserves installed draw, UC off 112ms
+   ✓ MESH_TEMPO alone preserves installed toss, UC off 102ms
+   ✓ MESH_TEMPO alone preserves installed qbDraw, UC off 107ms
+   ✓ retains acquired failed-exchange recovery with both zero and positive QB through speed 105ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  03:22:28
+   Duration  1.81s (transform 747ms, setup 0ms, collect 38ms, tests 1.57s, environment 0ms, prepare 64ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/pr153-review-contracts.test.ts > preserves the under-center draw QB arrival command, flip=false
+ FAIL  |core| test/pr153-review-contracts.test.ts > preserves the under-center draw QB arrival command, flip=true
+AssertionError: expected { x: -3.8663803486639146, y: +0 } to deeply equal { x: -0, y: +0 }
+
+- Expected
++ Received
+
+  {
+-   "x": -0,
++   "x": -3.8663803486639146,
+    "y": 0,
+  }
+
+ ❯ test/pr153-review-contracts.test.ts:21:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+

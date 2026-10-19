@@ -1,0 +1,15 @@
+import {createHash} from 'node:crypto';
+import {readdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {environment,profile} from './snapshot/scripts/baseline.mjs';
+const root=resolve('out/pr153-review'),snapshot=resolve(root,'snapshot');
+const files=(d,p='')=>readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(resolve(d,e.name),p+e.name+'/'):[p+e.name]).sort();
+const digest=(base,paths)=>{const h=createHash('sha256');for(const f of paths)h.update(f).update('\0').update(readFileSync(resolve(base,f))).update('\0');return h.digest('hex');};
+const before=digest(snapshot,files(resolve(snapshot,'src')).map(p=>'src/'+p));
+const start=performance.now(),args=['/workspace/perimeter-runs/node_modules/vitest/vitest.mjs','run','--root',snapshot,'--project','core','--maxWorkers=1','test/pr153-review-contracts.test.ts'];
+const r=spawnSync(process.execPath,args,{cwd:snapshot,env:environment(process.env),encoding:'utf8'});
+writeFileSync(resolve(root,'contracts.log'),r.stdout+r.stderr);
+const after=digest(snapshot,files(resolve(snapshot,'src')).map(p=>'src/'+p));
+writeFileSync(resolve(root,'contracts.json'),JSON.stringify({submission:'1c578afb38f2eb6fc4886639e63fccc4e79c4354',runtime:'c8d638086e69961de2ff45d41df0a9871947ca83',accepted:'f4146275ce7539816bf57b4ed55a0d2be10e48c7',sourceSha256:before,sourceUnchanged:before===after,node:process.version,flags:profile.flags,worldDefaults:profile.worldDefaults,reviewTestSha256:digest(snapshot,['test/pr153-review-contracts.test.ts']),command:[process.execPath,...args],wallSeconds:(performance.now()-start)/1000,exitCode:r.status,worldSteps:0,nativeContinuations:0},null,2)+'\n');
+console.log(r.stdout+r.stderr);process.exitCode=r.status??1;

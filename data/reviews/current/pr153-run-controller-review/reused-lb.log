@@ -1,0 +1,43 @@
+
+ RUN  v3.2.4 /workspace/perimeter-runs/out/run-game-v3-review/snapshot
+
+stdout | test/review-lb-key-target.test.ts > does not invent a fullback first step from the unrelated RB alignment, side=-1
+{"side":-1,"off":{"flow":false,"command":{"vel":{"x":-4.868513965514734,"y":-1.2171284913786802},"facing":3.141592653589793},"home":28.17,"rbHome":26.67},"on":{"flow":true,"command":{"vel":{"x":-4.9011181311335825,"y":9.205838561829612},"facing":3.141592653589793},"home":28.17,"rbHome":26.67}}
+
+stdout | test/review-lb-key-target.test.ts > does not invent a fullback first step from the unrelated RB alignment, side=1
+{"side":1,"off":{"flow":false,"command":{"vel":{"x":-4.868513965514734,"y":1.2171284913786802},"facing":3.141592653589793},"home":25.17,"rbHome":26.67},"on":{"flow":true,"command":{"vel":{"x":-4.9011181311335825,"y":-9.205838561829612},"facing":3.141592653589793},"home":25.17,"rbHome":26.67}}
+
+ ❯ |core| test/review-lb-key-target.test.ts (2 tests | 2 failed) 940ms
+   × does not invent a fullback first step from the unrelated RB alignment, side=-1 840ms
+     → expected true to be false // Object.is equality
+   × does not invent a fullback first step from the unrelated RB alignment, side=1 99ms
+     → expected true to be false // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  23:10:20
+   Duration  1.14s (transform 608ms, setup 0ms, collect 28ms, tests 940ms, environment 0ms, prepare 55ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/review-lb-key-target.test.ts > does not invent a fullback first step from the unrelated RB alignment, side=-1
+ FAIL  |core| test/review-lb-key-target.test.ts > does not invent a fullback first step from the unrelated RB alignment, side=1
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/review-lb-key-target.test.ts:33:19
+     31|   console.log(JSON.stringify({side,off,on}));
+     32|   expect(off.flow).toBe(false);
+     33|   expect(on.flow).toBe(false);
+       |                   ^
+     34|   expect(on.command.vel).toEqual(off.command.vel);
+     35| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
