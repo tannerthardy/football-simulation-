@@ -14,6 +14,11 @@ reach/gather policy, physics, capacity, contact or flag change. #175 and #176
 remain frozen independent candidates; preserve their force policies and flag
 shared call-site overlap. #177 stays separate. Integration owns combined checks.
 
+Independent local approval and complete focused receipts are published;
+no full-game realism or long-run distribution improvement is claimed. Source
+and football limits/adverse controls remain explicit in the linked report.
+Integration owns combined verification; no further selected-play variant.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
