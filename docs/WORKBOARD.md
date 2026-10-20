@@ -12,6 +12,13 @@ Coordinate unchanged183+186 routing with Do-It-All on one exact OZ4 blocked
 Will encounter plus WZORD success, in an isolated diagnostic source. No spacing
 algorithm edits,184/180/175/176 adoption, new goal/physics/capacity/flag variants,
 broad campaign or full suite. Integration owns final multi-component checks.
+Resolved runtimef766256/source12fb7db0 contains181 once,46 focused/typecheck pass.
+Existing support2302b48/sourcecfee0478 evidence reused; no recollection.
+Named pair/projection/routing sources tested on OZ4+WZORD only, six complete
+arms; routinga00b070/source7131384d passes38 focused/typecheck. Failed port
+checks retained. Adverse early approach/cost/no-new-tackle limits remain.
+[Exact blocker handoff](reviews/defensive-integration-blockers-2026-10-20.md).
+Stopping this task after publication; no additional behavior change.
 
 ## Acquired pursuit objective continuity — 2026-10-20 UTC
 

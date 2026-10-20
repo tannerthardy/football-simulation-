@@ -1,5 +1,12 @@
 # Preserve the acquired pursuit objective through teammate navigation
 
+> Integration update: PR182 now contains the resolved181+182 pair once at
+> f7662569ba6c89e3b8796fe7da2702ca6ea93661/source12fb7db0, with46 focused checks.
+> The original isolated182 evidence below retains its original source. See
+> [the exact integration-blocker handoff](defensive-integration-blockers-2026-10-20.md)
+> for the implemented composer, existing support composition, named routing
+> comparison and limits. Do not apply181 a second time.
+
 The repeated football problem is a lost responsibility at the fit-to-pursuit
 boundary. Defenders can request aggressive flow while the downstream navigation
 layer loses the goal needed to evaluate its compound path. It can still brake;
@@ -95,8 +102,10 @@ from receipts or run the passive comparison/film scripts. Native reproduction:
 `node scripts/baseline.mjs --candidate -- node --import tsx out/pursuit-objective/capture.mjs run out/pursuit-objective/initial-inputs.json.gz out/reproduced 10`.
 Baseline restoration pins/hashes are in the manifest; do not duplicate collection.
 
-Ready for independent Integration composition, not certification of full-game
-NFL realism.169/171/177,175/176 and composed-preview remain separate. Same-function
+The original isolated182 was ready for independent review, not certification
+of full-game NFL realism.169/171/177 and175/176 remain separate. Composed-preview
+is now contained once in the updated182; the original standalone evidence above
+is retained with its original source. Same-function
 common.ts overlap is explicit; when composing the preview correction, include
 ownApproach in its pure composer and remove the outer blend. Integration owns
 required exact combined checks; this source supplies focused evidence only.
