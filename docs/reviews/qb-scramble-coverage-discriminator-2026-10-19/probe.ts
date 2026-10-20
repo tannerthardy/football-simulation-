@@ -1,0 +1,13 @@
+import { writeFileSync } from 'node:fs';
+import { performance } from 'node:perf_hooks';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam,pickDefense,pickOffense } from '../../src/league/team.js';
+import { PASS_BY_ID } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID,FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(91),'Recording offense','RO'),'11'),defense:pickDefense(generateTeam(new Rng(92),'Recording defense','RD'),'nickel'),seed:0,audibles:false,offCall:{formation:FORMATION_BY_ID.gun_doubles_11,flip:false,kind:'pass',pass:PASS_BY_ID.four_verts,label:'rusher recording'},defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'rusher recording'},los:40,ballY:26,firstDownX:50});
+const qb=sim.qb.behavior as any, evaluate=qb.evaluate, evaluations:unknown[]=[],ticks:unknown[]=[];
+qb.evaluate=function(a:unknown,s:unknown,r:any,u:unknown){const ev=evaluate.call(this,a,s,r,u);evaluations.push({t:sim.t,read:r.slot,ev:ev?{P:ev.P,intRisk:ev.intRisk,value:ev.value,point:ev.point,T:ev.T}:null});return ev;};
+const step=sim.tick.bind(sim);sim.tick=()=>{step();if(sim.t<=2.20)ticks.push({t:sim.t,qb:sim.qb.pos,ball:sim.ball.kind,defenders:sim.defense.filter(a=>['CB_S','CB_W','FS','SS'].includes(a.slot)).map(a=>({slot:a.slot,pos:a.pos,vel:a.vel})),Y:sim.slot('Y')?.pos,state:qb.recordedState?.()});};
+const started=performance.now(), result=sim.run();writeFileSync(process.argv[2],JSON.stringify({seed:0,concept:'four_verts',coverage:'cover3',fixtureSource:'test/qb-rusher-recording.test.ts:fixture(0)',settingsIntent:'accepted baseline + RUN_CONTACT_COMPONENTS=1',result,evaluations,ticks,seconds:(performance.now()-started)/1000},null,2));console.log(JSON.stringify({scramble:result.stats.scramble,attempted:result.stats.attempted,outcome:result.outcome,duration:result.duration,events:result.events.filter(e=>['throw','throwaway','scramble','incomplete','sack'].includes(e.type))}));
