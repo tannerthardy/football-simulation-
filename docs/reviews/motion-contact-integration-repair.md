@@ -65,3 +65,12 @@ Reproducer:
 `node --import tsx scripts/diag/motion-contact-integration.mjs <source-root> <output.json> [case-index]`,
 through the baseline launcher with components enabled. All 44 settings remain
 unchanged. This receipt is not the eventual combined-build acceptance.
+
+Final independent source/test adjudication by
+`/root/run_contact_composition` accepts exact
+`4ee751d5ffd5af1d500a913bbb7d41ed1a0357e4` with runtime
+`436e9e61bea24170addcf4ff748164de09fb9c19`: native acquisition/load and budgets
+remain, the snapshot is honest, and the explicit mirrored acquired-cue controls
+preserve both positive and opposing log behavior without awarding contact. The
+reviewer inspected the full three-file diff, production gate and final receipt;
+no additional runs were requested.
