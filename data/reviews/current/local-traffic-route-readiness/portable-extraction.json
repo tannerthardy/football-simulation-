@@ -1,0 +1,24 @@
+{
+  "base": "2c98bed94adad8087c65f381d4090444ad283985",
+  "pr183": "0491f07b5728a149c3f4ac35008ceba14e392694",
+  "pr186": "5248e884fd450b44045e753caaf782a306710e0c",
+  "pr182": "4f29315039a0a9b397e53424354355eba108c839",
+  "jointTree": "9aead2020080a4d92db4c0e0ae688e374c1c613e",
+  "routeTree": "27bf41620e89c22526f1732ddc267ebd943f9ebe",
+  "routeSource": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+  "producerJointTree": "c82d1832fd01fbe6cbbb61165f36f22d29b55a55",
+  "producerJointSource": "35db39f492ddf094d1a0aa8a9fb4a6460dc21590de00100835b14d03d6c6b7f3",
+  "combinedTree": "f07e73620085b3f5ab052771e2c22dac594e4e62",
+  "combinedSource": "d9b4be837a6b3cd791d17353a5344f0d3eae3c18586249a4f61bea03c6a8fa84",
+  "patches": {
+    "183.patch": "b117a11febea1a62cfc64974a06d21126c196f6ba7c6638fd69f22a3721d61bf",
+    "186-after183.patch": "aece266c3d6f62849693023749f1e843680a623a93828fb638b5669cabc43646",
+    "182.patch": "80891f88774fd88b030ea3d1007802e4d10c627c9a9acb88e05eac66122a8d20"
+  },
+  "apply183Once": true,
+  "source186DependencyOccurrences": 1,
+  "simulationExecutions": 0,
+  "qualification": "Temporary Git index/objects only; exact source portability, no combined behavior acceptance. No181,184,175,176 or experimental motor/default imports.",
+  "referenceCommit": "118e0f8e3fb3d36c5844b4f4f57a10310f5abd3b",
+  "compositionCommit": "ef8bc183009466ab9de29b7be5266203fb996901"
+}

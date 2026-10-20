@@ -1,0 +1,37 @@
+{
+  "publication": "e789714df5d465f3b913a7fb43814c64e8aa5997",
+  "manifestSha256": "70f841eda667c66b29a2955f6283d5edf8f6e41fac321f8e168fdb6b699a2e08",
+  "runtimeAndTestsByteIdenticalTo186": [
+    "src/sim/spacing.ts",
+    "src/sim/traffic-distance.ts",
+    "src/sim/traffic-path.ts",
+    "src/sim/traffic-route.ts",
+    "scripts/diag/navigation/joint-projection.ts",
+    "scripts/diag/navigation/local-passage.ts",
+    "test/local-traffic-route.test.ts",
+    "test/joint-spacing-projection.test.ts",
+    "test/traffic-distance.test.ts",
+    "test/traffic-path.test.ts",
+    "test/fixtures/navigation-A042-setup.json",
+    "test/fixtures/traffic-route-impact.json"
+  ],
+  "verifiedArchives": [
+    {
+      "path": "pursuit-composition.tar.gz",
+      "sha256": "db6ad980daced9d5177d2c52647d1770827a210d2193fc97abee5ae5cf63af80",
+      "membersVerified": 29
+    },
+    {
+      "path": "routing-candidate.tar.gz",
+      "sha256": "83ff77bf1826e616693334a2cc66f7724d5ac811e5ff605c8aeb315bb0d4dc55",
+      "membersVerified": 16
+    },
+    {
+      "path": "projection-control.tar.gz",
+      "sha256": "63cc54efd2cb558440edbbeb1d5c5189a81a0d1eeee253305ecadf144ea94376",
+      "membersVerified": 5
+    }
+  ],
+  "newEngineRuns": 0,
+  "claim": "Independent source/evidence readback; no native or test execution. Canonical resolved181+182 composition supersedes the old182 two-arm staging for readiness."
+}

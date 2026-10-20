@@ -1,0 +1,227 @@
+{
+  "date": "2026-10-20 UTC",
+  "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "runtimeUnchanged": true,
+  "decisions": {
+    "183": {
+      "decision": "ACCEPT",
+      "reviewer": "middle_evidence",
+      "runtime": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+      "codeTestsOperators": "0491f07b5728a149c3f4ac35008ceba14e392694",
+      "sourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+      "reviewPublication": "d709ecd6d63951b6cdba9da3ff2e8c65af1c7615",
+      "newReview": false
+    },
+    "186": {
+      "decision": "ACCEPT for exact Integration review",
+      "independentReviewer": "middle_evidence",
+      "code": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "review": "docs/reviews/local-traffic-route-independent-review.md",
+      "required183Occurrences": 1,
+      "costDisposition": "Residual cost explicit; Integration owns final combined cost/adoption decision. No global budget violation established or waived."
+    },
+    "182+186": {
+      "decision": "ACCEPT bounded producer-consumer composition for Integration review",
+      "decisionOwners": [
+        "Do-It-All consumer owner",
+        "Catching producer/football owner"
+      ],
+      "independenceQualification": "Consumer-owner reconciliation with separately published original independent186 acceptance; not a fresh independent self-review.",
+      "producerIncludes181Once": true,
+      "producerCode": "f7662569ba6c89e3b8796fe7da2702ca6ea93661",
+      "testCompleteComposition": "a00b070d789b7d4dcb056e58ab6963fa18131513",
+      "compositionSourceSha256": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "canonicalEvidencePublication": "e789714df5d465f3b913a7fb43814c64e8aa5997",
+      "canonicalManifestSha256": "70f841eda667c66b29a2955f6283d5edf8f6e41fac321f8e168fdb6b699a2e08",
+      "canonicalNativeArmsReused": 6,
+      "independentReadback": "catching-readback.json"
+    },
+    "175": {
+      "decision": "HOLD this scope alone",
+      "code": "4b1ea231f911e18e168eec36e689b6ec52a4a15c",
+      "publication": "628ae0c09f4854513bb87fb03b6e54a9116ecadb",
+      "reason": "No fetchable attributable nonauthor review found; author recommendation is not independent acceptance. Narrow read-only review requested from Catching.",
+      "reviewRequest": "https://github.com/tannerthardy/football-simulation-/pull/175#issuecomment-6302101997",
+      "dependencyOf186": false,
+      "newTestsOrSimulations": 0,
+      "nativeBenefit": "Unproved; two ordinary OZ prefixes exactly unchanged.",
+      "priorCommandSeconds": 28.822
+    },
+    "176": {
+      "decision": "HOLD this scope alone on missing attributable review publication",
+      "code": "9ae5a7372049aca9f588e14d20a75908994cf5fb",
+      "publication": "0b2addbece94bc47f69ea729af27911398cf85fd",
+      "reportedHistoricalDecision": "Author reports independent ACCEPT narrow acquired point/velocity/cadence contract and HOLD broad benefit; reviewer attribution not independently verified.",
+      "reason": "Missing reviewer decision requested; no mechanism rejection or fabricated independent approval.",
+      "reviewRequest": "https://github.com/tannerthardy/football-simulation-/pull/176#issuecomment-6302103844",
+      "dependencyOf186": false,
+      "newTestsOrSimulations": 0,
+      "preservedAdverse": [
+        "AFTER-04 lost edge and new teammate bump",
+        "AFTER-14 earlier defender fall and assisted finish0.10s later",
+        "Rejected over-lead"
+      ],
+      "priorNewCommandSeconds": 60.374,
+      "priorReusedSecondsExcluded": 1.985
+    }
+  },
+  "canonicalEvidenceSummary": {
+    "OZ4": {
+      "allThreeGain": 15.59,
+      "allThreeTackleAt": 4.65,
+      "willRunnerDistanceAt3_25": {
+        "pair": 4.841,
+        "projection": 5.261,
+        "route": 3.762
+      },
+      "firstDifferenceAt": 1.75,
+      "firstDifferenceUses": "Existing fit goal; cannot attribute whole benefit to182",
+      "newPursuitGoalAt": 2.15,
+      "adverseAt2_30": {
+        "projectionDistance": 3.75,
+        "routeDistance": 3.818,
+        "projectionClosing": 2.293,
+        "routeClosing": 1.875
+      },
+      "newWillGrasp": false,
+      "projectionRouteParentRngFirstDifferenceAt": 3.4
+    },
+    "WZORD": {
+      "allThreeGain": 2.89,
+      "allThreeTackleAt": 3.5,
+      "newPursuitActivationActor": "Sam",
+      "newPursuitActivationAt": 2.4,
+      "preservedWrapAt": 2.75,
+      "preservedAssistAt": 3.05,
+      "newTackleClaim": false
+    }
+  },
+  "oldProducerStudy": {
+    "branch": "codex/route182-183-186-check",
+    "referenceCommit": "118e0f8e3fb3d36c5844b4f4f57a10310f5abd3b",
+    "compositionCommit": "ef8bc183009466ab9de29b7be5266203fb996901",
+    "referenceSource": "35db39f492ddf094d1a0aa8a9fb4a6460dc21590de00100835b14d03d6c6b7f3",
+    "compositionSource": "d9b4be837a6b3cd791d17353a5344f0d3eae3c18586249a4f61bea03c6a8fa84",
+    "producer": "4f29315039a0a9b397e53424354355eba108c839",
+    "maxTime": 4.25,
+    "bothCensored": true,
+    "newReactingArms": 2,
+    "nativeExecutions": 4,
+    "observerNeutrality": true,
+    "willRunnerDistanceAt4_25": {
+      "reference": 9.372829388,
+      "composition": 4.360695256
+    },
+    "newTackleOpportunityProven": false,
+    "shadowReplay": {
+      "WillFrames": 85,
+      "WillMismatches": 0,
+      "WillNewHelperChanges": 8,
+      "MikeFrames": 85,
+      "MikeMismatches": 0,
+      "MikeNewHelperChanges": 0
+    },
+    "qualification": "Old182 without181; distinct source from canonical Catching composition. No per-tick RNG equality claim."
+  },
+  "cost": {
+    "newOwnerMeasuredCommandSeconds": 7.838390134,
+    "receipts": [
+      {
+        "kind": "reference",
+        "path": "reference/OZ4-launch.json",
+        "seconds": 3.159100211,
+        "source": "35db39f492ddf094d1a0aa8a9fb4a6460dc21590de00100835b14d03d6c6b7f3",
+        "exitCode": 0,
+        "inputsUnchanged": true
+      },
+      {
+        "kind": "composition",
+        "path": "composition/OZ4-launch.json",
+        "seconds": 3.2430800989999997,
+        "source": "d9b4be837a6b3cd791d17353a5344f0d3eae3c18586249a4f61bea03c6a8fa84",
+        "exitCode": 0,
+        "inputsUnchanged": true
+      },
+      {
+        "kind": "OZ4-spacing-replay",
+        "path": "owner/OZ4-spacing-replay-launch.json",
+        "seconds": 0.8385120309999999,
+        "wrapperSource": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+        "executedImports": "Both recorded study source worktrees; wrapper hash alone is not the imported runtime.",
+        "exitCode": 0,
+        "inputsUnchanged": true
+      },
+      {
+        "kind": "OZ4-spacing-Mike-replay",
+        "path": "owner/OZ4-spacing-Mike-replay-launch.json",
+        "seconds": 0.597697793,
+        "wrapperSource": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+        "executedImports": "Both recorded study source worktrees; wrapper hash alone is not the imported runtime.",
+        "exitCode": 0,
+        "inputsUnchanged": true
+      }
+    ],
+    "oldProducerPlainWall": {
+      "reference": 0.61538399,
+      "composition": 0.695177333
+    },
+    "oldProducerPlainCpu": {
+      "reference": 1.664888,
+      "composition": 1.791974
+    },
+    "canonicalPlainWallSingleCaptures": {
+      "OZ4": {
+        "pair": 0.998,
+        "projection": 1.054,
+        "route": 1.228
+      },
+      "WZORD": {
+        "pair": 0.622,
+        "projection": 0.555,
+        "route": 0.634
+      }
+    },
+    "separateCatchingNewCommandSecondsReused": 55.209939721,
+    "prior186CommandSeconds": 101.613616873,
+    "prior183NewCommandSeconds": 28.069470315,
+    "prior183ReusedBaselineSecondsCountOnce": 4.582455991,
+    "residualA008": {
+      "accepted": 0.691,
+      "candidate": 0.81
+    },
+    "qualification": "Single native captures are not a benchmark or proof of global budget failure. No180 savings presumed. Static packaging is separate. Full combined suite remains Integration-owned."
+  },
+  "preserved186Adverse": [
+    "A008 worse first step and two extra gather requests",
+    "A042 no additional route benefit, exact joint-only continuation",
+    "A044 worse trueH distances for LBM and NB; worseNB goal error",
+    "Both mesh passes incomplete; historical postcatch pursuit/later offensive block untested",
+    "First903 gather earlier/harderDT hit rejected",
+    "5402 scalar-only trial no live speedup",
+    "Equal-distance route ties can differ elsewhere"
+  ],
+  "excludedCompositions": [
+    "180 motor",
+    "184 peer prediction",
+    "175 force shoulder",
+    "176 moving force",
+    "169/171/177 support",
+    "Held166 navigation policy",
+    "Old discovery stack"
+  ],
+  "newFullSuites": 0,
+  "newGames": 0,
+  "newNflQueries": 0,
+  "nextDecision": "Integration verifies its exact selected composition once and explicitly dispositions cost; advance183+186 without waiting for held175/176. No new navigation work.",
+  "packet": {
+    "archive": "evidence.tar.xz",
+    "sha256": "7808f6696abdeff8e9ce61f9471b42f29045b8497c7c5395bf988998735fe19f",
+    "bytes": 1757464,
+    "manifest": "manifest.json",
+    "manifestSha256": "fe3935975cbd2ae525609e043e9620a087fdefd19ec3d6bd83be50c6208516ed",
+    "members": 21,
+    "staticPackagingSeconds": 6.458592298993608
+  }
+}

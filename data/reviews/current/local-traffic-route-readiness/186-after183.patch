@@ -1,0 +1,1161 @@
+diff --git a/scripts/diag/navigation/local-passage.ts b/scripts/diag/navigation/local-passage.ts
+new file mode 100644
+index 0000000..c54c4aa
+--- /dev/null
++++ b/scripts/diag/navigation/local-passage.ts
+@@ -0,0 +1,73 @@
++/** A staged local movement question, not a new football policy or population
++ * claim. The actor repeatedly tracks the same owned goal through real World
++ * movement, using delayed acquired peer pictures. Teammates keep standing;
++ * contacts remain physical. No future route or live peer state is supplied.
++ */
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
++import {dirname} from 'node:path';
++import {gunzipSync} from 'node:zlib';
++import {pathToFileURL} from 'node:url';
++import {CENTER_Y} from '../../../src/core/field.js';
++import {newSupport} from '../../../src/physics/support.js';
++import {World,type Intent} from '../../../src/physics/world.js';
++import type {Body} from '../../../src/physics/kinematics.js';
++import {Agent} from '../../../src/sim/agent.js';
++import {track} from '../../../src/sim/behaviors/common.js';
++import {movementObjective} from '../../../src/sim/movement-objective.js';
++import {PerceptionBuffer} from '../../../src/sim/perception.js';
++import {spaceTeammates} from '../../../src/sim/spacing.js';
++import {sourceVersion} from '../../source-version.js';
++
++const fixturePath='test/fixtures/traffic-step.json.gz';
++const fixture=JSON.parse(gunzipSync(readFileSync(fixturePath)).toString());
++const modes=['single','mirror','head-on','cluster','clear'] as const;
++export function localPassage(mode:typeof modes[number]) {
++  const side=mode==='mirror'?-1:1;
++  const own:Body={...structuredClone(fixture.rows[0].body),pos:{x:50,y:CENTER_Y},vel:{x:4,y:0},
++    facing:0,energy:1,support:newSupport(),spin:0,squeeze:0};
++  const a=new Agent(0,'D','SS',fixture.player,own.profile,own,{kind:'zone',update(){throw Error('The selected goal is supplied, not a new football read');}});
++  const goal={x:58,y:CENTER_Y};
++  const positions=mode==='clear'?[{x:53,y:CENTER_Y+4}]
++    :mode==='cluster'?[{x:53,y:CENTER_Y},...[-1,1].map(n=>({x:52.4,y:CENTER_Y+n*.8}))]
++    :mode==='head-on'?[{x:53,y:CENTER_Y}]
++    :[{x:53,y:CENTER_Y+side*.1}];
++  const peers=positions.map((pos,i)=>{
++    const profile=fixture.rows[0].peers[i].profile;
++    const body:Body={pos,vel:{x:0,y:0},facing:0,energy:1,profile,support:newSupport(),spin:0};
++    return new Agent(i+1,'D','FS',fixture.player,profile,body,{kind:'zone',update(){throw Error('Stationary peer control');}});
++  });
++  const agents=[a,...peers],world=new World(agents.map(a=>a.body));world.time=2;
++  const pictures=new PerceptionBuffer(agents.length,.05);pictures.record(agents);
++  const initial=structuredClone(agents.map(a=>a.body)),states=[];
++  for(let k=0;k<60;k++) {
++    const now=2+k*.05,raw=track(a,goal,{x:0,y:0},{speed:.7,gain:3,facing:0});
++    const commands:Intent[]=[raw,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
++    const acquired:unknown[]=[];
++    spaceTeammates(agents,commands,(_actor,peer)=>{
++      const picture=pictures.perceive(peer.idx,.05);acquired.push({peer:peer.idx,picture:structuredClone(picture)});return picture;
++    },{now});
++    const before=structuredClone(agents.map(a=>a.body)),report=world.step(commands,.05);pictures.record(agents);
++    states.push({t:now,before:before.map(b=>({pos:b.pos,vel:b.vel,state:b.support?.state})),raw:{...raw,objective:movementObjective(raw)},
++      acquired,command:structuredClone(commands[0]),after:agents.map(a=>({pos:{...a.pos},vel:{...a.vel},state:a.body.support?.state})),
++      contacts:report.contacts,workResidual:report.work.residual});
++  }
++  return {mode,side,goal,initial,states,result:{progress:a.pos.x-50,goalError:Math.hypot(goal.x-a.pos.x,goal.y-a.pos.y),
++    lateral:a.pos.y-CENTER_Y,speed:Math.hypot(a.vel.x,a.vel.y),state:a.body.support?.state,
++    contactIntervals:states.filter(s=>s.contacts.length).map(s=>({t:s.t,contacts:s.contacts})),
++    maximumWorkResidual:Math.max(...states.map(s=>Math.abs(s.workResidual)))}};
++}
++function main(){
++const start=performance.now(),output=process.argv[2];assert.equal(process.argv.length,3,'Usage: local-passage.ts OUTPUT.json');
++const source=sourceVersion(),rows=modes.map(localPassage);assert.equal(sourceVersion(),source);
++const result={question:'Can the existing local traffic controller pass an acquired stationary teammate and resume its owned goal?',
++  source,node:process.version,toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
++  fixtureSha256:createHash('sha256').update(readFileSync(fixturePath)).digest('hex'),
++  limitations:['Staged command/World mechanism test, not natural football transfer.','Peer stance is an ordinary zero request, not frozen or collision-disabled body.',
++    'Every actor receives its acquired picture with original delay; no extra physical information enters the controller.','The baseline bounded maneuver is still restricted to existing man/zone behaviors.'],
++  rows,wallSeconds:(performance.now()-start)/1000};
++mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
++console.log(JSON.stringify({output,source,rows:rows.map(r=>({mode:r.mode,result:r.result})),wallSeconds:result.wallSeconds},null,2));
++}
++if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main();
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index e106646..7b2814c 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -16,6 +16,7 @@ import type { Agent } from './agent.js';
+ import type {Perceived} from './perception.js';
+ import { movementObjective } from './movement-objective.js';
+ import { containCoverage } from './coverage-space.js';
++import { localTrafficRoute } from './traffic-route.js';
+ 
+ /** Time a player gives himself to close the gap to a teammate, s. */
+ const CLOSE_HORIZON = 0.3;
+@@ -349,6 +350,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       return samples;
+     };
+     const gathered=gatherForMotion(a,spaced,peers,forecast,context);
+-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
++    const ordinary=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
++    const s=a.body.support;
++    const free=!!context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement
++      &&!context.constrained?.has(a.body)&&!ia.free&&!ia.dive&&!ia.lunge
++      &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
++      &&!!s&&s.state==='up'&&!s.foot&&!s.strike
++      &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
++    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
+   }
+ }
+diff --git a/src/sim/traffic-distance.ts b/src/sim/traffic-distance.ts
+new file mode 100644
+index 0000000..729dc43
+--- /dev/null
++++ b/src/sim/traffic-distance.ts
+@@ -0,0 +1,85 @@
++/** Joint route geometry with explicit constraint generation.
++ * Current plane shortest paths give a lower bound for every added obstacle.
++ * Return that bound only after continuous full-disc and field validation.
++ */
++import type { Vec2 } from '../core/vec.js';
++import { trafficPath, type TrafficBounds, type TrafficDisc, type TrafficPiece, type TrafficPath } from './traffic-path.js';
++
++const EPS = 1e-9, TAU = 2 * Math.PI;
++const angle = (value: number) => (value % TAU + TAU) % TAU;
++const finite = (point: Vec2) => Number.isFinite(point.x) && Number.isFinite(point.y);
++const inside = (point: Vec2, disc: TrafficDisc) => Math.hypot(point.x - disc.center.x, point.y - disc.center.y) < disc.radius - EPS;
++
++function entersSegment(from: Vec2, to: Vec2, disc: TrafficDisc): boolean {
++  const dx = to.x - from.x, dy = to.y - from.y, length2 = dx * dx + dy * dy;
++  const t = length2 ? Math.max(0, Math.min(1,
++    ((disc.center.x - from.x) * dx + (disc.center.y - from.y) * dy) / length2)) : 0;
++  return inside({ x: from.x + t * dx, y: from.y + t * dy }, disc);
++}
++
++function onSweep(theta: number, start: number, sweep: number): boolean {
++  return sweep >= 0 ? angle(theta - start) <= sweep + EPS : angle(start - theta) <= -sweep + EPS;
++}
++
++function entersPiece(piece: TrafficPiece, disc: TrafficDisc): boolean {
++  if (piece.kind === 'line') return entersSegment(piece.from, piece.to, disc);
++  if (inside(piece.from, disc) || inside(piece.to, disc)) return true;
++  // The distance from a fixed center to a circular arc is minimized at an
++  // endpoint or its radial bearing, including a clockwise returned arc.
++  const bearing = Math.atan2(disc.center.y - piece.center.y, disc.center.x - piece.center.x);
++  if (!onSweep(bearing, piece.startAngle, piece.sweep)) return false;
++  return inside({ x: piece.center.x + piece.radius * Math.cos(bearing),
++    y: piece.center.y + piece.radius * Math.sin(bearing) }, disc);
++}
++
++function within(point: Vec2, bounds?: TrafficBounds): boolean {
++  return !bounds || (point.x >= bounds.minX - EPS && point.x <= bounds.maxX + EPS
++    && point.y >= bounds.minY - EPS && point.y <= bounds.maxY + EPS);
++}
++
++function pieceWithin(piece: TrafficPiece, bounds?: TrafficBounds): boolean {
++  if (!within(piece.from, bounds) || !within(piece.to, bounds)) return false;
++  if (!bounds || piece.kind === 'line') return true;
++  return [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2].every(theta => !onSweep(theta, piece.startAngle, piece.sweep)
++    || within({ x: piece.center.x + piece.radius * Math.cos(theta),
++      y: piece.center.y + piece.radius * Math.sin(theta) }, bounds));
++}
++
++/** A shortest plane relaxation is a lower bound for every added obstacle.
++ * Accept its path only after checking all explicit discs and field bounds.
++ * Equal-distance path ties may differ from the full graph; the consumer must
++ * still evaluate its first direction through achievable movement previews.
++ */
++export function trafficRoute(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): TrafficPath | null {
++  if (!finite(start) || !finite(goal) || discs.length > 10
++    || discs.some(d => !finite(d.center) || !Number.isFinite(d.radius) || d.radius < 0)
++    || bounds && (![bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].every(Number.isFinite)
++      || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY)
++    || !within(start, bounds) || !within(goal, bounds)
++    || discs.some(d => inside(start, d) || inside(goal, d))) return null;
++  const active = new Set<number>();
++  for (let i = 0; i < discs.length; i++) if (entersSegment(start, goal, discs[i])) active.add(i);
++  if (!active.size) return trafficPath(start, goal, [], bounds);
++  // Every failed iteration adds an actual violated explicit disc, so there
++  // are at most ten subset solves. No peer is discarded for being distant.
++  for (let iteration = 0; iteration < discs.length; iteration++) {
++    const subset = discs.filter((_disc, index) => active.has(index));
++    const path = trafficPath(start, goal, subset);
++    if (!path || path.pieces.some(piece => !pieceWithin(piece, bounds)))
++      return trafficPath(start, goal, discs, bounds);
++    const added: number[] = [];
++    for (let i = 0; i < discs.length; i++)
++      if (!active.has(i) && path.pieces.some(piece => entersPiece(piece, discs[i]))) added.push(i);
++    if (!added.length) {
++      const indices=discs.flatMap((_disc,index)=>active.has(index)?[index]:[]);
++      const pieces=path.pieces.map(piece=>piece.kind==='arc'?{...piece,disc:indices[piece.disc]}:piece);
++      return {...path,pieces,firstPiece:pieces[0]??null};
++    }
++    for (const index of added) active.add(index);
++  }
++  return trafficPath(start, goal, discs, bounds);
++}
++
++export function trafficDistance(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): number | null {
++  return trafficRoute(start,goal,discs,bounds)?.distance??null;
++}
+diff --git a/src/sim/traffic-path.ts b/src/sim/traffic-path.ts
+new file mode 100644
+index 0000000..4454e2e
+--- /dev/null
++++ b/src/sim/traffic-path.ts
+@@ -0,0 +1,194 @@
++/** Static geometry of acquired teammate touch discs. This proposes a route to
++ * the actor's existing goal; it does not predict future cuts, certify physical
++ * execution, or change any body's radius. Optional bounds remove represented
++ * paths which leave the caller's existing field limits; no wall waypoints or
++ * field/circle intersections are invented to make a route exist.
++ */
++import type { Vec2 } from '../core/vec.js';
++
++export interface TrafficDisc { center: Vec2; radius: number }
++export interface TrafficBounds { minX: number; maxX: number; minY: number; maxY: number }
++export interface TrafficLine {
++  kind: 'line'; from: Vec2; to: Vec2; length: number;
++}
++export interface TrafficArc {
++  kind: 'arc'; from: Vec2; to: Vec2; length: number;
++  center: Vec2; radius: number; startAngle: number; sweep: number; disc: number;
++}
++export type TrafficPiece = TrafficLine | TrafficArc;
++export interface TrafficPath {
++  distance: number;
++  pieces: TrafficPiece[];
++  firstPiece: TrafficPiece | null;
++  firstDirection: Vec2;
++}
++
++// Numerical comparison tolerance only; disc radii remain caller supplied.
++const EPS = 1e-9, TAU = 2 * Math.PI;
++const copy = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
++const distance = (a: Vec2, b: Vec2) => Math.hypot(a.x - b.x, a.y - b.y);
++const finite = (v: Vec2) => Number.isFinite(v.x) && Number.isFinite(v.y);
++const angle = (a: number) => (a % TAU + TAU) % TAU;
++const inside = (p: Vec2, c: TrafficDisc) => distance(p, c.center) < c.radius - EPS;
++
++interface Circle extends TrafficDisc { original: number }
++interface Node { point: Vec2; circles: Set<number> }
++interface Edge { to: number; piece: TrafficPiece }
++
++function segmentClear(a: Vec2, b: Vec2, circles: readonly TrafficDisc[]): boolean {
++  const dx = b.x - a.x, dy = b.y - a.y, length2 = dx * dx + dy * dy;
++  return circles.every(c => {
++    const t = length2 ? Math.max(0, Math.min(1,
++      ((c.center.x - a.x) * dx + (c.center.y - a.y) * dy) / length2)) : 0;
++    return !inside({ x: a.x + t * dx, y: a.y + t * dy }, c);
++  });
++}
++
++function reverse(piece: TrafficPiece): TrafficPiece {
++  if (piece.kind === 'line') return { ...piece, from: copy(piece.to), to: copy(piece.from) };
++  return { ...piece, from: copy(piece.to), to: copy(piece.from),
++    startAngle: piece.startAngle + piece.sweep, sweep: -piece.sweep };
++}
++
++/** Shortest path in the represented union of at most ten static discs.
++ * Straight visibility edges and exposed circular boundary arcs share exact
++ * tangent/intersection nodes. Overlap intersections partition arcs even when
++ * a third disc covers the intersection; covered nodes/arcs remain unusable.
++ * Boundary touch is permitted. A start/goal inside a disc has no free route.
++ */
++export function trafficPath(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): TrafficPath | null {
++  if (!finite(start) || !finite(goal) || discs.length > 10
++    || discs.some(c => !finite(c.center) || !Number.isFinite(c.radius) || c.radius < 0)
++    || bounds && (![bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].every(Number.isFinite)
++      || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY)) return null;
++  const within = (p: Vec2) => !bounds || (p.x >= bounds.minX - EPS && p.x <= bounds.maxX + EPS
++    && p.y >= bounds.minY - EPS && p.y <= bounds.maxY + EPS);
++  if (!within(start) || !within(goal)) return null;
++  const nonzero = discs.map((c, original) => ({ center: copy(c.center), radius: c.radius, original }))
++    .filter(c => c.radius > 0);
++  if (nonzero.some(c => inside(start, c) || inside(goal, c))) return null;
++  // A contained disc adds no boundary to the same union. Retain one copy of
++  // equal coincident discs, rather than dividing by a zero center distance.
++  const circles: Circle[] = nonzero.filter((c, i) => !nonzero.some((d, j) => i !== j
++    && distance(c.center, d.center) + c.radius <= d.radius + EPS
++    && (d.radius > c.radius + EPS || j < i)));
++  if (segmentClear(start, goal, circles)) {
++    const length = distance(start, goal);
++    const piece: TrafficLine = { kind: 'line', from: copy(start), to: copy(goal), length };
++    return { distance: length, pieces: length ? [piece] : [], firstPiece: length ? piece : null,
++      firstDirection: length ? { x: (goal.x - start.x) / length, y: (goal.y - start.y) / length } : { x: 0, y: 0 } };
++  }
++
++  const nodes: Node[] = [];
++  function node(point: Vec2, circle?: number): number {
++    let index = nodes.findIndex(n => distance(n.point, point) <= EPS);
++    if (index < 0) { index = nodes.length; nodes.push({ point: copy(point), circles: new Set() }); }
++    if (circle !== undefined) nodes[index].circles.add(circle);
++    return index;
++  }
++  const first = node(start), last = node(goal);
++  for (let i = 0; i < circles.length; i++) {
++    const c = circles[i];
++    for (const p of [start, goal]) {
++      const d = distance(p, c.center);
++      if (Math.abs(d - c.radius) <= EPS) { node(p, i); continue; }
++      const heading = Math.atan2(p.y - c.center.y, p.x - c.center.x);
++      const offset = Math.acos(Math.min(1, c.radius / d));
++      for (const sign of [-1, 1]) {
++        const theta = heading + sign * offset;
++        node({ x: c.center.x + c.radius * Math.cos(theta), y: c.center.y + c.radius * Math.sin(theta) }, i);
++      }
++    }
++    for (let j = 0; j < i; j++) {
++      const d = circles[j], dx = d.center.x - c.center.x, dy = d.center.y - c.center.y;
++      const length2 = dx * dx + dy * dy, length = Math.sqrt(length2);
++      // Both external and internal common tangents, when they exist. Their
++      // straight edges are still checked against every disc below.
++      for (const orientation of [-1, 1]) {
++        const delta = c.radius - orientation * d.radius;
++        const height2 = length2 - delta * delta;
++        if (height2 < -EPS) continue;
++        const height = Math.sqrt(Math.max(0, height2));
++        for (const sign of [-1, 1]) {
++          const nx = (dx * delta - dy * height * sign) / length2;
++          const ny = (dy * delta + dx * height * sign) / length2;
++          node({ x: c.center.x + c.radius * nx, y: c.center.y + c.radius * ny }, i);
++          node({ x: d.center.x + orientation * d.radius * nx, y: d.center.y + orientation * d.radius * ny }, j);
++        }
++      }
++      if (length > c.radius + d.radius + EPS || length < Math.abs(c.radius - d.radius) - EPS) continue;
++      const along = (c.radius * c.radius - d.radius * d.radius + length2) / (2 * length);
++      const height = Math.sqrt(Math.max(0, c.radius * c.radius - along * along));
++      const x = c.center.x + along * dx / length, y = c.center.y + along * dy / length;
++      for (const sign of [-1, 1]) {
++        const p = { x: x - sign * height * dy / length, y: y + sign * height * dx / length };
++        node(p, i); node(p, j);
++      }
++    }
++  }
++
++  const exposed = nodes.map(n => within(n.point) && circles.every(c => !inside(n.point, c)));
++  const graph: Edge[][] = nodes.map(() => []);
++  function edge(a: number, b: number, piece: TrafficPiece) {
++    if (a === b || piece.length <= EPS || !exposed[a] || !exposed[b]) return;
++    graph[a].push({ to: b, piece }); graph[b].push({ to: a, piece: reverse(piece) });
++  }
++  for (let i = 0; i < nodes.length; i++) {
++    if (!exposed[i]) continue;
++    for (let j = 0; j < i; j++) {
++      if (!exposed[j] || !segmentClear(nodes[i].point, nodes[j].point, circles)) continue;
++      edge(i, j, { kind: 'line', from: copy(nodes[i].point), to: copy(nodes[j].point),
++        length: distance(nodes[i].point, nodes[j].point) });
++    }
++  }
++  for (let i = 0; i < circles.length; i++) {
++    const c = circles[i];
++    const ring = nodes.map((n, index) => ({ index, theta: angle(Math.atan2(n.point.y - c.center.y, n.point.x - c.center.x)) }))
++      .filter(n => nodes[n.index].circles.has(i)).sort((a, b) => a.theta - b.theta);
++    for (let j = 0; j < ring.length; j++) {
++      const from = ring[j], to = ring[(j + 1) % ring.length];
++      const sweep = angle(to.theta - from.theta);
++      if (sweep <= EPS) continue;
++      const middle = from.theta + sweep / 2;
++      const point = { x: c.center.x + c.radius * Math.cos(middle), y: c.center.y + c.radius * Math.sin(middle) };
++      if (!within(point) || circles.some((d, k) => k !== i && inside(point, d))) continue;
++      // Rectangular extrema occur at an endpoint or cardinal circle angle.
++      // Endpoints are checked by edge(); the remaining extrema prevent a
++      // clear-looking midpoint from hiding an out-of-bounds arc excursion.
++      if ([0, Math.PI / 2, Math.PI, 3 * Math.PI / 2].some(theta => angle(theta - from.theta) <= sweep + EPS
++        && !within({ x: c.center.x + c.radius * Math.cos(theta), y: c.center.y + c.radius * Math.sin(theta) }))) continue;
++      edge(from.index, to.index, { kind: 'arc', from: copy(nodes[from.index].point), to: copy(nodes[to.index].point),
++        center: copy(c.center), radius: c.radius, startAngle: from.theta, sweep,
++        length: c.radius * sweep, disc: c.original });
++    }
++  }
++
++  const costs = nodes.map(() => Infinity), visited = nodes.map(() => false);
++  const previous: ({ from: number; piece: TrafficPiece } | undefined)[] = nodes.map(() => undefined);
++  costs[first] = 0;
++  for (let k = 0; k < nodes.length; k++) {
++    let nearest = -1;
++    for (let i = 0; i < nodes.length; i++)
++      if (!visited[i] && (nearest < 0 || costs[i] < costs[nearest])) nearest = i;
++    if (nearest < 0 || !Number.isFinite(costs[nearest])) break;
++    if (nearest === last) break;
++    visited[nearest] = true;
++    for (const next of graph[nearest]) {
++      const cost = costs[nearest] + next.piece.length;
++      if (cost < costs[next.to]) { costs[next.to] = cost; previous[next.to] = { from: nearest, piece: next.piece }; }
++    }
++  }
++  if (!Number.isFinite(costs[last])) return null;
++  const pieces: TrafficPiece[] = [];
++  for (let index = last; index !== first;) {
++    const entry = previous[index];
++    if (!entry) return null;
++    pieces.push(entry.piece); index = entry.from;
++  }
++  pieces.reverse();
++  const piece = pieces[0];
++  const firstDirection = piece.kind === 'line'
++    ? { x: (piece.to.x - piece.from.x) / piece.length, y: (piece.to.y - piece.from.y) / piece.length }
++    : { x: -Math.sin(piece.startAngle) * Math.sign(piece.sweep), y: Math.cos(piece.startAngle) * Math.sign(piece.sweep) };
++  return { distance: costs[last], pieces, firstPiece: piece, firstDirection };
++}
+diff --git a/src/sim/traffic-route.ts b/src/sim/traffic-route.ts
+new file mode 100644
+index 0000000..6eb21fc
+--- /dev/null
++++ b/src/sim/traffic-route.ts
+@@ -0,0 +1,91 @@
++/** Local routes keep the football goal and use only acquired teammate pictures.
++ * Static geometry proposes the detour; ordinary movement previews decide which
++ * short command is achievable. Neither predicts a teammate's future decision.
++ */
++import {END_LINE_X,FIELD_WIDTH} from '../core/field.js';
++import type {MovementSample} from '../physics/movement-preview.js';
++import type {Intent} from '../physics/world.js';
++import type {Agent} from './agent.js';
++import {containCoverage} from './coverage-space.js';
++import {movementObjective} from './movement-objective.js';
++import type {TrafficDisc} from './traffic-path.js';
++import {trafficDistance,trafficRoute} from './traffic-distance.js';
++
++export interface TrafficPeer {
++  key:number; age?:number; pos:{x:number;y:number}; vel:{x:number;y:number}; touch:number;
++}
++type Forecast=(command:Intent)=>MovementSample[];
++const routing=new WeakSet<Agent>();
++const HORIZON=.6,EPS=1e-9;
++
++/** Swept touch geometry and incoming normal speed from the same achieved
++ * preview. Less eventual overlap alone can hide an earlier, harder impact.
++ * This is a contact-risk comparison, not a prediction of delivered impulse.
++ */
++function encounter(a:Agent,path:readonly MovementSample[],peer:TrafficPeer):{gap:number;closing:number} {
++  let x=a.pos.x-peer.pos.x,y=a.pos.y-peer.pos.y,least=Math.hypot(x,y)-peer.touch;
++  let closing:number|undefined,time=0;
++  if(least < -EPS)closing=Math.max(0,-(x*(a.vel.x-peer.vel.x)+y*(a.vel.y-peer.vel.y))/Math.max(EPS,Math.hypot(x,y)));
++  for(const sample of path){
++    const xx=sample.pos.x-peer.pos.x-peer.vel.x*sample.t;
++    const yy=sample.pos.y-peer.pos.y-peer.vel.y*sample.t;
++    const dx=xx-x,dy=yy-y;
++    const along=Math.max(0,Math.min(1,-(x*dx+y*dy)/Math.max(1e-12,dx*dx+dy*dy)));
++    const gap=Math.hypot(x+along*dx,y+along*dy)-peer.touch;
++    if(closing===undefined&&gap < -EPS){
++      const aa=dx*dx+dy*dy,bb=2*(x*dx+y*dy),cc=x*x+y*y-peer.touch*peer.touch;
++      const first=cc<=0?0:Math.max(0,Math.min(1,(-bb-Math.sqrt(Math.max(0,bb*bb-4*aa*cc)))/(2*aa)));
++      const rx=x+first*dx,ry=y+first*dy;
++      closing=Math.max(0,-(rx*dx+ry*dy)/(Math.max(EPS,sample.t-time)*Math.max(EPS,Math.hypot(rx,ry))));
++    }
++    least=Math.min(least,gap);x=xx;y=yy;time=sample.t;
++  }
++  return {gap:least,closing:closing??0};
++}
++
++/** Existing man/zone free-footwork scope only. Start when ordinary spacing
++ * restricts the selected request and its existing compound action found no
++ * alternative. Continue to reconsider the local route while the acquired
++ * obstacle still blocks that same goal; no fixed hold timer or peer memory.
++ */
++export function localTrafficRoute(a:Agent,raw:Intent,ordinary:Intent,peers:readonly TrafficPeer[],
++  forecast:Forecast,eligible:boolean,allowStart:boolean):Intent {
++  const clear=()=>{routing.delete(a);return ordinary;};
++  const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
++  if(!eligible||(a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<EPS
++    ||![goal.point.x,goal.point.y].every(Number.isFinite)
++    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0
++      ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y,p.touch].every(Number.isFinite)))return clear();
++  const flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity;
++  if(!flow||![flow.x,flow.y].every(Number.isFinite))return clear();
++  if(!routing.has(a)&&(!allowStart||(ordinary.vel.x===raw.vel.x&&ordinary.vel.y===raw.vel.y)))return ordinary;
++  const margin=a.profile.radius+.5;
++  const bounds={minX:margin,maxX:END_LINE_X-margin,minY:margin,maxY:FIELD_WIDTH-margin};
++  const futureGoal={x:goal.point.x+flow.x*HORIZON,y:goal.point.y+flow.y*HORIZON};
++  const discs:TrafficDisc[]=peers.map(peer=>({center:peer.pos,radius:peer.touch}));
++  const route=trafficRoute(a.pos,futureGoal,discs,bounds);
++  if(!route||route.distance<=Math.hypot(a.pos.x-futureGoal.x,a.pos.y-futureGoal.y)+EPS)return clear();
++  const futureDiscs=peers.map(peer=>({center:{x:peer.pos.x+peer.vel.x*HORIZON,
++    y:peer.pos.y+peer.vel.y*HORIZON},radius:peer.touch}));
++  const cost=(point:{x:number;y:number})=>trafficDistance(point,futureGoal,futureDiscs,bounds)??Infinity;
++  const oldPath=forecast(ordinary),oldEncounters=peers.map(peer=>encounter(a,oldPath,peer));
++  const oldCost=cost(oldPath[oldPath.length-1].pos);
++  let best=ordinary,bestCost=oldCost;
++  // A turn can require a real brake before the body can follow its tangent.
++  // These are the actor's existing raw pace, restricted pace, and gather;
++  // direction comes from joint geometry rather than extra sampled angles.
++  const paces=[speed,Math.hypot(ordinary.vel.x,ordinary.vel.y),0].filter((v,i,all)=>all.indexOf(v)===i);
++  for(const pace of paces){
++    const command=containCoverage(a,{...raw,vel:{x:route.firstDirection.x*pace,y:route.firstDirection.y*pace}});
++    const path=forecast(command);
++    if(path.some(sample=>sample.support!=='up')
++      ||peers.some((peer,i)=>{
++        const next=encounter(a,path,peer),old=oldEncounters[i];
++        return next.gap<Math.min(0,old.gap)-EPS||next.closing>old.closing+EPS;
++      }))continue;
++    const remaining=cost(path[path.length-1].pos);
++    if(remaining<bestCost-EPS){best=command;bestCost=remaining;}
++  }
++  if(best!==ordinary)routing.add(a);
++  return best;
++}
+diff --git a/test/fixtures/traffic-route-impact.json b/test/fixtures/traffic-route-impact.json
+new file mode 100644
+index 0000000..d82619c
+--- /dev/null
++++ b/test/fixtures/traffic-route-impact.json
+@@ -0,0 +1,250 @@
++{
++  "inputSha256": "d72f11b3e38913a5a9207b3ff61141b0b745d765ea336a4c6e6727c8db28d55d",
++  "t": 1.95,
++  "idx": 15,
++  "body": {
++    "pos": {
++      "x": 37.54908747540832,
++      "y": 26.4421612852699
++    },
++    "vel": {
++      "x": -0.6835628158789077,
++      "y": 1.6064874926721937
++    },
++    "facing": 3.204774301974286,
++    "energy": 0.987559075762981,
++    "profile": {
++      "vmax": 9.076817613371945,
++      "tau": 1.3397936959756922,
++      "brake": 6.147403628117912,
++      "lateral": 6.296676870748302,
++      "turnRate": 8.617777777777778,
++      "backpedal": 0.6122448979591837,
++      "shuffle": 0.5888,
++      "massKg": 112.49090776,
++      "heightYd": 2.091666666666667,
++      "radius": 0.3018181818181818,
++      "reach": 1.0669444444444445,
++      "maxCatchHeight": 3.468583333333333,
++      "reactReach": 3.0394166666666664,
++      "reactionTime": 0.2229387755102041,
++      "power": 112.68030571694285,
++      "balance": 0.19387755102040816,
++      "bend": 0.5127755102040817,
++      "stepSpeed": 3.389215419501133,
++      "getUp": 0.9557777777777778
++    },
++    "support": {
++      "xi": {
++        "x": 0,
++        "y": 0
++      },
++      "state": "up",
++      "since": null,
++      "posture": 0.19756125468843772,
++      "lean": {
++        "x": 0,
++        "y": 0
++      },
++      "load": {
++        "x": 0,
++        "y": 0
++      },
++      "felt": {
++        "x": 0,
++        "y": 0
++      },
++      "feetLock": 0,
++      "feetVel": {
++        "x": 0,
++        "y": 0
++      },
++      "fall": {
++        "x": 0,
++        "y": 0
++      },
++      "peak": 0,
++      "out": 0,
++      "feltTip": {
++        "x": 0,
++        "y": 0
++      },
++      "causes": {
++        "contact": 0,
++        "legs": 0,
++        "overspeed": 0
++      },
++      "accel": {
++        "x": 3.301536863108991,
++        "y": -3.3636827487935306
++      },
++      "tipAccel": {
++        "x": 0,
++        "y": 0
++      }
++    },
++    "spin": 2.527265935379723,
++    "squeeze": 0,
++    "sprintLoad": 0,
++    "squeezeHeading": -4.41705876141949
++  },
++  "raw": {
++    "request": {
++      "vel": {
++        "x": -2.5859974436405224,
++        "y": -9.076817613371945
++      },
++      "facing": -1.8483442273457844
++    },
++    "goal": {
++      "kind": "moving",
++      "point": {
++        "x": 36.5,
++        "y": 25.350723274526555
++      },
++      "velocity": {
++        "x": 0,
++        "y": 0
++      }
++    }
++  },
++  "ordinary": {
++    "vel": {
++      "x": 3.5899727904208216,
++      "y": -0.7656481655607994
++    },
++    "facing": -1.8483442273457844
++  },
++  "peers": [
++    {
++      "key": 11,
++      "age": 0.05,
++      "pos": {
++        "x": 34.08688574905692,
++        "y": 31.198308847822954
++      },
++      "vel": {
++        "x": 1.1566422173113486,
++        "y": 0.550667814945843
++      },
++      "touch": 0.5596363636363637
++    },
++    {
++      "key": 12,
++      "age": 0.05,
++      "pos": {
++        "x": 35.05897924311493,
++        "y": 19.408793132397054
++      },
++      "vel": {
++        "x": -0.38974339480173786,
++        "y": -0.7695927244605472
++      },
++      "touch": 0.5334545454545455
++    },
++    {
++      "key": 13,
++      "age": 0.05,
++      "pos": {
++        "x": 37.09087783906974,
++        "y": 25.825536239179687
++      },
++      "vel": {
++        "x": 1.483158443815617,
++        "y": 1.6066427807216965
++      },
++      "touch": 0.5383636363636364
++    },
++    {
++      "key": 14,
++      "age": 0.05,
++      "pos": {
++        "x": 37.05364903424972,
++        "y": 29.49089377286815
++      },
++      "vel": {
++        "x": 1.537156550446803,
++        "y": 2.1259341773738933
++      },
++      "touch": 0.5571818181818182
++    },
++    {
++      "key": 16,
++      "age": 0.05,
++      "pos": {
++        "x": 37.286679246989195,
++        "y": 27.625838443540676
++      },
++      "vel": {
++        "x": -1.6107332032667938,
++        "y": -0.7321699977104015
++      },
++      "touch": 0.5359090909090909
++    },
++    {
++      "key": 17,
++      "age": 0.05,
++      "pos": {
++        "x": 42.213360718175345,
++        "y": 11.018590209121635
++      },
++      "vel": {
++        "x": 0.7607159520849722,
++        "y": 2.4214686526800064
++      },
++      "touch": 0.5138181818181818
++    },
++    {
++      "key": 18,
++      "age": 0.05,
++      "pos": {
++        "x": 43.48572185720864,
++        "y": 42.763342032563
++      },
++      "vel": {
++        "x": 2.2305202912094524,
++        "y": -1.8847992970088354
++      },
++      "touch": 0.5064545454545455
++    },
++    {
++      "key": 19,
++      "age": 0.05,
++      "pos": {
++        "x": 38.32368819322482,
++        "y": 32.223184519076035
++      },
++      "vel": {
++        "x": -2.4753445156948586,
++        "y": -1.8174000982930902
++      },
++      "touch": 0.5015454545454545
++    },
++    {
++      "key": 20,
++      "age": 0.05,
++      "pos": {
++        "x": 45.09020147170544,
++        "y": 30.59587723244362
++      },
++      "vel": {
++        "x": -1.4823666135368772,
++        "y": -4.849874181711718
++      },
++      "touch": 0.48600000000000004
++    },
++    {
++      "key": 21,
++      "age": 0.05,
++      "pos": {
++        "x": 44.29505216804487,
++        "y": 21.09188947643207
++      },
++      "vel": {
++        "x": -2.7689085129139714,
++        "y": 2.9164951404639465
++      },
++      "touch": 0.5097272727272728
++    }
++  ]
++}
+diff --git a/test/local-traffic-route.test.ts b/test/local-traffic-route.test.ts
+new file mode 100644
+index 0000000..1f22c24
+--- /dev/null
++++ b/test/local-traffic-route.test.ts
+@@ -0,0 +1,220 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import { localPassage } from '../scripts/diag/navigation/local-passage.js';
++import { CENTER_Y } from '../src/core/field.js';
++import type { Body } from '../src/physics/kinematics.js';
++import * as Preview from '../src/physics/movement-preview.js';
++import { newSupport } from '../src/physics/support.js';
++import { World, type Intent } from '../src/physics/world.js';
++import { Agent } from '../src/sim/agent.js';
++import { track } from '../src/sim/behaviors/common.js';
++import { movementObjective, withMovementObjective } from '../src/sim/movement-objective.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { spaceTeammates } from '../src/sim/spacing.js';
++import { localTrafficRoute, type TrafficPeer } from '../src/sim/traffic-route.js';
++
++const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz', import.meta.url))).toString());
++const goal = { x: 58, y: CENTER_Y };
++
++function actor() {
++  const body: Body = { ...structuredClone(fixture.rows[0].body), pos: { x: 50, y: CENTER_Y },
++    vel: { x: 4, y: 0 }, facing: 0, energy: 1, support: newSupport(), spin: 0, squeeze: 0 };
++  return new Agent(0, 'D', 'SS', fixture.player, body.profile, body,
++    { kind: 'zone', update() { throw Error('The selected football goal is already supplied'); } });
++}
++
++function picture(a: Agent): TrafficPeer {
++  return { key: 1, pos: { x: 53, y: CENTER_Y }, vel: { x: 0, y: 0 }, age: .05,
++    touch: .9 * (a.profile.radius + fixture.rows[0].peers[0].profile.radius) };
++}
++
++function request(a: Agent): Intent {
++  return { ...track(a, goal, { x: 0, y: 0 }, { speed: .7, gain: 3, facing: 0 }),
++    posture: .25, effort: .9, cutSkill: .85 };
++}
++
++function usefulPassage(row: ReturnType<typeof localPassage>) {
++  // Reaching the far side is achieved movement, not a nominal detour request.
++  expect(row.result.progress).toBeGreaterThan(7);
++  expect(row.result.goalError).toBeLessThan(1);
++  expect(row.states.every(s => s.after[0].state === 'up')).toBe(true);
++  expect(row.states.every(s => s.command.facing === s.raw.facing)).toBe(true);
++  expect(row.result.maximumWorkResidual).toBeLessThan(1e-8);
++  // A tangent can produce a reported touch with zero delivered impulse.
++  // Such a record is not a physical teammate impact or a failed passage.
++  expect(row.result.contactIntervals.flatMap(s => s.contacts)
++    .every(c => c.impulse <= 1e-8)).toBe(true);
++}
++
++describe('local traffic routing preserves an owned goal through achieved movement', () => {
++  it.each(['head-on', 'cluster'] as const)('passes %s traffic and resumes the same goal over three seconds', mode => {
++    const row = localPassage(mode);
++    usefulPassage(row);
++    expect(row.states.some(s => Math.abs(s.after[0].pos.y - row.initial[0].pos.y) > row.initial[0].profile.radius)).toBe(true);
++    expect(row.states.every(s => s.raw.objective?.kind === 'moving'
++      && s.raw.objective.point.x === row.goal.x && s.raw.objective.point.y === row.goal.y
++      && s.raw.objective.velocity?.x === 0 && s.raw.objective.velocity?.y === 0)).toBe(true);
++  });
++
++  it('preserves useful offset passage in both mirrors, allowing harmless touch records', () => {
++    const ordinary = localPassage('single'), mirrored = localPassage('mirror');
++    usefulPassage(ordinary); usefulPassage(mirrored);
++    expect(ordinary.result.progress).toBeCloseTo(mirrored.result.progress, 8);
++    expect(ordinary.result.goalError).toBeCloseTo(mirrored.result.goalError, 8);
++    for (let i = 0; i < ordinary.states.length; i++) {
++      expect(ordinary.states[i].after[0].pos.x).toBeCloseTo(mirrored.states[i].after[0].pos.x, 8);
++      expect(ordinary.states[i].after[0].pos.y - CENTER_Y)
++        .toBeCloseTo(CENTER_Y - mirrored.states[i].after[0].pos.y, 8);
++    }
++  });
++
++  it('keeps the clear track unchanged without any movement previews', () => {
++    const preview = vi.spyOn(Preview, 'previewFreeMovement');
++    try {
++      const row = localPassage('clear');
++      usefulPassage(row);
++      expect(row.states.every(s => s.command.vel.x === s.raw.vel.x && s.command.vel.y === s.raw.vel.y)).toBe(true);
++      expect(preview).not.toHaveBeenCalled();
++    } finally { preview.mockRestore(); }
++  });
++
++  it('uses acquired peer pictures at the production hook while preserving body, pictures and command modifiers', () => {
++    const a = actor(), raw = request(a), seen: Perceived = { pos: { x: 53, y: CENTER_Y },
++      vel: { x: 0, y: 0 }, age: .05, facing: 0, stance: null };
++    const peer = { idx: 1, team: 'D', profile: fixture.rows[0].peers[0].profile,
++      get pos() { throw Error('Private peer position'); },
++      get vel() { throw Error('Private peer velocity'); },
++      get body() { throw Error('Private peer body'); } } as unknown as Agent;
++    const beforeBody = structuredClone(a.body), beforePicture = structuredClone(seen);
++    const intents: Intent[] = [raw, { vel: { x: 0, y: 0 }, free: true }];
++    let reads = 0;
++    spaceTeammates([a, peer], intents, (_observer, target) => {
++      expect(target).toBe(peer); reads++; return seen;
++    }, { now: 2 });
++    expect(reads).toBe(1);
++    expect(a.body).toEqual(beforeBody); expect(seen).toEqual(beforePicture);
++    expect({ ...intents[0], vel: undefined }).toEqual({ ...raw, vel: undefined });
++    expect(movementObjective(intents[0])).toEqual(movementObjective(raw));
++  });
++
++  it('distinguishes acquired stationary motion from unknown motion, age and objective flow', () => {
++    for (const kind of ['known-stationary', 'unknown-motion', 'unknown-age', 'unknown-flow'] as const) {
++      const a = actor(), peer = picture(a);
++      let raw = request(a);
++      if (kind === 'unknown-motion') peer.vel = { x: NaN, y: 0 };
++      if (kind === 'unknown-age') delete peer.age;
++      if (kind === 'unknown-flow') raw = withMovementObjective(raw, { kind: 'moving', point: goal });
++      const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++      const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++      const before = structuredClone({ body: a.body, peer });
++      const chosen = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++      if (kind === 'known-stationary') expect(forecast).toHaveBeenCalled();
++      else { expect(chosen).toBe(ordinary); expect(forecast).not.toHaveBeenCalled(); }
++      expect(a.body).toEqual(before.body); expect(peer).toEqual(before.peer);
++    }
++  });
++
++  it('leaves an occupied goal and unsupported or constrained action with its ordinary response', () => {
++    for (const kind of ['occupied-goal', 'unsupported-role', 'constrained'] as const) {
++      const a = actor(), peer = picture(a), raw = request(a);
++      if (kind === 'occupied-goal') peer.pos = { ...goal };
++      if (kind === 'unsupported-role') a.behavior = { kind: 'idle', update() { throw Error('No new role scope'); } };
++      const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++      const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++      expect(localTrafficRoute(a, raw, ordinary, [peer], forecast, kind !== 'constrained', true)).toBe(ordinary);
++      expect(forecast).not.toHaveBeenCalled();
++    }
++  });
++
++  it('retains a real impact when current momentum cannot avoid a close obstruction', () => {
++    const a = actor(), body: Body = { pos: { x: a.pos.x + .7, y: CENTER_Y },
++      vel: { x: 0, y: 0 }, facing: 0, energy: 1,
++      profile: structuredClone(fixture.rows[0].peers[0].profile), support: newSupport(), spin: 0 };
++    const peer = new Agent(1, 'D', 'FS', fixture.player, body.profile, body,
++      { kind: 'zone', update() { throw Error('Known stationary obstruction'); } });
++    const world = new World([a.body, body]); world.time = 2;
++    const seen: Perceived = { pos: { ...body.pos }, vel: { x: 0, y: 0 }, age: .05, facing: 0, stance: null };
++    const intents: Intent[] = [request(a), { vel: { x: 0, y: 0 }, free: true }];
++    spaceTeammates([a, peer], intents, () => seen, { now: 2 });
++    const report = world.step(intents, .05);
++    expect(report.contacts.some(c => c.impulse > 0)).toBe(true);
++    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  });
++  it('reconsiders acquired motion and retires its old detour when the owned goal changes', () => {
++    const a = actor(), peer = picture(a), raw = request(a);
++    const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++    const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++    const initial = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++    expect(Math.abs(initial.vel.y)).toBeGreaterThan(0);
++    expect(movementObjective(initial)).toEqual(movementObjective(raw));
++
++    // This is newly acquired transverse motion, not an unseen future cut or
++    // a route read from the teammate. The ordinary request now has room as
++    // that picture moves; a retained maneuver must reconsider its command.
++    const crossing = { ...peer, vel: { x: 0, y: 4 } };
++    const before = structuredClone({ own: a.body, crossing });
++    expect(localTrafficRoute(a, raw, raw, [crossing], forecast, true, false)).toBe(raw);
++    expect(a.body).toEqual(before.own); expect(crossing).toEqual(before.crossing);
++
++    // The original producer supplies a different legitimate owned goal. This
++    // checks goal semantics only; execution of its turn remains with ordinary
++    // spacing and World, rather than being certified by this route helper.
++    const cut = withMovementObjective({ ...raw, vel: { x: 0, y: Math.hypot(raw.vel.x, raw.vel.y) } },
++      { kind: 'moving', point: { x: a.pos.x, y: a.pos.y + 8 }, velocity: { x: 0, y: 0 } });
++    const ordinaryCut = { ...cut, vel: { x: 0, y: 1 } };
++    forecast.mockClear();
++    expect(localTrafficRoute(a, cut, ordinaryCut, [peer], forecast, true, false)).toBe(ordinaryCut);
++    expect(forecast).not.toHaveBeenCalled();
++    // With starting disallowed, the old maneuver cannot silently reactivate
++    // after yielding to the new goal. No fixed hold timer supplies continuity.
++    expect(localTrafficRoute(a, raw, ordinary, [peer], forecast, true, false)).toBe(ordinary);
++    expect(forecast).not.toHaveBeenCalled();
++  });
++  it('does not trade shallower predicted overlap for the harder first hit in the saved native encounter', () => {
++    const saved = JSON.parse(readFileSync(new URL('./fixtures/traffic-route-impact.json', import.meta.url), 'utf8'));
++    const body: Body = structuredClone(saved.body);
++    const a = new Agent(saved.idx, 'D', 'LB_M', fixture.player, body.profile, body,
++      { kind: 'zone', update() { throw Error('Replay only the already consumed goal'); } });
++    const raw: Intent = withMovementObjective(structuredClone(saved.raw.request), structuredClone(saved.raw.goal));
++    const ordinary: Intent = structuredClone(saved.ordinary);
++    const peers: TrafficPeer[] = structuredClone(saved.peers);
++    const before = structuredClone({ body, peers });
++    const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(body, command, saved.t, 12));
++    const selected = localTrafficRoute(a, raw, ordinary, peers, forecast, true, true);
++    // The saved ordinary preview enters acquired peer13 at .2403s / .825yd/s.
++    // Gather has less eventual overlap (-.227 vs -.493yd), but enters earlier
++    // and harder (.1769s / 1.335yd/s). The other detours create a peer16 hit.
++    // That lesser minimum overlap is not permission for the harder first hit.
++    expect(forecast.mock.calls.some(([command]) => command.vel.x === 0 && command.vel.y === 0)).toBe(true);
++    expect(selected).toBe(ordinary);
++    expect(body).toEqual(before.body); expect(peers).toEqual(before.peers);
++  });
++
++  it('permits a shallower, lower-closing glancing forecast instead of banning every overlap', () => {
++    const a = actor(), raw = request(a), peer = picture(a);
++    peer.pos.x = a.pos.x + 2;
++    const ordinary: Intent = { ...raw, vel: { x: 4, y: 0 } };
++    // Controlled forecast streams isolate the consumer comparison, not World
++    // contact physics. Both move4yd/s forward. The alternative adds an outward
++    // lateral curve (4.5yd/s² for.2s, then .9yd/s); at first touch its outward
++    // motion reduces normal closing below the ordinary4yd/s. It still overlaps
++    // the disc and later leaves it. No body radius or contact law is changed.
++    const forecast = (command: Intent) => Array.from({ length: 12 }, (_, k) => {
++      const t = (k + 1) * .05;
++      const bends = command !== ordinary && Math.abs(command.vel.y) > 0;
++      const sign = Math.sign(command.vel.y);
++      const lateral = t <= .2 ? .5 * 4.5 * t * t : .09 + .9 * (t - .2);
++      return { t, pos: { x: a.pos.x + 4 * t, y: a.pos.y + (bends ? sign * lateral : 0) },
++        vel: { x: 4, y: bends ? sign * Math.min(.9, 4.5 * t) : 0 }, support: 'up' as const };
++    });
++    const selected = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++    expect(selected).not.toBe(ordinary);
++    expect(Math.abs(selected.vel.y)).toBeGreaterThan(0);
++    const path = forecast(selected), end = path.at(-1)!;
++    expect(path.some(sample => Math.hypot(sample.pos.x - peer.pos.x, sample.pos.y - peer.pos.y) < peer.touch)).toBe(true);
++    expect(Math.hypot(end.pos.x - peer.pos.x, end.pos.y - peer.pos.y)).toBeGreaterThan(peer.touch);
++    expect(movementObjective(selected)).toEqual(movementObjective(raw));
++    expect({ ...selected, vel: undefined }).toEqual({ ...raw, vel: undefined });
++  });
++});
+diff --git a/test/traffic-distance.test.ts b/test/traffic-distance.test.ts
+new file mode 100644
+index 0000000..0a1253d
+--- /dev/null
++++ b/test/traffic-distance.test.ts
+@@ -0,0 +1,50 @@
++import {describe,expect,it} from 'vitest';
++import {trafficDistance,trafficRoute} from '../src/sim/traffic-distance.js';
++import {trafficPath,type TrafficDisc} from '../src/sim/traffic-path.js';
++
++const start={x:-3,y:0},goal={x:3,y:0};
++function same(discs:TrafficDisc[],bounds?:{minX:number;maxX:number;minY:number;maxY:number}) {
++  const before=structuredClone(discs),proposal=trafficPath(start,goal,discs,bounds);
++  expect(trafficDistance(start,goal,discs,bounds)).toBe(proposal?.distance??null);
++  const selected=trafficRoute(start,goal,discs,bounds);
++  expect(selected?.distance??null).toBe(proposal?.distance??null);
++  if(selected){
++    expect(selected.firstPiece).toEqual(selected.pieces[0]??null);
++    for(const piece of selected.pieces){
++      if(piece.kind==='arc')expect(discs[piece.disc]).toEqual({center:piece.center,radius:piece.radius});
++      for(let k=0;k<=80;k++){
++        const t=k/80;
++        const p=piece.kind==='line'?{x:piece.from.x+(piece.to.x-piece.from.x)*t,y:piece.from.y+(piece.to.y-piece.from.y)*t}
++          :{x:piece.center.x+piece.radius*Math.cos(piece.startAngle+piece.sweep*t),y:piece.center.y+piece.radius*Math.sin(piece.startAngle+piece.sweep*t)};
++        for(const disc of discs)expect(Math.hypot(p.x-disc.center.x,p.y-disc.center.y)).toBeGreaterThanOrEqual(disc.radius-1e-8);
++        if(bounds){expect(p.x).toBeGreaterThanOrEqual(bounds.minX-1e-8);expect(p.x).toBeLessThanOrEqual(bounds.maxX+1e-8);expect(p.y).toBeGreaterThanOrEqual(bounds.minY-1e-8);expect(p.y).toBeLessThanOrEqual(bounds.maxY+1e-8);}
++      }
++    }
++  }
++  expect(discs).toEqual(before);
++  expect(trafficPath(start,goal,discs,bounds)).toEqual(proposal);
++}
++describe('scalar route cost retains the full geometry problem',()=>{
++  it.each([-1,1])('checks an omitted obstacle inside the proposed arc in mirror %i',side=>{
++    // These small circles miss the initial straight segment. Checking only
++    // tangent lines or arc endpoints would incorrectly accept the shorter arc.
++    same([{center:{x:0,y:.2*side},radius:1},{center:{x:0,y:-.95*side},radius:.25}]);
++    same([{center:{x:0,y:0},radius:1},{center:{x:0,y:1.15},radius:.25},{center:{x:0,y:-1.15},radius:.25}]);
++  });
++  it('keeps all constraints while avoiding needless distant-disc graph nodes',()=>{
++    same([{center:{x:0,y:0},radius:1},...Array.from({length:9},(_,i)=>({center:{x:i*2,y:20},radius:1}))]);
++    same(Array.from({length:10},(_,i)=>({center:{x:i*2,y:20},radius:1})));
++    same([{center:{x:0,y:0},radius:1},{center:{x:0,y:0},radius:1},{center:{x:.2,y:.1},radius:.3}]);
++  });
++  it.each([.5,.1])('retains the bounded full solve when the plane shortcut leaves the field (%s)',maxY=>{
++    const discs=[{center:{x:0,y:-.35},radius:1}];
++    same(discs,{minX:-4,maxX:4,minY:maxY===.5?-2:-.1,maxY});
++  });
++  it('keeps unknown, invalid, inside-body and excessive-peer cases unavailable',()=>{
++    expect(trafficDistance({x:NaN,y:0},goal,[])).toBeNull();
++    expect(trafficDistance(start,goal,[{center:{x:0,y:0},radius:NaN}])).toBeNull();
++    expect(trafficDistance(start,goal,[{center:start,radius:1}])).toBeNull();
++    expect(trafficDistance(start,goal,Array.from({length:11},()=>({center:{x:0,y:20},radius:1})))).toBeNull();
++    expect(trafficDistance(start,start,[])).toBe(0);
++  });
++});
+diff --git a/test/traffic-path.test.ts b/test/traffic-path.test.ts
+new file mode 100644
+index 0000000..241da69
+--- /dev/null
++++ b/test/traffic-path.test.ts
+@@ -0,0 +1,123 @@
++import { describe, expect, it } from 'vitest';
++import { trafficPath, type TrafficDisc, type TrafficPath } from '../src/sim/traffic-path.js';
++import type { Vec2 } from '../src/core/vec.js';
++
++function checkPath(path: TrafficPath | null, start: Vec2, goal: Vec2, discs: TrafficDisc[]) {
++  expect(path).not.toBeNull();
++  const result = path!;
++  expect(result.distance).toBeCloseTo(result.pieces.reduce((sum, p) => sum + p.length, 0), 8);
++  expect(result.pieces[0].from.x).toBeCloseTo(start.x, 8);
++  expect(result.pieces[0].from.y).toBeCloseTo(start.y, 8);
++  expect(result.pieces.at(-1)!.to.x).toBeCloseTo(goal.x, 8);
++  expect(result.pieces.at(-1)!.to.y).toBeCloseTo(goal.y, 8);
++  expect(Math.hypot(result.firstDirection.x, result.firstDirection.y)).toBeCloseTo(1, 8);
++  for (let i = 0; i < result.pieces.length; i++) {
++    const piece = result.pieces[i];
++    if (i) {
++      expect(piece.from.x).toBeCloseTo(result.pieces[i - 1].to.x, 8);
++      expect(piece.from.y).toBeCloseTo(result.pieces[i - 1].to.y, 8);
++    }
++    // Independently sample each returned physical-radius boundary/line,
++    // including endpoints and covered overlap seams. The exact one-disc
++    // length below separately rejects a merely sampled/chord detour.
++    for (let k = 0; k <= 80; k++) {
++      const t = k / 80;
++      const p = piece.kind === 'line'
++        ? { x: piece.from.x + (piece.to.x - piece.from.x) * t, y: piece.from.y + (piece.to.y - piece.from.y) * t }
++        : { x: piece.center.x + piece.radius * Math.cos(piece.startAngle + piece.sweep * t),
++          y: piece.center.y + piece.radius * Math.sin(piece.startAngle + piece.sweep * t) };
++      for (const disc of discs) expect(Math.hypot(p.x - disc.center.x, p.y - disc.center.y))
++        .toBeGreaterThanOrEqual(disc.radius - 1e-8);
++    }
++  }
++}
++
++describe('the same football point through represented teammate-disc geometry', () => {
++  it('retains a direct clear path without changing inputs', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: 0, y: 2 }, radius: 1 }], before = structuredClone({ start, goal, discs });
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBe(6); expect(path!.pieces).toHaveLength(1);
++    expect(path!.firstDirection).toEqual({ x: 1, y: 0 });
++    expect({ start, goal, discs }).toEqual(before);
++  });
++
++  it('uses the exact tangent-plus-arc distance around one physical disc', () => {
++    const start = { x: -2, y: 0 }, goal = { x: 2, y: 0 }, discs = [{ center: { x: 0, y: 0 }, radius: 1 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeCloseTo(2 * Math.sqrt(3) + Math.PI / 3, 8);
++    expect(path!.distance).toBeGreaterThan(4);
++    expect(path!.pieces.some(p => p.kind === 'arc')).toBe(true);
++  });
++
++  it.each([2, 3])('plans around %i overlapping bodies together without entering a covered seam', count => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: -.6, y: 0 }, radius: 1 },
++      { center: { x: .6, y: 0 }, radius: 1 }, { center: { x: 0, y: -.65 }, radius: 1 }].slice(0, count);
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeGreaterThan(6);
++    expect(path!.pieces.some(p => p.kind === 'arc')).toBe(true);
++  });
++
++  it('mirrors a uniquely shorter side and its initial physical direction', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const a = trafficPath(start, goal, [{ center: { x: 0, y: .35 }, radius: 1 }])!;
++    const b = trafficPath(start, goal, [{ center: { x: 0, y: -.35 }, radius: 1 }])!;
++    expect(a.distance).toBeCloseTo(b.distance, 8);
++    expect(a.firstDirection.x).toBeCloseTo(b.firstDirection.x, 8);
++    expect(a.firstDirection.y).toBeCloseTo(-b.firstDirection.y, 8);
++    expect(a.firstDirection.y).toBeLessThan(0);
++  });
++
++  it('keeps contained/duplicate discs equivalent to their actual union', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const outer = { center: { x: 0, y: 0 }, radius: 1 };
++    const discs = [outer, structuredClone(outer), { center: { x: .2, y: .1 }, radius: .3 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeCloseTo(trafficPath(start, goal, [outer])!.distance, 8);
++  });
++
++  it('allows physical boundary touch while retaining inside-body and invalid-input blockers', () => {
++    const discs = [{ center: { x: 0, y: 1 }, radius: 1 }, { center: { x: 0, y: -1 }, radius: 1 }];
++    const path = trafficPath({ x: -3, y: 0 }, { x: 3, y: 0 }, discs);
++    expect(path!.distance).toBe(6); expect(path!.pieces).toHaveLength(1);
++    expect(trafficPath({ x: 0, y: 1 }, { x: 3, y: 0 }, discs)).toBeNull();
++    expect(trafficPath({ x: -3, y: 0 }, { x: 0, y: -1 }, discs)).toBeNull();
++    expect(trafficPath({ x: NaN, y: 0 }, { x: 1, y: 0 }, [])).toBeNull();
++    expect(trafficPath({ x: 0, y: 0 }, { x: 1, y: 0 }, [{ center: { x: 0, y: 2 }, radius: -1 }])).toBeNull();
++    expect(trafficPath({ x: 0, y: 0 }, { x: 1, y: 0 }, Array.from({ length: 11 }, () => discs[0]))).toBeNull();
++    expect(trafficPath({ x: 2, y: 0 }, { x: 2, y: 0 }, [])).toEqual({
++      distance: 0, pieces: [], firstPiece: null, firstDirection: { x: 0, y: 0 } });
++  });
++
++  it('can begin with a real boundary arc rather than a chord through the body', () => {
++    const start = { x: 1, y: 0 }, goal = { x: -3, y: 0 }, discs = [{ center: { x: 0, y: 0 }, radius: 1 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.firstPiece!.kind).toBe('arc');
++    expect(Math.abs(path!.firstDirection.y)).toBeCloseTo(1, 8);
++  });
++
++  it('chooses a represented in-field side when the shorter arc leaves existing bounds', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: 0, y: -.35 }, radius: 1 }];
++    const bounds = { minX: -4, maxX: 4, minY: -2, maxY: .5 };
++    const free = trafficPath(start, goal, discs)!, bounded = trafficPath(start, goal, discs, bounds)!;
++    checkPath(bounded, start, goal, discs);
++    expect(free.firstDirection.y).toBeGreaterThan(0);
++    expect(bounded.firstDirection.y).toBeLessThan(0);
++    expect(bounded.distance).toBeGreaterThan(free.distance);
++    for (const piece of bounded.pieces) for (let k = 0; k <= 80; k++) {
++      const t = k / 80, y = piece.kind === 'line' ? piece.from.y + (piece.to.y - piece.from.y) * t
++        : piece.center.y + piece.radius * Math.sin(piece.startAngle + piece.sweep * t);
++      expect(y).toBeGreaterThanOrEqual(bounds.minY - 1e-8);
++      expect(y).toBeLessThanOrEqual(bounds.maxY + 1e-8);
++    }
++    expect(trafficPath(start, goal, discs, { ...bounds, minY: -.1, maxY: .1 })).toBeNull();
++    expect(trafficPath(start, goal, discs, { ...bounds, minX: 0 })).toBeNull();
++  });
++});

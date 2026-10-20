@@ -1,5 +1,11 @@
 # Preserve the football goal through local teammate traffic
 
+[2026-10-20 Integration readiness update](local-traffic-route-readiness.md):
+#183's named review is published, its dependency is included once, and the
+canonical #182 pursuit activation is dispositioned with Catching. Runtime is
+unchanged; adverse cases, residual costs and separate #175/#176 review holds
+remain explicit.
+
 2026-10-20 UTC. **Recommendation: ADOPT the bounded movement correction, subject to Integration’s exact composition check.** Existing movement can pass finite acquired teammate obstructions while preserving its original responsibility. A three-body cluster required treating the geometry together and allowing a real brake before turning. The first native candidate also exposed a contact-risk error: reducing predicted overlap can still cause an earlier, harder collision. The guarded behavior removes that regression.
 
 The portable candidate is branch **`codex/local-traffic-route`**, final code **`5248e884fd450b44045e753caaf782a306710e0c`**, engine source **`d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12`**, dependency head **`dceec577baee5ea9b4f7fcf24d63bbef94385177`**. That dependency contains accepted develop **`2c98bed94adad8087c65f381d4090444ad283985`** plus the separately reviewed #183 joint projection. Guarded behavior was ported at `bb458e8b3dcb49492db637591c0291bb4b4ea010`, followed by scalar-only trial `5402d71d15ded211766c6fe6e34fecfb4ac0787c` and final validated-geometry optimization5248. The old experimental discovery stack is not an implementation prerequisite; #181/#182 are not imported. [Compact evidence](../../data/reviews/current/local-traffic-route/decision.json) retains exact sources, operators, acquired-input hashes, selected request-to-motion witnesses, original failures and all scoped launch receipts. [Fetchable evidence archive](../../data/reviews/current/local-traffic-route/evidence.tar.xz) and [member manifest](../../data/reviews/current/local-traffic-route/manifest.json) preserve selected full native arms, failed operators, source overlays and receipts. The manifest records both original gzip and published decoded payload hashes; no JSON byte changes during transport.

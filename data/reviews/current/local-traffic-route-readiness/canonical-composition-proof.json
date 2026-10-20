@@ -1,0 +1,15 @@
+{
+  "base": "2c98bed94adad8087c65f381d4090444ad283985",
+  "patchesInOrder": [
+    "182-resolved-including181.patch",
+    "183.patch",
+    "186-after183.patch"
+  ],
+  "temporaryTree": "526b0df17aa65ce1791deecb9f3c6d49ee4bee04",
+  "sourceSha256": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+  "matchesCatchingRuntime": "a00b070d789b7d4dcb056e58ab6963fa18131513",
+  "183Occurrences": 1,
+  "181Occurrences": 1,
+  "newEngineRuns": 0,
+  "qualification": "Source bytes from portable patches match canonical Catching routing source; this is not a rerun of its tests/native cases or whole combined Integration verification."
+}

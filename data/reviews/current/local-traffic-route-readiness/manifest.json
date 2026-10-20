@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "question": "Exact #183-once extraction, frozen #186 readiness and canonical #182 pursuit activation; no behavior changes.",
+  "qualification": "This archive holds only old182 prefix study, not the separate Catching canonical six-arm evidence. Two reacting arms, plain/observed identity per arm, both live/censored at4.25s. Two shadow refinements add no observations or native World execution. Absolute original paths retain provenance; restore/import the named matching source revisions.",
+  "transport": "Original native gzip payloads decoded byte-for-byte into JSON for joint compression; original gzip hashes retained. Other selected bytes unchanged.",
+  "members": [
+    {
+      "path": "composition/OZ4-launch.json",
+      "bytes": 2339,
+      "sha256": "e2cf361256dd59b0915322e06af6075eb9e70e8dc0e0f67810b7ecf74dce6ded"
+    },
+    {
+      "path": "composition/OZ4.json",
+      "bytes": 19618697,
+      "sha256": "8d447b04bdfaf94997d64b899a71e083f7bbb7d9c2f39626d36e51d272926f58"
+    },
+    {
+      "path": "composition/OZ4.log",
+      "bytes": 1045,
+      "sha256": "66c99dc817f7f6cbdd54172ba2f34cd1aab1f8d8c015285c127894aa871332e9"
+    },
+    {
+      "path": "operators/native-traffic.ts",
+      "bytes": 12470,
+      "sha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f"
+    },
+    {
+      "path": "owner/OZ4-setup.json",
+      "bytes": 48279,
+      "sha256": "0f7cd8eff1484f16e384c3523bd98467d676c82460801f9d84ada77b2ad4aa14"
+    },
+    {
+      "path": "owner/OZ4-spacing-Mike-replay-launch.json",
+      "bytes": 2216,
+      "sha256": "fbb21c2897a2b58c3277991bf34540d7a887083d50cbd374440533d6a6e780b4"
+    },
+    {
+      "path": "owner/OZ4-spacing-Mike-replay.json",
+      "bytes": 213014,
+      "sha256": "4da549f2655e6e3ad3e1d9bbeecd37437d51858ab015208d40bfc49746fd3100"
+    },
+    {
+      "path": "owner/OZ4-spacing-Mike-replay.log",
+      "bytes": 367,
+      "sha256": "a615ee75fa979e5acb40be909843905428eaf5bfe63c31c458aed92f3ad932bd"
+    },
+    {
+      "path": "owner/OZ4-spacing-replay-launch.json",
+      "bytes": 2218,
+      "sha256": "b3fe4980bfd321c9b263f1c7b8356a48a89e8b5178bec1cc10856d3a6111f7c8"
+    },
+    {
+      "path": "owner/OZ4-spacing-replay.json",
+      "bytes": 268129,
+      "sha256": "be0f7b1c8e692752c8790610aa7bd09ded5508cebb2602f0a3cabe40a94f7a3f"
+    },
+    {
+      "path": "owner/OZ4-spacing-replay.log",
+      "bytes": 5557,
+      "sha256": "52cdc009b63a4a1ac0bc8b8aa668287df6635e756f44a036952c090c9fca244c"
+    },
+    {
+      "path": "owner/OZ4-summary.json",
+      "bytes": 180504,
+      "sha256": "3daf8ddb59e0c6b1e967dc7e124f77f0addc4861478414000ef9ab92c2d3f5b1"
+    },
+    {
+      "path": "owner/OZ4-summary.txt",
+      "bytes": 11114,
+      "sha256": "16adb2b4331fc091d3e1232d6b742a512cf820775f0b2705ad04a033cf71084f"
+    },
+    {
+      "path": "owner/replay-spacing-Mike.mjs",
+      "bytes": 5009,
+      "sha256": "26cc9bc04cbecd63d426de71e2cd2604b58a8ff07aecd41757cdb9e3ed5517d7"
+    },
+    {
+      "path": "owner/replay-spacing.mjs",
+      "bytes": 4962,
+      "sha256": "4b11bbc04974f2493d2c68dfb1ecf7bcbca3afa7cde8a77ffb57dfa5d43b1fce"
+    },
+    {
+      "path": "reducers/compare-native-navigation.py",
+      "bytes": 2286,
+      "sha256": "588195d4a90a3a516290ecee2f1c45e3c5ab4e24a9eb081947a9e84a30a1e49f"
+    },
+    {
+      "path": "reducers/readiness-oz4-summary.py",
+      "bytes": 3258,
+      "sha256": "a1fcb88e6fc034d3fc66532c877303fd4a2e0d0be5fb32cb21b02b5dbf33eade"
+    },
+    {
+      "path": "reference/OZ4-launch.json",
+      "bytes": 2330,
+      "sha256": "d7aaeb4d3566c26f8f86c4f914b20b21c31671d158de9fc97cd26c18bc5e4785"
+    },
+    {
+      "path": "reference/OZ4.json",
+      "bytes": 19633190,
+      "sha256": "c6317de3a7db98943842b9acc0f6cb4d9a21676ee6d45a7d93fa82cddd3f5285"
+    },
+    {
+      "path": "reference/OZ4.log",
+      "bytes": 1031,
+      "sha256": "dd9421d6fe890cd91917a4f907a0b3ec1c1216b9e3a38370ea1ba814540bbac6"
+    }
+  ],
+  "nativeTransport": [
+    {
+      "originalPath": "/workspace/route182-183-reference/out/readiness-186/OZ4-reference.json.gz",
+      "originalSha256": "07777505eb90eb3d09ba3375104a860abe081fa418d92d27698be8f066142643",
+      "originalBytes": 1800794,
+      "publishedPath": "reference/OZ4.json",
+      "decodedSha256": "c6317de3a7db98943842b9acc0f6cb4d9a21676ee6d45a7d93fa82cddd3f5285",
+      "decodedBytes": 19633190
+    },
+    {
+      "originalPath": "/workspace/route182-183-186-check/out/readiness-186/OZ4-composition.json.gz",
+      "originalSha256": "ad1a8b07e0ed77c1fe511564f99527467a1b47d219bd3bf79a582352f6aa8e46",
+      "originalBytes": 1792881,
+      "publishedPath": "composition/OZ4.json",
+      "decodedSha256": "8d447b04bdfaf94997d64b899a71e083f7bbb7d9c2f39626d36e51d272926f58",
+      "decodedBytes": 19618697
+    }
+  ]
+}
