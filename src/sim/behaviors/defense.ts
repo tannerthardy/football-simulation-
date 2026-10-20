@@ -19,7 +19,7 @@ import { TRACKING_REACH_BONUS } from '../catching.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
-import { showsBlock } from '../coverage-cues.js';
+import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
@@ -197,6 +197,8 @@ export class ManCoverage implements Behavior {
   private readonly observation = new RouteObservation();
   private readonly depth = new DeepCoverage();
   private keyedFitRecorded = false;
+  /** Shallow blocking evidence admitted this marker's current support duty. */
+  private blockingRun = false;
 
   /** The technique actually in use, without updating receiver observation. */
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
@@ -220,7 +222,18 @@ export class ManCoverage implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
-    if (sim.ball.kind === 'air') return playBall(a, sim, R, () => this.coverMan(a, sim));
+    if (sim.ball.kind === 'air') {
+      let continuing = false;
+      const command = playBall(a, sim, R, () => {
+        continuing = true;
+        return this.coverMan(a, sim);
+      });
+      // The existing ball controller recognized flight, rather than invoking
+      // the continuation. Retire support without another sighting or private
+      // release-time gate.
+      if (!continuing) this.blockingRun = false;
+      return command;
+    }
     return this.coverMan(a, sim);
   }
 
@@ -257,8 +270,10 @@ export class ManCoverage implements Behavior {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    const blockingLook = showsBlock(a, sim, R, receiverCue);
-    if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
+    const blockingLook = this.blockingRun
+      ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
+    this.blockingRun = believesRun(sim, a) && blockingLook;
+    if (this.blockingRun) return runFit(a, sim, this.gap, this.gapSign);
 
     return this.trackReceiver(a, sim);
   }
