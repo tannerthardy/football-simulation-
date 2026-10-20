@@ -33,12 +33,14 @@ World load, stages an equal-distance contact beyond the old frame, and sets
 the achieved torso toward the man. `updateEngagements` must calculate
 `abs(phi)>=1.1` itself, preserve the bodies and owned hands, then actual World
 execution must carry real load within unchanged work/arm/support budgets.
-No future turn credit is needed. The existing mirrored actual-torso-away
+No future turn credit or new holding rescue is allowed. The existing mirrored actual-torso-away
 negative still must release those hands and earn real helper collection.
 Restoring the old fixed-frame release would fail the new controlled positive;
 always retaining hands would fail the unchanged opposing controls.
 
 Independent rules-readiness review accepts this contract adjudication,
-conditional on the one focused helper-file run passing. No runtime file,
+with a final explicit no-holding-rescue assertion. All24 focused helper checks
+passed on the initial test revision; the final two mirrored positive controls
+are checked again after that assertion, reusing the other22 unchanged checks. No runtime file,
 threshold, physical law, capacity, setting or historical baseline changes.
 Integration owns the next exact combined verification and acceptance.
