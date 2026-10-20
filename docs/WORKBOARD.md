@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Active local teammate navigation — 2026-10-20 UTC
+
+Do-It-All owns the bounded shared spacing/local-maneuver investigation on
+`codex/teammate-navigation`, accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985`, current queue6575988f.
+[Scope coordination](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300535544).
+Inspect joint radial projection and objective-preserving local traffic response
+in `src/sim/spacing.ts`; add only supported helpers, focused tests/diagnostics.
+Run retains blocking/engagement; Catching retains football coverage objectives.
+Any producer semantic change needs their explicit contract coordination. #175,
+#176 and other pending candidates remain frozen and independent. No Physics,
+capacity, perception/memory, assignment or experimental SPACE_STEER activation.
+Use Measurement's actual-owner/full-request/achieved-motion process, bounded
+opposing controls, and distinguish mechanism repair from native usefulness.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
