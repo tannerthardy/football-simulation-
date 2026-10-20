@@ -1,5 +1,10 @@
 # Current project status
 
+Current integration preparation: latest reviewed #169–#188 scopes are being
+composed on `codex/finished-controller-integration`; accepted2c98bed9 remains
+until required exact verification and the user-budgeted matched games pass.
+[Canonical assembly and holds](INTEGRATION.md#accepted-development).
+
 Updated **2026-10-20 UTC /2026-10-19 America/Phoenix**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.

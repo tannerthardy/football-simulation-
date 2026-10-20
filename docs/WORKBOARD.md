@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Active finished-work integration — 2026-10-20 UTC
+
+Integration owns composition and exact verification only in
+`codex/finished-controller-integration`, isolated from accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985`. Independent subagents supply portable
+reviewed extracts; original workers and evidence histories remain untouched.
+Chosen scope is169/170/171/174(including172 once)/175/176/177/178/180/181/182/
+183/184/185/186/188, with173/179/187 reference/evidence tooling. New owner
+replacements resolve both shared controller seams; no whole Claude research
+parent or data-only evidence root is imported. User explicitly approved180's
+ordinary yaw/recovery motor boundary, subject to combined verification/games.
+All44 flags remain unchanged, components1; GAIT_STEP0 and experimental holds
+remain. Root owns current tracking/docs/receipt publication; no contributor
+repeats the shared suite. Four-game budget: zone-power and spread-air matched
+pairs; candidate first game doubles as smoke. Accepted pin advances only after
+passing verification, accounting review and bounded game comparison.
+
 ## Completed Claude153 intake / pending candidate verification — 2026-10-20 America/Phoenix
 
 Integration owns only the existing review-intake/current queue/status/issues/workboard

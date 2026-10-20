@@ -49,6 +49,28 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+### Current assembly: finished reviewed checkpoint (not yet adopted)
+
+Root is composing the latest #187 owner handoffs on
+`codex/finished-controller-integration` from accepted2c98bed9. Source changes are
+independently reviewed; source/test/settings verification and games remain
+pending. #174 contains172 once; owner68e7241 reconciles169/171/177/174;
+canonical182f7662569 contains181 once;183 precedes186, with182 activation
+explicitly reviewed.175/176 now have a new attributable independent review;
+178/188 rules remain a coherent dependent scope.180's bounded ordinary
+requested-angle/recovery motor has explicit user approval in this chat.
+No GAIT_STEP, held165, experimental hands/solvers or whole153 branch import.
+173's rules inventory remains dated;179's completed12/12 query is reused,
+not recollected.187's audit is preserved as source-qualified evidence.
+
+Required decision gates: exact combined typecheck/build/code/data suite, one
+full-game smoke, then bounded matched comparison on frozen teams/settings/seeds.
+Four games total (two pairs); smoke reuses the candidate arm. Root owns this
+verification; no unchanged standalone or publication reruns. Previous accepted
+2c98bed9 remains the current build until the final merge. See current workboard
+claim and forthcoming receipt under
+`data/reviews/current/finished-controller-integration/`.
+
 ### Accepted #168 reviewed checkpoint — develop2c98bed9
 
 **Accepted develop is `2c98bed94adad8087c65f381d4090444ad283985`**, merged through
