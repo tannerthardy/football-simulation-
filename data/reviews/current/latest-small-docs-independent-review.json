@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "heads": {
+    "156": "aacfce18865f345b59b96a192d2ed9064403853e",
+    "157": "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+    "161": "b6e993392669fd0ebcea7e9329ca957eebd80569"
+  },
+  "checks": {
+    "156": {
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "changedFiles": [
+        "data/reviews/current/shotgun-rb-alignment/checks.json",
+        "data/reviews/current/shotgun-rb-alignment/launcher.json",
+        "data/reviews/current/shotgun-rb-alignment/observations.json.gz",
+        "data/reviews/current/shotgun-rb-alignment/prefixes.json.gz",
+        "data/reviews/current/shotgun-rb-alignment/summary.json",
+        "docs/WORKBOARD.md",
+        "docs/reviews/shotgun-rb-alignment.md",
+        "scripts/diag/shotgun-rb-alignment.ts",
+        "src/playbook/formations.ts",
+        "test/shotgun-rb-alignment.test.ts"
+      ],
+      "sourceSha256": "113971550edb4f1058c892610e168a20382507b7d39b9296c59e6396feed3217",
+      "verifiedArtifacts": [
+        "data/reviews/current/shotgun-rb-alignment/checks.json",
+        "data/reviews/current/shotgun-rb-alignment/launcher.json",
+        "data/reviews/current/shotgun-rb-alignment/prefixes.json.gz",
+        "data/reviews/current/shotgun-rb-alignment/observations.json.gz"
+      ],
+      "verifiedControlPairs": 3,
+      "verifiedReachableExchangeArmRows": 10
+    },
+    "157": {
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "changedFiles": [
+        "data/reviews/current/toss-box-accounting/box-count-green-receipt.json",
+        "data/reviews/current/toss-box-accounting/box-count-green.json",
+        "data/reviews/current/toss-box-accounting/box-count-red-corrected-receipt.json",
+        "data/reviews/current/toss-box-accounting/box-count-red-corrected.json",
+        "data/reviews/current/toss-box-accounting/box-count-red-receipt.json",
+        "data/reviews/current/toss-box-accounting/box-count-red.json",
+        "data/reviews/current/toss-box-accounting/continuations.json.gz",
+        "data/reviews/current/toss-box-accounting/diagnostic-types-receipt.json",
+        "data/reviews/current/toss-box-accounting/final-scope-types-receipt.json",
+        "data/reviews/current/toss-box-accounting/installations-receipt.json",
+        "data/reviews/current/toss-box-accounting/installations.json.gz",
+        "data/reviews/current/toss-box-accounting/iz-bear-receipt.json",
+        "data/reviews/current/toss-box-accounting/iz-under-receipt.json",
+        "data/reviews/current/toss-box-accounting/manifest.json",
+        "data/reviews/current/toss-box-accounting/oz-over-receipt.json",
+        "data/reviews/current/toss-box-accounting/side-count-green-receipt.json",
+        "data/reviews/current/toss-box-accounting/side-count-green.json",
+        "data/reviews/current/toss-box-accounting/summary.json",
+        "docs/WORKBOARD.md",
+        "docs/reviews/toss-box-accounting/README.md",
+        "docs/reviews/toss-box-accounting/promotion.patch",
+        "scripts/diag/toss-box-accounting.ts",
+        "src/sim/qbmind.ts",
+        "test/qb-installed-box-count.test.ts"
+      ],
+      "sourceSha256": "c6eed919bec29229b9cda00c08b11e522bafa0795612c272ea0c585eabe718cc",
+      "artifactManifestEntriesVerified": 17,
+      "authorFocusedPassesReused": 8,
+      "protectedQbOutsideCountIdentical": true
+    },
+    "161": {
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "changedFiles": [
+        "data/reviews/current/nfl-agent-evidence-plan.json",
+        "docs/NFL_DATA.md",
+        "docs/WORKBOARD.md",
+        "docs/reviews/nfl-agent-evidence-plan.md"
+      ],
+      "sourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+      "sourceFingerprintsVerified": [
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:docs/reviews/run-game-v3.md",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:docs/reviews/run-game-v3-pr153-response.md",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/open-field/arm.mjs",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/stretch/paired.py",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/stretch/film-page.ts",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/stretch/film.ts",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/stretch/film-cases.txt",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:scripts/diag/stretch/seal.py",
+        "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f:docs/reviews/run-game-v3/v7/v7dcgap.manifest.json",
+        "410a36983dadbe6e8cc2d917a8fb12665a63ccab:docs/reviews/p045-nfl-expanded-interpretation-2026-10-15.md",
+        "410a36983dadbe6e8cc2d917a8fb12665a63ccab:docs/reviews/p045-nfl-restoration-handoff-2026-10-15.md",
+        "410a36983dadbe6e8cc2d917a8fb12665a63ccab:docs/reviews/amf-source-review-2026-10-15.md",
+        "410a36983dadbe6e8cc2d917a8fb12665a63ccab:docs/reviews/amf-protection-access-2026-10-15.md",
+        "f4146275ce7539816bf57b4ed55a0d2be10e48c7:docs/NFL_DATA.md",
+        "f4146275ce7539816bf57b4ed55a0d2be10e48c7:docs/TESTING_COSTS.md",
+        "f4146275ce7539816bf57b4ed55a0d2be10e48c7:docs/BEHAVIOR_REVIEW.md",
+        "f4146275ce7539816bf57b4ed55a0d2be10e48c7:scripts/mechanics/metrics.py"
+      ]
+    }
+  },
+  "newEngineTicks": 0,
+  "newTestsRun": 0,
+  "newGames": 0,
+  "newDownloads": 0,
+  "localMarkdownLinks": [
+    {
+      "PR": 156,
+      "localLinkTargetsChecked": 5
+    },
+    {
+      "PR": 157,
+      "localLinkTargetsChecked": 4
+    },
+    {
+      "PR": 161,
+      "localLinkTargetsChecked": 10
+    }
+  ],
+  "staticCheckSeconds": 1.5315660100022797,
+  "reviewer": "Independent Integration subagent latest_small_docs_review; not contributor implementation author",
+  "reviewDate": "2026-10-19 America/Phoenix",
+  "decisions": {
+    "156": {
+      "decision": "ACCEPT for exact combined verification",
+      "scope": [
+        {
+          "path": "src/playbook/formations.ts",
+          "blob": "6a0fd81c5b0f7513a8f6d1f4b3b07442a7e2b5ff"
+        },
+        {
+          "path": "test/shotgun-rb-alignment.test.ts",
+          "blob": "7bef88cdd21ffa88c911195dcf38f7c667d1b645"
+        }
+      ],
+      "runtimeDependencies": []
+    },
+    "157": {
+      "decision": "ACCEPT for exact combined verification",
+      "scope": [
+        {
+          "path": "src/sim/qbmind.ts",
+          "blob": "f3501852f5c4e60123bfe0e48b8d71ac3273ebd4"
+        },
+        {
+          "path": "test/qb-installed-box-count.test.ts",
+          "blob": "986e78c89b275cc5a3f0ae57c83cb72d1f58ca0d"
+        }
+      ],
+      "runtimeDependencies": []
+    },
+    "161": {
+      "decision": "ACCEPT documentation; current access note recommended",
+      "scope": [
+        {
+          "path": "docs/NFL_DATA.md",
+          "blob": "05303bc90578b318261b0522000f4baf1ffc67b0"
+        },
+        {
+          "path": "docs/reviews/nfl-agent-evidence-plan.md",
+          "blob": "7ceaabf411f32a496476b204f3e48ffc60ba7c88"
+        },
+        {
+          "path": "data/reviews/current/nfl-agent-evidence-plan.json",
+          "blob": "b2df6c3053e850e341bfcc67773bafc0a8bcaaaa"
+        }
+      ],
+      "runtimeDependencies": []
+    }
+  },
+  "authorityClassification": {
+    "156": "Routine installed formation geometry; nominal playbook data changes, not physics law, physical capability, experimental feature/default or outcome calibration. Existing user broad integration scope covers this reviewed formation correction.",
+    "157": "Routine own-installed-slot arithmetic correction, no changed authority/noise/threshold or opponent-information acquisition.",
+    "161": "Documentation/source inventory only. No new mandatory query, benchmark, game, download, activation or root instruction change."
+  },
+  "reusedEvidence": {
+    "156": {
+      "focusedChecks": 31,
+      "focusedSeconds": 2.505656816,
+      "nativePrefixes": 16,
+      "nativeLauncherSeconds": 1.436671912,
+      "knownEndings": 0,
+      "notes": "Receipt source verified, new no native execution."
+    },
+    "157": {
+      "focusedChecks": 8,
+      "types": "published scoped checks",
+      "authorTotalCommandSeconds": 17.954,
+      "newNativeEndings": 0
+    }
+  },
+  "notes": [
+    "Only git metadata/blob/hash/JSON/relative-link checks newly executed. One source commit fetched to inspect provenance, no NFL archive/data acquisition.",
+    "Initial fingerprint pass lacked local object410a369; fetched original immutable commit then all17 hashes passed; no contributor artifact defect.",
+    "PR161 accessChecked is a historical per-environment presence snapshot. Current162 comment confirms a usable existing data host and published common.tar.gz; no runtime approval implied."
+  ]
+}

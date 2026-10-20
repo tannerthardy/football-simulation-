@@ -1,0 +1,25 @@
+--- a/docs/reviews/nfl-agent-evidence-plan.md
++++ b/docs/reviews/nfl-agent-evidence-plan.md
+@@ -138,6 +138,22 @@
+ source/patch/settings/input/call/seed, failures/censors/unrun tail, runtime and
+ fetchable artifact hashes. Reuse existing manifests instead of creating another
+ format. A material missing field limits the affected claim, not unrelated work.
++
++## Current access update — 2026-10-19 America/Phoenix
++
++After the inspection above, the existing data holder
++[confirmed access and checksum reuse on #161](https://github.com/tannerthardy/football-simulation-/pull/161#issuecomment-6278732246).
++The small query/operator, selected IDs/exposure and receipt are published at
++[#162 evidence `ed6ebd2`](https://github.com/tannerthardy/football-simulation-/tree/ed6ebd21911a28f07a085094c393ea2613abeb69/data/reviews/movement-continuity)
++in `common.tar.gz`. The holder reports the existing players/plays/player-play/
++week1 hashes matching the prior restoration; week1 SHA256 is
++`dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c`.
++Use the published result or that verified execution host before arranging another
++query. The earlier `accessChecked` entries remain this review environment's
++historical presence observations, not a current shared-access blocker.
++This update records the holder's published receipt; it does not independently
++re-query raw tracking or approve #162's controller/Physics changes. The20-play
++subset and provider-orientation limits remain. No new archive is required.
+ 
+ ## First rollout: existing work, not another campaign
+ 

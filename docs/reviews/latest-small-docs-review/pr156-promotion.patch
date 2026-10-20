@@ -1,0 +1,132 @@
+diff --git a/src/playbook/formations.ts b/src/playbook/formations.ts
+index e84c89a0..6a0fd81c 100644
+--- a/src/playbook/formations.ts
++++ b/src/playbook/formations.ts
+@@ -6,7 +6,10 @@ import type { Formation } from './types.js';
+ 
+ const ON = 0.6;
+ const OFF = 1.2;
+-const GUN_RB = 5.2;
++// Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
++// and 0.5 yd behind him. Empty and pistol use their own placements.
++const GUN_RB_SPLIT = 2.3;
++const GUN_RB_DEPTH = 5.5;
+ 
+ export const FORMATIONS: Formation[] = [
+   // ---------------------------------------------------------------- 11
+@@ -17,7 +20,7 @@ export const FORMATIONS: Formation[] = [
+       H: { side: 'L', split: 'slot', depth: OFF },
+       Z: { side: 'R', split: 'wide', depth: OFF },
+       Y: { side: 'R', split: 'inline', depth: ON },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+@@ -27,7 +30,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'slot2', depth: OFF },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+@@ -37,7 +40,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: OFF },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'inline', depth: ON },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+@@ -47,7 +50,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'R', split: 7.5, depth: ON },
+       Z: { side: 'R', split: 9, depth: 1.7 },
+       H: { side: 'R', split: 6.2, depth: 1.9 },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+@@ -98,7 +101,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'L', split: 'slot', depth: OFF },
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+@@ -108,7 +111,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'slot2', depth: OFF },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   // ---------------------------------------------------------------- 12
+@@ -131,7 +134,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'R', split: 'inline', depth: ON },
+       H: { side: 'R', split: 'wing', depth: 1.4 },
+       Z: { side: 'R', split: 'wide', depth: OFF },
+-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
++      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
+     },
+   },
+   {
+diff --git a/test/shotgun-rb-alignment.test.ts b/test/shotgun-rb-alignment.test.ts
+new file mode 100644
+index 00000000..7bef88cd
+--- /dev/null
++++ b/test/shotgun-rb-alignment.test.ts
+@@ -0,0 +1,47 @@
++import { describe, expect, it } from 'vitest';
++import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y } from '../src/core/field.js';
++import { alignOffense } from '../src/playbook/alignment.js';
++import { FORMATIONS, FORMATION_BY_ID } from '../src/playbook/formations.js';
++
++const offsetGun = FORMATIONS.filter(f => f.qb === 'gun' && typeof f.slots.RB?.split === 'number');
++
++describe('offset shotgun back alignment', () => {
++  it.each(offsetGun)('$id gives the back lateral and downhill runway on either side/hash', formation => {
++    for (const flip of [false, true]) for (const ballY of [HASH_LEFT_Y, CENTER_Y, HASH_RIGHT_Y]) {
++      const a = alignOffense(formation, flip, 40, ballY), qb = a.spots.QB, rb = a.spots.RB;
++      expect(qb.pos.x - rb.pos.x).toBeCloseTo(.5);
++      expect(rb.pos.y - qb.pos.y).toBeCloseTo(flip ? -2.3 : 2.3);
++      expect(rb.backfield).toBe(true);
++      expect(a.numbering.B).toBe('RB');
++      expect(a.refOf.RB).toBe('B');
++      expect(a.counts.S + a.counts.W).toBe(4);
++    }
++  });
++
++  it('keeps the empty back in receiver numbering and pistol/under-center backs centered', () => {
++    const empty = alignOffense(FORMATION_BY_ID.gun_empty_11, false, 40, CENTER_Y);
++    expect(empty.spots.RB.backfield).toBe(false);
++    expect(empty.numbering.B).toBeUndefined();
++    expect(empty.refOf.RB).toMatch(/^[SW][123]$/);
++    for (const id of ['pistol_11', 'pistol_12', 'ace_11', 'ace_12', 'i_pro_21']) {
++      const f = FORMATION_BY_ID[id], a = alignOffense(f, false, 40, CENTER_Y);
++      expect(a.spots.RB.pos.y).toBe(CENTER_Y);
++      expect(a.spots.RB.pos.x).toBe(40 - f.slots.RB!.depth);
++      expect(a.numbering.B).toBe('RB');
++    }
++  });
++
++  it('preserves seven on the line and eligible ends in every installed formation', () => {
++    for (const formation of FORMATIONS) for (const flip of [false, true]) {
++      const a = alignOffense(formation, flip, 40, CENTER_Y);
++      const eligibleOn = Object.keys(formation.slots).filter(slot => a.spots[slot].pos.x >= 39.4 - 1e-9);
++      expect(eligibleOn, formation.id).toHaveLength(2); // five OL plus two ends
++      for (const end of eligibleOn) {
++        const endY = a.spots[end].pos.y - CENTER_Y;
++        expect(eligibleOn.some(other => other !== end
++          && Math.sign(a.spots[other].pos.y - CENTER_Y) === Math.sign(endY)
++          && Math.abs(a.spots[other].pos.y - CENTER_Y) > Math.abs(endY)), formation.id).toBe(false);
++      }
++    }
++  });
++});

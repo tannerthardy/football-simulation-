@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Completed independent #156/#157/#161 review — 2026-10-19 America/Phoenix
+
+Integration subagent `latest_small_docs_review` claimed only
+`docs/reviews/latest-small-docs-independent-review.md`, its review-only patch
+folder and `data/reviews/current/latest-small-docs-independent-review.json` on
+accepted `f4146275`; no production ownership crossed. Exact source, receipts,
+links and scope were independently checked. #156/#157 are accepted for root's
+combined verification; #161 documentation is accepted with the published-access
+update supplied separately. No tests, native runs or data queries repeated.
+This review boundary is complete; root retains composition, verification and
+merge authority. [Review](reviews/latest-small-docs-independent-review.md).
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
