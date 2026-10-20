@@ -186,3 +186,31 @@ mechanical corrections will change bodies and do not inherit these native
 endings. Loaded contact lifetime, climb departure stalls, first-level help
 coaching, awareness/source limitations and deep pursuit remain unresolved.
 This review grants no physics/default/baseline or destructive-cleanup authority.
+
+## Root-adjudicated composition — source review addendum
+
+Root independently accepts the separate #150 native-test proposal: retained
+original failure, no intervening-DE engagement, actual Will load by1.60s,
+real hands/arm/work budgets and no runner contact preserve the intended duty
+without banning glancing body contact. This resolves the test-contract decision;
+Root's exact combined check still must pass.
+
+**ACCEPT** the composed corrected #160 plus #164 engagement source inspected at
+candidate commit `8c2232d52f8d152e36982753f163dd5cabc72a1e`:
+
+- Git blob `745ae4aed886cfea87a114641b357d2c51230ab0`;
+- file SHA256 `f68b2132a5d15d185290290b76d0a2d7f596839b7f1c64d355c7e3ec6dc76dbe`.
+
+The new deep-lateral mode requires the defender's own run recognition and
+fresh acquired positive-RB/negative-QB possession. Optional target `flow` and
+mandatory adopted `lateralFlow` have separate meanings, held with the same aim,
+runner mode, adoption time and prediction bound. Only elapsed held time advances
+the reference. The observer retains both provenance fields; the `DL_FLOW=0`
+fallback retains `read.flow`; original depth, shedding and unpromoted branches
+are unchanged. Existing legacy holder-selection limitations remain explicitly
+outside the new-mode repair. No missing #162/GAIT dependency was introduced.
+
+This addendum is source review only: zero edits to Root's code and zero tests
+or native prefixes. Root retains the tiny actual-overlap check and exact full
+verification. #165's attained-pose execution change means earlier native endings
+are not automatically evidence for the final composed source.

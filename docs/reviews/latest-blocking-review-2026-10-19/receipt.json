@@ -125,7 +125,7 @@
   "unchangedOriginalTestPreserved": true,
   "sourceAncestryAndDataEvidenceNotMerged": true,
   "filesSha256": {
-    "README.md": "1cbb95028147ecf23a6ff1ba6f7c7c6eff77fe8ed41b8378d7f2de0cf800be59",
+    "README.md": "00337a3f3117cab198e5960259ae9e887ff7f830a32c87f539f69bca9e04e62e",
     "evidence/artifact-verification.json": "ce6c384e7c07f6248fbe08e7f4198e28b1a7a10be3fd0d23369c072e78f5a473",
     "evidence/climb-composition.ts.txt": "185b537a336e977055a08dec3506dec8248b440bafdeff97fd878cc507bb0d89",
     "evidence/composed-prefix-receipt.json": "559010637a8fe48f1a781707fa71c8de6ba981da73c6bc68ee86d661dc7fdbf0",
@@ -145,5 +145,17 @@
     "patches/pr150-portable.patch": "61aaea6c8d6cc9edcebe5c23095a88f492d7f6620cfefa44fd89e7ec0b47a5a4",
     "patches/pr152.patch": "223e1ece8a0bb750249cd30fa629abc4ffbf51f059ed9d856f5ed6f7bfefe42d",
     "patches/pr164.patch": "03f9efd407f6dec24ba69ec588abcd7c62d287040a65408c57006f4c93afa1af"
+  },
+  "rootAdjudicated150Contract": "ACCEPT separate proposed test; original failure and zero-impulse evidence preserved",
+  "finalEngagementSourceReview": {
+    "decision": "ACCEPT",
+    "candidateCommit": "8c2232d52f8d152e36982753f163dd5cabc72a1e",
+    "file": "src/sim/engagement.ts",
+    "gitBlob": "745ae4aed886cfea87a114641b357d2c51230ab0",
+    "sha256": "f68b2132a5d15d185290290b76d0a2d7f596839b7f1c64d355c7e3ec6dc76dbe",
+    "runtimeScopes": "corrected160 plus164; existing-law controller only",
+    "newTests": 0,
+    "newNativePrefixes": 0,
+    "combinedVerificationOwner": "Root Integration"
   }
 }
