@@ -8,6 +8,7 @@ import {createHash} from 'node:crypto';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {dirname} from 'node:path';
 import {gunzipSync} from 'node:zlib';
+import {pathToFileURL} from 'node:url';
 import {CENTER_Y} from '../../../src/core/field.js';
 import {newSupport} from '../../../src/physics/support.js';
 import {World,type Intent} from '../../../src/physics/world.js';
@@ -21,10 +22,8 @@ import {sourceVersion} from '../../source-version.js';
 
 const fixturePath='test/fixtures/traffic-step.json.gz';
 const fixture=JSON.parse(gunzipSync(readFileSync(fixturePath)).toString());
-const output=process.argv[2];assert.equal(process.argv.length,3,'Usage: local-passage.ts OUTPUT.json');
 const modes=['single','mirror','head-on','cluster','clear'] as const;
-const start=performance.now();
-function run(mode:typeof modes[number]) {
+export function localPassage(mode:typeof modes[number]) {
   const side=mode==='mirror'?-1:1;
   const own:Body={...structuredClone(fixture.rows[0].body),pos:{x:50,y:CENTER_Y},vel:{x:4,y:0},
     facing:0,energy:1,support:newSupport(),spin:0,squeeze:0};
@@ -59,7 +58,9 @@ function run(mode:typeof modes[number]) {
     contactIntervals:states.filter(s=>s.contacts.length).map(s=>({t:s.t,contacts:s.contacts})),
     maximumWorkResidual:Math.max(...states.map(s=>Math.abs(s.workResidual)))}};
 }
-const source=sourceVersion(),rows=modes.map(run);assert.equal(sourceVersion(),source);
+function main(){
+const start=performance.now(),output=process.argv[2];assert.equal(process.argv.length,3,'Usage: local-passage.ts OUTPUT.json');
+const source=sourceVersion(),rows=modes.map(localPassage);assert.equal(sourceVersion(),source);
 const result={question:'Can the existing local traffic controller pass an acquired stationary teammate and resume its owned goal?',
   source,node:process.version,toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
   fixtureSha256:createHash('sha256').update(readFileSync(fixturePath)).digest('hex'),
@@ -68,3 +69,5 @@ const result={question:'Can the existing local traffic controller pass an acquir
   rows,wallSeconds:(performance.now()-start)/1000};
 mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({output,source,rows:rows.map(r=>({mode:r.mode,result:r.result})),wallSeconds:result.wallSeconds},null,2));
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main();
