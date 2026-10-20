@@ -16,6 +16,7 @@ import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
+import { localTrafficRoute } from './traffic-route.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -349,6 +350,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       return samples;
     };
     const gathered=gatherForMotion(a,spaced,peers,forecast,context);
-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+    const ordinary=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+    const s=a.body.support;
+    const free=!!context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement
+      &&!context.constrained?.has(a.body)&&!ia.free&&!ia.dive&&!ia.lunge
+      &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
+      &&!!s&&s.state==='up'&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
+    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
   }
 }
