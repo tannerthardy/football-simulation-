@@ -1,0 +1,30 @@
+[
+  {
+    "path": "baseline-zone-reference.zip",
+    "bytes": 49176207,
+    "sha256": "39b03bf44c41a2d409c64e691f121a57a8a3542468ff5cdb4782e6380ea3ffb4",
+    "arm": "baseline",
+    "game": "zone-reference"
+  },
+  {
+    "path": "baseline-spread-air.zip",
+    "bytes": 50295634,
+    "sha256": "52cba19030b80c69c68e31e3dc07251d01382efc72ca9abd1b35a73f47f75322",
+    "arm": "baseline",
+    "game": "spread-air"
+  },
+  {
+    "path": "candidate-zone-reference.zip",
+    "bytes": 48751013,
+    "sha256": "5bfc98c851e8cf564d22de44209cb3b4681ae2f1aae2cd652175021b377e294c",
+    "arm": "candidate",
+    "game": "zone-reference"
+  },
+  {
+    "path": "candidate-spread-air.zip",
+    "bytes": 49040999,
+    "sha256": "e0d50b548980543169b5dd0ea8ab1382d59140e83dde648e9098ba11ebd3e00a",
+    "arm": "candidate",
+    "game": "spread-air"
+  }
+]

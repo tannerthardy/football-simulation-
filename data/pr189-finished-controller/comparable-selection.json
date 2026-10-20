@@ -1,0 +1,20 @@
+[
+  {
+    "game": "zone-reference",
+    "before": 10,
+    "after": 16,
+    "note": "Counter: same offense, call, front/coverage, 1st-and-10 at35. Different earlier histories; earlier defensive access is a real result, not automatically better blocking."
+  },
+  {
+    "game": "zone-reference",
+    "before": 7,
+    "after": 7,
+    "note": "Power: same called concept/front/coverage, but baseline1st-and20 at55.3 vs candidate2nd-and10 at64.2. Compare blocking/finish, not isolated causality."
+  },
+  {
+    "game": "spread-air",
+    "before": 1,
+    "after": 1,
+    "note": "PA Post-Dig opening control: same call/front/coverage, 1st-and10 at33.0/32.8. Edge sack remains; this is retained adverse behavior."
+  }
+]
