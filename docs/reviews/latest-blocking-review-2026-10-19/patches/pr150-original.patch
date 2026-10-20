@@ -1,0 +1,360 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index b312fcfc4d823db7558332b8af613804add4cd20..f5e94593f942f10ad336af6da64211db2958bb46 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -29,6 +29,7 @@ import { interceptPoint } from '../../physics/reach.js';
+ import type { Perceived } from '../perception.js';
+ import { goTo, runThrough, stand, track } from './common.js';
+ import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
++import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
+ 
+ /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
+ const PULL_STEP = process.env.PULL_STEP === '1';
+@@ -740,6 +741,7 @@ export class RunBlocker implements Behavior {
+   /** Native technique read, retained between the player's ordinary decisions. */
+   zoneRead: ZoneReachRead | null = null;
+   /** Held climb plan from one acquired picture of the backer. */
++  private climbAccess: ClimbAccess | null = null;
+   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
+   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
+   /** The called track he is running this tick (known to teammates). */
+@@ -914,12 +916,25 @@ export class RunBlocker implements Behavior {
+       }
+       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
+         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
++      this.climbAccess = null;
++      if (Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
++        // A backer assignment does not remove the bodies between us. Read
++        // first-level surfaces on the same beat; never inspect their private
++        // assignments, engagement state or future controller requests.
++        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
++          ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
++          .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
++          .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
++        const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
++        this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
++      }
+       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
+         chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
+         cue: 'one acquired picture of the backer, previewed with own free movement',
+         options: ['attainable meeting point', 'closest approach (no attainable fit)'],
+         detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
+     }
++    if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
+     const r = this.climbRead!;
+     const capacity = a.body.support
+       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+@@ -1177,7 +1192,7 @@ export class RunBlocker implements Behavior {
+         const bodyContact = a.profile.radius + target.profile.radius;
+         // Interception supplies the approach, not permission to run through
+         // the man. Use the same acquired near-strike fit as other climbs.
+-        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
++        if (!this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+           return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
+             placementError, contact, bodyContact, fit, sim.t);
+         return fit;
+diff --git a/src/sim/climb-access.ts b/src/sim/climb-access.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..9d896f7c60dd07500806be638df0fb015e79584b
+--- /dev/null
++++ b/src/sim/climb-access.ts
+@@ -0,0 +1,83 @@
++/** Local access to an assigned backer, using acquired bodies and own movement.
++ * This predicts neither a teammate's next decision nor a successful block.
++ */
++import { FIELD_WIDTH } from '../core/field.js';
++import { clamp, type Vec2 } from '../core/vec.js';
++import { cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../physics/kinematics.js';
++import { previewFreeMovement } from '../physics/movement-preview.js';
++import { availability, supportParams } from '../physics/support.js';
++import type { World } from '../physics/world.js';
++import type { Agent } from './agent.js';
++import type { Perceived } from './perception.js';
++
++export interface ClimbSurface { seen: Perceived; radius: number; key: number }
++export interface ClimbAccess {
++  at: number; goal: Vec2; flow: Vec2; through: number; backer: Perceived; obstacle: number;
++}
++const STEPS = 12; // A few steps, the existing local movement-preview horizon.
++
++function gap(a: Agent, path: ReturnType<typeof previewFreeMovement>, p: ClimbSurface): number {
++  let px = a.pos.x-p.seen.pos.x, py = a.pos.y-p.seen.pos.y;
++  const radius = a.profile.radius+p.radius;
++  let minimum = Math.hypot(px,py)-radius;
++  for (const s of path) {
++    const rx = s.pos.x-p.seen.pos.x-p.seen.vel.x*s.t, ry = s.pos.y-p.seen.pos.y-p.seen.vel.y*s.t;
++    const ex = rx-px, ey = ry-py;
++    const along = clamp(-(px*ex+py*ey)/Math.max(1e-12,ex*ex+ey*ey),0,1);
++    minimum = Math.min(minimum,Math.hypot(px+along*ex,py+along*ey)-radius);
++    px = rx; py = ry;
++  }
++  return minimum;
++}
++
++export function climbAccessCommand(a: Agent, read: ClimbAccess, now: number): MoveCommand {
++  const dt = now-read.at;
++  const goal = { x:read.goal.x+read.flow.x*dt, y:read.goal.y+read.flow.y*dt };
++  const capacity = a.body.support
++    ? availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)) : 1;
++  return { vel:movingArrivalVelocity(a.body,goal,read.flow,a.profile.vmax,.1,read.through,1,capacity),
++    facing:Math.atan2(read.backer.pos.y-a.pos.y,read.backer.pos.x-a.pos.x) };
++}
++
++/** Keep an unobstructed interception exactly. Otherwise compare two short
++ * steps around an acquired first-level body, including every supplied body in
++ * the clearance check. Swept own movement, not a ray between centers, decides
++ * whether a request clears. Pictures move at their observed velocity only.
++ * The ordinary controller read cadence owns expiry; there is no route timer.
++ */
++export function chooseClimbAccess(a: Agent, backer: Perceived, surfaces: readonly ClimbSurface[],
++  original: MoveCommand, now: number, interval: number, handContact: World['handContact']): ClimbAccess | null {
++  const path = previewFreeMovement(a.body,original,now,STEPS,handContact);
++  const originalGaps = surfaces.map(p=>gap(a,path,p));
++  const blocking = surfaces.map((p,i)=>({p,gap:originalGaps[i]}))
++    .filter(q=>q.gap<-.025).sort((a,b)=>a.gap-b.gap)[0];
++  if (!blocking) return null;
++  const body = blocking.p;
++  const relative = { x:a.pos.x-body.seen.pos.x, y:a.pos.y-body.seen.pos.y };
++  const distance = Math.hypot(relative.x,relative.y);
++  if (distance<1e-9) return null;
++  const ray = { x:backer.pos.x-body.seen.pos.x, y:backer.pos.y-body.seen.pos.y };
++  const preferred = Math.sign(relative.x*ray.y-relative.y*ray.x)||1;
++  const radius = Math.max(a.profile.radius+body.radius+.15,distance);
++  let best: ClimbAccess | null = null, bestScore = Infinity;
++  for (const sign of [preferred,-preferred]) {
++    // Same short foot-replacement arc as the existing run-block fit recovery.
++    const angle = sign*.35;
++    const goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
++      y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
++    if (goal.y<.5||goal.y>FIELD_WIDTH-.5) continue;
++    const read: ClimbAccess = { at:now, goal, flow:{...body.seen.vel},
++      through:cornerSpeed(a.body,goal,backer.pos,radius), backer:structuredClone(backer), obstacle:body.key };
++    const trial = previewFreeMovement(a.body,climbAccessCommand(a,read,now),now,STEPS,handContact);
++    if (trial.some(s=>s.support!=='up')) continue;
++    const gaps = surfaces.map(p=>gap(a,trial,p));
++    // Do not create another collision or deepen an already acquired overlap.
++    if (gaps.some((g,i)=>g<Math.min(0,Math.hypot(a.pos.x-surfaces[i].seen.pos.x,
++      a.pos.y-surfaces[i].seen.pos.y)-a.profile.radius-surfaces[i].radius)-1e-9)) continue;
++    const last = trial[Math.max(0,Math.min(trial.length-1,Math.round(interval/.05)-1))];
++    const score = Math.hypot(last.pos.x-backer.pos.x-backer.vel.x*last.t,
++      last.pos.y-backer.pos.y-backer.vel.y*last.t);
++    if (score<bestScore) { best=read; bestScore=score; }
++  }
++  return best;
++}
+diff --git a/test/climb-access.test.ts b/test/climb-access.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..9d84ff0bdbe749fd328829e38dea68572165015a
+--- /dev/null
++++ b/test/climb-access.test.ts
+@@ -0,0 +1,86 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
++import { RunBlocker } from '../src/sim/behaviors/blocking.js';
++import type { ClimbAccess } from '../src/sim/climb-access.js';
++import type { Perceived } from '../src/sim/perception.js';
++
++const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/climb-traffic.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
++function stage(at: number) {
++  const sim = new PlaySim(structuredClone(fixture.setup));
++  while (sim.phase==='live'&&sim.t<at) sim.tick();
++  const y = sim.slot('Y')!, controller = y.behavior as RunBlocker;
++  expect(controller.plan.kind).toBe('climb');
++  expect(controller.target).toBe(sim.slot('LB_W'));
++  expect(y.engagement).toBeNull();
++  return {sim,y,controller};
++}
++function decision(hiddenChange: boolean, clearPicture: boolean) {
++  const {sim,y,controller} = stage(.25), end = sim.slot('DE_W')!;
++  // Test-controlled acquired pictures are held identical while reality changes.
++  // Reading the existing buffer has no acquisition/RNG side effects.
++  const pictures = new Map(sim.agents.map(b=>[b,structuredClone(sim.see(y,b))]));
++  if (clearPicture) pictures.get(end)!.pos.x+=20;
++  if (hiddenChange) {
++    end.body.pos={x:end.pos.x+10,y:end.pos.y-12};
++    end.body.vel={x:-7,y:4};
++  }
++  const see = vi.spyOn(sim,'see').mockImplementation((a,b)=>{
++    expect(a).toBe(y);
++    return structuredClone(pictures.get(b)!) as Perceived;
++  });
++  const body = structuredClone(y.body), rng = JSON.stringify(sim.rng);
++  const command = controller.update(y,sim);
++  expect(y.body).toEqual(body);
++  expect(JSON.stringify(sim.rng)).toBe(rng);
++  expect(controller.target).toBe(sim.slot('LB_W'));
++  expect(y.engagement).toBeNull();
++  expect(see.mock.calls.some(([a,b])=>a===y&&b===end)).toBe(true);
++  see.mockRestore();
++  return {command,access:Reflect.get(controller,'climbAccess') as ClimbAccess|null,end:end.idx};
++}
++
++describe('assigned climb clears acquired first-level traffic',()=>{
++  it('retains the linebacker objective while responding to acquired obstruction, not hidden movement',()=>{
++    const original=decision(false,false), hidden=decision(true,false), clear=decision(false,true);
++    expect(original.access?.obstacle).toBe(original.end);
++    expect(hidden.command).toEqual(original.command);
++    expect(hidden.access).toEqual(original.access);
++    expect(clear.access).toBeNull();
++    expect(clear.command).not.toEqual(original.command);
++  });
++
++  it('holds the acquired access objective through the ordinary read beat without extra surface reads or randomness',()=>{
++    const {sim,y,controller}=stage(.3), held=Reflect.get(controller,'climbAccess') as ClimbAccess;
++    expect(held).not.toBeNull();
++    const body=structuredClone(y.body),rng=JSON.stringify(sim.rng),see=vi.spyOn(sim,'see');
++    const first=controller.update(y,sim),again=controller.update(y,sim);
++    expect(Reflect.get(controller,'climbAccess')).toBe(held);
++    expect(see.mock.calls.some(([,b])=>b===sim.slot('DE_W'))).toBe(false);
++    expect(again).toEqual(first);
++    expect(y.body).toEqual(body);expect(JSON.stringify(sim.rng)).toBe(rng);
++    see.mockRestore();
++  });
++
++  it('clears the end and acquires real assigned-backer load in the native all22 continuation',()=>{
++    const sim=new PlaySim(structuredClone(fixture.setup)),y=sim.slot('Y')!,end=sim.slot('DE_W')!,backer=sim.slot('LB_W')!;
++    let incidentalImpulse=0,firstLoad:number|null=null,positiveNormal=false;
++    while(sim.phase==='live'&&sim.t<2){
++      sim.tick();const report=sim.lastStep!;
++      incidentalImpulse+=report.contacts.filter(c=>c.i===y.idx&&c.j===end.idx||c.i===end.idx&&c.j===y.idx)
++        .reduce((sum,c)=>sum+c.impulse,0);
++      const e=y.engagement;
++      if(e?.defender===backer&&e.hands&&Math.hypot(e.hands.normalForce??0,e.hands.tangentForce??0)>1){
++        firstLoad??=sim.t;positiveNormal ||= (e.hands.normalForce??0)>0;
++        expect(sim.world.joints).toContain(e.hands);
++      }
++      expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++      for(const a of [y,end,backer])expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx]+1e-8);
++    }
++    expect(incidentalImpulse).toBe(0);
++    expect(firstLoad).not.toBeNull();expect(firstLoad!).toBeLessThanOrEqual(1.6);
++    expect(positiveNormal).toBe(true);
++    expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
++  });
++});
+diff --git a/test/fixtures/climb-traffic.json.gz b/test/fixtures/climb-traffic.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..f87b600a61f29cc92fe3792a79f53df162c1f4f4
+GIT binary patch
+literal 5962
+zcmV-Q7q#dgiwFP!000001Erl?bK^#mh5rfzPrDIp2I>xQo<>r;?U`=3Eh)Cgb~rj9
+zvLs?f0W<)%EIazYZ)EX;%B%uN_0EH*DM2KN%g2)^PZs}9%4IT7eq}P5CW~UdPUcDZ
+z*XL(jJSNlRzHXk9c~UIwXU5@iQ&(LwPwFqWfrsmIlgztjYo|$TyX_{K|DDwL_qJ*+
+z{PX7v`0wro>dH<&zWMor!QYil+x=KP*<_x){ZdrPG+7tuCv7rK{?|6GeM#nKnr!N}
+z?8>@I=J1@;q<FB&T%^;){<*PDX{&{G+dbK$-8RMD+P3h@D_cISx*w`!Zq!UplV|t%
+z{arHWET1Mt^8~*Wd}gM}s;HLmD4%inzPp!XE@zpVCY`NrHtVuW=4__3Y0|E?UAMOI
+zYiXuQw`#1ttSi`q8CTQfi*34cQLK}>VDMyjO<gRLIb&*?+}UceO6KX;Y0?y3Sv|P@
+zY`ex*58Vp(Wty~I@l;ktGS~12#kz3sPKs&L)!T<vW!rZ5yKdFg&p*}Awn^qWpC-j(
+zakHwME}3Vkd-MSgz1jWd%G%BDL1WjpfD>f&{y9EY*IPJ9#=QjWpvmE&FCK08Q)AoR
+z@y*yY`BJv-G-x?Z?0ValU+ivwObTz*7LT{Z;t>uGH*V+GH+HdYN;sNEO_NR0?a!8w
+z)1;}loxR>xRarg2(K_zi|FrP3Eu5#_nQ4=`$fwDot~%Rxc6nKJu$%B}c#+$tSUkEX
+z;T&G1Z7<gK;xU=aY??INYX1mc6Q1qXE>>0f#};-|Pm{GRmisLZe}27fSNkK&vi?Wk
+zmGExu?mXSWpWLkMa=CkDI6?5{kNdGIyZv*(!Psn@b_-XLfD5&#F5xEHUC45p{8d-B
+z|B2g;-4PIKe;gmn^}5|1rN?sdczEV~_wb*K#kMIHaM7mlTGipDMYem`ZvZ<}JQvOW
+z%)x2htc#axyQm+k{cQ%9#?mg_+5S-M4y}=J0-iQ?yKU_55?Pk*qTH-YxcD`jCPmei
+zixN(<dy>qZv9@eGTfr;CMfzMfkJm*9SG4*%P40`Qa$Od?E9CF5a8oW;wtLwC3Epk1
+z77nLvlCRU`{Vk=*$6HF1%N1PN2qzzkwyu1faKw|3w+EhZiFv}uc#_S8&lADYo+oO?
+ze4dyiPt=SF%o8IJPmCfwf$P`fiGXK5@FdNSJmGu@D291Jfm3z_iZ%!+D#t*9TdM~O
+zT%re{z%6qG3S3@CpuhtkC~$G^fx;s|fji~^6u7$)P<Tdxl2f1v?gIsWPk@p}fTE8;
+zkun05JOBzqK!HQp1I2_u$v6f|9sotK7*I?A6n8X_K#>dqCG&s+ghD`(iUI{bJ@!Cx
+z2i6BlhJYd&1qz%R4=6mRKmp=-K!FP@0E&(PMdcVM5(5Q}BnAqQ3jsw7A1EdbfRcQC
+zm&{XlUtPjKBq7XCMcYn(YU<7|y4q3ZI;6}yNhwo2*`_A4<)V2hs?GzAPBCcS9YJF-
+zXw<lHF$gqp^&CJWhcE+IlaHAU%a$xhn8{|T_A$emhZ$h@o-#rVQ6@7UWiljNGE5mm
+zD3ke=ai2_k%D^>zqzuTao-zVcMu;P2;GdK-K!F2g+>u9=QIs+nrHs4PdfCD$WxRds
+zDPwxsqC(0r9Z*Ii%4kHHETjxz-J=Y=M?x82$s8%;UYJk@%a+WijLJRAz<rM>13$o&
+zal5fQ0tQ2d6V;Lhkl|Rh2nreai3b@IQ!OeBAp_v?A!ANKMygTB=uowQhM1=_y=ROe
+zjQLP(*E<DsNzrmi^~=9)wS*!JlV#hjUA=WAi$G+#Jc31Iu*fm6NCK9W`4y2GLQ8t0
+zBFbq+l#z-^dlixF6$~3<3%uE$Evc_ya?F;Lutg&U!+W+c#1`YRMe0|vMS5(Jlr17)
+zOHdLiq+pz0!3xGi*rLW2j6A^>xC45&<SJwfE{Q}ImPC0>!LYC-LJCG`pDof?FtF2@
+zEjmyztS^buQ3V4Zi=%LX!$uSg$0d=Bl|(F}U@{CBO-dq3;ldb&i$rkYLkcFF?kPhR
+zj3dcEyVcru)>TRGLj6K1^S*wdrpr%Fxv)NB)S2RClrfr$mvq2&VX0@ks2Q9vq+dvx
+zBnf0de|Y*u`?gEk+b&|TOoB7sLq_`ohCqg4$S^)6V0h}6Nz8)`Bai`#93UejWs>Y6
+z17#+Lj3AIX-W+|Igaix}T^KTOHwTcB<B%~FG76VT@Tu#SNofEXV7Ff;iBQ0(2xOdI
+z!;pb{cL*|$uSee{rI0a!?;?B1XaX67A)^AwNUUHCg$%>K3ml>lGHFD?q!=;^Lk2ET
+z3>iTo14fJo8T0K5<~l+bagK)h_-wJMJ6Ig4SGX_+cG=?#{PD3k@-+<HH$7d52?H9?
+zql?yrE(V#p?%F@Fg}t^o(ugf=)YBCTvBk4sz((o?j2N?E^pP#hM2aKNf^q86XN%;7
+zEi4c)&Kv025_-BK!j|mF79R0**(m`7UPjLr6&6Q|pDK<-tT^JKrwf1T6-Vq9YzZtF
+zo(>8aj@iNj0pm=lQMMqoKnW9~g`ad_1hI5M4HL9Tf)=1pj~2!LA7}}hMb}}os3{ki
+zEB`8<tj`rk@SZEz7vI7aonv>Gr_$3cL%kv=4LqzUjj*!6GkdIH(?y6`-h+krl@ZH^
+zz@qq2W#j~s2NqHp$zjoAe6aZ5F3$;A`pU?CQjdrhxbnuEML^)OW|0oOT^*~8#1Ski
+z;<|{SS)>I5i$cw!gNNgR1+IP%EGiT&j<Eq)WLOz#<n5+DSeWm+2<q(uMu_XuH;XuJ
+z7I7?Ef@aZyB>wK>W)bmrW0esc#z3?vL>6!fe6pyZStMTX?S6LwM1fQN={i;#eX5(s
+zRo%3%F8YPi<@PP5%ZH*VYmAp4i!Vjf)E;0mTo~QH{igPj!G#gmp7|n3VWj+ibVl44
+zGtL<J;P4p3p$mR=U-UWsBkeQBc#KiFA)Qh81@(_4^BCic7wH#9oRPvv^^A!*yV~m?
+z(T4O+rg@CfL1Dzzc>hTAkTJR!FS!mGlLz8OXCwWiJP+L$To@S@iWhNa|HvT5poTPj
+zvL6{EX+v5CjPVO2M#M{st=&+(;Qo;a+!xne^sL<&W6rU5Nnr#>o>;r-xcd^Zc6W@?
+zN5m+?m>(*5v57ldJ00^M3Yt&XoPg%GDcg=ZFrSL`BXW7&=Ri-IPuIub3&*6%$4JAe
+zl<`WWbcQ-e+5?RsHm}5>VGMyrJ4?m`jYMK5J44J!K2#+s?7(PEs-zUzyk7DJKJMZ+
+zFEbc4$^%WTN>V*&U{eGdO&irJXdx+7C9x1RIs}dB9hi)TpfLexvJ`<vpel(+k}nuE
+z;#|-~sw9O#lcPqp@Wl+L$(OK7@{%w4xC4_0pvg`(s<F+hV?885LI4`lsAdE-DgX_2
+zU^0|^(J}<hwF8Zqf})tGGfqJRSMlU_)!3o~%KREqCMcGko{DN~i4g+_$C)!n%<uus
+zz^U^wla66VV9YR``+`RJn8`iNNLn*7gqbwJ45CanQyyjVo-%TfGRWu6Jjw_?+DsC-
+zWD=g7$p*a`Nt#K0zRrcTC}q5oNl~9yQ=eCb`8wQ8Vw5sjq)~lvX4}K3DW;6hC}j*T
+znOyU`&)2cAWKySmUKx$Uh!gobhA1OYzK%ANL?CBm@5L~VDI?j5W)hJzoChTnHe($8
+z1IomjNkq=1r<zH7_pGOkLO!q2ucyq-x^{T^KCG6gh`DH979?u-@A|n|w~wVq7bi5M
+z<x=*F5R3t%#S<~$eDridX*=ONGG>%6ToAhCIK69z@M6yDRhx7KFKVn>;>r^-K3;?`
+zVgzX;aWh^mdGTHNH?Eeb)vJPPN#bfL3q(u=FRB+Yd3uhBA#EgudeusVZ6s{<>M*|R
+zyT4=A5=SD2BfRVy#zT$_988QC$QSJKB1yHRPT_@RC#oe*f-oY67Zr)`Vi6-ruUds^
+zJ3;ZHkci1&UoCy8zu3v`+vMw4*uUePz}4H&pD=K)-n_kf7a-@~FKa@ai=uk;?cW@W
+z8F-R!Y+PgDXzn+bH1cPB;<!kPPn;YRC-8tVag?9$<$ZIB4-y9;)0a)mPsgO=$vadw
+zv3!U)D0!C>;`EJc_c1t@?+u7UJzx=dz#NrLVe-z65D?->-Zz&b9&nhB5tum6k2(^E
+z=~HD>WMDwY1_rWF&_Ef{6UU^3$vaJxcOp#Q^<@*I9<V~h36gi5%nPIea54lOcZ&tU
+zi8Pmt8m*e(f+STFr}j*W^h_ii^ZsZ7U%56@pl3GLE+=p%cIM30+s`+YH1C5p(}!~H
+zno1sMZnsT^+!=*^;P>CuXfoKFkzSjL&GJE6L%bPy?3=)f${I<kraU^7#PahZc+!Im
+zBOUB)%$pg8jP^}nDr>Sn9g~e$O+g2n1rfYph`>3UBPOtn3=s$~-W%y)%TtgM2r?p!
+z;E_gC#G6sEbc_faO*x9-fq~ycM*AjkMj@jDSp&U*Arn|*6F5l6DAK_WtEMwdU=x!y
+z<LMX^q+@i@Xv$7Cnw*T7yH3oFtDh)lZdco<&7Lr~Az`j=X-4L%ekv>4%f4OJPa8a}
+zlw-<V-G0*yfr0p-7n6~w+k|2=IO|KNl`v>r@(OjEG>PG{cnojQ1crV{eEgA`z=D8A
+zqWUQtFoC^^pxs9|0u3MSXu~CYR5KJbA{c)ROyC^@j%p@|;l;)uy`)TbPD5K_516C!
+ziHGhCJLv)ISkzaB9<V{pCWD$y#&>6Q(9j+mBLE3GB4$oTeZ!=T3ss$%BZxJ$Gd?;;
+z08-_|uoCz?<58I-XDDBOtXn(TUs^lH1ohI@EuB)jD%KqxQo1Uh31HX&VCZypHtzmn
+zz_@(cG3Sf?narPtl!PyMmO#^40zDS<m1o3!bHB-?5MSiDKck1Dczfq&&llhR<;4DF
+z`PtoU7Id?NX~>W-cpB0Kb4po6$n@jY{99%TIO=8}f_;9qM51`%G^9(E1VSba0fX#c
+zI6od>{3sq68z<~v;Y~x5D4yh}noJtozX4##G^C8#zcM0ZNX!@f7*s9=LWa{Up2$v&
+zSDy`-_ZOc(gk=)7V}9P2RX~`Ch*5H=RC-NhhU2U+7s4-=RGcw#W=Mxg<FGFailwtc
+zd3-SK3m$x2!f-rrEhUjK`A~;R`jZ4`6q1usNZF@-g&wb!1nn?M+F?3|$@*FeAw~ur
+zrkI40eTOMF3VFEyyjlsb;2=;aPlgsS9E0(3B@>+_2rb|o88U9_vPTT_Yb8Mku7gPe
+zX9C4131El)f$PwbQKvdg`t-OGd{zdvlE9%nY5@mvUlU9cuv3oAYigzU7om=Me?fK3
+z$ETvfjCpULOW*ZX*$`mZt6JC@c4L%ZCFMgcY(t79_(1dB7+ND?GsaDJ#S(dgfYE*n
+z+xUq*p%7pUP2>p_l<|5@%r|2gO8pM6=pZ63Y{=Cd0VAjxqbXoQ$5)`BOwePB0Y>zW
+zuQ*S`NUUKv(l8OgkRmB;VT)MmHxiTqGolBKMrKUr_n6=|!+_xwFsd(-Bn`^oc}O0v
+z=zswuSTIh20po^s&RWrdED=LibWlN1Mg{Yb2rwej!hR)S0y75wo*KSUC39KV8)W(B
+z>0on7uvb(|3Sq|Z!CEOle<dnKYbCg1yjm&uy%>M)`n=AP@r8`$m@`DkNHer@j4(ri
+zJZ=V~GK@tyla2_PkTW8vm9Xg>2$^WD)X!ZDe%4Y{Br1bUUm4a)aNCZLEtyy#Planb
+z7-aey#2IHCAB7C%OgOgW)k=aa>cH|7$zLf?aE2^J6<s+di;P6>bV*+;5i`bwW(<wW
+z;E_lb>1Cg4EnRP`$xT;p_Ncjxpyu*|`o5QSV_z_4zAu^vsTq!Y*q6PU;jd6Lj7%8#
+zxnG7Byz}FDw6lb@4Cl01G9>lu%|`OG#0-KAnvKMP8ACct992vHc!5BM3>#@*i*&TJ
+zB*(@Jlsq{b>7q|Z$fy7^EHc6*`oN5e<nd&%aEuTmoh22{T}y1p$Vgx&1{oQ4mKX}m
+zXdIYHeKA94BeTHq&HKQNCXg}e)OZ2uUk5A4Fm(oGBB@`c#`AbVU?vNyB{agMvJf&(
+z!RXkM4wtoSIPb_3R7saX&pNX5-F4j}uBaidkf1Lc9gRdWUuZA((*$~`V|^m#%Yq;t
+zNyT_I689R`gFY{CERGdYBT0f4iH8ZahZTR#7^y~lUOpc4bqnGg){F_XOHNZUq0gJ5
+zK9UL=){#_<@FpW;%V-8MUyi4i@GyZ4u_B1iYeKBVV!rN$$8vZs^4AX&_zi1ChY56G
+z!k9i4V+d9h(Jq=|g~aew&_^OE-*Zzj5~q9>Es=s$j0uL8*r{29C{=b*m>w(N1#;zv
+zGUZ>z+E%9qA~~*#ZoVmR$7eZKE7~uLJg#J3gIdm<NElASq?&NW;E`+8pgwPY05y>O
+z<uo}iiZod#Mxcf6gg-xk)^hO87fHb)M$H#K=I-*q-3^j34C$3{F{)S+hWF-6Y~=dn
+z`n&?I6T>55!RCvUAz02#!YJhKYB{);g9?_@4D^cW^$PJ`4CaamxFXUM<}T?UnOOfQ
+zwicDd4QfT>c7gX|f`#r-+)hX2%H<*7yDN@@eD9^LI@{crcD>v|<|c#;?IOJ|0)O|D
+zy}KJ;)8XcuMhKj>;x7O$edU7OU4Kyrtw-HmP6w1SwA>xfki9F;AdHe{RzyM84o6`0
+zKm>;8XD;dx3H16A7`k4spstIM;|Unp!_%&dw_dM~Oc1bOAu5rMbf_ayJBFinhX%L5
+z5LI+dhp>I5(sT2?v_q}Ks2v}Sz$oJG@_;ZnYR7|uh)xik8?{r|b<u<{(3>MsyI{2#
+zg9sCe+MOcI_b+!%xpV^r_5J;&`@(|1-S-siUvp2J<5w0`JEYu{)x+A}6^qBo?Q>a8
+z+#u4%Hf>#17QXbrZT!bwGEcVE(%HUU0r%!_$;Qc@l`X!!B)?CSc3pSwo^^xXZMk$1
+zOQuP?V?^={KZ2vTf%}=w_+g$ZvTf<c$NQ~!vh5dd>+6$S|2nXBY(I93?Cdwb>^Dx2
+z+v!>M6^^d|-42gs1;@16f*6GV9*%PVO%eOU{6huLJ#no6wEIoFSXuYG()|v81$$LC
+zcCiQg{wazQzH0)i(kI)lZcF$h_XP@@?Rsq+I2XSIK#R_u7W-wVO@Zid?&?32-@n3#
+z$es1S!eTdPa=1+V^L<yeR*L>RE%xtd|IHTrw<F(($;aJKyubae|KqA$Jh}<nCG4($
+zbsUoBodr%M8ji&7u;2J6F!v&(`%T68rk}h`S-<J0VAHo~Q#G>bp-r;i)I@hc&X|`B
+z33tHTRC&GK@J)U4pHsVwZE*zO{xrBBi2g)4GET(gziu91{yW)I<Hg^wU0L_#C3R)r
+ztjdQ~;uxFE?~8S7k1*Xos_JgnDQc{pEUn#4C-?QXnYdg3ACqonCvDf%)x)GM?rrxn
+zY3lX5oh<9;YSPt{#kN_$xnCFEq^OpY`?^`!8QdB5UUnS3;Qf8`*Y1*c|2I$I<vw?-
+zvRQs^eS7EB#?O7xHoWQ6o{jE}RJMSF{96M1`x*B4Gx$OMqi5h+T|c@XyMG*i0#5`t
+zlsj$?_tkd2?r$)6pTG@Q?=v3o5%r4;<!SW4Y_ImN>gVb|yAR3MT3A?|xv<=#ZkGG=
+z@^zY&)n?n>tO~9)+<v*ZU+RM2E6LMrVNEV`YjP#|osvdyc9*NnE(%*{EsH#7RxENZ
+zbZYPK?#(?MoIke3y1XwJ#i42UXR+uebyGf+Rk5BFi-p~EcKN2Qx6Q&%er0k}!e?Ny
+sp16Ja$E2#eNik_^IHb$TeYt*`ELL{$xT(vkn<ZcW4=o(N6hdbJ0MpGxhX4Qo
+
+literal 0
+HcmV?d00001
+

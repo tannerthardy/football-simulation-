@@ -1,0 +1,334 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 3799add9301073f1b3669d8ad6708d0102c4d3a1..dd2006ac4e1ebef95a543ae1470fcb08d5504fa5 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1172,11 +1172,16 @@ export class RunBlocker implements Behavior {
+     // leverage boundary as an established run block, without a time grace.
+     const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
+       : zone ? { x: 1, y: 0 } : plan.drive;
+-    const lost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
++    const installedLost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
++    const runnerFit = !sim.world.joints.some(j => j.a === a.body || j.b === a.body)
++      ? this.runnerSideFit(a, sim, target, seen) : null;
++    const lost = runnerFit ? runnerFit.lost : installedLost;
+     // A solo drive still strikes downhill from an ordinary fit. Once the
+     // personally observed shoulder is gone, replace the feet before reaching
+     // again, using the same bounded recovery as other first-level blocks.
+-    const fit = fitCandidate && (plan.kind !== 'drive' || lost);
++    // Once the carrying back is acquired, crossing the old drive normal need
++    // not lose useful screening position. Do not recover to its opposite side.
++    const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
+     if (!lost && dd < contact) {
+       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
+       if (e) {
+@@ -1261,6 +1266,9 @@ export class RunBlocker implements Behavior {
+         contact, a.profile.radius + target.profile.radius, command, sim.t);
+     }
+     const original = runThrough(a, aim, { speed: 1 });
++    if (runnerFit?.lost) return chooseRunBlockFit(a, seen,
++      { x: -runnerFit.axis.x, y: -runnerFit.axis.y }, runnerFit.aim, placementError,
++      contact, a.profile.radius + target.profile.radius, original, sim.t, true);
+     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
+       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
+       !!zone || !!contactFit, zone ? 2.4 : 0) : original;
+@@ -1398,6 +1406,29 @@ export class RunBlocker implements Behavior {
+     sim.event('block_collect',a,threat,'penetration before climb');
+   }
+ 
++  /** A free first-level blocker recovers between his defender and the back
++   * he has acquired, rather than blindly returning to the original drive
++   * angle. This chooses feet only: target, drive and contact frame stay owned
++   * by the installation. Unknown possession and a snap-carrying QB keep it.
++   */
++  private runnerSideFit(a: Agent, sim: PlaySim, target: Agent, seen: Perceived):
++    { axis: Vec2; aim: Vec2; lost: boolean } | null {
++    if (!(isOL(a) || sim.offAlign.spots[a.slot]?.inline)
++      || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
++      || (this.plan.combination && !this.plan.combination.released)) return null;
++    const ref = this.workReference(a, sim);
++    if (this.workPicture?.source !== 'acquired' || this.workPicture.carrier !== sim.slot('RB')?.idx) return null;
++    // Existing run-contact continuation ends once the runner has passed the
++    // defender by this depth. This recovery does not renew an obsolete job.
++    if ((ref.x - seen.pos.x) * sim.attackDir(a.team) > 2.5) return null;
++    const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, distance = Math.hypot(dx, dy);
++    if (distance < 1e-9) return null;
++    const axis = { x: dx / distance, y: dy / distance }, drive = { x: -axis.x, y: -axis.y };
++    const sep = a.profile.radius + target.profile.radius + .15;
++    return { axis, aim: { x: seen.pos.x + axis.x * sep, y: seen.pos.y + axis.y * sep },
++      lost: Math.abs(observedBlockLeverage(a, seen, drive)) >= 1.1 };
++  }
++
+   private workReference(a: Agent, sim: PlaySim): Vec2 {
+     if (!this.workPicture || sim.t >= this.workPicture.nextRead)
+       this.workPicture = readBlockerWorkPicture(a, sim);
+diff --git a/test/fixtures/runner-side-recovery.json.gz b/test/fixtures/runner-side-recovery.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..057eaa7c4ebf9f27670c1da92ca8b20055ce1a20
+GIT binary patch
+literal 6082
+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
+IsQ7090O7#CkN^Mx
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/runner-side-recovery.test.ts b/test/runner-side-recovery.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..93bb39eac8427507873d6bd02af43960a9480daa
+--- /dev/null
++++ b/test/runner-side-recovery.test.ts
+@@ -0,0 +1,138 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { alignOffense } from '../src/playbook/alignment.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
++
++const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/runner-side-recovery.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
++afterEach(()=>vi.restoreAllMocks());
++
++/** Controlled decision geometry with native selected players/capacities.
++ * No World tick or claimed native continuation is reconstructed from it.
++ */
++function scene(signal: boolean | undefined = true) {
++  const sim = new PlaySim(structuredClone(fixture.setup)), a = sim.slot('H')!, d = sim.slot('DE_W')!, rb = sim.slot('RB')!;
++  for (const other of sim.agents) {
++    if (other!==a&&other!==d) other.body.pos={x:80+other.idx*3,y:8};
++    other.body.vel={x:0,y:0};
++  }
++  a.body.pos={x:42,y:CENTER_Y+.3}; d.body.pos={x:40,y:CENTER_Y};
++  rb.body.pos={x:35,y:CENTER_Y}; sim.qb.body.pos={x:35,y:CENTER_Y+2};
++  a.body.facing=Math.atan2(d.pos.y-a.pos.y,d.pos.x-a.pos.x);
++  const controller = new RunBlocker({kind:'drive',target:d,drive:{x:1,y:0}});
++  a.behavior=controller; sim.t=1.7;
++  const pictures = new Map(sim.agents.map(other=>[other,{
++    pos:{...other.pos},vel:{...other.vel},facing:other.facing,stance:null,pose:'up',age:.25,carrying:false,
++  } as Perceived]));
++  pictures.get(rb)!.carrying=signal;
++  const ordinarySee=sim.see.bind(sim);
++  const see=vi.spyOn(sim,'see').mockImplementation((observer,target,scale)=>observer===a
++    ? structuredClone(pictures.get(target)!) : ordinarySee(observer,target,scale));
++  return {sim,a,d,rb,controller,pictures,see,command:()=>controller.update(a,sim)};
++}
++
++describe('free first-level recovery screens a personally acquired carrying back',()=>{
++  it('uses acquired runner/defender pictures without moving bodies or adding randomness',()=>{
++    const f=scene(), bodies=f.sim.agents.map(a=>structuredClone(a.body)), rng=JSON.stringify(f.sim.rng);
++    const drive={...f.controller.plan.drive},command=f.command();
++    expect(command.posture).toBe(.7);
++    expect(Math.hypot(command.vel.x,command.vel.y)).toBeLessThan(f.a.profile.vmax);
++    expect(f.a.engagement).toBeNull();
++    expect(f.controller.target).toBe(f.d);expect(f.controller.plan.drive).toEqual(drive);
++    expect(f.sim.agents.map(a=>a.body)).toEqual(bodies);expect(JSON.stringify(f.sim.rng)).toBe(rng);
++    expect(Reflect.get(f.controller,'workPicture').source).toBe('acquired');
++  });
++
++  it('ignores hidden runner motion and possession changes with the same acquired evidence',()=>{
++    const first=scene(), hidden=scene();
++    hidden.rb.body.pos={x:95,y:4};hidden.rb.body.vel={x:-8,y:5};
++    hidden.sim.ball={kind:'held',carrier:hidden.sim.qb};
++    expect(hidden.command()).toEqual(first.command());
++    expect(JSON.stringify(hidden.sim.rng)).toBe(JSON.stringify(first.sim.rng));
++  });
++
++  it.each([false,undefined])('keeps unavailable/negative possession out of recovery even when the hidden runner carries, %s',signal=>{
++    const f=scene();f.pictures.get(f.rb)!.carrying=signal;f.sim.ball={kind:'held',carrier:f.rb};
++    const command=f.command();
++    expect(command.posture).toBeUndefined();
++    expect(Math.hypot(command.vel.x,command.vel.y)).toBeCloseTo(f.a.profile.vmax,12);
++    expect(Reflect.get(f.controller,'workPicture').source).toBe('installed');
++  });
++
++  it('does not treat a carrying QB at the mesh as an acquired back',()=>{
++    const f=scene(false);f.pictures.get(f.sim.qb)!.carrying=true;
++    expect(f.command().posture).toBeUndefined();
++    expect(Reflect.get(f.controller,'workPicture').carrier).toBe(f.sim.qb.idx);
++  });
++
++  it('holds the work picture through its normal beat, then responds to a new acquired runner side',()=>{
++    const f=scene(), first=f.command(),held=Reflect.get(f.controller,'workPicture');
++    f.pictures.get(f.rb)!.pos={x:39,y:CENTER_Y+9};
++    f.see.mockClear();
++    expect(f.command()).toEqual(first);
++    expect(Reflect.get(f.controller,'workPicture')).toBe(held);
++    expect(f.see.mock.calls.some(([,b])=>b===f.rb)).toBe(false);
++    f.sim.t=held.nextRead;
++    const updated=f.command();
++    expect(updated).not.toEqual(first);
++    expect(Reflect.get(f.controller,'workPicture')).not.toBe(held);
++    expect(f.see.mock.calls.some(([,b])=>b===f.rb)).toBe(true);
++  });
++
++  it('does not renew the recovery objective after the acquired runner has passed the defender',()=>{
++    const f=scene();f.pictures.get(f.rb)!.pos={x:f.d.pos.x+2.51,y:CENTER_Y};
++    const command=f.command();
++    expect(command.posture).toBeUndefined();
++    expect(Math.hypot(command.vel.x,command.vel.y)).toBeCloseTo(f.a.profile.vmax,12);
++  });
++
++  it('preserves detached receiver work and an unreleased double',()=>{
++    for(const control of ['detached','double'] as const){
++      const f=scene();
++      if(control==='detached'){
++        f.sim.offCall.formation=FORMATION_BY_ID.gun_trips_11;
++        Object.assign(f.sim.offAlign,alignOffense(FORMATION_BY_ID.gun_trips_11,false,f.sim.los,f.sim.ballY));
++        expect(f.sim.offAlign.spots.H.inline).toBe(false);
++      }else{
++        const partner=f.sim.slot('LT')!;
++        const combination:Combination={members:[f.a,partner],defender:f.d,backer:f.sim.slot('LB_W')!,
++          released:false,secureSince:-1,nextRead:10,soloKind:'drive'};
++        f.controller.plan.combination=combination;
++      }
++      expect(f.command().posture).toBeUndefined();
++      expect(Reflect.get(f.controller,'workPicture')).toBeNull();
++      expect(f.controller.target).toBe(f.d);
++    }
++  });
++
++  it.each([1.099,1.101])('preserves the existing marginal-strike boundary, runner-side phi %s',phi=>{
++    const f=scene(),reach=f.a.profile.radius+f.d.profile.radius+.1+f.a.player.measurables.armIn/36*.45;
++    const angle=phi*Math.PI/2,radius=reach*.85;
++    f.a.body.pos={x:f.d.pos.x-radius*Math.cos(angle),y:f.d.pos.y+radius*Math.sin(angle)};
++    f.a.body.facing=Math.atan2(f.d.pos.y-f.a.pos.y,f.d.pos.x-f.a.pos.x);
++    const engage=vi.spyOn(f.sim,'engage');f.command();
++    if(phi<1.1){
++      expect(engage).toHaveBeenCalled();expect(f.a.engagement?.defender).toBe(f.d);
++      expect(f.sim.world.joints).toContain(f.a.engagement!.hands);
++    }else{
++      expect(engage).not.toHaveBeenCalled();expect(f.a.engagement).toBeNull();
++    }
++  });
++
++  it('leaves an existing physical hold and its hands under the accepted contact motor',()=>{
++    const f=scene();f.a.body.pos={x:f.d.pos.x-.65,y:f.d.pos.y+.2};
++    f.a.body.facing=Math.atan2(f.d.pos.y-f.a.pos.y,f.d.pos.x-f.a.pos.x);
++    const e=f.sim.engage(f.a,f.d,'run',f.controller.plan.drive)!;
++    expect(e).not.toBeNull();
++    const hands=e.hands, joints=[...f.sim.world.joints],body=structuredClone(f.a.body),rng=JSON.stringify(f.sim.rng);
++    f.see.mockClear();const command=f.command();
++    expect(command.vel).toEqual({x:0,y:0});expect(f.a.engagement).toBe(e);
++    expect(e.hands).toBe(hands);expect(f.sim.world.joints).toEqual(joints);
++    expect(f.a.body).toEqual(body);expect(JSON.stringify(f.sim.rng)).toBe(rng);
++    expect(f.see).not.toHaveBeenCalled();
++  });
++});

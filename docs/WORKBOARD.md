@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Completed latest blocking independent review — 2026-10-19 America/Phoenix
+
+Delegated Integration reviewer owns only the published nonauthor review/portable
+patches for #150/#152/#164 on acceptedf4146275. Original source branches and
+adverse/rejected evidence remain unchanged. #152/#164 accepted as bounded
+controllers; #150 installed-climb/help tradeoff accepted with an explicit
+proposed composed native-test adjudication for Root, original failure retained.
+One 47-check composition and three-check isolation plus two2s prefixes cost
+4.960s command wall; no full suite/games. #160 runTargets overlap is documented,
+not overwritten. Root retains final composition/exact verification ownership.
+[Pinned scopes, receipt and separate patches](reviews/latest-blocking-review-2026-10-19/README.md).
+
 ## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
 
 Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.

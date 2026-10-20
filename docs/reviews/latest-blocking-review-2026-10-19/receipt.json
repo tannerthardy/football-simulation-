@@ -1,0 +1,149 @@
+{
+  "schema": "latest-blocking-independent-review-v1",
+  "reviewer": "Codex Integration delegated nonauthor blocking reviewer",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "remoteDevelopRechecked": true,
+  "scopes": {
+    "150": {
+      "head": "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+      "code": "403d7a9f114e39fb069aa3d5cb2ede648c33cbe9",
+      "actualBase": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+      "decision": "ACCEPT installed-climb scope; combined native assertion adjudication explicitly proposed for root",
+      "portablePatch": "patches/pr150-portable.patch",
+      "composedTestProposal": "patches/pr150-composed-contract.patch",
+      "reusedFocusedChecks": 77
+    },
+    "152": {
+      "head": "346421f9e47938cdb4e53f491c69d656a052783c",
+      "code": "7b092ae2f6e345473dc74b4243350d57511a0545",
+      "actualBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "decision": "ACCEPT",
+      "portablePatch": "patches/pr152.patch",
+      "reusedFocusedChecks": 94
+    },
+    "164": {
+      "head": "5035aad0f37affc43b6803c9e9f924896c5b43e7",
+      "code": "f2cd4dba1ebdc52dc32560f6407a20ea8d40e2f0",
+      "actualBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "decision": "ACCEPT final moving-reference controller under existing physics; reconcile160 explicitly",
+      "portablePatch": "patches/pr164.patch",
+      "reusedFocusedChecks": 81
+    }
+  },
+  "newChecks": [
+    {
+      "receipt": "evidence/portability-checks.json",
+      "sourceSha256": "150178aec2797e9a32df69fe888f7bd1f1888ac9220ab4ff4c08d3ef8c549b27",
+      "validationSha256": "bcc51ed95907d6110bca9bfa49b407d8e2f59caebee405bc1d68939e0d265421",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/climb-access.test.ts",
+            "test/runner-side-recovery.test.ts",
+            "test/run-rep-lateral-arrival.test.ts",
+            "test/run-contact-flow.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.037728576
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/pr150-only.json",
+      "sourceSha256": "3c8b6083adb4df4d55b343665254ddf80dbc784b45ba6ea6e22a4cce0043b1c3",
+      "validationSha256": "484547bda0348a8bf32e60f05806b952cbe84753594923aab237d58fe4f13886",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/climb-access.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.6998340920000001
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/pr150-prefix-receipt.json",
+      "sourceSha256": "3c8b6083adb4df4d55b343665254ddf80dbc784b45ba6ea6e22a4cce0043b1c3",
+      "validationSha256": "484547bda0348a8bf32e60f05806b952cbe84753594923aab237d58fe4f13886",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "--import",
+            "tsx",
+            "out/latest-blocking-review/climb-composition.ts",
+            "out/latest-blocking-review/pr150-prefix.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.680162917
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/composed-prefix-receipt.json",
+      "sourceSha256": "150178aec2797e9a32df69fe888f7bd1f1888ac9220ab4ff4c08d3ef8c549b27",
+      "validationSha256": "bcc51ed95907d6110bca9bfa49b407d8e2f59caebee405bc1d68939e0d265421",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "--import",
+            "tsx",
+            "out/latest-blocking-review/climb-composition.ts",
+            "out/latest-blocking-review/composed-prefix.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.542497893
+        }
+      ]
+    }
+  ],
+  "newCheckCommandSeconds": 4.9602234780000005,
+  "newFullSuites": 0,
+  "newFullGames": 0,
+  "newStandaloneNativePrefixes": {
+    "count": 2,
+    "untilSeconds": 2,
+    "sameFrozenInput": true
+  },
+  "noPhysicsOrFlagsPromoted": true,
+  "unchangedOriginalTestPreserved": true,
+  "sourceAncestryAndDataEvidenceNotMerged": true,
+  "filesSha256": {
+    "README.md": "1cbb95028147ecf23a6ff1ba6f7c7c6eff77fe8ed41b8378d7f2de0cf800be59",
+    "evidence/artifact-verification.json": "ce6c384e7c07f6248fbe08e7f4198e28b1a7a10be3fd0d23369c072e78f5a473",
+    "evidence/climb-composition.ts.txt": "185b537a336e977055a08dec3506dec8248b440bafdeff97fd878cc507bb0d89",
+    "evidence/composed-prefix-receipt.json": "559010637a8fe48f1a781707fa71c8de6ba981da73c6bc68ee86d661dc7fdbf0",
+    "evidence/composed-prefix.json": "62f4e430be772276fb84a9afa17cdd0cdd5096cbf5901662942e290b4a479498",
+    "evidence/composed-prefix.log": "86e6bc6c51d9528dc8f9984f2b18e4353c5a9bdd98ab7609918a5d1a183dceed",
+    "evidence/original-climb-access.test.ts.txt": "575f4dcd6740ea1f67cdf46ed0c62da7ccc0bae2963d48266ccdc60b47c3a6f3",
+    "evidence/portability-checks.json": "2d210eeb15b1d1e143fb92a750224cb4b23252b6bb880a6b1337aa8832e876f6",
+    "evidence/portability-checks.log": "f02298edbeb0a0f776cb6e874f37b878404291b1a761acf791f972dcffa1c9a0",
+    "evidence/pr150-only.json": "0a8f153677dc199c071b00067c55bc9e7f313a1e6888b97c193feb3778005e98",
+    "evidence/pr150-only.log": "d451cfb5f4421a5e3944ba731d84818617c3d6c54fc48eaf52aa11030eb93a17",
+    "evidence/pr150-prefix-receipt.json": "4ba23db1edbef751bccf73ede191b211d673ec89c8c2703b16c72257dd18f75b",
+    "evidence/pr150-prefix.json": "c38fc69dd72b1edc2e34988295957e1d393ac7a93f58d61348e03cff0b84dd58",
+    "evidence/pr150-prefix.log": "2531ae85e7cac45a5124149c7e59e4e90d62f4a13c5d13e21f08d693b2ec2c4e",
+    "evidence/proposed-climb-access.test.ts.txt": "a2166e6c2cbfbae6344ae8825e526e435e35a69e88f5827784e4dfcb60417304",
+    "patches/pr150-composed-contract.patch": "e1fd4f66c2bfc3a7999cb544e956eed72bf60965c7efbd5d67ac813a8613e8fd",
+    "patches/pr150-original.patch": "3a3e3283ecaf6d6b0a3ffc8e68001178912bc12680183797f3e4c52e1f03ff24",
+    "patches/pr150-portable.patch": "61aaea6c8d6cc9edcebe5c23095a88f492d7f6620cfefa44fd89e7ec0b47a5a4",
+    "patches/pr152.patch": "223e1ece8a0bb750249cd30fa629abc4ffbf51f059ed9d856f5ed6f7bfefe42d",
+    "patches/pr164.patch": "03f9efd407f6dec24ba69ec588abcd7c62d287040a65408c57006f4c93afa1af"
+  }
+}

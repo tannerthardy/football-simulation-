@@ -1,0 +1,23 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { PlaySim } from '../../src/sim/playsim.js';
+const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/climb-traffic.json.gz')).toString());
+const sim=new PlaySim(structuredClone(fixture.setup));
+const y=sim.slot('Y')!,end=sim.slot('DE_W')!,backer=sim.slot('LB_W')!;
+let incidentalImpulse=0,firstLoad:null|number=null,positiveNormal=false;
+const rows:any[]=[];
+while(sim.phase==='live'&&sim.t<2){
+ sim.tick();const report=sim.lastStep!;
+ const incidental=report.contacts.filter(c=>c.i===y.idx&&c.j===end.idx||c.i===end.idx&&c.j===y.idx).reduce((sum,c)=>sum+c.impulse,0);
+ incidentalImpulse+=incidental;
+ const e=y.engagement;
+ if(e?.defender===backer&&e.hands&&Math.hypot(e.hands.normalForce??0,e.hands.tangentForce??0)>1){
+  firstLoad??=sim.t;positiveNormal||=(e.hands.normalForce??0)>0;
+ }
+ rows.push({t:sim.t,yPos:{...y.pos},endPos:{...end.pos},backerPos:{...backer.pos},incidental,
+ target:(y.behavior as any).target?.slot,access:structuredClone((y.behavior as any).climbAccess),
+ engagement:e?{target:e.defender.slot,normal:e.hands?.normalForce,tangent:e.hands?.tangentForce}:null,
+ residual:report.work.residual});
+}
+writeFileSync(process.argv[2],JSON.stringify({phase:sim.phase,t:sim.t,incidentalImpulse,firstLoad,positiveNormal,
+ carrierContacts:sim.events.filter(e=>e.type==='carrier_contact'),rows},null,2)+'\n');
