@@ -15,6 +15,10 @@ World/kinematics/capacities, active hands, mesh, release timers or defaults.
 Physics retains solver ownership. First distinguish raw/final requests,
 execution and achieved protection; no NFL distance/speed target or broad lab.
 Parallel subagents provide read-only controller/evidence audits.
+Candidate boundary also includes the typed `Behavior.contactMotion` work
+selector and `RunBlocker.contactMotion`'s existing acquired-intention hook;
+no route, climb, navigation or shared movement-file changes. Diagnose bounded
+solo runoff work only, keeping parked reach-track behavior independently off.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
