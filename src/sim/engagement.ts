@@ -1103,7 +1103,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  if (!stretch) {
+    // Full drive assumes the man is ahead on the installed drive line.
+    // Once level or past, carry the existing connection instead of running
+    // away from it. Seal work, anchoring and World still govern the rep.
+    const ahead = (d.pos.x - b.pos.x) * drive.x + (d.pos.y - b.pos.y) * drive.y;
+    const w = clamp(ahead / (0.5 * sep), 0, 1);
+    forward = w * 2.4 + (1 - w) * clamp(along(d.vel) + gap * 3, -1, 2.4);
+  }
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).

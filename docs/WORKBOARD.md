@@ -1,5 +1,26 @@
 # Current work ownership
 
+## Drive-connection completion — 2026-10-20
+
+Run owns only the non-stretch `stepRunRep` forward request in
+`src/sim/engagement.ts`, its direct controls and review receipts on
+`codex/drive-connection-controller`, starting accepted
+`2c98bed94adad8087c65f381d4090444ad283985` / queue
+`4cc3337df24faa6d857b612ae62e3df3109a5296`.
+Extract Claude's independently supported `DRIVE_CONNECT` mechanism, without
+research ancestry or mesh, departure, lateral-cap, combo-release, gait,
+physics, capacity, spacing, navigation or flag-value changes. Keep #172's
+separately accepted runoff command correction out of this candidate.
+Question: when the contacted defender is no longer ahead on the installed
+drive line, can the rep track that real connection instead of continuing a
+fixed drive away? Preserve full drive with the man ahead, stretch/pass,
+active anchoring and ordinary releases. Use focused producer-to-consumer
+checks; reuse the qualified prior Power continuation. Adoption remains HOLD
+for one missing saved added-OZ-tail pair, requested from Claude; no new
+census/panel or speculative collection variant can answer that absent ID.
+Measurement's process critique f3063e5 guides the bounded completion.
+
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
