@@ -15,6 +15,7 @@ import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import type { MoveCommand } from '../../../src/physics/kinematics.js';
+import type { GraspJoint } from '../../../src/physics/world.js';
 import { movementObjective } from '../../../src/sim/movement-objective.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { sourceVersion } from '../../source-version.js';
@@ -90,7 +91,7 @@ function trial(input:typeof inputs[number],observe:boolean) {
       const contained=cmd(baseCommands[a.idx]),applied=cmd(intents[a.idx]);
       const incoming=sim.agents.map(agent=>({mass:agent.profile.massKg,vel:{...agent.vel}}));
       const report=step(intents,dt);
-      const loadedGrasps=sim.world.joints.filter(j=>j.kind==='grasp'&&j.b===rb.body).map(j=>({
+      const loadedGrasps=sim.world.joints.filter((j):j is GraspJoint=>j.kind==='grasp'&&j.b===rb.body).map(j=>({
         holder:sim.agents.find(a=>a.body===j.a)?.slot,force:j.force??0,
         broken:j.broken??false,slipping:j.slipping??false}));
       const ground=report.groundImpulse.reduce((p,q)=>({x:p.x+q.x,y:p.y+q.y}),{x:0,y:0});
