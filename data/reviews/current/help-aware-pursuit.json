@@ -1,0 +1,1175 @@
+{
+  "title": "Installed force shoulder at midfield",
+  "dateUtc": "2026-10-20",
+  "recommendation": "ACCEPT narrow installed-duty correction for independent Integration review; ordinary-play prevalence and dynamic teammate-help inference unproved.",
+  "pins": {
+    "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+    "candidateCode": "4b1ea231f911e18e168eec36e689b6ec52a4a15c",
+    "initialCandidate": "ff7e27f3791b2d1e62febbb55bc20a5bea66e91a",
+    "evidenceCommit": null,
+    "branch": "codex/help-aware-pursuit",
+    "acceptedSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "finalSourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+    "finalValidationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+    "historicalProvisionalSourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+    "queue": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+    "claudeResearch": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+    "receiptHeadExplanation": "Final collectors ran with common.ts tracked changes at ff7e27f; their frozen source hash matches final code pin 4b1ea231. Evidence publication pin will be added by the owner."
+  },
+  "process": {
+    "measurementComment": "https://github.com/tannerthardy/football-simulation-/pull/170#issuecomment-6299671944",
+    "critiqueCommit": "f3063e550b434d355fc050bfc604a894303ea0a0",
+    "rule": "Repair the narrowest demonstrated broken contract at its actual owner.",
+    "causalPath": [
+      "installed job/initial geometry",
+      "acquired cue/age",
+      "retained target/mode",
+      "full raw command",
+      "downstream refinements",
+      "achieved motion/load",
+      "observed or credited result"
+    ],
+    "proofLevels": {
+      "defectDemonstrated": "Generic field-middle inside fade erases installed force/edge-box outside shoulder, with fixed acquired picture and mirrored sides.",
+      "interventionRepairsMechanism": "Installed side receives unsigned leverage magnitude; coupled production pursuit/runner reactions preserve useful outside motion, complementary actual loading and faster-runner escape.",
+      "transferImportance": "Two native ordinary-play prefixes are exactly unchanged; frequency and native benefit are not established."
+    }
+  },
+  "scope": {
+    "source": [
+      "src/sim/behaviors/common.ts"
+    ],
+    "newPerceptionReads": false,
+    "newRandomDraws": false,
+    "physicsChanges": false,
+    "dynamicHelpInference": false,
+    "preserved": [
+      "generic leverage multiplication order",
+      "generic midfield symmetry",
+      "near-contact hip closure",
+      "existing uncertainty/observation timing",
+      "real contacts and offensive escape"
+    ],
+    "notCertified": [
+      "caller-level private carrier/activation gates",
+      "general acquired-information decision invariance",
+      "dynamic helper availability",
+      "NFL-rate improvement",
+      "held physics packages162/164/165"
+    ]
+  },
+  "runtimeEnvironment": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "checks": {
+    "baselineNewFile": {
+      "tests": 11,
+      "failed": 6,
+      "passed": 5,
+      "expectedFailures": [
+        "4 mirrored force/edge-box positive outside-point assertions",
+        "2 complementary force-vs-alley request assertions"
+      ],
+      "receipt": "out/force-shoulder/midpoint-baseline-tests.json"
+    },
+    "finalFocused": {
+      "tests": 44,
+      "failed": 0,
+      "passed": 44,
+      "files": [
+        "test/pursuit-force-shoulder.test.ts",
+        "test/chase-arrival.test.ts",
+        "test/pursuit-contact.test.ts"
+      ],
+      "receipt": "out/force-shoulder/final-focused.json"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "elapsedSeconds": 13.667082598,
+      "receipt": "out/force-shoulder/final-typecheck.json"
+    },
+    "noBroadCampaign": true
+  },
+  "stagedReacting": {
+    "definition": {
+      "start": 2,
+      "horizon": 2.5,
+      "rosterSeeds": [
+        19,
+        20
+      ],
+      "playSeed": 83,
+      "cases": [
+        {
+          "id": "inside-support",
+          "helperAvailable": true,
+          "runnerSpeed": 6,
+          "forceX": 56
+        },
+        {
+          "id": "helper-unavailable",
+          "helperAvailable": false,
+          "runnerSpeed": 6,
+          "forceX": 56
+        },
+        {
+          "id": "escaping-runner",
+          "helperAvailable": false,
+          "runnerSpeed": 8,
+          "forceX": 49
+        }
+      ],
+      "responsibilities": "Explicit staged FS force side+1; SS alley side\u22121. Production post-catch behaviors; no dynamic peer-availability inference is added."
+    },
+    "constructor": "gun_doubles_11/four_verts vs nickel Over Cover3; generated roster seeds19/20 without capability edits; play seed83; t2 stage after catch at x50,y=CENTER_Y. Force y=CENTER_Y+2; available helper x55,y=CENTER_Y-2; both initially stationary facing pi. Other bodies far/parked downUntil99. 24 straight moving acquired history samples end at the staged pose; carrying true.",
+    "observerNeutrality": {
+      "baseline": {
+        "case": "inside-support",
+        "observed": "50e97bea566238453d960dc0dd18c813674a20644f24de01d975e2ef2769bbf6",
+        "plain": "50e97bea566238453d960dc0dd18c813674a20644f24de01d975e2ef2769bbf6",
+        "pass": true,
+        "plainRuntime": {
+          "wallSeconds": 0.11228741200000002,
+          "cpuSeconds": 0.256398
+        }
+      },
+      "candidate": {
+        "case": "inside-support",
+        "observed": "5affb725ed3c002017a3fb64941d105c5bede2d3443ba8b21ba052dc2d3ca44f",
+        "plain": "5affb725ed3c002017a3fb64941d105c5bede2d3443ba8b21ba052dc2d3ca44f",
+        "pass": true,
+        "plainRuntime": {
+          "wallSeconds": 0.09624874699999998,
+          "cpuSeconds": 0.253726
+        }
+      }
+    },
+    "rows": [
+      {
+        "input": {
+          "id": "inside-support",
+          "helperAvailable": true,
+          "runnerSpeed": 6,
+          "forceX": 56
+        },
+        "inputSha256": "b6d39cd8727e0c0f09f1cac3966a383c4dc0ca00363d2e802b412f7b3079055b",
+        "identicalInitialBodiesProfilesAndInput": true,
+        "finalFramesAndResultEqualProvisional": true,
+        "baseline": {
+          "t": 3.4,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.60852912577312,
+            "y": 26.560595686716507
+          },
+          "physicalAdvance": 8.353249391561462,
+          "physicalYChange": -0.1060709799501609,
+          "firstTorsoContactInterval": {
+            "start": 2.75,
+            "end": 2.8
+          },
+          "firstLoadedGripInterval": {
+            "start": 2.7,
+            "end": 2.75
+          },
+          "firstAcquiredHoldAt": 2.65,
+          "runnerFirstFallAt": 2.95,
+          "loadedIntervals": [
+            {
+              "start": 2.7,
+              "end": 3.4
+            }
+          ],
+          "loadedSeconds": 0.6999999999999997,
+          "firstAcquiredHoldToEnding": 0.7000000000000002,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 1.0647704939970026e-11
+        },
+        "candidate": {
+          "t": 3.35,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.42829534048513,
+            "y": 26.56175649142853
+          },
+          "physicalAdvance": 8.155405555446116,
+          "physicalYChange": -0.10491017523813895,
+          "firstTorsoContactInterval": {
+            "start": 2.8,
+            "end": 2.8499999999999996
+          },
+          "firstLoadedGripInterval": {
+            "start": 2.7,
+            "end": 2.75
+          },
+          "firstAcquiredHoldAt": 2.65,
+          "runnerFirstFallAt": 2.9,
+          "loadedIntervals": [
+            {
+              "start": 2.7,
+              "end": 3.3499999999999996
+            }
+          ],
+          "loadedSeconds": 0.6499999999999995,
+          "firstAcquiredHoldToEnding": 0.6500000000000004,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 5.444866779669155e-12
+        },
+        "firstDifferenceByFrameStart": {
+          "FS": {
+            "raw": 2,
+            "applied": 2,
+            "after": 2
+          },
+          "SS": {
+            "raw": 2.5,
+            "applied": 2.45,
+            "after": 2.45
+          },
+          "Z": {
+            "raw": 2.75,
+            "applied": 2.75,
+            "after": 2.7
+          }
+        },
+        "endpointSha256": {
+          "baseline": "50e97bea566238453d960dc0dd18c813674a20644f24de01d975e2ef2769bbf6",
+          "candidate": "5affb725ed3c002017a3fb64941d105c5bede2d3443ba8b21ba052dc2d3ca44f"
+        },
+        "runtime": {
+          "baseline": {
+            "wallSeconds": 0.152887771,
+            "cpuSeconds": 0.270442
+          },
+          "candidate": {
+            "wallSeconds": 0.149563957,
+            "cpuSeconds": 0.251949
+          }
+        },
+        "mechanism": {
+          "baseline": {
+            "firstRawForceCommand": {
+              "behavior": "pursuit",
+              "command": {
+                "vel": {
+                  "x": -5.87937153977548,
+                  "y": -7.750007129032214
+                },
+                "effort": 1
+              },
+              "objective": null
+            },
+            "forceOutsideOffsetAt2_70": 0.6898148574865992,
+            "firstLoadedByHolder": {
+              "SS": {
+                "start": 2.7,
+                "end": 2.75
+              },
+              "FS": {
+                "start": 2.75,
+                "end": 2.8
+              }
+            },
+            "scalarGripLoadIntegral2_70To2_90": {
+              "SS": 293.8806020701798,
+              "FS": 34.585167039905386
+            }
+          },
+          "candidate": {
+            "firstRawForceCommand": {
+              "behavior": "pursuit",
+              "command": {
+                "vel": {
+                  "x": -6.623115754218623,
+                  "y": -7.124883010196948
+                },
+                "effort": 1
+              },
+              "objective": null
+            },
+            "forceOutsideOffsetAt2_70": 0.7989030999400057,
+            "firstLoadedByHolder": {
+              "SS": {
+                "start": 2.7,
+                "end": 2.75
+              },
+              "FS": {
+                "start": 2.75,
+                "end": 2.8
+              }
+            },
+            "scalarGripLoadIntegral2_70To2_90": {
+              "SS": 299.8383285961432,
+              "FS": 47.55555257265812
+            }
+          },
+          "scalarGripLoadIntegralDefinition": "Integral of positive recorded mean grasp force magnitude over the identical [2.70,2.90) pre-fall window; kg*yd/s, not forward impulse or work."
+        },
+        "adverse": "First positive torso impulse interval shifts 2.75-2.80 to 2.80-2.85; 0.05 s later. First grip and first loaded interval unchanged."
+      },
+      {
+        "input": {
+          "id": "helper-unavailable",
+          "helperAvailable": false,
+          "runnerSpeed": 6,
+          "forceX": 56
+        },
+        "inputSha256": "df8b49f87c3584502dbd42473c3c30e92cfab3cc41e12e5f2a0ddce12025e0ef",
+        "identicalInitialBodiesProfilesAndInput": true,
+        "finalFramesAndResultEqualProvisional": true,
+        "baseline": {
+          "t": 4.5,
+          "phase": "live",
+          "outcome": null,
+          "endSpot": null,
+          "physicalAdvance": 17.594267110283283,
+          "physicalYChange": -3.617717112436413,
+          "firstTorsoContactInterval": null,
+          "firstLoadedGripInterval": {
+            "start": 2.85,
+            "end": 2.9
+          },
+          "firstAcquiredHoldAt": 2.8,
+          "runnerFirstFallAt": null,
+          "loadedIntervals": [
+            {
+              "start": 2.85,
+              "end": 3.25
+            },
+            {
+              "start": 3.6,
+              "end": 4.5
+            }
+          ],
+          "loadedSeconds": 1.3000000000000003,
+          "firstAcquiredHoldToEnding": null,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 7.075229291331198e-12
+        },
+        "candidate": {
+          "t": 3.65,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 60.98435003381788,
+            "y": 24.34370068662021
+          },
+          "physicalAdvance": 10.684460877770931,
+          "physicalYChange": -2.322965980046458,
+          "firstTorsoContactInterval": {
+            "start": 3.6,
+            "end": 3.65
+          },
+          "firstLoadedGripInterval": {
+            "start": 2.8,
+            "end": 2.8499999999999996
+          },
+          "firstAcquiredHoldAt": 2.75,
+          "runnerFirstFallAt": 3.2,
+          "loadedIntervals": [
+            {
+              "start": 2.8,
+              "end": 3.65
+            }
+          ],
+          "loadedSeconds": 0.8500000000000001,
+          "firstAcquiredHoldToEnding": 0.8500000000000001,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 2.8919089345436078e-12
+        },
+        "firstDifferenceByFrameStart": {
+          "FS": {
+            "raw": 2,
+            "applied": 2,
+            "after": 2
+          },
+          "SS": {
+            "raw": null,
+            "applied": null,
+            "after": null
+          },
+          "Z": {
+            "raw": 2.25,
+            "applied": 2.25,
+            "after": 2.25
+          }
+        },
+        "endpointSha256": {
+          "baseline": "8b895fcad4e8436f571d58a1de81d040ea3a8c47cbabfcefb7ee63dffe0f1f04",
+          "candidate": "b6fe1a883fc0db9d4f5d6650ca0bd9dcd3f2d6e71735d8cb8b10f9b131ba6e79"
+        },
+        "runtime": {
+          "baseline": {
+            "wallSeconds": 0.14273496499999994,
+            "cpuSeconds": 0.392574
+          },
+          "candidate": {
+            "wallSeconds": 0.11109399399999995,
+            "cpuSeconds": 0.281221
+          }
+        },
+        "interpretation": "Baseline live at horizon, candidate terminal tackle. Actual inward runner response retained; no baseline final-gain or final-yardage-reduction claim."
+      },
+      {
+        "input": {
+          "id": "escaping-runner",
+          "helperAvailable": false,
+          "runnerSpeed": 8,
+          "forceX": 49
+        },
+        "inputSha256": "e845d510ba1ce8b43cf3add469328de9d81f8fdd7f23df3773743f1bc78feec3",
+        "identicalInitialBodiesProfilesAndInput": true,
+        "finalFramesAndResultEqualProvisional": true,
+        "baseline": {
+          "t": 4.5,
+          "phase": "live",
+          "outcome": null,
+          "endSpot": null,
+          "physicalAdvance": 22.960159457441193,
+          "physicalYChange": 0,
+          "firstTorsoContactInterval": null,
+          "firstLoadedGripInterval": null,
+          "firstAcquiredHoldAt": null,
+          "runnerFirstFallAt": null,
+          "loadedIntervals": [],
+          "loadedSeconds": 0,
+          "firstAcquiredHoldToEnding": null,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 2.0331479555490972e-12
+        },
+        "candidate": {
+          "t": 4.5,
+          "phase": "live",
+          "outcome": null,
+          "endSpot": null,
+          "physicalAdvance": 22.960159457441193,
+          "physicalYChange": 0,
+          "firstTorsoContactInterval": null,
+          "firstLoadedGripInterval": null,
+          "firstAcquiredHoldAt": null,
+          "runnerFirstFallAt": null,
+          "loadedIntervals": [],
+          "loadedSeconds": 0,
+          "firstAcquiredHoldToEnding": null,
+          "forceInsideTeammateContactTicks": 0,
+          "maximumAbsoluteWorkResidual": 2.0649038035003286e-12
+        },
+        "firstDifferenceByFrameStart": {
+          "FS": {
+            "raw": 2,
+            "applied": 2,
+            "after": 2
+          },
+          "SS": {
+            "raw": null,
+            "applied": null,
+            "after": null
+          },
+          "Z": {
+            "raw": null,
+            "applied": null,
+            "after": null
+          }
+        },
+        "endpointSha256": {
+          "baseline": "f37f4fa62455be5bb3ac7f60eb7740dd354dc27b6037e54188efb6c217a2ce50",
+          "candidate": "3f688151e8dc42903f68941a4f759a8b37a5a97d1f8061ca6363fa3d80f746cf"
+        },
+        "runtime": {
+          "baseline": {
+            "wallSeconds": 0.09991498200000001,
+            "cpuSeconds": 0.34135
+          },
+          "candidate": {
+            "wallSeconds": 0.09873502699999995,
+            "cpuSeconds": 0.296562
+          }
+        },
+        "runnerTrajectoryExactlyEqual": true,
+        "interpretation": "Runner escapes with identical trajectory, no attempts/grips/torso contacts. Force commands/body differ; entire case is not identical."
+      }
+    ],
+    "loadedIntervalDefinition": "Union of intervals with any positive-load carrier grasp; may include different holders or separated intervals. Not necessarily a continuous single-holder hold.",
+    "contactDefinition": "World ContactRecord positive normal impulse, not total contact impulse vector. Grasp acquisition, positive loading, torso impulse, first fall and terminal event are recorded separately.",
+    "collectionRuntime": {
+      "baseline": {
+        "wallSeconds": 0.523568229,
+        "cpuSeconds": 1.27916
+      },
+      "candidate": {
+        "wallSeconds": 0.46579242400000004,
+        "cpuSeconds": 1.110174
+      }
+    }
+  },
+  "native": {
+    "definition": "AFTER04/14 are historical film constructor identifiers, not accepted outcome claims. All22 naturally react. Consumed pictures and aim calls observed only; truth/body fields are diagnostic, never fed into decisions. Behavior return, coverage-contained base and final World intent are separate. Modifier attribution between coverage and World remains grouped.",
+    "constructorCommon": "Ace12 OZ strong; formation flip false; Cover3 match; spill/stack; generated teams strength0.55; LOS40,ballY26.67,down1,firstDown50; audiblesfalse,hurryfalse,recordfalse; horizon3.5s. All22 naturally react.",
+    "rows": [
+      {
+        "input": {
+          "id": "AFTER-04",
+          "look": "under3",
+          "personnel": "base43",
+          "front": "under",
+          "roster": 11,
+          "seed": 7,
+          "case": "oz/strong/ace_12/under3/pair11/7"
+        },
+        "actor": {
+          "slot": "SS",
+          "idx": 21,
+          "side": -1,
+          "installedJob": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "spill",
+            "pace": "stack"
+          }
+        },
+        "signature": "467cdf0711917476743c0c6a452f5281d01fd87c6439b8445b201269d1e3de4e",
+        "exactAcceptedCandidateSignatureMatch": true,
+        "result": {
+          "phase": "live",
+          "outcome": null,
+          "t": 3.5,
+          "gain": 4.368101476754447
+        },
+        "summary": {
+          "edgeFitTicks": 54,
+          "acquiredCarryingEdgeFitTicks": 25,
+          "minimumLiveMargin": -3.179299381149093,
+          "firstInsideDuringAcquiredEdgeFit": 2.35,
+          "losCrossing": {
+            "t": 2.65,
+            "margin": -1.3508286011138075
+          },
+          "maximumAbsoluteWorkResidual": 1.0537348771322286e-11,
+          "maximumPairMomentumResidual": 1.0642023213932278e-12
+        },
+        "selectedEvents": [],
+        "firstPositiveTorsoInterval": null,
+        "runtime": {
+          "baseline": {
+            "wallSeconds": 0.6542931369999999,
+            "cpuSeconds": 1.616021
+          },
+          "candidate": {
+            "wallSeconds": 0.690762653,
+            "cpuSeconds": 1.595613
+          }
+        }
+      },
+      {
+        "input": {
+          "id": "AFTER-14",
+          "look": "wide9",
+          "personnel": "nickel",
+          "front": "wide9",
+          "roster": 31,
+          "seed": 8,
+          "case": "oz/strong/ace_12/wide9/pair31/8"
+        },
+        "actor": {
+          "slot": "SS",
+          "idx": 21,
+          "side": -1,
+          "installedJob": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "spill",
+            "pace": "stack"
+          }
+        },
+        "signature": "792a448da532cdc904bd867a03f1b76574521bffa8e35b88c9d7dba913b6ab32",
+        "exactAcceptedCandidateSignatureMatch": true,
+        "result": {
+          "phase": "live",
+          "outcome": null,
+          "t": 3.5,
+          "gain": 1.7684359550013156
+        },
+        "summary": {
+          "edgeFitTicks": 62,
+          "acquiredCarryingEdgeFitTicks": 33,
+          "minimumLiveMargin": -0.29246704372689436,
+          "firstInsideDuringAcquiredEdgeFit": 3.3,
+          "losCrossing": {
+            "t": 2.8,
+            "margin": 1.6900455221856312
+          },
+          "maximumAbsoluteWorkResidual": 7.247535904753022e-12,
+          "maximumPairMomentumResidual": 1.299108428785908e-12
+        },
+        "selectedEvents": [
+          {
+            "t": 3.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 41.54,
+              "y": 17.18
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.3,
+            "type": "tackle_wrap",
+            "a": 21,
+            "b": 6,
+            "pos": {
+              "x": 42.17,
+              "y": 17.28
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.45,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 41.77,
+              "y": 16.43
+            },
+            "note": "legs"
+          }
+        ],
+        "firstPositiveTorsoInterval": {
+          "start": 3.35,
+          "end": 3.4
+        },
+        "runtime": {
+          "baseline": {
+            "wallSeconds": 0.49435441300000005,
+            "cpuSeconds": 1.047828
+          },
+          "candidate": {
+            "wallSeconds": 0.463783632,
+            "cpuSeconds": 1.0034
+          }
+        }
+      }
+    ],
+    "observerControl": {
+      "baseline": {
+        "input": {
+          "id": "AFTER-04",
+          "look": "under3",
+          "personnel": "base43",
+          "front": "under",
+          "roster": 11,
+          "seed": 7
+        },
+        "signature": "467cdf0711917476743c0c6a452f5281d01fd87c6439b8445b201269d1e3de4e",
+        "matched": true,
+        "runtime": {
+          "wallSeconds": 0.36484161000000015,
+          "cpuSeconds": 0.943796
+        }
+      },
+      "candidate": {
+        "input": {
+          "id": "AFTER-04",
+          "look": "under3",
+          "personnel": "base43",
+          "front": "under",
+          "roster": 11,
+          "seed": 7
+        },
+        "signature": "467cdf0711917476743c0c6a452f5281d01fd87c6439b8445b201269d1e3de4e",
+        "matched": true,
+        "runtime": {
+          "wallSeconds": 0.368047669,
+          "cpuSeconds": 0.979148
+        }
+      }
+    },
+    "claim": "Both exact physical/RNG/perception/command endpoint signatures unchanged. Prefix gains are physical body position minus LOS, not final credited gain."
+  },
+  "separateNextInvestigation": {
+    "candidateIncluded": false,
+    "case": "AFTER-04",
+    "interval": {
+      "start": 2.35,
+      "end": 2.4
+    },
+    "ownRecognition": "run",
+    "consumedRunnerCue": {
+      "target": "RB",
+      "idx": 6,
+      "delayMultiplier": null,
+      "picture": {
+        "pos": {
+          "x": 38.72783079658145,
+          "y": 20.627445777007086
+        },
+        "vel": {
+          "x": 3.541225123557079,
+          "y": -3.9095526294676826
+        },
+        "stance": null,
+        "facing": -0.8098379740935753,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": true
+      }
+    },
+    "retainedAim": {
+      "job": "edge-fit",
+      "desired": {
+        "x": 40.3,
+        "y": 19.986092019732418
+      },
+      "adopted": {
+        "x": 44.125,
+        "y": 20.466903490466642
+      },
+      "held": true,
+      "until": 2.3826141913974697
+    },
+    "raw": {
+      "request": {
+        "vel": {
+          "x": 0.12434546889234355,
+          "y": -0.17605987225315192
+        },
+        "facing": 3.141592653589793
+      },
+      "objective": {
+        "kind": "moving",
+        "point": {
+          "x": 44.125,
+          "y": 20.466903490466642
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    "contained": {
+      "request": {
+        "vel": {
+          "x": 0.12434546889234355,
+          "y": -0.17605987225315192
+        },
+        "facing": 3.141592653589793
+      },
+      "objective": {
+        "kind": "moving",
+        "point": {
+          "x": 44.125,
+          "y": 20.466903490466642
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    "applied": {
+      "request": {
+        "vel": {
+          "x": 0.12434546889234355,
+          "y": -0.17605987225315192
+        },
+        "facing": 3.141592653589793
+      },
+      "objective": {
+        "kind": "moving",
+        "point": {
+          "x": 44.125,
+          "y": 20.466903490466642
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    "margins": {
+      "liveBefore": 0.028211634003195485,
+      "liveAfter": -0.1885795448245382,
+      "acquiredBefore": 0.10185566245606026,
+      "desired": 0.6413537572746684,
+      "adopted": 0.16054228654044422
+    },
+    "finding": "Acquired lateral carrier motion is presented to retained edge-fit tracking as zero target velocity with facing pi; raw=contained=applied at the first lost-width interval. Spacing is not the producer of this command. A separate achievable moving-target test belongs with the run-fit/coverage owners; no claim this frozen common patch repairs it."
+  },
+  "artifacts": [
+    {
+      "path": "out/force-shoulder/pair-baseline.json",
+      "sha256": "a6fa5a8de9e98d7b2dc435ef770a363769950c429ffd8096afa8ea36c845fc89",
+      "bytes": 2697816,
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "toolSha256": "2f7d7d875ce93cdcdeee81be344bf8a2dc339cd8e777d17742ca1a7ca5e9eb82"
+    },
+    {
+      "path": "out/force-shoulder/pair-midpoint.json",
+      "sha256": "44249117cf2c13bd03c67907ba5c59fb5cd3b06bb26180f521293da8e26189ce",
+      "bytes": 2331791,
+      "sourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+      "toolSha256": "2f7d7d875ce93cdcdeee81be344bf8a2dc339cd8e777d17742ca1a7ca5e9eb82"
+    },
+    {
+      "path": "out/force-shoulder/pair-final.json",
+      "sha256": "4db7ddd54efb7c3e33b6dbab9a53255cf4a8e93b6607c461fa151d9bed8314a8",
+      "bytes": 2331785,
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "toolSha256": "2f7d7d875ce93cdcdeee81be344bf8a2dc339cd8e777d17742ca1a7ca5e9eb82"
+    },
+    {
+      "path": "out/force-shoulder/accepted-native.json",
+      "sha256": "0d035ff7321df8cfe533cc5080d7b7a454aa578526ebe32e73157cf6f43c4e00",
+      "bytes": 3863958,
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "toolSha256": "7857c9b1c1ed3ba6004a54f6b1f6d1167df9aa125f32e80ae481e6a078791a4c"
+    },
+    {
+      "path": "out/force-shoulder/midpoint-native.json",
+      "sha256": "8e63ec40c26672253981d8adac57e3d775e84655a505e0e1d0177d326d694eae",
+      "bytes": 3863950,
+      "sourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+      "toolSha256": "7857c9b1c1ed3ba6004a54f6b1f6d1167df9aa125f32e80ae481e6a078791a4c"
+    },
+    {
+      "path": "out/force-shoulder/final-native.json",
+      "sha256": "26914b50bb598a6c14a1fd2ed79b13f16e026257fe5cee030f13120d73bd5c6d",
+      "bytes": 3863933,
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "toolSha256": "7857c9b1c1ed3ba6004a54f6b1f6d1167df9aa125f32e80ae481e6a078791a4c"
+    }
+  ],
+  "fileChecksums": [
+    {
+      "path": "src/sim/behaviors/common.ts",
+      "sha256": "0041e735fcfc0c78cb69d97747170230b6b30159ba8eee909834aca16300934e"
+    },
+    {
+      "path": "test/pursuit-force-shoulder.test.ts",
+      "sha256": "ac65663ba9c7340e072076fd34ef54c85ab36a74ece0b375c16c2098b0045650"
+    },
+    {
+      "path": "scripts/diag/defense/pursuit-pair.ts",
+      "sha256": "2f7d7d875ce93cdcdeee81be344bf8a2dc339cd8e777d17742ca1a7ca5e9eb82"
+    },
+    {
+      "path": "scripts/diag/defense/force-shoulder.ts",
+      "sha256": "7857c9b1c1ed3ba6004a54f6b1f6d1167df9aa125f32e80ae481e6a078791a4c"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "out/force-shoulder/midpoint-baseline-tests.json",
+      "sha256": "c15eaf0bfb4307261985fbe3921bb6d74822e372fa5a8a60660fc241ddbb4db0",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "2290b25806025a1c9473d32e831ccda2a92bdc94fbe5498a0185c82425aa6ea7",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/pursuit-force-shoulder.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.4464026329999995
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "startedAt": "2026-10-20T19:46:20.146Z",
+      "finishedAt": "2026-10-20T19:46:22.596Z"
+    },
+    {
+      "path": "out/force-shoulder/accepted-launch.json",
+      "sha256": "70456dec4597ddbe74a18348ad0862c8276d65cb166e4125d1e798debf90ed68",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "6ca86d7941851bb498cd84c9704d08624a3c72ba3f2e56a61234c62838c1f848",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/force-shoulder.ts",
+            "out/force-shoulder/accepted-native.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.9845401599999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:48:04.031Z",
+      "finishedAt": "2026-10-20T19:48:06.019Z"
+    },
+    {
+      "path": "out/force-shoulder/pair-baseline-launch.json",
+      "sha256": "a77e3b802db20b2b753033924dc302ceaf38cba5c9b11fd7c7f41431ed2edf9a",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/pursuit-pair.ts",
+            "out/force-shoulder/pair-baseline.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.821169004
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:51:47.013Z",
+      "finishedAt": "2026-10-20T19:51:47.837Z"
+    },
+    {
+      "path": "out/force-shoulder/midpoint-candidate-tests.json",
+      "sha256": "b245ed573eed7523ec2aba812277a31a3ce500272442508aff8857af895460fe",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/pursuit-force-shoulder.test.ts",
+            "test/chase-arrival.test.ts",
+            "test/pursuit-contact.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.168560431
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:52:26.888Z",
+      "finishedAt": "2026-10-20T19:52:29.059Z"
+    },
+    {
+      "path": "out/force-shoulder/pair-midpoint-launch.json",
+      "sha256": "d8ddca38707ffe4e64e24ec430483f74a0b0ec50c8cc72d5a14cc97f8b063a2b",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/pursuit-pair.ts",
+            "out/force-shoulder/pair-midpoint.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9495384800000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:53:09.241Z",
+      "finishedAt": "2026-10-20T19:53:10.195Z"
+    },
+    {
+      "path": "out/force-shoulder/midpoint-native-launch.json",
+      "sha256": "7d1be0610a4a0fcd5f69ce0408f9e838b7ce3397f983a3079469b53edd5ae347",
+      "producingHead": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "42f22f58bb1edd42ce7927b81df1c0e97a45baa9f48b3d38ef7603ec4ea7b061",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/force-shoulder.ts",
+            "out/force-shoulder/midpoint-native.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.8443326549999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:53:10.523Z",
+      "finishedAt": "2026-10-20T19:53:12.370Z"
+    },
+    {
+      "path": "out/force-shoulder/final-focused.json",
+      "sha256": "10b1d01385edb0e6c33e05dceb21df3a0c2ef6573067d391445ae58c9ec9d89d",
+      "producingHead": "ff7e27f3791b2d1e62febbb55bc20a5bea66e91a",
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/pursuit-force-shoulder.test.ts",
+            "test/chase-arrival.test.ts",
+            "test/pursuit-contact.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.361906042
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:56:02.184Z",
+      "finishedAt": "2026-10-20T19:56:04.549Z"
+    },
+    {
+      "path": "out/force-shoulder/pair-final-launch.json",
+      "sha256": "2d506d554ccc59f7e5285112ab80466305d596513c5893966756d75759845118",
+      "producingHead": "ff7e27f3791b2d1e62febbb55bc20a5bea66e91a",
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/pursuit-pair.ts",
+            "out/force-shoulder/pair-final.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7534942219999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:56:04.788Z",
+      "finishedAt": "2026-10-20T19:56:05.544Z"
+    },
+    {
+      "path": "out/force-shoulder/final-native-launch.json",
+      "sha256": "4d448ffaa6e5e647ab55cf3ef8d1d6f9dbc2f21774199f4e214efa3487fe4616",
+      "producingHead": "ff7e27f3791b2d1e62febbb55bc20a5bea66e91a",
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/force-shoulder.ts",
+            "out/force-shoulder/final-native.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.8247435660000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:56:05.792Z",
+      "finishedAt": "2026-10-20T19:56:07.619Z"
+    },
+    {
+      "path": "out/force-shoulder/final-typecheck.json",
+      "sha256": "b707b569248e9f9fd56e7a8b879003ecde6e932c9b82db192209a2208d95673c",
+      "producingHead": "ff7e27f3791b2d1e62febbb55bc20a5bea66e91a",
+      "sourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0",
+      "validationSha256": "4b8ae617878e24e75ec3ee96b63cc604efb542ad19ea05638099b64ed56d35b3",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.667082598
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T19:56:21.957Z",
+      "finishedAt": "2026-10-20T19:56:35.628Z"
+    }
+  ],
+  "totalRecordedWrapperCommandSeconds": 28.821769791,
+  "costNote": "Includes accepted/provisional/final focused or tiny collections and typecheck; no full-suite, full-game or NFL scan. Final repeat follows restoring exact original generic floating-point multiplication order, not a documentation-only rerun."
+}
