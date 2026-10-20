@@ -1,0 +1,206 @@
+diff --git a/src/physics/kinematics.ts b/src/physics/kinematics.ts
+index 1d9606b5..bd65a9e1 100644
+--- a/src/physics/kinematics.ts
++++ b/src/physics/kinematics.ts
+@@ -257,9 +257,10 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
+   const turnRate = turnRateOf(body);
+   const df = angleDiff(body.facing, commandFacing(body, cmd));
+   const target = body.facing + clamp(df, -turnRate * dt, turnRate * dt);
+-  // The requested turn is not yet an achieved gait pose. Use the current
+-  // facing here, matching World's movement plan before its finite yaw motor.
++  const beforeFacing = body.facing;
++  body.facing = target;
+   const a = locomotionAccel(body, cmd, dt);
++  body.facing = beforeFacing;
+   const traction = supportParams(body.profile).traction;
+   const force = Math.hypot(a.x,a.y) * body.profile.massKg;
+   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index d1f9fdd5..d036ca62 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -955,9 +955,12 @@ export class World {
+     // Pad level costs a little speed when he plays low.
+     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);
+     const cmd = low < 1 ? { ...intent, effort: (intent.effort ?? 1) * low } : intent;
+-    // Gait starts from the attained pose. The yaw target below is a request:
+-    // finite spin and shared traction may prevent reaching it this tick.
++    const saved = b.facing;
++    // A turn-rate ceiling is not an achieved pose. Contact and the shared
++    // traction budget can prevent that turn; it cannot grant gait speed yet.
++    if (this.handContact === 'center') b.facing = facing;
+     const acc = locomotionAccel(b, cmd, dt, a);
++    b.facing = saved;
+     return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
+   }
+ 
+diff --git a/src/playbook/formations.ts b/src/playbook/formations.ts
+index 6a0fd81c..e84c89a0 100644
+--- a/src/playbook/formations.ts
++++ b/src/playbook/formations.ts
+@@ -6,10 +6,7 @@ import type { Formation } from './types.js';
+ 
+ const ON = 0.6;
+ const OFF = 1.2;
+-// Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
+-// and 0.5 yd behind him. Empty and pistol use their own placements.
+-const GUN_RB_SPLIT = 2.3;
+-const GUN_RB_DEPTH = 5.5;
++const GUN_RB = 5.2;
+ 
+ export const FORMATIONS: Formation[] = [
+   // ---------------------------------------------------------------- 11
+@@ -20,7 +17,7 @@ export const FORMATIONS: Formation[] = [
+       H: { side: 'L', split: 'slot', depth: OFF },
+       Z: { side: 'R', split: 'wide', depth: OFF },
+       Y: { side: 'R', split: 'inline', depth: ON },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+@@ -30,7 +27,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'slot2', depth: OFF },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+@@ -40,7 +37,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: OFF },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'inline', depth: ON },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+@@ -50,7 +47,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'R', split: 7.5, depth: ON },
+       Z: { side: 'R', split: 9, depth: 1.7 },
+       H: { side: 'R', split: 6.2, depth: 1.9 },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+@@ -101,7 +98,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'L', split: 'slot', depth: OFF },
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+@@ -111,7 +108,7 @@ export const FORMATIONS: Formation[] = [
+       Z: { side: 'R', split: 'wide', depth: ON },
+       H: { side: 'R', split: 'slot', depth: OFF },
+       Y: { side: 'R', split: 'slot2', depth: OFF },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   // ---------------------------------------------------------------- 12
+@@ -134,7 +131,7 @@ export const FORMATIONS: Formation[] = [
+       Y: { side: 'R', split: 'inline', depth: ON },
+       H: { side: 'R', split: 'wing', depth: 1.4 },
+       Z: { side: 'R', split: 'wide', depth: OFF },
+-      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
++      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+     },
+   },
+   {
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 745ae4ae..d66a8a49 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -806,9 +806,7 @@ interface RunStackRead {
+   hold?: { y: number; until: number };
+ }
+ const runStacks = new WeakMap<Engagement, RunStackRead>();
+-const runTargets = new WeakMap<Engagement, {
+-  aim: Vec2; runner: boolean; flow?: number; lateralFlow: number; adoptedAt: number; predictionFor: number;
+-}>();
++const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: number }>();
+ 
+ function runContactRead(sim: PlaySim, e: Engagement) {
+   const d = e.defender, b = e.blocker, job = d.runFit;
+@@ -907,23 +905,16 @@ function runContactRead(sim: PlaySim, e: Engagement) {
+   // A newly seen declaration cannot drop flow feedforward midway through it.
+   // Support contacts hold the selected target mode too. A safety's acquired
+   // runner aim must not keep being treated as an undeclared force landmark.
+-  if (runTargets.get(e)?.aim !== aim) {
+-    const runner = flow === undefined && declared && (!edge || advanced);
+-    runTargets.set(e, { aim, runner, flow, lateralFlow: runner ? 0 : flow ?? stack?.flow ?? 0,
+-      adoptedAt: sim.t, predictionFor: d.mind.decisionInterval });
+-  }
+-  const selected = runTargets.get(e)!;
+-  // perceive() already advances visual information. Advance only elapsed time
+-  // holding this action, with its own snapshotted motion and target mode.
+-  const lateralAimY = aim.y + selected.lateralFlow * clamp(sim.t - selected.adoptedAt, 0, selected.predictionFor);
++  if (runTargets.get(e)?.aim !== aim)
++    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced), flow });
+   // A close observed back can threaten a penetrating lineman deep behind
+   // the surface; shedding must not wait for the free-fit declaration depth.
+   // A standing deep QB is still a mesh key, not a run target. An observed
+   // advanced carrier supplies urgency even after an original pass read.
+   const threat = reading && carrierCue &&
+     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
+-  return { aim, lateralAimY, lateralFlow: selected.lateralFlow, reading, threat,
+-    declared: selected.runner, flow: selected.flow, stack, acquiredBackfield: !!acquired };
++  return { aim, reading, threat, declared: runTargets.get(e)!.runner,
++    flow: runTargets.get(e)!.flow, stack, acquiredBackfield: !!acquired };
+ }
+ 
+ /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
+@@ -1187,8 +1178,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
+     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
+     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
+-    heldFlow: read.stack?.flow, heldTargetFlow: read.flow, defensiveLateralAimY: read.lateralAimY,
+-    selectedLateralFlow: read.lateralFlow, fit: d.runFit });
++    heldFlow: read.stack?.flow, heldTargetFlow: read.flow, fit: d.runFit });
+   // Follow acquired flow while preserving the chosen shoulder. Control/lag
+   // replace feet toward their remembered contact depth; attack retains useful
+   // forward intent. These are finite requests, not stronger ground support.
+@@ -1199,18 +1189,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
+     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
+       : -sim.attackDir(b.team) * 1.5;
+-  // Match the acquired shoulder's motion and close the remaining error with
+-  // the braking this body can actually supply. A held contact objective is
+-  // not a new deadline every tick: inverting the sprint lag over two reads
+-  // amplifies tiny position/load changes into alternating saturated requests.
++  // Keep the shoulder where it will need to be: the held flow cue carries it
++  // forward over a short horizon, and the request is planned with his own
++  // acceleration (the law the zone blockers plan with), so a lineman who is
++  // being reached works laterally to keep his gap instead of lagging it.
+   // DL_FLOW=0 restores the proportional follow.
+   const held = read.declared ? 0 : read.flow ?? read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
+-  const capacity = d.body.support
+-    ? availability(d.body.support, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+-  const flow = DL_FLOW
+-    ? movingArrivalVelocity(d.body, { x: d.pos.x, y: read.lateralAimY }, { x: 0, y: read.lateralFlow },
+-      td.lateral, 0, 0, .8 + .4 * td.bend, capacity).y
+-    : clamp(held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
++  const flow = clamp(DL_FLOW
++    ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
++    : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
+   // who feels himself driven sideways holds the point where the push began
+   // and leans into it, instead of following the blocker's flow off his gap.
+diff --git a/test/qb-rusher-recording.test.ts b/test/qb-rusher-recording.test.ts
+index 65b6b329..54226e25 100644
+--- a/test/qb-rusher-recording.test.ts
++++ b/test/qb-rusher-recording.test.ts
+@@ -81,6 +81,7 @@ describe('recording the actual rushing player', () => {
+       configurable: true, enumerable: true, get: () => undefined, set: () => {},
+     });
+     const actual = observedRun(recorded), control = observedRun(unrecorded);
++    console.log('SCRAMBLE_DIAGNOSTIC', JSON.stringify({ stats: actual.result.stats, outcome: actual.result.outcome, duration: actual.result.duration, events: actual.result.events, identicalStates: JSON.stringify(actual.states) === JSON.stringify(control.states), identicalObservations: JSON.stringify(actual.pictures) === JSON.stringify(control.pictures), identicalRandomCalls: actual.randomCalls === control.randomCalls, identicalRandomState: JSON.stringify(actual.randomState) === JSON.stringify(control.randomState) }));
+     expect(actual.result.kind).toBe('pass');
+     expect(actual.result.stats.scramble).toBe(true);
+     expect(actual.result.stats.attempted).toBe(false);

@@ -1,0 +1,39 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source d94e38d5c47efdd890343e7289ed42403aaaa7287f02a7a4c6cec00cf9bdc386
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/qb-rusher-recording.test.ts --testNamePattern records a native pass-call scramble
+
+ RUN  v3.2.4 /workspace/football-latest-small-fixture-review
+
+stdout | test/qb-rusher-recording.test.ts > recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness
+SCRAMBLE_DIAGNOSTIC {"stats":{"tacklers":[],"completed":false,"attempted":true,"sacked":false,"scramble":false,"throwaway":false,"pressured":false,"brokenTackles":0,"missedTackles":0,"dropped":false,"qbRead":{"pre":"cover3","actual":"cover3","post":"cover3"},"passer":"RO-QB2","timeToThrow":2.1,"target":"RO-TE2","airYards":15.862009401536028,"separation":2.9},"outcome":"incomplete","duration":4.05,"events":[{"t":0,"type":"snap","a":3,"pos":{"x":39.45,"y":26}},{"t":0.3,"type":"read","a":12,"pos":{"x":40.87,"y":22.11},"note":"pass; pPass=0.71 focus=0.96 urgency=0.73"},{"t":0.4,"type":"block_contact","a":1,"b":11,"pos":{"x":39.654955342568755,"y":28.645997507395894},"note":"pass"},{"t":0.4,"type":"read","a":21,"pos":{"x":47.46,"y":19.08},"note":"pass; pPass=0.72 focus=0.83 urgency=0.84"},{"t":0.45,"type":"read","a":11,"pos":{"x":40.82,"y":29.25},"note":"pass; pPass=0.75 focus=0.89 urgency=0.65"},{"t":0.45,"type":"read","a":16,"pos":{"x":44.69,"y":28.09},"note":"pass; pPass=0.74 focus=1.00 urgency=0.75"},{"t":0.5,"type":"read","a":13,"pos":{"x":40.75,"y":24.13},"note":"pass; pPass=0.75 focus=0.81 urgency=0.85"},{"t":0.5,"type":"read","a":15,"pos":{"x":45.17,"y":25.24},"note":"pass; pPass=0.70 focus=0.60 urgency=0.79"},{"t":0.55,"type":"read","a":14,"pos":{"x":40.72,"y":26.46},"note":"pass; pPass=0.77 focus=0.79 urgency=0.87"},{"t":0.65,"type":"block_contact","a":3,"b":14,"pos":{"x":39.15305507750255,"y":26.14614457232622},"note":"pass"},{"t":0.65,"type":"read","a":20,"pos":{"x":53.34,"y":25.88},"note":"pass; pPass=0.70 focus=0.99 urgency=0.76"},{"t":0.75,"type":"block_contact","a":5,"b":13,"pos":{"x":39.001574059945014,"y":24.76555953193708},"note":"pass"},{"t":0.95,"type":"read","a":18,"pos":{"x":47.89,"y":44.43},"note":"pass; pPass=0.70 focus=0.88 urgency=0.78"},{"t":1.1,"type":"read","a":17,"pos":{"x":48.44,"y":7.58},"note":"pass; pPass=0.71 focus=1.00 urgency=0.79"},{"t":1.1,"type":"read","a":19,"pos":{"x":43.81,"y":33.54},"note":"pass; pPass=0.71 focus=0.81 urgency=0.78"},{"t":1.35,"type":"block_contact","a":2,"b":12,"pos":{"x":38.516065085034874,"y":21.486162322530127},"note":"pass"},{"t":1.8,"type":"shed","a":12,"b":2,"pos":{"x":36.21,"y":20.4},"note":"pass: turned the corner"},{"t":2.1,"type":"throw","a":0,"b":7,"pos":{"x":32.14,"y":26}},{"t":4,"type":"incomplete"}],"identicalStates":true,"identicalObservations":true,"identicalRandomCalls":true,"identicalRandomState":true}
+
+ ❯ |core| test/qb-rusher-recording.test.ts (5 tests | 1 failed | 4 skipped) 694ms
+   ↓ recording the actual rushing player > attributes an unexchanged snap from its actual segment without inventing a fumble or scramble
+   ↓ recording the actual rushing player > records achieved catch depth without replacing the intended target or aim depth
+   × recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness 693ms
+     → expected false to be true // Object.is equality
+   ↓ recording the actual rushing player > does not label an ordinary native pass as a rush
+   ↓ recording the actual rushing player > keeps an actual handoff credited to the receiving back
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/qb-rusher-recording.test.ts > recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/qb-rusher-recording.test.ts:86:42
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  00:56:20
+   Duration  1.92s (transform 777ms, setup 0ms, collect 1.03s, tests 694ms, environment 0ms, prepare 58ms)
+
+Validation receipt: out/latest-small-fixture-review/scramble-old-geometry.json; exit 1
