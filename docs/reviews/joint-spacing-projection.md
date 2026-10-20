@@ -160,3 +160,5 @@ Advance this portable projection correction with independent narrow acceptance
 to Integration's combined verification. Broader navigation and native football
 benefit remain separate questions. No next maneuver or approach-policy
 expansion is included.
+
+The previously completed [independent decision](joint-spacing-projection-independent-review.md) is now published at its exact runtime/code pins. This is a documentation-only readiness update; no review or checks were repeated.

@@ -44,8 +44,12 @@
   },
   "independentReview": {
     "status": "ACCEPT narrow closest-request contract; broader football-benefit claims remain unsupported.",
-    "reviewer": "middle_evidence (independent agent; owner will publish review link)",
-    "integrationAdopted": false
+    "reviewer": "middle_evidence (independent internal agent)",
+    "integrationAdopted": false,
+    "decisionRecord": "docs/reviews/joint-spacing-projection-independent-review.md",
+    "reviewedRuntimeCommit": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+    "publicationOnly": true,
+    "newReviewerExecutions": 0
   },
   "environment": {
     "node": "v22.23.3",
