@@ -120,8 +120,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
-  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
-  const lev = (force ? Math.abs(leverage(a,p.y))*a.runFit!.side : leverage(a,p.y)) * clamp((dist-reach)/6,0,1);
+  const lev = pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
   return { x: p.x, y: p.y + lev };
 }
 
@@ -135,6 +134,20 @@ export function leverage(a: Agent, y: number): number {
   const inside = clamp((FIELD_WIDTH / 2 - y) / 1.5, -1, 1);
   const near = clamp(1 - toSide / 14, 0, 1);
   return inside * (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
+}
+
+function leverageMagnitude(a: Agent, y: number): number {
+  const toSide = Math.min(y, FIELD_WIDTH - y);
+  const near = clamp(1 - toSide / 14, 0, 1);
+  return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
+}
+
+function pursuitLeverage(a: Agent, y: number): number {
+  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+  // A called outside shoulder is unambiguous at midfield. Only the generic
+  // inside preference needs the center-field fade; close approaches still
+  // shed the shade through their ordinary distance-to-contact factors.
+  return force ? leverageMagnitude(a,y)*a.runFit!.side : leverage(a,y);
 }
 
 /** Gather from an already consumed runner picture. A fit and a chase use
@@ -205,8 +218,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
-  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
+  const offset = pursuitLeverage(a, seen.pos.y)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This
   // picture is already acquired and dead-reckoned to now; the intercept below
