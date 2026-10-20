@@ -1,5 +1,31 @@
 # Current work ownership
 
+## Intent-driven gait response — 2026-10-20 America/Phoenix
+
+Physics owns research branch `codex/gait-intent`, accepted `2c98bed9` / queue
+`4cc3337d`, reviewing Claude Part12/13 at `bae3fe80`. Preserve #163's held native
+caller; carry only its optional actuator API, not its puller activation. Scope:
+`kinematics.ts` movement-request execution, a bounded trajectory/arrival controller,
+focused mechanical/native diagnostics/tests. Delegate a narrow bearing-overshoot
+proof/fix and a read-only NFL evidence audit/extract; no solver, capacity, recovery,
+contact-law or global GAIT_STEP activation. Use saved reference plus a few exact
+football prefixes/controlled approaches, not another lab/game campaign. Integration
+preparation is not this milestone. All other owners' contact/spacing decisions stay
+separate; publish actual source/settings and retained adverse evidence.
+
+Checkpoint: [report](reviews/gait-intent.md),
+[receipt](../data/reviews/current/gait-intent.json). Runtime `4379f0eb`;
+80 focused TS/11 Python/typecheck pass, no suite/games. Separately reviewable
+bearing correction `fd393b9`; optional burst/held-tick arrival `fd8f76f`; legal
+measurement windows `4021579`. Existing capacities/flags/laws retained. Nine
+fixed NFL geometry tasks support explicit intent; they do not calibrate ability
+or establish global jitter reduction. Pullers start earlier; fresh trap remains
+adverse after the .65 handover correction (.06yd vs accepted2.08), so caller
+stays held. Run's next decision: reconcile acquired outgoing waypoint with the
+landmark actually executed through the turn. No physical acceleration deficit
+is demonstrated by that adverse trace. Accepted develop/queue/Claude refetched
+unchanged at handoff. Research code/evidence publication only; no activation.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on

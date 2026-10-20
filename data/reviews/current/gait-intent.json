@@ -1,0 +1,2325 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-20",
+  "branch": "codex/gait-intent",
+  "base": {
+    "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+    "queue": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+    "claudeReviewed": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+    "handoffRefetch": "all three unchanged"
+  },
+  "candidate": {
+    "testedCommit": "40215792837c42320448ecd9c0a85e09da6a1117",
+    "runtimeSourceSha256": "4379f0ebe71edcd7fab1e98c727fd6cd005ea5722ee47389777df07088806fb7",
+    "actuatorApiCommit": "763265d42befb53de37fb8aa086ff1833505dadf",
+    "bearingCommit": "fd393b9b6e0bf200700007447aee7b169500d101",
+    "plannerCommit": "fd8f76feb66c9b92964578f51c5465b57ee6bbe6",
+    "measurementCommit": "40215792837c42320448ecd9c0a85e09da6a1117"
+  },
+  "decision": {
+    "globalGAIT_STEP": "retain0",
+    "capabilities": "unchanged",
+    "solverRecoveryContactLaws": "unchanged",
+    "bearing": "bounded correction, independently reviewable; unmerged",
+    "burstArrival": "mechanical and supplied-trajectory scope supported, opt-in research",
+    "nativePullerCaller": "HOLD; dynamic outgoing waypoint/turn contract still unresolved",
+    "next": "Run reconciles acquired outgoing landmark and actual handover before caller activation; no more global acceleration or solver tuning"
+  },
+  "settings": {
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "nativeExtraFlags": {
+      "PULL_STEP": "1"
+    },
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "dependencyLockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "note": "Historical baseline launcher commit metadata names the checkout; its runtime is the extracted accepted engine identified by4273994f source digest, not that launcher checkout."
+  },
+  "inputs": {
+    "commonLabProfilesAndInitialStates": [
+      {
+        "id": "OG/burst-speed",
+        "inputSha256": "68016551caedc475b049418bcba0827fbd8ea8933443d7fea83d355303f634ef",
+        "profileSha256": "9dec462dd59ea121e31a03c2fb388ca41578f13e27141d3a8fa6d7a38ffa7e23",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "OG/cruise-control",
+        "inputSha256": "956f0b59bc4e0a93669fe602c083a7d55cb89fcff65c04460f3514668dbd5386",
+        "profileSha256": "9dec462dd59ea121e31a03c2fb388ca41578f13e27141d3a8fa6d7a38ffa7e23",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "OG/stop",
+        "inputSha256": "455c373b90071108f67028fc795106fed0d48c651315c654b1dab1008c52297a",
+        "profileSha256": "9dec462dd59ea121e31a03c2fb388ca41578f13e27141d3a8fa6d7a38ffa7e23",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "OG/late-stop",
+        "inputSha256": "d6f196bf19e4499a63cb5c6139f585293a9cd222ef090e761fe44f4b7be96ffc",
+        "profileSha256": "9dec462dd59ea121e31a03c2fb388ca41578f13e27141d3a8fa6d7a38ffa7e23",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 5,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "OG/through-transition",
+        "inputSha256": "07988cfaf9524a31d53253189e57a562005b424d48937049d391de6d13d2f45b",
+        "profileSha256": "9dec462dd59ea121e31a03c2fb388ca41578f13e27141d3a8fa6d7a38ffa7e23",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "LB/burst-speed",
+        "inputSha256": "4251605c87b067933a16f6a597c7d9d6de71825faf367255d169372cee9add6c",
+        "profileSha256": "3237ce65615d3b3400919017973057c78162edcbaa2068a2b34abc449a9e5da0",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "LB/cruise-control",
+        "inputSha256": "83a37fbd0012c95666d177d8cc6410ed591083081cba71d4cf83781d4e157083",
+        "profileSha256": "3237ce65615d3b3400919017973057c78162edcbaa2068a2b34abc449a9e5da0",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "LB/stop",
+        "inputSha256": "6419a593a91961f7861e0739ae48b4d89a23e776be2934a875192875d09fe130",
+        "profileSha256": "3237ce65615d3b3400919017973057c78162edcbaa2068a2b34abc449a9e5da0",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "LB/late-stop",
+        "inputSha256": "b48b42d703ccd0fdaebaaacb41390009c75bfbb9691f096a3773dd2ae859bbe0",
+        "profileSha256": "3237ce65615d3b3400919017973057c78162edcbaa2068a2b34abc449a9e5da0",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 5,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "LB/through-transition",
+        "inputSha256": "249a5e55046bb733e9a9c9e74b98ce1bb0fd2d1639d77ae8a687e98059d1b511",
+        "profileSha256": "3237ce65615d3b3400919017973057c78162edcbaa2068a2b34abc449a9e5da0",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "CB/burst-speed",
+        "inputSha256": "e3866f194789b10af3d50a0c647d6ae3518f8b0cd87f4f2376034d8cf95c0aa4",
+        "profileSha256": "99087361a80d68d226ae57c58676547be5801a9e07869e2b021b3c4e72ac555a",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "CB/cruise-control",
+        "inputSha256": "82d18a75db1de6349432c2d1defa9f667db82515b147aa9d160083766add77db",
+        "profileSha256": "99087361a80d68d226ae57c58676547be5801a9e07869e2b021b3c4e72ac555a",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "CB/stop",
+        "inputSha256": "ddac45f11c234d084d299c1bf128d9bdbaaf739d9e847119be0353fe4ee66025",
+        "profileSha256": "99087361a80d68d226ae57c58676547be5801a9e07869e2b021b3c4e72ac555a",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "CB/late-stop",
+        "inputSha256": "c17175dca8dd8ee76bfc03c133c6f6030245f49cf781b24ad23385100a1b7cff",
+        "profileSha256": "99087361a80d68d226ae57c58676547be5801a9e07869e2b021b3c4e72ac555a",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 5,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "CB/through-transition",
+        "inputSha256": "6f0a263d27fb35f77141f072334dfdd96a92f03c36a0479a4cf8b582f4b9d21c",
+        "profileSha256": "99087361a80d68d226ae57c58676547be5801a9e07869e2b021b3c4e72ac555a",
+        "initial": {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0
+        }
+      },
+      {
+        "id": "NFL/2022091200-180/41310/OL_moderate_settle",
+        "inputSha256": "3412ab47083d30bc419dc8b3428d22a7d683af020b344ab479d4fe35b5434acb",
+        "profileSha256": "349bf6fd39d609d78dcacc8685f40e8fded5715e1bdcd5b1502ff9d1ee566f20",
+        "initial": {
+          "pos": {
+            "x": -0.8499984741210938,
+            "y": 22.53
+          },
+          "vel": {
+            "x": 0.261413267676897,
+            "y": 0.3539252795188372
+          },
+          "facing": 0.9346238144429634
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/41310/OL_lateral_track_proxy",
+        "inputSha256": "65cfcda49c24ad9451c81e3e21d865ab51fa29e7edda0c162d74af12816eea38",
+        "profileSha256": "74699304e65edc63e7056b43fef873cb43fdf56a8c83ea4ee02fccf88cf94eb0",
+        "initial": {
+          "pos": {
+            "x": -0.009998779296900295,
+            "y": 22.21
+          },
+          "vel": {
+            "x": -0.2644746191259749,
+            "y": -0.8393170889706527
+          },
+          "facing": -1.876054412968705
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/42393/DB_controlled_then_accelerate",
+        "inputSha256": "ec5ddf7ec56b317deed134d0cacbff799c3f5567abfdeed32c87c5475ac6f24a",
+        "profileSha256": "1e6ff2975efb0a03b1f7c86b5b004047cd740c255df3005a99dec047ad87b92e",
+        "initial": {
+          "pos": {
+            "x": 8.860001220703097,
+            "y": 13.41
+          },
+          "vel": {
+            "x": 0.2426055658181242,
+            "y": -0.06035345420162632
+          },
+          "facing": -0.2438224965036077
+        }
+      },
+      {
+        "id": "NFL/2022091200-180/53438/DB_moderate_settle",
+        "inputSha256": "b354cd30a34cd7caf8d3b8a28620c7a2319999faae8395102a10333ebf347a83",
+        "profileSha256": "017fd990b192b874d2474c085523ec4ac64b87692360ac64b20b9fcea9e485e1",
+        "initial": {
+          "pos": {
+            "x": 2.310001525878903,
+            "y": 35.2
+          },
+          "vel": {
+            "x": -1.0599115927244243,
+            "y": -0.013689982044343942
+          },
+          "facing": -3.128677217125035
+        }
+      },
+      {
+        "id": "NFL/2022091200-315/52456/LB_moderate_settle_contact_unknown",
+        "inputSha256": "8e23ee70ed84d11270558189a3a96e172ed26fea8e706556f07fc3f82dda8d5f",
+        "profileSha256": "e4091827dd6b6af00c044459055bc7a9042428cc6556222765e5d0e0c6c686e6",
+        "initial": {
+          "pos": {
+            "x": 0.7100030517577949,
+            "y": 17.503333333333337
+          },
+          "vel": {
+            "x": -0.2681199359592758,
+            "y": 0.24023259550109724
+          },
+          "facing": 2.410997828704967
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/46074/LB_running_acceleration_free_proxy",
+        "inputSha256": "0bd670cab81f0c7d549926d98c9c52f97268c7a62f24032692f4ffbaf4068c7c",
+        "profileSha256": "cfdb9e68ff0a3168e7cfa8a583c6c4f9a295f4d51884fd3416f04ba737757c5c",
+        "initial": {
+          "pos": {
+            "x": 1.6400012207030983,
+            "y": 30.01
+          },
+          "vel": {
+            "x": -0.16639346822101017,
+            "y": -0.9048277259972662
+          },
+          "facing": -1.7526596348527055
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/41369/heldout_first_OL",
+        "inputSha256": "b422ec06254a81de6142499158e1bb606246330355afdb7848e6352f377b8e89",
+        "profileSha256": "899972d0a90c52888d0f92e4b5ddc33d5cd8d0659282fef42004f836a5774d3d",
+        "initial": {
+          "pos": {
+            "x": -0.9300012207031045,
+            "y": 20.71333333333334
+          },
+          "vel": {
+            "x": 0.25025774221887837,
+            "y": 0.2587876783378788
+          },
+          "facing": 0.8021533242165938
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/46117/heldout_first_LB",
+        "inputSha256": "10420a08ac9d3f32344fb9cc0be5f9741869002ee163320c14627a7cb8745a44",
+        "profileSha256": "5949632356188b9c04be3fea245713f1e7412e70adc1ac8b5f9a22af7e22756a",
+        "initial": {
+          "pos": {
+            "x": 0.9399987792969,
+            "y": 28.133333333333336
+          },
+          "vel": {
+            "x": -0.18914644352901192,
+            "y": -0.6114111733525371
+          },
+          "facing": -1.870818425212722
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/42543/heldout_first_DB",
+        "inputSha256": "130a4b16125d7cdd7bb6565c538f6465059765e7959d190335d90f54efb4ee1d",
+        "profileSha256": "b9239a2845cb3b548e191e9aaa9cf0c0a9c9bfc2b7e2003e483879b5c51e8d1b",
+        "initial": {
+          "pos": {
+            "x": 13.539998779296909,
+            "y": 34.07333333333334
+          },
+          "vel": {
+            "x": -0.20458411182800232,
+            "y": 0.1050968181609103
+          },
+          "facing": 2.667037629972535
+        }
+      }
+    ],
+    "nflFixture": "test/fixtures/gait-intent-nfl.json",
+    "nflFixtureSha256": "a8603753c521678eff870356f5b8a574c51e0c2edad9c15554eb7126b11f1f42",
+    "fullGeometrySha256": "03dad202cdc6fe2a84c203c5c8542c0bcf71f1cf1d7c58e5b16c6bc9e7143af6",
+    "nflSelection": {
+      "game": "first gameId in tracking_week_1.csv source order",
+      "playSelection": "first 8 source-order, non-nullified designed runs with an RB/FB credited rush and observed handoff; keep all winners/losses/endings; no outcome selection",
+      "bounds": {
+        "games": 1,
+        "plays": 8,
+        "maxSecondsFromSnap": 2.0,
+        "trackingRows": 250000,
+        "trackingBufferBytes": 100663296
+      },
+      "split": "first4 selected plays illustration; next4 reserved geometry controls; no controller selected or fit on either split",
+      "witnessSelection": "within illustration split, first source-order player in sorted stable NFL IDs satisfying each declared shape; no outcome tests"
+    },
+    "nflScan": {
+      "gameId": "2022091200",
+      "selectedPlays": 8,
+      "eligibleSourceOrder": [
+        "64",
+        "180",
+        "315",
+        "375",
+        "446",
+        "601",
+        "622",
+        "643"
+      ],
+      "trackingRowsRead": 73279,
+      "trackingBufferBytesRead": 10043392,
+      "stopReason": "declared_play_count",
+      "seconds": 3.1431644100230187
+    },
+    "nativeInputDefinitions": "scripts/diag/gait-intent-lab.ts; four frozen setups/seeds, complete setup and hash in raw traces"
+  },
+  "artifacts": [
+    {
+      "kind": "lab",
+      "arm": "accepted",
+      "path": "out/gait-response/lab-accepted.json",
+      "sha256": "cd112a5f8a878f4bc0caf052a0053a5aa7368b10f0c5b26bb7805dc368550bcf",
+      "launcherReceiptSha256": "582995b956ee368b3ca90ef14fdf423d062c0b6f387ef54b6598f7940b23ac3e",
+      "engineSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {},
+      "collectorSecondsNotBenchmark": 0.14082836699999995
+    },
+    {
+      "kind": "lab",
+      "arm": "global5",
+      "path": "out/gait-response/lab-global5.json",
+      "sha256": "1b01405a7ef7f96db22c87251c6c2305420c93e0ba897a8aff1628c45c8a7f90",
+      "launcherReceiptSha256": "bb75b05484ad8ab23d7673b24ec46e949eff719630bb1aaafe202dec462b6ecd",
+      "engineSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "GAIT_STEP": ".5"
+      },
+      "collectorSecondsNotBenchmark": 0.13116815599999995
+    },
+    {
+      "kind": "lab",
+      "arm": "bearing",
+      "path": "out/gait-response/lab-bearing.json",
+      "sha256": "24c74fb4e232b77b2ea3378330d57cb129e83f7ba9bf9442ea38d52b5861b93b",
+      "launcherReceiptSha256": "20e733a06c91ce9c84a40a1b7df08f749c6bf72f54837770fc4dceeda29632fd",
+      "engineSourceSha256": "4379f0ebe71edcd7fab1e98c727fd6cd005ea5722ee47389777df07088806fb7",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {},
+      "collectorSecondsNotBenchmark": 0.21219752099999994
+    },
+    {
+      "kind": "lab",
+      "arm": "full-old",
+      "path": "out/gait-response/lab-full-old.json",
+      "sha256": "61e02fb56ab3d89437140c2e86cfc3afe84c2b60bc45b1f78295d5a3cac7c86d",
+      "launcherReceiptSha256": "cd4029191d498159932a575c5238a86b9f42428548672885cbdcd227ef0b67c9",
+      "engineSourceSha256": "4379f0ebe71edcd7fab1e98c727fd6cd005ea5722ee47389777df07088806fb7",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {},
+      "collectorSecondsNotBenchmark": 0.111253197
+    },
+    {
+      "kind": "lab",
+      "arm": "intent",
+      "path": "out/gait-response/lab-intent.json",
+      "sha256": "842c989dfbaabbc8985adcb1c777d94bb03bb42da1b232c3dd835700549e2520",
+      "launcherReceiptSha256": "dbd10902376e7bcb807bf8bbda679367a3b29dc7de57765fa7f0a08265775a3d",
+      "engineSourceSha256": "4379f0ebe71edcd7fab1e98c727fd6cd005ea5722ee47389777df07088806fb7",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {},
+      "collectorSecondsNotBenchmark": 0.233412553
+    },
+    {
+      "kind": "native",
+      "arm": "accepted",
+      "path": "out/gait-response/native-accepted.json",
+      "sha256": "044326c950212ff7a75926130a67cb79efa8ec1ec0404d2d7eae1a437f167d11",
+      "launcherReceiptSha256": "67a2061afe935dffb73c2de6a13fcdf2265582306680923b9f119dc2a111cd24",
+      "engineSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "collectorSha256": "61594845aa9c57fc4d2cb86d2ebc86b152decbc7e30896d34439cde16be97586",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "PULL_STEP": "1"
+      },
+      "collectorSecondsNotBenchmark": 7.724278089
+    },
+    {
+      "kind": "native",
+      "arm": "global5",
+      "path": "out/gait-response/native-global5.json",
+      "sha256": "868a2e2c035a9c7416138a3c70229dcf9fef493628442a66ddc57678a3283f0c",
+      "launcherReceiptSha256": "ca1a9e4d9ac40b251b94760c780f8e560d831c02275ca3b33348a776ea794096",
+      "engineSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "collectorSha256": "61594845aa9c57fc4d2cb86d2ebc86b152decbc7e30896d34439cde16be97586",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "GAIT_STEP": ".5",
+        "PULL_STEP": "1"
+      },
+      "collectorSecondsNotBenchmark": 8.094572711
+    },
+    {
+      "kind": "native",
+      "arm": "bearing",
+      "path": "out/gait-response/native-bearing.json",
+      "sha256": "e64c3adae411a53209b9b3a418722e3c97fe00310ef3730bf608852eee73f605",
+      "launcherReceiptSha256": "ebf8c77cf274595258dfd09457158536eb1d4cd8f40f2fa526b6288d6aa1602f",
+      "engineSourceSha256": "5495bd70626c01bef9ed1b04de0b6e193c9f2434bed39117fbd37420d09e84ce",
+      "collectorSha256": "61594845aa9c57fc4d2cb86d2ebc86b152decbc7e30896d34439cde16be97586",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "PULL_STEP": "1"
+      },
+      "collectorSecondsNotBenchmark": 9.804311438000001
+    },
+    {
+      "kind": "native",
+      "arm": "intent-pre-boundary",
+      "path": "out/gait-response/native-intent-pre-boundary.json",
+      "sha256": "029c2c6b95aa77d3c199b0ceae1795c0f453c56250c80eba3265f8b221b9083a",
+      "launcherReceiptSha256": "302d04a35f42b64f5277e3ca2dabcd73f93d0b0c4a90f997c1272d2be6236a41",
+      "engineSourceSha256": "5495bd70626c01bef9ed1b04de0b6e193c9f2434bed39117fbd37420d09e84ce",
+      "collectorSha256": "61594845aa9c57fc4d2cb86d2ebc86b152decbc7e30896d34439cde16be97586",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "PULL_STEP": "1"
+      },
+      "collectorSecondsNotBenchmark": 8.862832535
+    },
+    {
+      "kind": "native",
+      "arm": "intent",
+      "path": "out/gait-response/native-intent.json",
+      "sha256": "d159713fbbbf059ee00c70356d3b1e9324bc3d51d4bbe11851351773f5b13559",
+      "launcherReceiptSha256": "2620b9e3d60f37b7f4f0ee32974bd2bc0b926897eae2c5c5e926814b08c719ba",
+      "engineSourceSha256": "4379f0ebe71edcd7fab1e98c727fd6cd005ea5722ee47389777df07088806fb7",
+      "collectorSha256": "bbb764db071c5c8ec01a0614927dbb62ab769aed66e10d03b91498d68f4ec28e",
+      "node": "v22.23.3",
+      "flagsOverridesFromRecordedSettings": {
+        "PULL_STEP": "1"
+      },
+      "collectorSecondsNotBenchmark": 2.6771733330000003
+    }
+  ],
+  "mechanical": [
+    {
+      "position": "OG",
+      "arms": {
+        "accepted": {
+          "burstSpeedAtHalfSecond": 0.928885308653611,
+          "burstDistanceAtHalfSecond": 0.26895343928646076,
+          "burstFinalEnergy": 0.9885819691419225,
+          "cruiseSpeedAtHalfSecond": 0.928885308653611,
+          "stopFinalX": 1.8900308514360606,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.8166949020111889,
+          "lateStopSpeedAtHalfSecond": 2.2667831917860957,
+          "throughTransitionFinalX": 5.885231486838452,
+          "throughTransitionFinalVx": 0
+        },
+        "global5": {
+          "burstSpeedAtHalfSecond": 1.726002133735,
+          "burstDistanceAtHalfSecond": 0.505148986475875,
+          "burstFinalEnergy": 0.9866892603019476,
+          "cruiseSpeedAtHalfSecond": 1.726002133735,
+          "stopFinalX": 1.998915211924148,
+          "stopFinalVx": 0.006551439298308137,
+          "lateStopXAtHalfSecond": 1.8166949020111889,
+          "lateStopSpeedAtHalfSecond": 2.2667831917860957,
+          "throughTransitionFinalX": 5.977781997195019,
+          "throughTransitionFinalVx": 0.017966185673187942
+        },
+        "bearing": {
+          "burstSpeedAtHalfSecond": 0.928885308653611,
+          "burstDistanceAtHalfSecond": 0.26895343928646076,
+          "burstFinalEnergy": 0.9885819691419225,
+          "cruiseSpeedAtHalfSecond": 0.928885308653611,
+          "stopFinalX": 1.8900308514360606,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.8166949020111889,
+          "lateStopSpeedAtHalfSecond": 2.2667831917860957,
+          "throughTransitionFinalX": 5.885231486838452,
+          "throughTransitionFinalVx": 0
+        },
+        "full-old": {
+          "burstSpeedAtHalfSecond": 2.425197203506399,
+          "burstDistanceAtHalfSecond": 0.6438843165110815,
+          "burstFinalEnergy": 0.9860400565874067,
+          "cruiseSpeedAtHalfSecond": 0.928885308653611,
+          "stopFinalX": 1.8850557497137157,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.8166949020111889,
+          "lateStopSpeedAtHalfSecond": 2.2667831917860957,
+          "throughTransitionFinalX": 5.884794071056111,
+          "throughTransitionFinalVx": 0
+        },
+        "intent": {
+          "burstSpeedAtHalfSecond": 2.425197203506399,
+          "burstDistanceAtHalfSecond": 0.6438843165110815,
+          "burstFinalEnergy": 0.9860400565874067,
+          "cruiseSpeedAtHalfSecond": 0.928885308653611,
+          "stopFinalX": 1.85,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.8166949020111889,
+          "lateStopSpeedAtHalfSecond": 2.2667831917860957,
+          "throughTransitionFinalX": 5.85,
+          "throughTransitionFinalVx": 4.810968734089874e-15
+        }
+      }
+    },
+    {
+      "position": "LB",
+      "arms": {
+        "accepted": {
+          "burstSpeedAtHalfSecond": 1.0163495939473497,
+          "burstDistanceAtHalfSecond": 0.3061257652093059,
+          "burstFinalEnergy": 0.9892841155261027,
+          "cruiseSpeedAtHalfSecond": 1.0163495939473497,
+          "stopFinalX": 1.891794212170871,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6722107042770207,
+          "lateStopSpeedAtHalfSecond": 1.6888462423439903,
+          "throughTransitionFinalX": 5.892754563795702,
+          "throughTransitionFinalVx": 0
+        },
+        "global5": {
+          "burstSpeedAtHalfSecond": 1.726002133735,
+          "burstDistanceAtHalfSecond": 0.505148986475875,
+          "burstFinalEnergy": 0.9881358303279851,
+          "cruiseSpeedAtHalfSecond": 1.726002133735,
+          "stopFinalX": 1.9064897613562777,
+          "stopFinalVx": 0.0008371651947719761,
+          "lateStopXAtHalfSecond": 1.6722107042770207,
+          "lateStopSpeedAtHalfSecond": 1.6888462423439903,
+          "throughTransitionFinalX": 6.008416504415295,
+          "throughTransitionFinalVx": 0.020052039895768342
+        },
+        "bearing": {
+          "burstSpeedAtHalfSecond": 1.0163495939473497,
+          "burstDistanceAtHalfSecond": 0.3061257652093059,
+          "burstFinalEnergy": 0.9892841155261027,
+          "cruiseSpeedAtHalfSecond": 1.0163495939473497,
+          "stopFinalX": 1.891794212170871,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6722107042770207,
+          "lateStopSpeedAtHalfSecond": 1.6888462423439903,
+          "throughTransitionFinalX": 5.892754563795702,
+          "throughTransitionFinalVx": 0
+        },
+        "full-old": {
+          "burstSpeedAtHalfSecond": 2.65,
+          "burstDistanceAtHalfSecond": 0.7951936179577366,
+          "burstFinalEnergy": 0.9875776036536976,
+          "cruiseSpeedAtHalfSecond": 1.0163495939473497,
+          "stopFinalX": 1.8922594907443768,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6722107042770207,
+          "lateStopSpeedAtHalfSecond": 1.6888462423439903,
+          "throughTransitionFinalX": 5.892183998263523,
+          "throughTransitionFinalVx": 0
+        },
+        "intent": {
+          "burstSpeedAtHalfSecond": 2.65,
+          "burstDistanceAtHalfSecond": 0.7951936179577366,
+          "burstFinalEnergy": 0.9875776036536976,
+          "cruiseSpeedAtHalfSecond": 1.0163495939473497,
+          "stopFinalX": 1.85,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6722107042770207,
+          "lateStopSpeedAtHalfSecond": 1.6888462423439907,
+          "throughTransitionFinalX": 5.85,
+          "throughTransitionFinalVx": 4.810966203632913e-15
+        }
+      }
+    },
+    {
+      "position": "CB",
+      "arms": {
+        "accepted": {
+          "burstSpeedAtHalfSecond": 0.9920771389999224,
+          "burstDistanceAtHalfSecond": 0.2996186920910139,
+          "burstFinalEnergy": 0.9894634628918413,
+          "cruiseSpeedAtHalfSecond": 0.9920771389999224,
+          "stopFinalX": 1.8932677285361228,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6853526412467137,
+          "lateStopSpeedAtHalfSecond": 1.7414138257228773,
+          "throughTransitionFinalX": 5.89830892310506,
+          "throughTransitionFinalVx": 0
+        },
+        "global5": {
+          "burstSpeedAtHalfSecond": 1.726002133735,
+          "burstDistanceAtHalfSecond": 0.505148986475875,
+          "burstFinalEnergy": 0.988354616885392,
+          "cruiseSpeedAtHalfSecond": 1.726002133735,
+          "stopFinalX": 1.9145433583258353,
+          "stopFinalVx": 0.0013174693971136106,
+          "lateStopXAtHalfSecond": 1.6853526412467137,
+          "lateStopSpeedAtHalfSecond": 1.7414138257228773,
+          "throughTransitionFinalX": 6.01560133732228,
+          "throughTransitionFinalVx": 0.021486893228797585
+        },
+        "bearing": {
+          "burstSpeedAtHalfSecond": 0.9920771389999224,
+          "burstDistanceAtHalfSecond": 0.2996186920910139,
+          "burstFinalEnergy": 0.9894634628918413,
+          "cruiseSpeedAtHalfSecond": 0.9920771389999224,
+          "stopFinalX": 1.8932677285361228,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6853526412467137,
+          "lateStopSpeedAtHalfSecond": 1.7414138257228773,
+          "throughTransitionFinalX": 5.89830892310506,
+          "throughTransitionFinalVx": 0
+        },
+        "full-old": {
+          "burstSpeedAtHalfSecond": 2.65,
+          "burstDistanceAtHalfSecond": 0.8037497236319227,
+          "burstFinalEnergy": 0.9878373251181469,
+          "cruiseSpeedAtHalfSecond": 0.9920771389999224,
+          "stopFinalX": 1.8916071629293836,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6853526412467137,
+          "lateStopSpeedAtHalfSecond": 1.7414138257228773,
+          "throughTransitionFinalX": 5.8916645109016565,
+          "throughTransitionFinalVx": 0
+        },
+        "intent": {
+          "burstSpeedAtHalfSecond": 2.65,
+          "burstDistanceAtHalfSecond": 0.8037497236319227,
+          "burstFinalEnergy": 0.9878373251181469,
+          "cruiseSpeedAtHalfSecond": 0.9920771389999224,
+          "stopFinalX": 1.85,
+          "stopFinalVx": 0,
+          "lateStopXAtHalfSecond": 1.6853526412467137,
+          "lateStopSpeedAtHalfSecond": 1.7414138257228773,
+          "throughTransitionFinalX": 5.85,
+          "throughTransitionFinalVx": 4.810966462403117e-15
+        }
+      }
+    }
+  ],
+  "nfl": {
+    "profilesIdenticalAcrossArms": true,
+    "fullOldIntentFramesIdentical": true,
+    "aggregate": {
+      "accepted": {
+        "positionRMSE": {
+          "n": 9,
+          "mean": 0.6198970655105305,
+          "median": 0.44431702931274203,
+          "max": 1.6151742483436344
+        },
+        "laboratory20HzConsecutiveTurnReversals": 108,
+        "maxGroundFraction": 0.590180957838819,
+        "maxWorkResidual": 6.48401471403659e-13,
+        "crossedRequestedBearingSteps": 191,
+        "forwardBearingEligibleSteps": 241,
+        "signedAlongReferenceLagYd": {
+          "n": 9,
+          "mean": 0.5228343290274092,
+          "median": 0.3951097228053517,
+          "max": 1.3571491527125863
+        },
+        "common10Hz": {
+          "None": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.6205255736963653,
+              "median": 0.5896316541753213,
+              "max": 1.4331507948639446
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.0656862359407204,
+              "median": 1.1632663650068513,
+              "max": 1.6807309760081646
+            },
+            "consecutiveTurnReversals": 2
+          },
+          "1": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.6246083634259207,
+              "median": 0.6077387898141149,
+              "max": 1.444208677048598
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.1469471584828934,
+              "median": 1.1812981609986577,
+              "max": 1.675320965464775
+            },
+            "consecutiveTurnReversals": 30
+          },
+          "2": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.620987813131998,
+              "median": 0.5895980734984008,
+              "max": 1.4343983636255708
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.067362774421007,
+              "median": 1.1570195305568882,
+              "max": 1.6886864515418643
+            },
+            "consecutiveTurnReversals": 7
+          }
+        }
+      },
+      "global5": {
+        "positionRMSE": {
+          "n": 9,
+          "mean": 0.3368524638814442,
+          "median": 0.234102916133341,
+          "max": 0.9334767785697348
+        },
+        "laboratory20HzConsecutiveTurnReversals": 42,
+        "maxGroundFraction": 0.5951506136113696,
+        "maxWorkResidual": 7.81985587394729e-13,
+        "crossedRequestedBearingSteps": 177,
+        "forwardBearingEligibleSteps": 261,
+        "signedAlongReferenceLagYd": {
+          "n": 9,
+          "mean": 0.28740741901072864,
+          "median": 0.20084362013248303,
+          "max": 0.7928626232726712
+        },
+        "common10Hz": {
+          "None": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.37537063830773204,
+              "median": 0.3513354140590313,
+              "max": 0.7714594269564607
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.861908543452125,
+              "median": 0.7530238172435934,
+              "max": 1.32167373878534
+            },
+            "consecutiveTurnReversals": 3
+          },
+          "1": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.3928092224883887,
+              "median": 0.3669754727294624,
+              "max": 0.7765516640596601
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.9746961093864612,
+              "median": 0.9809129162495945,
+              "max": 1.3659228409752628
+            },
+            "consecutiveTurnReversals": 30
+          },
+          "2": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.37672431803671286,
+              "median": 0.3481955737323697,
+              "max": 0.7708253129436642
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.8651226548142142,
+              "median": 0.7430887685481392,
+              "max": 1.317902804456766
+            },
+            "consecutiveTurnReversals": 6
+          }
+        }
+      },
+      "bearing": {
+        "positionRMSE": {
+          "n": 9,
+          "mean": 0.6900374243553606,
+          "median": 0.5910799188520541,
+          "max": 1.631965405508905
+        },
+        "laboratory20HzConsecutiveTurnReversals": 4,
+        "maxGroundFraction": 0.5105900603262998,
+        "maxWorkResidual": 8.634759574022155e-13,
+        "crossedRequestedBearingSteps": 0,
+        "forwardBearingEligibleSteps": 229,
+        "signedAlongReferenceLagYd": {
+          "n": 9,
+          "mean": 0.5797049822072419,
+          "median": 0.5222513491051638,
+          "max": 1.3699771658778714
+        },
+        "common10Hz": {
+          "None": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.6872777813742961,
+              "median": 0.6333698907827104,
+              "max": 1.450790036341835
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.159596232131736,
+              "median": 1.1769327756569667,
+              "max": 1.6446112242411977
+            },
+            "consecutiveTurnReversals": 2
+          },
+          "1": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.6830673807151233,
+              "median": 0.5986740019539863,
+              "max": 1.4593677781754468
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.1993887958107876,
+              "median": 1.1537174761896605,
+              "max": 1.6362018569857257
+            },
+            "consecutiveTurnReversals": 34
+          },
+          "2": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.6887848912821357,
+              "median": 0.636336872925128,
+              "max": 1.4518853171226482
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 1.1601726971950301,
+              "median": 1.1967991043299486,
+              "max": 1.6554510819061623
+            },
+            "consecutiveTurnReversals": 8
+          }
+        }
+      },
+      "full-old": {
+        "positionRMSE": {
+          "n": 9,
+          "mean": 0.07089379285274093,
+          "median": 0.06727251028215392,
+          "max": 0.14380624164995356
+        },
+        "laboratory20HzConsecutiveTurnReversals": 15,
+        "maxGroundFraction": 0.5640257832934696,
+        "maxWorkResidual": 7.143174940438257e-13,
+        "crossedRequestedBearingSteps": 0,
+        "forwardBearingEligibleSteps": 296,
+        "signedAlongReferenceLagYd": {
+          "n": 9,
+          "mean": -0.042523848506858385,
+          "median": -0.041916115116866305,
+          "max": -0.021621860710959152
+        },
+        "common10Hz": {
+          "None": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.07557293501720468,
+              "median": 0.07910369789466148,
+              "max": 0.10966090931407382
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.16237348559370932,
+              "median": 0.13321421749200132,
+              "max": 0.27327945151149396
+            },
+            "consecutiveTurnReversals": 3
+          },
+          "1": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.11438172483862426,
+              "median": 0.1144690041587021,
+              "max": 0.13748403437138232
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.533076062607182,
+              "median": 0.537813081446632,
+              "max": 0.7047906700183099
+            },
+            "consecutiveTurnReversals": 29
+          },
+          "2": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.075348872979791,
+              "median": 0.07790188999751994,
+              "max": 0.1080735259548452
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.1638372186065641,
+              "median": 0.1339005743811146,
+              "max": 0.2585540605730375
+            },
+            "consecutiveTurnReversals": 5
+          }
+        }
+      },
+      "intent": {
+        "positionRMSE": {
+          "n": 9,
+          "mean": 0.07089379285274093,
+          "median": 0.06727251028215392,
+          "max": 0.14380624164995356
+        },
+        "laboratory20HzConsecutiveTurnReversals": 15,
+        "maxGroundFraction": 0.5640257832934696,
+        "maxWorkResidual": 7.143174940438257e-13,
+        "crossedRequestedBearingSteps": 0,
+        "forwardBearingEligibleSteps": 296,
+        "signedAlongReferenceLagYd": {
+          "n": 9,
+          "mean": -0.042523848506858385,
+          "median": -0.041916115116866305,
+          "max": -0.021621860710959152
+        },
+        "common10Hz": {
+          "None": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.07557293501720468,
+              "median": 0.07910369789466148,
+              "max": 0.10966090931407382
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.16237348559370932,
+              "median": 0.13321421749200132,
+              "max": 0.27327945151149396
+            },
+            "consecutiveTurnReversals": 3
+          },
+          "1": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.11438172483862426,
+              "median": 0.1144690041587021,
+              "max": 0.13748403437138232
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.533076062607182,
+              "median": 0.537813081446632,
+              "max": 0.7047906700183099
+            },
+            "consecutiveTurnReversals": 29
+          },
+          "2": {
+            "speedMAE": {
+              "n": 9,
+              "mean": 0.075348872979791,
+              "median": 0.07790188999751994,
+              "max": 0.1080735259548452
+            },
+            "gainMAE": {
+              "n": 9,
+              "mean": 0.1638372186065641,
+              "median": 0.1339005743811146,
+              "max": 0.2585540605730375
+            },
+            "consecutiveTurnReversals": 5
+          }
+        }
+      }
+    },
+    "casePositionRMSE": [
+      {
+        "id": "NFL/2022091200-180/41310/OL_moderate_settle",
+        "split": "illustration",
+        "group": "OL",
+        "arms": {
+          "accepted": 0.5469240966513599,
+          "global5": 0.234102916133341,
+          "bearing": 0.6146979892845611,
+          "full-old": 0.05469132461110368,
+          "intent": 0.05469132461110368
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/41310/OL_lateral_track_proxy",
+        "split": "illustration",
+        "group": "OL",
+        "arms": {
+          "accepted": 1.1249911173299292,
+          "global5": 0.585738468867885,
+          "bearing": 1.1529191950888562,
+          "full-old": 0.06698479762770268,
+          "intent": 0.06698479762770268
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/42393/DB_controlled_then_accelerate",
+        "split": "illustration",
+        "group": "DB",
+        "arms": {
+          "accepted": 0.3690053417155116,
+          "global5": 0.18003560145341307,
+          "bearing": 0.5405919598541571,
+          "full-old": 0.06727251028215392,
+          "intent": 0.06727251028215392
+        }
+      },
+      {
+        "id": "NFL/2022091200-180/53438/DB_moderate_settle",
+        "split": "illustration",
+        "group": "DB",
+        "arms": {
+          "accepted": 0.6069508359514509,
+          "global5": 0.35374942293088707,
+          "bearing": 0.6763209818653358,
+          "full-old": 0.0765631968273065,
+          "intent": 0.0765631968273065
+        }
+      },
+      {
+        "id": "NFL/2022091200-315/52456/LB_moderate_settle_contact_unknown",
+        "split": "illustration",
+        "group": "LB",
+        "arms": {
+          "accepted": 0.44431702931274203,
+          "global5": 0.26320209355281665,
+          "bearing": 0.5910799188520541,
+          "full-old": 0.07379688716778422,
+          "intent": 0.07379688716778422
+        }
+      },
+      {
+        "id": "NFL/2022091200-64/46074/LB_running_acceleration_free_proxy",
+        "split": "illustration",
+        "group": "LB",
+        "arms": {
+          "accepted": 1.6151742483436344,
+          "global5": 0.9334767785697348,
+          "bearing": 1.631965405508905,
+          "full-old": 0.14380624164995356,
+          "intent": 0.14380624164995356
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/41369/heldout_first_OL",
+        "split": "heldout",
+        "group": "OL",
+        "arms": {
+          "accepted": 0.2529789956624468,
+          "global5": 0.13104094649034662,
+          "bearing": 0.32574333065804506,
+          "full-old": 0.04020699259949084,
+          "intent": 0.04020699259949084
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/46117/heldout_first_LB",
+        "split": "heldout",
+        "group": "LB",
+        "arms": {
+          "accepted": 0.3975240522954038,
+          "global5": 0.1953952185168537,
+          "bearing": 0.43860758976200254,
+          "full-old": 0.0766340780828158,
+          "intent": 0.0766340780828158
+        }
+      },
+      {
+        "id": "NFL/2022091200-446/42543/heldout_first_DB",
+        "split": "heldout",
+        "group": "DB",
+        "arms": {
+          "accepted": 0.2212078723322958,
+          "global5": 0.15493072841771974,
+          "bearing": 0.23841044832432917,
+          "full-old": 0.03808810682635719,
+          "intent": 0.03808810682635719
+        }
+      }
+    ],
+    "common10HzHeadingReversals": {
+      "None": 6,
+      "1": 27,
+      "2": 6
+    },
+    "limits": [
+      "Nine preselected illustration/later-play controls from one game; not representative or independent calibration.",
+      "NFL contact and effort unknown; proxy profiles use recorded weight but generated capabilities and facing-from-velocity.",
+      "Supplied future trajectory is a lab target, not acquired information or inferred actual request.",
+      "Provider velocity feedforward is not exactly the derivative of interpolated position; tracking error includes that inconsistency.",
+      "Intent and full-old have identical NFL controllers; their equality does not validate the arrival/braking planner.",
+      "Turn reversal is descriptive; legitimate curved routes and quantization affect it. No global sim-vs-NFL jitter estimate is made.",
+      "Twenty-Hz native velocity is not directly compared with NFL provider velocity. Common comparisons use 10Hz positions and identical complete windows.",
+      "No new NFL scan, recollection, simulation or test was run."
+    ]
+  },
+  "native": {
+    "accepted": [
+      {
+        "id": "counter/ace_12/1",
+        "inputSha256": "773ea408b3839717f18003eea2aafd143eaf1c2598647948dd580b19b6e077df",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LT",
+            "firstLateral15": 0.85,
+            "lateral1": -0.8543198945974169,
+            "lateral1Toward": 0.8543198945974169,
+            "firstEngagement": 3.65
+          },
+          {
+            "slot": "LG",
+            "firstLateral15": 0.85,
+            "lateral1": -0.8209364987280452,
+            "lateral1Toward": 0.8209364987280452,
+            "firstEngagement": 2.5
+          }
+        ],
+        "bodyStateSha256": "178cb01f8fe22b316883dfacdb610f486de40992701f6bfe4208c32ec2a3f4a1",
+        "lastRunnerState": {
+          "pos": {
+            "x": 42.964853188889094,
+            "y": 20.898477297545618
+          },
+          "vel": {
+            "x": 5.748512760152768,
+            "y": -2.9852750298490283
+          }
+        }
+      },
+      {
+        "id": "power/i_pro_21/77",
+        "inputSha256": "9caf8e01039d314fe053ecaf22a3a67988da9c8438ae7e793faf51d3794c0be3",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 1.78
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.85,
+            "lateral1": -0.8395606219989489,
+            "lateral1Toward": 0.8395606219989489,
+            "firstEngagement": null
+          }
+        ],
+        "bodyStateSha256": "f70857661b01684bde11f67c30ba3329276c95ccee9987cff883ec16b0182e1c",
+        "lastRunnerState": {
+          "pos": {
+            "x": 41.78119384213533,
+            "y": 24.942186853681484
+          },
+          "vel": {
+            "x": 0.05957811850756407,
+            "y": 0.7353878622736207
+          }
+        }
+      },
+      {
+        "id": "trap/i_pro_21/71009",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 2.08
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.8,
+            "lateral1": -0.8395373381876645,
+            "lateral1Toward": 0.8395373381876645,
+            "firstEngagement": 1.95
+          }
+        ],
+        "bodyStateSha256": "934246fa5f7d30bf7136417280a0376df8661ac437504573ca62f979eaab87fd",
+        "lastRunnerState": {
+          "pos": {
+            "x": 41.939483074296916,
+            "y": 23.01862527816838
+          },
+          "vel": {
+            "x": 1.5163970224957581,
+            "y": -1.037397441851824
+          }
+        }
+      },
+      {
+        "id": "oz_strong/ace_12/77",
+        "inputSha256": "80865923562954cf46fe35108becc183dfb9a2a667ea8b4661c470c4ad0c5dbb",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 5.1
+        },
+        "censoredAt": null,
+        "metrics": [],
+        "bodyStateSha256": "d1fe7459774ad16d93ce1ca02367540cc70d3f966b1c048f94459d17a8fe1d10",
+        "lastRunnerState": {
+          "pos": {
+            "x": 44.83213779336338,
+            "y": 16.917490794143827
+          },
+          "vel": {
+            "x": 1.2710329579877542,
+            "y": -2.4357160142987353
+          }
+        }
+      }
+    ],
+    "global5": [
+      {
+        "id": "counter/ace_12/1",
+        "inputSha256": "773ea408b3839717f18003eea2aafd143eaf1c2598647948dd580b19b6e077df",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LT",
+            "firstLateral15": 0.5,
+            "lateral1": -1.5739014904676836,
+            "lateral1Toward": 1.5739014904676836,
+            "firstEngagement": 3.2
+          },
+          {
+            "slot": "LG",
+            "firstLateral15": 0.55,
+            "lateral1": -1.4863576147307747,
+            "lateral1Toward": 1.4863576147307747,
+            "firstEngagement": 2.3
+          }
+        ],
+        "bodyStateSha256": "0ee94b7565a3b9ef5f376a8e7d0162c85cc26f4b6ac1efe4a65e6ab6efccc100",
+        "lastRunnerState": {
+          "pos": {
+            "x": 43.54294664012833,
+            "y": 20.95352981540956
+          },
+          "vel": {
+            "x": 2.5961300903287907,
+            "y": -1.1537747042612618
+          }
+        }
+      },
+      {
+        "id": "power/i_pro_21/77",
+        "inputSha256": "9caf8e01039d314fe053ecaf22a3a67988da9c8438ae7e793faf51d3794c0be3",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 0.46
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.55,
+            "lateral1": -1.4697258570511842,
+            "lateral1Toward": 1.4697258570511842,
+            "firstEngagement": null
+          }
+        ],
+        "bodyStateSha256": "c46a08834d6f3ca22024db5deba0cd1279be2a83672d38834d6d09a4c3d659f0",
+        "lastRunnerState": {
+          "pos": {
+            "x": 40.34846282154415,
+            "y": 24.656275075619746
+          },
+          "vel": {
+            "x": -8.569483427033681e-05,
+            "y": -0.0011069703555953107
+          }
+        }
+      },
+      {
+        "id": "trap/i_pro_21/71009",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 3.03
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.7,
+            "lateral1": -1.0215237778921242,
+            "lateral1Toward": 1.0215237778921242,
+            "firstEngagement": 1.65
+          }
+        ],
+        "bodyStateSha256": "430d1ad9994320554d8a78d59d29ffe6fa094fe670fbc5fc68646d426919542c",
+        "lastRunnerState": {
+          "pos": {
+            "x": 42.841028067048384,
+            "y": 25.478141108093002
+          },
+          "vel": {
+            "x": 1.072275423461191,
+            "y": 0.3918563198321762
+          }
+        }
+      },
+      {
+        "id": "oz_strong/ace_12/77",
+        "inputSha256": "80865923562954cf46fe35108becc183dfb9a2a667ea8b4661c470c4ad0c5dbb",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 1.91
+        },
+        "censoredAt": null,
+        "metrics": [],
+        "bodyStateSha256": "1775efa8c5f782eb45dd6cf8f58512f3c3240750fc4cb3b27071bf0b441546c6",
+        "lastRunnerState": {
+          "pos": {
+            "x": 41.914846184657975,
+            "y": 20.212517593164897
+          },
+          "vel": {
+            "x": 1.8077165925719316,
+            "y": -2.4372319151381974
+          }
+        }
+      }
+    ],
+    "bearing": [
+      {
+        "id": "counter/ace_12/1",
+        "inputSha256": "773ea408b3839717f18003eea2aafd143eaf1c2598647948dd580b19b6e077df",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LT",
+            "firstLateral15": 0.9,
+            "lateral1": -0.8359126352687376,
+            "lateral1Toward": 0.8359126352687376,
+            "firstEngagement": 3.35
+          },
+          {
+            "slot": "LG",
+            "firstLateral15": 0.95,
+            "lateral1": -0.7151638931615416,
+            "lateral1Toward": 0.7151638931615416,
+            "firstEngagement": 2.8
+          }
+        ],
+        "bodyStateSha256": "30d74bcfc5c27dc78cf1b1fd15a4b25113a4d1dcf506906d684a8b74caab20f8",
+        "lastRunnerState": {
+          "pos": {
+            "x": 41.53405414005253,
+            "y": 23.270078111343917
+          },
+          "vel": {
+            "x": 0.28439721892397934,
+            "y": -0.06462339702188903
+          }
+        }
+      },
+      {
+        "id": "power/i_pro_21/77",
+        "inputSha256": "9caf8e01039d314fe053ecaf22a3a67988da9c8438ae7e793faf51d3794c0be3",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.9,
+            "lateral1": -0.7283249911038929,
+            "lateral1Toward": 0.7283249911038929,
+            "firstEngagement": null
+          }
+        ],
+        "bodyStateSha256": "1815ab4719d5b977e275538cb0e57f4d845ae9792327bdb003ccbeacb1b6cf0f",
+        "lastRunnerState": {
+          "pos": {
+            "x": 40.69490994123034,
+            "y": 23.859637168024733
+          },
+          "vel": {
+            "x": 0.8977391686059542,
+            "y": 0.13720750499663395
+          }
+        }
+      },
+      {
+        "id": "trap/i_pro_21/71009",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.85,
+            "lateral1": -0.7420740352463859,
+            "lateral1Toward": 0.7420740352463859,
+            "firstEngagement": 2.2
+          }
+        ],
+        "bodyStateSha256": "db50f2e4c9728d7e9728ac386a059fad67c11498535c8175692879b81e101e12",
+        "lastRunnerState": {
+          "pos": {
+            "x": 40.32455647834354,
+            "y": 22.802173774101686
+          },
+          "vel": {
+            "x": -0.18855076793715417,
+            "y": -0.4998953862868519
+          }
+        }
+      },
+      {
+        "id": "oz_strong/ace_12/77",
+        "inputSha256": "80865923562954cf46fe35108becc183dfb9a2a667ea8b4661c470c4ad0c5dbb",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [],
+        "bodyStateSha256": "1fa9b5fdc69596926757cf4093606bf1c6162055cfa6d1f5959279c89982f72a",
+        "lastRunnerState": {
+          "pos": {
+            "x": 44.15311921864327,
+            "y": 16.422628933960784
+          },
+          "vel": {
+            "x": 1.1955429266925144,
+            "y": -3.2332004532951455
+          }
+        }
+      }
+    ],
+    "intent-pre-boundary": [
+      {
+        "id": "counter/ace_12/1",
+        "inputSha256": "773ea408b3839717f18003eea2aafd143eaf1c2598647948dd580b19b6e077df",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 3.41
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LT",
+            "firstLateral15": 0.5,
+            "lateral1": -1.6535125697955309,
+            "lateral1Toward": 1.6535125697955309,
+            "firstEngagement": null
+          },
+          {
+            "slot": "LG",
+            "firstLateral15": 0.5,
+            "lateral1": -1.5974132561387293,
+            "lateral1Toward": 1.5974132561387293,
+            "firstEngagement": 2.5
+          }
+        ],
+        "bodyStateSha256": "0a360f44be927bc82f41ebf019709e8f40c9affaa5b487a5838963a60b3566c6",
+        "lastRunnerState": {
+          "pos": {
+            "x": 43.34295226548707,
+            "y": 20.948977869424017
+          },
+          "vel": {
+            "x": 2.6953049542028396,
+            "y": -1.167016746473879
+          }
+        }
+      },
+      {
+        "id": "power/i_pro_21/77",
+        "inputSha256": "9caf8e01039d314fe053ecaf22a3a67988da9c8438ae7e793faf51d3794c0be3",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.45,
+            "lateral1": -1.7125366803090252,
+            "lateral1Toward": 1.7125366803090252,
+            "firstEngagement": null
+          }
+        ],
+        "bodyStateSha256": "f71ae87dd578231fa1d187b6f040b6fb58fcafb9b2dfd6df26a1c939f8d74d40",
+        "lastRunnerState": {
+          "pos": {
+            "x": 41.525840629500834,
+            "y": 22.77389218417234
+          },
+          "vel": {
+            "x": 0.42588684756879136,
+            "y": -1.1078186164329749
+          }
+        }
+      },
+      {
+        "id": "trap/i_pro_21/71009",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": -0.16
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.6,
+            "lateral1": -1.368479011087473,
+            "lateral1Toward": 1.368479011087473,
+            "firstEngagement": 1.9
+          }
+        ],
+        "bodyStateSha256": "d23b8b5671e280aace972db0c90588b67765a71669433f4fc26e066cac318eb7",
+        "lastRunnerState": {
+          "pos": {
+            "x": 39.64713739927767,
+            "y": 21.097441762156528
+          },
+          "vel": {
+            "x": 0.547820457325727,
+            "y": -1.2810629027276839
+          }
+        }
+      },
+      {
+        "id": "oz_strong/ace_12/77",
+        "inputSha256": "80865923562954cf46fe35108becc183dfb9a2a667ea8b4661c470c4ad0c5dbb",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [],
+        "bodyStateSha256": "1fa9b5fdc69596926757cf4093606bf1c6162055cfa6d1f5959279c89982f72a",
+        "lastRunnerState": {
+          "pos": {
+            "x": 44.15311921864327,
+            "y": 16.422628933960784
+          },
+          "vel": {
+            "x": 1.1955429266925144,
+            "y": -3.2332004532951455
+          }
+        }
+      }
+    ],
+    "intent": [
+      {
+        "id": "counter/ace_12/1",
+        "inputSha256": "773ea408b3839717f18003eea2aafd143eaf1c2598647948dd580b19b6e077df",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 6.79
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LT",
+            "firstLateral15": 0.5,
+            "lateral1": -1.6502849113202132,
+            "lateral1Toward": 1.6502849113202132,
+            "firstEngagement": null
+          },
+          {
+            "slot": "LG",
+            "firstLateral15": 0.5,
+            "lateral1": -1.5869885473773913,
+            "lateral1Toward": 1.5869885473773913,
+            "firstEngagement": 2.65
+          }
+        ],
+        "bodyStateSha256": "0d726ee132c4eb1704d91d93483ef4027e5526104e8e96fbd16900e68cf12207",
+        "lastRunnerState": {
+          "pos": {
+            "x": 46.79288221118966,
+            "y": 23.215478480515777
+          },
+          "vel": {
+            "x": 2.768416502321334,
+            "y": 0.9538813429144785
+          }
+        }
+      },
+      {
+        "id": "power/i_pro_21/77",
+        "inputSha256": "9caf8e01039d314fe053ecaf22a3a67988da9c8438ae7e793faf51d3794c0be3",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.5,
+            "lateral1": -1.7014447267103598,
+            "lateral1Toward": 1.7014447267103598,
+            "firstEngagement": null
+          }
+        ],
+        "bodyStateSha256": "9cc6c472e7d14795892b205e5e1ad7b0d1fd519e51db24d90b6d001034a7adf8",
+        "lastRunnerState": {
+          "pos": {
+            "x": 44.009734454237275,
+            "y": 21.118282527820046
+          },
+          "vel": {
+            "x": 2.407129348150721,
+            "y": -1.4087852753573555
+          }
+        }
+      },
+      {
+        "id": "trap/i_pro_21/71009",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d",
+        "terminal": true,
+        "ending": {
+          "outcome": "tackle",
+          "yards": 0.06
+        },
+        "censoredAt": null,
+        "metrics": [
+          {
+            "slot": "LG",
+            "firstLateral15": 0.6,
+            "lateral1": -1.3459262459390509,
+            "lateral1Toward": 1.3459262459390509,
+            "firstEngagement": 1.85
+          }
+        ],
+        "bodyStateSha256": "922aa61846a9e49fe712faae801d0ff5571713ab83f3108b28dca734232af178",
+        "lastRunnerState": {
+          "pos": {
+            "x": 39.792931711548036,
+            "y": 19.504942043518422
+          },
+          "vel": {
+            "x": 0.2258448351207285,
+            "y": -2.697601547241638
+          }
+        }
+      },
+      {
+        "id": "oz_strong/ace_12/77",
+        "inputSha256": "80865923562954cf46fe35108becc183dfb9a2a667ea8b4661c470c4ad0c5dbb",
+        "terminal": false,
+        "ending": null,
+        "censoredAt": 4,
+        "metrics": [],
+        "bodyStateSha256": "1fa9b5fdc69596926757cf4093606bf1c6162055cfa6d1f5959279c89982f72a",
+        "lastRunnerState": {
+          "pos": {
+            "x": 44.15311921864327,
+            "y": 16.422628933960784
+          },
+          "vel": {
+            "x": 1.1955429266925144,
+            "y": -3.2332004532951455
+          }
+        }
+      }
+    ]
+  },
+  "nativeUnchangedNoPullerControl": true,
+  "ordinaryCruiseFramesIdenticalForCandidate": true,
+  "trapPreBoundaryDiagnosis": {
+    "schemaVersion": 1,
+    "question": "Does faster optional puller movement fail through body execution or an inconsistent waypoint/arrival request?",
+    "method": "Saved matched trap traces only; no new native simulation. Recomputed pure force/geometry quantities from saved states.",
+    "firstPullerDifference": {
+      "recordedFrameT": 0.15,
+      "ordinaryVelocity": {
+        "x": -0.06549137141179456,
+        "y": -0.11860204429923932
+      },
+      "intentVelocity": {
+        "x": -0.12247083116473641,
+        "y": -0.21691884102336428
+      },
+      "firstPhase1": {
+        "ordinary": 0.8,
+        "intent": 0.6
+      },
+      "firstPhase2": {
+        "ordinary": 1.5,
+        "intent": 1.2
+      }
+    },
+    "bodyExecution": {
+      "testedInterval": [
+        1.2,
+        1.75
+      ],
+      "maximumAccelErrorVersusUnloadedExistingEnvelope": 5.4025784115714076e-15,
+      "noTorsoContactThrough": 1.75,
+      "support": "up; zero support xi, load, lean throughout selected free-turn interval",
+      "conclusion": "Recorded COM acceleration agrees with bounded existing demand; the requested abrupt turn is not instantaneously attainable. No demonstrated force/capacity defect."
+    },
+    "firstRunnerDifference": {
+      "commandTime": 1.5,
+      "recordedFrameT": 1.55,
+      "sameRunnerStateBeforeCommand": true,
+      "ordinaryFinalRequest": {
+        "vel": {
+          "x": 5.649423586278106,
+          "y": -2.665732613252727
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "intentFinalRequest": {
+        "vel": {
+          "x": 1.2563431919695693,
+          "y": -1.2041521364557524
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "ordinarySpeed": 6.246768542418919,
+      "intentSpeed": 1.74022429121629,
+      "spacingConstraint": {
+        "slot": "QB",
+        "gap": 0.6819132532127882,
+        "withinAware": true,
+        "normal": {
+          "x": 0.9013758330314345,
+          "y": 0.43303765151183765
+        },
+        "plane": 0.6109941780011827,
+        "finalAlong": 0.6109941780011813,
+        "finalPlaneResidual": -1.4432899320127035e-15
+      },
+      "ordinarySpacingConstraint": {
+        "slot": "QB",
+        "gap": 0.6819132532127946,
+        "withinAware": true,
+        "normal": {
+          "x": 0.9013758330314356,
+          "y": 0.4330376515118353
+        },
+        "plane": 0.6109941780011965,
+        "finalAlong": 3.9378913008273995,
+        "finalPlaneResidual": 3.326897122826203
+      },
+      "derivedEnergy": 0.9905213092277658,
+      "reconstructedBeforeQBHeadwayProjection": {
+        "x": 6.1413637555598894,
+        "y": 1.1427022553797266
+      },
+      "reconstructedPressSpeed": 6.246768542418919,
+      "reconstructedHeadingDegrees": 10.540292428138612,
+      "inferenceLimit": "Pre-spacing carrier request was not recorded directly. Its reconstruction uses the source contract: first designed carry tick returns press speed unless paced; only QB qualifies for radial headway, own speed<2 excludes forecast gather. Final request lies on QB headway plane to1.5e-15. Reconstructed ordinary press ray misses QB touch while intent ray intersects. Exact entry identity/native information difference was not captured."
+    },
+    "verdict": "Hold optional puller caller. Faster legal startup is demonstrated; a general two-dimensional arrival/turn contract is not. Aligning declared capture with actual handover is the smallest supported interface correction. Keep changing outgoing landmark/incoming velocity risk explicit; preserve adverse ending and censored ordinary control. No physics retune or fit-rule takeover.",
+    "remainingUncertainty": "The late ending combines changed carrier choices, teammate spacing, defender/other-blocker responses and later contacts. This packet does not causally assign every0.16-yard loss to the corner. It does establish that the first divergence in runner motion is a changed command with no physical runner contact, and that the puller free-turn response is lawful.",
+    "boundary": {
+      "handoverRadius": 0.65,
+      "optionalPlannerCapture": 0.15,
+      "conclusion": "Mismatch is real. Matching capture reduces earlier desired speeds but alone does not prove turn feasibility because outgoing landmark changes at handover.",
+      "selectedRows": [
+        {
+          "t": 1,
+          "changedPhase": false,
+          "phaseBefore": 1,
+          "phaseAfter": 1,
+          "speed": 3.061547450572843,
+          "previousWaypoint": {
+            "x": 39.15,
+            "y": 25.46180086243541
+          },
+          "previousWaypointDistance": 1.3510704624331362,
+          "path": {
+            "x": 39.15,
+            "y": 25.46180086243541
+          },
+          "next": {
+            "x": 39.9,
+            "y": 25.07353459486713
+          },
+          "d": 1.3510704624331362,
+          "through": 2.47917101410531,
+          "actualRequest": {
+            "x": 1.1655476142681354,
+            "y": -3.677156894776635
+          },
+          "cap15": 3.8574582395574275,
+          "cap65": 3.2852306195113488
+        },
+        {
+          "t": 1.05,
+          "changedPhase": false,
+          "phaseBefore": 1,
+          "phaseAfter": 1,
+          "speed": 3.080875883143795,
+          "previousWaypoint": {
+            "x": 39.15,
+            "y": 25.46180086243541
+          },
+          "previousWaypointDistance": 1.2246301311322902,
+          "path": {
+            "x": 39.15,
+            "y": 25.46180086243541
+          },
+          "next": {
+            "x": 39.9,
+            "y": 25.07353459486713
+          },
+          "d": 1.2246301311322902,
+          "through": 2.6049969118691956,
+          "actualRequest": {
+            "x": 1.3916866379832706,
+            "y": -3.540008752441494
+          },
+          "cap15": 3.8037420608794648,
+          "cap65": 3.222589958878519
+        },
+        {
+          "t": 1.1,
+          "changedPhase": false,
+          "phaseBefore": 1,
+          "phaseAfter": 1,
+          "speed": 3.0950230993634773,
+          "previousWaypoint": {
+            "x": 39.15,
+            "y": 25.46180086243541
+          },
+          "previousWaypointDistance": 1.0973599033193826,
+          "path": {
+            "x": 39.15,
+            "y": 25.751411249177163
+          },
+          "next": {
+            "x": 39.9,
+            "y": 25.07353459486713
+          },
+          "d": 0.8459854117191484,
+          "through": 4.630421856819219,
+          "actualRequest": {
+            "x": 2.864193401479559,
+            "y": -4.193365573936407
+          },
+          "cap15": 5.0781806464278185,
+          "cap65": 4.651616852246953
+        },
+        {
+          "t": 1.15,
+          "changedPhase": false,
+          "phaseBefore": 1,
+          "phaseAfter": 1,
+          "speed": 3.140849964563497,
+          "previousWaypoint": {
+            "x": 39.15,
+            "y": 25.751411249177163
+          },
+          "previousWaypointDistance": 0.7357907972059508,
+          "path": {
+            "x": 39.15,
+            "y": 25.751411249177163
+          },
+          "next": {
+            "x": 39.9,
+            "y": 25.07353459486713
+          },
+          "d": 0.7357907972059508,
+          "through": 7.249856487509028,
+          "actualRequest": {
+            "x": 4.865017054496003,
+            "y": -5.339167912354216
+          },
+          "cap15": 7.223233689757644,
+          "cap65": 7.136381236497874
+        },
+        {
+          "t": 1.2,
+          "changedPhase": true,
+          "phaseBefore": 1,
+          "phaseAfter": 2,
+          "speed": 3.2139048796121745,
+          "previousWaypoint": {
+            "x": 39.15,
+            "y": 25.751411249177163
+          },
+          "previousWaypointDistance": 0.6343493528978463,
+          "path": {
+            "x": 39.9,
+            "y": 25.551411249177164
+          },
+          "d": 1.383803043105014,
+          "through": 0,
+          "actualRequest": {
+            "x": 2.734789903641163,
+            "y": -1.2765255746126631
+          },
+          "cap15": 3.0180446251998716,
+          "cap65": 2.2588570919587494
+        },
+        {
+          "t": 1.35,
+          "changedPhase": false,
+          "phaseBefore": 2,
+          "phaseAfter": 2,
+          "speed": 2.809624277791026,
+          "previousWaypoint": {
+            "x": 39.9,
+            "y": 25.551411249177164
+          },
+          "previousWaypointDistance": 1.2291556470970817,
+          "path": {
+            "x": 39.9,
+            "y": 25.956184796847914
+          },
+          "d": 1.2510127315723605,
+          "through": 0,
+          "actualRequest": {
+            "x": 2.817082867478909,
+            "y": 0.6210985505116106
+          },
+          "cap15": 2.884739033550663,
+          "cap65": 2.0819426859102554
+        }
+      ]
+    },
+    "originalDiagnosticSha256": "fc4e9972c15785ee0e4e506b0aec3a062a8b407d38197c3cd990ff53a2de5e7e",
+    "traces": [
+      {
+        "path": "out/gait-response/trap-detail-ordinary.json",
+        "sha256": "684d93c33bf631bbdb7eb944ce3b3b3defe07debe6d48de4cd8b7dc19ad812d3",
+        "engineSourceSha256": "5495bd70626c01bef9ed1b04de0b6e193c9f2434bed39117fbd37420d09e84ce",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d"
+      },
+      {
+        "path": "out/gait-response/trap-detail-intent.json",
+        "sha256": "cdfbfe2b5f861c2c765bed6524b497984d78a62e6d0be9d81c07251f9b02acec",
+        "engineSourceSha256": "5495bd70626c01bef9ed1b04de0b6e193c9f2434bed39117fbd37420d09e84ce",
+        "inputSha256": "986bd91f50d1099e4046998da8b7ba378884ce3c5aecdfb7be21f20d0807547d"
+      }
+    ]
+  },
+  "retainedFailures": {
+    "firstContinuousPlanner": "zero-radius stop line exceeded by .0013964196yd atdt.05; fixed without loosening tolerance",
+    "preBoundaryTrap": "-.16yd tackle retained; ordinary control censored at4s",
+    "boundaryAlignedTrap": ".06yd tackle versus accepted2.08, still adverse; caller held",
+    "historicalPatchFailures": "not rerun, cleared or promoted",
+    "knownFacingHold": "prospective-facing contract remains; radial feasibility does not clear it",
+    "mixedFlags": "nonzeroGAIT_STEP plus full near standstill not an accepted combined contract"
+  },
+  "cost": {
+    "receiptPath": "out/gait-response/cost.json",
+    "receiptSha256": "3f64e53796f635b078d684eeec3cb4a7b1c3ecfc641d6e995f0c9994d85a0bbe",
+    "testedSourceSha256": "5495bd70626c01bef9ed1b04de0b6e193c9f2434bed39117fbd37420d09e84ce",
+    "reuse": "same query planner/default radius; not cost of changed native capture interface",
+    "repeats": 11,
+    "dt": 0.05,
+    "rows": [
+      {
+        "kind": "query",
+        "countPerBatch": 25000,
+        "ordinary": {
+          "medianUs": 0.12336383999999725,
+          "p90Us": 0.1623088800000005,
+          "worstUs": 0.29439060000000156,
+          "samplesUs": [
+            0.08739936000000398,
+            0.14346555999999963,
+            0.058065400000000406,
+            0.07894948000000113,
+            0.12336383999999725,
+            0.14807540000000244,
+            0.0622744799999964,
+            0.14470088000000034,
+            0.29439060000000156,
+            0.11516655999999785,
+            0.1623088800000005
+          ]
+        },
+        "intent": {
+          "medianUs": 0.39379607999999733,
+          "p90Us": 0.4267770400000017,
+          "worstUs": 0.7086274400000002,
+          "samplesUs": [
+            0.41094176000000066,
+            0.30803871999999954,
+            0.4267770400000017,
+            0.36511168,
+            0.39379607999999733,
+            0.2785010800000009,
+            0.25675500000000284,
+            0.413644119999999,
+            0.7086274400000002,
+            0.3902029600000015,
+            0.40465803999999933
+          ]
+        }
+      },
+      {
+        "kind": "world",
+        "countPerBatch": 960,
+        "ordinary": {
+          "medianUs": 6.527208333333334,
+          "p90Us": 17.639445833333294,
+          "worstUs": 21.94404375,
+          "samplesUs": [
+            21.94404375,
+            17.639445833333294,
+            10.95444062499998,
+            4.965250000000054,
+            5.846254166666635,
+            5.293105208333297,
+            7.084964583333313,
+            5.9098031249999865,
+            4.616939583333372,
+            6.527208333333334,
+            6.882287500000099
+          ]
+        },
+        "intent": {
+          "medianUs": 7.204724999999949,
+          "p90Us": 22.477113541666686,
+          "worstUs": 35.20465208333334,
+          "samplesUs": [
+            35.20465208333334,
+            22.477113541666686,
+            7.662948958333378,
+            5.6900093749999785,
+            5.1255114583334205,
+            6.376680208333241,
+            8.987540624999943,
+            7.204724999999949,
+            6.281422916666675,
+            8.53269791666674,
+            6.051088541666634
+          ]
+        }
+      }
+    ],
+    "scope": "Microseconds per query/isolated World tick. Alternating warm runs in one process. No tracing, JSON or assertions inside timed batches. Not a loaded/native game runtime benchmark;11 batches do not characterize rare tails."
+  },
+  "validation": {
+    "typescript": {
+      "passed": 80,
+      "files": 8,
+      "runnerSeconds": 4.72,
+      "receiptPath": "out/gait-response/final-focused-receipt.json",
+      "receiptSha256": "2079adf40bf9eec9e31841ebd4b2ba2e4d1d4444c858b98602aca43c741a02d2",
+      "validationSha256": "719a7842e9084578e57d7987bf86d6ffe8a4f04234fba0a512dfd53770ba076e",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "test/physics.test.ts",
+            "test/gait-facing-contract.test.ts",
+            "test/movement-preview.test.ts",
+            "test/snap-mesh-and-pull.test.ts",
+            "test/puller-route-progress.test.ts",
+            "test/gait-bearing.test.ts",
+            "test/arrival-plan.test.ts",
+            "test/puller-propulsion.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.786119923
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "python": {
+      "passed": 11,
+      "seconds": 0.02,
+      "command": "python3 -m unittest discover -s test -p test_acceleration_windows.py"
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    "fullSuiteOrGames": "not run; no integration candidate requested"
+  },
+  "experimentCostScope": {
+    "distinctNativeSetups": 4,
+    "newNativePrefixExecutions": 24,
+    "prefixMaxSeconds": 4,
+    "breakdown": "16 initial four-arm prefixes +4 targeted trap detail captures (including immutable-plan diagnostic repair) +4 capture-boundary candidate prefixes",
+    "nativeCollectorTimesAreBenchmarks": false,
+    "newGames": 0,
+    "newFullSuites": 0,
+    "nflTrackingRowsRead": 73279,
+    "nflTrackingBytesRead": 10043392
+  },
+  "review": {
+    "scope": "bounded research correctness/publication, not integration/default activation",
+    "nonAuthorReviews": [
+      "bearing math and branch/control preservation",
+      "held-step reserve/root and capture interface",
+      "complete-legal-window implementation/tests",
+      "NFL frozen geometry, source/settings and numeric claim audit"
+    ],
+    "verdict": "no research correctness blocker; optional native caller remains held",
+    "newTestsOrSimulationsDuringReview": 0
+  }
+}
