@@ -15,6 +15,16 @@ capacities, recovery, caller decisions or flags are changed. #180's reviewed
 yaw candidate stays independently held on paired tail cost; it is not a parent.
 Integration owns exact combined verification after independent review.
 
+Completed candidate:`24ff632`/runtime`89dfe6ea`;32 focused checks/typecheck pass.
+Independent source/information/adverse review says **READY for isolated
+Integration review**, no separate physical-law/default approval. Frozen C
+picture error.128→.00070yd and2.450→.02785yd/s; genuine fast-peer avoidance
+unchanged. Native WZ improves, its flipped control regresses, IZ runner timings
+unchanged. Targeted flip has no teammate body collisions; changed LG/LT
+climb/departure exposes LB_S. Keep that Run concern visible. All source/evidence
+pins and source compatibility are in[the report](reviews/announced-motion.md).
+No yaw/GAIT_STEP/World/capacity promotion or full-suite duplication.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on

@@ -1,0 +1,1093 @@
+{
+  "schema": 1,
+  "acceptedRevision": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "candidateRevision": "24ff632b142183d295068c3720b5990bf8c956f8",
+  "candidateSource": "89dfe6ea4b1eb08754895b43e0c0dcadaa1ae38b1c7425cb9d1d70bd43224fea",
+  "disposition": {
+    "independentReview": "READY for isolated Integration review at24ff632; source, information boundary and adverse native case accepted",
+    "scope": "Prediction of announced teammate target, not actual body/capability/contact/recovery laws; no experimental activation",
+    "remaining": "Adverse flipped WZ follows different existing climb/departure; no general football/jitter benefit established; Integration owns combined verification"
+  },
+  "evidence": {
+    "baseline": "2c98bed94adad8087c65f381d4090444ad283985",
+    "scope": "announced teammate acquired-picture one ordinarytick free estimate, production physics unchanged",
+    "physicalPicture": {
+      "input": {
+        "seen": {
+          "pos": {
+            "x": 39.60379035170925,
+            "y": 26.418020919850782
+          },
+          "vel": {
+            "x": 0.6353803091671011,
+            "y": -0.8004675841429838
+          },
+          "stance": "low",
+          "facing": -0.342855424895114,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "called": {
+          "x": 0,
+          "y": -3.3920662501666694
+        },
+        "actualPos": {
+          "x": 39.59995081500933,
+          "y": 26.413280668845815
+        },
+        "actualVel": {
+          "x": 0.4817988411700087,
+          "y": -0.9900776243416669
+        }
+      },
+      "old": {
+        "pos": {
+          "x": 39.5720213362509,
+          "y": 26.2884409865496
+        },
+        "vel": {
+          "x": 0,
+          "y": -3.3920662501666694
+        },
+        "positionErrorYd": 0.12792576776997544,
+        "velocityErrorYdS": 2.449832541612885
+      },
+      "candidate": {
+        "pos": {
+          "x": 39.600623306619205,
+          "y": 26.41310050551346
+        },
+        "vel": {
+          "x": 0.5086985055654276,
+          "y": -0.9972841576359194
+        },
+        "positionErrorYd": 0.0006962067161981458,
+        "velocityErrorYdS": 0.027848268648290094
+      },
+      "oldConsumedRGRawRequest": {
+        "x": -0.5266103291713178,
+        "y": -0.04744855057501951
+      },
+      "oldConsumedRGFinalRequest": {
+        "x": -0.2935854152693194,
+        "y": -2.0868790744298176
+      },
+      "candidateFrozenOperatorRGFinalRequest": {
+        "x": -0.5266103291713178,
+        "y": -0.04744855057501951
+      }
+    },
+    "native": [
+      {
+        "input": "wz_strong-s3",
+        "arm": "baseline",
+        "initialBodyHash": "00f4d1206cfeb7f916455e86d34c6e23faefd2d128e1ccbe584790faafb990f8",
+        "natural": true,
+        "stopTime": 2.95,
+        "los": null,
+        "firstBodyContact": {
+          "t": 2.3499999999999996,
+          "defender": "DT_S",
+          "depth": -0.9814839937797402,
+          "impulse": 187.5964468677239
+        },
+        "firstGrip": {
+          "t": 2.25,
+          "depth": -1.2185355349336646,
+          "defender": "DT_S"
+        },
+        "lastRunnerDepth": -0.9869151294105336,
+        "observerNeutral": true,
+        "maxWorkResidual": 8.673062268371723e-12
+      },
+      {
+        "input": "wz_strong-s3",
+        "arm": "candidate",
+        "initialBodyHash": "00f4d1206cfeb7f916455e86d34c6e23faefd2d128e1ccbe584790faafb990f8",
+        "natural": true,
+        "stopTime": 3.35,
+        "los": {
+          "t": 2.8499999999999996,
+          "depth": 0.1357516694637937
+        },
+        "firstBodyContact": {
+          "t": 2.9,
+          "defender": "LB_M",
+          "depth": 0.2853313300628457,
+          "impulse": 207.33138626112907
+        },
+        "firstGrip": {
+          "t": 2.8,
+          "depth": -0.0232603280392496,
+          "defender": "LB_M"
+        },
+        "lastRunnerDepth": 0.6503471683858635,
+        "observerNeutral": true,
+        "maxWorkResidual": 7.410072555558145e-12
+      },
+      {
+        "input": "wz_strong-s3-mirror",
+        "arm": "baseline",
+        "initialBodyHash": "8cb7114c59f0e2b7d74dc113d4edbc9686019ba9c25a384110ffd4b51c881b84",
+        "natural": true,
+        "stopTime": 4.1,
+        "los": {
+          "t": 2.65,
+          "depth": 0.15403151701409
+        },
+        "firstBodyContact": {
+          "t": 3.9,
+          "defender": "FS",
+          "depth": 5.222812839753175,
+          "impulse": 88.60884958670192
+        },
+        "firstGrip": {
+          "t": 2.8,
+          "depth": 0.7242691794127651,
+          "defender": "DE_S"
+        },
+        "lastRunnerDepth": 5.731957179577904,
+        "observerNeutral": null,
+        "maxWorkResidual": 1.113420466936077e-11
+      },
+      {
+        "input": "wz_strong-s3-mirror",
+        "arm": "candidate",
+        "initialBodyHash": "8cb7114c59f0e2b7d74dc113d4edbc9686019ba9c25a384110ffd4b51c881b84",
+        "natural": true,
+        "stopTime": 3.05,
+        "los": {
+          "t": 2.5,
+          "depth": 0.002779053485078009
+        },
+        "firstBodyContact": {
+          "t": 2.5999999999999996,
+          "defender": "LB_S",
+          "depth": 0.3622992990772502,
+          "impulse": 204.5286076841321
+        },
+        "firstGrip": {
+          "t": 2.55,
+          "depth": 0.21127554089125056,
+          "defender": "LB_S"
+        },
+        "lastRunnerDepth": 0.9827819466940895,
+        "observerNeutral": null,
+        "maxWorkResidual": 7.467804152838653e-12
+      },
+      {
+        "input": "iz_strong-s3",
+        "arm": "baseline",
+        "initialBodyHash": "00f4d1206cfeb7f916455e86d34c6e23faefd2d128e1ccbe584790faafb990f8",
+        "natural": true,
+        "stopTime": 4,
+        "los": {
+          "t": 2.65,
+          "depth": 0.004674501756944949
+        },
+        "firstBodyContact": {
+          "t": 3.1999999999999997,
+          "defender": "DT_S",
+          "depth": 3.173559686149666,
+          "impulse": 226.0685937320418
+        },
+        "firstGrip": {
+          "t": 2.8499999999999996,
+          "depth": 1.101591953525535,
+          "defender": "LB_M"
+        },
+        "lastRunnerDepth": 5.317657526010144,
+        "observerNeutral": null,
+        "maxWorkResidual": 1.0109246773026825e-11
+      },
+      {
+        "input": "iz_strong-s3",
+        "arm": "candidate",
+        "initialBodyHash": "00f4d1206cfeb7f916455e86d34c6e23faefd2d128e1ccbe584790faafb990f8",
+        "natural": true,
+        "stopTime": 4,
+        "los": {
+          "t": 2.65,
+          "depth": 0.004674501756944949
+        },
+        "firstBodyContact": {
+          "t": 3.1999999999999997,
+          "defender": "DT_S",
+          "depth": 3.173559686149666,
+          "impulse": 226.0685937320418
+        },
+        "firstGrip": {
+          "t": 2.8499999999999996,
+          "depth": 1.101591953525535,
+          "defender": "LB_M"
+        },
+        "lastRunnerDepth": 5.317657526010144,
+        "observerNeutral": null,
+        "maxWorkResidual": 1.0109246773026825e-11
+      }
+    ],
+    "mirrorDiagnosis": [
+      {
+        "arm": "baseline",
+        "positiveTeammateBodyContacts": 0,
+        "allLineSupportUp": true,
+        "climbEvents": [
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 1,
+            "b": 17,
+            "pos": {
+              "x": 39.98,
+              "y": 29.82
+            },
+            "note": "secured DT_S; LG stays"
+          }
+        ],
+        "newBackerContacts": [
+          {
+            "t": 1.8,
+            "type": "block_contact",
+            "a": 1,
+            "b": 17,
+            "pos": {
+              "x": 40.79094447762589,
+              "y": 30.756036023806665
+            },
+            "note": "run"
+          }
+        ]
+      },
+      {
+        "arm": "candidate",
+        "positiveTeammateBodyContacts": 0,
+        "allLineSupportUp": true,
+        "climbEvents": [
+          {
+            "t": 0.9,
+            "type": "block_climb",
+            "a": 4,
+            "b": 17,
+            "pos": {
+              "x": 39.86,
+              "y": 28.49
+            },
+            "note": "secured DT_S; LT stays"
+          }
+        ],
+        "newBackerContacts": []
+      }
+    ],
+    "cost": {
+      "kind": "uninstrumented helper-only same-machine alternating repeated calls, not net native runtime",
+      "old": {
+        "medianNsPerCall": 48.857850000000546,
+        "p90NsPerCall": 81.32086000000015,
+        "worstNsPerCall": 81.32086000000015,
+        "repetitions": 9,
+        "callsPerRep": 100000
+      },
+      "candidate": {
+        "medianNsPerCall": 318.1277799999998,
+        "p90NsPerCall": 514.4463999999999,
+        "worstNsPerCall": 514.4463999999999,
+        "repetitions": 9,
+        "callsPerRep": 100000
+      },
+      "sink": 508698.5055708527
+    },
+    "files": {
+      "src/sim/called-motion.ts": "b47752aa75b3479a5c025962184bb3023a6f9699bbc39cef1fd2ff26afaf4492",
+      "src/sim/playsim.ts": "9c1e8182bddc44f6e57ad3738f502df9e08409c93f52860e6c1a5ae4d880f900",
+      "test/called-motion.test.ts": "20dae9f9ea2b91c80116ea244139a67cf5394043d8b333accb9a52b2a24ac503",
+      "test/fixtures/announced-motion.json": "d0e4514e865bbb49c7fd2612f09be4c7ab8c8f42db019536d78269b238b664f4"
+    }
+  },
+  "sourceCompatibility": {
+    "nativeTestedHelperSha256": "9a0ce4cfa8cf32325f273d3849ec6ec0f393942ea1629e7f057666b60c1b93f3",
+    "undefinedAnnotationHelperSha256": "280e0683127293c45fb2fa58a5af5c7c4949f59a7b857729b602285887778ebc",
+    "finalHelperSha256": "b47752aa75b3479a5c025962184bb3023a6f9699bbc39cef1fd2ff26afaf4492",
+    "annotationOnlyEmittedJavaScriptIdentical": true,
+    "timingChange": "ordinary .05 controller interval selects held acceleration; picture age only integrates it; all native teammate ages .05 so arguments and results unchanged",
+    "nativeCompatibility": true
+  },
+  "rootSourceCompatibility": {
+    "files": {
+      "src/sim/called-motion.ts": {
+        "candidate": "b47752aa75b3479a5c025962184bb3023a6f9699bbc39cef1fd2ff26afaf4492",
+        "staged": "b47752aa75b3479a5c025962184bb3023a6f9699bbc39cef1fd2ff26afaf4492"
+      },
+      "src/sim/playsim.ts": {
+        "candidate": "a9b690f2352c52283d273801fce77fd502fd4fd7f30082cace204e66c9070f62",
+        "staged": "9c1e8182bddc44f6e57ad3738f502df9e08409c93f52860e6c1a5ae4d880f900"
+      },
+      "test/called-motion.test.ts": {
+        "candidate": "20dae9f9ea2b91c80116ea244139a67cf5394043d8b333accb9a52b2a24ac503",
+        "staged": "20dae9f9ea2b91c80116ea244139a67cf5394043d8b333accb9a52b2a24ac503"
+      },
+      "test/fixtures/announced-motion.json": {
+        "candidate": "d0e4514e865bbb49c7fd2612f09be4c7ab8c8f42db019536d78269b238b664f4",
+        "staged": "d0e4514e865bbb49c7fd2612f09be4c7ab8c8f42db019536d78269b238b664f4"
+      }
+    },
+    "playSimEmittedJavaScriptEqual": true,
+    "helperEqual": true
+  },
+  "provenance": {
+    "command": "PATH=/workspace/.tools/node22/node-v22.23.3-linux-x64/bin:$PATH node --import tsx out/loaded-movement-audit/candidate/native.ts",
+    "launcher": "direct Node/tsx, not baseline launcher",
+    "runtime": {
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "execPath": "/workspace/.tools/node22/node-v22.23.3-linux-x64/bin/node"
+    },
+    "baselineProfileHash": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+    "knownBaselineAmbient": {
+      "ANCHOR_SPLIT": null,
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": null,
+      "CLIMB_PLAN": null,
+      "DL_FIGHT": null,
+      "DL_FLOW": null,
+      "DL_HANDS": null,
+      "FLOW_READ": null,
+      "FLOW_RELEASE": null,
+      "GAIT_STEP": null,
+      "HAND_FIGHT": null,
+      "HAND_MOTOR": null,
+      "HOLD_SUBSTEPS": null,
+      "IN_STRIDE_CATCH": null,
+      "KEEPER_TORSO": null,
+      "LB_PLAN": null,
+      "LEG_BRACE": null,
+      "LEVER_FACING": null,
+      "LIVE_AIM": null,
+      "LIVE_GAPS": null,
+      "PASS_SINK": null,
+      "PULL_CUE": null,
+      "PULL_PLAN": null,
+      "PULL_READ": null,
+      "PULL_STEP": null,
+      "REACH_CONTACT": null,
+      "READ_EYES": null,
+      "READ_RISK_TRACE": null,
+      "RUN_ANCHOR": null,
+      "RUN_CONTACT_COMPONENTS": null,
+      "RUN_CONTACT_TRACK": null,
+      "RUN_HANDS": null,
+      "RUN_READ": null,
+      "RUN_READ_TURN": null,
+      "SCRAPE": null,
+      "SHED_PHYSICAL": null,
+      "STALK_CLAIM": null,
+      "STRETCH_MESH": null,
+      "STRETCH_REACH": null,
+      "TACKLE_ROLL": null,
+      "TACKLE_TOUCH": null,
+      "THREAT_READ": null,
+      "WRAP_BIND": null,
+      "ZONE_FLOW": null
+    },
+    "currentAllKnownUnset": true,
+    "moduleReferences": {
+      "ANCHOR_SPLIT": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 629,
+          "source": "const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';"
+        }
+      ],
+      "CF_FLOW": [
+        {
+          "file": "src/sim/counterfactual.ts",
+          "line": 5,
+          "source": "process.env.CF_FLOW === 'hold' || process.env.CF_FLOW === 'over' ? process.env.CF_FLOW : null;"
+        }
+      ],
+      "CLIMB_INTERCEPT": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 760,
+          "source": "const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';"
+        }
+      ],
+      "CLIMB_PLAN": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 757,
+          "source": "const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';"
+        }
+      ],
+      "DL_FIGHT": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 647,
+          "source": "const DL_FIGHT = process.env.DL_FIGHT === '1';"
+        }
+      ],
+      "DL_FLOW": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 639,
+          "source": "const DL_FLOW = process.env.DL_FLOW !== '0';"
+        }
+      ],
+      "DL_HANDS": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 643,
+          "source": "const DL_HANDS = process.env.DL_HANDS === '1';"
+        }
+      ],
+      "FLOW_READ": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 137,
+          "source": "const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;"
+        }
+      ],
+      "FLOW_RELEASE": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 751,
+          "source": "const FLOW_RELEASE = process.env.FLOW_RELEASE !== '0';"
+        }
+      ],
+      "GAIT_STEP": [
+        {
+          "file": "src/physics/kinematics.ts",
+          "line": 94,
+          "source": "const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);"
+        }
+      ],
+      "HAND_FIGHT": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 957,
+          "source": "const HAND_FIGHT = process.env.HAND_FIGHT === '1';"
+        }
+      ],
+      "HAND_MOTOR": [
+        {
+          "file": "src/physics/world.ts",
+          "line": 252,
+          "source": "const HAND_MOTOR = process.env.HAND_MOTOR === '1';"
+        }
+      ],
+      "HOLD_SUBSTEPS": [
+        {
+          "file": "src/physics/world.ts",
+          "line": 250,
+          "source": "const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);"
+        }
+      ],
+      "IN_STRIDE_CATCH": [
+        {
+          "file": "src/sim/behaviors/receiver.ts",
+          "line": 283,
+          "source": "const IN_STRIDE_CATCH = process.env.IN_STRIDE_CATCH === '1';"
+        }
+      ],
+      "KEEPER_TORSO": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 754,
+          "source": "const KEEPER_TORSO = process.env.KEEPER_TORSO !== '0';"
+        }
+      ],
+      "LB_PLAN": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 131,
+          "source": "const LB_PLAN = process.env.LB_PLAN !== '0';"
+        }
+      ],
+      "LEG_BRACE": [
+        {
+          "file": "src/physics/world.ts",
+          "line": 254,
+          "source": "const LEG_BRACE = process.env.LEG_BRACE === '1';"
+        }
+      ],
+      "LEVER_FACING": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 650,
+          "source": "const LEVER_FACING = process.env.LEVER_FACING !== '0';"
+        }
+      ],
+      "LIVE_AIM": [
+        {
+          "file": "src/sim/behaviors/carrier.ts",
+          "line": 47,
+          "source": "if (!opts.aim || !opts.aimGap || process.env.LIVE_AIM === '0') return opts.aim;"
+        }
+      ],
+      "LIVE_GAPS": [
+        {
+          "file": "src/sim/live-gaps.ts",
+          "line": 25,
+          "source": "export const LIVE_GAPS = process.env.LIVE_GAPS !== '0';"
+        }
+      ],
+      "PASS_SINK": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 645,
+          "source": "const PASS_SINK = process.env.PASS_SINK === '1';"
+        }
+      ],
+      "PULL_CUE": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 143,
+          "source": "const PULL_CUE = process.env.PULL_CUE === '1';"
+        }
+      ],
+      "PULL_PLAN": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 134,
+          "source": "const PULL_PLAN = process.env.PULL_PLAN === '1';"
+        }
+      ],
+      "PULL_READ": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 140,
+          "source": "const PULL_READ = process.env.PULL_READ !== '0';"
+        }
+      ],
+      "PULL_STEP": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 36,
+          "source": "const PULL_STEP = process.env.PULL_STEP === '1';"
+        }
+      ],
+      "REACH_CONTACT": [
+        {
+          "file": "src/sim/tackle.ts",
+          "line": 66,
+          "source": "const REACH_CONTACT = process.env.REACH_CONTACT === '1';"
+        }
+      ],
+      "READ_EYES": [
+        {
+          "file": "src/sim/run-read.ts",
+          "line": 42,
+          "source": "const READ_EYES = process.env.READ_EYES !== '0';"
+        }
+      ],
+      "READ_RISK_TRACE": [
+        {
+          "file": "src/sim/run-read.ts",
+          "line": 117,
+          "source": "const trace = runReadObservers.has(sim) && process.env.READ_RISK_TRACE === '1';"
+        }
+      ],
+      "RUN_ANCHOR": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 660,
+          "source": "const ANCHOR = process.env.RUN_ANCHOR !== '0';"
+        }
+      ],
+      "RUN_CONTACT_COMPONENTS": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 636,
+          "source": "const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';"
+        }
+      ],
+      "RUN_CONTACT_TRACK": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 634,
+          "source": "const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';"
+        }
+      ],
+      "RUN_HANDS": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 641,
+          "source": "const RUN_HANDS = process.env.RUN_HANDS === '1';"
+        }
+      ],
+      "RUN_READ": [
+        {
+          "file": "src/sim/run-read.ts",
+          "line": 35,
+          "source": "export const RUN_READ = process.env.RUN_READ === '1';"
+        }
+      ],
+      "RUN_READ_TURN": [
+        {
+          "file": "src/sim/run-read.ts",
+          "line": 39,
+          "source": "export const RUN_READ_TURN = process.env.RUN_READ_TURN === '1';"
+        }
+      ],
+      "SCRAPE": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 128,
+          "source": "const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ !== '0';"
+        }
+      ],
+      "SHED_PHYSICAL": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 653,
+          "source": "const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';"
+        }
+      ],
+      "STALK_CLAIM": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 748,
+          "source": "const STALK_CLAIM = process.env.STALK_CLAIM !== '0';"
+        }
+      ],
+      "STRETCH_MESH": [
+        {
+          "file": "src/sim/assign.ts",
+          "line": 158,
+          "source": "const STRETCH_MESH = process.env.STRETCH_MESH !== '0';"
+        }
+      ],
+      "STRETCH_REACH": [
+        {
+          "file": "src/sim/engagement.ts",
+          "line": 632,
+          "source": "const STRETCH_REACH = process.env.STRETCH_REACH !== '0';"
+        }
+      ],
+      "TACKLE_ROLL": [
+        {
+          "file": "src/sim/tackle.ts",
+          "line": 60,
+          "source": "const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';"
+        }
+      ],
+      "TACKLE_TOUCH": [
+        {
+          "file": "src/sim/tackle.ts",
+          "line": 69,
+          "source": "const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';"
+        }
+      ],
+      "THREAT_READ": [
+        {
+          "file": "src/sim/run-fits.ts",
+          "line": 128,
+          "source": "const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ !== '0';"
+        }
+      ],
+      "WRAP_BIND": [
+        {
+          "file": "src/sim/tackle.ts",
+          "line": 63,
+          "source": "const WRAP_BIND = process.env.WRAP_BIND === '1';"
+        }
+      ],
+      "ZONE_FLOW": [
+        {
+          "file": "src/sim/behaviors/blocking.ts",
+          "line": 763,
+          "source": "const ZONE_FLOW = process.env.ZONE_FLOW !== '0';"
+        }
+      ]
+    },
+    "baselineEffectiveFlags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "nativeElapsedMs": [
+      {
+        "input": "wz_strong-s3",
+        "arm": "baseline",
+        "ms": 1122.5734889999999
+      },
+      {
+        "input": "wz_strong-s3",
+        "arm": "candidate",
+        "ms": 579.7533960000001
+      },
+      {
+        "input": "wz_strong-s3-mirror",
+        "arm": "baseline",
+        "ms": 490.6643820000004
+      },
+      {
+        "input": "wz_strong-s3-mirror",
+        "arm": "candidate",
+        "ms": 229.90450200000032
+      },
+      {
+        "input": "iz_strong-s3",
+        "arm": "baseline",
+        "ms": 278.26605800000016
+      },
+      {
+        "input": "iz_strong-s3",
+        "arm": "candidate",
+        "ms": 337.1552479999991
+      }
+    ],
+    "mirrorElapsedMs": [
+      {
+        "arm": "baseline",
+        "ms": 822.913107
+      },
+      {
+        "arm": "candidate",
+        "ms": 551.0554649999999
+      }
+    ],
+    "limits": [
+      "Native original receipts captured only a partial environment-name filter, yielding flags={}; they were NOT baseline-launcher-pinned.",
+      "Current inherited environment is checked only for the 44 known baseline keys; no unrelated environment values were inspected.",
+      "Reconstruction assumes inherited environment stayed unchanged between native collection and this audit; current absence cannot independently reconstruct an unrecorded historical environment.",
+      "Node runtime is pinned by the explicit PATH in recorded commands; elapsed native calls include diagnostic instrumentation and are not repeated uninstrumented performance benchmarks."
+    ],
+    "reconstructedModuleDefaultFlags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "defaultMatchesBaselineProfile": {
+      "count": 44,
+      "all": true,
+      "differences": []
+    }
+  },
+  "focused": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/announced-motion",
+    "commit": "24ff632b142183d295068c3720b5990bf8c956f8",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "89dfe6ea4b1eb08754895b43e0c0dcadaa1ae38b1c7425cb9d1d70bd43224fea",
+    "validationSha256": "6cd426112d1e937130ed271e2196e2e6d1de8242d31837c62521daf78bdb34a2",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-20T20:43:37.702Z",
+    "commands": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/called-motion.test.ts",
+          "test/zone-track.test.ts",
+          "test/joint-spacing.test.ts",
+          "test/spacing-yield.test.ts",
+          "test/spacing-residual-motion.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 4.959618988
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-20T20:43:42.665Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "typecheck": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/announced-motion",
+    "commit": "24ff632b142183d295068c3720b5990bf8c956f8",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "89dfe6ea4b1eb08754895b43e0c0dcadaa1ae38b1c7425cb9d1d70bd43224fea",
+    "validationSha256": "6cd426112d1e937130ed271e2196e2e6d1de8242d31837c62521daf78bdb34a2",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-20T20:43:37.715Z",
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 23.579387369
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-20T20:44:01.298Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "nativeInputManifest": {
+    "generation": {
+      "offenseRosterSeed": 31,
+      "defenseRosterSeed": 32,
+      "strength": 0.55,
+      "formation": "ace_11",
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover3",
+      "los": 40,
+      "ballY": "CENTER_Y",
+      "firstDownX": 50
+    },
+    "cases": [
+      {
+        "run": "wz_strong",
+        "seed": 3,
+        "flip": false
+      },
+      {
+        "run": "wz_strong",
+        "seed": 3,
+        "flip": true
+      },
+      {
+        "run": "iz_strong",
+        "seed": 3,
+        "flip": false
+      }
+    ],
+    "operator": "World step endpoint; positive opposing body impulse, live grasp joint and LOS separately; supplemental O/O positive impulses and block_climb/contact events; no proximity substitute"
+  },
+  "assets": [
+    {
+      "path": "out/loaded-movement-audit/candidate/native.ts",
+      "bytes": 5162,
+      "sha256": "b1c13d71ad4353db740c42cc9be581f128ec815a8a1036deac333881844bf086"
+    },
+    {
+      "path": "out/loaded-movement-audit/candidate/native.json",
+      "bytes": 1076586,
+      "sha256": "f47026510d28603795d1f437920dcb9d8c40556bf943ec4ac4a046e3eb42155d"
+    },
+    {
+      "path": "out/loaded-movement-audit/candidate/mirror-diagnosis.ts",
+      "bytes": 6417,
+      "sha256": "8d394b63c71bbdf8d541ba6632b3afef96c7c97edea31b0ddd39d6be0e4cec72"
+    },
+    {
+      "path": "out/loaded-movement-audit/candidate/mirror-diagnosis.json",
+      "bytes": 925993,
+      "sha256": "4f91ffe4ff8d23c317bc3e45358d1e54154e04847668af383bd9e1629c818a30"
+    },
+    {
+      "path": "out/loaded-movement-audit/candidate/compact-evidence.ts",
+      "bytes": 3504,
+      "sha256": "523966aa9efca22d2c817e4cc91530b3d53e233e0c888fb7cbac9b8c6a139966"
+    },
+    {
+      "path": "out/loaded-movement-audit/candidate/announced-motion.patch",
+      "bytes": 23930,
+      "sha256": "6990d9af1b3b0dd707181ddf388c6f2ec9bb5f6af7765ccca8adc3ce5d2fc429"
+    }
+  ],
+  "reproduction": "docs/archive/research/announced-motion/README.md; pure operator9tests in test/called-motion.test.ts"
+}
