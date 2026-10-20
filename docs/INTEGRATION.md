@@ -58,6 +58,11 @@ matches publication; source/tests/settings/tooling exactly match passing
 freeze7d5da0c7, source12a5c880. [Actual merged-pin proof](../data/reviews/current/pr189-merge.json).
 No unchanged code-suite or game rerun merely to publish/merge.
 
+All20 completed source/reference PR boundaries169–188 are closed as incorporated
+by reviewed extraction, with original exact heads, comments, branches and adverse
+evidence preserved. [Disposition ledger](../data/reviews/current/pr189-dispositions.json).
+No legacy/experimental PR was closed and no branch was deleted.
+
 Included169/171/174(172once)/175/176/177/178/180/181/182/183/184/185/186/188;
 170/173/179/187 evidence/docs are retained. Exact new owner-approved shared
 seams, fresh175/176 independent reviews, explicit user180motor approval and
