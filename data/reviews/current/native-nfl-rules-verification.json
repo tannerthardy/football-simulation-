@@ -1,0 +1,177 @@
+{
+  "schema": "native-nfl-rules-verification-v1",
+  "status": "PASS; prepared for Integration review, not merged",
+  "rulesEdition": "NFL-2026",
+  "acceptedParent": "2c98bed94adad8087c65f381d4090444ad283985",
+  "testedCommit": "ad494e5ca952ee237708f8dd13422025cf4bb3ca",
+  "sourceSha256": "2b5da9fa83788c318283dbe7fdbd8a1283cd6595d3be5e26a0a1387c54af6db6",
+  "validationSha256": "1a2ea81e5a5c5cd16894ffdd6baa78e9bc09a79b98802e13be1b1b7c7d4a1e75",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "registeredFlags": 44,
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "inputsUnchanged": true,
+  "skippedCommands": [],
+  "typescript": {
+    "passed": 2354,
+    "filesPassed": 210,
+    "failed": 0,
+    "skipped": 0
+  },
+  "python": {
+    "passed": 145,
+    "failed": 0
+  },
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 10.097917783
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 12.611816266000002
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 231.758363582
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.0567362730000167
+    }
+  ],
+  "elapsedCommandSeconds": 255.52483390400002,
+  "combinedVerificationAttempts": 1,
+  "newFocusedTests": 106,
+  "standaloneGameCampaigns": 0,
+  "newTrackingQueries": 0,
+  "existingSuiteGameAssertions": "Executed normally in test:all; no additional game campaign.",
+  "independentReviews": [
+    {
+      "reviewer": "official_nfl_rules",
+      "kind": "read-only substantive review",
+      "commit": "ad494e5ca952ee237708f8dd13422025cf4bb3ca",
+      "disposition": "ACCEPT within delivered bounded scopes; previous blockers corrected; no full-NFL or unsupported-Try/COP certification"
+    },
+    {
+      "reviewer": "rules_runtime_inventory",
+      "kind": "read-only native/caller composition review",
+      "disposition": "No additional score/down/possession blocker in corrected bounded paths; multi-possession stats remain explicitly limited"
+    }
+  ],
+  "delivered": [
+    "Conservative native prethrow loaded-block OPI with per-pair initial-line provenance",
+    "Native second and post-possession forward-pass calls",
+    "Fourth-down/late-half/Try fumble advancement and signed field-origin boundary rulings",
+    "Plural called fouls/evidence, supported Rule14 choices and official Game enforcement",
+    "Supported Try, untimed-down and regained-possession callers"
+  ],
+  "limitations": [
+    "No new native DPI, illegal-contact, roughing, blindside/back/low-block or tackle-anatomy detector",
+    "Legacy sampled holding legality and postcatch enforcement are not certified",
+    "Conservative OPI subset; fast/substep, general body-only and in-flight branches unqualified",
+    "Returned-behind-line helper has no native crossing-history producer; grounding/beyond-line release absent",
+    "Complex clean-hands/multifoul/COP/carryover and other Try branches explicitly unsupported",
+    "Unknown end-zone-origin impetus/momentum and full airborne loose-ball OOB semantics unqualified",
+    "Multi-possession team-turnover and defensive-return fumble player statistics remain reduced",
+    "General clocks/runoff, eligibility, catch process, presnap/free-play and special teams remain partial"
+  ],
+  "protectedFiles": {
+    "src/game/game.ts": "b4e486c0315fbd74b9aa8181569897cba7f62dc678d882f6c7fef7b99d050714",
+    "src/game/penalty-enforcement.ts": "3272daac95537badb5b3dc56ef875415aa6ccbb062eb50670135e79fbc836e3f",
+    "src/sim/ball-rules.ts": "314f4d37169a7450933ba5e345f0eb545daf4c72db8bae9313cd7f2ab78cdad7",
+    "src/sim/engagement.ts": "69bf570944c5b0e1c2594431b3bd4a8698c6c376c48c69a4ee238590638197af",
+    "src/sim/pass-interference.ts": "edcb9c4b09b16d64bc2e3eb67182d0a9b267c2eff7e3472ffcbce77098390992",
+    "src/sim/playsim.ts": "b09dbebe70c722251d13fe2368cc6e68832280581acb98de419a8baa9447727f",
+    "src/sim/types.ts": "df21f249a935b9b8707d556160822bf5eba3e3ee8e063a501b12abc8d79d5264",
+    "test/ball-rules.test.ts": "6f46b71e1746afd925dfe070d6f9093c79fa581e826753b8e49030c6dfe5ed09",
+    "test/native-penalty-game.test.ts": "b30a624d80ae43dea705328ebd8dd476662aecca3dbbd5969fc9d50344cf75e6",
+    "test/penalty-enforcement.test.ts": "26797a3af5737fe7344f916de72ba1981a91962bf4839a0439b61c1dc230968d",
+    "test/prethrow-opi.test.ts": "8cdeedbc38a9fd8d352ae34fc44d1258b02b1502e79fce7fee70527c1caa545c"
+  },
+  "artifacts": {
+    "combined.json": {
+      "sha256": "7a07144581fdd49c1955f57b5b8525f8bc295fcd21da712c45334b7c19ab6c08"
+    },
+    "combined.log": {
+      "sha256": "6843ec7973be7d97d9b41e70f1fef2a6a7559895d534281bd98d2174c2594c7c"
+    }
+  },
+  "publicationContract": "Only documentation/evidence may follow this tested commit. Reuse exact compatible source/test/settings receipt; Integration owns changed composition and adoption. Develop remains unchanged."
+}

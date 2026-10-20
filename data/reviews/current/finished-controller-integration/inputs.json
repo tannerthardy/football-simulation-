@@ -1,0 +1,144 @@
+{
+  "schema": "matched-controller-game-inputs-v1",
+  "node": "v22.23.3",
+  "preparedBeforeOutcomes": true,
+  "previousAccepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "arms": {
+    "baseline": {
+      "root": "/workspace/football-big-game-baseline",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571"
+    },
+    "candidate": {
+      "root": "/workspace/football-finished-controller-integration",
+      "commit": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+      "sourceSha256": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9"
+    }
+  },
+  "frozenInputPath": "/workspace/football-big-game-baseline/data/reviews/current/accepted-controller-game-inputs.json",
+  "frozenInputSha256": "09c3796d27265a9e3218e3686a919863c02ded465af10de3815b4e04743d527b",
+  "fixtures": [
+    {
+      "id": "zone-reference",
+      "rosterSeeds": [
+        31,
+        32
+      ],
+      "seed": 701,
+      "home": [
+        "wide-zone",
+        "4-3"
+      ],
+      "away": [
+        "west-coast",
+        "nickel-heavy"
+      ],
+      "scope": "Known Ace roster seeds; normal full-game coaching and fatigue.",
+      "teamsSha256": "88bcfcb03db4c2e68cb8a09943f60e65ce46982a0bb999906f631ff1c18733a1"
+    },
+    {
+      "id": "spread-air",
+      "rosterSeeds": [
+        27101,
+        27102
+      ],
+      "seed": 702,
+      "home": [
+        "spread",
+        "3-4"
+      ],
+      "away": [
+        "air-raid",
+        "nickel-heavy"
+      ],
+      "scope": "Fresh spread and pass-heavy offenses.",
+      "teamsSha256": "bbb46bb6b4af3eeb0ebcbf97c032b887e710744284daaf0c595b1148a22f8eac"
+    }
+  ],
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "settings": {
+    "record": true,
+    "recordLevel": "full",
+    "handContact": "center"
+  },
+  "budget": {
+    "gamesPerArm": 2,
+    "totalGames": 4,
+    "maxGameSeconds": 120,
+    "maxCollectionSeconds": 100,
+    "maxCombinedGameSeconds": 480,
+    "maxGameSteps": 600
+  },
+  "question": "Does the exact reviewed composition complete ordinary run/pass games with coherent football, rules/stat accounting and acceptable runtime relative to previous accepted source?",
+  "limits": [
+    "Two fixed roster pairs are smoke/transfer evidence, not league-wide or NFL realism validation.",
+    "Game histories diverge; match clips by installed call/coverage/field context, not play number alone.",
+    "Official credits and raw physical film are reported separately."
+  ],
+  "tooling": {
+    "collectorSha256": "6c3f990fdba132e80e9d076322c159530e8983089ac55188535df5f7bd449ef6",
+    "supervisorSha256": "aa72b7a772c6dca48ff3c947a0356ddade80a798ee0d3a4707076f9684d12c9e"
+  },
+  "executionOrder": [
+    "candidate/zone-reference (smoke, reused)",
+    "baseline/zone-reference",
+    "baseline/spread-air",
+    "candidate/spread-air"
+  ]
+}

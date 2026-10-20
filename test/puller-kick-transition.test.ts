@@ -16,6 +16,35 @@ function stage(id:string,mirror=false){
  return sim;
 }
 describe('kick phase follows a personally read end after the flat track',()=>{
+ it.each([false,true])('logs only an acquired inside crossing before contact, reflected=%s',mirror=>{
+  for(const inside of [false,true]){
+   const sim=stage('K03',mirror),a=sim.slot('LG')!,controller=a.behavior as RunBlocker;
+   controller.update(a,sim);
+   sim.t=2;Reflect.set(controller,'pullIdx',2);Reflect.set(controller,'pullCleared',true);
+   const side=sim.offAlign.strongSign*(sim.offCall.run!.direction==='strong'?1:-1);
+   a.body.pos={x:38.85,y:sim.ballY};a.body.vel={x:0,y:0};
+   const target=controller.plan.target!,see=sim.see.bind(sim);
+   // Private live geometry contradicts the delivered picture and is out of
+   // physical reach. Only the already acquired cue can select this technique.
+   target.body.pos={x:46,y:a.pos.y+(inside?side:-side)*3};
+   sim.see=(observer,other,scale)=>{
+    const seen=see(observer,other,scale);
+    return observer===a?{...seen,pos:other===target
+     ?{x:sim.los-.1,y:a.pos.y+(inside?-side:side)*.5}
+     :{x:44,y:40},vel:{x:0,y:0}}:seen;
+   };
+   const before=structuredClone(a.body),rng=JSON.stringify(sim.rng);
+   controller.update(a,sim);
+   expect(a.body).toEqual(before);expect(JSON.stringify(sim.rng)).toBe(rng);
+   expect(a.engagement).toBeNull();expect(sim.world.joints).toHaveLength(0);
+   const log=sim.events.find(e=>e.type==='block_log');
+   expect(a.tags.has('block-log')).toBe(inside);
+   if(inside){
+    expect(log?.note).toBe('kick target crossed inside shoulder');
+    expect(controller.plan.drive.y*side).toBeLessThan(0);
+   }else expect(log).toBeUndefined();
+  }
+ });
  it.each([false,true])('fits an upfield end after clearance, reflected=%s',mirror=>{
   const sim=stage('K03'),a=sim.slot('LG')!,controller=a.behavior as RunBlocker;
   controller.update(a,sim); // Initialize home stance before restoring the saved pull phase.
@@ -30,6 +59,8 @@ describe('kick phase follows a personally read end after the flat track',()=>{
   const before=structuredClone(a.body);const next=controller.update(a,sim);
   expect(next.facing).toBeDefined();expect(next.vel.x).toBeGreaterThan(0);expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
   Reflect.set(controller,'pullCleared',false);Reflect.set(controller,'pullIdx',0);
-  expect(controller.update(a,sim).facing).toBeUndefined();
+  const clearance=controller.update(a,sim);
+  expect(clearance.facing).toBe(0); // Square depth clearance, not an early strike.
+  expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
  });
 });

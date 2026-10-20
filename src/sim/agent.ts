@@ -35,7 +35,7 @@ export interface Behavior {
   calledMotion?(): Vec2 | null;
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
-  contactMotion?(a: Agent): Vec2 | null;
+  contactMotion?(a: Agent, work?: 'reach' | 'runoff'): Vec2 | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';

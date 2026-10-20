@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "source": "BDB2025 / season2022 week1",
+  "selection": "Exact first12 eligible runs from existing movement-continuity receipt; selection originally independent of outcomes. Extend these IDs to actual provider ending, retain missing/censored/no-crossing cases.",
+  "priorReceipt": {
+    "commit": "ed6ebd21911a28f07a085094c393ea2613abeb69",
+    "archiveSha256": "82d82db057a804ecdee71eba0038a17810acbea0dfb9c155941f7c649759ac60",
+    "member": "nfl-receipt.json"
+  },
+  "plays": [
+    {
+      "gameId": "2022091200",
+      "playId": "64",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "180",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "315",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "375",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "446",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "601",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "622",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "643",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "716",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "741",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "810",
+      "week": 1
+    },
+    {
+      "gameId": "2022091200",
+      "playId": "910",
+      "week": 1
+    }
+  ],
+  "sources": [
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    },
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    }
+  ],
+  "archive": {
+    "bytes": 1219840421,
+    "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view"
+  }
+}

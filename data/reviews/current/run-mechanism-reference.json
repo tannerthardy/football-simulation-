@@ -1,0 +1,1715 @@
+{
+  "schema": "run-mechanism-reference-v1",
+  "acceptedPin": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queuePin": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "purpose": "Evidence tool and selected saved-data demonstration; no controller acceptance or NFL calibration",
+  "nfl": {
+    "selectedIds": [
+      {
+        "gameId": "2022091200",
+        "playId": "64",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "180",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "315",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "375",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "446",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "601",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "622",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "643",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "716",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "741",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "810",
+        "week": 1
+      },
+      {
+        "gameId": "2022091200",
+        "playId": "910",
+        "week": 1
+      }
+    ],
+    "sourceFilePins": [
+      {
+        "file": "players.csv",
+        "bytes": 104749,
+        "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+      },
+      {
+        "file": "plays.csv",
+        "bytes": 6892353,
+        "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+      },
+      {
+        "file": "player_play.csv",
+        "bytes": 52533762,
+        "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+      },
+      {
+        "file": "tracking_week_1.csv",
+        "bytes": 971403802,
+        "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+      }
+    ],
+    "archive": {
+      "bytes": 1219840421,
+      "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+      "url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view"
+    },
+    "localRestoreCost": {
+      "archiveBytes": 1219840421,
+      "fourExtractedFileBytes": 1030934666,
+      "archivePlusFourFilesBytes": 2250775087,
+      "allNineTrackingExtractedBytes": 8111559585
+    },
+    "status": "complete",
+    "requested": 12,
+    "measured": 12,
+    "trackingGroupsAttempted": 12,
+    "exclusions": {},
+    "cacheHere": "/workspace/datasets/nfl/bdb2025/big-data-bowl-data",
+    "result": "/workspace/datasets/nfl/run-sequence-09a8780/nfl.json",
+    "summary": "data/reviews/current/run-mechanism-reference/summary.json",
+    "executionReceipt": "data/reviews/current/run-mechanism-reference/source-manifest-execution.json",
+    "acquisitionReceipt": "data/reviews/current/run-mechanism-reference/input-manifest-acquisition.json",
+    "resultSha256": "0ffa01542282b81451f0ac6ca9ea6aa594e8120ebb48ecd087495cdd4f34c8d3",
+    "elapsedSeconds": 4.986239,
+    "priorBlockedAttempt": {
+      "publicationCommit": "066add740055c6ce7900a0a7fb9b822f3f673f33",
+      "status": "blocked",
+      "requested": 12,
+      "measured": 0,
+      "trackingGroupsAttempted": 0,
+      "selectedIds": [
+        {
+          "gameId": "2022091200",
+          "playId": "64",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "180",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "315",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "375",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "446",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "601",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "622",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "643",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "716",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "741",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "810",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "910",
+          "week": 1
+        }
+      ],
+      "sourceFilePins": [
+        {
+          "file": "players.csv",
+          "bytes": 104749,
+          "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+        },
+        {
+          "file": "plays.csv",
+          "bytes": 6892353,
+          "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+        },
+        {
+          "file": "player_play.csv",
+          "bytes": 52533762,
+          "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+        },
+        {
+          "file": "tracking_week_1.csv",
+          "bytes": 971403802,
+          "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+        }
+      ],
+      "archive": {
+        "bytes": 1219840421,
+        "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+        "url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view"
+      },
+      "cacheHere": "No BDB raw/converted tracking located",
+      "existingDataHost": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
+      "downloadAttempts": [
+        {
+          "method": "HEAD",
+          "httpStatus": 403
+        },
+        {
+          "method": "GET range0-1023",
+          "result": "proxy CONNECT tunnel HTTP403",
+          "archiveBytesReceived": 0
+        }
+      ],
+      "restoredSmallPacket": {
+        "commit": "ed6ebd21911a28f07a085094c393ea2613abeb69",
+        "bytes": 382985,
+        "sha256": "82d82db057a804ecdee71eba0038a17810acbea0dfb9c155941f7c649759ac60",
+        "contents": "Existing metadata, selection/operators/results; no raw/converted NFL trajectories"
+      },
+      "nextDecision": "Execute this frozen query once on existing verified host; return compact permitted result. Alternative local restore needs reachable approved source or permitted exact four-file transfer.",
+      "localRestoreCost": {
+        "archiveBytes": 1219840421,
+        "fourExtractedFileBytes": 1030934666,
+        "archivePlusFourFilesBytes": 2250775087,
+        "allNineTrackingExtractedBytes": 8111559585
+      },
+      "executionHandoff": "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300891519"
+    },
+    "nextDecision": "Use the fixed-ID phase evidence with existing native witnesses; additional collection needs a named unresolved mechanism. No controller acceptance or pooled calibration."
+  },
+  "operators": [
+    {
+      "path": "scripts/diag/trench/run-sequence.py",
+      "bytes": 32606,
+      "sha256": "a317bc1faa905f14e9c8b861a7753a12560e25349e15c2ca2a639621c96ffacf"
+    },
+    {
+      "path": "scripts/diag/trench/native-run-sequence.py",
+      "bytes": 22898,
+      "sha256": "83bcfb8387469d091331977ce380034cc42f75503ad6c52b332eaa3f8a47fa24"
+    },
+    {
+      "path": "scripts/data/run-game-reference.py",
+      "bytes": 10854,
+      "sha256": "1ac9a35964a12e75a794d08342c6774dc28aafceb877f64208a3969505226362"
+    },
+    {
+      "path": "test/test_run_sequence.py",
+      "bytes": 16822,
+      "sha256": "3269949b9ff31c8a1ec5ff09f77d695136f2ab600ffc8241320e413b4fdd8b06"
+    },
+    {
+      "path": "config/run-sequence-reference.json",
+      "bytes": 2332,
+      "sha256": "2a51aa93e2f29d2fdb09c4e27c21f3385ceeba78765380ecaa75da5b5585ff63"
+    }
+  ],
+  "native": {
+    "evidenceCommit": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+    "sourcePR": 172,
+    "inputs": "All3 original preselected inputs,6 saved arms; no added cases/seeds/rosters",
+    "baselineSrcTree": "c4d1d5a9e7158ed2ef1abe5bb31a6e64c04a7c68",
+    "acceptedSrcTree": "c4d1d5a9e7158ed2ef1abe5bb31a6e64c04a7c68",
+    "baselineSourceEqualsAccepted": true,
+    "candidateRuntime": "859d0255fdaca7ceba26a56258c97890fe263009",
+    "examples": [
+      {
+        "id": "oz/strong/ace_12/over3/pair11/77",
+        "arms": {
+          "baseline": {
+            "producingCommit": "fabba9909451aa870036f11d2b760b18f88752ae",
+            "producingSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+            "fileSha256": "090be5f1156834409c93665701f661d34f698ef94b38644b15cbcf026d2cf78f",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "0f3a33aebca432f715d9372a95316260b6acb9dd1b7172b4a63be2e537789b96",
+            "setupSha256": "572d38fd3ba55b9199ebae8299d6ee4c416d161559305cf9881e57b94cf4b839",
+            "initialSha256": "e53ff556c8768e372c9bb3bd3e12951595f51c72137d2704ba2954983395fcee",
+            "profileSha256": "2189f953e6a2e7640591c67b3c202e9a6d2f813e20938b85ad767cb15a124f5e",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 8,
+              "nativeIntervals": 160,
+              "geometrySamples10Hz": 81,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": false,
+              "time": null,
+              "phase": "live",
+              "outcome": null,
+              "reportedGain": null
+            },
+            "firstCarrierContact": {
+              "logicalTime": 3.55,
+              "interval": [
+                3.55,
+                3.5999999999999996
+              ],
+              "completedSampleTime": 3.5999999999999996,
+              "event": {
+                "t": 3.55,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 18,
+                "pos": {
+                  "x": 45.49,
+                  "y": 16.38
+                },
+                "note": "grasp"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair11O-OG1",
+                "position": [
+                  -0.17606609212409552,
+                  21.77561844622006
+                ],
+                "velocity": [
+                  0.8616385181341879,
+                  -2.7521783536126914
+                ],
+                "displacementFromSnap": [
+                  0.37393390787590164,
+                  -3.5943815537799395
+                ]
+              },
+              "C": {
+                "id": "pair11O-OG2",
+                "position": [
+                  4.062579671976259,
+                  21.95936057847896
+                ],
+                "velocity": [
+                  -1.1336987574344042,
+                  -1.400514826397831
+                ],
+                "displacementFromSnap": [
+                  4.612579671976256,
+                  -4.710639421521041
+                ]
+              },
+              "DT_S": {
+                "id": "pair11D-EDGE1",
+                "position": [
+                  0.28202115432524266,
+                  21.034982439561425
+                ],
+                "velocity": [
+                  -0.08264954462953202,
+                  -3.3902718283134154
+                ],
+                "displacementFromSnap": [
+                  -0.6179788456747559,
+                  -3.5236894655581743
+                ],
+                "runnerSeparation": 2.6389892692179124,
+                "depthToRunner": -2.079216492828955,
+                "lateralToRunner": 1.625153266309166
+              },
+              "DT_W": {
+                "id": "pair11D-DT3",
+                "position": [
+                  -0.6692120129292434,
+                  23.704831048940814
+                ],
+                "velocity": [
+                  0.37955974432657646,
+                  -1.9921308109063447
+                ],
+                "displacementFromSnap": [
+                  -1.569212012929242,
+                  -3.741496212236612
+                ],
+                "runnerSeparation": 5.2564880152501114,
+                "depthToRunner": -3.030449660083441,
+                "lateralToRunner": 4.2950018756885555
+              },
+              "LB_W": {
+                "id": "pair11D-LB2",
+                "position": [
+                  1.1451487660564723,
+                  22.064038874947716
+                ],
+                "velocity": [
+                  0.46633117780368416,
+                  -4.828366224994213
+                ],
+                "displacementFromSnap": [
+                  -3.454851233943529,
+                  -6.611463571550907
+                ],
+                "runnerSeparation": 2.9195378585152487,
+                "depthToRunner": -1.2160888810977255,
+                "lateralToRunner": 2.654209701695457
+              },
+              "LB_M": {
+                "id": "pair11D-LB3",
+                "position": [
+                  2.4447350627253357,
+                  22.52635933136399
+                ],
+                "velocity": [
+                  1.2704201113250846,
+                  -3.041102700338762
+                ],
+                "displacementFromSnap": [
+                  -2.5552649372746643,
+                  -3.403633113632619
+                ],
+                "runnerSeparation": 3.117648479996903,
+                "depthToRunner": 0.08349741557113788,
+                "lateralToRunner": 3.1165301581117326
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          },
+          "candidate": {
+            "producingCommit": "859d0255fdaca7ceba26a56258c97890fe263009",
+            "producingSource": "573bc9cff09455aa59eccee98cfa2010fe9fcbaee133431744292bbcfde8e3fc",
+            "fileSha256": "8e0e2061630c59beb1f6c9a22edbb53d8f943bd72c15853e0e84ab3bffa50276",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "0f3a33aebca432f715d9372a95316260b6acb9dd1b7172b4a63be2e537789b96",
+            "setupSha256": "572d38fd3ba55b9199ebae8299d6ee4c416d161559305cf9881e57b94cf4b839",
+            "initialSha256": "e53ff556c8768e372c9bb3bd3e12951595f51c72137d2704ba2954983395fcee",
+            "profileSha256": "2189f953e6a2e7640591c67b3c202e9a6d2f813e20938b85ad767cb15a124f5e",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 8,
+              "nativeIntervals": 160,
+              "geometrySamples10Hz": 81,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": false,
+              "time": null,
+              "phase": "live",
+              "outcome": null,
+              "reportedGain": null
+            },
+            "firstCarrierContact": {
+              "logicalTime": 2.5,
+              "interval": [
+                2.5,
+                2.55
+              ],
+              "completedSampleTime": 2.55,
+              "event": {
+                "t": 2.5,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 13,
+                "pos": {
+                  "x": 40.31,
+                  "y": 21.48
+                },
+                "note": "body collision"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair11O-OG1",
+                "position": [
+                  0.6935319414592058,
+                  21.205812231912574
+                ],
+                "velocity": [
+                  1.2815225395159566,
+                  -2.8239176459597553
+                ],
+                "displacementFromSnap": [
+                  1.243531941459203,
+                  -4.164187768087427
+                ]
+              },
+              "C": {
+                "id": "pair11O-OG2",
+                "position": [
+                  4.066294662020326,
+                  21.985024133431146
+                ],
+                "velocity": [
+                  -1.1300679496532358,
+                  -1.3340397634309629
+                ],
+                "displacementFromSnap": [
+                  4.616294662020323,
+                  -4.6849758665688555
+                ]
+              },
+              "DT_S": {
+                "id": "pair11D-EDGE1",
+                "position": [
+                  1.2405301159889532,
+                  20.5540717660369
+                ],
+                "velocity": [
+                  0.7135165304042068,
+                  -3.3262609746753617
+                ],
+                "displacementFromSnap": [
+                  0.34053011598895466,
+                  -4.004600139082701
+                ],
+                "runnerSeparation": 0.9676391603762244,
+                "depthToRunner": -0.5440735905069829,
+                "lateralToRunner": 0.8001933971274973
+              },
+              "DT_W": {
+                "id": "pair11D-DT3",
+                "position": [
+                  -0.6375565648273636,
+                  23.523906136162594
+                ],
+                "velocity": [
+                  0.6091569343766114,
+                  -2.3076770870867325
+                ],
+                "displacementFromSnap": [
+                  -1.5375565648273621,
+                  -3.922421125014832
+                ],
+                "runnerSeparation": 4.481067924706906,
+                "depthToRunner": -2.4221602713232997,
+                "lateralToRunner": 3.770027767253193
+              },
+              "LB_W": {
+                "id": "pair11D-LB2",
+                "position": [
+                  1.2646671127518871,
+                  22.20700149083472
+                ],
+                "velocity": [
+                  0.42586466783421717,
+                  -4.582980828572537
+                ],
+                "displacementFromSnap": [
+                  -3.3353328872481143,
+                  -6.468500955663902
+                ],
+                "runnerSeparation": 2.507617816342592,
+                "depthToRunner": -0.519936593744049,
+                "lateralToRunner": 2.4531231219253193
+              },
+              "LB_M": {
+                "id": "pair11D-LB3",
+                "position": [
+                  2.351009287177625,
+                  22.583142353418918
+                ],
+                "velocity": [
+                  0.6214011939806936,
+                  -3.0921520815269856
+                ],
+                "displacementFromSnap": [
+                  -2.648990712822375,
+                  -3.346850091577693
+                ],
+                "runnerSeparation": 2.885402913956737,
+                "depthToRunner": 0.566405580681689,
+                "lateralToRunner": 2.8292639845095167
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          }
+        },
+        "firstCommonFieldDivergence": {
+          "after": {
+            "tickStart": 0.7,
+            "completed": 0.75,
+            "actorIds": [
+              "pair11O-OT4",
+              "pair11D-DT3"
+            ]
+          },
+          "intents": {
+            "tickStart": 0.7,
+            "completed": 0.75,
+            "actorIds": [
+              "pair11O-OT4"
+            ]
+          },
+          "requests": {
+            "tickStart": 1.05,
+            "completed": 1.1,
+            "actorIds": [
+              "pair11D-LB2"
+            ]
+          }
+        },
+        "rngComparisonAvailable": false,
+        "controlledInputs": {
+          "seed": 77,
+          "formation": "ace_12",
+          "run": {
+            "id": "oz_strong",
+            "name": "Outside Zone",
+            "scheme": "outsideZone",
+            "direction": "strong",
+            "aim": "C",
+            "meshTime": 1.15,
+            "pullers": [],
+            "beats": [
+              "penetrating",
+              "light-box"
+            ]
+          },
+          "flip": false,
+          "front": "over",
+          "coverage": "cover3"
+        },
+        "savedFiles": {
+          "baseline": "data/reviews/current/zone-contact-execution/strong-baseline.json.gz",
+          "candidate": "data/reviews/current/zone-contact-execution/strong-candidate.json.gz"
+        }
+      },
+      {
+        "id": "oz/strong/ace_12/tite4/pair11/77",
+        "arms": {
+          "baseline": {
+            "producingCommit": "fabba9909451aa870036f11d2b760b18f88752ae",
+            "producingSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+            "fileSha256": "70e77643972ace022011276658a1686c097df4a55b85609669265c34038c65f1",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "d0580679c58cf0795a733a6da85f1eaba896a3a9e340d9804936d029fbf4ad5b",
+            "setupSha256": "288cfc5089fdaea82f2a2f99f0df7ccc16814341527dd3355bc03cd713c56b8b",
+            "initialSha256": "ac2c420bf8a3bbb21aaffe1fded7297d3f6954ac5daf5fa0a202238fa55be4bf",
+            "profileSha256": "d12bb7a24f0a6060d6448426f98521ee4447ad7e832fdce46d95fa423ecad589",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 3,
+              "nativeIntervals": 60,
+              "geometrySamples10Hz": 31,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": true,
+              "time": 3,
+              "phase": "dead",
+              "outcome": "tackle",
+              "reportedGain": 0.86
+            },
+            "firstCarrierContact": {
+              "logicalTime": 2.4,
+              "interval": [
+                2.4,
+                2.4499999999999997
+              ],
+              "completedSampleTime": 2.4499999999999997,
+              "event": {
+                "t": 2.4,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 16,
+                "pos": {
+                  "x": 39.83,
+                  "y": 20.89
+                },
+                "note": "grasp"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair11O-OG1",
+                "position": [
+                  1.723146089746308,
+                  20.614087057784367
+                ],
+                "velocity": [
+                  0.3019108587952179,
+                  -2.714537352041718
+                ],
+                "displacementFromSnap": [
+                  2.273146089746305,
+                  -4.755912942215634
+                ]
+              },
+              "C": {
+                "id": "pair11O-OG2",
+                "position": [
+                  2.300669132030201,
+                  22.55611931475406
+                ],
+                "velocity": [
+                  0.8996427843770085,
+                  -2.062168300401906
+                ],
+                "displacementFromSnap": [
+                  2.8506691320301982,
+                  -4.113880685245942
+                ]
+              },
+              "DT_S": {
+                "id": "pair11D-EDGE1",
+                "position": [
+                  2.3187696217626765,
+                  20.6124338969674
+                ],
+                "velocity": [
+                  0.3016626884068059,
+                  -2.9815491815349793
+                ],
+                "displacementFromSnap": [
+                  1.418769621762678,
+                  -3.5962380081521985
+                ],
+                "runnerSeparation": 1.6732368129734685,
+                "depthToRunner": 1.4618971233893063,
+                "lateralToRunner": 0.8139890864843835
+              },
+              "DT_W": {
+                "id": "pair11D-EDGE4",
+                "position": [
+                  0.5219150955255785,
+                  24.64918070687606
+                ],
+                "velocity": [
+                  -0.10581590184286288,
+                  -1.1034427625018242
+                ],
+                "displacementFromSnap": [
+                  -0.3780849044744201,
+                  -4.446962000230986
+                ],
+                "runnerSeparation": 4.862287033719684,
+                "depthToRunner": -0.33495740284779174,
+                "lateralToRunner": 4.850735896393044
+              },
+              "LB_W": {
+                "id": "pair11D-LB2",
+                "position": [
+                  2.804853460989726,
+                  22.933668372006675
+                ],
+                "velocity": [
+                  1.4620027583101605,
+                  -1.6410554934385795
+                ],
+                "displacementFromSnap": [
+                  -1.7951465390102754,
+                  -5.741834074491948
+                ],
+                "runnerSeparation": 3.6911050664332006,
+                "depthToRunner": 1.9479809626163558,
+                "lateralToRunner": 3.1352235615236594
+              },
+              "LB_M": {
+                "id": "pair11D-LB3",
+                "position": [
+                  1.348574102327433,
+                  19.652546892075026
+                ],
+                "velocity": [
+                  0.9156451256037651,
+                  -1.1493945830684558
+                ],
+                "displacementFromSnap": [
+                  -3.2514258976725685,
+                  -4.9774455529215835
+                ],
+                "runnerSeparation": 0.5128905048124621,
+                "depthToRunner": 0.4917016039540627,
+                "lateralToRunner": -0.14589791840798938
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [
+              {
+                "interval": [
+                  2.75,
+                  2.8
+                ],
+                "normal": 74.72738185677592,
+                "tangent": 566.384105630052
+              },
+              {
+                "interval": [
+                  2.8,
+                  2.8499999999999996
+                ],
+                "normal": 918.1871347105921,
+                "tangent": 584.5413423009819
+              },
+              {
+                "interval": [
+                  2.85,
+                  2.9
+                ],
+                "normal": 939.0432903403382,
+                "tangent": 602.1888586030749
+              },
+              {
+                "interval": [
+                  2.9,
+                  2.9499999999999997
+                ],
+                "normal": 961.9429365161494,
+                "tangent": 356.7099554773849
+              },
+              {
+                "interval": [
+                  2.95,
+                  3
+                ],
+                "normal": 957.7917727836104,
+                "tangent": -312.682483603359
+              }
+            ],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          },
+          "candidate": {
+            "producingCommit": "859d0255fdaca7ceba26a56258c97890fe263009",
+            "producingSource": "573bc9cff09455aa59eccee98cfa2010fe9fcbaee133431744292bbcfde8e3fc",
+            "fileSha256": "a0c878914f94c8d1efe81f9f3332c16964fcc37de00c8dabd65019a0d580edb7",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "d0580679c58cf0795a733a6da85f1eaba896a3a9e340d9804936d029fbf4ad5b",
+            "setupSha256": "288cfc5089fdaea82f2a2f99f0df7ccc16814341527dd3355bc03cd713c56b8b",
+            "initialSha256": "ac2c420bf8a3bbb21aaffe1fded7297d3f6954ac5daf5fa0a202238fa55be4bf",
+            "profileSha256": "d12bb7a24f0a6060d6448426f98521ee4447ad7e832fdce46d95fa423ecad589",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 3,
+              "nativeIntervals": 60,
+              "geometrySamples10Hz": 31,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": false,
+              "time": null,
+              "phase": "live",
+              "outcome": null,
+              "reportedGain": null
+            },
+            "firstCarrierContact": {
+              "logicalTime": 2.5,
+              "interval": [
+                2.5,
+                2.55
+              ],
+              "completedSampleTime": 2.55,
+              "event": {
+                "t": 2.5,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 16,
+                "pos": {
+                  "x": 39.81,
+                  "y": 20.28
+                },
+                "note": "grasp"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair11O-OG1",
+                "position": [
+                  1.3768735057924246,
+                  20.78393619542145
+                ],
+                "velocity": [
+                  -0.0949575195233897,
+                  -2.548737588344609
+                ],
+                "displacementFromSnap": [
+                  1.9268735057924218,
+                  -4.586063804578551
+                ]
+              },
+              "C": {
+                "id": "pair11O-OG2",
+                "position": [
+                  1.1582579721037618,
+                  22.257019568562797
+                ],
+                "velocity": [
+                  0.49973938439376153,
+                  -2.223854950356794
+                ],
+                "displacementFromSnap": [
+                  1.708257972103759,
+                  -4.412980431437205
+                ]
+              },
+              "DT_S": {
+                "id": "pair11D-EDGE1",
+                "position": [
+                  1.9698584015959,
+                  20.83063380119565
+                ],
+                "velocity": [
+                  -0.09495751463190355,
+                  -2.5487376504586594
+                ],
+                "displacementFromSnap": [
+                  1.0698584015959014,
+                  -3.3780381039239487
+                ],
+                "runnerSeparation": 2.4753905759422663,
+                "depthToRunner": 1.5826404201308364,
+                "lateralToRunner": 1.9033674905366738
+              },
+              "DT_W": {
+                "id": "pair11D-EDGE4",
+                "position": [
+                  0.6778983963272012,
+                  23.819127724450574
+                ],
+                "velocity": [
+                  -0.08322912152438573,
+                  -2.435556087555879
+                ],
+                "displacementFromSnap": [
+                  -0.2221016036727974,
+                  -5.277014982656471
+                ],
+                "runnerSeparation": 4.900490097462453,
+                "depthToRunner": 0.2906804148621376,
+                "lateralToRunner": 4.891861413791599
+              },
+              "LB_W": {
+                "id": "pair11D-LB2",
+                "position": [
+                  2.48851344363176,
+                  22.589493693144288
+                ],
+                "velocity": [
+                  -0.8073806742094541,
+                  -5.219596899076088
+                ],
+                "displacementFromSnap": [
+                  -2.1114865563682415,
+                  -6.086008753354335
+                ],
+                "runnerSeparation": 4.2222449029334586,
+                "depthToRunner": 2.1012954621666964,
+                "lateralToRunner": 3.6622273824853124
+              },
+              "LB_M": {
+                "id": "pair11D-LB3",
+                "position": [
+                  0.9017975104093949,
+                  18.89296075239187
+                ],
+                "velocity": [
+                  0.8647334710341308,
+                  -2.424555161472217
+                ],
+                "displacementFromSnap": [
+                  -3.6982024895906065,
+                  -5.7370316926047416
+                ],
+                "runnerSeparation": 0.5157217883089562,
+                "depthToRunner": 0.5145795289443313,
+                "lateralToRunner": -0.03430555826710702
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          }
+        },
+        "firstCommonFieldDivergence": {
+          "after": {
+            "tickStart": 0.8,
+            "completed": 0.8500000000000001,
+            "actorIds": [
+              "pair11O-OT2",
+              "pair11D-EDGE4"
+            ]
+          },
+          "intents": {
+            "tickStart": 0.8,
+            "completed": 0.8500000000000001,
+            "actorIds": [
+              "pair11O-OT2"
+            ]
+          },
+          "requests": {
+            "tickStart": 1.1,
+            "completed": 1.1500000000000001,
+            "actorIds": [
+              "pair11D-LB2"
+            ]
+          }
+        },
+        "rngComparisonAvailable": false,
+        "controlledInputs": {
+          "seed": 77,
+          "formation": "ace_12",
+          "run": {
+            "id": "oz_strong",
+            "name": "Outside Zone",
+            "scheme": "outsideZone",
+            "direction": "strong",
+            "aim": "C",
+            "meshTime": 1.15,
+            "pullers": [],
+            "beats": [
+              "penetrating",
+              "light-box"
+            ]
+          },
+          "flip": false,
+          "front": "tite",
+          "coverage": "cover4"
+        },
+        "savedFiles": {
+          "baseline": "data/reviews/current/zone-contact-execution/fresh-tite-baseline.json.gz",
+          "candidate": "data/reviews/current/zone-contact-execution/fresh-tite-candidate.json.gz"
+        }
+      },
+      {
+        "id": "wz/weak/ace_12/over2/pair31/1",
+        "arms": {
+          "baseline": {
+            "producingCommit": "fabba9909451aa870036f11d2b760b18f88752ae",
+            "producingSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+            "fileSha256": "f18eaf6b44d7da86795bffb030fab228a5bd7e5ed349a3af75bf096364dfd330",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "a14753ed8257d7c434271f9bc0b2ef25aa4fe2ede2a7fd11e5972a1111bde820",
+            "setupSha256": "6289913c7c039b66a131b4798a8c5e52ab8e4de426c004b2c1b0002708165b42",
+            "initialSha256": "5b3fdb520af4b774d3bbdca42ba99928974dae1107b9bb0731bed0716a5f8f81",
+            "profileSha256": "57b15c6daa3d4b45e57e66b171abca8fe7efdea2c4eef78dd8cd5a53d690e400",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 3.55,
+              "nativeIntervals": 71,
+              "geometrySamples10Hz": 36,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": true,
+              "time": 3.55,
+              "phase": "dead",
+              "outcome": "tackle",
+              "reportedGain": 2.89
+            },
+            "firstCarrierContact": {
+              "logicalTime": 2.75,
+              "interval": [
+                2.75,
+                2.8
+              ],
+              "completedSampleTime": 2.8,
+              "event": {
+                "t": 2.75,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 16,
+                "pos": {
+                  "x": 41.13,
+                  "y": 33.46
+                },
+                "note": "grasp"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair31O-OG3",
+                "position": [
+                  1.3755601937674982,
+                  30.05487582018457
+                ],
+                "velocity": [
+                  -0.17067715530136093,
+                  4.911485268057059
+                ],
+                "displacementFromSnap": [
+                  1.9255601937674953,
+                  4.684875820184569
+                ]
+              },
+              "C": {
+                "id": "pair31O-C1",
+                "position": [
+                  -0.9921920483416855,
+                  29.919955848285152
+                ],
+                "velocity": [
+                  -0.016469887615712022,
+                  1.952163203042155
+                ],
+                "displacementFromSnap": [
+                  -0.44219204834168835,
+                  3.2499558482851505
+                ]
+              },
+              "DT_S": {
+                "id": "pair31D-EDGE1",
+                "position": [
+                  0.25127611676533235,
+                  27.882669122881246
+                ],
+                "velocity": [
+                  1.2554767385319225,
+                  3.5173355224289704
+                ],
+                "displacementFromSnap": [
+                  -0.6487238832346662,
+                  3.1417867984472494
+                ],
+                "runnerSeparation": 6.438063748913543,
+                "depthToRunner": -1.499353164706939,
+                "lateralToRunner": -6.261038645668783
+              },
+              "DT_W": {
+                "id": "pair31D-DT2",
+                "position": [
+                  -0.35731445329471256,
+                  30.051203692494976
+                ],
+                "velocity": [
+                  -0.016469907687656448,
+                  1.952163300135237
+                ],
+                "displacementFromSnap": [
+                  -1.2573144532947111,
+                  2.864746565076967
+                ],
+                "runnerSeparation": 4.603478728252212,
+                "depthToRunner": -2.107943734766984,
+                "lateralToRunner": -4.092504076055054
+              },
+              "LB_W": {
+                "id": "pair31D-LB1",
+                "position": [
+                  2.0326314196273927,
+                  33.3242317870868
+                ],
+                "velocity": [
+                  2.479954200465337,
+                  5.112304151219157
+                ],
+                "displacementFromSnap": [
+                  -2.5673685803726087,
+                  4.717426399813824
+                ],
+                "runnerSeparation": 0.8666406926282545,
+                "depthToRunner": 0.28200213815512143,
+                "lateralToRunner": -0.8194759814632278
+              },
+              "LB_M": {
+                "id": "pair31D-LB3",
+                "position": [
+                  3.30985527084389,
+                  31.262305281391704
+                ],
+                "velocity": [
+                  -0.5277586146591595,
+                  4.0271202565163575
+                ],
+                "displacementFromSnap": [
+                  -1.6901447291561098,
+                  5.136497658717445
+                ],
+                "runnerSeparation": 3.2762274003698355,
+                "depthToRunner": 1.559225989371619,
+                "lateralToRunner": -2.8814024871583257
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          },
+          "candidate": {
+            "producingCommit": "859d0255fdaca7ceba26a56258c97890fe263009",
+            "producingSource": "573bc9cff09455aa59eccee98cfa2010fe9fcbaee133431744292bbcfde8e3fc",
+            "fileSha256": "ed8d083e4114251e08b0dcc25adb2cccf9c908ae82a6407f3cd25f846ef2803d",
+            "flags": {
+              "ANCHOR_SPLIT": "1",
+              "CF_FLOW": null,
+              "CLIMB_INTERCEPT": "1",
+              "CLIMB_PLAN": "1",
+              "DL_FIGHT": "0",
+              "DL_FLOW": "1",
+              "DL_HANDS": "0",
+              "FLOW_READ": "1",
+              "FLOW_RELEASE": "1",
+              "GAIT_STEP": "0",
+              "HAND_FIGHT": "0",
+              "HAND_MOTOR": "0",
+              "HOLD_SUBSTEPS": "0",
+              "IN_STRIDE_CATCH": "0",
+              "KEEPER_TORSO": "1",
+              "LB_PLAN": "1",
+              "LEG_BRACE": "0",
+              "LEVER_FACING": "1",
+              "LIVE_AIM": "1",
+              "LIVE_GAPS": "1",
+              "PASS_SINK": "0",
+              "PULL_CUE": "0",
+              "PULL_PLAN": "0",
+              "PULL_READ": "1",
+              "PULL_STEP": "0",
+              "REACH_CONTACT": "0",
+              "READ_EYES": "1",
+              "READ_RISK_TRACE": "0",
+              "RUN_ANCHOR": "1",
+              "RUN_CONTACT_COMPONENTS": "1",
+              "RUN_CONTACT_TRACK": "0",
+              "RUN_HANDS": "0",
+              "RUN_READ": "0",
+              "RUN_READ_TURN": "0",
+              "SCRAPE": "1",
+              "SHED_PHYSICAL": "1",
+              "STALK_CLAIM": "1",
+              "STRETCH_MESH": "1",
+              "STRETCH_REACH": "1",
+              "TACKLE_ROLL": "0",
+              "TACKLE_TOUCH": "0",
+              "THREAT_READ": "1",
+              "WRAP_BIND": "0",
+              "ZONE_FLOW": "1"
+            },
+            "node": "v22.23.3",
+            "inputSha256": "a14753ed8257d7c434271f9bc0b2ef25aa4fe2ede2a7fd11e5972a1111bde820",
+            "setupSha256": "6289913c7c039b66a131b4798a8c5e52ab8e4de426c004b2c1b0002708165b42",
+            "initialSha256": "5b3fdb520af4b774d3bbdca42ba99928974dae1107b9bb0731bed0716a5f8f81",
+            "profileSha256": "57b15c6daa3d4b45e57e66b171abca8fe7efdea2c4eef78dd8cd5a53d690e400",
+            "recording": {
+              "firstTime": 0,
+              "lastCompletedTime": 3.65,
+              "nativeIntervals": 73,
+              "geometrySamples10Hz": 37,
+              "bodyTimestamp": "completed"
+            },
+            "ending": {
+              "known": true,
+              "time": 3.65,
+              "phase": "dead",
+              "outcome": "tackle",
+              "reportedGain": 2.91
+            },
+            "firstCarrierContact": {
+              "logicalTime": 2.75,
+              "interval": [
+                2.75,
+                2.8
+              ],
+              "completedSampleTime": 2.8,
+              "event": {
+                "t": 2.75,
+                "type": "carrier_contact",
+                "a": 6,
+                "b": 16,
+                "pos": {
+                  "x": 41.13,
+                  "y": 33.46
+                },
+                "note": "grasp"
+              }
+            },
+            "snap3Actors": {
+              "RG": {
+                "id": "pair31O-OG3",
+                "position": [
+                  1.4197309478653395,
+                  30.184513399036558
+                ],
+                "velocity": [
+                  -0.04767455266738549,
+                  4.953411103801407
+                ],
+                "displacementFromSnap": [
+                  1.9697309478653366,
+                  4.8145133990365565
+                ]
+              },
+              "C": {
+                "id": "pair31O-C1",
+                "position": [
+                  -0.9495667086414556,
+                  30.875029739287953
+                ],
+                "velocity": [
+                  -0.20758307828814224,
+                  2.3619856010303293
+                ],
+                "displacementFromSnap": [
+                  -0.3995667086414585,
+                  4.205029739287951
+                ]
+              },
+              "DT_S": {
+                "id": "pair31D-EDGE1",
+                "position": [
+                  0.222603839483142,
+                  28.25493418245964
+                ],
+                "velocity": [
+                  1.4358943620148878,
+                  3.6198946025600547
+                ],
+                "displacementFromSnap": [
+                  -0.6773961605168566,
+                  3.514051858025642
+                ],
+                "runnerSeparation": 6.102240157423246,
+                "depthToRunner": -1.5318445744746043,
+                "lateralToRunner": -5.906842400007097
+              },
+              "DT_W": {
+                "id": "pair31D-DT2",
+                "position": [
+                  -0.6464703371495659,
+                  30.236237470732654
+                ],
+                "velocity": [
+                  -0.09750538507449727,
+                  2.1299908100034113
+                ],
+                "displacementFromSnap": [
+                  -1.5464703371495645,
+                  3.0497803433146444
+                ],
+                "runnerSeparation": 4.6015506263837525,
+                "depthToRunner": -2.4009187511073122,
+                "lateralToRunner": -3.925539111734082
+              },
+              "LB_W": {
+                "id": "pair31D-LB1",
+                "position": [
+                  2.062631621131729,
+                  33.32137514964766
+                ],
+                "velocity": [
+                  2.3018054681479683,
+                  5.153492361948498
+                ],
+                "displacementFromSnap": [
+                  -2.5373683788682726,
+                  4.71456976237468
+                ],
+                "runnerSeparation": 0.8951265036118647,
+                "depthToRunner": 0.3081832071739825,
+                "lateralToRunner": -0.8404014328190783
+              },
+              "LB_M": {
+                "id": "pair31D-LB3",
+                "position": [
+                  3.319269313435804,
+                  31.217980384239134
+                ],
+                "velocity": [
+                  -0.35198076786534715,
+                  3.517129079177188
+                ],
+                "displacementFromSnap": [
+                  -1.6807306865641962,
+                  5.092172761564875
+                ],
+                "runnerSeparation": 3.333856701200968,
+                "depthToRunner": 1.5648208994780575,
+                "lateralToRunner": -2.943796198227602
+              }
+            },
+            "centerWeakLBForceBearingIntervals": [],
+            "capturedChannels": {
+              "rng": false,
+              "declarationReads": false,
+              "acquiredPictures": false,
+              "retainedPlans": true
+            }
+          }
+        },
+        "firstCommonFieldDivergence": {
+          "after": {
+            "tickStart": 0.9,
+            "completed": 0.9500000000000001,
+            "actorIds": [
+              "pair31O-C1",
+              "pair31D-DT2"
+            ]
+          },
+          "intents": {
+            "tickStart": 0.9,
+            "completed": 0.9500000000000001,
+            "actorIds": [
+              "pair31O-C1"
+            ]
+          },
+          "requests": {
+            "tickStart": 1.2,
+            "completed": 1.25,
+            "actorIds": [
+              "pair31D-LB1"
+            ]
+          }
+        },
+        "rngComparisonAvailable": false,
+        "controlledInputs": {
+          "seed": 1,
+          "formation": "ace_12",
+          "run": {
+            "id": "wz_weak",
+            "name": "Wide Zone Weak",
+            "scheme": "wideZone",
+            "direction": "weak",
+            "aim": "D",
+            "meshTime": 1.2,
+            "pullers": [],
+            "beats": [
+              "light-box"
+            ]
+          },
+          "flip": false,
+          "front": "over",
+          "coverage": "cover2"
+        },
+        "savedFiles": {
+          "baseline": "data/reviews/current/zone-contact-execution/weak-baseline.json.gz",
+          "candidate": "data/reviews/current/zone-contact-execution/weak-candidate.json.gz"
+        }
+      }
+    ],
+    "details": {
+      "path": "out/run-sequence/native172-final.json",
+      "bytes": 6032463,
+      "sha256": "948ef8d3e9770c1cddcb56bb8ac286ff820b164e138d7ebe037483803c93b12a"
+    },
+    "upstreamManifest": {
+      "path": "/workspace/datasets/run-mechanism-reference/zone172/manifest.json",
+      "bytes": 5604,
+      "sha256": "494741442f41aea09df56e98788c0ddddd2b0f7ca27b5edfee44852f533e09e2"
+    },
+    "limits": [
+      "Source/controller candidates remain separate; native evidence does not establish NFL agreement.",
+      "Raw/final requests exist; separate complete contact,bond,spacing,readiness stages are absent.",
+      "No complete RNG stream or perception stream in compact #172 files; retained zoneRead pictures/timestamps may still be present in plans.",
+      "Per-phase geometric candidates are not installed assignments or engagement labels.",
+      "Six recorded arms: three known terminal recordings,three censored; no gain assigned to censors.",
+      "Fresh Tite baseline C\u2013LB_W force starts2.75s after Mike grasp2.40s; presence versus absence of this late load does not establish useful protection or a causal loss."
+    ],
+    "sourceWorldDefaults": "Inherited from explicit producing source and upstream manifest; compact trace does not separately serialize every World API constructor choice."
+  },
+  "validation": {
+    "focusedControlsPassed": 26,
+    "command": "python -I -m unittest discover -s test -p test_run_sequence.py -v",
+    "reportedSeconds": 0.197,
+    "independentReview": "ACCEPT tooling/evidence meaning only; read-only no controller acceptance",
+    "reviewedHashes": {
+      "nfl": "a317bc1faa905f14e9c8b861a7753a12560e25349e15c2ca2a639621c96ffacf",
+      "native": "83bcfb8387469d091331977ce380034cc42f75503ad6c52b332eaa3f8a47fa24"
+    },
+    "preservedDevelopment": "Initial14,then17,then19 controls passed; final26 cover end-to-end and native/exposure fixes. Provisional18.18MB then6.03MB saved-data reductions preserved locally; final rebinds exact operator hashes after measurement repair.",
+    "reuse": "Operator/helper/selection/tests unchanged from reviewed09a8780; reuse26 focused controls and independent tooling/evidence-meaning review. Receipt/docs-only completion needs provenance/consistency checks, no engine rerun."
+  },
+  "newEngineTicks": 0,
+  "newNativeRuns": 0,
+  "newGames": 0,
+  "newMeasuredNFLPlays": 12,
+  "productionChanges": false
+}

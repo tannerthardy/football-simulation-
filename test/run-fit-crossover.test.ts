@@ -38,8 +38,15 @@ describe('free insertion uses crossover for acquired lateral run flow',()=>{
  it('retains a lag assignment and a patient stationary landmark',()=>{
   for(const f of [stage(1,'insert','lag'),stage(1,'insert','attack',false)])expect(f.command().facing).toBe(Math.PI);
  });
- it('keeps an outside force shoulder on the existing edge technique',()=>{
-  const f=stage(1,'force');expect(f.command().facing).toBe(Math.PI);
+ it.each([-1,1])('lets an acquired widening force duty run laterally while a still force fit stays square, side=%s',side=>{
+  const f=stage(side,'force'),cmd=f.command(),goal=movementObjective(cmd);
+  expect(cmd.vel.y*side).toBeGreaterThan(Math.abs(cmd.vel.x));
+  expect(Math.abs(angleDiff(cmd.facing!,Math.atan2(cmd.vel.y,cmd.vel.x)))).toBeLessThan(1e-12);
+  expect(goal?.kind).toBe('moving');
+  if(goal?.kind==='moving')expect(goal.velocity!.y).toBe(side*3);
+  expect(f.a.runFit).toMatchObject({kind:'force',side,gap:'A'});
+  const still=stage(side,'force');still.picture.get(still.back)!.vel={x:2,y:0};
+  expect(still.command().facing).toBe(Math.PI);
  });
  it('still executes the original square fit when a picture does not call for lateral running',()=>{
   const f=stage(1,'insert','attack',false),first=f.command();

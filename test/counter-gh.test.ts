@@ -87,26 +87,36 @@ describe('GH consumes an achieved guard/end picture',()=>{
  });
 });
 
-it('carries acquired guard motion between reads instead of retreating from a cleared old position',()=>{
- const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id==='GH04')!.setup));
- const h=sim.slot('H')!,controller=h.behavior as RunBlocker,original=controller.update;
- const stop=new Error('after the real H decision');let visited=false;
- const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
-  if(s.t<1.4)return original.call(controller,a,s);
-  visited=true;
-  const at=Reflect.get(controller,'wrapTrafficAt') as number;
-  const pictures=Reflect.get(controller,'wrapTraffic') as {pos:{x:number;y:number};vel:{x:number;y:number}}[];
-  const guard=pictures[4];
-  expect(at).toBeCloseTo(1.25,8);
-  expect(guard.pos.x).toBeGreaterThan(a.pos.x);
-  expect(guard.pos.x+guard.vel.x*(s.t-at)).toBeLessThan(a.pos.x);
-  const before=structuredClone(a.body),rng=JSON.stringify(s.rng);
-  const command=original.call(controller,a,s);
-  expect(Math.abs(command.vel.x)).toBeLessThan(.005);expect(command.vel.y).toBeGreaterThan(0);
-  expect(a.body).toEqual(before);expect(JSON.stringify(s.rng)).toBe(rng);
-  throw stop;
- });
- let caught:unknown;
- try{while(sim.phase==='live'&&sim.t<1.5)sim.tick();}catch(e){caught=e;}finally{hook.mockRestore();}
- expect(visited).toBe(true);expect(caught).toBe(stop);
+it.each([false,true])('carries acquired guard motion between reads without requiring an old native micro-crossing, mirror=%s',mirror=>{
+ function request(moving:boolean){
+  const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id==='GH04')!.setup));
+  const h=sim.slot('H')!,controller=h.behavior as RunBlocker,p=controller.plan;
+  if(mirror){
+   for(const b of sim.agents){b.body.pos.y=2*sim.ballY-b.pos.y;b.body.vel.y*=-1;b.body.facing*=-1;}
+   for(const spot of Object.values(sim.offAlign.spots))if(spot)spot.pos.y=2*sim.ballY-spot.pos.y;
+   sim.offAlign.strongSign*=-1;p.drive.y*=-1;
+   for(const w of p.pullPath!)w.y=2*sim.ballY-w.y;
+  }
+  const side=mirror?-1:1,flat=p.pullPath![1],guard=p.pullSurface!.blocker,end=p.pullSurface!.defender;
+  h.body.pos={x:flat.x,y:flat.y-side*2};h.body.vel={x:0,y:side*2};sim.t=1.4;
+  Reflect.set(controller,'homeY',sim.offAlign.spots.H.pos.y);Reflect.set(controller,'pullIdx',1);
+  // A delivered traffic picture held since 1.25s. Observation latency is
+  // already represented; only the subsequent .15s may be carried forward.
+  const pictures=sim.offense.filter(b=>['LT','LG','C','RG','RT'].includes(b.slot)).map(b=>b===guard
+   ? {pos:{x:h.pos.x+.4,y:h.pos.y+side*.2},vel:{x:moving?-4:0,y:0}}
+   : {pos:{x:45,y:h.pos.y+side*6},vel:{x:0,y:0}});
+  Reflect.set(controller,'wrapTraffic',pictures);Reflect.set(controller,'wrapTrafficAt',1.25);
+  Reflect.set(controller,'nextSurfaceRead',1.55);
+  const before=structuredClone(h.body),rng=JSON.stringify(sim.rng),see=vi.spyOn(sim,'see');
+  const command=controller.update(h,sim);
+  expect(Reflect.get(controller,'wrapTrafficAt')).toBe(1.25);
+  expect(see.mock.calls.some(([a,b])=>a===h&&(b===guard||b===end))).toBe(false);
+  expect(h.body).toEqual(before);expect(JSON.stringify(sim.rng)).toBe(rng);
+  expect(h.engagement).toBeNull();expect(sim.world.joints).toHaveLength(0);
+  see.mockRestore();return command;
+ }
+ const carried=request(true),stationary=request(false);
+ expect(Math.abs(carried.vel.x)).toBeLessThan(.005);
+ expect(carried.vel.y*(mirror?-1:1)).toBeGreaterThan(0);
+ expect(stationary.vel.x).toBeLessThan(0);
 });

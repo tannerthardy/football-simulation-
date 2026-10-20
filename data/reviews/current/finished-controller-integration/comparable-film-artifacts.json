@@ -1,0 +1,77 @@
+{
+  "schema": "saved-comparable-films-v1",
+  "candidate": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+  "baseline": "2c98bed94adad8087c65f381d4090444ad283985",
+  "artifacts": [
+    {
+      "path": "clips/02-zone-reference-8-8.montage.png",
+      "bytes": 291595,
+      "sha256": "68951c2c81daaac225d8ce35c47a8f828da55ef7049bcf7153cf67fe2a1bf223"
+    },
+    {
+      "path": "clips/03-spread-air-2-2.gif",
+      "bytes": 1946792,
+      "sha256": "b97eb060d8ae6b341f275cfaff62b2b6fdc4c2df56ae0c429bc951e350730ba8"
+    },
+    {
+      "path": "clips/01-zone-reference-11-17.montage.png",
+      "bytes": 263014,
+      "sha256": "c548c188d53c9713b6830da79335afe98fdeb354177118d3658bc8709f8c8cd7"
+    },
+    {
+      "path": "clips/02-zone-reference-8-8.gif",
+      "bytes": 6167715,
+      "sha256": "ac95651002b92b93b33967bab205186e83250dc2988c01e4a75b9fd5d48645e0"
+    },
+    {
+      "path": "clips/01-zone-reference-11-17.gif",
+      "bytes": 1847761,
+      "sha256": "6c858e62884f39630db7d7877e79d633467c6b9986978cf6dc9a59460d83c881"
+    },
+    {
+      "path": "clips/02-zone-reference-8-8-inspection.png",
+      "bytes": 153556,
+      "sha256": "e5ae9babcf3251b491c311e09121549cd193108966a92448d88f00da246b977a"
+    },
+    {
+      "path": "clips/03-spread-air-2-2.montage.png",
+      "bytes": 258830,
+      "sha256": "5a081118823bf85f7dc00b08eae98b80449590b9ca1888d77826a70b85fe8254"
+    },
+    {
+      "path": "clips/03-spread-air-2-2-inspection.png",
+      "bytes": 138421,
+      "sha256": "aae6e0ded6966aed7e43954b94d3badfb58d4244093fbabfbe3242d62ee117e1"
+    },
+    {
+      "path": "clips/01-zone-reference-11-17-inspection.png",
+      "bytes": 149047,
+      "sha256": "5dc17b5180f378638f0cf4573b42b0118e5c064378a7db430d913f1b32379862"
+    },
+    {
+      "path": "clips.json",
+      "bytes": 2117,
+      "sha256": "1c2b415f81a76f9db7412ed50b042e8ec2f91aa38858c1a0fcf1b4249925c73d"
+    },
+    {
+      "path": "comparable-selection.json",
+      "bytes": 711,
+      "sha256": "d9fa94ef03285ec9829101715ca9e922826c6bef6421f2fa84749878bd5e389c"
+    },
+    {
+      "path": "football-context.json",
+      "bytes": 12865,
+      "sha256": "e75c4501d047776d24a970a179056852d99f6b9b3733a3c760ae0a561d1d423a"
+    },
+    {
+      "path": "turnover-audit.json",
+      "bytes": 20407,
+      "sha256": "8421108b7af296065b93367306eb8de4d3250e0518fdeaad565f9a8a50e4c1ff"
+    },
+    {
+      "path": "score-audit.json",
+      "bytes": 19936,
+      "sha256": "099a46e1bd94bc6736c6bc526bd2e112d589b5f1c09051b82df5d8b39ae79309"
+    }
+  ]
+}

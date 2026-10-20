@@ -225,7 +225,9 @@ export interface RedirectResult extends Invariants {
   peakTangent: number;
   /** Installed home and actual free-protection requests after the original shed. */
   protectionHomeY: number;
-  postShedProtection: Array<{ t: number; target: string | null; request: MoveCommand }>;
+  /** Detached attained positions are ordered RT, DE_S, QB. */
+  postShedProtection: Array<{ t: number; target: string | null; request: MoveCommand;
+    positions: Array<{ x: number; y: number }> }>;
 }
 
 /** A tackle in his set takes on a speed rusher already in his hands outside him. */
@@ -261,7 +263,7 @@ export function redirect(o: LabOptions & { rusherPower?: number; maxT?: number }
       && event.a === d.idx && event.b === b.idx && event.note === 'pass: turned the corner')) {
       const target = this.recordedTarget(actor);
       postShedProtection.push({ t: world.t, target: target === null ? null : world.agents[target].slot,
-        request: structuredClone(request) });
+        request: structuredClone(request), positions: [b, d, qb].map(a => ({ ...a.pos })) });
     }
     return request;
   };

@@ -16,6 +16,7 @@ import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
+import { localTrafficRoute } from './traffic-route.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -28,18 +29,6 @@ const TURN_STEPS = 12;
 const TURN_HORIZON = TURN_STEPS * .05;
 /** Avoid changing requests for a negligible forecast difference, yd. */
 const TURN_MARGIN = .05;
-/** Experimental (SPACE_STEER=1, off): a free player whose teammate spacing
- * costs him more than STEER_LOSS of his forecast progress bends around the
- * teammate instead: the same request rotated to either side, forecast with
- * the same free-movement law against the same acquired peer pictures, and
- * the clear one with the most progress along his request is used. The side
- * chosen is kept for STEER_HOLD while it stays clear. Coverage players'
- * step-around still refines the result. */
-const SPACE_STEER = process.env.SPACE_STEER === '1' || process.env.SPACE_STEER === '2';
-/** Diagnostic (SPACE_STEER=2): every free player but the ball carrier. */
-const STEER_CARRIER = process.env.SPACE_STEER !== '2';
-const STEER_LOSS = .3, STEER_HOLD = .3;
-const STEER_ANGLES = [15, 30, 45, 60, 75].map(d => d * Math.PI / 180);
 
 export interface SpacingContext {
   now: number;
@@ -70,11 +59,17 @@ function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:numbe
   limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
   const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
     &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
-  if(feasible(ordinary))return ordinary;
-  let best:{x:number;y:number}|undefined,bestError=Infinity;
+  // Sequential corrections can be feasible yet farther from the selected
+  // request than a joint solution. Keep that response as a fallback, then
+  // evaluate the same boundary candidates before accepting its diversion.
+  let best:{x:number;y:number}|undefined=feasible(ordinary)?ordinary:undefined;
+  let bestError=best?(best.x-raw.x)**2+(best.y-raw.y)**2:Infinity;
   function consider(x:number,y:number):void {
     const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
-    if(error<bestError&&feasible(v)){best=v;bestError=error;}
+    // Algebraically equivalent projections can differ by a few rounding
+    // units. Retain the existing request on that numerical tie.
+    const tie=16*Number.EPSILON*Math.max(1,error,bestError);
+    if((!best||error<bestError-tie)&&feasible(v)){best=v;bestError=error;}
   }
   const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
   consider(raw.x*scale,raw.y*scale);
@@ -206,36 +201,6 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   return gather;
 }
 
-const steerSides=new WeakMap<Agent,{side:number;until:number}>();
-
-/** SPACE_STEER: bend the request around teammates rather than only slowing. */
-function steerAroundTeammates(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, now:number):Intent {
-  const speed=Math.hypot(raw.vel.x,raw.vel.y);
-  if(speed<1)return chosen;
-  const ux=raw.vel.x/speed,uy=raw.vel.y/speed;
-  const progress=(path:readonly MovementSample[])=>{
-    const end=path[path.length-1];
-    return(end.pos.x-a.pos.x)*ux+(end.pos.y-a.pos.y)*uy;
-  };
-  const open=progress(forecast(raw)),held=progress(forecast(chosen));
-  if(open<.2||held>=(1-STEER_LOSS)*open)return chosen;
-  // Never close on a teammate already inside touch distance.
-  const floor=peers.map(p=>Math.min(0,Math.hypot(a.pos.x-p.pos.x,a.pos.y-p.pos.y)-p.touch)-1e-9);
-  const memo=steerSides.get(a),sides=memo&&memo.until>now?[memo.side]:[1,-1];
-  let best=chosen,bestProgress=held+TURN_MARGIN,bestSide=0;
-  for(const angle of STEER_ANGLES)for(const side of sides){
-    const c=Math.cos(angle*side),s=Math.sin(angle*side);
-    const command:Intent={...raw,vel:{x:raw.vel.x*c-raw.vel.y*s,y:raw.vel.x*s+raw.vel.y*c}};
-    const path=forecast(command);
-    if(path.some(sample=>sample.support!=='up'))continue;
-    if(peers.some((p,i)=>sweptClearance(a,path,p)<floor[i]))continue;
-    const p=progress(path);
-    if(p>bestProgress){best=command;bestProgress=p;bestSide=side;}
-  }
-  if(bestSide)steerSides.set(a,{side:bestSide,until:now+STEER_HOLD});
-  return best;
-}
-
 interface PassingFrame { peer: number; forward: {x:number;y:number}; normal: {x:number;y:number} }
 // Own maneuver state, not remembered peer motion. Every evaluation uses this
 // tick's acquired picture; a missing picture ends the maneuver.
@@ -362,16 +327,15 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       }
     }
     let spaced=ia;
-    const s=a.body.support;
-    // This is free footwork. A loaded blocker or committed strike cannot
-    // be allocated a new joint velocity from radial headway alone: the
-    // contact controller owns that work, and the World resolves its load.
-    const free=context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
-      &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
-      &&!s.foot&&!s.strike&&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
-      const ordinary={x:vx*scale,y:vy*scale};
+      const ordinary={x:vx*scale,y:vy*scale},s=a.body.support;
+      // This is free footwork. A loaded blocker or committed strike cannot
+      // be allocated a new joint velocity from radial headway alone: the
+      // contact controller owns that work, and the World resolves its load.
+      const free=context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement&&!context.constrained?.has(a.body)
+        &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
+        &&!s.foot&&!s.strike&&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
       spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
     }
     // Both selectors may ask about the same request. The body/time are fixed
@@ -386,8 +350,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       return samples;
     };
     const gathered=gatherForMotion(a,spaced,peers,forecast,context);
-    const steered=SPACE_STEER&&free&&gathered!==ia&&(STEER_CARRIER||a.behavior.kind!=='carrier')
-      ?steerAroundTeammates(a,ia,gathered,peers,forecast,context!.now):gathered;
-    intents[i]=stepAroundTraffic(a,ia,steered,peers,forecast,context);
+    const ordinary=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+    const s=a.body.support;
+    const free=!!context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement
+      &&!context.constrained?.has(a.body)&&!ia.free&&!ia.dive&&!ia.lunge
+      &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
+      &&!!s&&s.state==='up'&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
+    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
   }
 }

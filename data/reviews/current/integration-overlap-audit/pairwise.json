@@ -1,0 +1,549 @@
+{
+  "schema": "integration-overlap-audit-v1",
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "pairs": [
+    {
+      "a": 185,
+      "b": 174,
+      "sharedRuntimeFiles": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "exitCode": 1,
+      "tree": "01eb2a536e53c4cb36e3828a39e090c8a6f7ea83",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 185,
+      "b": 172,
+      "sharedRuntimeFiles": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "exitCode": 1,
+      "tree": "9cc24922a9762cce1a7b72701d05c4a3b4bbef42",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 184,
+      "b": 178,
+      "sharedRuntimeFiles": [
+        "src/sim/playsim.ts"
+      ],
+      "exitCode": 1,
+      "tree": "9ed821b1284464cdeacd582675f5129f26c49878",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 182,
+      "b": 181,
+      "sharedRuntimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "exitCode": 1,
+      "tree": "c855882b070abda7e7f43ddc3f55134c83eea64f",
+      "conflictFiles": [
+        "docs/WORKBOARD.md",
+        "src/sim/behaviors/common.ts"
+      ],
+      "productionConflicts": [
+        "src/sim/behaviors/common.ts"
+      ]
+    },
+    {
+      "a": 182,
+      "b": 175,
+      "sharedRuntimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "exitCode": 1,
+      "tree": "314d2b3750dd96793abdaa1ac2b6d134f0cf9221",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 181,
+      "b": 176,
+      "sharedRuntimeFiles": [
+        "src/sim/run-fits.ts"
+      ],
+      "exitCode": 1,
+      "tree": "b2cec66fbad0529e6d24caf4852988c168eb4458",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 181,
+      "b": 175,
+      "sharedRuntimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "exitCode": 1,
+      "tree": "a61bf44b9491d767592675e38afcaaed46fa5f58",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 181,
+      "b": 171,
+      "sharedRuntimeFiles": [
+        "src/sim/run-fits.ts"
+      ],
+      "exitCode": 1,
+      "tree": "5a408b05a6b29945f752537fc71f345fdb5c80d7",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 178,
+      "b": 177,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "4981ff12bb68382eb8a30f90554ced89eb0e55e8",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 178,
+      "b": 174,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "bde3020254f3e1497a4a77720a78389920ae8248",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 178,
+      "b": 172,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "8308ac2397bdbad8dc53a27c827a31a2be0b6d40",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 178,
+      "b": 169,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "18ab367ec29f533d21e5713c4a046880374ea5fa",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 177,
+      "b": 174,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "95f500c0a61a6b12008d1f2a64382c1e00925ab2",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 177,
+      "b": 172,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "4c0aeaa623be54a2280adfe21a22220dbdc2726f",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 177,
+      "b": 169,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "f68f22cfe8bd7ef45931dfa70b6e03c3facc9a7d",
+      "conflictFiles": [
+        "docs/WORKBOARD.md",
+        "src/sim/engagement.ts"
+      ],
+      "productionConflicts": [
+        "src/sim/engagement.ts"
+      ]
+    },
+    {
+      "a": 176,
+      "b": 171,
+      "sharedRuntimeFiles": [
+        "src/sim/run-fits.ts"
+      ],
+      "exitCode": 1,
+      "tree": "3484610f8e2b6453f4b9266e3f7c4728f8e3b986",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 174,
+      "b": 172,
+      "sharedRuntimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "eec7f8b1b2161721df4d9feaff451a6aff59b5b4",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 174,
+      "b": 169,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "14d528a7dc3ce1257b5303a85bcbd75e5c91a593",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 172,
+      "b": 169,
+      "sharedRuntimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "exitCode": 1,
+      "tree": "4d276795ff7728713eeaf331043f18f7112ec735",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    },
+    {
+      "a": 183,
+      "b": 186,
+      "sharedRuntimeFiles": [
+        "src/sim/spacing.ts"
+      ],
+      "exitCode": 1,
+      "tree": "d0bbcbd62c95f7ce3576109eb17d709c38d054f0",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
+    }
+  ],
+  "hunks": {
+    "185": [
+      "diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts",
+      "@@ -774,3 +774,3 @@ export class RunBlocker implements Behavior {",
+      "@@ -907,4 +907,11 @@ export class RunBlocker implements Behavior {",
+      "@@ -916,4 +923,17 @@ export class RunBlocker implements Behavior {",
+      "@@ -931,3 +951,2 @@ export class RunBlocker implements Behavior {",
+      "@@ -943,4 +962,10 @@ export class RunBlocker implements Behavior {",
+      "@@ -949,5 +974,7 @@ export class RunBlocker implements Behavior {",
+      "@@ -1184,4 +1211,14 @@ export class RunBlocker implements Behavior {",
+      "diff --git a/test/counter-gh.test.ts b/test/counter-gh.test.ts",
+      "@@ -89,24 +89,34 @@ describe('GH consumes an achieved guard/end picture',()=>{",
+      "diff --git a/test/puller-acquired-corner.test.ts b/test/puller-acquired-corner.test.ts",
+      "@@ -0,0 +1,80 @@",
+      "diff --git a/test/puller-clearance-command.test.ts b/test/puller-clearance-command.test.ts",
+      "@@ -0,0 +1,31 @@",
+      "diff --git a/test/puller-kick-transition.test.ts b/test/puller-kick-transition.test.ts",
+      "@@ -32,3 +32,5 @@ describe('kick phase follows a personally read end after the flat track',()=>{"
+    ],
+    "184": [
+      "diff --git a/src/sim/called-motion.ts b/src/sim/called-motion.ts",
+      "@@ -0,0 +1,31 @@",
+      "diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts",
+      "@@ -30,2 +30,3 @@ import { IncidentalCatchReadiness } from './catch-readiness.js';",
+      "@@ -589,9 +590,7 @@ export class PlaySim {",
+      "diff --git a/test/called-motion.test.ts b/test/called-motion.test.ts",
+      "@@ -0,0 +1,86 @@",
+      "diff --git a/test/fixtures/announced-motion.json b/test/fixtures/announced-motion.json",
+      "@@ -0,0 +1 @@"
+    ],
+    "183": [
+      "diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts",
+      "@@ -60,7 +60,13 @@ function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:numbe",
+      "diff --git a/test/fixtures/navigation-A042-setup.json b/test/fixtures/navigation-A042-setup.json",
+      "@@ -0,0 +1,1862 @@",
+      "diff --git a/test/joint-spacing-projection.test.ts b/test/joint-spacing-projection.test.ts",
+      "@@ -0,0 +1,45 @@"
+    ],
+    "182": [
+      "diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts",
+      "@@ -210,4 +210,10 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC",
+      "@@ -219,3 +225,3 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC",
+      "diff --git a/test/pursuit-objective.test.ts b/test/pursuit-objective.test.ts",
+      "@@ -0,0 +1,91 @@"
+    ],
+    "181": [
+      "diff --git a/src/sim/approach-control.ts b/src/sim/approach-control.ts",
+      "@@ -18,5 +18,10 @@ const CHOICE_MARGIN = .1; // yd; avoid switching on a negligible forecast differ",
+      "@@ -29,3 +34,3 @@ export function chooseApproach(a: Agent, seen: Perceived, contact: number,",
+      "@@ -35,3 +40,3 @@ export function chooseApproach(a: Agent, seen: Perceived, contact: number,",
+      "@@ -66,4 +71,4 @@ export function chooseApproach(a: Agent, seen: Perceived, contact: number,",
+      "@@ -72,4 +77,5 @@ export function chooseApproach(a: Agent, seen: Perceived, contact: number,",
+      "diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts",
+      "@@ -218,4 +218,4 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC",
+      "diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts",
+      "@@ -265,4 +265,4 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback",
+      "diff --git a/test/approach-composition.test.ts b/test/approach-composition.test.ts",
+      "@@ -0,0 +1,88 @@"
+    ],
+    "180": [
+      "diff --git a/src/physics/kinematics.ts b/src/physics/kinematics.ts",
+      "@@ -17,3 +17,3 @@ import type { Support } from './support.js';",
+      "@@ -266,3 +266,5 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {",
+      "diff --git a/src/physics/world.ts b/src/physics/world.ts",
+      "@@ -37,3 +37,3 @@ import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, loco",
+      "@@ -963,3 +963,8 @@ export class World {",
+      "@@ -1541,5 +1546,4 @@ export class World {",
+      "diff --git a/src/physics/yaw-response.ts b/src/physics/yaw-response.ts",
+      "@@ -15,47 +15,51 @@ export function integrateYaw(error: number, spin: number, h: number,",
+      "@@ -80,3 +84,3 @@ export function integrateYaw(error: number, spin: number, h: number,",
+      "@@ -94,3 +98,3 @@ export function integrateYaw(error: number, spin: number, h: number,",
+      "@@ -119,3 +123,3 @@ export function integrateYaw(error: number, spin: number, h: number,",
+      "@@ -127 +131,35 @@ export function integrateYaw(error: number, spin: number, h: number,",
+      "diff --git a/test/movement-yaw-continuity.test.ts b/test/movement-yaw-continuity.test.ts",
+      "@@ -0,0 +1,71 @@",
+      "diff --git a/test/yaw-response.test.ts b/test/yaw-response.test.ts",
+      "@@ -96,2 +96,25 @@ describe('bounded critical yaw response uses one physical response time', () =>"
+    ],
+    "178": [
+      "diff --git a/src/game/game.ts b/src/game/game.ts",
+      "@@ -16,3 +16,3 @@ import { CoverageScouting } from '../sim/qbmind.js';",
+      "@@ -20,2 +20,3 @@ import { DefensiveCoordinator, OffensiveCoordinator, type Situation } from './pl",
+      "@@ -45,4 +46,5 @@ export interface PlayLog {",
+      "@@ -51,2 +53,7 @@ export interface PlayLog {",
+      "@@ -174,2 +181,4 @@ export class Game {",
+      "@@ -259,3 +268,3 @@ export class Game {",
+      "@@ -497,2 +506,3 @@ export class Game {",
+      "@@ -541,2 +551,3 @@ export class Game {",
+      "@@ -560,2 +571,3 @@ export class Game {",
+      "@@ -576,3 +588,2 @@ export class Game {",
+      "@@ -619,18 +630,48 @@ export class Game {",
+      "@@ -638,3 +679,3 @@ export class Game {",
+      "@@ -645,13 +686,20 @@ export class Game {",
+      "@@ -689,6 +737,16 @@ export class Game {",
+      "@@ -696,4 +754,3 @@ export class Game {",
+      "@@ -701,3 +758,4 @@ export class Game {",
+      "@@ -711,2 +769,21 @@ export class Game {",
+      "@@ -752,33 +829,2 @@ export class Game {",
+      "@@ -885,13 +931,72 @@ export class Game {",
+      "@@ -929,2 +1034,3 @@ export class Game {",
+      "@@ -957,2 +1063,3 @@ export class Game {",
+      "@@ -1101,2 +1208,13 @@ export class Game {",
+      "diff --git a/src/game/penalty-enforcement.ts b/src/game/penalty-enforcement.ts",
+      "@@ -0,0 +1,222 @@",
+      "diff --git a/src/sim/ball-rules.ts b/src/sim/ball-rules.ts",
+      "@@ -0,0 +1,120 @@",
+      "diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts",
+      "@@ -1360,6 +1360,16 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {",
+      "diff --git a/src/sim/pass-interference.ts b/src/sim/pass-interference.ts",
+      "@@ -0,0 +1,167 @@",
+      "diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts",
+      "@@ -13,2 +13,5 @@ import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } fr",
+      "@@ -34,3 +37,3 @@ import { ReplayTrace } from './telemetry.js';",
+      "@@ -64,2 +67,5 @@ export interface PlaySetup {",
+      "@@ -127,3 +133,18 @@ export class PlaySim {",
+      "@@ -177,2 +198,5 @@ export class PlaySim {",
+      "@@ -362,2 +386,24 @@ export class PlaySim {",
+      "@@ -396,2 +442,17 @@ export class PlaySim {",
+      "@@ -411,9 +472,12 @@ export class PlaySim {",
+      "@@ -425,3 +489,6 @@ export class PlaySim {",
+      "@@ -447,2 +514,30 @@ export class PlaySim {",
+      "@@ -460,3 +555,4 @@ export class PlaySim {",
+      "@@ -610,4 +706,7 @@ export class PlaySim {",
+      "@@ -686,2 +785,3 @@ export class PlaySim {",
+      "@@ -699,3 +799,4 @@ export class PlaySim {",
+      "@@ -732,3 +833,4 @@ export class PlaySim {",
+      "@@ -736,3 +838,25 @@ export class PlaySim {",
+      "@@ -883,3 +1007,3 @@ export class PlaySim {",
+      "@@ -892,2 +1016,6 @@ export class PlaySim {",
+      "@@ -898,2 +1026,12 @@ const round2 = (v: number) => Math.round(v * 100) / 100;",
+      "diff --git a/src/sim/types.ts b/src/sim/types.ts",
+      "@@ -74,3 +74,5 @@ export type BallState =",
+      "@@ -115,2 +117,5 @@ export type PlayEventType =",
+      "@@ -177,2 +182,10 @@ export interface PlayResult {",
+      "@@ -180,3 +193,3 @@ export interface PlayResult {",
+      "@@ -188,2 +201,29 @@ export interface PenaltyCall {",
+      "diff --git a/test/ball-rules.test.ts b/test/ball-rules.test.ts",
+      "@@ -0,0 +1,281 @@",
+      "diff --git a/test/native-penalty-game.test.ts b/test/native-penalty-game.test.ts",
+      "@@ -0,0 +1,376 @@",
+      "diff --git a/test/penalty-enforcement.test.ts b/test/penalty-enforcement.test.ts",
+      "@@ -0,0 +1,218 @@",
+      "diff --git a/test/prethrow-opi.test.ts b/test/prethrow-opi.test.ts",
+      "@@ -0,0 +1,212 @@"
+    ],
+    "177": [
+      "diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts",
+      "@@ -656,3 +656,3 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';",
+      "@@ -1001,2 +1001,4 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1020,4 +1022,2 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1031,3 +1031,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1231,3 +1242,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1248,2 +1266,5 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "diff --git a/test/support-escape-objective.test.ts b/test/support-escape-objective.test.ts",
+      "@@ -0,0 +1,187 @@"
+    ],
+    "176": [
+      "diff --git a/src/sim/force-track.ts b/src/sim/force-track.ts",
+      "@@ -0,0 +1,50 @@",
+      "diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts",
+      "@@ -14,2 +14,3 @@ import { requestToCover } from './motion-plan.js';",
+      "@@ -250,4 +251,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback",
+      "diff --git a/test/force-track.test.ts b/test/force-track.test.ts",
+      "@@ -0,0 +1,153 @@",
+      "diff --git a/test/run-fit-crossover.test.ts b/test/run-fit-crossover.test.ts",
+      "@@ -40,4 +40,11 @@ describe('free insertion uses crossover for acquired lateral run flow',()=>{"
+    ],
+    "175": [
+      "diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts",
+      "@@ -122,4 +122,3 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)",
+      "@@ -139,2 +138,16 @@ export function leverage(a: Agent, y: number): number {",
+      "@@ -207,4 +220,3 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC",
+      "diff --git a/test/pursuit-force-shoulder.test.ts b/test/pursuit-force-shoulder.test.ts",
+      "@@ -0,0 +1,102 @@"
+    ],
+    "174": [
+      "diff --git a/src/sim/agent.ts b/src/sim/agent.ts",
+      "@@ -31,3 +31,3 @@ export interface Behavior {",
+      "diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts",
+      "@@ -798,7 +798,12 @@ export class RunBlocker implements Behavior {",
+      "diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts",
+      "@@ -1105,3 +1105,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1111,2 +1119,3 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1119,2 +1128,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1176,3 +1194,3 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "diff --git a/test/drive-connection.test.ts b/test/drive-connection.test.ts",
+      "@@ -0,0 +1,44 @@",
+      "diff --git a/test/zone-runoff-work.test.ts b/test/zone-runoff-work.test.ts",
+      "@@ -0,0 +1,70 @@"
+    ],
+    "173": [],
+    "172": [
+      "diff --git a/src/sim/agent.ts b/src/sim/agent.ts",
+      "@@ -31,3 +31,3 @@ export interface Behavior {",
+      "diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts",
+      "@@ -798,7 +798,12 @@ export class RunBlocker implements Behavior {",
+      "diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts",
+      "@@ -1111,2 +1111,3 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1119,2 +1120,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1176,3 +1186,3 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "diff --git a/test/zone-runoff-work.test.ts b/test/zone-runoff-work.test.ts",
+      "@@ -0,0 +1,70 @@"
+    ],
+    "171": [
+      "diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts",
+      "@@ -21,4 +21,4 @@ import { traits } from '../engagement.js';",
+      "@@ -153,4 +153,4 @@ export class Blitzer implements Behavior {",
+      "@@ -199,2 +199,4 @@ export class ManCoverage implements Behavior {",
+      "@@ -222,3 +224,14 @@ export class ManCoverage implements Behavior {",
+      "@@ -254,2 +267,15 @@ export class ManCoverage implements Behavior {",
+      "@@ -259,4 +285,6 @@ export class ManCoverage implements Behavior {",
+      "@@ -265,2 +293,12 @@ export class ManCoverage implements Behavior {",
+      "diff --git a/src/sim/coverage-cues.ts b/src/sim/coverage-cues.ts",
+      "@@ -8,2 +8,12 @@ export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = si",
+      "diff --git a/src/sim/coverage/reads.ts b/src/sim/coverage/reads.ts",
+      "@@ -16,3 +16,3 @@ import type { Agent } from '../agent.js';",
+      "@@ -98,3 +98,8 @@ export class ReleaseReader {",
+      "diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts",
+      "@@ -33,2 +33,11 @@ export interface KeyedRunFit {",
+      "@@ -179,7 +188,10 @@ const contradictedMesh = new WeakSet<Agent>();",
+      "@@ -187,8 +199,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback",
+      "diff --git a/test/man-run-continuity.test.ts b/test/man-run-continuity.test.ts",
+      "@@ -0,0 +1,188 @@"
+    ],
+    "170": [
+      "diff --git a/test/recoverable-contact.test.ts b/test/recoverable-contact.test.ts",
+      "@@ -0,0 +1,62 @@"
+    ],
+    "169": [
+      "diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts",
+      "@@ -1015,4 +1015,3 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "@@ -1022,3 +1021,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
+      "diff --git a/test/support-work-off.test.ts b/test/support-work-off.test.ts",
+      "@@ -23,2 +23,61 @@ function scene(kind:'force'|'insert'|'interior'='force',side=1){"
+    ],
+    "186": [
+      "diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts",
+      "@@ -18,2 +18,3 @@ import { movementObjective } from './movement-objective.js';",
+      "@@ -351,3 +352,10 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],",
+      "diff --git a/src/sim/traffic-distance.ts b/src/sim/traffic-distance.ts",
+      "@@ -0,0 +1,85 @@",
+      "diff --git a/src/sim/traffic-path.ts b/src/sim/traffic-path.ts",
+      "@@ -0,0 +1,194 @@",
+      "diff --git a/src/sim/traffic-route.ts b/src/sim/traffic-route.ts",
+      "@@ -0,0 +1,91 @@",
+      "diff --git a/test/fixtures/traffic-route-impact.json b/test/fixtures/traffic-route-impact.json",
+      "@@ -0,0 +1,250 @@",
+      "diff --git a/test/local-traffic-route.test.ts b/test/local-traffic-route.test.ts",
+      "@@ -0,0 +1,220 @@",
+      "diff --git a/test/traffic-distance.test.ts b/test/traffic-distance.test.ts",
+      "@@ -0,0 +1,50 @@",
+      "diff --git a/test/traffic-path.test.ts b/test/traffic-path.test.ts",
+      "@@ -0,0 +1,123 @@"
+    ]
+  },
+  "checkedUtc": "2026-10-20T21:21:07.950036+00:00",
+  "method": "git merge-tree --write-tree --merge-base=<accepted> <headA> <headB>; only pairs sharing recent runtime files. Full branch documentation conflicts retained.",
+  "productionConflictPairs": [
+    {
+      "a": 182,
+      "b": 181,
+      "files": [
+        "src/sim/behaviors/common.ts"
+      ]
+    },
+    {
+      "a": 177,
+      "b": 169,
+      "files": [
+        "src/sim/engagement.ts"
+      ]
+    }
+  ],
+  "simulations": 0,
+  "testsRun": 0
+}

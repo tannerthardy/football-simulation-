@@ -95,6 +95,29 @@ describe('bounded critical yaw response uses one physical response time', () => 
   });
 
   it.each([
+    { error: 1.5, spin: 0, h: .3, alpha: 2000, rate: 8, mode: 'rate' },
+    { error: .1, spin: 1, h: .2, alpha: 5, rate: 8, mode: 'acceleration' },
+  ])('detects an interior $mode limit even when both free endpoints fit', c => {
+    const B = c.error / TAU - c.spin;
+    const endSpin = (c.spin + B * c.h / TAU) * Math.exp(-c.h / TAU);
+    const acceleration = (t: number) =>
+      (c.error - 2 * TAU * c.spin - B * t) * Math.exp(-t / TAU) / TAU ** 2;
+    expect(Math.abs(c.spin)).toBeLessThan(c.rate);
+    expect(Math.abs(endSpin)).toBeLessThan(c.rate);
+    expect(Math.abs(acceleration(0))).toBeLessThan(c.alpha);
+    expect(Math.abs(acceleration(c.h))).toBeLessThan(c.alpha);
+    const whole = integrateYaw(c.error, c.spin, c.h, TAU, c.alpha, c.rate);
+    expect(whole.events.some(e => e.to === c.mode)).toBe(true);
+    let error = c.error, spin = c.spin;
+    for (const weight of [.07, .31, .13, .49]) {
+      const part = integrateYaw(error, spin, c.h * weight, TAU, c.alpha, c.rate);
+      error = part.error; spin = part.spin;
+    }
+    expect(error).toBeCloseTo(whole.error, 10);
+    expect(spin).toBeCloseTo(whole.spin, 10);
+  });
+
+  it.each([
     [0, 0, -.01, TAU, 1, 1], [0, 0, .01, 0, 1, 1],
     [0, 0, .01, TAU, -1, 1], [0, 0, .01, TAU, 1, -1],
     [NaN, 0, .01, TAU, 1, 1], [0, Infinity, .01, TAU, 1, 1],

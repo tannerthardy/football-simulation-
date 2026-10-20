@@ -13,8 +13,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
-import { interceptPoint } from '../physics/reach.js';
-import { FIELD_WIDTH } from '../core/field.js';
+import { forceTrack, retainedForceTrack } from './force-track.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -33,6 +32,15 @@ export interface KeyedRunFit {
   target: Agent;
   cue: Perceived;
 }
+
+/** Installed exchange expectation and this observer's backfield picture.
+ * This is not an affirmative runner key: retain normal pursuit boundaries
+ * and let acquired empty-back/QB evidence retire the existing expectation.
+ */
+export interface BackfieldRunFit {
+  backfield: { back: Agent; backCue: Perceived; qbCue: Perceived };
+}
+export type RunFitRead = KeyedRunFit | BackfieldRunFit;
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
@@ -178,12 +186,6 @@ const FORCE_DEPTH = process.env.FORCE_DEPTH === '1';
  * movement follows the flow and pull reads rather than a sprint at the line.
  * The existing threat read decides when he fills. */
 const LB_DEPTH = process.env.LB_DEPTH === '1';
-/** Experimental (FORCE_LEAD=1, off): a force defender keeps leverage on the
- * runner's acquired lateral track, not his current spot. He aims his margin
- * outside the earliest point of that track his own body can reach first at
- * his fit depth, moves with the track's lateral speed, and opens to run while
- * that needs more lateral speed than a square shuffle. */
-const FORCE_LEAD = process.env.FORCE_LEAD === '1';
 /** Experimental (TRAP_READ=1, off): an interior defender meets an arriving
  * trapper the way an edge meets a kick-out (wrong-arm or box his near half at
  * his depth) instead of holding his gap landmark at the line. A trapper is an
@@ -251,20 +253,24 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 // sight of the empty back later does not reinstall the expected exchange.
 const contradictedMesh = new WeakSet<Agent>();
 
-export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
+export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
-  const c = keyed?.target ?? sim.carrier;
-  const back = sim.slot('RB');
+  const keyed = input && 'target' in input ? input : undefined;
+  const picture = input && 'backfield' in input ? input.backfield : undefined;
+  const back = picture?.back ?? sim.slot('RB');
+  const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
+  const c = picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
-  let premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
+  let premesh = picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
-  let seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  let seen = picture ? premesh || c === back ? picture.backCue : picture.qbCue
+    : keyed?.cue ?? sim.see(a, premesh ? back! : c);
   if (!keyed && premesh) {
-    const qb = sim.see(a, sim.qb);
+    const qb = picture?.qbCue ?? sim.see(a, sim.qb);
     // Snap possession is expected. An empty back already beyond the line
     // and out of handoff reach contradicts that expectation; a personally
     // acquired committed QB also retires it. Neither uses a failure clock.
@@ -333,29 +339,30 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       // kickout. The blocker can answer with a log; no outcome is prescribed.
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
-    }
+    } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const offBall=FORCE_DEPTH && job.kind==='force' && homeDepth>=5;
     const supportDepth=offBall && (premesh||seen.pos.x<sim.los) ? homeDepth
       : job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
-    // The track's lateral speed when it widens toward this side, else none.
-    const widen = FORCE_LEAD && job.kind === 'force' && seen.vel.y * job.side > 1 ? seen.vel.y : 0;
-    if (!kick && job.kind === 'force') {
-      let ry = seen.pos.y;
-      if (widen) {
-        const margin = job.side * .7;
-        const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale },
-          (t) => ({ x, y: clamp(seen.pos.y + widen * t + margin, 0, FIELD_WIDTH) }), { horizon: 2, radius: .3 });
-        ry = ip.point.y - margin;
-      }
-      gy = job.side > 0 ? Math.max(surface+.5,ry+.7) : Math.min(surface-.5,ry-.7);
-    }
-    const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
-    let fit = track(a,aim,{x:0,y:widen},{speed:.9,gain:3,facing:Math.PI});
-    // A lateral sprint is run with open hips, not shuffled square.
-    if (widen && Math.abs(fit.vel.y) > Math.max(Math.abs(fit.vel.x), 2.5))
-      fit = { ...fit, facing: Math.atan2(fit.vel.y, fit.vel.x) };
+    // The outside shoulder belongs to a moving runner/surface, not a series
+    // of stationary landmarks. Use only the pictures acquired above and
+    // retain point and motion together for the existing decision beat.
+    let aim, motion = {x:0,y:0};
+    if (job.kind === 'force') {
+      const boundary = core.reduce((p,q) => job.side*(p.pos.y+job.side*p.radius)
+        >= job.side*(q.pos.y+job.side*q.radius) ? p : q);
+      const desired = forceTrack(a,seen,x,surface,boundary.vel.y,job.side);
+      desired.point.y += a.mind.placementError;
+      const held = retainedForceTrack(a,desired,sim.t);
+      aim = held.point; motion = held.velocity;
+    } else aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
+    const fit = track(a,aim,motion,{speed:.9,gain:3,facing:Math.PI});
+    // Open the hips for an acquired outward lateral run; a square shuffle
+    // cannot execute this request. Near-contact gathering below still owns
+    // the final approach, and stationary/inside fits keep their technique.
+    if (motion.y*job.side > 0 && Math.abs(fit.vel.y)>Math.abs(fit.vel.x))
+      fit.facing = Math.atan2(fit.vel.y,fit.vel.x);
     // A fit landmark is not permission to run through an approaching back.
     // Gather for a personally identified runner threatening this surface,
     // even before he crosses the old LOS pursuit gate. Keep the installed
@@ -369,8 +376,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (!premesh && seen.carrying === true && free && job.side * (seen.pos.y - gy) >= -contact) {
       const offset = aim.y-seen.pos.y;
       const { near, gather } = gatheringApproach(a,seen,contact,offset);
-      const approach = chooseApproach(a,seen,contact,offset,fit,sim.t);
-      return blendApproach(approach,near,gather);
+      return chooseApproach(a,seen,contact,offset,fit,sim.t,
+        command => blendApproach(command,near,gather));
     }
     return fit;
   }
