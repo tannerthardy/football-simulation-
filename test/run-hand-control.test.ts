@@ -261,9 +261,9 @@ describe('run helpers earn contact and retain it through ownership', () => {
   });
 });
 
-describe('solo hand-fight execution with the preserved legacy policy is unchanged', () => {
-  it.each(['run', 'pass'] as const)('matches frozen 923dbe0 legacy %s commands, bodies, loads and RNG', type => {
-    const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [];
+describe('solo hand-fight execution retains its legacy policy with the adopted yaw motor', () => {
+  it.each(['run', 'pass'] as const)('preserves legacy %s commands/control/RNG and the reviewed motor-specific physical trace', type => {
+    const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [], policyTrace: unknown[] = [];
     for (let k = 0; k < 6; k++) {
       const { intents, report } = step(f);
       // The frozen witness predates Rule12 observation receipts. Preserve
@@ -277,11 +277,25 @@ describe('solo hand-fight execution with the preserved legacy policy is unchange
       };
       trace.push({ intents, control: f.engagement.control,
         bodies: f.sim.agents.map(a => structuredClone(a.body)), report: historicalReport });
+      policyTrace.push({ intents, control: f.engagement.control });
     }
-    const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng: f.sim.rng.nextU32() })).digest('hex');
-    const baseline = type === 'run'
-      ? '1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2ecd'
-      : 'd3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55edc';
-    expect(actual).toBe(baseline);
+    const nextRng = f.sim.rng.nextU32();
+    // The accepted #180 motor intentionally changes post-contact yaw and
+    // recovery. The six-tick accepted / motor-only / combined diagnostic
+    // preserves the historical full hashes and shows the first physical
+    // change at tick six, with no command, control or RNG change. Keep those
+    // legacy policy fields pinned separately; pin the complete physical trace
+    // to independently reviewed #180, rather than requiring the old motor.
+    // See docs/reviews/solo-hand-motor-contract.md and its exact trace receipt.
+    const policy = { trace: policyTrace, nextRng };
+    const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
+    expect(policyHash).toBe(type === 'run'
+      ? '82b6a93e956e652f136d93444a82bb718f209ddebf98f3bce86d18da8f0b12dc'
+      : 'a86cbcee799208e979666c327ebeaa9557ae41fd0e40297df933ec9f74e7a19d');
+    const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
+    const motor180 = type === 'run'
+      ? 'ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1'
+      : 'ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e';
+    expect(actual).toBe(motor180);
   });
 });
