@@ -1,0 +1,54 @@
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197
+Running node node_modules/vitest/vitest.mjs run --project core test/replay-recording-precision.test.ts
+
+ RUN  v3.2.4 /workspace/football-latest-mesh-review
+
+ ❯ |core| test/replay-recording-precision.test.ts (2 tests | 1 failed) 11ms
+   × replay coordinate precision through native recording and viewing > preserves a slow native movement through recording, packing and decoding without advancing the world 8ms
+     → expected [ [ 31.2, 26.7, 1.2 ], …(1) ] to deeply equal [ [ 31.24, 26.67, 1.23 ], …(1) ]
+   ✓ replay coordinate precision through native recording and viewing > decodes old unscaled clips and explicit tenths beside hundredths, including posture 1ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  00:41:49
+   Duration  966ms (transform 606ms, setup 0ms, collect 748ms, tests 11ms, environment 0ms, prepare 63ms)
+
+Validation receipt: out/latest-mesh-review/precision-upstream-failure.json; exit 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/replay-recording-precision.test.ts > replay coordinate precision through native recording and viewing > preserves a slow native movement through recording, packing and decoding without advancing the world
+AssertionError: expected [ [ 31.2, 26.7, 1.2 ], …(1) ] to deeply equal [ [ 31.24, 26.67, 1.23 ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+-     31.24,
+-     26.67,
+-     1.23,
++     31.2,
++     26.7,
++     1.2,
+    ],
+    [
+-     31.27,
+-     26.71,
+-     1.23,
++     31.3,
++     26.7,
++     1.2,
+    ],
+  ]
+
+ ❯ test/replay-recording-precision.test.ts:25:39
+     23|     pos.x += .03; pos.y += .04; host.t = .1;
+     24|     record.call(host);
+     25|     expect(frames.map(f => f.agents)).toEqual([[31.24, 26.67, 1.23], […
+       |                                       ^
+     26|     const packed = packReplayPlay({ index: 0, quarter: 1, clock: 900, …
+     27|       yardline: 25, call: 'Recorded fixture', defense: 'D', text: '', …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

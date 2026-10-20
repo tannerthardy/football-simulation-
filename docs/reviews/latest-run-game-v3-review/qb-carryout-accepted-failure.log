@@ -1,0 +1,40 @@
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197
+Running node node_modules/vitest/vitest.mjs run --project core test/qb-carryout-direction.test.ts
+
+ RUN  v3.2.4 /workspace/football-latest-mesh-review
+
+ ❯ |core| test/qb-carryout-direction.test.ts (5 tests | 4 failed) 34ms
+   × QB handoff carry-out side from the installed play > carries away from power after either exchange drift, flip=false 21ms
+     → expected 3.0739517463046586 to be less than 0
+   × QB handoff carry-out side from the installed play > carries away from power after either exchange drift, flip=true 6ms
+     → expected 3.0739517463046586 to be less than 0
+   × QB handoff carry-out side from the installed play > carries away from iz_weak after either exchange drift, flip=false 3ms
+     → expected 3.0739517463046586 to be less than 0
+   × QB handoff carry-out side from the installed play > carries away from iz_weak after either exchange drift, flip=true 2ms
+     → expected 3.0739517463046586 to be less than 0
+   ✓ QB handoff carry-out side from the installed play > preserves the pre-exchange arrival and the no-installed-run fallback 2ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  00:42:42
+   Duration  941ms (transform 571ms, setup 0ms, collect 742ms, tests 34ms, environment 0ms, prepare 48ms)
+
+Validation receipt: out/latest-mesh-review/qb-carryout-accepted-failure.json; exit 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/qb-carryout-direction.test.ts > QB handoff carry-out side from the installed play > carries away from power after either exchange drift, flip=false
+ FAIL  |core| test/qb-carryout-direction.test.ts > QB handoff carry-out side from the installed play > carries away from power after either exchange drift, flip=true
+ FAIL  |core| test/qb-carryout-direction.test.ts > QB handoff carry-out side from the installed play > carries away from iz_weak after either exchange drift, flip=false
+ FAIL  |core| test/qb-carryout-direction.test.ts > QB handoff carry-out side from the installed play > carries away from iz_weak after either exchange drift, flip=true
+AssertionError: expected 3.0739517463046586 to be less than 0
+ ❯ test/qb-carryout-direction.test.ts:33:34
+     31|         qb.body.pos = { x: mesh.x, y: mesh.y + side * drift };
+     32|         const cmd = behavior.update(qb, sim);
+     33|         expect(cmd.vel.y * side).toBeLessThan(0);
+       |                                  ^
+     34|         expect(cmd).toEqual(goTo(qb, { x: sim.los - 6, y: qb.pos.y - s…
+     35|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
