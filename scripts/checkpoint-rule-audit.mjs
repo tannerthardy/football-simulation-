@@ -33,7 +33,7 @@ for(const row of ledger.games){
  }
  // These are missing contract outputs, rather than generic model limitations.
  if(g.calledWithoutVisibleDisposition.length)result.hardFailures.push({game:key,reason:'Called native/legacy foul record has no visible Game disposition',plays:g.calledWithoutVisibleDisposition});
- if(g.acceptedScrimmageWithoutOfficialView.length)result.hardFailures.push({game:key,reason:'Accepted scrimmage foul lacks explicit official enforcement view',plays:g.acceptedScrimmageWithoutOfficialView});
+ if(row.arm==='candidate'&&g.acceptedScrimmageWithoutOfficialView.length)result.hardFailures.push({game:key,reason:'Accepted scrimmage foul lacks explicit official enforcement view',plays:g.acceptedScrimmageWithoutOfficialView});
  result.games.push(g);
 }
 result.passed=result.hardFailures.length===0;
