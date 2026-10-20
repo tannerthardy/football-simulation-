@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Active moving run-fit objective — 2026-10-20 America/Phoenix
+
+Catching/Awareness owns a bounded continuation of held free-fit research, starting
+accepted2c98bed94adad8087c65f381d4090444ad283985 /queue4cc3337df24faa6d857b612ae62e3df3109a5296
+on isolated codex/run-fit-moving-objective. Question: does a selected moving fit
+need its point, acquired motion, planner and facing adopted coherently? Current
+saved OZ4 repeats mixed-age free-LB action switching. Prior free-fit mode-only
+candidate remains held; do not import it as accepted or infer tackle improvement.
+Claim only executeRunFit's final insertion action and directly affected contracts;
+no acquired backfield/input change (#171 separate), common.ts pursuit/leverage
+(Do-It-All), contact/engagement/Physics/gait, block planning, target-admission
+thresholds or ratings/default changes. Run keeps its research LB_GLIDE stack.
+Use saved native evidence plus one useful opposing fit/declaration control;
+Integration owns exact combined verification. No broad campaign.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
