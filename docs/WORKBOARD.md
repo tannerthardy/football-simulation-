@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Active man-marker run-duty continuation — 2026-10-20 America/Phoenix
+
+Catching reviews Claude `MAN_RUN_COMMIT` at `bae3fe80`, from accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985` / canonical queue `4cc3337`.
+Bounded claim: `ManCoverage.coverMan`, acquired blocking cues and their focused
+contracts. Separate from #169's engagement-start wait; no engagement/physics,
+capacity/default, spacing, whole coverage-system or offensive stalk changes.
+Reuse current accepted saved witnesses and distinguish provisional cues,
+continuing duty, contradictory acquired evidence and recognized throw priority.
+No permanent run latch, private throw/call cue or timer-only release. Run retains
+its experimental stack; Integration owns combined verification.
+
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
