@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Active moving force shoulder — 2026-10-20 UTC
+
+Do-It-All owns only `executeRunFit`'s force edge-fit goal/retained-motion/facing
+block in `src/sim/run-fits.ts`, local `force-track.ts`, focused controls and
+observer-only diagnostics on `codex/force-moving-shoulder`, from accepted
+`2c98bed94adad8087c65f381d4090444ad283985`. Coordinated in
+[153 comment6300011985](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300011985).
+Catching retains acquired/expected runner resolution and activation/retirement;
+the other run-fit owner retains the bottom insertion objective block. No
+assignment, engagement, perception, shared steering, capacity or World edits.
+The midpoint common-helper correction is independently reviewable on
+`codex/help-aware-pursuit`; it is not a dependency of this trial. Follow
+Measurement's narrow-owner/full-request trace and keep mechanical, reacting
+repair and transfer claims separate. Existing contact and offensive escape
+remain opposing outcomes, not targets to erase.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
