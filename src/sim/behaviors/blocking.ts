@@ -796,11 +796,16 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
-  contactMotion(a: Agent): Vec2 | null {
+  contactMotion(a: Agent, work: 'reach' | 'runoff' = 'reach'): Vec2 | null {
     const e = a.engagement, read = this.zoneRead;
     if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
-      || !read || read.target !== e.defender.idx || read.phase !== 'reach'
+      || !read || read.target !== e.defender.idx || read.phase !== work
       || (this.plan.combination && !this.plan.combination.released)) return null;
+    // A runoff is selected from the acquired hip picture when the outside
+    // surface is unattainable. Realize its chosen drive at the existing run
+    // rep tempo; contact still bounds each component and supplies every force.
+    if (work === 'runoff') return this.plan.target === e.defender
+      ? { x: read.drive.x * 2.4, y: read.drive.y * 2.4 } : null;
     // The same track tempo as the free stretch step, until the acquired
     // shoulder picture changes the technique. Seal/runoff have their own fit.
     return { x: 0, y: read.side * a.profile.vmax * .45 };

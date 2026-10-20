@@ -1103,12 +1103,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  if (!stretch) {
+    // Full drive assumes the man is ahead on the installed drive line.
+    // Once level or past, carry the existing connection instead of running
+    // away from it. Seal work, anchoring and World still govern the rep.
+    const ahead = (d.pos.x - b.pos.x) * drive.x + (d.pos.y - b.pos.y) * drive.y;
+    const w = clamp(ahead / (0.5 * sep), 0, 1);
+    forward = w * 2.4 + (1 - w) * clamp(along(d.vel) + gap * 3, -1, 2.4);
+  }
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
   const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
+  const runoffWork = RUN_CONTACT_COMPONENTS && stretch ? b.behavior.contactMotion?.(b, 'runoff') : null;
   if (stretch && run) {
     const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
     if (Math.abs(toPlay) > .5) {
@@ -1116,6 +1125,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       if (contactTrack) {
         const track = contactTrack.x * lat.x + contactTrack.y * lat.y;
         lateral = Math.max(lateral * toPlay, Math.min(mirror, track * toPlay)) * toPlay;
+      }
+      if (runoffWork) {
+        // The component frame removes the drive's tangent to avoid double
+        // counting. Keep the chosen solo-runoff work explicitly, rather than
+        // reducing it to defender co-flow after the shoulder offset settles.
+        // Project once, retain the existing bound, and let spacing/body/contact
+        // execution decide which movement and protection can be achieved.
+        const side = Math.sign(toPlay), work = runoffWork.x * lat.x + runoffWork.y * lat.y;
+        lateral = Math.max(lateral * side, Math.min(mirror, work * side)) * side;
       }
     }
   }
@@ -1174,7 +1192,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // normal work is the emitted command, not that legacy drive projection.
     legacyDriveRequest: forward, normalRequest: -(blockVel.x * axis.x + blockVel.y * axis.y),
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
-    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
+    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, runoffWork, lateral, preAnchor,
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
