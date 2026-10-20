@@ -1,5 +1,18 @@
 # Current work ownership
 
+## #180 yaw readiness continuation — 2026-10-20 UTC
+
+User explicitly resumes #180 to finish its cost/readiness blocker. Physics
+owns only `integrateYaw` execution cost in `src/physics/yaw-response.ts`, focused
+reference/parity checks and #180 evidence on existing `codex/loaded-movement`.
+Starting head `ddee165fecb8fc88925b4561d4b1837fc1964716`; accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985` and canonical queue
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52` re-fetched unchanged. Preserve the
+prior1.267 paired-p95 failure against1.25; profile before changing the hot path.
+Same yaw response/limits, independent references, contacts, capacities, recovery
+laws and other experimental defaults. #184 remains independently ready, not a
+parent. Integration owns combined verification once the component is ready.
+
 ## Shared free/loaded movement checkpoint — 2026-10-20 UTC
 
 Physics owns `codex/loaded-movement` from accepted develop
