@@ -947,9 +947,11 @@ export class RunBlocker implements Behavior {
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
-        // The pull step opens the hips to the play side: he does not turn to
-        // face his own backfield while he gains depth (PULL_STEP).
-        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
+        // The installed straight-back clearance is a square depth step, not
+        // a pivot toward our own end zone. The optional diagonal open step
+        // retains its authored playside pose; the flat/fit legs face normally.
+        return goTo(a, path, { speed: 0.95, through,
+          facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
     }
     if (!target) {
