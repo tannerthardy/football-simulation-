@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Shared free/loaded movement checkpoint — 2026-10-20 UTC
+
+Physics owns `codex/loaded-movement` from accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985`, compared with canonical queue
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`. Bounded scope: complete movement
+request versus achieved free/linked-pair motion, moderate-speed propulsion and
+steady-facing response; focused mechanics/tests and minimal portable candidate
+only after localization. Existing `codex/gait-intent` research/evidence remains
+unchanged. Run retains technique/assignment decisions; existing anchor/release/
+climb fixes are not reopened. Capacities, recovery laws, experimental defaults
+and held contact/solver work remain unchanged. Integration owns the eventual
+exact combined verification; workers provide focused evidence. No shared-suite,
+game campaign or experimental promotion is implied by this diagnostic claim.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
