@@ -772,7 +772,7 @@ export class RunBlocker implements Behavior {
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
-  private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
+  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
@@ -910,8 +910,15 @@ export class RunBlocker implements Behavior {
           }
         }
       }
-      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
-      const wp = plan.pullPath[this.pullIdx];
+      const observedCorner = !plan.pullSurface && target &&
+        (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead');
+      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) {
+        // Resolve the flat leg against its acquired rear surface below, not
+        // against a snap x coordinate that may now lie inside the down wall.
+        if (this.pullIdx === 1 && observedCorner) break;
+        this.pullIdx++;
+      }
+      let wp = plan.pullPath[this.pullIdx];
       if (wp) {
         // Clear the wall with the feet before fitting the moving kick/trap
         // target. Reaching a waypoint's tolerance does not establish that
@@ -919,8 +926,21 @@ export class RunBlocker implements Behavior {
         // distance of the puller to become relevant work.
         const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
+        const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         if (read) {
-          this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
+          const clearNow = read.clearanceX === null || a.pos.x + a.profile.radius <= read.clearanceX;
+          this.pullCleared ||= clearNow;
+          // A cleared puller may pass the moving corner deeper than its old
+          // snap landmark. Do not make him return upfield to finish that
+          // waypoint, or add another retreat solely for being near a teammate.
+          // An actually obstructed rear surface still requires gaining depth.
+          const stationY = this.pullCleared && plan.pullRole !== 'lead'
+            ? read.seen.pos.y - ps * .65 : wp.y;
+          if (observedCorner && this.pullIdx === 1 &&
+              clearNow && (stationY-a.pos.y)*ps < .65) {
+            this.pullIdx++;
+            wp = plan.pullPath[this.pullIdx];
+          }
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
@@ -934,7 +954,6 @@ export class RunBlocker implements Behavior {
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
-        const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
@@ -946,15 +965,23 @@ export class RunBlocker implements Behavior {
             const elapsed=t-this.wrapTrafficAt,x=p.pos.x+p.vel.x*elapsed,y=p.pos.y+p.vel.y*elapsed;
             return Math.hypot(x-a.pos.x,y-a.pos.y)<1.2 && x>a.pos.x;
           })
-          : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
-        if (this.pullIdx === 1 && nearWall) {
+          : !read && sim.offense.some(o => {
+            if (o === a || !isOL(o)) return false;
+            const seen=sim.see(a,o);
+            return Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<1.2 && seen.pos.x>a.pos.x;
+          });
+        if (this.pullIdx === 1 && observedCorner && read && read.clearanceX !== null) {
+          path = {x:Math.min(wp.x,read.clearanceX-a.profile.radius),y:path.y};
+        } else if (this.pullIdx === 1 && nearWall) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
-        // The pull step opens the hips to the play side: he does not turn to
-        // face his own backfield while he gains depth (PULL_STEP).
-        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
+        // The installed straight-back clearance is a square depth step, not
+        // a pivot toward our own end zone. The optional diagonal open step
+        // retains its authored playside pose; the flat/fit legs face normally.
+        return goTo(a, path, { speed: 0.95, through,
+          facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
     }
     if (!target) {
@@ -1187,8 +1214,18 @@ export class RunBlocker implements Behavior {
         && !(b.behavior instanceof RunBlocker && b.behavior.plan.kind === 'pull')
         && sim.offAlign.spots[b.slot].pos.y >= Math.min(fromY, exitY)-b.profile.radius
         && sim.offAlign.spots[b.slot].pos.y <= Math.max(fromY, exitY)+b.profile.radius);
-      const clearanceX = wall.length ? Math.min(...wall.map(b => sim.see(a, b).pos.x-b.profile.radius))
-        : this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius;
+      const side = playSideSign(sim,sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+      const surfaces = wall.map(b => ({b,seen:sim.see(a,b)})).filter(({b,seen}) => {
+        if (this.plan.pullSurface) return true; // GH retains its surface/traffic contract.
+        // A down-blocker already behind the crossing body is no longer an
+        // obstacle to this corner. Retain a closing body that can re-enter
+        // their combined width before the next ordinary acquired read.
+        const lateral = (seen.pos.y-a.pos.y)*side;
+        const closing = Math.max(0,(seen.vel.y-a.vel.y)*side)*a.mind.decisionInterval;
+        return lateral+closing >= -(a.profile.radius+b.profile.radius);
+      });
+      const clearanceX = surfaces.length ? Math.min(...surfaces.map(({b,seen}) => seen.pos.x-b.profile.radius))
+        : this.plan.pullSurface ? this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius : null;
       this.pullRead = { target, seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } },
         clearanceX, nextRead: sim.t + a.mind.decisionInterval };
     }
