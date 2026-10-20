@@ -1,8 +1,8 @@
 {
   "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
   "failedCombined": "075e2148a8c94c80ba90743a324e4670091998c0",
-  "isolated185": "ed3583af",
-  "repair": "436e9e61",
+  "isolated185": "ed3583afcdff6c3c02b9df932adc8b2308d3afcc",
+  "repair": "436e9e61bea24170addcf4ff748164de09fb9c19",
   "finalTested": "4ee751d5ffd5af1d500a913bbb7d41ed1a0357e4",
   "nativeDiagnosticExecutions": 12,
   "completedGames": 0,
@@ -65,6 +65,14 @@
       "sha256": "781cb0dcadcc78fde4e83d4513f356bbe9160a81115a11048f226e74a9e8e48a"
     },
     {
+      "path": "data/reviews/current/motion-contact-integration/redirect-geometric-focused.log",
+      "sha256": "17dab000f6f4dbe61c4d1dcbdae0eef678ecc93067704c880ad4dc5d9167ac34"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/redirect-geometric-receipt.json",
+      "sha256": "0ea407f5c79e0d231a9fd17bbfc390fcd2ffe46bcc16cf5b53b94643cb6333ad"
+    },
+    {
       "path": "data/reviews/current/motion-contact-integration/repaired-stationary-receipt.json",
       "sha256": "459e8ce24039b26762a2140c267f77f160e75bf6f6e1e8cfec586f5d6f35a766"
     },
@@ -72,5 +80,20 @@
       "path": "data/reviews/current/motion-contact-integration/repaired-stationary.json.gz",
       "sha256": "fc10787b36805e7aa69daaf54b7159bb732c2aae5feac159b19908314dd2dfa0"
     }
-  ]
+  ],
+  "independentReview": {
+    "reviewer": "/root/run_contact_composition",
+    "decision": "ACCEPT exact runtime436e9e61 and final4ee751d5 after full patch/source and49-pass receipt review",
+    "newRuns": 0
+  },
+  "redirectQualification": {
+    "commit": "8928b9f66f59eaa1477971ac94b9f7a17d752968",
+    "decision": "ACCEPT by /root/motor_review after raw traces/exact patch/evidence hashes review",
+    "focusedPassed": 2,
+    "commandSeconds": 2.034265198,
+    "historicalDiagnosis": "2ce93896b191e70cda9a2e12a9e4d5de48b98dfe",
+    "positionAccuracyYd": 1e-09,
+    "velocityAccuracyYdPerS": 2e-08,
+    "productionChange": false
+  }
 }
