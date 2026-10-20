@@ -3,10 +3,11 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import {goTo} from '../src/sim/behaviors/common.js';
+import {cornerSpeed} from '../src/physics/kinematics.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/puller-access-inputs.json.gz',import.meta.url))).toString());
 
-function stage(mirror:boolean,obstructed=false,hiddenClose=false){
+function stage(mirror:boolean,obstructed=false,hiddenClose=false,passedWall?:'sinking'|'closing'|'empty'){
  const sim=new PlaySim(structuredClone(inputs.rows.find((r:{id:string})=>r.id==='K01').setup) as PlaySetup);
  const a=sim.slot('RT')!,controller=a.behavior as RunBlocker;
  if(mirror){
@@ -20,13 +21,18 @@ function stage(mirror:boolean,obstructed=false,hiddenClose=false){
  const side=mirror?-1:1,flat=controller.plan.pullPath![1];
  // Initialize installed home stance before staging a physical flat-leg state.
  sim.t=.05;controller.update(a,sim);sim.t=2;
- a.body.pos={x:flat.x-(obstructed?.3:1),y:flat.y+side*.2};a.body.vel={x:0,y:side*2};
+ a.body.pos={x:flat.x-(obstructed?.3:1),y:flat.y+side*(passedWall==='empty'?-2:.2)};a.body.vel={x:0,y:side*2};
  Reflect.set(controller,'pullIdx',1);Object.defineProperty(a.mind,'placementError',{get:()=>0});
  const ordinary=sim.see.bind(sim),target=controller.plan.target!;
  sim.see=(observer,other,scale)=>{
-  const seen=ordinary(observer,other,scale);
+  const original=ordinary(observer,other,scale);
+  const seen=mirror?{...original,pos:{x:original.pos.x,y:2*sim.ballY-original.pos.y},vel:{x:original.vel.x,y:-original.vel.y}}:original;
   if(observer!==a)return seen;
   if(other===target)return {...seen,pos:{x:43,y:flat.y+side*3},vel:{x:0,y:0}};
+  if(passedWall==='empty')return {...seen,pos:{x:38,y:a.pos.y-side*3},vel:{x:0,y:0}};
+  if(passedWall && other.slot==='LG')return {...seen,
+   pos:{x:38,y:a.pos.y-side*(passedWall==='closing'?1:2)},
+   vel:{x:0,y:passedWall==='closing'?side*4.5:0}};
   return {...seen,pos:{x:obstructed?38:40,y:seen.pos.y},vel:{x:0,y:0}};
  };
  // Private movement cannot alter the same delivered picture.
@@ -52,5 +58,23 @@ describe('one acquired rear surface governs the ordinary pull corner',()=>{
  });
  it.each([false,true])('private teammate movement cannot reinstate the retreat, mirror=%s',mirror=>{
   expect(stage(mirror,false,true).command).toEqual(stage(mirror,false,false).command);
+ });
+ it.each([false,true])('a passed sinking teammate cannot block an already clear corner, mirror=%s',mirror=>{
+  const f=stage(mirror,false,false,'sinking');
+  expect(Reflect.get(f.controller,'pullIdx')).toBe(2);
+  expect(f.command).toEqual(stage(mirror).command);
+ });
+ it.each([false,true])('retains a passed body closing back into the crossing width before the next read, mirror=%s',mirror=>{
+  const f=stage(mirror,false,false,'closing');
+  expect(Reflect.get(f.controller,'pullIdx')).toBe(1);
+  expect(f.command.vel.x).toBeLessThan(0);
+ });
+ it.each([false,true])('no remaining wall does not create a held own-front barrier before the station, mirror=%s',mirror=>{
+  const f=stage(mirror,false,false,'empty');
+  expect(Reflect.get(f.controller,'pullRead').clearanceX).toBeNull();
+  expect(Reflect.get(f.controller,'pullIdx')).toBe(1);
+  f.a.body.pos.x+=.15;f.sim.t+=.05;
+  const p=f.controller.plan.pullPath!;
+  expect(f.controller.update(f.a,f.sim)).toEqual(goTo(f.a,p[1],{speed:.95,through:cornerSpeed(f.a.body,p[1],p[2],.65)}));
  });
 });
