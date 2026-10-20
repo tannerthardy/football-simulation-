@@ -101,7 +101,10 @@ First portable candidate: independently reviewed **169@1004b818 +171@6cbdcc4d**,
 seven files/five runtime files, sourcef3ed945f. [Patch and manifest](../data/reviews/current/claude-latest-review-intake.json).
 Only temporary-index/ref/blob checks completed: not frozen/combined-verified or
 adopted. Integration owns final overlap acceptance/exact verification once;
-contributor focused receipts are reused.170@4a5aadcb remains a separate diagnostic/
+contributor focused receipts are reused.Newly refreshed172@ae6b1d9 already has independent solo-runoff acceptance. Optional
+169+171+172 portable composition is10files/7runtime, source094ce734; temporary-index
+application succeeds, semantic stepRunRep overlap/adverse review remains Root's.
+170@4a5aadcb remains a separate diagnostic/
 regression-contract review with no engine/default delta. Neither lane waits for
 all research or Physics. Preserve169 WZ7 leverage cost and171 OZ4 adverse ending.
 
@@ -884,6 +887,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
 | Reviewed controller preparation |169@1004b818 +171@6cbdcc4d; portable sourcef3ed945f | Integration final composition/verification once; no repeated contributor review or research-stack import. [Manifest](../data/reviews/current/claude-latest-review-intake.json). |
+| Reviewed runoff preparation |172@ae6b1d9; accepted-base solo-runoff hook | Root reviews actual offensive/defensive stepRunRep composition before optional169/171/172 freeze; preserve earlier access/live censors, reuse existing independent review. |
 | Separate diagnostic review |170@4a5aadcb; no src/settings delta | Integration tool/test portability/contract decision; preserves recoverable contact versus proximity interpretation. |
 | Claude153 newer families |bae3fe80;75 registered research settings,44 accepted | Proposed FORCE_LEAD author extraction→Run review first; other owners follow named existing lanes, holds unchanged. [Requests](reviews/run-game-v3-review-intake.md#latest-claude-preparation). |
 | Delivered via168 |131/141/148→149/150/152/155/156/157/159/corrected160/161/167 plus two153 extractions; develop2c98bed9 | All13 source PRs closed as incorporated; branches/evidence retained. [Actual pin/owner handoff](../data/reviews/current/pr168-merge.json). |

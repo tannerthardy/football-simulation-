@@ -8,6 +8,8 @@ metadata plus new portable-patch/source manifest and delivery records on
 Researchbae3fe80 includes accepted source; no full research ancestry import.
 Temporary-index169+171 preparation touches no worker's index/checkout/engine:
 seven-file/five-runtime patchsourcef3ed945f, not frozen or combined verified.
+172's independently accepted solo-runoff hook also applies in an optional10-file/7-source
+patch; shared offensive/defensive stepRunRep semantic review remains Root's.
 170 diagnostic/tool/test review is separate. Root owns exact combined verification
 when the scoped candidate is accepted; contributors retain their focused receipts.
 

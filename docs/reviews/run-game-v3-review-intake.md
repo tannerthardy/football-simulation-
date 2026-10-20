@@ -20,6 +20,7 @@ configured values. The31 additional settings and research behavior are not adopt
 | Related156/157 formation/F-count and155 eligibility | Independently accepted and delivered through168 | Completed; retain changed installed starting geometry in new mesh evidence. |
 |169@1004b818 | Independent controller/mechanical acceptance of first informed-support work-off timing; adverse WZ7 retained | Integration portable composition/verification; no new blanket duration/containment approval. |
 |171@6cbdcc4d | Published independent information/continuation acceptance at11ef170/runtime925eb44; OZ4 adverse retained | Integration composition with169; preserve BackfieldRunFit/ReleaseReader contracts and current acquired inputs. |
+|172@ae6b1d9 | Published independent ACCEPT of acquired solo-runoff tangent realization at859d0255; strong earlier defensive access and live censors retained | Integration source/adverse/semantic overlap review with169 in stepRunRep; no repeat author review or physics activation. |
 |170@4a5aadcb | Independent evidence/physics reviews support diagnostic conclusion; no src/settings change | Integration diagnostic/tooling/test portability and contract adoption review, independent of runtime promotion. No generic slowdown approval. |
 | UC_MESH/MESH_TEMPO/GUN_MESH_SIDE/QB_CARRYOUT/PACE_LEAD | Previously reviewed HOLD at earlier pins; draw/TE guard repairs and genuine UC timing dependency recorded | Run/author inspect changed/minimal hunks only. Current-base full package remains unaccepted; accepted156 affects starting geometry. |
 | ZONE_TE/STRETCH_FLAT/LB_KEY,DRIVE_CONNECT/DEPART_TEMPO/FB_TRACK/OL_ALIGN | Existing review holds/adverse cases; earlier local repairs do not activate the features | Run delta triage; no repeat of unchanged checks. Preserve vector/frame, actor association, useful protection and loaded/passing controls. |
@@ -61,6 +62,18 @@ No31 research registrations, default activation or branch/data-only ancestry imp
 170's diagnostics remain separately reviewable and cannot delay this controller
 candidate merely to complete every lane.
 
+A final queue refresh found reviewed172@ae6b1d9. The optional
+[169+171+172 patch](../../data/reviews/current/claude-controller-169-171-172.patch)
+applies cleanly:10files/7runtime, source SHA256
+`094ce7348ae10bc1c0bc2b54cf7a495995fc906247a662e3697980bcfd786d27`.
+The original smaller patch remains unchanged and fetchable. Textual application
+is not semantic acceptance; Integration must review169's defensive timing versus
+172's offensive contact hook in shared stepRunRep and preserve172's earlier
+DT/RB access, censor and collection qualifications before choosing the exact freeze.
+[Existing172 acceptance](https://github.com/tannerthardy/football-simulation-/pull/172#issuecomment-6300122933)
+is reused; no contributor re-review or additional broad campaign.
+
+
 Integration owns source/overlap acceptance and then required exact combined
 verification once. Reuse169's34 and171's129 focused checks within their recorded
 sources; do not sum them into a claimed distinct combined count. A targeted
@@ -90,7 +103,7 @@ Finish one existing controller finding as a minimal current-develop candidate be
 
 [Posted request](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300179998).
 
-Independently review the proposed FORCE_LEAD extraction first, using source and existing AFTER-04/14 evidence before requesting runs. Decide acquired-input safety, outside leverage, attainable requests and legitimate cutback/PA/offensive controls. Classify routine contract repair versus new policy/default requiring a decision. Then source-triage PULL_STEP/LEAD_READ/TRAP_READ and the mesh/climb family for the smallest next candidate; carry forward unchanged UC/MESH/GUN/ZONE_TE/DRIVE_CONNECT/DEPART_TEMPO holds and inspect only changed or newly portable hunks. Keep SHED_PURSUE's acquired intent and .6s re-grab prohibition separate. No full research merge or automatic experiment matrix.
+Your #172 solo-runoff correction at ae6b1d9 already has a published independent acceptance; keep its scope/receipts stable and do not repeat that review. Integration owns its potential composition with169/171, including the shared stepRunRep boundary and retained earlier DT access/censored outcomes. Independently review the proposed FORCE_LEAD extraction first, using source and existing AFTER-04/14 evidence before requesting runs. Decide acquired-input safety, outside leverage, attainable requests and legitimate cutback/PA/offensive controls. Classify routine contract repair versus new policy/default requiring a decision. Then source-triage PULL_STEP/LEAD_READ/TRAP_READ and the mesh/climb family for the smallest next candidate; carry forward unchanged UC/MESH/GUN/ZONE_TE/DRIVE_CONNECT/DEPART_TEMPO holds and inspect only changed or newly portable hunks. Keep SHED_PURSUE's acquired intent and .6s re-grab prohibition separate. No full research merge or automatic experiment matrix.
 
 <a id="coverage-support-review"></a>
 #### Catching And Defensive Pursuit
