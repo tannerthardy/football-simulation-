@@ -1,6 +1,6 @@
 # Shared integration queue
 
-Updated **2026-10-20 UTC /2026-10-19 America/Phoenix**. Integration in this chat owns queue
+Updated **2026-10-20 UTC**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
@@ -49,32 +49,48 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
-### Reviewed #189 finished-work checkpoint — freeze7d5da0c7
+### Accepted #189 finished-work checkpoint — developd91c9014
 
-The independently accepted checkpoint is [#189](https://github.com/tannerthardy/football-simulation-/pull/189),
-exact tested source `7d5da0c79adea4d7c4b43b85c498876ffe6d8742`. Its publication
-preserves the tested source/tests/settings/tooling exactly. **Fetch current origin/develop;
-the actual merged accepted pin is published on the canonical queue branch**
-linked above.2c98bed9 below is the previous accepted build, not a post189 reference.
+**Current accepted develop is `d91c9014fe5e088f3f43e38236e967d68bd388b0`**,
+merged through [#189](https://github.com/tannerthardy/football-simulation-/pull/189).
+Actual parents are previous2c98bed9 and publicationa57612b1. Entire merged tree
+matches publication; source/tests/settings/tooling exactly match passing
+freeze7d5da0c7, source12a5c880. [Actual merged-pin proof](../data/reviews/current/pr189-merge.json).
+No unchanged code-suite or game rerun merely to publish/merge.
 
-Includes169/171/174(172once)/175/176/177/178/180/181/182/183/184/185/186/188;
-170/173/179/187 evidence/docs are preserved. New owner-approved shared seams,
-fresh175/176 independent decisions, explicit user180motor approval and finished
-independently reviewed178/188 rules are recorded in the
+Included169/171/174(172once)/175/176/177/178/180/181/182/183/184/185/186/188;
+170/173/179/187 evidence/docs are retained. Exact new owner-approved shared
+seams, fresh175/176 independent reviews, explicit user180motor approval and
+finished independently reviewed178/188 rules are in the
 [scope/adverse/film report](reviews/finished-controller-integration.md).
-[Exact receipt](../data/reviews/current/finished-controller-integration/final-receipt.json):
-3007TS/171Python/typecheck/build pass,44settings/components1, no skips/drift.
-Four matched evaluation games pass98standard accounting checks and candidate
-score/TOP/possession audits; original failures and the old baseline's two missed
-turnover credits remain explicit. Runtime+7.2%/+9.0%collection is accepted with
-normalized costs/limits. No further unchanged verification to publish/merge.
+[Final receipt](../data/reviews/current/finished-controller-integration/final-receipt.json):
+**3007TS/171Python,typecheck/build pass**,303.243s,44settings/components1,
+no skips/drift. Four matched games complete in191.236s;98standard accounting
+checks plus candidate score/TOP/rule/possession audits pass. The old baseline's
+two missed takeaway credits remain explicit, along with all initial/intermediate
+failures. Simulation cost+7.2%/+9.0% (+9.9%/+13.6% perWorldstep) is accepted for
+this bounded composition. Neither32candidateboxexplosivesvs31old nor changed
+scores establish a general football benefit. Edge sacks/longtail remain visible.
+
+[Four fetchable complete game/film archives and three paired clips](https://github.com/tannerthardy/football-simulation-/tree/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller)
+are data-only history, never merged into the engine. Share these saved cases
+and hashes rather than recollecting games simply to distribute them.
 
 Whole153, unreviewedFORCE_FLOW/TRAP_READ/LEAD_READ, GAIT_STEP/165,
-experimentalhands/solvers and old101/106/137/158/163/164/166 holds remain out.
-A blocked item holds itself; no new broad campaign, default switch, historical
-baseline change, branch deletion or forced worker rebase. Owners fetch/adopt
-this new source at clean checkpoints; source-qualify older investigations.
-All older readiness snapshots below are historical relative to this checkpoint.
+experimentalhands/solvers and old101/106/137/158/163/164/166 holds stay separate.
+A blocked item holds itself. No historical baseline/default switch, deletion,
+force-push or forced rebase. All older ready snapshots below are historical
+relative to this acceptance. Root owns the continuing ready queue/checkpoint
+verification when resumed; no background monitoring is assumed.
+
+Affected owners fetch this exactdevelop at clean checkpoints. Run reconciles
+174/185 with support exits and actual holding; Catching reconciles171/175/176/
+177/181/182 plus local routing; Flex reconciles183/184/186 with the approved
+motor/goal interface and measured cost; Physics adopts only180yaw/recovery,
+not gait/solvers. CEO/Measurement use officialCredit/per-possession history and
+retain unresolved-rule evidence/old baseline counter defects. Claude retains
+researchd1c87ffa and publishes any next minimal candidate against this accepted
+source. No repeated review of already adopted scope or forced research rebase.
 
 ### Historical accepted #168 checkpoint — previous develop2c98bed9
 

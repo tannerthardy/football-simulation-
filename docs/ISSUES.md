@@ -3,7 +3,8 @@
 ## #189 checkpoint interpretation — 2026-10-20
 
 Reviewed run/support/pursuit/movement and finished178/188rules are composed and
-verified on7d5da0c7; actual adoption pin follows the canonical queue. The real
+verified on7d5da0c7, adopted asdevelopd91c9014 through189.
+[Actual merged-pin proof](../data/reviews/current/pr189-merge.json). The real
 185remote-wall regression is repaired; historical hand/facing/log/mirror test
 qualification preserves its underlying contracts and original failed evidence.
 Four games retain explosive run/YAC and edge protection failures;32candidate

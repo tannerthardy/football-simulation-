@@ -1,13 +1,14 @@
 # Current work ownership
 
-## #189 finished-work checkpoint — composition and verification complete
+## Completed #189 accepted checkpoint — developd91c9014
 
 Integration composed independently reviewed scopes in its isolated branch;
 exact freeze7d5da0c7 passes3007TS/171Python/typecheck/build and four budgeted
 matched games. One real185integration bug and source-qualified test contracts
 are independently repaired; all initial/intermediate failures remain fetchable.
-No contributor duplicated the shared suite. Root owns publication, final remote/tree comparison and the authorized189
-merge/current-reference handoff. Read the canonical queue for actual adoption.
+No contributor duplicated the shared suite. Actualdevelopd91c9014 matches publication and the passing protected tree.
+Publication/remote-tree checks/authorizedmerge are complete; assembly boundary
+released. Root retains only ongoing queue/reference ownership.
 Original worker branches/checkouts/evidence and all experimental holds remain.
 [Final scope, receipt and film](reviews/finished-controller-integration.md).
 Actual merged accepted pin is recorded in the canonical queue after adoption;

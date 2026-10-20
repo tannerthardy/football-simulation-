@@ -1,0 +1,38 @@
+{
+  "schema": "pr189-actual-merge-v1",
+  "actualDevelop": "d91c9014fe5e088f3f43e38236e967d68bd388b0",
+  "previousDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "publication": "a57612b13ff94836f9c0b0b7c54fddb6b41c4426",
+  "testedFreeze": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+  "parents": [
+    "2c98bed94adad8087c65f381d4090444ad283985",
+    "a57612b13ff94836f9c0b0b7c54fddb6b41c4426"
+  ],
+  "actualTree": "312564ef06f157b01ec07d91e5a82d6b0e63b7e8",
+  "publicationTreeMatchesActual": true,
+  "protectedSourceTestsSettingsToolingMatchFreeze": true,
+  "sourceSha256": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+  "verificationReceipt": "finished-controller-integration/final-receipt.json",
+  "verification": {
+    "typescript": 3007,
+    "python": 171,
+    "typecheck": true,
+    "build": true,
+    "skips": [],
+    "commandSeconds": 303.243496421
+  },
+  "games": {
+    "completed": 4,
+    "supervisedSeconds": 191.236288837,
+    "accountingChecks": 98,
+    "candidateRuleScoreTopPossessionPassed": true,
+    "historicalBaselineFailurePreserved": "Spread game2missedtakeawaycredits, INT\u2192returnfumble\u2192offenserecovery."
+  },
+  "evidenceCommit": "d1099d909f6e8050c5d577983af9adaecaaf8581",
+  "evidenceHistoryNotAncestorOfEngine": true,
+  "noUnchangedVerificationRerun": true,
+  "defaultBranchChanged": false,
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "branchesDeleted": [],
+  "ownerAdoption": "Fetchdevelopatcleancandidates; reconcile relevant movement/pursuit/contact/rules interfaces, preserve pinned research and evidence."
+}

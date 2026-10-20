@@ -1,5 +1,12 @@
 # Current project status
 
+**Accepted develop: `d91c9014fe5e088f3f43e38236e967d68bd388b0` through#189.**
+[Actual merge proof](../data/reviews/current/pr189-merge.json),
+[scope/verification/game results/film/holds](reviews/finished-controller-integration.md).
+Owners reconcile relevant current code at clean checkpoints; historical source
+pins remain valid evidence, not claims about this later runtime.
+
+
 Reviewed #189 checkpoint passes exact combined verification (3007TS/171Python,
 typecheck/build) and four matched evaluation games. Includes finished acquired
 run/pursuit/movement corrections and178/188rules. Actual merged pin/adoption is
