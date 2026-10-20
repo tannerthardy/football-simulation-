@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Puller technique and continuation — 2026-10-20
+## Puller technique and continuation — ready for Integration, 2026-10-20
 
 Run owns `RunBlocker` pull-track/read/target continuation and the installed
 pull path in `src/sim/behaviors/blocking.ts` on
@@ -16,6 +16,18 @@ roster, grip, release-timer or private-information bypass. #174's completed
 contact composition remains separate and Integration owns its combined check.
 Only demonstrated coherent controller corrections and focused controls will
 be submitted, with mirror/real obstruction and legitimate defensive wins.
+
+Completed runtime459f750/source d7c8873f; validation1fd8d1d passes53 focused
+checks and typecheck. Independent reviewer ACCEPTS the coherent square
+clearance/acquired-corner correction. Nine bounded native collector calls
+(10.552s; final three3.017s), one passive-equivalence prefix, compatible Power
+baseline reused; no games or full suite. Native late K04 RB/X impacts and
+K01's adverse gain remain visible. RT/Sam's missing contact is not itself a
+missed useful block: LT/Will and H/Mike work, Sam never threatens that runner
+route. Counter count, kick/trap private retarget debt and receiver/carrier
+traffic remain separate. Integration owns final exact composition/verification
+with #174; this branch does not import #174. The bounded source edit claim
+releases on publication. [Report](reviews/puller-technique-continuation.md).
 
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix

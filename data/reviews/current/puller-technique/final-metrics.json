@@ -1,0 +1,2458 @@
+{
+  "runtimeCommit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+  "acceptedComparisonCommit": "2c98bed94adad8087c65f381d4090444ad283985",
+  "definitions": {
+    "rotation": "Absolute wrapped per-tick executed facing deltas, through the step ending1.20s. Requested heading variation uses the exact defaultFacing fallback from kinematics.ts; not physical execution.",
+    "forceUnits": "Raw engine force: kg*yd/s^2. Raw engine impulse: kg*yd/s. No SI conversion is applied; these are not newtons or newton-seconds.",
+    "load": "Nonzero hypot(primary normal,tangent); individual helpers only when their forces were actually recorded. Tick-start labels with end bounds, not exact continuous force integrals.",
+    "phase": "Controller phase-entry command ticks; cached Power baseline has no phase telemetry.",
+    "impacts": "Positive native report contact impulse between two offensive slots, identified using native i/j. Samples can repeat a physical encounter.",
+    "firstRBContact": "First native carrier_contact event, separate from terminal tackle.",
+    "context": "All22 players react normally; terminal continuations are uncensored. No film, new simulation or future-path forcing.",
+    "lateRetargetQualification": "Final K01 RG changes from DE_W to LB_W at3.75, after first RB contact3.70. Its later Will force is not end-kick protection. Existing availability/retarget gate risk is preserved for review, not bundled into this patch.",
+    "PowerRoleQualification": "Power LG has installed pullRole kick and target LB_S in this one-back setup. It makes useful second-level contact but is not relabeled a conventional lead/wrap job."
+  },
+  "cases": {
+    "K01": {
+      "baseline": {
+        "path": "out/puller-technique/k01-baseline.json.gz",
+        "fileSha256": "a1e4f2259d36d94ffafdefc859943caa749ff764ebb1ede332fac8a7288c07c7",
+        "inputSha256": "d46d95a3ada575ef41049ead6847bcfc98f7027301ad97cdf0727ec1884167b0",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "traceCommit": null,
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.5,
+        "result": {
+          "gain": 6.33,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": true,
+        "phaseEntries": {
+          "RT": {
+            "available": true,
+            "role": "lead",
+            "target": "LB_S",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.3,
+              "2": 2.4
+            },
+            "firstClearedCommandTick": 1.5,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          },
+          "RG": {
+            "available": true,
+            "role": "kick",
+            "target": "DE_W",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.25,
+              "2": 1.55
+            },
+            "firstClearedCommandTick": 0.75,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DT_W"
+            },
+            {
+              "tick": 1.25,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "lead",
+              "target": "LB_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "kick",
+              "target": "DE_W"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "Y/DE_S": [
+            {
+              "firstSampleTick": 0.4,
+              "lastSampleTick": 1.8,
+              "lastTickEnd": 1.85,
+              "samples": 29,
+              "maxForceKgYdPerS2": 569.4541253207836
+            }
+          ],
+          "LG/DT_W": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.7,
+              "lastTickEnd": 3.75,
+              "samples": 65,
+              "maxForceKgYdPerS2": 1186.1048106300193
+            },
+            {
+              "firstSampleTick": 3.8,
+              "lastSampleTick": 4.15,
+              "lastTickEnd": 4.2,
+              "samples": 8,
+              "maxForceKgYdPerS2": 762.8527374970774
+            },
+            {
+              "firstSampleTick": 4.25,
+              "lastSampleTick": 4.45,
+              "lastTickEnd": 4.5,
+              "samples": 5,
+              "maxForceKgYdPerS2": 813.1316105988255
+            }
+          ],
+          "C/DT_S": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.2,
+              "lastTickEnd": 2.25,
+              "samples": 28,
+              "maxForceKgYdPerS2": 447.22330314774473
+            }
+          ],
+          "RG/DE_W": [
+            {
+              "firstSampleTick": 1.8,
+              "lastSampleTick": 3.05,
+              "lastTickEnd": 3.0999999999999996,
+              "samples": 26,
+              "maxForceKgYdPerS2": 667.2279737489552
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.1,
+              "lastSampleTick": 2.65,
+              "lastTickEnd": 2.6999999999999997,
+              "samples": 12,
+              "maxForceKgYdPerS2": 298.4610136929413
+            }
+          ],
+          "H/LB_M": [
+            {
+              "firstSampleTick": 2.5,
+              "lastSampleTick": 3.6,
+              "lastTickEnd": 3.65,
+              "samples": 23,
+              "maxForceKgYdPerS2": 515.2872588226433
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 2.95,
+              "lastSampleTick": 3.65,
+              "lastTickEnd": 3.6999999999999997,
+              "samples": 15,
+              "maxForceKgYdPerS2": 251.06612700033756
+            }
+          ]
+        },
+        "individualHelperForceRecorded": false,
+        "firstCarrierContactEvent": {
+          "t": 3.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 43.94,
+            "y": 36.26
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "FS"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 3.1999999999999997,
+          "tick": 3.15,
+          "position": {
+            "x": 40.13757163019935,
+            "y": 33.55352506948931
+          },
+          "firstEntryFrameAtOrBeyondLOS": 3.2
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 312.9382407961755,
+            "finalRequestedHeadingTotalVariationDegrees": 318.2243725758359,
+            "rawRequestedHeadingTotalVariationDegrees": 279.15609425847435,
+            "finalBodyFacingDegrees": -273.56361117357636,
+            "finalBodyPosition": {
+              "x": 38.829325759509864,
+              "y": 26.544150959308862
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 309.65649412070746,
+            "finalRequestedHeadingTotalVariationDegrees": 305.1482107485191,
+            "rawRequestedHeadingTotalVariationDegrees": 264.87641542870625,
+            "finalBodyFacingDegrees": -252.4472669093057,
+            "finalBodyPosition": {
+              "x": 39.211580138150005,
+              "y": 25.060641055314044
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 54.12636155279568,
+            "finalRequestedHeadingTotalVariationDegrees": 28.139484031381347,
+            "rawRequestedHeadingTotalVariationDegrees": 119.81343626816728,
+            "finalBodyFacingDegrees": -17.341207921293638,
+            "finalBodyPosition": {
+              "x": 39.71839679216367,
+              "y": 27.054430554419177
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 0,
+          "byPair": {}
+        }
+      },
+      "final": {
+        "path": "out/puller-technique/k01-final.json.gz",
+        "fileSha256": "d9b0d0685c46d40ce42e325335ce2150e731db620d8917f57ec278f5fcc39aaf",
+        "inputSha256": "d46d95a3ada575ef41049ead6847bcfc98f7027301ad97cdf0727ec1884167b0",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "traceCommit": null,
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.55,
+        "result": {
+          "gain": 5.86,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": null,
+        "phaseEntries": {
+          "RT": {
+            "available": true,
+            "role": "lead",
+            "target": "LB_S",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.3,
+              "2": 2.3,
+              "3": 3
+            },
+            "firstClearedCommandTick": 1.45,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          },
+          "RG": {
+            "available": true,
+            "role": "kick",
+            "target": "DE_W",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.25,
+              "2": 1.5
+            },
+            "firstClearedCommandTick": 0.75,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DT_W"
+            },
+            {
+              "tick": 1.25,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            },
+            {
+              "tick": 3.8,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_S"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "lead",
+              "target": "LB_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "kick",
+              "target": "DE_W"
+            },
+            {
+              "tick": 3.75,
+              "kind": "pull",
+              "role": "kick",
+              "target": "LB_W"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "Y/DE_S": [
+            {
+              "firstSampleTick": 0.4,
+              "lastSampleTick": 1.8,
+              "lastTickEnd": 1.85,
+              "samples": 29,
+              "maxForceKgYdPerS2": 569.4541253207836
+            },
+            {
+              "firstSampleTick": 3.35,
+              "lastSampleTick": 3.75,
+              "lastTickEnd": 3.8,
+              "samples": 9,
+              "maxForceKgYdPerS2": 545.7857107481259
+            },
+            {
+              "firstSampleTick": 3.85,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 9,
+              "maxForceKgYdPerS2": 490.8959019378761
+            },
+            {
+              "firstSampleTick": 4.35,
+              "lastSampleTick": 4.5,
+              "lastTickEnd": 4.55,
+              "samples": 4,
+              "maxForceKgYdPerS2": 167.72857983038466
+            }
+          ],
+          "LG/DT_W": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.4,
+              "lastTickEnd": 3.4499999999999997,
+              "samples": 59,
+              "maxForceKgYdPerS2": 1219.9996764278656
+            },
+            {
+              "firstSampleTick": 3.5,
+              "lastSampleTick": 3.9,
+              "lastTickEnd": 3.9499999999999997,
+              "samples": 9,
+              "maxForceKgYdPerS2": 799.344262097793
+            },
+            {
+              "firstSampleTick": 4,
+              "lastSampleTick": 4.35,
+              "lastTickEnd": 4.3999999999999995,
+              "samples": 8,
+              "maxForceKgYdPerS2": 809.5918303497306
+            }
+          ],
+          "C/DT_S": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.2,
+              "lastTickEnd": 2.25,
+              "samples": 28,
+              "maxForceKgYdPerS2": 447.22330314774473
+            }
+          ],
+          "RG/DE_W": [
+            {
+              "firstSampleTick": 1.7,
+              "lastSampleTick": 3.65,
+              "lastTickEnd": 3.6999999999999997,
+              "samples": 40,
+              "maxForceKgYdPerS2": 687.6462944737445
+            }
+          ],
+          "LT/LB_W": [
+            {
+              "firstSampleTick": 2.05,
+              "lastSampleTick": 3.4,
+              "lastTickEnd": 3.4499999999999997,
+              "samples": 28,
+              "maxForceKgYdPerS2": 1360.9713792869327
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.1,
+              "lastSampleTick": 2.65,
+              "lastTickEnd": 2.6999999999999997,
+              "samples": 12,
+              "maxForceKgYdPerS2": 312.3663682672573
+            }
+          ],
+          "H/LB_M": [
+            {
+              "firstSampleTick": 2.55,
+              "lastSampleTick": 3.15,
+              "lastTickEnd": 3.1999999999999997,
+              "samples": 13,
+              "maxForceKgYdPerS2": 433.2769074091538
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 2.75,
+              "lastSampleTick": 3.4,
+              "lastTickEnd": 3.4499999999999997,
+              "samples": 14,
+              "maxForceKgYdPerS2": 521.2124116098616
+            }
+          ],
+          "RG/LB_W": [
+            {
+              "firstSampleTick": 3.75,
+              "lastSampleTick": 4.1,
+              "lastTickEnd": 4.1499999999999995,
+              "samples": 8,
+              "maxForceKgYdPerS2": 474.2135705585168
+            }
+          ],
+          "LT/LB_S": [
+            {
+              "firstSampleTick": 3.85,
+              "lastSampleTick": 4.5,
+              "lastTickEnd": 4.55,
+              "samples": 14,
+              "maxForceKgYdPerS2": 1230.680703158465
+            }
+          ]
+        },
+        "individualHelperForceRecorded": false,
+        "firstCarrierContactEvent": {
+          "t": 3.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 19,
+          "pos": {
+            "x": 43.83,
+            "y": 37.88
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "CB_W"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 2.8,
+          "tick": 2.75,
+          "position": {
+            "x": 40.00259278862729,
+            "y": 31.88573181464967
+          },
+          "firstEntryFrameAtOrBeyondLOS": 2.8
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 221.2559329202768,
+            "finalRequestedHeadingTotalVariationDegrees": 221.34939361666298,
+            "rawRequestedHeadingTotalVariationDegrees": 108.07348362815681,
+            "finalBodyFacingDegrees": 99.31292681142773,
+            "finalBodyPosition": {
+              "x": 38.92458868595901,
+              "y": 26.63468924538476
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 154.20200826636423,
+            "finalRequestedHeadingTotalVariationDegrees": 183.83515814343858,
+            "rawRequestedHeadingTotalVariationDegrees": 102.58856208704523,
+            "finalBodyFacingDegrees": 96.968338338833,
+            "finalBodyPosition": {
+              "x": 39.174185968453315,
+              "y": 25.098356469127935
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 54.12636155279568,
+            "finalRequestedHeadingTotalVariationDegrees": 28.139484031381347,
+            "rawRequestedHeadingTotalVariationDegrees": 119.81343626816728,
+            "finalBodyFacingDegrees": -17.341207921293638,
+            "finalBodyPosition": {
+              "x": 39.71839679216367,
+              "y": 27.054430554419177
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 0,
+          "byPair": {}
+        }
+      }
+    },
+    "K04": {
+      "baseline": {
+        "path": "out/puller-technique/k04-baseline.json.gz",
+        "fileSha256": "22f1c389fe987e9dc21d2fb4301abdf160f623c261f8f2cdbfc74cc20b43e6ac",
+        "inputSha256": "99a8a36ecc81b83d78512cf449b5020886d13dad2d2754ecfb0fbdd8a5043568",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "traceCommit": null,
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.45,
+        "result": {
+          "gain": 5.37,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": null,
+        "phaseEntries": {
+          "RT": {
+            "available": true,
+            "role": "lead",
+            "target": "LB_S",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.3,
+              "2": 2.2
+            },
+            "firstClearedCommandTick": 1.85,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          },
+          "RG": {
+            "available": true,
+            "role": "kick",
+            "target": "DE_W",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.25,
+              "2": 1.55
+            },
+            "firstClearedCommandTick": 0.75,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DT_W"
+            },
+            {
+              "tick": 1.3,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            },
+            {
+              "tick": 3.1,
+              "kind": "climb",
+              "role": null,
+              "target": null
+            },
+            {
+              "tick": 3.85,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_S"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "lead",
+              "target": "LB_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "kick",
+              "target": "DE_W"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "Y/DE_S": [
+            {
+              "firstSampleTick": 0.4,
+              "lastSampleTick": 1.8,
+              "lastTickEnd": 1.85,
+              "samples": 29,
+              "maxForceKgYdPerS2": 569.4541253207836
+            }
+          ],
+          "LG/DT_W": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.75,
+              "lastTickEnd": 3.8,
+              "samples": 66,
+              "maxForceKgYdPerS2": 1274.8545543647658
+            },
+            {
+              "firstSampleTick": 3.85,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 9,
+              "maxForceKgYdPerS2": 679.143728580829
+            }
+          ],
+          "C/DT_S": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.35,
+              "lastTickEnd": 2.4,
+              "samples": 31,
+              "maxForceKgYdPerS2": 470.9464582008314
+            }
+          ],
+          "RG/DE_W": [
+            {
+              "firstSampleTick": 1.8,
+              "lastSampleTick": 3.2,
+              "lastTickEnd": 3.25,
+              "samples": 29,
+              "maxForceKgYdPerS2": 667.2279737489552
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.1,
+              "lastSampleTick": 2.65,
+              "lastTickEnd": 2.6999999999999997,
+              "samples": 12,
+              "maxForceKgYdPerS2": 298.4610136929413
+            }
+          ],
+          "H/LB_M": [
+            {
+              "firstSampleTick": 2.4,
+              "lastSampleTick": 3.55,
+              "lastTickEnd": 3.5999999999999996,
+              "samples": 24,
+              "maxForceKgYdPerS2": 430.0066479893643
+            },
+            {
+              "firstSampleTick": 3.65,
+              "lastSampleTick": 4,
+              "lastTickEnd": 4.05,
+              "samples": 8,
+              "maxForceKgYdPerS2": 296.36753005196056
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 3,
+              "lastSampleTick": 3.75,
+              "lastTickEnd": 3.8,
+              "samples": 16,
+              "maxForceKgYdPerS2": 351.7999835615566
+            }
+          ]
+        },
+        "individualHelperForceRecorded": false,
+        "firstCarrierContactEvent": {
+          "t": 3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 39.58,
+            "y": 32.73
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "LB_W"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 3.15,
+          "tick": 3.1,
+          "position": {
+            "x": 40.006263099257914,
+            "y": 33.206271857288755
+          },
+          "firstEntryFrameAtOrBeyondLOS": 3.15
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 312.9382407961755,
+            "finalRequestedHeadingTotalVariationDegrees": 318.2243725758359,
+            "rawRequestedHeadingTotalVariationDegrees": 279.15609425847435,
+            "finalBodyFacingDegrees": -273.56361117357636,
+            "finalBodyPosition": {
+              "x": 38.829325759509864,
+              "y": 26.544150959308862
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 309.6565111752603,
+            "finalRequestedHeadingTotalVariationDegrees": 306.89081710000977,
+            "rawRequestedHeadingTotalVariationDegrees": 264.87641542870625,
+            "finalBodyFacingDegrees": -252.4472498547529,
+            "finalBodyPosition": {
+              "x": 39.21158045142272,
+              "y": 25.060628007383812
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 54.47555283172821,
+            "finalRequestedHeadingTotalVariationDegrees": 26.877016458744333,
+            "rawRequestedHeadingTotalVariationDegrees": 118.28178790392808,
+            "finalBodyFacingDegrees": -19.172165670816344,
+            "finalBodyPosition": {
+              "x": 39.74066812313995,
+              "y": 27.029325319943318
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 1,
+          "byPair": {
+            "C/Y": {
+              "samples": 1,
+              "sumImpulse": 143.36561291513124,
+              "maxImpulse": 143.36561291513124,
+              "firstTick": 3.75,
+              "lastTick": 3.75,
+              "nativeIndexPairs": [
+                [
+                  3,
+                  7
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "final": {
+        "path": "out/puller-technique/k04-final.json.gz",
+        "fileSha256": "b5befac8c69bd0816d7c839284ab5167c474aeb74d71793dd5683f05eb74cb7d",
+        "inputSha256": "99a8a36ecc81b83d78512cf449b5020886d13dad2d2754ecfb0fbdd8a5043568",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "traceCommit": null,
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.8,
+        "result": {
+          "gain": 6.13,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": null,
+        "phaseEntries": {
+          "RT": {
+            "available": true,
+            "role": "lead",
+            "target": "LB_S",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.3,
+              "2": 2.2
+            },
+            "firstClearedCommandTick": 2.15,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          },
+          "RG": {
+            "available": true,
+            "role": "kick",
+            "target": "DE_W",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.25,
+              "2": 1.5,
+              "3": 3.5
+            },
+            "firstClearedCommandTick": 0.75,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DT_W"
+            },
+            {
+              "tick": 1.3,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "lead",
+              "target": "LB_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "kick",
+              "target": "DE_W"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "Y/DE_S": [
+            {
+              "firstSampleTick": 0.4,
+              "lastSampleTick": 1.8,
+              "lastTickEnd": 1.85,
+              "samples": 29,
+              "maxForceKgYdPerS2": 569.4541253207836
+            }
+          ],
+          "LG/DT_W": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.55,
+              "lastTickEnd": 3.5999999999999996,
+              "samples": 62,
+              "maxForceKgYdPerS2": 1159.9417263313262
+            },
+            {
+              "firstSampleTick": 3.65,
+              "lastSampleTick": 4.05,
+              "lastTickEnd": 4.1,
+              "samples": 9,
+              "maxForceKgYdPerS2": 1065.112245077302
+            },
+            {
+              "firstSampleTick": 4.15,
+              "lastSampleTick": 4.55,
+              "lastTickEnd": 4.6,
+              "samples": 9,
+              "maxForceKgYdPerS2": 306.9280906559679
+            }
+          ],
+          "C/DT_S": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.35,
+              "lastTickEnd": 2.4,
+              "samples": 31,
+              "maxForceKgYdPerS2": 470.9464582008314
+            }
+          ],
+          "RG/DE_W": [
+            {
+              "firstSampleTick": 1.7,
+              "lastSampleTick": 3.4,
+              "lastTickEnd": 3.4499999999999997,
+              "samples": 35,
+              "maxForceKgYdPerS2": 694.1622677807302
+            },
+            {
+              "firstSampleTick": 3.5,
+              "lastSampleTick": 3.9,
+              "lastTickEnd": 3.9499999999999997,
+              "samples": 9,
+              "maxForceKgYdPerS2": 973.6912622305528
+            },
+            {
+              "firstSampleTick": 4,
+              "lastSampleTick": 4.35,
+              "lastTickEnd": 4.3999999999999995,
+              "samples": 8,
+              "maxForceKgYdPerS2": 547.4828540161561
+            },
+            {
+              "firstSampleTick": 4.45,
+              "lastSampleTick": 4.75,
+              "lastTickEnd": 4.8,
+              "samples": 7,
+              "maxForceKgYdPerS2": 457.02151311632787
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.1,
+              "lastSampleTick": 2.65,
+              "lastTickEnd": 2.6999999999999997,
+              "samples": 12,
+              "maxForceKgYdPerS2": 386.6369189604416
+            }
+          ],
+          "LT/LB_W": [
+            {
+              "firstSampleTick": 2.3,
+              "lastSampleTick": 3,
+              "lastTickEnd": 3.05,
+              "samples": 15,
+              "maxForceKgYdPerS2": 778.588847439348
+            },
+            {
+              "firstSampleTick": 3.75,
+              "lastSampleTick": 4.1,
+              "lastTickEnd": 4.1499999999999995,
+              "samples": 8,
+              "maxForceKgYdPerS2": 768.5818810868143
+            },
+            {
+              "firstSampleTick": 4.2,
+              "lastSampleTick": 4.45,
+              "lastTickEnd": 4.5,
+              "samples": 6,
+              "maxForceKgYdPerS2": 651.4819731825825
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 2.9,
+              "lastSampleTick": 3.65,
+              "lastTickEnd": 3.6999999999999997,
+              "samples": 16,
+              "maxForceKgYdPerS2": 210.91773870502047
+            }
+          ],
+          "H/LB_M": [
+            {
+              "firstSampleTick": 2.95,
+              "lastSampleTick": 3.5,
+              "lastTickEnd": 3.55,
+              "samples": 12,
+              "maxForceKgYdPerS2": 770.5294056265371
+            },
+            {
+              "firstSampleTick": 3.6,
+              "lastSampleTick": 4,
+              "lastTickEnd": 4.05,
+              "samples": 9,
+              "maxForceKgYdPerS2": 949.2359989988956
+            },
+            {
+              "firstSampleTick": 4.1,
+              "lastSampleTick": 4.45,
+              "lastTickEnd": 4.5,
+              "samples": 8,
+              "maxForceKgYdPerS2": 635.6376385772719
+            },
+            {
+              "firstSampleTick": 4.55,
+              "lastSampleTick": 4.75,
+              "lastTickEnd": 4.8,
+              "samples": 5,
+              "maxForceKgYdPerS2": 432.88904033839134
+            }
+          ]
+        },
+        "individualHelperForceRecorded": false,
+        "firstCarrierContactEvent": {
+          "t": 3.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 44.35,
+            "y": 35.05
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "FS"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 3.05,
+          "tick": 3,
+          "position": {
+            "x": 40.0399497606889,
+            "y": 32.76802132258364
+          },
+          "firstEntryFrameAtOrBeyondLOS": 3.05
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 221.2559329202768,
+            "finalRequestedHeadingTotalVariationDegrees": 221.34939361666298,
+            "rawRequestedHeadingTotalVariationDegrees": 108.07348362815681,
+            "finalBodyFacingDegrees": 99.31292681142773,
+            "finalBodyPosition": {
+              "x": 38.92458868595901,
+              "y": 26.63468924538476
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 154.20201687813974,
+            "finalRequestedHeadingTotalVariationDegrees": 185.537416412308,
+            "rawRequestedHeadingTotalVariationDegrees": 102.58856208704523,
+            "finalBodyFacingDegrees": 96.9683469506085,
+            "finalBodyPosition": {
+              "x": 39.17418645053813,
+              "y": 25.098347521358583
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 54.47555283172821,
+            "finalRequestedHeadingTotalVariationDegrees": 26.877016458744333,
+            "rawRequestedHeadingTotalVariationDegrees": 118.28178790392808,
+            "finalBodyFacingDegrees": -19.172165670816344,
+            "finalBodyPosition": {
+              "x": 39.74066812313995,
+              "y": 27.029325319943318
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 3,
+          "byPair": {
+            "C/Y": {
+              "samples": 1,
+              "sumImpulse": 118.4224669218987,
+              "maxImpulse": 118.4224669218987,
+              "firstTick": 3.7,
+              "lastTick": 3.7,
+              "nativeIndexPairs": [
+                [
+                  3,
+                  7
+                ]
+              ]
+            },
+            "RB/X": {
+              "samples": 2,
+              "sumImpulse": 307.99536525588076,
+              "maxImpulse": 273.4728167740049,
+              "firstTick": 4.1,
+              "lastTick": 4.25,
+              "nativeIndexPairs": [
+                [
+                  6,
+                  8
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Power": {
+      "baseline": {
+        "path": "out/run-contact-composition/power-baseline.json.gz",
+        "fileSha256": "264ded34e0bc1921d7aeb0ae5b2bdda65b2c2c87bae708cc263154ff7aae0d05",
+        "inputSha256": "28d6ab8f6c73784b679b3d08a903f0f21b64f34491fc395f7818c6df62e956a6",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "traceCommit": "5bc7605f01e7af0623ac681b066bfc0bdca53e8b",
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.5,
+        "result": {
+          "gain": 4.15,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": null,
+        "phaseEntries": {
+          "LG": {
+            "available": false,
+            "reason": "Cached tape did not record private pullIdx/corner state."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": null,
+              "target": "LB_S"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DE_S"
+            },
+            {
+              "tick": 0.95,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_W"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "RT/DE_S": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 4.45,
+              "lastTickEnd": 4.5,
+              "samples": 80,
+              "maxForceKgYdPerS2": 849.1159504813858
+            }
+          ],
+          "RG/DT_S": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.25,
+              "lastTickEnd": 3.3,
+              "samples": 56,
+              "maxForceKgYdPerS2": 477.6438757718192
+            }
+          ],
+          "Y/DE_S": [
+            {
+              "firstSampleTick": 0.6,
+              "lastSampleTick": 0.9,
+              "lastTickEnd": 0.9500000000000001,
+              "samples": 7,
+              "maxForceKgYdPerS2": 823.5953923532696
+            }
+          ],
+          "H/DE_W": [
+            {
+              "firstSampleTick": 0.6,
+              "lastSampleTick": 1.4,
+              "lastTickEnd": 1.45,
+              "samples": 17,
+              "maxForceKgYdPerS2": 427.47422455071467
+            },
+            {
+              "firstSampleTick": 2.55,
+              "lastSampleTick": 3.6,
+              "lastTickEnd": 3.65,
+              "samples": 22,
+              "maxForceKgYdPerS2": 522.0475595348349
+            },
+            {
+              "firstSampleTick": 4.05,
+              "lastSampleTick": 4.4,
+              "lastTickEnd": 4.45,
+              "samples": 8,
+              "maxForceKgYdPerS2": 562.7496342550849
+            }
+          ],
+          "C/DT_W": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.4,
+              "lastTickEnd": 2.4499999999999997,
+              "samples": 32,
+              "maxForceKgYdPerS2": 644.5995637753108
+            },
+            {
+              "firstSampleTick": 2.95,
+              "lastSampleTick": 3.35,
+              "lastTickEnd": 3.4,
+              "samples": 9,
+              "maxForceKgYdPerS2": 727.7337769265447
+            },
+            {
+              "firstSampleTick": 4.05,
+              "lastSampleTick": 4.35,
+              "lastTickEnd": 4.3999999999999995,
+              "samples": 7,
+              "maxForceKgYdPerS2": 393.9867140472578
+            }
+          ],
+          "Y/LB_M": [
+            {
+              "firstSampleTick": 1.7,
+              "lastSampleTick": 2.3,
+              "lastTickEnd": 2.3499999999999996,
+              "samples": 13,
+              "maxForceKgYdPerS2": 234.5734687570695
+            }
+          ],
+          "LT/LB_W": [
+            {
+              "firstSampleTick": 1.75,
+              "lastSampleTick": 2.3,
+              "lastTickEnd": 2.3499999999999996,
+              "samples": 12,
+              "maxForceKgYdPerS2": 331.22899623021317
+            }
+          ],
+          "LG/LB_S": [
+            {
+              "firstSampleTick": 2.15,
+              "lastSampleTick": 3.5,
+              "lastTickEnd": 3.55,
+              "samples": 28,
+              "maxForceKgYdPerS2": 1147.9987292806707
+            },
+            {
+              "firstSampleTick": 3.95,
+              "lastSampleTick": 4.35,
+              "lastTickEnd": 4.3999999999999995,
+              "samples": 9,
+              "maxForceKgYdPerS2": 365.43544053520213
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 2.15,
+              "lastSampleTick": 2.7,
+              "lastTickEnd": 2.75,
+              "samples": 12,
+              "maxForceKgYdPerS2": 424.0546657899262
+            },
+            {
+              "firstSampleTick": 3.85,
+              "lastSampleTick": 4.45,
+              "lastTickEnd": 4.5,
+              "samples": 13,
+              "maxForceKgYdPerS2": 297.47246130302324
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.3,
+              "lastSampleTick": 2.7,
+              "lastTickEnd": 2.75,
+              "samples": 9,
+              "maxForceKgYdPerS2": 266.3784629612428
+            }
+          ]
+        },
+        "individualHelperForceRecorded": true,
+        "firstCarrierContactEvent": {
+          "t": 3.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.74,
+            "y": 28.41
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "LB_W"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 3.1999999999999997,
+          "tick": 3.15,
+          "position": {
+            "x": 40.15318310398968,
+            "y": 27.3545500048935
+          },
+          "firstEntryFrameAtOrBeyondLOS": 3.2
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 55.99889502955513,
+            "finalRequestedHeadingTotalVariationDegrees": 36.017092621723506,
+            "rawRequestedHeadingTotalVariationDegrees": 163.5856150236822,
+            "finalBodyFacingDegrees": 16.750972465755073,
+            "finalBodyPosition": {
+              "x": 39.92787341009197,
+              "y": 26.314905098230927
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 74.20970431207432,
+            "finalRequestedHeadingTotalVariationDegrees": 49.18078160195887,
+            "rawRequestedHeadingTotalVariationDegrees": 144.63669449032105,
+            "finalBodyFacingDegrees": -16.993042948681445,
+            "finalBodyPosition": {
+              "x": 40.18436600651213,
+              "y": 24.530155094574244
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 299.9611834159629,
+            "finalRequestedHeadingTotalVariationDegrees": 343.05601268918036,
+            "rawRequestedHeadingTotalVariationDegrees": 303.847036516935,
+            "finalBodyFacingDegrees": -71.84221793993937,
+            "finalBodyPosition": {
+              "x": 38.837640495439366,
+              "y": 26.794705530706498
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 0,
+          "byPair": {}
+        },
+        "sourceQualification": "Cached source digest matches accepted 2c98bed9; trace commit is export parent, not runtime pin."
+      },
+      "final": {
+        "path": "out/puller-technique/power-final.json.gz",
+        "fileSha256": "1bec95de88ed454c9bf431a0210523d58099d381d44ce5bfb34409bb0d012014",
+        "inputSha256": "28d6ab8f6c73784b679b3d08a903f0f21b64f34491fc395f7818c6df62e956a6",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "traceCommit": null,
+        "node": "v22.23.3",
+        "settings": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "all22Present": true,
+        "censored": false,
+        "terminalTime": 4.3,
+        "result": {
+          "gain": 3.92,
+          "outcome": "tackle"
+        },
+        "passiveObserverVerified": null,
+        "phaseEntries": {
+          "LG": {
+            "available": true,
+            "role": "kick",
+            "target": "LB_S",
+            "firstCommandTickByPhase": {
+              "0": 0,
+              "1": 0.25,
+              "2": 1.95
+            },
+            "firstClearedCommandTick": 0.8,
+            "semantics": "after-controller phase is recorded on its command tick; before may already contain controller changes."
+          }
+        },
+        "installedAndLaterTargetChanges": {
+          "QB": [],
+          "LT": [
+            {
+              "tick": 0,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_W"
+            },
+            {
+              "tick": 4.05,
+              "kind": "climb",
+              "role": null,
+              "target": "FS"
+            }
+          ],
+          "RT": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DE_S"
+            }
+          ],
+          "C": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_W"
+            }
+          ],
+          "LG": [
+            {
+              "tick": 0,
+              "kind": "pull",
+              "role": "kick",
+              "target": "LB_S"
+            }
+          ],
+          "RG": [
+            {
+              "tick": 0,
+              "kind": "down",
+              "role": null,
+              "target": "DT_S"
+            }
+          ],
+          "RB": [],
+          "Y": [
+            {
+              "tick": 0,
+              "kind": "combo",
+              "role": null,
+              "target": "DE_S"
+            },
+            {
+              "tick": 0.95,
+              "kind": "climb",
+              "role": null,
+              "target": "LB_M"
+            }
+          ],
+          "X": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_W"
+            }
+          ],
+          "Z": [
+            {
+              "tick": 0,
+              "kind": "stalk",
+              "role": null,
+              "target": "CB_S"
+            }
+          ],
+          "H": [
+            {
+              "tick": 0,
+              "kind": "cutoff",
+              "role": null,
+              "target": "DE_W"
+            }
+          ]
+        },
+        "actualPrimaryAndMeasuredHelperLoad": {
+          "RT/DE_S": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 76,
+              "maxForceKgYdPerS2": 887.4577847642685
+            }
+          ],
+          "RG/DT_S": [
+            {
+              "firstSampleTick": 0.5,
+              "lastSampleTick": 3.25,
+              "lastTickEnd": 3.3,
+              "samples": 56,
+              "maxForceKgYdPerS2": 477.6438757718192
+            }
+          ],
+          "H/DE_W": [
+            {
+              "firstSampleTick": 0.6,
+              "lastSampleTick": 1.4,
+              "lastTickEnd": 1.45,
+              "samples": 17,
+              "maxForceKgYdPerS2": 427.47422455071467
+            },
+            {
+              "firstSampleTick": 2.55,
+              "lastSampleTick": 3.6,
+              "lastTickEnd": 3.65,
+              "samples": 22,
+              "maxForceKgYdPerS2": 522.0475595348349
+            },
+            {
+              "firstSampleTick": 4.15,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 3,
+              "maxForceKgYdPerS2": 469.56876135951865
+            }
+          ],
+          "C/DT_W": [
+            {
+              "firstSampleTick": 0.85,
+              "lastSampleTick": 2.4,
+              "lastTickEnd": 2.4499999999999997,
+              "samples": 32,
+              "maxForceKgYdPerS2": 644.5995637753108
+            },
+            {
+              "firstSampleTick": 2.95,
+              "lastSampleTick": 3.35,
+              "lastTickEnd": 3.4,
+              "samples": 9,
+              "maxForceKgYdPerS2": 727.7337769265447
+            },
+            {
+              "firstSampleTick": 4.1,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 4,
+              "maxForceKgYdPerS2": 406.3332117906714
+            }
+          ],
+          "Y/LB_M": [
+            {
+              "firstSampleTick": 1.7,
+              "lastSampleTick": 2.3,
+              "lastTickEnd": 2.3499999999999996,
+              "samples": 13,
+              "maxForceKgYdPerS2": 238.8172429086049
+            }
+          ],
+          "LT/LB_W": [
+            {
+              "firstSampleTick": 1.75,
+              "lastSampleTick": 2.3,
+              "lastTickEnd": 2.3499999999999996,
+              "samples": 12,
+              "maxForceKgYdPerS2": 331.22899623021317
+            }
+          ],
+          "LG/LB_S": [
+            {
+              "firstSampleTick": 2.15,
+              "lastSampleTick": 3.5,
+              "lastTickEnd": 3.55,
+              "samples": 28,
+              "maxForceKgYdPerS2": 1155.2014685253475
+            }
+          ],
+          "Z/CB_S": [
+            {
+              "firstSampleTick": 2.15,
+              "lastSampleTick": 2.7,
+              "lastTickEnd": 2.75,
+              "samples": 12,
+              "maxForceKgYdPerS2": 424.0546657899262
+            },
+            {
+              "firstSampleTick": 3.85,
+              "lastSampleTick": 4.25,
+              "lastTickEnd": 4.3,
+              "samples": 9,
+              "maxForceKgYdPerS2": 116.82334118576489
+            }
+          ],
+          "X/CB_W": [
+            {
+              "firstSampleTick": 2.3,
+              "lastSampleTick": 2.7,
+              "lastTickEnd": 2.75,
+              "samples": 9,
+              "maxForceKgYdPerS2": 266.3784629612428
+            }
+          ]
+        },
+        "individualHelperForceRecorded": false,
+        "firstCarrierContactEvent": {
+          "t": 3.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.73,
+            "y": 28.43
+          },
+          "note": "grasp",
+          "observer": "RB",
+          "other": "LB_W"
+        },
+        "runnerLOSArrival": {
+          "firstPostStepAtOrBeyondLOS": 3.1999999999999997,
+          "tick": 3.15,
+          "position": {
+            "x": 40.15348021165384,
+            "y": 27.354828683789787
+          },
+          "firstEntryFrameAtOrBeyondLOS": 3.2
+        },
+        "openingRotation": {
+          "RG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 55.99889502955513,
+            "finalRequestedHeadingTotalVariationDegrees": 36.017092621723506,
+            "rawRequestedHeadingTotalVariationDegrees": 163.5856150236822,
+            "finalBodyFacingDegrees": 16.750972465755073,
+            "finalBodyPosition": {
+              "x": 39.92787341009197,
+              "y": 26.314905098230927
+            }
+          },
+          "RT": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 74.20970431207432,
+            "finalRequestedHeadingTotalVariationDegrees": 49.18078160195887,
+            "rawRequestedHeadingTotalVariationDegrees": 144.63669449032105,
+            "finalBodyFacingDegrees": -16.993042948681445,
+            "finalBodyPosition": {
+              "x": 40.18436600651213,
+              "y": 24.530155094574244
+            }
+          },
+          "LG": {
+            "window": [
+              0,
+              1.2
+            ],
+            "achievedAbsoluteRotationDegrees": 220.4411150779967,
+            "finalRequestedHeadingTotalVariationDegrees": 256.0039893149116,
+            "rawRequestedHeadingTotalVariationDegrees": 138.54530744166266,
+            "finalBodyFacingDegrees": -74.41531762037562,
+            "finalBodyPosition": {
+              "x": 38.808915734128895,
+              "y": 26.778951117431138
+            }
+          }
+        },
+        "offensiveTeammateImpacts": {
+          "samples": 0,
+          "byPair": {}
+        }
+      }
+    }
+  },
+  "cost": {
+    "receipts": [
+      {
+        "receipt": "check-launch-error-receipt.json",
+        "commit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "focused_or_launcher",
+        "exitCode": 1,
+        "seconds": 0.16504454399999996,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/focused-checks.ts"
+        ]
+      },
+      {
+        "receipt": "final-checks-receipt.json",
+        "commit": "1fd8d1df5a04f633161fb252171977e969aa052a",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "focused_or_launcher",
+        "exitCode": 0,
+        "seconds": 2.825155319,
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--project",
+          "core",
+          "test/puller-acquired-corner.test.ts",
+          "test/puller-target-read.test.ts",
+          "test/puller-route-progress.test.ts",
+          "test/puller-clearance-command.test.ts",
+          "test/puller-kick-transition.test.ts",
+          "test/counter-gh.test.ts",
+          "--maxWorkers=1"
+        ]
+      },
+      {
+        "receipt": "final-typecheck-receipt.json",
+        "commit": "1fd8d1df5a04f633161fb252171977e969aa052a",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "focused_or_launcher",
+        "exitCode": 0,
+        "seconds": 10.598941693999999,
+        "command": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "-p",
+          "tsconfig.json",
+          "--noEmit"
+        ]
+      },
+      {
+        "receipt": "gh-prefix-precondition-failure-receipt.json",
+        "commit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "focused_or_launcher",
+        "exitCode": 1,
+        "seconds": 3.063047852,
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--project",
+          "core",
+          "test/puller-acquired-corner.test.ts",
+          "test/puller-target-read.test.ts",
+          "test/puller-route-progress.test.ts",
+          "test/puller-clearance-command.test.ts",
+          "test/puller-kick-transition.test.ts",
+          "test/counter-gh.test.ts",
+          "--maxWorkers=1"
+        ]
+      },
+      {
+        "receipt": "k01-baseline-receipt.json",
+        "commit": "10c052b9fa1076f500442fad3bea39f3d2d2d1db",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.819789492,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K01",
+          "--until",
+          "8",
+          "--verify",
+          "--out",
+          "out/puller-technique/k01-baseline.json.gz"
+        ]
+      },
+      {
+        "receipt": "k01-corner-receipt.json",
+        "commit": "de14562d2a5103eba793494c2464d27abdfaf52e",
+        "sourceSha256": "bc20ffcef1505ea929381bd20cc738c23187bf0f3372ec223358ec053133b449",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.0784280080000002,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K01",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k01-corner.json.gz"
+        ]
+      },
+      {
+        "receipt": "k01-final-receipt.json",
+        "commit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.017700049,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K01",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k01-final.json.gz"
+        ]
+      },
+      {
+        "receipt": "k01-square-receipt.json",
+        "commit": "78030ae0c9ab02e66d2af6dcd3fc6ac812dfd71e",
+        "sourceSha256": "2ce6b9b570b39f4211242ab74443164319518ef5203c536f23584e6d4366de1c",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 0.999971649,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K01",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k01-square.json.gz"
+        ]
+      },
+      {
+        "receipt": "k04-baseline-receipt.json",
+        "commit": "10c052b9fa1076f500442fad3bea39f3d2d2d1db",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.5395768799999998,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K04",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k04-baseline.json.gz"
+        ]
+      },
+      {
+        "receipt": "k04-corner-receipt.json",
+        "commit": "de14562d2a5103eba793494c2464d27abdfaf52e",
+        "sourceSha256": "bc20ffcef1505ea929381bd20cc738c23187bf0f3372ec223358ec053133b449",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.110993635,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K04",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k04-corner.json.gz"
+        ]
+      },
+      {
+        "receipt": "k04-final-receipt.json",
+        "commit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 1.0313938599999999,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--id",
+          "K04",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/k04-final.json.gz"
+        ]
+      },
+      {
+        "receipt": "power-corner-receipt.json",
+        "commit": "de14562d2a5103eba793494c2464d27abdfaf52e",
+        "sourceSha256": "bc20ffcef1505ea929381bd20cc738c23187bf0f3372ec223358ec053133b449",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 0.9859517179999999,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--inputs",
+          "out/puller-technique/power-input.json.gz",
+          "--id",
+          "POWER",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/power-corner.json.gz"
+        ]
+      },
+      {
+        "receipt": "power-final-receipt.json",
+        "commit": "459f7506f8219df404cc9df59aa03aadf3ffb673",
+        "sourceSha256": "d7c8873f1b3f2740e2cba5ef3b1c3577c1cd04dc95c37b9588b22c7d43704d5e",
+        "category": "native",
+        "exitCode": 0,
+        "seconds": 0.968274525,
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/puller-technique.ts",
+          "--inputs",
+          "out/puller-technique/power-input.json.gz",
+          "--id",
+          "POWER",
+          "--until",
+          "8",
+          "--out",
+          "out/puller-technique/power-final.json.gz"
+        ]
+      }
+    ],
+    "sumRecordedNewCommandSeconds": 27.204269224999997,
+    "nativeSeconds": 10.552079816,
+    "finalNativeSeconds": 3.0173684339999998,
+    "note": "Totals include receipted rejected/intermediate native runs and failed launch/check attempts. Cached Power baseline reused; its prior execution excluded. No costs inferred for unreceipted work."
+  }
+}
