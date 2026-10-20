@@ -71,5 +71,25 @@
     "disposition": "HOLD experimental gait-law/default activation",
     "requiredAcceptedValue": "0",
     "adverseZone20Plus": "28 -> 63 per 1200 on research package; not accepted-source causal transfer"
+  },
+  "precisionAndDirectionIndependentAddendum": {
+    "siblingPublication": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+    "inspectedIntegrationCommit": "aa9e91d235aab220770210254f88439bd11dc4a1",
+    "disposition": "ACCEPT exact source-only corrections; root owns combined verification",
+    "patches": {
+      "viewer-precision.patch": "6dd3c7149ca7d23ab6752a297c291b6d0e4f21a4d9e8c22c30ce480c58307867",
+      "native-recording-precision.patch": "0b67ae18d491d3d32cc8856ec53e02cdf957b9681b3e9ddb4431720549866f41",
+      "qb-carryout-direction.patch": "6ebb6e77985aaff4626daee295f06fbe7fe139c19e42adde4077da76bd7fd988"
+    },
+    "reusedReceipts": [
+      "precision-pipeline-focused.json",
+      "qb-carryout-focused-final.json"
+    ],
+    "focusedChecksReused": [
+      23,
+      5
+    ],
+    "newExecution": false,
+    "qualification": "Finer native replay precision can change exporter-derived pressure2yd/ttp near its existing threshold; no sim feedback."
   }
 }

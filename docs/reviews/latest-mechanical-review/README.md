@@ -142,3 +142,51 @@ Next decision: Integration may explicitly classify isolated #165 for its next
 compatible candidate. #162 and GAIT_STEP retain separate promotion holds. No
 broad lab or game campaign is needed to make that distinction. Never merge the
 data-only evidence histories to obtain these changes.
+
+## Independent addendum: native film precision and QB away direction
+
+**ACCEPT both bounded corrections** authored in the sibling
+[run-game review publication](https://github.com/tannerthardy/football-simulation-/tree/77c28ffbbd55b29b2f0459be289bd497927d045c/docs/reviews/latest-run-game-v3-review).
+Inspected their extracted source in Integration's candidate at
+`aa9e91d235aab220770210254f88439bd11dc4a1`, without changing it. This is a
+source-only independent review, not combined verification or a new football
+benefit claim. Reused the sibling's published 23 precision/export checks and
+five controller checks, including original-source failures; no new execution.
+
+**Native precision + exporter/viewer pair:** `PlaySim.recordFrame` copies
+rounded scalar values into newly allocated output arrays. Changing `round1`
+to existing `round2` does not assign positions, facing, World, RNG, perception
+or controller state. Sampling cadence, frame times, carrier, posture and trace
+call remain. Source consumers of `PlaySim.frames` pass these recordings to
+the result/replay exporter, not back into player decisions. The exporter
+scales positions, facings, ball and posture consistently by 100; the viewer
+uses that scale and preserves old missing-scale and explicit-scale-10 clips.
+The zero-tick test exercises actual native recording, packing and template
+decoding while asserting unchanged source pose. Keep this native completion
+independently identified rather than attributing it to the original author.
+
+One qualification: the exporter already derives `pressure2yd`/`ttp` from
+recorded coordinates. Finer recordings can change that output measurement
+near its two-yard boundary. It cannot change the simulated pressure event or
+mechanics, but old and new replay-derived threshold measurements must retain
+their producing precision/operator. Old rounded film gains no missing detail.
+
+**QB away direction:** the sole runtime hunk changes the existing post-transfer
+branch's lateral sign to the opposite of `offCall.run.direction` with the
+installed `offAlign.strongSign`. These are the QB's own called-play information;
+no opponent/private future state is used. Both strong/weak and mirrored calls
+stay away despite either exchange drift. Destination depth remains LOS minus
+six yards, lateral displacement four yards and speed `.4`; missing-run fallback
+retains the old expression. Arrival, pivot, keeper, give/pitch, acquired failed-
+exchange recovery and all lower control branches are byte-identical. No new
+constructor, moving-exchange geometry, through-speed or `QB_CARRYOUT` flag is
+introduced. The installed-away duty is corrected; achieved fake effectiveness
+and reduced QB/RB interference remain unproved.
+
+Portable scopes are the sibling's `viewer-precision.patch`,
+`native-recording-precision.patch` and `qb-carryout-direction.patch`. The
+original viewer/export pair remains its own exact three-file extraction;
+the two new completions each retain their own test. Their only textual
+neighborhood overlap with other candidate work is the recorder's containing
+`playsim.ts`; the separate airborne endpoint capture does not consume frames.
+No physical-law, capacity, default or research-package activation is needed.
