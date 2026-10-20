@@ -182,7 +182,7 @@ export const COVERAGES: Coverage[] = [
     note: 'Backside corner locks X; the trips side plays match with the post safety relating to #3.',
     roles: {
       CB_S: z('deep_third_s', 'c3_corner'),
-      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
       FS: z('deep_mid'),
     },
     underneath: [seat('curl_flat_s', 'c3_curl_flat'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
@@ -282,7 +282,7 @@ export const COVERAGES: Coverage[] = [
     roles: {
       CB_S: z('quarter_s_out', 'q_corner_mod'),
       SS: z('quarter_s_in', 'q_safety'),
-      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
       FS: z('quarter_w_in', 'poach_safety'),
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
@@ -291,7 +291,7 @@ export const COVERAGES: Coverage[] = [
     id: 'cover4_stubbie', name: 'Quarters Stubbie (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
     note: 'Trips corner locks #1; nickel, safety and hook build a triangle on #2/#3; backside plays quarters on X.',
     roles: {
-      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
       SS: z('quarter_s_in', 'stubbie_safety'),
       ...QUARTERS_W,
     },
