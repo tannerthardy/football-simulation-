@@ -3,7 +3,9 @@ plays: the two deepest defenders' depth past the line at the snap, at the
 handoff + 0.5 s and when the carrier crosses the line; their downhill speed
 (yd/s toward the line) at the crossing; and, when the carrier first reaches
 REF yd, how many defenders are ahead of him and how far behind him the
-nearest beaten ones are. usage: dbdepth.py FILE [REF=10] [--ytg60] [--sim-form F]"""
+nearest beaten ones are. usage: dbdepth.py FILE [REF=10] [--ytg60] [--sim-form F] [--shell 1|3|2]
+--shell keeps one coverage family: NFL by the charted coverage label, sim by
+the lab look (1 = Cover 1/0, 3 = Cover 3, 2 = two-high: Cover 2/4/6)."""
 import gzip, json, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play  # noqa: E402
@@ -18,6 +20,14 @@ for line in gzip.open(path, 'rt'):
     if raw.get('kind') != 'run' or raw.get('carrier') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
     if raw.get('source') == 'sim' and opt('--sim-form') and not raw['id'].split('/')[2].startswith(opt('--sim-form')): continue
+    if opt('--shell'):
+        if raw.get('source') == 'sim':
+            look = raw['id'].split('/')[3]
+            fam = '1' if look in ('bear1', 'off1', 'mike1') else '3' if look in ('over3', 'under3', 'wide9', 'odd3') else '2'
+        else:
+            cov = (raw.get('cell') or {}).get('coverage') or ''
+            fam = '1' if cov.startswith(('Cover-1', 'Cover-0')) else '3' if cov.startswith('Cover-3') else '2' if cov.startswith(('Cover-2', 'Quarters', 'Cover 6', '2-Man')) else None
+        if fam != opt('--shell'): continue
     p = Play(raw); c = raw['carrier']; ev = raw.get('events') or {}
     end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     D = [d for d in p.who('D') if p.pos(d, 0)[0] is not None]

@@ -706,6 +706,10 @@ const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
 /** A run shed is a decision executed by the body (SHED_PHYSICAL=0: rolled outcome). */
 const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
+/** Experimental (SHED_FACE=1, off): a defender working off a run block turns
+ * his shoulders with the rip, toward the side he is working to, instead of
+ * keeping his chest squared to the blocker. World still limits the turn. */
+const SHED_FACE = process.env.SHED_FACE === '1';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -1327,7 +1331,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
-    facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+    facing: SHED_FACE && workOff ? Math.atan2(workOff.y, workOff.x) : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,

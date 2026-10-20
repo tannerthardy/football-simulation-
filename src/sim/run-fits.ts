@@ -159,6 +159,17 @@ const PULL_CUE = process.env.PULL_CUE === '1';
  * level and keeps his installed depth until the ball crosses the line, rather
  * than coming down to the alley landmark at linebacker depth. See capFit. */
 const DEEP_CAP = process.env.DEEP_CAP === '1';
+/** Experimental (EDGE_SQUEEZE=1, off): an edge or force defender whose acquired
+ * carrying runner is inside him at the line has no outside left to keep; he
+ * pursues inside-out instead of holding his edge landmark, square to the line,
+ * until the runner is two yards past it. */
+const EDGE_SQUEEZE = process.env.EDGE_SQUEEZE === '1';
+/** Experimental (FORCE_DEPTH=1, off): a force defender aligned off the ball
+ * (5+ yd) keeps his installed depth outside the runner while the runner he
+ * sees is still behind the line, then comes downhill, instead of squeezing to
+ * the line of scrimmage first. The installed alignment, not the offense's
+ * call, decides who he is. */
+const FORCE_DEPTH = process.env.FORCE_DEPTH === '1';
 
 /** Is this defender the installed deep cap on a run? Installed zone, not the
  * offense's call: a deep-zone defender with an alley fit. */
@@ -278,6 +289,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     gy = liveGapY(sim, a, job.gap, job.side);
   }
   const edge = job.kind === 'edge' || job.kind === 'force';
+  if (edge && EDGE_SQUEEZE && !premesh && seen.carrying === true && seen.pos.x > sim.los - .5
+    && job.side * (seen.pos.y - a.pos.y) < -(a.profile.radius + c.profile.radius + a.profile.reach)) return chase(sim, a, c);
   if (edge) {
     let kick: ReturnType<PlaySim['see']> | null = null;
     if (job.kind === 'edge') {
@@ -292,7 +305,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
-    const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
+    const offBall=FORCE_DEPTH && job.kind==='force' && homeDepth>=5;
+    const supportDepth=offBall && (premesh||seen.pos.x<sim.los) ? homeDepth
+      : job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
     const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
     const fit = track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
