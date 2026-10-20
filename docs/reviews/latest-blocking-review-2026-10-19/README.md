@@ -6,10 +6,16 @@ three separately extractable scopes. It does not adopt a new develop pin,
 activate a flag, merge author/evidence ancestry or certify league-wide football.
 Root Integration owns the exact final combined verification.
 
+**Latest disposition: HOLD #164 after actual combined native-contract failures.**
+The previously accepted local moving-reference design and source composition
+are insufficient to approve its unexplained loss of useful joined departure
+and Tite contact work. See the failure-triage addendum below. #150/#152 remain
+independently acceptable; they remain present in the passing reduced arm.
+
 | PR | Exact reviewed head / implementation | Disposition |
 | --- | --- | --- |
 | [#152](https://github.com/tannerthardy/football-simulation-/pull/152) | `346421f9e47938cdb4e53f491c69d656a052783c` / `7b092ae2f6e345473dc74b4243350d57511a0545` | **ACCEPT** free first-level recovery toward the acquired runner side. |
-| [#164](https://github.com/tannerthardy/football-simulation-/pull/164) | `5035aad0f37affc43b6803c9e9f924896c5b43e7` / `f2cd4dba1ebdc52dc32560f6407a20ea8d40e2f0` | **ACCEPT** final coherent moving-reference arrival under unchanged physical laws. Reconcile #160's held target flow explicitly. |
+| [#164](https://github.com/tannerthardy/football-simulation-/pull/164) | `5035aad0f37affc43b6803c9e9f924896c5b43e7` / `f2cd4dba1ebdc52dc32560f6407a20ea8d40e2f0` | **HOLD** combined readiness after useful native access/contact failures; local reference design and explicit #160 assembly remain technically supported. |
 | [#150](https://github.com/tannerthardy/football-simulation-/pull/150) | `e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9` / `403d7a9f114e39fb069aa3d5cb2ede648c33cbe9` | **ACCEPT** installed climb access and its documented protection tradeoff. Original exact-zero native contact assertion is a composition gate requiring the explicit adjudication below. |
 
 All three remote heads were rechecked unchanged. #150's actual base is
@@ -214,3 +220,52 @@ This addendum is source review only: zero edits to Root's code and zero tests
 or native prefixes. Root retains the tiny actual-overlap check and exact full
 verification. #165's attained-pose execution change means earlier native endings
 are not automatically evidence for the final composed source.
+
+## Actual combined failure triage — supersedes #164 promotion recommendation
+
+Root's exact freeze `bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f` exposes native
+failures beyond a changed exact-zero collision fixture. Do not change or waive
+these assertions merely to complete integration. The original full verification
+is Root's evidence and was not repeated by this reviewer.
+
+One targeted group selects the five existing `combo-strike-access` contracts,
+the native Split Zone Tite helper and the native planned-climb keeper/load
+control. All tests are unchanged. Isolated same-source reversals distinguish
+the scopes:
+
+| Arm on the exact freeze | Selected results | Interpretation |
+| --- | --- | --- |
+| Original freeze | all seven fail, from Root's existing run | Named unresolved native risk. |
+| Reverse #165's two production files only | six fail, planned-climb control passes | #165 contributes to the planned-climb failure in this composition; it does not explain the remaining blocking failures. |
+| Also reverse #164, retaining corrected #160 and #150/#152 | all seven pass | #164 independently causes the useful combo-departure/Tite failures under accepted physical execution. #150/#152 do not prevent recovery. |
+
+This is not proof that #165 alone, without #164, necessarily fails the same
+planned-climb witness. Its independent mechanical disposition belongs to that
+review lane. The selected group's 23 other assertions are excluded explicitly;
+these are diagnostic selections, not passing full-suite receipts.
+
+One paired 2.65-second prefix of the existing combo-strike fixture identifies
+the first controller interaction. With #165 reversed in both arms, bodies match
+through0.45s. At the first DT_S contact, completed tick0.50s, #164 changes DT
+motion under the same adopted aimy24.882712 and flow0. The RG/DT hands and RT
+helper then exist in both arms. No climb-access choice, target abandonment,
+penetration collection or fall initiates this difference. Without #164, RG
+earns the secured-DT release at event1.05s/completed1.10s while RT retains the
+down surface; RG later performs the Mike job. With #164, the pair remains joined
+and RG remains on DT through2.65s. This occurs upstream of #150's backer-access
+navigation. The paired traces retain positions, velocities, facing, actual
+load, contact references and all events; they do not claim identical later RNG.
+
+**HOLD #164 from the immediate batch** until the keeper/release/contact tradeoff
+is explained and opposed. This does not prove that every prior departure time
+or offensive gain is required, nor that smoother requests are wrong. It shows
+that local request/reference improvements did not resolve the effect on a
+previously useful earned departure and real Tite normal load. A source-clean
+composition cannot substitute for that football disposition. Do not fix this by
+forcing release, changing capacities, relaxing old assertions or promoting
+GAIT/other Physics.
+
+All [failed/passing receipts, logs and prefixes](evidence/failure-triage/summary.json)
+are preserved. No additional full suite, games, roster/NFL panel or main-owner
+handoff ran. Root can remove the offending independent scope and continue the
+remaining compatible candidate rather than paying for a larger campaign.

@@ -1,0 +1,119 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source 5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c
+Running /tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node node_modules/vitest/vitest.mjs run --project core test/combo-strike-access.test.ts test/planned-climb-fit.test.ts test/zone-helper-check.test.ts -t earned departure|maintains acquired Mike|native Split Zone Tite
+
+ RUN  v3.2.4 /workspace/football-latest-blocking-failure-diagnosis
+
+ ❯ |core| test/zone-helper-check.test.ts (22 tests | 1 failed | 21 skipped) 494ms
+   ↓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1
+   ↓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1
+   ↓ the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update
+   ↓ the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time
+   ↓ the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering
+   ↓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1
+   ↓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1
+   ↓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip
+   ↓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor
+   ↓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber
+   ↓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help
+   ↓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away
+   ↓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper
+   ↓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss
+   ↓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path
+   ↓ a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands
+   × the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands 492ms
+     → expected 0 to be greater than 0
+   ↓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help
+ ✓ |core| test/planned-climb-fit.test.ts (3 tests | 2 skipped) 765ms
+   ✓ planned climb acquires a useful near strike without running through the backer > maintains acquired Mike load and the keeper through runner arrival with ordinary World limits  764ms
+ ❯ |core| test/combo-strike-access.test.ts (5 tests | 5 failed) 1075ms
+   × earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=false 563ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=true 323ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=false 53ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=true 44ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > develops real second-level load while the original keeper still protects the down surface 90ms
+     → expected 'drive' to be 'climb' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=false
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=true
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ decision test/combo-strike-access.test.ts:38:28
+ ❯ test/combo-strike-access.test.ts:63:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=false
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=true
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ decision test/combo-strike-access.test.ts:38:28
+ ❯ test/combo-strike-access.test.ts:66:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > develops real second-level load while the original keeper still protects the down surface
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ test/combo-strike-access.test.ts:69:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |core| test/zone-helper-check.test.ts > the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands
+AssertionError: expected 0 to be greater than 0
+ ❯ test/zone-helper-check.test.ts:483:83
+    481|         expect(off / (Math.PI / 2)).toBeLessThan(1.1);
+    482|         expect(owner.body.support!.state).toBe('up');
+    483|         expect(sim.world.joints).toContain(e.hands); expect(e.hands!.n…
+       |                                                                                   ^
+    484|         expect(e.helpers).toEqual([]); retainedReach++;
+    485|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  6 failed | 1 passed | 23 skipped (30)
+   Start at  00:53:37
+   Duration  2.34s (transform 1.28s, setup 0ms, collect 2.92s, tests 2.33s, environment 0ms, prepare 325ms)
+
+Validation receipt: out/blocking-failure/no165-focused.json; exit 1

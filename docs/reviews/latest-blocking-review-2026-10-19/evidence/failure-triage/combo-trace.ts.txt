@@ -1,0 +1,12 @@
+import { readFileSync,writeFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { runContactObservers } from '../../src/sim/run-contact-observer.js';
+const setup=JSON.parse(gunzipSync(readFileSync('test/fixtures/combo-strike-access.json.gz')).toString()).setup;
+const sim=new PlaySim(structuredClone(setup)),rg=sim.slot('RG')!,rt=sim.slot('RT')!,d=sim.slot('DT_S')!,m=sim.slot('LB_M')!;
+const combo=(rg.behavior as any).plan.combination;const rows:any[]=[];let requests:any[]=[];
+runContactObservers.set(sim,(e,phase,data)=>{if(phase==='movement'&&e.defender===d)requests.push({blocker:e.blocker.slot,aim:data.defensiveAim,flow:data.heldFlow,selectedFlow:data.selectedLateralFlow,lateralAim:data.defensiveLateralAimY,command:data.command})});
+const actor=(a:any)=>({slot:a.slot,pos:{...a.pos},vel:{...a.vel},support:a.body.support?.state,facing:a.facing,
+  kind:a.behavior?.plan?.kind,target:a.behavior?.target?.slot,engagement:a.engagement?{blocker:a.engagement.blocker.slot,defender:a.engagement.defender.slot,helpers:a.engagement.helpers.map((h:any)=>h.slot),phi:a.engagement.phi,baseB:a.engagement.baseB,baseD:a.engagement.baseD,normal:a.engagement.hands?.normalForce,tangent:a.engagement.hands?.tangentForce}:null});
+while(sim.phase==='live'&&sim.t<2.65){requests=[];sim.tick();rows.push({t:sim.t,rg:actor(rg),rt:actor(rt),down:actor(d),backer:actor(m),combo:{released:combo?.released,secureSince:combo?.secureSince,checkSince:combo?.checkSince},requests:structuredClone(requests)});}
+writeFileSync(process.argv[2],JSON.stringify({t:sim.t,phase:sim.phase,rows,events:sim.events},null,2)+'\n');

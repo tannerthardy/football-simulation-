@@ -1,0 +1,103 @@
+{
+  "freeze": "bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f",
+  "decision164": "HOLD combined football readiness: useful joined departure and Tite normal load not preserved; exact assembled source review remains supported but is insufficient",
+  "decision150152": "Remain acceptable; present in passing reduced arm",
+  "arms": [
+    {
+      "receipt": "evidence/failure-triage/no165-focused.json",
+      "sourceSha256": "5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c",
+      "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/combo-strike-access.test.ts",
+            "test/planned-climb-fit.test.ts",
+            "test/zone-helper-check.test.ts",
+            "-t",
+            "earned departure|maintains acquired Mike|native Split Zone Tite"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.7247232
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/failure-triage/no165-no164-focused.json",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/combo-strike-access.test.ts",
+            "test/planned-climb-fit.test.ts",
+            "test/zone-helper-check.test.ts",
+            "-t",
+            "earned departure|maintains acquired Mike|native Split Zone Tite"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.716306991
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/failure-triage/no165-no164-trace-receipt.json",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "--import",
+            "tsx",
+            "out/blocking-failure/combo-trace.ts",
+            "out/blocking-failure/no165-no164-trace.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7758302659999999
+        }
+      ]
+    },
+    {
+      "receipt": "evidence/failure-triage/no165-trace-receipt.json",
+      "sourceSha256": "5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c",
+      "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+            "--import",
+            "tsx",
+            "out/blocking-failure/combo-trace.ts",
+            "out/blocking-failure/no165-trace.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.631441053
+        }
+      ]
+    }
+  ],
+  "newCommandSeconds": 6.848301510000001,
+  "newFullSuites": 0,
+  "newGames": 0,
+  "standaloneNativePrefixes": {
+    "count": 2,
+    "limitSeconds": 2.65,
+    "inputFixture": "test/fixtures/combo-strike-access.json.gz"
+  },
+  "rootOriginalFullSuiteFailures": "Owned/preserved by Root at freeze bda8ee6a; not repeated by this reviewer",
+  "assertionsChanged": false
+}

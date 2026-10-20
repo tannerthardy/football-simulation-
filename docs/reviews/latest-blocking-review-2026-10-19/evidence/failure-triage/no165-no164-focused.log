@@ -1,0 +1,19 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source 4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571
+Running /tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node node_modules/vitest/vitest.mjs run --project core test/combo-strike-access.test.ts test/planned-climb-fit.test.ts test/zone-helper-check.test.ts -t earned departure|maintains acquired Mike|native Split Zone Tite
+
+ RUN  v3.2.4 /workspace/football-latest-blocking-failure-diagnosis
+
+ ✓ |core| test/zone-helper-check.test.ts (22 tests | 21 skipped) 599ms
+   ✓ the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands  597ms
+ ✓ |core| test/planned-climb-fit.test.ts (3 tests | 2 skipped) 709ms
+   ✓ planned climb acquires a useful near strike without running through the backer > maintains acquired Mike load and the keeper through runner arrival with ordinary World limits  708ms
+ ✓ |core| test/combo-strike-access.test.ts (5 tests) 1296ms
+   ✓ earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=false  628ms
+   ✓ earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=true  301ms
+
+ Test Files  3 passed (3)
+      Tests  7 passed | 23 skipped (30)
+   Start at  00:53:59
+   Duration  2.32s (transform 928ms, setup 0ms, collect 2.35s, tests 2.60s, environment 1ms, prepare 212ms)
+
+Validation receipt: out/blocking-failure/no165-no164-focused.json; exit 0

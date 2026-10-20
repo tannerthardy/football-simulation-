@@ -25,7 +25,7 @@
       "head": "5035aad0f37affc43b6803c9e9f924896c5b43e7",
       "code": "f2cd4dba1ebdc52dc32560f6407a20ea8d40e2f0",
       "actualBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
-      "decision": "ACCEPT final moving-reference controller under existing physics; reconcile160 explicitly",
+      "decision": "HOLD after composed native useful-access failures; design/source assembly review alone is insufficient",
       "portablePatch": "patches/pr164.patch",
       "reusedFocusedChecks": 81
     }
@@ -125,12 +125,25 @@
   "unchangedOriginalTestPreserved": true,
   "sourceAncestryAndDataEvidenceNotMerged": true,
   "filesSha256": {
-    "README.md": "00337a3f3117cab198e5960259ae9e887ff7f830a32c87f539f69bca9e04e62e",
+    "README.md": "191beb2c678c674a89ce6da84d1202835186e28a49aa17548a681cd0046c7149",
     "evidence/artifact-verification.json": "ce6c384e7c07f6248fbe08e7f4198e28b1a7a10be3fd0d23369c072e78f5a473",
     "evidence/climb-composition.ts.txt": "185b537a336e977055a08dec3506dec8248b440bafdeff97fd878cc507bb0d89",
     "evidence/composed-prefix-receipt.json": "559010637a8fe48f1a781707fa71c8de6ba981da73c6bc68ee86d661dc7fdbf0",
     "evidence/composed-prefix.json": "62f4e430be772276fb84a9afa17cdd0cdd5096cbf5901662942e290b4a479498",
     "evidence/composed-prefix.log": "86e6bc6c51d9528dc8f9984f2b18e4353c5a9bdd98ab7609918a5d1a183dceed",
+    "evidence/failure-triage/combo-trace.ts.txt": "30b06ca6d92e518bf326a3e5e8f822f50acf2adbd660b30a6c1d0726b0f6c7eb",
+    "evidence/failure-triage/no165-focused.json": "a2bdde8adb36a6810f945d7c26a1ba16c667592b2021cf3e1f496267f955fb37",
+    "evidence/failure-triage/no165-focused.log": "ddc3df3e29d13142e838178a375a659c944b3b67653b23dba26bee06d595f120",
+    "evidence/failure-triage/no165-no164-focused.json": "80bdb3de86ae09dd54a757985570df476f5572085fa7ba0f8c82ca9c60fb7b4c",
+    "evidence/failure-triage/no165-no164-focused.log": "4babf702df2f7b176c50859464478811b399361932554aad6c1c041b3d45ea85",
+    "evidence/failure-triage/no165-no164-trace-receipt.json": "9ab610315b4be2755d8d87e244c43344f318d556af7f00e1b99fbb173d079492",
+    "evidence/failure-triage/no165-no164-trace.json": "0bca5c6ce1e2241e4c4acef9850cf2753be1c57e3ff23962d544baddb125c2b8",
+    "evidence/failure-triage/no165-no164-trace.log": "b3847b03accd5cf7c522db450e97ee0135559bf3920b609ffc1f7b858e7dc90f",
+    "evidence/failure-triage/no165-trace-receipt.json": "5b8f3a093f3b1f45d92df926ee80ceaf13e0c357bf0263826e0d5ff4ace582f1",
+    "evidence/failure-triage/no165-trace.json": "29076791cc9ad46eb0dd768ba07669a5bbe22750eba191c32bedd2532f36fe79",
+    "evidence/failure-triage/no165-trace.log": "a54dd1135b7fda471fe15e3c9b6175dfc394a90e792325d486e9e9e7f6d9b291",
+    "evidence/failure-triage/pr165-world-kinematics.patch": "51c3e1f3fc66a0a891504a941dbfae301f42c48b4417e6a75bb3cc21e7174bd6",
+    "evidence/failure-triage/summary.json": "b8360dbe0c0fe3f02f5c36c2419fdb29d175c18fbabeb971a59432e12ef65616",
     "evidence/original-climb-access.test.ts.txt": "575f4dcd6740ea1f67cdf46ed0c62da7ccc0bae2963d48266ccdc60b47c3a6f3",
     "evidence/portability-checks.json": "2d210eeb15b1d1e143fb92a750224cb4b23252b6bb880a6b1337aa8832e876f6",
     "evidence/portability-checks.log": "f02298edbeb0a0f776cb6e874f37b878404291b1a761acf791f972dcffa1c9a0",
@@ -157,5 +170,108 @@
     "newTests": 0,
     "newNativePrefixes": 0,
     "combinedVerificationOwner": "Root Integration"
+  },
+  "newComposedFailureTriage": {
+    "freeze": "bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f",
+    "decision164": "HOLD combined football readiness: useful joined departure and Tite normal load not preserved; exact assembled source review remains supported but is insufficient",
+    "decision150152": "Remain acceptable; present in passing reduced arm",
+    "arms": [
+      {
+        "receipt": "evidence/failure-triage/no165-focused.json",
+        "sourceSha256": "5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c",
+        "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+              "node_modules/vitest/vitest.mjs",
+              "run",
+              "--project",
+              "core",
+              "test/combo-strike-access.test.ts",
+              "test/planned-climb-fit.test.ts",
+              "test/zone-helper-check.test.ts",
+              "-t",
+              "earned departure|maintains acquired Mike|native Split Zone Tite"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 2.7247232
+          }
+        ]
+      },
+      {
+        "receipt": "evidence/failure-triage/no165-no164-focused.json",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+              "node_modules/vitest/vitest.mjs",
+              "run",
+              "--project",
+              "core",
+              "test/combo-strike-access.test.ts",
+              "test/planned-climb-fit.test.ts",
+              "test/zone-helper-check.test.ts",
+              "-t",
+              "earned departure|maintains acquired Mike|native Split Zone Tite"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.716306991
+          }
+        ]
+      },
+      {
+        "receipt": "evidence/failure-triage/no165-no164-trace-receipt.json",
+        "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+              "--import",
+              "tsx",
+              "out/blocking-failure/combo-trace.ts",
+              "out/blocking-failure/no165-no164-trace.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.7758302659999999
+          }
+        ]
+      },
+      {
+        "receipt": "evidence/failure-triage/no165-trace-receipt.json",
+        "sourceSha256": "5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c",
+        "validationSha256": "4b4a7ef5d33c6152f9055ca0950dc53097086667cc6ff074b8406438ca1b47d1",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "/tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node",
+              "--import",
+              "tsx",
+              "out/blocking-failure/combo-trace.ts",
+              "out/blocking-failure/no165-trace.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.631441053
+          }
+        ]
+      }
+    ],
+    "newCommandSeconds": 6.848301510000001,
+    "newFullSuites": 0,
+    "newGames": 0,
+    "standaloneNativePrefixes": {
+      "count": 2,
+      "limitSeconds": 2.65,
+      "inputFixture": "test/fixtures/combo-strike-access.json.gz"
+    },
+    "rootOriginalFullSuiteFailures": "Owned/preserved by Root at freeze bda8ee6a; not repeated by this reviewer",
+    "assertionsChanged": false
   }
 }

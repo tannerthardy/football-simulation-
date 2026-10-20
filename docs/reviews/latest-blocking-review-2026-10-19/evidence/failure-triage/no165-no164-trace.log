@@ -1,0 +1,3 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source 4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571
+Running /tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node --import tsx out/blocking-failure/combo-trace.ts out/blocking-failure/no165-no164-trace.json
+Validation receipt: out/blocking-failure/no165-no164-trace-receipt.json; exit 0
