@@ -14,6 +14,9 @@ exactly. This closes #180's cost hold; it does not merge or activate the change.
 This is an 84.4% reduction in alternating **body-facing correction amplitude**
 in the existing matched windows, not 84% fewer full spins or global path jitter.
 
+[Integration handoff: exact version, reused evidence, preview compatibility and
+adoption boundary](loaded-movement-integration-handoff.md).
+
 Accepted comparison: `2c98bed94adad8087c65f381d4090444ad283985`;
 canonical queue inspected: `6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`.
 Minimal #162 extraction: `2637558c5024b84dc23f7de10cffc3058b2dab41`.

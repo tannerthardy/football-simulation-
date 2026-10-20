@@ -1,5 +1,22 @@
 # Current work ownership
 
+## #180 Integration handoff — 2026-10-20 UTC
+
+Physics owns a documentation/provenance-only handoff on `codex/loaded-movement`
+from reviewed publication `2c6d53ecce9f5eb54e7a086c7723dd21aa68320a`.
+Read #187's Physics instructions and the owner comment on #180; re-fetch
+accepted develop `2c98bed94adad8087c65f381d4090444ad283985` and queue
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`. Confirm World/stepBody and
+#181/#184/#186 preview boundaries by source/blob checks and reuse compatible
+component evidence. No source/test/settings changes, new simulations, benchmark
+or suite. Preserve all adverse cases and held gait/capacity/solver experiments;
+Integration retains combined verification and the explicit motor adoption.
+Completed: source and all 11 published artifact hashes match the reviewed
+runtime; source-only #181/#184/#186/#170 preview checks find no motor/interface
+conflict. **READY**, with explicit ordinary-motor/shared-peak-torque adoption
+and exact combined verification left to Integration. Zero new tests/native
+runs/benchmarks. Boundary released. [Handoff](reviews/loaded-movement-integration-handoff.md).
+
 ## #180 yaw readiness continuation — 2026-10-20 UTC
 
 User explicitly resumes #180 to finish its cost/readiness blocker. Physics
