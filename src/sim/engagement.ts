@@ -654,7 +654,7 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
-const runSheds = new WeakMap<Engagement, { until: number; side: number }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -999,6 +999,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const axis = axisOf(sim, e); // defender toward the intended contact surface
   const lat = latOf(axis);
   const read = runContactRead(sim, e);
+  const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
+    && read.declared && read.threat?.carrying === true;
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
@@ -1013,14 +1015,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
 
   // Shed attempts once the ball carrier threatens his area — not the QB
   // standing at the mesh before the handoff.
-  if (read.threat && t >= e.nextMoveAt) {
+  if (read.threat) {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
-    const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
-      && read.declared && read.threat.carrying === true;
-    if (dc < 3.5 || supportRunner) {
+    // #169: acquiring hands does not restart already justified support.
+    const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
+    if (ready && (dc < 3.5 || supportRunner)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
@@ -1029,7 +1031,18 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // does is physical: the hand fight (who controls the hands), his feet
         // and the blocker's body decide it through the release geometry
         // below, not a roll.
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side });
+        // Once his blocker is behind the already selected runner approach,
+        // continuing across the old surface is no longer the exit objective.
+        // Loaded hands supply the local body position; an extended, unloaded
+        // reach supplies only this observer's acquired blocker picture.
+        let runner = false;
+        if (supportRunner) {
+          const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
+          const blocker = loaded ? b.pos : sim.see(d, b).pos;
+          if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
+            runner = true;
+        }
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1229,7 +1242,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
-  const workOff = shedding ? { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+  // The contact technique does not own a second, older runner waypoint.
+  // Follow the existing read's held objective as it legitimately refreshes;
+  // lost/contradictory acquisition retains the ordinary across-face response.
+  const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
+  const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
+  const workOff = shedding ? exit
+    ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
+    : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
   let cf: Vec2 | null = null;
   if (CF_FLOW && !read.declared) {
@@ -1246,6 +1266,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
   };
+  runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
+    declared: read.declared, supportRunner, defensiveAim: read.aim,
+    exitAim, workOff, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
