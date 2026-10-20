@@ -409,6 +409,9 @@ export interface RunBlockPlan {
   climbTo?: Agent | null;
   drive: Vec2;
   pullPath?: Vec2[];
+  /** Optional movement intention, separate from the installed path and fit.
+   * Unspecified preserves ordinary gait; explicit drive still plans braking. */
+  pullPropulsion?: 'full';
   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
   pullRole?: 'kick' | 'lead' | 'trap';
   /** Explicit GH installation: first guard/end relationship known at the snap. */
@@ -949,7 +952,8 @@ export class RunBlocker implements Behavior {
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
         // The pull step opens the hips to the play side: he does not turn to
         // face his own backfield while he gains depth (PULL_STEP).
-        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
+        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined,
+          ...(plan.pullPropulsion ? {propulsion:plan.pullPropulsion,captureRadius:.65} : {}) });
       }
     }
     if (!target) {

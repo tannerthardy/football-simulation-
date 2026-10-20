@@ -297,13 +297,13 @@ export function pushBody(body: Body, push: Vec2, dt: number): void {
  * Steering helper: desired velocity to arrive at `target` passing through it at
  * `throughSpeed` (0 = stop there), never exceeding `maxSpeed`.
  */
-export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0): Vec2 {
+export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0, captureRadius = .15): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
   const d = Math.hypot(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
   const brake = body.profile.brake * 0.8;
-  const allowed = Math.sqrt(throughSpeed * throughSpeed + 2 * brake * Math.max(0, d - 0.15));
+  const allowed = Math.sqrt(throughSpeed * throughSpeed + 2 * brake * Math.max(0, d - captureRadius));
   const s = Math.min(maxSpeed, allowed);
   return { x: (dx / d) * s, y: (dy / d) * s };
 }

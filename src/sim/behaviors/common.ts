@@ -7,6 +7,8 @@ import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { planArrival } from '../arrival-plan.js';
+import { DT } from '../../core/units.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -15,12 +17,15 @@ export function stand(facing?: number): MoveCommand {
   return { vel: { x: 0, y: 0 }, facing };
 }
 
-/** Move toward a point, arriving at `through` speed (0 = stop). */
-export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: number; facing?: number; cutSkill?: number; effort?: number; propulsion?: 'full' } = {}): MoveCommand {
+/** Move toward a point, arriving at `through` speed (0 = stop).
+ * captureRadius is the caller's actual waypoint handover boundary. */
+export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: number; facing?: number; cutSkill?: number; effort?: number; propulsion?: 'full'; captureRadius?: number } = {}): MoveCommand {
   const vmax = a.profile.vmax * (opts.speed ?? 1);
   const t = { x: target.x, y: clamp(target.y, 0.3, FIELD_WIDTH - 0.3) };
   return {
-    vel: arriveVelocity(a.body, t, vmax, opts.through ?? 0),
+    vel: opts.propulsion === 'full'
+      ? planArrival(a.body,t,vmax,opts.through??0,DT,opts.captureRadius??.15,opts.cutSkill??1).velocity
+      : arriveVelocity(a.body, t, vmax, opts.through ?? 0,opts.captureRadius),
     facing: opts.facing,
     cutSkill: opts.cutSkill,
     effort: opts.effort,
