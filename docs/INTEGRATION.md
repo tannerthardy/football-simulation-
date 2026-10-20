@@ -109,8 +109,9 @@ Run independently reviews proposed FORCE_LEAD first and triages mesh/puller/clim
 deltas; Catching retains169/171 and coverage duties; Physics continues gait-intent
 and separately adjudicates contact validity; Flex continues pursuit and reviews
 SPACE_STEER at its checkpoint; Measurement checks changed operators/provenance;
-CEO reconciles old154 planning. Owner-addressed GitHub delivery follows publication;
-no direct chat dispatch tool is available. [Exact requests](../data/reviews/current/claude-integration-assignments.json).
+CEO reconciles old154 planning. All seven owner-addressed GitHub requests are
+posted; acknowledgment pending. Direct chat dispatch is unavailable.
+[Delivery links](../data/reviews/current/claude-owner-delivery.json), [exact prompts](../data/reviews/current/claude-integration-assignments.json).
 
 Earlier UC/mesh/ZONE_TE/STRETCH_FLAT/LB_KEY/drive/departure/FB/alignment and
 SHED_PURSUE holds persist unless changed pinned hunks resolve them. New Part9–13

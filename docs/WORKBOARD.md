@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active Claude153 integration preparation — 2026-10-20 America/Phoenix
+## Completed Claude153 intake / pending candidate verification — 2026-10-20 America/Phoenix
 
 Integration owns only the existing review-intake/current queue/status/issues/workboard
 metadata plus new portable-patch/source manifest and delivery records on
@@ -17,6 +17,8 @@ Run independently reviews it and triages unchanged/changed mesh/puller/climb sco
 Catching triages coverage; Physics owns law/contact validity; Flex reviews spacing;
 Measurement owns changed evidence compatibility; CEO reconciles154 planning.
 These are bounded next checkpoints, not permission to start seven broad studies.
+All seven owner requests are posted on existing PRs, acknowledgment pending. Metadata
+preparation boundary released; Integration retains the next candidate verification.
 No simulations/suite/default activation, branch moves or historical receipt edits.
 [Exact prompts/scope](reviews/run-game-v3-review-intake.md#latest-claude-preparation).
 

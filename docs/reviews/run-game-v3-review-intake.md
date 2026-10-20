@@ -71,45 +71,59 @@ are explanations to adjudicate, not a rule that every yardage result must improv
 ### Owner prompts and scope boundaries
 
 The user requests owner distribution. Use existing PR/queue channels; direct
-chat dispatch is unavailable in this tool session, so GitHub delivery is recorded
-separately. These are bounded continuations, not seven new independent projects.
+chat dispatch is unavailable in this tool session. All seven owner-addressed
+requests are posted on GitHub; acknowledgment is pending. [Delivery links](../../data/reviews/current/claude-owner-delivery.json). These are bounded continuations, not seven new independent projects.
 Existing Physics gait-intent, Catching man-run continuation and Flex pursuit/contact
 ownership remain intact. A blocked scope holds itself.
 
-Use accepted develop `2c98bed94adad8087c65f381d4090444ad283985` and Claude research `bae3fe80d189a7d792aaafbc4eea1ae2baa79573` (#153, Parts9–13); refresh refs before acting. [Current Integration intake and portable169+171 candidate](https://github.com/tannerthardy/football-simulation-/blob/codex/integration-queue/docs/reviews/run-game-v3-review-intake.md#latest-claude-preparation). Research has75 registered settings versus44 accepted, with the original44 values unchanged; full research is not approved. Reuse compatible receipts under docs/TESTING_COSTS.md; no automatic broad lab, games, NFL sweep or contributor full suite. Preserve adverse/rejected evidence. Publish fetchable pins, genuine dependencies and explicit enabled/default intent. Integration owns exact combined verification and adoption; law/default/experimental promotion remains separately gated.
+Use accepted develop `2c98bed94adad8087c65f381d4090444ad283985` and Claude research `bae3fe80d189a7d792aaafbc4eea1ae2baa79573` (#153, Parts9–13); refresh refs before acting. [Current Integration intake and portable169+171 candidate](https://github.com/tannerthardy/football-simulation-/blob/codex/integration-queue/docs/reviews/run-game-v3-review-intake.md#latest-claude-preparation). Research has75 registered settings versus44 accepted, with the original44 values unchanged; full research is not approved. Reuse compatible receipts under docs/TESTING_COSTS.md; no automatic broad lab, games, NFL sweep or contributor full suite. Preserve adverse/rejected evidence. Publish fetchable pins, genuine dependencies and explicit enabled/default intent. Integration owns exact combined verification and adoption; law/default/experimental promotion remains separately gated. [Claude's pinned Parts1–13 report](https://github.com/tannerthardy/football-simulation-/blob/bae3fe80d189a7d792aaafbc4eea1ae2baa79573/docs/reviews/run-game-v3.md) and `scripts/diag/stretch/film-tail-cases.txt` identify the source/cases. `out/film/tail-review.html` is local-only; obtain selected existing inputs/film through the author's fetchable evidence handoff, without recollecting the campaign.
 
 <a id="claude-author"></a>
 #### Claude
+
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300178882).
 
 Finish one existing controller finding as a minimal current-develop candidate before the next discovery cycle. Start with FORCE_LEAD as a proposed extraction for Run's independent review; preserve installed force duty, acquired runner information and existing physical limits. Publish the exact patch, genuine dependencies and existing AFTER-04/14 witness/control access. Package evidence is not standalone proof; add only the smallest missing production-path comparison if it changes the decision. State the Part13 SPACE_STEER=2/TRAP_READ arms as pending unless already completed and published. Keep the research branch intact, and let the remaining findings proceed independently.
 
 <a id="run-controller-review"></a>
 #### Run Game
 
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300179998).
+
 Independently review the proposed FORCE_LEAD extraction first, using source and existing AFTER-04/14 evidence before requesting runs. Decide acquired-input safety, outside leverage, attainable requests and legitimate cutback/PA/offensive controls. Classify routine contract repair versus new policy/default requiring a decision. Then source-triage PULL_STEP/LEAD_READ/TRAP_READ and the mesh/climb family for the smallest next candidate; carry forward unchanged UC/MESH/GUN/ZONE_TE/DRIVE_CONNECT/DEPART_TEMPO holds and inspect only changed or newly portable hunks. Keep SHED_PURSUE's acquired intent and .6s re-grab prohibition separate. No full research merge or automatic experiment matrix.
 
 <a id="coverage-support-review"></a>
 #### Catching And Defensive Pursuit
+
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300180952).
 
 Keep #169/#171's reviewed pins stable; answer only new composition questions, with no repeat of completed independent reviews. Integration has prepared their seven-file combined patch. Preserve WZ7/OZ4 adverse evidence, BackfieldRunFit's expected-versus-affirmative-key distinction, release/PA/recognized-flight controls and unchanged initial RNG rules. For Claude's remaining coverage family, source-triage EDGE_SQUEEZE/FORCE_DEPTH/DEEP_CAP/LB_DEPTH and TRACK_FACING, and advance only the most mature independent correction. MAN_RUN_COMMIT's narrow continuation successor is #171, not permission to import Claude's flag wholesale. Coordinate fit-input overlap with Run's FORCE_LEAD review; do not self-approve your own implementation.
 
 <a id="physics-boundaries"></a>
 #### Physics Sim
 
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/163#issuecomment-6300182020).
+
 Continue the already assigned codex/gait-intent investigation; do not restart #163 or promote GAIT_STEP=.5 from aggregate fit. Report a minimal independently reviewable execution/request correction if supported, or the precise remaining law/default decision. Preserve low-speed LB/DB acceleration-envelope and shotgun adverse results. Give BLOCK_FRONT a separate contact-validity disposition before any promotion; a hard angular exclusion is not automatically an existing-law correction. Keep #162/#164/#165 and SHED_PURSUE's re-grab prohibition under their existing holds. #170 supplies recoverable-contact evidence, not approval for generic slowdown. Reuse existing mechanical witnesses; no broader campaign.
 
 <a id="movement-and-contact"></a>
 #### Do-It-All!
+
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/170#issuecomment-6300183042).
 
 Keep #170's published diagnostic/regression scope stable and continue your assigned codex/help-aware-pursuit work independently. Integration will assess #170's portable tooling/test contract; no new contact law is implied. At the next checkpoint, source-review Claude's SPACE_STEER and saved Part13 IZ/gap adverse cases: distinguish a clear teammate path from progress toward the installed football objective, preserve acquired peer inputs and physical forecasts, and separate carrier from noncarrier policy. Unscored SPACE_STEER=2 cannot be accepted evidence. Return the smallest supported extraction or a specific HOLD; avoid another broad avoidance framework or duplicate Run's force-fit work.
 
 <a id="measurement-compatibility"></a>
 #### Measurement
 
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300184096).
+
 Apply your published f3063e5 critique to the changed Parts9–13 claims and candidate evidence, reusing c9f162a and completed corrections. Check source/flags/operator/cohort bindings and fetchable selected AFTER-04/14 inputs/film; provide a compact missing-artifact or compatibility list. Preserve proximity versus actual contact/loading, continuous episode versus elapsed time, survivor-conditioned slowing and gap-concept/cohort limits. #170 already demonstrates recoverable disruption; do not repeat that investigation or turn 97%/0% labels into a physical law. Qualify gait acceleration and pooled TVD adverse cells. No new archive, study, P045 query or NFL scan just for distribution/review.
 
 <a id="priority-reconciliation"></a>
 #### CEO of Football
+
+[Posted request](https://github.com/tannerthardy/football-simulation-/pull/154#issuecomment-6300185209).
 
 Reconcile #154's existing planning document with accepted #168: #131's live caller and #141's reviewed extraction are completed, not waiting tasks. Use the current Integration intake for #169/#171's reviewed-controller preparation, #170's separate diagnostic lane and the unreviewed Claude families. Prioritize one independently adoptable controller correction, with a precise football decision for any material tradeoff; do not make all audit/Physics work prerequisites. Preserve historical planning/evidence, coordinate only unresolved owner boundaries, and send prioritization changes to the existing queue. No new tracker, general audit or game campaign.
 
