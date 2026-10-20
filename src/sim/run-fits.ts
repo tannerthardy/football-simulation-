@@ -1,5 +1,6 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
-import { gaitLag } from '../physics/kinematics.js';
+import { fatigueFactor, gaitLag, movingArrivalVelocity } from '../physics/kinematics.js';
+import { availability, supportParams } from '../physics/support.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
@@ -132,6 +133,13 @@ const LB_PLAN = process.env.LB_PLAN !== '0';
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
 const PULL_PLAN = process.env.PULL_PLAN === '1';
+/** Experimental (LB_GLIDE=1, off): a free fit's lateral work follows its
+ * landmark as a moving point every tick: the landmark's own observed velocity
+ * (the gap's bounding bodies, the back's declared track, or an adopted pull)
+ * plus the closure his braking allows, instead of LB_PLAN's gated two-read
+ * cover request. That request inverts the sprint lag; on a responsive gait it
+ * saturates and reverses within a read, and its gate switches it on and off. */
+const LB_GLIDE = process.env.LB_GLIDE === '1';
 
 /** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
 const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
@@ -338,7 +346,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const gap = liveGap(sim, a, job.gap, job.side);
   const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
-  let pullSide = 0;
+  let pullSide = 0, pullVel = 0;
   if (PULL_READ) {
     // Read the guards: every puller this player sees crossing behind the line
     // shows where an extra blocker will turn up. Flow with him to keep the
@@ -348,7 +356,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
       if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
-        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
+        gy = target; pullSide = dir; pullVel = p.vel.y; a.tags.add('fit-pull-read');
       }
     }
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
@@ -384,6 +392,17 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // beat. Do not amplify the still-held action away from that observed pull.
   const planPull = PULL_PLAN && job.kind === 'insert' && job.technique !== 'lag'
     && (aim.y - a.pos.y) * pullSide > 0;
+  if (LB_GLIDE) {
+    // The landmark's lateral velocity, from the same pictures that placed it.
+    const moving = flowing ? seen.vel.y : pullSide ? pullVel : SCRAPE ? gap.vel : 0;
+    const vmax = a.profile.vmax * (.78 + .15 * a.mind.urgency);
+    const capacity = a.body.support ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+    const vy = movingArrivalVelocity(a.body, { x: a.pos.x, y: aim.y }, { x: 0, y: moving }, vmax, 0, 0, 1, capacity).y;
+    // The same crossover as the planned fit below once lateral running leads.
+    const facing = job.kind === 'insert' && flowing && Math.abs(vy) > Math.abs(fit.vel.x)
+      ? Math.atan2(vy, fit.vel.x) : fit.facing;
+    return { ...fit, vel: { x: fit.vel.x, y: vy }, facing };
+  }
   if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
   const horizon = 2 * a.mind.decisionInterval;
   const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);

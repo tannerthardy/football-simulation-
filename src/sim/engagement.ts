@@ -632,6 +632,11 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 /** Trial: retain the held solo reach's track intention through contact. */
 const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
+/** Experimental (DL_FEEL=1, off): an engaged defender's lateral flow cue is
+ * the blocker's motion felt through the hands each tick while touching (the
+ * same haptic channel as his position), not the visual sample held for a
+ * decision beat. */
+const DL_FEEL = process.env.DL_FEEL === '1';
 /** Experimental (STRETCH_FLAT=1, off): a reach blocker plays flat. Matching
  * an attacking defender's normal motion asks his feet to retreat, so the
  * defender walks into the backfield without load. He gives no ground on
@@ -906,8 +911,12 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     }
     // Motion is a personally acquired cue held for an ordinary decision beat.
     // Touch supplies local position/load, never the OL's private drive.
+    // DL_FEEL: with hands on, the blocker's motion is felt through the
+    // contact every tick, like his position; the visual sample stays for
+    // the held decision beat otherwise.
+    if (DL_FEEL && touch) stack.flow = b.vel.y;
     if (sim.t >= stack.nextRead) {
-      stack.flow = picture.vel.y;
+      if (!(DL_FEEL && touch)) stack.flow = picture.vel.y;
       if (!edge && job.technique === 'lag' && reading && Math.abs(stack.flow) > .8)
         stack.shoulder = -Math.sign(stack.flow) * (b.profile.radius + d.profile.radius) * .65;
       stack.nextRead = sim.t + d.mind.decisionInterval;

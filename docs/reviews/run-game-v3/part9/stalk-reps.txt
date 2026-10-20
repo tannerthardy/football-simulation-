@@ -1,0 +1,8 @@
+== pre-merge (6184040f)
+plays 240; WR-on-DB run reps 46 (0.19/play); plays with a stalked DB 28
+rep duration p25/p50/p75 0.45/1.05/1.20 s; ends: (still engaged at end) 23, separation 16, runner passed defender 7
+stalked DBs reaching the carrier 2/41; 20+ runs 7, with a stalked DB 1
+== post-merge (ece674aa)
+plays 240; WR-on-DB run reps 506 (2.11/play); plays with a stalked DB 236
+rep duration p25/p50/p75 0.55/0.75/1.10 s; ends: separation 299, (still engaged at end) 160, runner passed defender 41, body down 6
+stalked DBs reaching the carrier 42/432; 20+ runs 16, with a stalked DB 16
