@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Active Claude153 integration preparation — 2026-10-20 America/Phoenix
+
+Integration owns only the existing review-intake/current queue/status/issues/workboard
+metadata plus new portable-patch/source manifest and delivery records on
+`codex/integration-queue`, from4cc3337d. Accepted2c98bed9 remains unchanged.
+Researchbae3fe80 includes accepted source; no full research ancestry import.
+Temporary-index169+171 preparation touches no worker's index/checkout/engine:
+seven-file/five-runtime patchsourcef3ed945f, not frozen or combined verified.
+170 diagnostic/tool/test review is separate. Root owns exact combined verification
+when the scoped candidate is accepted; contributors retain their focused receipts.
+
+Existing Physics gait-intent, Catching man-run-continuation and Flex help-aware-pursuit/
+contact ownership remain. Claude supplies the first FORCE_LEAD portable candidate;
+Run independently reviews it and triages unchanged/changed mesh/puller/climb scope;
+Catching triages coverage; Physics owns law/contact validity; Flex reviews spacing;
+Measurement owns changed evidence compatibility; CEO reconciles154 planning.
+These are bounded next checkpoints, not permission to start seven broad studies.
+No simulations/suite/default activation, branch moves or historical receipt edits.
+[Exact prompts/scope](reviews/run-game-v3-review-intake.md#latest-claude-preparation).
+
 ## Completed #168 latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration completed only minimal extraction/composition and exact verification on

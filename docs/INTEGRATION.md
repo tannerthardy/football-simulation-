@@ -80,7 +80,7 @@ pickup, contact lifetime, wide-zone/combo movement and deep-pursuit risks.
 Finer film can change output-derived pressure metrics near thresholds; retain
 measurement provenance. Correctness repairs do not certify football/NFL realism.
 
-The integration-ready queue is empty at this publication checkpoint.
+At168 publication the integration-ready queue was empty; the latest169/170/171 intake follows below.
 All13 incorporated source PRs are closed with exact extraction dispositions;
 all source branches and original/rejected evidence are retained.153 remains open
 research;164/165 remain held. [Dispositions](../data/reviews/current/latest-reviewed-checkpoint/dispositions.json).
@@ -90,19 +90,39 @@ parents and source-qualify old tapes. Assembly boundary released. Next follow-up
 should use a bounded saved witness for wide-zone/combo access or deep pursuit.
 Any frozen-panel comparison is separately budgeted; no automatic per-patch game gate.
 
-### #153 run-game v3 — partial extraction only; research remains open
+### Latest Claude153 preparation — Parts1–13 atbae3fe80
 
-Current reviewed research head is
-`claude/run-game-v3@6184040fb0e2190b8799a2bd925df9e8af6494da`.
-Only QB carry-out direction and native/export/viewer precision were delivered via168, with
-existing QB speed/depth/timing and legacy film compatibility. No QB_CARRYOUT or
-other experimental activation. The full mesh/UC_MESH/lead/FB/departure/shoulder/
-shed package, unsafe reset/clean instrumentation, yaw law and GAIT_STEP promotion
-remain excluded. Preserve zone20+28→63/1200 and unfinished wide-zone flow,
-combo duration/displacement, re-latch, chattering and deep-pursuit tails.
-[Current scope and pinned independent reviews](reviews/latest-reviewed-checkpoint.md).
-[Original review intake](reviews/run-game-v3-review-intake.md) retains the earlier
-1c578afb research snapshot and bounded questions as historical preparation.
+Accepted develop remains2c98bed9; research `bae3fe80d189a7d792aaafbc4eea1ae2baa79573`
+already includes it.75 research settings versus44 accepted; original44 values
+unchanged. Full research behavior/31 added registrations remain unapproved.
+[Current reviewed/unreviewed scope, owner prompts and exact pins](reviews/run-game-v3-review-intake.md#latest-claude-preparation).
+
+First portable candidate: independently reviewed **169@1004b818 +171@6cbdcc4d**,
+seven files/five runtime files, sourcef3ed945f. [Patch and manifest](../data/reviews/current/claude-latest-review-intake.json).
+Only temporary-index/ref/blob checks completed: not frozen/combined-verified or
+adopted. Integration owns final overlap acceptance/exact verification once;
+contributor focused receipts are reused.170@4a5aadcb remains a separate diagnostic/
+regression-contract review with no engine/default delta. Neither lane waits for
+all research or Physics. Preserve169 WZ7 leverage cost and171 OZ4 adverse ending.
+
+Run independently reviews proposed FORCE_LEAD first and triages mesh/puller/climb
+deltas; Catching retains169/171 and coverage duties; Physics continues gait-intent
+and separately adjudicates contact validity; Flex continues pursuit and reviews
+SPACE_STEER at its checkpoint; Measurement checks changed operators/provenance;
+CEO reconciles old154 planning. Owner-addressed GitHub delivery follows publication;
+no direct chat dispatch tool is available. [Exact requests](../data/reviews/current/claude-integration-assignments.json).
+
+Earlier UC/mesh/ZONE_TE/STRETCH_FLAT/LB_KEY/drive/departure/FB/alignment and
+SHED_PURSUE holds persist unless changed pinned hunks resolve them. New Part9–13
+controller families have no blanket independent acceptance. MAN_RUN_COMMIT's
+narrow successor is171; it does not approve the original experimental flag.
+GAIT_STEP=.5 and162/164/165 remain separately gated. Preserve shotgun49→103/600
+negatives, worse low-speed LB/DB acceleration fit, SPACE_STEER IZ/gap costs,
+pending carrier-excluded/trap arms and operator qualifications.170 demonstrates
+recoverable disruption under its exact conditions, not a universal slowdown law.
+No games, broad lab/NFL recollection or shared suite during this preparation.
+Only QB-away direction and complete film precision from153 were delivered via168.
+All original intakes, receipts, rejected trials, branches and historical4ded6b6 remain.
 
 <details>
 <summary>Completed #151 checkpoint and its then-pending queue — historical</summary>
@@ -862,6 +882,9 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
+| Reviewed controller preparation |169@1004b818 +171@6cbdcc4d; portable sourcef3ed945f | Integration final composition/verification once; no repeated contributor review or research-stack import. [Manifest](../data/reviews/current/claude-latest-review-intake.json). |
+| Separate diagnostic review |170@4a5aadcb; no src/settings delta | Integration tool/test portability/contract decision; preserves recoverable contact versus proximity interpretation. |
+| Claude153 newer families |bae3fe80;75 registered research settings,44 accepted | Proposed FORCE_LEAD author extraction→Run review first; other owners follow named existing lanes, holds unchanged. [Requests](reviews/run-game-v3-review-intake.md#latest-claude-preparation). |
 | Delivered via168 |131/141/148→149/150/152/155/156/157/159/corrected160/161/167 plus two153 extractions; develop2c98bed9 | All13 source PRs closed as incorporated; branches/evidence retained. [Actual pin/owner handoff](../data/reviews/current/pr168-merge.json). |
 | Combined-contract hold |164@5035aad0,165@d922b7c2 | Preserve original assertions and failed traces; resolve useful earned departure / native motion-spacing contracts before a new review. |
 | Law/default decision held |162 ordinary yaw/recovery; GAIT_STEP=.3 | Separate physical-law/default review; preserve zone20+28→63/1200 adverse tail. No activation. |
