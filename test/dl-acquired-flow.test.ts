@@ -72,3 +72,24 @@ describe('first-level acquired lateral runner objective',()=>{
   expect(cmd(left).vel).toEqual(cmd(right).vel);
  });
 });
+
+// Only the new deep lateral mode is acquired; legacy contact-reading metadata
+// remains outside this correction. An observed empty QB cannot declare a run
+// merely because authoritative hidden possession happens to select his picture.
+describe('acquired deep-flow activation does not use the hidden holder',()=>{
+ it.each(['pass','unsure']as const)('does not activate new flow while personally reading %s',read=>{
+  const left=stage(),right=stage();
+  for(const f of [left,right]){f.defender.recog!.read=read;f.qbCue.pos.x=f.sim.los+3;}
+  right.sim.ball={kind:'held',carrier:right.sim.qb};
+  const emitted=(f:Scene)=>{
+   const samples:Record<string,unknown>[]=[];
+   runContactObservers.set(f.sim,(_rep,phase,data)=>{if(phase==='movement')samples.push(data);});
+   try{return{command:cmd(f),aim:samples[0].defensiveAim,flow:samples[0].heldTargetFlow};}
+   finally{runContactObservers.delete(f.sim);}
+  };
+  const a=emitted(left),b=emitted(right);
+  // Legacy `reading`/`declared` may still differ through authoritative holder
+  // selection. Do not broaden this repair to that prior target policy.
+  expect(a.flow).toBeUndefined();expect(b.flow).toBeUndefined();
+ });
+});

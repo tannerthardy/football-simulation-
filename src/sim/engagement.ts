@@ -880,7 +880,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
   else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
   let flow: number | undefined;
-  if (stack && job!.kind === 'interior' && job!.technique !== 'lag' && reading && back) {
+  if (stack && job!.kind === 'interior' && job!.technique !== 'lag' && d.recog?.read === 'run' && back) {
     // The runner has left this first-level fit laterally. Work along the
     // line with inside-out leverage instead of recentering on an obsolete
     // blocker shoulder. Possession comes from acquired backfield pictures;
