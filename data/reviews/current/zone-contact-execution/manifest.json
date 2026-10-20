@@ -56,9 +56,9 @@
     "ZONE_FLOW": "1"
   },
   "files": {
-    "README.md": "0cba71766a1fc48a61f2f6ac5545132276e8f05139305aaae88876a0c2d850d3",
+    "README.md": "ed3ac0c05377a0d3d5ee83440524bc6e25f2b7963a60b2a488fa32e553249048",
     "before-after.png": "4bc5249475a063fd135ff22c91778b1a7c3a02e2c055e97a47832e2cc958a6a6",
-    "before-after.svg": "c9bcaaeb5466b816dccf1d468bfeb38e13f031d612a56837040f45c05d12dee2",
+    "before-after.svg": "571a682688a083ae5e68fc9cb1e396972940581f1f03aa83abe81caf62c585fa",
     "fresh-tite-baseline.json.gz": "70e77643972ace022011276658a1686c097df4a55b85609669265c34038c65f1",
     "fresh-tite-candidate.json.gz": "a0c878914f94c8d1efe81f9f3332c16964fcc37de00c8dabd65019a0d580edb7",
     "receipts/baseline-contracts-corrected-before.json": "2955638e4cc3744b3df132cc48f01f5a6f0a5079fee15d6d3a6999a7e2c083c0",
@@ -83,7 +83,7 @@
     "strong-baseline.json.gz": "090be5f1156834409c93665701f661d34f698ef94b38644b15cbcf026d2cf78f",
     "strong-candidate.json.gz": "8e0e2061630c59beb1f6c9a22edbb53d8f943bd72c15853e0e84ab3bffa50276",
     "strong-runner-read.json": "06070da10537e4a0af49326b2da25afb991444e2d137414a80ec858065aa2729",
-    "summary.json": "14d47e24df58c9ca6d6ffbbc92d94855e79c7125790fe35975d907b42cdea9c0",
+    "summary.json": "5161735889497d03eab64149357e7ada9e3bcc18c5c4f3b3c579b028b1292a34",
     "weak-baseline.json.gz": "f18eaf6b44d7da86795bffb030fab228a5bd7e5ed349a3af75bf096364dfd330",
     "weak-candidate.json.gz": "ed8d083e4114251e08b0dcc25adb2cccf9c908ae82a6407f3cd25f846ef2803d"
   },
@@ -91,8 +91,8 @@
   "recommendation": "Review narrow solo-runoff work for integration; keep strong contact and Tite collection costs visible; no whole-package promotion.",
   "diagnostics": {
     "scripts/diag/zone-contact-execution.ts": "068aaf1992aaaf7e3fc42ce2532f008d339c194d6db32b6a61559029dac6879d",
-    "scripts/diag/zone-contact-summary.py": "379c164c48cc8aceebce6146b82d8d4a822323a05a42811b32013b59d8497484",
-    "scripts/diag/zone-contact-evidence.py": "2638b6de76b76c65561541d2f91ba4f16138ab921e813684e0121ffcf8a85895"
+    "scripts/diag/zone-contact-summary.py": "2d057282eb3b37b0fdade41c588d2cc70cb93aa646a99d2664f91427afd3d066",
+    "scripts/diag/zone-contact-evidence.py": "8e22e98bcee449356e346749ce463625cff38ee11ff2dd4e639a8937b6def5e2"
   },
   "lastFetchedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
   "lastFetchedResearch": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573"

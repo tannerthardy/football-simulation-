@@ -3926,6 +3926,12 @@
       "seconds": 10.964594521999999
     },
     {
+      "name": "out/zone-contact-execution/publication-typecheck.json",
+      "sourceSha256": "573bc9cff09455aa59eccee98cfa2010fe9fcbaee133431744292bbcfde8e3fc",
+      "exitCode": 0,
+      "seconds": 9.950233277
+    },
+    {
       "name": "out/zone-contact-execution/contract-before.json",
       "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
       "exitCode": 1,

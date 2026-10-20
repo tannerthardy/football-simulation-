@@ -33,7 +33,7 @@ for arm,alpha in [('baseline',.35),('candidate',1)]:
  for slot,col in [('RG',blue),('DT_S',green),('RB',orange)]:
   q=pos(d,f,slot);idx=d['slots'].index(slot);x,y=-(q['y']-26.67),q['x']-40
   ax.add_patch(Circle((x,y),d['profiles'][idx]['radius'],facecolor=col if arm=='candidate' else 'none',edgecolor=col,alpha=alpha,lw=1.5))
-  
+
   if arm=='candidate':
    offset={'RG':(-65,-30),'DT_S':(-30,45),'RB':(35,-20)}[slot]
    ax.annotate(slot,(x,y),xytext=offset,textcoords='offset points',fontsize=9,color=col,arrowprops={'arrowstyle':'-','color':col},bbox={'facecolor':'white','edgecolor':'none','alpha':.85})
@@ -41,4 +41,6 @@ ax.set_xlim(3.4,6);ax.set_ylim(-1.3,1.3);ax.set_aspect('equal',adjustable='box')
 ax.set_title('Strong adverse: earlier DT access to RB at 2.50 s',fontsize=11);ax.set_xlabel('Playside position from ball (yd)');ax.set_ylabel('Depth from LOS (yd)');ax.grid(alpha=.18)
 fig.suptitle('Loaded zone contact: baseline 2c98bed9 and runoff candidate 859d0255',fontsize=14)
 fig.savefig(P/'before-after.png',dpi=160);fig.savefig(P/'before-after.svg')
+svg=P/'before-after.svg'
+svg.write_text('\n'.join(line.rstrip() for line in svg.read_text().splitlines())+'\n')
 print(P/'before-after.png')

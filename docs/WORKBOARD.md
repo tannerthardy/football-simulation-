@@ -5,7 +5,7 @@
 Run owns bounded controller diagnosis on `codex/zone-contact-execution`,
 accepted base `2c98bed94adad8087c65f381d4090444ad283985`, canonical queue
 `4cc3337df24faa6d857b612ae62e3df3109a5296`. Compare Claude research
-`bae3fe80d189a7d792aaafbc4eea1ae2baa79573` Parts9/12/13 with current accepted
+`bae3fe80d189a7d792aaafbc4eea1ae2baa79573` Parts 9/12/13 with current accepted
 native zone cases. Proposed edit boundary, only after a demonstrated error:
 `stepRunRep` offensive loaded footwork in `src/sim/engagement.ts`, related
 direct controls and observation-only diagnostics. Preserve #160 acquired
@@ -19,12 +19,12 @@ Candidate boundary also includes the typed `Behavior.contactMotion` work
 selector and `RunBlocker.contactMotion`'s existing acquired-intention hook;
 no route, climb, navigation or shared movement-file changes. Diagnose bounded
 solo runoff work only, keeping parked reach-track behavior independently off.
-Runtime859d025/source573bc9c supplies that bounded work; [review/evidence](reviews/zone-contact-execution.md).
-Nonauthor source review passes.33 focused checks/typecheck, with final13
+Runtime 859d025/source 573bc9c supplies that bounded work; [review/evidence](reviews/zone-contact-execution.md).
+Nonauthor source review passes. 33 focused checks/typecheck, with final 13
 direct checks after guard cleanup; A018 earned keeper/climb retained. Weak C
-earns seal2.10; strong line transports more but DT contacts RB earlier; Tite
-C loses late Will collection by3s. All costs retained, three paired inputs,
-15.639s collector/41.473s all command time, no games/full suite/Physics changes.
+earns seal 2.10; strong line transports more but DT contacts RB earlier; Tite
+C loses late Will collection by 3 s. All costs retained, three paired inputs,
+15.639 s collector/51.423 s all command time, no games/full suite/Physics changes.
 Recommend narrow independent integration review, no package activation.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix

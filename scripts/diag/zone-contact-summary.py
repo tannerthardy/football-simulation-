@@ -49,7 +49,7 @@ x=json.loads(gzip.decompress((R/'strong-runner-read.json.gz').read_bytes()));ass
 (D/'strong-runner-read.json').write_text(json.dumps({k:x[k] for k in ['case','inputSha256','commit','flags','node','passiveObserverVerified','runnerReads']},indent=2)+'\n')
 for p in sorted(list(R.glob('*receipt.json'))+list((R/'baseline/out').glob('*continuation-receipt.json'))):
  d=json.loads(p.read_text());summary['receipts'].append({'name':str(p),'sourceSha256':d['sourceSha256'],'exitCode':d['exitCode'],'seconds':sum(c['elapsedSeconds'] for c in d['commands'])})
-for p in [R/'focused-final.json',R/'focused-exact.json',R/'typecheck.json',R/'contract-before.json',R/'contract-after.json',R/'contract-corrected-fixture.json',R/'baseline/out/contracts-corrected-before.json']:
+for p in [R/'focused-final.json',R/'focused-exact.json',R/'typecheck.json',R/'publication-typecheck.json',R/'contract-before.json',R/'contract-after.json',R/'contract-corrected-fixture.json',R/'baseline/out/contracts-corrected-before.json']:
  d=json.loads(p.read_text());summary['receipts'].append({'name':str(p),'sourceSha256':d['sourceSha256'],'exitCode':d['exitCode'],'seconds':sum(c['elapsedSeconds'] for c in d['commands'])})
 summary['newCollectorInvocations']=11;summary['actualCollectorPrefixesIncludingObserverChecks']=13;summary['games']=0
 summary['sourceReview']={'agent.ts':'54dd83cd7ecfa351937ac03e71d6f98521b38011','blocking.ts':'13a97d8f272959e90148e52ca121e9ba2262c0eb','engagement.ts':'0f592bd4edb41c8887a6d1db42b3ab6220d8089b','scope':'Read-only nonauthor source boundary; football consequences separately assessed.'}
