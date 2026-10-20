@@ -96,10 +96,26 @@ if(!process.argv.includes('--native')){
     const start=new Map(pullers.map((a:any)=>[a.idx,{...a.pos}]));
     const initialActors=sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,playerId:a.player.id,body:structuredClone(a.body)}));
     if(mode==='intent')for(const a of pullers)a.behavior.plan.pullPropulsion='full';
-    while(sim.phase==='live'&&sim.t<4){sim.tick();frames.push({t:sim.t,pullers:pullers.map((a:any)=>({slot:a.slot,pos:{...a.pos},vel:{...a.vel},facing:a.facing,
+    // A final intent cannot recover a request replaced by contact/spacing.
+    // Optional observation copies actual producer returns and World inputs;
+    // it adds no sensing, random draw, request replacement or actor state.
+    const detail=process.argv.includes('--detail'),wrapped=new WeakSet<object>(),raw=new Map<number,unknown>();
+    let worldInputs:unknown=null;
+    if(detail){const step=sim.world.step.bind(sim.world);sim.world.step=(intents:any[],dt:number)=>{
+      worldInputs=sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,body:structuredClone(a.body),intent:structuredClone(intents[a.idx])}));
+      return step(intents,dt);
+    };}
+    while(sim.phase==='live'&&sim.t<4){
+      const commandTime=sim.t;raw.clear();worldInputs=null;
+      if(detail)for(const a of sim.agents)if(!wrapped.has(a.behavior)){
+        const behavior=a.behavior,update=behavior.update;wrapped.add(behavior);
+        behavior.update=function(actor:any,play:any){const request=update.call(this,actor,play);
+          raw.set(actor.idx,{idx:actor.idx,slot:actor.slot,behavior:this.kind,request:structuredClone(request),body:structuredClone(actor.body)});return request;};
+      }
+      sim.tick();frames.push({t:sim.t,commandTime,pullers:pullers.map((a:any)=>({slot:a.slot,pos:{...a.pos},vel:{...a.vel},facing:a.facing,
       command:structuredClone(sim.intents[a.idx]),phase:a.behavior.pullIdx,engaged:!!a.engagement,support:a.body.support.state,energy:a.body.energy})),
       runner:{pos:{...sim.slot('RB').pos},vel:{...sim.slot('RB').vel}},contacts:sim.lastStep?.contacts,
-      ...(process.argv.includes('--detail')?{actors:sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,pos:{...a.pos},vel:{...a.vel},facing:a.facing,
+      ...(detail?{rawRequests:[...raw.values()],worldInputs,actors:sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,pos:{...a.pos},vel:{...a.vel},facing:a.facing,
         command:structuredClone(sim.intents[a.idx]),support:structuredClone(a.body.support),engaged:!!a.engagement})),pullPlans:pullers.map((a:any)=>({slot:a.slot,plan:structuredClone({...a.behavior.plan,target:a.behavior.plan.target?.idx})}))}:{} )});}
     const result=sim.buildResult(),side=sim.offAlign.strongSign;
     native.push({id:concept+'/'+formationId+'/'+seed,setup,initialActors,inputSha256:fingerprint(setup),frames,terminal:sim.phase!=='live',ending:sim.phase==='live'?null:{outcome:result.outcome,yards:result.offenseYards},

@@ -1,5 +1,32 @@
 # Current work ownership
 
+## Gait continuation: one acquired pull-turn snapshot — 2026-10-20
+
+Physics continues `codex/gait-intent@6af3a71` on the deliberately pinned accepted
+`2c98bed9` host; initial refetch confirms the prior develop/queue/Claude pins. Adopt Measurement's
+`f3063e5` diagnostic-process critique: follow request composition, distinguish
+defect/repair/transfer, and repair the narrowest demonstrated contract. Bounded
+claim: `RunBlocker` kick/trap acquired waypoint-y/lookahead/refinement consistency,
+new focused tests, and targeted diagnostic request capture. No assignment/fit,
+lead/wrapper, capacity, shared solver, recovery, yaw or default activation.
+Same saved adverse trap plus existing ordinary controls; preserve failures and
+censoring. Two delegates independently audit the cue/landmark contract and
+physical attainability. Test-only author owns its new snapshot test; parent owns
+the runtime correction. Run review remains necessary for native caller adoption.
+
+Completed bounded correction `615d0c0`: remaining acquired Y landmarks update
+together, and wall-depth refinement preserves the adopted Y. Earned progression
+is unchanged; the first trial's extra phase policy was rejected. [Report](reviews/pull-landmark-snapshot.md),
+[receipt](../data/reviews/current/pull-landmark-snapshot.json). 43 focused checks
+and typecheck pass; accepted-only extraction tested separately. Power/OZ exact
+controls survive; trap remains adverse (accepted2.08→.81yd; burst.06→−.23).
+No capacity/physics/default activation. Defect and local repair proven; football
+adoption HOLD for Run's useful-arrival/fit review. Source boundary released after
+publication; no additional controller/physics tuning claimed.
+Handoff refetch: develop remains `2c98bed9`, Claude remains `bae3fe80`; queue
+advanced to `6575988` with owner/preparation metadata, inspected without importing
+its pending runtime families. Gait and contact-validity ownership remain separate.
+
 ## Intent-driven gait response — 2026-10-20 America/Phoenix
 
 Physics owns research branch `codex/gait-intent`, accepted `2c98bed9` / queue

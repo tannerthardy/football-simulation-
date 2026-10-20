@@ -1,5 +1,9 @@
 # Acceleration intent, bearing control and bounded arrival
 
+This is the first milestone at `6af3a71`. See the
+[pull-turn continuation](pull-landmark-snapshot.md) for the later, independently
+portable acquired-landmark correction and retained native adverse evidence.
+
 Research on `codex/gait-intent`, 2026-10-20. **Keep `GAIT_STEP=0` and the
 existing physical capabilities. Separate an explosive acceleration request
 from the speed the player intends to reach.** The bounded implementation
@@ -169,7 +173,7 @@ Outside zone, with no puller, is byte-identical to the bearing-only candidate.
 | Input | Accepted ordinary | Global .5 | Boundary-aligned intent |
 | --- | --- | --- | --- |
 | Counter | Live at 4 s, x=LOS+2.96 | Live, +3.54 | Tackle, 6.79 yd |
-| Power | Tackle, 1.78 yd | Tackle, 0.46 yd | Live at 4 s, +1.53 |
+| Power | Tackle, 1.78 yd | Tackle, 0.46 yd | Live at 4 s, +4.01 |
 | Fresh trap | Tackle, 2.08 yd | Tackle, 3.03 yd | Tackle, 0.06 yd |
 | Outside zone | Tackle, 5.10 yd | Tackle, 1.91 yd | Live at 4 s, +4.15 |
 
