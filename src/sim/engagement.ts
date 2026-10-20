@@ -1117,6 +1117,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
   const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
+  const runoffWork = RUN_CONTACT_COMPONENTS && stretch ? b.behavior.contactMotion?.(b, 'runoff') : null;
   if (stretch && run) {
     const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
     if (Math.abs(toPlay) > .5) {
@@ -1124,6 +1125,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       if (contactTrack) {
         const track = contactTrack.x * lat.x + contactTrack.y * lat.y;
         lateral = Math.max(lateral * toPlay, Math.min(mirror, track * toPlay)) * toPlay;
+      }
+      if (runoffWork) {
+        // The component frame removes the drive's tangent to avoid double
+        // counting. Keep the chosen solo-runoff work explicitly, rather than
+        // reducing it to defender co-flow after the shoulder offset settles.
+        // Project once, retain the existing bound, and let spacing/body/contact
+        // execution decide which movement and protection can be achieved.
+        const side = Math.sign(toPlay), work = runoffWork.x * lat.x + runoffWork.y * lat.y;
+        lateral = Math.max(lateral * side, Math.min(mirror, work * side)) * side;
       }
     }
   }
@@ -1182,7 +1192,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // normal work is the emitted command, not that legacy drive projection.
     legacyDriveRequest: forward, normalRequest: -(blockVel.x * axis.x + blockVel.y * axis.y),
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
-    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
+    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, runoffWork, lateral, preAnchor,
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
