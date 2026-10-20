@@ -233,6 +233,13 @@ There is no demonstrated defect here that a small scalar slowdown can repair.
 
 ## Checks, costs and reproducibility
 
+Candidate: `dc4b8f101d2a04e91be2ffd36b6bb051a36fdbc6` on
+`codex/contact-middle`. [Compact receipt](../../data/reviews/current/contact-middle.json)
+and [portable native request tape](../../data/reviews/current/contact-middle-native.json)
+are separate evidence; the latter reproduces the full-trace mechanical comparison
+without reconstructing a historical engine. Source SHA256 is
+`4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571`.
+
 Three new focused checks cover achieved disruption/recovery, genuine miss versus
 square/passive falls, and refined conservation/work. All pass. Typecheck passes.
 Existing accepted combined-suite evidence is reused; no full suite, games, NFL
@@ -251,11 +258,13 @@ local measured wall times, not a simulator throughput benchmark.
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/recoverable-contact.ts --seconds 2 --refine 48
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/native-contact-middle.ts out/contact-middle/native-power77.json
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/contact-middle-panel.ts out/contact-middle/native-three.json
+node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/contact-middle-replay.ts data/reviews/current/contact-middle-native.json out/contact-middle/portable-replay.json
 node scripts/baseline.mjs --candidate -- npx vitest run --project core test/recoverable-contact.test.ts
 ```
 
 Use Node 22.23.3 and the published compact receipt's exact historical flags for
 that separate constructor. The receipt pins the input/operator/source hashes,
-all final output hashes, commands and costs. Detailed ignored traces remain
-available in the evidence archive; no candidate source differs from accepted
+all final output hashes, commands and costs. Detailed traces stay in ignored
+`out/contact-middle/`; the committed compact tape retains the replay inputs.
+No candidate runtime source differs from accepted
 `src` or baseline settings.
