@@ -6,6 +6,7 @@ import {COVERAGE_BY_ID,FRONT_BY_ID} from '../src/playbook/defense.js';
 import {FORMATION_BY_ID} from '../src/playbook/formations.js';
 import {ManCoverage,playBall,runFit,sawThrow} from '../src/sim/behaviors/defense.js';
 import {showsBlock} from '../src/sim/coverage-cues.js';
+import {ReleaseReader} from '../src/sim/coverage/reads.js';
 import type {Perceived} from '../src/sim/perception.js';
 import {PlaySim} from '../src/sim/playsim.js';
 
@@ -148,5 +149,40 @@ describe('a man marker distinguishes blocking admission from continued evidence'
   const p=runFit(pictured.a,pictured.sim,'D',1,pictured.backfield());
   const k=runFit(keyed.a,keyed.sim,'D',1,{target:keyed.sim.slot('RB')!,cue:keyed.backfield().backfield.backCue});
   expect(p).not.toEqual(k);expect(p.facing).toBe(Math.PI);
+ });
+});
+
+describe('release readers retain admitted blocking on the same acquired evidence',()=>{
+ function readStage(){
+  const f=stage(),reader=new ReleaseReader(f.a,f.sim);
+  const read=(t:number)=>{f.sim.t=t;return reader.read(f.sim,f.r)!;};
+  read(.6);expect(read(.8).release).toBe('block');
+  return{...f,read};
+ }
+ it('does not turn an accepted low-pad blocker into a vertical just because he crosses LOS+2',()=>{
+  const f=readStage();f.set({pos:{x:43.4,y:f.cue().pos.y}});
+  for(const t of[1,1.2,1.4,1.6])expect(f.read(t).release).toBe('block');
+ });
+ it('keeps acquired facing-contact evidence after the blocker has passed the shallow entry area',()=>{
+  const f=readStage();f.set({pos:{x:45.3,y:f.a.pos.y},vel:{x:0,y:0},stance:'high'});
+  for(const t of[1,1.2,1.4])expect(f.read(t).release).toBe('block');
+ });
+ it('still requires normal confirmation of an acquired upright release, outward route and wheel',()=>{
+  const f=readStage();f.set({pos:{x:43.4,y:f.cue().pos.y},vel:{x:6,y:0},stance:'high'});
+  expect(f.read(1).release).toBe('block');expect(f.read(1.2).release).toBe('vertical');
+  const out=Math.sign(f.r.pos.y-f.sim.ballY)||1;
+  f.set({vel:{x:0,y:out*5}});expect(f.read(1.4).release).toBe('vertical');expect(f.read(1.6).release).toBe('out');
+  f.set({pos:{x:48,y:f.cue().pos.y+out*2},vel:{x:6,y:0}});
+  expect(f.read(1.8).release).toBe('out');expect(f.read(2).release).toBe('vertical');
+ });
+ it('does not initially classify a deep low-pad route as an accepted blocker',()=>{
+  const f=stage(),reader=new ReleaseReader(f.a,f.sim);f.set({pos:{x:43.4,y:f.cue().pos.y}});
+  f.sim.t=1;reader.read(f.sim,f.r);f.sim.t=1.2;expect(reader.read(f.sim,f.r)!.release).toBe('vertical');
+ });
+ it.each(['pass','unsure'] as const)('keeps an upright pressed vertical under the existing %s-read contract',read=>{
+  const f=readStage();f.a.recog!.read=read;
+  f.set({pos:{x:43.4,y:f.a.pos.y},vel:{x:5,y:0},stance:'high'});
+  f.a.body.pos={x:44.1,y:f.a.pos.y};
+  expect(f.read(1).release).toBe('block');expect(f.read(1.2).release).toBe('vertical');
  });
 });
