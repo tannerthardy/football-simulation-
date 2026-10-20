@@ -128,10 +128,12 @@ const angleBias = new WeakMap<Agent, number>();
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
+  const toSide = Math.min(y, FIELD_WIDTH - y);
   // Mid-field has no inside: the preference fades out near the middle, so
   // a play and its mirror image are played the same way.
   const inside = clamp((FIELD_WIDTH / 2 - y) / 1.5, -1, 1);
-  return inside * leverageMagnitude(a,y);
+  const near = clamp(1 - toSide / 14, 0, 1);
+  return inside * (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
 function leverageMagnitude(a: Agent, y: number): number {

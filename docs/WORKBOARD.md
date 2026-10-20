@@ -1,5 +1,27 @@
 # Current work ownership
 
+## Cooperative pursuit — Do-It-All
+
+User assigns continued defensive awareness/open-field tackling. Start accepted
+`2c98bed94adad8087c65f381d4090444ad283985`, queue4cc3337d, researchbae3fe80;
+branch `codex/help-aware-pursuit`. Adopt Measurement's f3063e55 causal-process
+guidance: installed job → acquired cue/age → retained mode → complete request →
+refinements → attained movement/load/result. Separately establish defect, repair
+and transfer; no automatic campaign or unchanged suite rerun. Keep170 stable.
+Claim only `common.ts` pursuitPoint/chase installed-force leverage semantics,
+focused tests and a bounded diagnostic after evidence. Catching retains
+ManCoverage/executeRunFit picture resolution; Run retains169/blocking; shared
+physics/defaults untouched. Check existing complementary force/alley contract:
+generic midfield inside-sign currently erases an installed outside shoulder.
+Use legitimate existing pictures/installed jobs, real collisions and runner
+counterplay. Coordination:153 comment6299849626; two read-only reviewers. No
+new teammate-perception transport or blanket team-avoidance policy.
+Accepted AFTER04/14 trace also demonstrates a stationary command for an acquired
+moving force shoulder; scope extension coordinated on153: only force edge-fit
+goal/held-motion/facing block in `run-fits.ts`, preserving all input resolution,
+admission/retirement, buildRunFits and other owners' hunks. Retain AFTER14's real
+grasp/impact as opposing evidence. No live-help-awareness claim from static jobs.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
