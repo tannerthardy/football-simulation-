@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Puller technique and continuation — 2026-10-20
+
+Run owns `RunBlocker` pull-track/read/target continuation and the installed
+pull path in `src/sim/behaviors/blocking.ts` on
+`codex/puller-technique-continuation`, starting accepted
+`2c98bed94adad8087c65f381d4090444ad283985`, queue6575988. Trace fixed K01
+Counter/Ace and K04 plug opposing input using their saved full setups;
+reuse current accepted Power/Ace/Under3 pair31/77 collector success. No broad
+roster panel or games. Distinguish initial intent, acquired/held information,
+waypoint progression, raw/final commands, actual load and runner arrival.
+Investigate actual on/off boundaries before introducing commitment timers.
+Physics retains #163/gait/yaw/solver; Flex retains shared spacing; no capacity,
+roster, grip, release-timer or private-information bypass. #174's completed
+contact composition remains separate and Integration owns its combined check.
+Only demonstrated coherent controller corrections and focused controls will
+be submitted, with mirror/real obstruction and legitimate defensive wins.
+
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
