@@ -1,0 +1,290 @@
+{
+  "schema": "latest-reviewed-final-receipt-v1",
+  "status": "PASS; routine reviewed scope accepted for merge under standing user authority",
+  "testedCommit": "25a7a5919b8eb6de24bf8b604b8d859263052dd9",
+  "acceptedParent": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "validationSha256": "8ebba85cbece416155e828806e1ba5acb1186046a3d6ed5bfd48e1402e91fa7a",
+  "flagSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "registeredFlags": 44,
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "inputsUnchanged": true,
+  "skippedCommands": [],
+  "typescript": {
+    "filesPassed": 206,
+    "passed": 2248,
+    "failed": 0,
+    "skipped": 0
+  },
+  "python": {
+    "passed": 145,
+    "failed": 0
+  },
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 12.110037101
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 13.38038108
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 235.23827101199998
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.0281089060000086
+    }
+  ],
+  "elapsedCommandSeconds": 261.756798099,
+  "initialFailedCommandSeconds": 252.10595516,
+  "combinedVerificationCommandSecondsIncludingFailedAttempt": 513.862753259,
+  "costQualification": "Two required exact runs on different protected trees: failed initial candidate and materially reduced final candidate. Focused probes/reused native receipts retain their own pinned costs; no unchanged publication or merge rerun.",
+  "standaloneGameCampaigns": 0,
+  "existingSuiteGameAssertions": "Executed normally in test:all",
+  "protectedFileCount": 50,
+  "sourceFileCount": 17,
+  "included": [
+    {
+      "pr": 131,
+      "authorHead": "fc48a8f147b515850b231431c64e09bb889195b9",
+      "independentReview": "6188d36ae07581def3d3c2f4db47b0785e4f54a2",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 141,
+      "authorHead": "055f78ded6821336ce90c708b892e881ea9b7f08",
+      "independentReview": "06b07f556ae95a1a9f1d838a374824acf36438e1",
+      "dependency": null,
+      "qualification": "six runtime/four tests from reviewed portable12487de7, no old source overwrite"
+    },
+    {
+      "pr": 148,
+      "authorHead": "6fd13e4782a08497383912272b693e6a59747d80",
+      "independentReview": "3ba572851cb03d3693748aaad74cace90fae6d8d",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 149,
+      "authorHead": "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+      "independentReview": "3ba572851cb03d3693748aaad74cace90fae6d8d",
+      "dependency": 148,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 150,
+      "authorHead": "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+      "independentReview": "e8ad18a3c9c010f632348c375ff9205fc1dddffb",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 152,
+      "authorHead": "346421f9e47938cdb4e53f491c69d656a052783c",
+      "independentReview": "e8ad18a3c9c010f632348c375ff9205fc1dddffb",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 155,
+      "authorHead": "2866f88232dd9e794469a46b084d51f735cbb7b9",
+      "independentReview": "3ba572851cb03d3693748aaad74cace90fae6d8d",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 156,
+      "authorHead": "aacfce18865f345b59b96a192d2ed9064403853e",
+      "independentReview": "1e2fb96ce1e39c840bc2f32785d2f60c2cedbdc1",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 157,
+      "authorHead": "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+      "independentReview": "1e2fb96ce1e39c840bc2f32785d2f60c2cedbdc1",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 159,
+      "authorHead": "57b05b0995d05d9c4f44a8611496c6b966e3e72f",
+      "independentReview": "7035a2080a1ead3923c8ea25526cb2a47d79fee4",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 160,
+      "authorHead": "3828370a8b6905a7de2af761b72e0be5c41500cd",
+      "independentReview": "7035a2080a1ead3923c8ea25526cb2a47d79fee4",
+      "dependency": null,
+      "qualification": "original head held; only corrected recognition-gate extraction accepted"
+    },
+    {
+      "pr": 161,
+      "authorHead": "b6e993392669fd0ebcea7e9329ca957eebd80569",
+      "independentReview": "1e2fb96ce1e39c840bc2f32785d2f60c2cedbdc1",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    },
+    {
+      "pr": 167,
+      "authorHead": "fb8cf7ecbd151c6d3817c6835531a7197c753ba7",
+      "independentReview": "3ba572851cb03d3693748aaad74cace90fae6d8d",
+      "dependency": null,
+      "qualification": "minimal reviewed extraction"
+    }
+  ],
+  "extra153": {
+    "head": "6184040fb0e2190b8799a2bd925df9e8af6494da",
+    "scopes": [
+      "legacy-compatible hundredth-yard export/viewer plus observation-only native recorder completion",
+      "installed-play QB away direction, existing speed/depth/timing retained"
+    ],
+    "review": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+    "nonauthorCompletionReview": "049ea71b3a697c02905584274d2aa868542a70c3",
+    "noExperimentalActivation": true
+  },
+  "held": {
+    "162": "new ordinary yaw motor/recovery law; escalation required",
+    "GAIT_STEP=.3": "experimental/default law activation, preserve28->63 zone20+ tail",
+    "158": "unresolved power-rush duty/PA pressure tradeoff",
+    "163": "propulsion API/native caller adverse and owner contract unresolved",
+    "166": "objective/traffic contract and fresh ranking failure",
+    "137": "joint allocation policy separate from adopted eligibility",
+    "153": "broader mesh/lead/FB/departure/shoulder/shed/latency flags held; unsafe instrument.sh excluded",
+    "101/106": "existing collector-accounting holds",
+    "127/experimentalPhysics": "existing holds unchanged",
+    "164": "Initial local/source acceptance superseded by combined useful keeper/departure access failure; original tests and DT first-contact traces retained.",
+    "165": "Technical attained-pose support retained, adoption held for native motion/spacing/center-mode contract reconciliation."
+  },
+  "testInputAdjudications": {
+    "climb": "earlier root-adjudicated no-DE-engagement/realWillload/armwork contract retained",
+    "FS": "capture actual installed longitudinal separation before staging, 463048139550dd233ab47feaa69bd8bedecbcb6e",
+    "QB": "explicit historical base-coaching control; all positive assertions retained and two unmocked current Cover3 controls;41df9f009fefeb14294b92c1a199e6e194a96df6"
+  },
+  "sourceRefIndependentAudit": "e8e92aa5036aa05879ec34c61943f74ace390b0e",
+  "independentAuditUrl": "https://github.com/tannerthardy/football-simulation-/blob/e8e92aa5036aa05879ec34c61943f74ace390b0e/docs/reviews/latest-small-fixture-review/final-source-ref-audit.md",
+  "artifacts": {
+    "final-combined.json": {
+      "sha256": "e78a95556acf50ee8346cc3a42152a62f051511151ba359cfb3317bcb935db7a"
+    },
+    "final-combined.log": {
+      "sha256": "338c843d174722b8920141b3bbfc1b078e13c5a19883b5f792a41c25a778e43e"
+    },
+    "failed-initial-combined.json": {
+      "sha256": "8407f92cecaa6aeeedf90bee9b89314836f6251441f97d2b7ee73206ef316d8d"
+    },
+    "failed-initial-combined.log": {
+      "sha256": "738df0f475a78e43fb2c673c9aba1c5a0d34f40985102fab04301da7bb3596a1"
+    },
+    "final-intake.json": {
+      "sha256": "84dae887a13488a9287ef2e601faf9b1d608efe95b491ec26ef2eded9670a628"
+    },
+    "overlap.json": {
+      "sha256": "39d0f3c9cf754d10d9fe8cc1dc10e1ee1759ec2a6be564fac7cfc84ab189034e"
+    },
+    "overlap.log": {
+      "sha256": "645640dee1a6770f9cf71fe595c226ceb07515360ba64a038b5b727a5384512d"
+    },
+    "p019-isolation.json": {
+      "sha256": "a175db21127468b83da1472b4c1f903a49f6c2f7a5d2969ddd467298e796ec4a"
+    },
+    "p019-isolation.log": {
+      "sha256": "324937f49d6883c45d5248eb7d35bceb61a4ad0afa447c48dac9a39b8611d3c7"
+    }
+  },
+  "publicationContract": "Documentation/receipt-only publication must preserve all source/tests/settings/tooling bytes at testedCommit; verify GitHub preview and actual merge tree, publish actual develop pin separately.",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "physicsDefaultActivation": false,
+  "branchesDeleted": [],
+  "preservedRisks": [
+    "P192 comeback space/censor and vertical-versus-underneath coverage tradeoff",
+    "PA13 receiver traffic/collision/two falls; information repairs do not certify coverage quality",
+    "Inside/perimeter stalk costs and earlier legitimate defensive access",
+    "Delayed shotgun exchange, loaded blitz protection not established",
+    "Wide-zone lateral flow, combo displacement/duration, deep pursuit and contact lifecycle remain unresolved",
+    "Finer raw film can change output-derived pressure2yd/ttp near thresholds; retain source/operator provenance",
+    "Legacy declaration/hidden-holder shortcuts outside corrected160 remain"
+  ]
+}

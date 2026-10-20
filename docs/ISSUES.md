@@ -12,7 +12,7 @@ not the current development instruction.
 
 Latest accepted develop is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` through151. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
 
-Current runtime disposition:126/132/133/134/135/136/138/140/143/146/147 are adopted via151. Scoped information/continuation/credit contracts are resolved; broader coverage, second-level access, possession readers and long-contact lifecycle remain open.137/148/149/150,141/131 await their named reviews/caller hook; experiments stay held. [Full receipt/risks/owner handoff](../data/reviews/current/pr151-merge.json).
+Current runtime preparation: #168 minimally extracts reviewed131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; final adoption awaits mutable-ref/tree check. Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -20,15 +20,7 @@ audit or a claim that every old research concern affects today's engine.
 Use [STATUS](STATUS.md) for the short priority list, [INTEGRATION](INTEGRATION.md)
 for candidate/receipt decisions, and [WORKBOARD](WORKBOARD.md) before shared edits.
 
-Latest preparation resolves the old independent-review gates for131 caller,
-141's three contracts/comeback cost and148/149/150 within the named minimal
-scopes. They are included in the pending combined candidate, not yet accepted
-develop.160's original hidden-holder activation fails; only the separately
-reviewed own-recognition correction is included.165 is current-facing execution
-order, not162 yaw/GAIT_STEP promotion. Preserve receiver traffic, delayed shotgun
-exchange, contact lifetime, wide-zone/combo and deep-pursuit risks. [Current
-intake/dispositions](reviews/latest-reviewed-checkpoint.md). Older dated held
-rows below retain original evidence; the canonical queue determines live status.
+The old131 caller,141 contract and148/149/150 independent-review gates are resolved within the named168 extraction. Original160 hidden-holder activation is excluded; only own-recognition repair is accepted.164/165 were removed after combined failures, with all failures and traces preserved. Their useful-access/motion contracts remain held;162 yaw/GAIT_STEP promotion is separate. Preserve receiver traffic, comeback space, delayed shotgun exchange/unproved loaded protection, contact lifetime, wide-zone/combo and deep-pursuit risks. Finer film changes output-derived measurement near thresholds, not physical trajectories. [Current dispositions and exact pins](reviews/latest-reviewed-checkpoint.md). Older dated rows retain their original evidence; the canonical queue governs live status.
 
 ## Status and evidence rules
 

@@ -49,40 +49,49 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
-### Latest reviewed checkpoint — initial failure retained, coherent scope pending
+### #168 reviewed checkpoint — verified, final publication/ref check
 
-Accepted develop remains `f4146275ce7539816bf57b4ed55a0d2be10e48c7`.
-`codex/latest-reviewed-checkpoint` minimally composes independently accepted
-131/141/148/149/150/152/155/156/157/159/corrected160/161/167,
-plus153's narrow QB-away and end-to-end film precision extractions. Initial
-53-file/19-source freezebda8 failed13 TS checks; receipt/log retained.164/165
-were removed with normal revert commits after targeted contract isolation;
-they hold only themselves. All44 flags unchanged, components1/GAIT_STEP0/CF_FLOW unset.
-Independent root disposition of160's recognition repair,150's real-load contract
-and165's existing-law attained pose is explicit. Exact shared engagement has
-independent source acceptance;54 targeted overlap checks pass in2.083s.
-[Scope/review/adverse decisions](reviews/latest-reviewed-checkpoint.md) and
-[pins/file fingerprints](../data/reviews/current/latest-reviewed-checkpoint/intake.json).
-The reduced exact candidate needs its own required verification; no standalone game campaign.
-162/new yaw,GAIT_STEP activation,158/163/166,137 joint policy and broader153
-experiments remain separate; original failures/branches/data histories retained.
+Accepted parent is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` until the
+merge is recorded here. Exact freeze `25a7a5919b8eb6de24bf8b604b8d859263052dd9`
+passes **2,248 TS/206 files,145 Python,typecheck/build** in261.757 command seconds,
+Node22.23.3, no skips/input drift. All44 settings unchanged, components1,
+GAIT_STEP0/CF_FLOW unset; World/kinematics/capacities/dependencies/verifier unchanged.
 
-### #153 run-game v3 — review intake, no promotion
+Included minimal scopes: **131/141/148→149/150/152/155/156/157/159/corrected160/161/167**,
+plus153's installed-play QB-away direction and end-to-end hundredth-yard film.
+50 protected files/17 source files, independently reconstructed from reviewed
+pins. The full153 research branch and data-only histories are not imported.
+[Scope/adverse/test-input decisions](reviews/latest-reviewed-checkpoint.md),
+[final pins/file hashes](../data/reviews/current/latest-reviewed-checkpoint/final-intake.json),
+[final receipt/raw evidence](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
 
-[Draft #153](https://github.com/tannerthardy/football-simulation-/pull/153) pins
-`claude/run-game-v3@1c578afb38f2eb6fc4886639e63fccc4e79c4354`, runtime checkpoint
-`c8d638086e69961de2ff45d41df0a9871947ca83`, directly on accepted `f4146275…`.
-The complete 140-file research branch is not integration-ready. Review mesh
-scheduling/shotgun geometry separately from UC_MESH, and acquired shed intent
-separately from the new trigger for the 0.6s re-grab prohibition. Earlier
-ZONE_TE/STRETCH_FLAT/LB_KEY require separate dispositions; parked flags/Physics
-stay separate. Preserve power 40+ tail, missing moderate runs and gun-TE costs.
-[Exact scopes, bounded reviewer prompts, provenance limits and next decision](reviews/run-game-v3-review-intake.md).
-Measurement qualifies contact/whistle/proximity/NFL claims; author supplies
-fetchable existing witnesses and producing settings, no recollection. Draft
-status is a review request, not independent acceptance or activation. No engine
-changes, simulations or repeated suite; accepted develop remains the #151 pin.
-Other review-ready work continues independently.
+Initialbda8 failed13 TS checks; original receipt/log retained. Normal reverts
+hold164's useful departure/access tradeoff and165's native motion/spacing
+contracts; neither is waived. The materially reduced candidate justified one
+new exact run; no unchanged publication/merge rerun or extra game campaign.
+Also held:162/new yaw,GAIT_STEP activation,158/163/166,137 joint policy,
+broader153 experiments and earlier tooling/Physics. Preserve coverage comeback
+space, receiver traffic/falls, delayed shotgun exchange/unproved loaded blitz
+pickup, contact lifetime, wide-zone/combo movement and deep-pursuit risks.
+Finer film can change output-derived pressure metrics near thresholds; retain
+measurement provenance. Correctness repairs do not certify football/NFL realism.
+
+### #153 run-game v3 — partial extraction only; research remains open
+
+Current reviewed research head is
+`claude/run-game-v3@6184040fb0e2190b8799a2bd925df9e8af6494da`.
+Only QB carry-out direction and native/export/viewer precision enter168, with
+existing QB speed/depth/timing and legacy film compatibility. No QB_CARRYOUT or
+other experimental activation. The full mesh/UC_MESH/lead/FB/departure/shoulder/
+shed package, unsafe reset/clean instrumentation, yaw law and GAIT_STEP promotion
+remain excluded. Preserve zone20+28→63/1200 and unfinished wide-zone flow,
+combo duration/displacement, re-latch, chattering and deep-pursuit tails.
+[Current scope and pinned independent reviews](reviews/latest-reviewed-checkpoint.md).
+[Original review intake](reviews/run-game-v3-review-intake.md) retains the earlier
+1c578afb research snapshot and bounded questions as historical preparation.
+
+<details>
+<summary>Completed #151 checkpoint and its then-pending queue — historical</summary>
 
 ### Completed #151 and next queue
 
@@ -128,6 +137,8 @@ and experimental/default lanes retain holds. #101 readiness removed pending its
 minimal repair/review. Fetch/record this accepted pin at clean checkpoints; preserve
 intentional research hosts and never relabel old native tapes as current evidence.
 Integration assembly boundary released. Historical4ded6b6/GitHub default unchanged.
+
+</details>
 
 <details>
 <summary>Previous handbook-only #144/#145 /914f4d56 adoption — historical</summary>
@@ -837,12 +848,13 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
-| Delivered |126/132/133/134/135/136/138/140/143/146/147 via151 atf4146275 | Incorporated source PRs closed; branches/evidence retained. Reuse exact passing receipt; no unchanged rerun. |
-| Run independent review |137@cdaeff43,148@6fd13e47,149@968e9cea,150@e914fc60 | Installed assignment/duty/access versus adverse protection cost.149 depends on148; do not import all of them merely to fill a batch. [Task](https://github.com/tannerthardy/football-simulation-/pull/150#issuecomment-6245714067). |
-| Coverage independent review |141@055f78de | Three assertion/roof contracts and comeback tradeoff; preserve135/132/128 composition. [Task](https://github.com/tannerthardy/football-simulation-/pull/141#issuecomment-6245741656). |
-| Caller/interface incomplete |131@2f9085f1; Physics/Catching | Pure closest-legal query alone is not a behavioral fix. Catching owns endpoint capture/eligibility/retry/order/difficulty. |
-| Tooling repair held |101@ed2fed9e,106@706a10cc | Run/Catching minimal accounting repairs, Measurement zero-engine review; no1848/3198-study recollection.101 ready label removed until a fetchable repair. |
-| Experiments held |99/114/115/116/119/127 and earlier solver/default work | Separate existing approval/scientific decisions; no activation or evidence-history merge. |
+| Verified for routine adoption |131/141/148→149/150/152/155/156/157/159/corrected160/161/167 plus two153 extractions; freeze25a7a591 | Final mutable-ref and protected-tree check, merge168 under standing authority; publish actual pin/owner handoff. [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json). |
+| Combined-contract hold |164@5035aad0,165@d922b7c2 | Preserve original assertions and failed traces; resolve useful earned departure / native motion-spacing contracts before a new review. |
+| Law/default decision held |162 ordinary yaw/recovery; GAIT_STEP=.3 | Separate physical-law/default review; preserve zone20+28→63/1200 adverse tail. No activation. |
+| Other runtime holds |158 duty/PA cost,163 propulsion/caller,166 objective/traffic,137 joint allocation; full153 package | Each holds itself; source-qualified evidence and focused return condition required. No bulk research merge. |
+| Tooling repair held |101@ed2fed9e,106@706a10cc | Existing accounting repair/review conditions; no study recollection. |
+| Earlier delivered |126/132/133/134/135/136/138/140/143/146/147 via151 atf4146275 | Prior source PRs closed; branches/evidence retained. |
+| Experiments held |99/114/115/116/119/127 and earlier solver/default work | Existing separate decisions; no activation or evidence-history merge. |
 
 Earlier delivered checkpoints below are preserved history; accepted pin/current queue above govern new work.
 

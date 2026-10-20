@@ -1,6 +1,6 @@
 # Latest independently reviewed checkpoint
 
-Preparation on 2026-10-19 America/Phoenix; not yet merged or accepted develop.
+Verified on 2026-10-19 America/Phoenix; publication prepared for routine merge.
 Accepted parent `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue
 `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`. Integration owns minimal compatible
 extraction and one exact combined verification. Original evidence and branches
@@ -13,6 +13,22 @@ are preserved as `failed-initial-combined.*`. #164 and #165 were removed by
 normal revert commits; they are not in the final promotion scope. All other
 independently reviewed scopes continue. The new candidate requires its own
 complete verification; the failed run is never presented as a pass.
+
+**Final verification PASS:** exact reduced freeze
+`25a7a5919b8eb6de24bf8b604b8d859263052dd9`, source SHA256
+`4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571`:
+**2,248 TypeScript checks /206 files,145 Python,typecheck/build**, no skips or
+input drift, Node22.23.3,44 unchanged settings/components1/GAIT_STEP0/CF_FLOW unset.
+Commands total261.757s; the preserved first failure cost252.106s. The second run
+was justified by the materially reduced source and reviewed test-input boundaries,
+not publication. No additional standalone game campaign. [Final receipt and
+artifact checksums](../../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json),
+[raw verification](../../data/reviews/current/latest-reviewed-checkpoint/final-combined.json)
+and [unchanged log](../../data/reviews/current/latest-reviewed-checkpoint/final-combined.log).
+An independent [source/ref reconstruction](https://github.com/tannerthardy/football-simulation-/blob/e8e92aa5036aa05879ec34c61943f74ace390b0e/docs/reviews/latest-small-fixture-review/final-source-ref-audit.md)
+recreates all50 protected blobs from author/reviewer pins, without importing their
+ancestry. Documentation-only publication must preserve this tested tree; actual
+merged develop is recorded in the canonical queue after the final ref/tree check.
 
 ## Independent #131 helper and caller disposition
 
