@@ -622,8 +622,11 @@ export class QBHandoff implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
-      // Carry out the fake away from the play.
-      const away = a.pos.y + Math.sign(a.pos.y - this.mesh.y || 1) * 4;
+      // Carry out the fake away from the installed play, even after the
+      // exchange has taken the QB slightly across his own mesh spot.
+      const run = sim.offCall.run;
+      const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
+      const away = a.pos.y + (playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1)) * 4;
       return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
     }
     if (this.keeper && sim.t >= this.meshTime) {
