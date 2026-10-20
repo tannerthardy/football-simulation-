@@ -1,0 +1,293 @@
+{
+  "provenance": "Input specs/mirrors only, extracted from the existing 24-case fastpath reference; no expected candidate answers.",
+  "results": [
+    {
+      "spec": {
+        "label": "steady",
+        "e": 0,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "steady",
+        "e": 0,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "near-target",
+        "e": -0.001,
+        "w": -0.2,
+        "h": 0.004166666666666667,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "near-target",
+        "e": -0.001,
+        "w": -0.2,
+        "h": 0.004166666666666667,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "counterstep",
+        "e": 0.002,
+        "w": -0.15,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "counterstep",
+        "e": 0.002,
+        "w": -0.15,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "acceleration-extremum",
+        "e": 0.01,
+        "w": 0.18,
+        "h": 0.1,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "acceleration-extremum",
+        "e": 0.01,
+        "w": 0.18,
+        "h": 0.1,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "rate-extremum",
+        "e": 0.07,
+        "w": 0.4,
+        "h": 0.15,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "rate-extremum",
+        "e": 0.07,
+        "w": 0.4,
+        "h": 0.15,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "normal turn",
+        "e": 0.5,
+        "w": 0.5,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "normal turn",
+        "e": 0.5,
+        "w": 0.5,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "external spin",
+        "e": 0,
+        "w": 10,
+        "h": 0.004166666666666667,
+        "tau": 0.05,
+        "a": 23.01324636936366,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "external spin",
+        "e": 0,
+        "w": 10,
+        "h": 0.004166666666666667,
+        "tau": 0.05,
+        "a": 23.01324636936366,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "acceleration boundary",
+        "e": 0.15,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "acceleration boundary",
+        "e": 0.15,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "near acceleration boundary",
+        "e": 0.1499999999999999,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "near acceleration boundary",
+        "e": 0.1499999999999999,
+        "w": 0,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "rate boundary",
+        "e": 0.7,
+        "w": 7,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "rate boundary",
+        "e": 0.7,
+        "w": 7,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "tiny",
+        "e": 1e-16,
+        "w": -1e-16,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "tiny",
+        "e": 1e-16,
+        "w": -1e-16,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 60,
+        "r": 7
+      },
+      "mirror": -1
+    },
+    {
+      "spec": {
+        "label": "no yaw allowance",
+        "e": 0.1,
+        "w": 2,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 0,
+        "r": 7
+      },
+      "mirror": 1
+    },
+    {
+      "spec": {
+        "label": "no yaw allowance",
+        "e": 0.1,
+        "w": 2,
+        "h": 0.05,
+        "tau": 0.05,
+        "a": 0,
+        "r": 7
+      },
+      "mirror": -1
+    }
+  ]
+}

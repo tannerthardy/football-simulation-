@@ -10,8 +10,17 @@ Starting head `ddee165fecb8fc88925b4561d4b1837fc1964716`; accepted develop
 `6575988fe9e72bd0aaf9e3573787f0dcb81ebf52` re-fetched unchanged. Preserve the
 prior1.267 paired-p95 failure against1.25; profile before changing the hot path.
 Same yaw response/limits, independent references, contacts, capacities, recovery
-laws and other experimental defaults. #184 remains independently ready, not a
-parent. Integration owns combined verification once the component is ready.
+laws and other experimental defaults. Completed at `f96a85f`, runtime source
+`03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1`:
+profiled local-function setup removed; 48 focused checks/typecheck pass,
+1,024 numerical cases and94 native ticks retain exact held-candidate parity.
+One new idle 20-round balanced cost run passes unchanged median≤1.10/p95≤1.25
+gates on both inputs (paired p95 Toss 1.0169/Pass 1.0254). Previous cost failure,
+adverse contacts and supplemental CPU-tail qualification remain visible.
+Independent review: **READY for isolated Integration review**. #184 remains
+independently ready, not a parent. Boundary released; Integration owns combined
+verification/adoption. No worker full suite or production/default activation.
+[Final evidence](../data/reviews/current/loaded-movement-readiness.json).
 
 ## Shared free/loaded movement checkpoint — 2026-10-20 UTC
 
@@ -31,9 +40,10 @@ Bounded milestone: `2637558` extracts #162 onto accepted code; `aadac6d`
 adds an independently reviewed, exact unsaturated-flow shortcut.114 focused
 checks/typecheck pass; final Toss94-tick state/request/RNG parity is exact;
 body-facing reversals fall84.4% in567 native windows. Mechanics accepted by
-independent Physics/source/native reviewers. Adoption remains **HOLD**:
+independent Physics/source/native reviewers. Historical adoption **HOLD**:
 clean repeated native Toss paired-p95 cost1.267× exceeds declared1.25×,
-despite passing typical cost. No budget waiver or further micro-tuning.
+despite passing typical cost. The user-resumed continuation above supersedes
+that readiness disposition after a profiled correction; no budget waiver.
 Source/evidence preserved; original #162 and all other owners' branches remain.
 [Report](reviews/loaded-movement.md). The separately demonstrated target-as-
 achieved teammate-spacing prediction is the next request-boundary candidate.

@@ -7,12 +7,21 @@ or randomness. The candidate removes that self-generated motion and preserves
 the existing force, traction, inertia, rate and recovery laws. Its ordinary
 motor response and the ground reserve left for recovery **do change**.
 
+**Current disposition: READY for isolated Integration review.** The profiled
+execution correction at `f96a85fdd818b6fd860554e7a9881083ae0dd60c` passes the
+unchanged native cost budget and preserves the held candidate's mechanics
+exactly. This closes #180's cost hold; it does not merge or activate the change.
+This is an 84.4% reduction in alternating **body-facing correction amplitude**
+in the existing matched windows, not 84% fewer full spins or global path jitter.
+
 Accepted comparison: `2c98bed94adad8087c65f381d4090444ad283985`;
 canonical queue inspected: `6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`.
 Minimal #162 extraction: `2637558c5024b84dc23f7de10cffc3058b2dab41`.
 Exact-flow optimization: `aadac6d8b78bd452ff3bb92b337e027bec4a0d25`.
-Final runtime SHA256:
-`8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2`.
+Previously held runtime SHA256:
+`8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2`;
+ready candidate runtime SHA256:
+`03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1`.
 Node22.23.3, all44 baseline settings retained, components1/GAIT_STEP0,
 center hands, centered integration, legacy support, speculative impacts and
 mean support integration. Research gait/contact branches remain separate.
@@ -40,7 +49,7 @@ review accepts both the motor interface and this equivalent fast path.
 ## Evidence and limits
 
 Five of the eight turning assertions fail on accepted code; all eight pass
-after extraction. Final candidate passes114 directly affected assertions and
+after extraction. The earlier candidate passes 114 directly affected assertions and
 typecheck. Twenty-four direct mirrored reference comparisons are bit-identical,
 including peak demand and events. Two added opposing controls ensure an
 interior acceleration/rate limit is detected even when both free endpoints fit.
@@ -97,8 +106,9 @@ moving−.800yd/s but its announced−3.392yd/s target is substituted as achieve
 motion, including position extrapolation. This generates an unnecessary RG
 escape request of−2.087yd/s. A finite-response estimate preserves the raw request
 and retains exactly the old avoidance when C really is moving at that speed.
-This is a separate prediction/controller candidate, not part of the motor fix.
-It needs its own complete native continuation and information/avoidance review.
+This is the separate prediction/controller candidate in #184, not part of the
+motor fix. It has its own continuation and information/avoidance review; #180
+does not import it as a parent or depend on its activation.
 
 Moderate-speed acceleration remains a separate request contract. Global
 GAIT_STEP activation is not justified; explicit burst can use existing capacity
@@ -110,7 +120,7 @@ generic arrival guarantee or an adopted native controller.
 Known center angular/contact accounting, experimental solver, support-history,
 and the nine unrelated historical patch failures retain their existing holds.
 
-## Runtime and adoption decision
+## Previous runtime hold — preserved evidence
 
 The unoptimized extraction increases isolated World-step median cost about
 60% free/52% loaded. The exact-flow fast path reduces these to21%/14% in
@@ -130,21 +140,74 @@ idle repeat, on frozen final source, gives:
 
 Use the receipt's unrounded values. Tail statistics describe batch averages,
 not individual-tick latency. No average speedup is claimed. The predeclared
-median≤1.10× gate passes; **paired p95≤1.25× fails for Toss**. Absolute-p95
+median ≤1.10× gate passes; **paired p95 ≤1.25× fails for Toss**. Absolute-p95
 ratios are smaller but do not replace that gate after observing results.
-Do not silently waive the failure or launch another micro-tuning loop.
+The failure was not waived. The user subsequently resumed this cost blocker;
+the separately profiled correction and one new benchmark are reported below.
 
 The optimized Toss exactly reproduces the unoptimized candidate's94 ticks:
 full bodies, requests, perceptions, RNG, contacts/events and outcome, with only
 source/elapsed metadata excluded. Thus its native accuracy evidence is reused
 without relabeling the original source.
 
-**Disposition: mechanics ACCEPT, adoption HOLD on the practical tail-cost
-decision.** The isolated correction is fully reviewable, but is not yet declared
-integration-ready. Primary/Integration retain the ordinary yaw/default adoption
-decision and exact combined verification. No production branch or experiment
-was activated; no worker full-suite rerun. Next useful independent work is the
-announced-motion prediction defect above, rather than more solver mechanics.
+**Previous disposition: mechanics ACCEPT, adoption HOLD on practical tail
+cost.** This historical result remains failed at its recorded source; the new
+candidate below supersedes its readiness disposition, not its measurements.
 
 Exact inputs, settings, checks, independent reviews, source/tape hashes and
-cost summaries: [compact receipt](../../data/reviews/current/loaded-movement.json).
+cost summaries: [previous compact receipt](../../data/reviews/current/loaded-movement.json).
+
+## Profiled execution correction and current readiness
+
+The measured Node 22/tsx path repeatedly creates and names local functions,
+including before the certified fast return. A sampled profile attributes about
+84 ms self time to these generated naming helpers, versus 2.7 ms to root searches.
+This supports removing repeated setup, not changing the force model or adding
+more numerical refinement. It does not establish the same cost in tsc-built
+JavaScript or a browser frame-rate improvement.
+
+The correction moves pure mode/root helpers to module scope and separates the
+fallback from a closure-free wrapper. Scalar finite checks and early zero-time/
+zero-torque returns preserve values, exceptions and fresh event arrays. Exact
+flow, interior extrema, saturation, event order, torque peaks and tolerances are
+unchanged. There is no result pooling or new physical shortcut.
+
+On frozen `f96a85f`, 48 directly affected assertions and typecheck pass in
+2.96 s/16.23 s. Independent review compares 1,024 deterministic states against the
+held function: all agree by ordered recursive `Object.is`, including 607 event
+cases and 11 exceptions. This is regression parity; the existing independent
+analytic references remain the physical checks. The complete 94-tick Toss
+replay also exactly matches both previous candidates, excluding only source
+and elapsed-time metadata. Its body/request/observation/RNG/contact/event/result
+hash is `9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f`.
+Thus existing accuracy and adverse-contact evidence remains attributable to
+its original recordings and is compatible with this execution correction.
+
+One new uninstrumented idle-machine benchmark follows the material profiled
+change: same Node 22.23.3/Linux x64, exact accepted source and two frozen inputs,
+four warmup pairs/case, 20 balanced AB/BA rounds/case, 60 live ticks per prefix.
+No tracing, copying or source hashing occurs inside wall clocks. Both source
+hashes and all 44 settings remain unchanged through collection.
+
+| ms/native tick, batch average | Accepted median /p95 /max | Candidate median /p95 /max | Paired median /p95 /max |
+| --- | --- | --- | --- |
+| Toss |2.7203 /3.0202 /3.3641|2.4912 /2.7424 /2.8941|.9083 /1.0169 /1.1212×|
+| Pass13 |2.4201 /2.7511 /2.9862|2.2969 /2.5524 /2.7001|.9253 /1.0254 /1.0313×|
+
+**Both inputs pass the unchanged paired median ≤1.10× and p95 ≤1.25× gates.**
+Use the receipt's unrounded values. These are repeated prefix batch averages,
+not individual-tick latency or an all-input bound. Supplemental process CPU
+does not replace the wall gate: Toss CPU p95/max rises from 4.0246/4.6879 to
+4.1896/5.2407 ms/tick. V8 worker CPU can exceed wall time; universally better CPU
+tails are not established. Accepted/candidate native geometry differs, so this
+is observed workload cost, not an equal-physical-work algorithm speedup.
+
+Independent source/mechanical review returns **READY for isolated Integration
+review**. Preserve later Toss contact, the censored pass and adverse loaded-slip
+continuation above. The original failed budget, angular/contact accounting and
+support-history holds remain recorded. No capacities, contact/recovery laws,
+experimental settings or full-suite expectations changed. Integration owns the
+exact combined verification and adoption; production remains unchanged here.
+
+[Current receipt and independent dispositions](../../data/reviews/current/loaded-movement-readiness.json),
+[fetchable reproductions](../archive/research/movement-yaw/README.md).
