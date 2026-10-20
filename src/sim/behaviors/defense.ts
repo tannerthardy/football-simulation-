@@ -265,6 +265,11 @@ export class ManCoverage implements Behavior {
     // not discard pursuit. No private scramble/handoff state is required.
     const qbCue = sim.see(a, sim.qb);
     if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
+    const back = sim.slot('RB');
+    const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
+    // Do not extend this duty where its explicit information input is absent.
+    // Empty/split-back formations keep their pre-existing shallow policy.
+    if (!installedBackfield) this.blockingRun = false;
     const run = believesRun(sim, a);
     const blockingLook = this.blockingRun
       ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
@@ -278,8 +283,10 @@ export class ManCoverage implements Behavior {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    this.blockingRun = run && blockingLook;
-    if (this.blockingRun) return this.blockingSupport(a, sim, qbCue);
+    if (run && blockingLook) {
+      this.blockingRun = installedBackfield;
+      return this.blockingSupport(a, sim, qbCue);
+    }
 
     return this.trackReceiver(a, sim);
   }

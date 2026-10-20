@@ -52,6 +52,11 @@ describe('a man marker distinguishes blocking admission from continued evidence'
   const f=stage();f.set({pos:{x:43.5,y:f.cue().pos.y},stance});
   expect(f.update()).toEqual(f.man.trackReceiver(f.a,f.sim));
  });
+ it('keeps the original shallow policy when no installed backfield picture can support continuation',()=>{
+  const f=stage();f.sim.offAlign.spots.RB.backfield=false;accept(f);
+  f.set({pos:{x:43.4,y:f.cue().pos.y}});
+  expect(f.update()).toEqual(f.man.trackReceiver(f.a,f.sim));
+ });
  it('retains acquired reachable facing-contact evidence beyond the shallow admission area',()=>{
   const f=stage(),expected=stage();accept(f);accept(expected);
   for(const s of[f,expected])s.set({pos:{x:45.3,y:s.a.pos.y},vel:{x:0,y:0},stance:'high'});
