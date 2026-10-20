@@ -16,8 +16,10 @@ const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
  * the real engagement/World step, and the production pass-release caller.
  * Recording is deliberately disabled. Bystanders are parked away from the
  * act so neither a hidden collision nor an execution outcome awards a foul. */
-function scene({ slot = 'X', x = 44, contact = true } = {}) {
-  const formation = FORMATION_BY_ID.ace_11;
+function scene({ slot = 'X', x = 44, contact = true, covered = false } = {}) {
+  const ace = FORMATION_BY_ID.ace_11;
+  const formation = covered ? { ...ace, id: 'covered_te_opi_control',
+    slots: { ...ace.slots, Z: { ...ace.slots.Z!, depth: .6 } } } : ace;
   const sim = new PlaySim({
     offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
     offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'OPI act' },
@@ -108,7 +110,8 @@ describe('native prethrow downfield-block OPI, NFL2026 8-5-4(a)', () => {
   });
 
   it('does not lose a possible ineligible initial-charge exception when the same skill-player contact later moves downfield', () => {
-    const f = scene({ x: 40.8 }); f.sim.tick(); f.sim.tick();
+    const f = scene({ slot: 'Y', x: 40.8, covered: true }); f.sim.tick(); f.sim.tick();
+    expect(f.sim.snapEligibility.get(f.blocker.player.id)?.eligible).toBe(false);
     expect(Math.hypot(f.hands!.normalForce ?? 0, f.hands!.tangentForce ?? 0)).toBeGreaterThan(0);
     // Stage a common translation of the still-intact contact to isolate its
     // remembered origin. This is a provenance counterfactual, not a claim
@@ -120,8 +123,26 @@ describe('native prethrow downfield-block OPI, NFL2026 8-5-4(a)', () => {
     expect(opi(f.sim)).toEqual([]);
   });
 
+  it('calls the known eligible receiver whose continuous line-origin block moves downfield before the pass', () => {
+    const f = scene({ x: 40.8 });
+    expect(f.sim.snapEligibility.get(f.blocker.player.id)?.eligible).toBe(true);
+    f.sim.tick(); f.sim.tick();
+    f.blocker.body.pos.x += 3; f.defender.body.pos.x += 3;
+    f.sim.tick(); f.sim.tick(); throwForward(f.sim);
+    expect(opi(f.sim)).toHaveLength(1);
+  });
+
+  it('preserves unknown snap eligibility as an unresolved possible initial-charge exception', () => {
+    const f = scene({ x: 40.8 }); f.sim.snapEligibility.delete(f.blocker.player.id);
+    f.sim.tick(); f.sim.tick();
+    f.blocker.body.pos.x += 3; f.defender.body.pos.x += 3;
+    f.sim.tick(); f.sim.tick(); throwForward(f.sim);
+    expect(opi(f.sim)).toEqual([]);
+  });
+
   it('keeps possible initial-line contact provenance across release and a new hand joint on the same pair', () => {
-    const f = scene({ x: 40.8 }); f.sim.tick(); f.sim.tick();
+    const f = scene({ slot: 'Y', x: 40.8, covered: true }); f.sim.tick(); f.sim.tick();
+    expect(f.sim.snapEligibility.get(f.blocker.player.id)?.eligible).toBe(false);
     expect(Math.hypot(f.hands!.normalForce ?? 0, f.hands!.tangentForce ?? 0)).toBeGreaterThan(0);
     f.sim.disengage(f.blocker.engagement!);
     // A different HandJoint alone does not prove that body contact broke.
@@ -137,7 +158,8 @@ describe('native prethrow downfield-block OPI, NFL2026 8-5-4(a)', () => {
   });
 
   it.each([false, true])('retains initial-line torso contact before any grip, backward pitch=%s', pitch => {
-    const f = scene({ x: 40.8, contact: false });
+    const f = scene({ slot: 'Y', x: 40.8, contact: false, covered: true });
+    expect(f.sim.snapEligibility.get(f.blocker.player.id)?.eligible).toBe(false);
     f.defender.body.pos.x = f.blocker.pos.x + .45;
     const back = f.sim.slot('RB')!;
     if (pitch) {
@@ -195,12 +217,20 @@ describe('native prethrow downfield-block OPI, NFL2026 8-5-4(a)', () => {
     expect(opi(f.sim)).toEqual([]);
   });
 
+  it('qualifies a native straddling release when part of the passer remains behind the line', () => {
+    const f = scene(); f.sim.tick(); f.sim.tick();
+    f.sim.qb.body.pos.x = 40.1;
+    throwForward(f.sim);
+    expect(opi(f.sim)).toHaveLength(1);
+    expect(f.sim.penalties.some(p => p.kind === 'illegal_forward_pass')).toBe(false);
+  });
+
   it('requires a supported behind-line forward release, with no officiating RNG draws', () => {
     const f = scene(); f.sim.tick(); f.sim.tick();
     const before = JSON.stringify(f.sim.rng);
     assessPrethrowBlocksOnPass(f.sim, f.sim.qb, 37.3, f.sim.t, -15);
-    f.sim.qb.body.pos.x = 40.1;
-    assessPrethrowBlocksOnPass(f.sim, f.sim.qb, 40.4, f.sim.t, 15);
+    f.sim.qb.body.pos.x = 41.1;
+    assessPrethrowBlocksOnPass(f.sim, f.sim.qb, 41.4, f.sim.t, 15);
     expect(opi(f.sim)).toEqual([]);
     expect(JSON.stringify(f.sim.rng)).toBe(before);
     f.sim.qb.body.pos.x = 37;

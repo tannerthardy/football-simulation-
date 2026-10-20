@@ -58,6 +58,16 @@ export interface Intent extends MoveCommand {
   free?: boolean;
 }
 
+/** Material contact selected by an executing technique. These descriptors
+ * identify the represented patch; officiating still validates the delivered
+ * height, geometry and impulse. Omission means unknown anatomy. */
+export interface ContactAnatomy {
+  actorPart: 'hand' | 'forearm' | 'shoulder' | 'helmet' | 'chest' | 'leg';
+  targetRegion: 'head_neck' | 'above_waist' | 'thigh' | 'knee_or_below';
+  gripLocation?: 'facemask' | 'helmet_opening' | 'inside_back_side_collar' | 'nameplate_or_above' | 'other';
+  handShape?: 'open' | 'palm' | 'fist';
+}
+
 /** Arm's-length hand fight between two bodies (block, jam, stiff arm). */
 export interface HandJoint {
   kind: 'hands';
@@ -81,6 +91,11 @@ export interface HandJoint {
   steer: number;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
+  readonly contactAnatomy?: Readonly<ContactAnatomy>;
+  /** Last achieved height after the ordinary World clamp, not desired height. */
+  achievedContactHeight?: number;
+  /** First actually loaded row of this controller step, in a/b order. */
+  firstApplied?: ContactSnapshot;
   /** HAND_MOTOR (experimental, off): wanted velocity of b past a along the
    * hands' tangent, yd/s; the arms work toward it within steer and arm budgets. */
   drive?: number;
@@ -90,6 +105,10 @@ export interface HandJoint {
   /** Last step's mean force on b from a: normal (+ pushes apart) and tangential. */
   normalForce?: number;
   tangentForce?: number;
+  /** Achieved normal and steering world-force channels, valid in both
+   * integration modes even when their shared frame rotates during a tick. */
+  normalForceOnB?: Vec2;
+  tangentForceOnB?: Vec2;
   /** Patch mode: attained mean world force on b and yaw moments on each body.
    * Use these for felt load; scalar components cannot recover a changing frame. */
   forceOnB?: Vec2;
@@ -121,6 +140,9 @@ export interface GraspJoint {
   brace?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
+  readonly contactAnatomy?: Readonly<ContactAnatomy>;
+  achievedContactHeight?: number;
+  firstApplied?: ContactSnapshot;
   /** Rate the holder's arms reel the two bodies together, yd/s (bounded by the grip). */
   pull?: number;
   /** Current arm distance; ratchets in as the holder closes, slides out when the grip slips. */
@@ -131,6 +153,10 @@ export interface GraspJoint {
   broken?: boolean;
   /** Mean grip force used last step, kg·yd/s². */
   force?: number;
+  normalForce?: number;
+  tangentForce?: number;
+  normalForceOnB?: Vec2;
+  tangentForceOnB?: Vec2;
   /** How the hold was made (diagnostics: 'form', 'reach', 'block', 'dive'). */
   origin?: string;
 }
@@ -146,6 +172,26 @@ export interface ContactRecord {
   impulse: number;
   /** Largest closing speed at a touch this step, yd/s. */
   closing: number;
+  /** First delivered torso contact of this controller interval. These are
+   * observed solver coordinates, not intended targets or anatomical claims.
+   * The normal points from i to j. Optional for historical saved reports. */
+  first?: ContactSnapshot;
+}
+
+export interface ContactSnapshot {
+  time: number;
+  intervalEnd: number;
+  normal: Vec2;
+  positionI: Vec2;
+  positionJ: Vec2;
+  facingI: number;
+  facingJ: number;
+  velocityI: Vec2;
+  velocityJ: Vec2;
+  /** The reduced contact-height load actually used by this World row. */
+  height: number;
+  supportI: 'up' | 'falling' | 'down' | 'rising';
+  supportJ: 'up' | 'falling' | 'down' | 'rising';
 }
 
 /** Achieved technique impulse, aggregated over one requested action's tick.
@@ -157,6 +203,10 @@ export interface StrikeRecord {
   work: number;
   /** Requested height; the support load uses its ordinary body-height clamp. */
   height?: number;
+  /** Deliberate strike request time, separate from its achieved force. */
+  requestedAt?: number;
+  first?: ContactSnapshot;
+  readonly contactAnatomy?: Readonly<ContactAnatomy>;
 }
 
 export interface StepReport {
@@ -298,10 +348,12 @@ interface Contact {
   closing: number;
   /** The compliant solve pressed them together (before the relax). */
   touched?: boolean;
+  observed: ContactSnapshot;
 }
 
 interface JointRow {
   joint: Joint;
+  observed: ContactSnapshot;
   i: number;
   j: number;
   nx: number;
@@ -391,7 +443,7 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
-  private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; delivered?: StrikeRecord }> = [];
+  private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
   private readonly attachments = new WeakMap<GraspJoint, { share: number; reference: Vec2; foot: NonNullable<Support['foot']>; bounded?: boolean;
@@ -491,9 +543,9 @@ export class World {
    * `a`, applied inside the next step so balance and loads respond to it.
    * Internal: total momentum is unchanged.
    */
-  strike(a: Body, b: Body, j: Vec2, height?: number): void {
+  strike(a: Body, b: Body, j: Vec2, height?: number, contactAnatomy?: Readonly<ContactAnatomy>): void {
     if (this.indexOf(a) < 0 || this.indexOf(b) < 0 || a === b || !Number.isFinite(j.x + j.y)) return;
-    this.pending.push({ a, b, x: j.x, y: j.y, height });
+    this.pending.push({ a, b, x: j.x, y: j.y, height, contactAnatomy, requestedAt: this.time });
   }
 
   /** Energy stored in compressed torso contacts (the compliant springs), kg·yd²/s². */
@@ -536,11 +588,17 @@ export class World {
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
     this.syncHeldSupport();
     for (const j of this.joints) {
+      j.achievedContactHeight = undefined;
+      j.firstApplied = undefined;
       if (j.kind === 'hands') {
         j.normalForce = 0; j.tangentForce = 0;
+        j.normalForceOnB = { x: 0, y: 0 }; j.tangentForceOnB = { x: 0, y: 0 };
         if (this.handContact === 'patch') { j.forceOnB = { x: 0, y: 0 }; j.momentOnA = j.momentOnB = 0; }
       }
-      else j.force = 0;
+      else {
+        j.force = 0; j.normalForce = 0; j.tangentForce = 0;
+        j.normalForceOnB = { x: 0, y: 0 }; j.tangentForceOnB = { x: 0, y: 0 };
+      }
     }
     for (let i = 0; i < n; i++) {
       const b = bs[i];
@@ -618,12 +676,19 @@ export class World {
     for (const j of this.joints) {
       if (j.kind === 'hands') {
         j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt;
+        j.normalForceOnB = { x: (j.normalForceOnB?.x ?? 0) / dt, y: (j.normalForceOnB?.y ?? 0) / dt };
+        j.tangentForceOnB = { x: (j.tangentForceOnB?.x ?? 0) / dt, y: (j.tangentForceOnB?.y ?? 0) / dt };
         if (this.handContact === 'patch') {
           j.forceOnB!.x /= dt; j.forceOnB!.y /= dt;
           j.momentOnA = (j.momentOnA ?? 0) / dt; j.momentOnB = (j.momentOnB ?? 0) / dt;
         }
       }
-      else j.force = (j.force ?? 0) / dt;
+      else {
+        j.force = (j.force ?? 0) / dt;
+        j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt;
+        j.normalForceOnB = { x: (j.normalForceOnB?.x ?? 0) / dt, y: (j.normalForceOnB?.y ?? 0) / dt };
+        j.tangentForceOnB = { x: (j.tangentForceOnB?.x ?? 0) / dt, y: (j.tangentForceOnB?.y ?? 0) / dt };
+      }
     }
     report.work.after = this.kineticEnergy();
     report.work.residual = report.work.after-report.work.before
@@ -1072,6 +1137,19 @@ export class World {
         const scale = this.armScale[ia] * h / this.tickDt;
         const x = p.x*scale, y = p.y*scale;
         const workBefore = report.work.strikes;
+        let observed: ContactSnapshot | undefined;
+        if (!p.delivered) {
+          const dx = p.b.pos.x - p.a.pos.x, dy = p.b.pos.y - p.a.pos.y;
+          const length = Math.hypot(dx, dy) || 1;
+          observed = { time: this.time, intervalEnd: this.time + h,
+            normal: { x: dx / length, y: dy / length },
+            positionI: { ...p.a.pos }, positionJ: { ...p.b.pos },
+            facingI: p.a.facing, facingJ: p.b.facing,
+            velocityI: { ...p.a.vel }, velocityJ: { ...p.b.vel },
+            supportI: p.a.support!.state, supportJ: p.b.support!.state,
+            height: clamp(p.height ?? Math.min(this.padHeight[ia], this.padHeight[ib]), 0,
+              Math.min(p.a.profile.heightYd, p.b.profile.heightYd)) };
+        }
         const delivered = this.pairImpulse(ia,ib,x,y,ia,'strikes');
         // A technique strike is a bounded force developed across h, just
         // like hands, rather than a collision impulse at its start. Center
@@ -1083,7 +1161,9 @@ export class World {
         this.travelAdjustY[ib] -= .5 * y * delivered / this.mass[ib];
         if (delivered > 0 && Math.hypot(x, y) > 0) {
           if (!p.delivered) {
-            p.delivered = { i: ia, j: ib, impulse: { x: 0, y: 0 }, work: 0, height: p.height };
+            p.delivered = { i: ia, j: ib, impulse: { x: 0, y: 0 }, work: 0, height: p.height,
+              requestedAt: p.requestedAt, contactAnatomy: p.contactAnatomy,
+              first: observed };
             report.strikes.push(p.delivered);
           }
           const record = p.delivered;
@@ -1118,6 +1198,8 @@ export class World {
       const wanted=foot ? Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/demandMobility
         : Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
       const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
+      const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
+      const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, height);
       const fraction=share>0?this.supportImpulse(jt,-nx*impulse,-ny*impulse,h,true)
         :this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
       // Reeling is a bounded force across h, like hands and strikes. Center
@@ -1125,6 +1207,12 @@ export class World {
       // attachment also moves support through supportImpulse above; its chart,
       // motor work and passive capture retain their own integration rules.
       const x = -nx * impulse * fraction, y = -ny * impulse * fraction;
+      jt.normalForce = (jt.normalForce ?? 0) - impulse * fraction;
+      jt.normalForceOnB!.x += x; jt.normalForceOnB!.y += y;
+      if (impulse * fraction > 0) {
+        jt.firstApplied ??= observed;
+        jt.achievedContactHeight = observed.height;
+      }
       this.travelAdjustX[i] += .5 * x / this.mass[i];
       this.travelAdjustY[i] += .5 * y / this.mass[i];
       this.travelAdjustX[j] -= .5 * x / this.mass[j];
@@ -1134,7 +1222,6 @@ export class World {
       // Active reel and passive tension act through the same hand position.
       // A leg grip cannot pull at shoulder height while its passive restraint
       // trips the foot below it.
-      const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
       this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0);
     }
 
@@ -1175,6 +1262,10 @@ export class World {
         const height = jt.height ?? (jt.kind === 'grasp'
           ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
           : undefined);
+        if (Math.hypot(r.ln, r.lt) > 0) jt.achievedContactHeight = clamp(
+          height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
+          Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
+        if (Math.hypot(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         // Hands and patch grips are bounded forces acting across h. Use one
         // timing rule for their attained impulse AND spin, including the reel.
@@ -1202,6 +1293,8 @@ export class World {
           if (!r.handMembers) {
             jt.normalForce = (jt.normalForce ?? 0) + r.ln;
             jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
+            jt.normalForceOnB!.x += r.nx * r.ln; jt.normalForceOnB!.y += r.ny * r.ln;
+            jt.tangentForceOnB!.x -= r.ny * r.lt; jt.tangentForceOnB!.y += r.nx * r.lt;
           }
           for (const member of r.handMembers ?? []) {
             const owner = this.indexOf(member.actor ?? member.a);
@@ -1214,6 +1307,12 @@ export class World {
             member.normalForce = (member.normalForce ?? 0) + r.ln * normalShare;
             member.tangentForce = (member.tangentForce ?? 0) + r.lt * tangentShare;
             const ln = r.ln * normalShare, lt = r.lt * tangentShare;
+            if (Math.hypot(ln, lt) > 0) {
+              member.firstApplied ??= r.observed;
+              member.achievedContactHeight = r.observed.height;
+            }
+            member.normalForceOnB!.x += r.nx * ln; member.normalForceOnB!.y += r.ny * ln;
+            member.tangentForceOnB!.x -= r.ny * lt; member.tangentForceOnB!.y += r.nx * lt;
             member.forceOnB!.x += r.nx * ln - r.ny * lt;
             member.forceOnB!.y += r.ny * ln + r.nx * lt;
             member.momentOnA = (member.momentOnA ?? 0) + (r.ni ?? 0) * ln - (r.ri ?? 0) * lt;
@@ -1231,12 +1330,24 @@ export class World {
             : used >= .98 * r.limit && r.limit > 0;
           if (!r.members) {
             jt.force = (jt.force ?? 0) + used;
+            jt.normalForce = (jt.normalForce ?? 0) + r.ln;
+            jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
+            jt.normalForceOnB!.x += r.nx * r.ln; jt.normalForceOnB!.y += r.ny * r.ln;
+            jt.tangentForceOnB!.x -= r.ny * r.lt; jt.tangentForceOnB!.y += r.nx * r.lt;
             jt.slipping = slipping;
           }
           for (const member of r.members ?? []) {
             const cap = this.gripCapacity(member);
             const share = r.limit > 0 ? cap * h / r.limit : 0;
             member.force = (member.force ?? 0) + used * share;
+            member.normalForce = (member.normalForce ?? 0) + r.ln * share;
+            member.tangentForce = (member.tangentForce ?? 0) + r.lt * share;
+            member.normalForceOnB!.x += r.nx * r.ln * share; member.normalForceOnB!.y += r.ny * r.ln * share;
+            member.tangentForceOnB!.x -= r.ny * r.lt * share; member.tangentForceOnB!.y += r.nx * r.lt * share;
+            if (used * share > 0) {
+              member.firstApplied ??= r.observed;
+              member.achievedContactHeight = r.observed.height;
+            }
             member.slipping = slipping;
           }
         }
@@ -1303,7 +1414,7 @@ export class World {
           const key = c.i * 1024 + c.j;
           const rec = pairs.get(key);
           if (rec) { rec.impulse += c.ln; rec.closing = Math.max(rec.closing, c.closing); }
-          else pairs.set(key, { i: c.i, j: c.j, impulse: c.ln, closing: c.closing });
+          else pairs.set(key, { i: c.i, j: c.j, impulse: c.ln, closing: c.closing, first: c.observed });
         }
       }
     }
@@ -1834,7 +1945,14 @@ export class World {
         const vn = rvx * nx + rvy * ny;
         const row: Contact = { i, j, nx, ny, R, ri, rj, ni: 0, nj: 0,
           mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
-          guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0 };
+          guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
+          observed: { time: this.time, intervalEnd: this.time + h, normal: { x: nx, y: ny },
+            positionI: { ...a.pos }, positionJ: { ...b.pos },
+            facingI: a.facing, facingJ: b.facing,
+            velocityI: { ...a.vel }, velocityJ: { ...b.vel },
+            supportI: a.support!.state, supportJ: b.support!.state,
+            height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0,
+              Math.min(a.profile.heightYd, b.profile.heightYd)) } };
         if (this.handContact === 'patch') this.contactPatch(row);
         out.push(row);
       }
@@ -1932,7 +2050,10 @@ export class World {
       }
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
-      const row: JointRow = { joint: jt, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
+      const appliedHeight = jt.height ?? (jt.kind === 'grasp'
+        ? this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1)) : Math.min(this.padHeight[i], this.padHeight[j]));
+      const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, appliedHeight);
+      const row: JointRow = { joint: jt, observed, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
         mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
       if (jt.kind === 'hands' || upperPatch || lowerPatch) {
         // The effective patch lies between the bodies, weighted by their
@@ -2083,8 +2204,26 @@ export class World {
       : this.pairImpulse(r.i, r.j, -r.nx * impulse, -r.ny * impulse, r.i, 'grasps', true, undefined,
         -(r.ni ?? 0) * impulse, -(r.nj ?? 0) * impulse);
     r.reel = impulse * fraction;
+    for (const member of r.members ?? [jt]) {
+      const share = r.members ? r.limit > 0 ? this.gripCapacity(member) * h / r.limit : 0 : 1;
+      member.normalForce = (member.normalForce ?? 0) - r.reel * share;
+      member.normalForceOnB!.x -= r.nx * r.reel * share;
+      member.normalForceOnB!.y -= r.ny * r.reel * share;
+      if (r.reel * share > 0) {
+        member.firstApplied ??= r.observed;
+        member.achievedContactHeight = r.observed.height;
+      }
+    }
     this.report.armImpulse[r.i] += r.reel;
     this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]*(1-.55*clamp(jt.legs,0,1)), jt.legs>0);
+  }
+
+  private jointSnapshot(jt: Joint, h: number, nx: number, ny: number, height: number): ContactSnapshot {
+    const a = jt.a, b = jt.b;
+    return { time: this.time, intervalEnd: this.time + h, normal: { x: nx, y: ny },
+      positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing,
+      velocityI: { ...a.vel }, velocityJ: { ...b.vel }, supportI: a.support!.state,
+      supportJ: b.support!.state, height: clamp(height, 0, Math.min(a.profile.heightYd, b.profile.heightYd)) };
   }
 
   private solveGrasp(r: JointRow, soft: Softness, h: number): void {

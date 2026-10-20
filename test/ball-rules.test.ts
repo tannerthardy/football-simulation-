@@ -8,7 +8,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { BallState } from '../src/sim/types.js';
 import { assessForwardPass, fumbleOutOfBounds, fumbleRecovery,
-  type FumbleRecoveryFacts } from '../src/sim/ball-rules.js';
+  looseBallBoundaryStep, type FumbleRecoveryFacts } from '../src/sim/ball-rules.js';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -203,7 +203,7 @@ function boundaryFumble(team: 'O' | 'D', fumbleX: number, start: [number, number
   sim.fumble(fumbler, null);
   const loose = sim.ball as BallState;
   if (loose.kind !== 'loose') throw new Error('Missing native fumble');
-  loose.flight = { pos: { x: start[0], y: start[1], z: 2 },
+  loose.flight = { pos: { x: start[0], y: start[1], z: 0 },
     vel: { x: velocity[0], y: velocity[1], z: 0 }, drag: 0 };
   const chance = vi.spyOn(sim.rng, 'chance');
   (sim as unknown as { updateBall(): void }).updateBall();
@@ -277,5 +277,213 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     sim.fumble(fumbler, null);
     recoverer.body.pos = { x: 13, y: CENTER_Y };
     expect(() => sim.possess(recoverer, 'recovery')).toThrow(/Unsupported NFL 8-7-5: end-zone recovery impetus\/momentum/);
+  });
+});
+
+
+describe('full-body forward-pass boundary', () => {
+  it('requires both entire body and ball beyond the line at release', () => {
+    const f = { previousForwardPasses: 0, possessionChangedBeforePass: false };
+    expect(assessForwardPass({ ...f, entireBodyBeyondLine: true, ballBeyondLine: true }))
+      .toEqual({ rule: '8-1-2', reason: 'beyond_line', enforcement: 'spot', lossDown: true });
+    expect(assessForwardPass({ ...f, entireBodyBeyondLine: false, ballBeyondLine: true, fromBehindLine: true })).toBeNull();
+    expect(assessForwardPass({ ...f, entireBodyBeyondLine: true, ballBeyondLine: false, fromBehindLine: true })).toBeNull();
+  });
+  it('does not replace the after-possession-change penalty with loss of down', () => {
+    expect(assessForwardPass({ previousForwardPasses: 0, possessionChangedBeforePass: true,
+      entireBodyBeyondLine: true, ballBeyondLine: true }))
+      .toMatchObject({ reason: 'after_change_of_possession', lossDown: false });
+  });
+  it('calls a real fully-beyond release and preserves a body straddling the line', () => {
+    const sim = nativeSim(), qb = sim.qb;
+    qb.body.pos = { x: 42, y: CENTER_Y }; sim.ball = { kind: 'held', carrier: qb };
+    sim.throwBall(qb, sim.slot('X')!, { x: 10, y: 0, z: 2 }, { x: 50, y: CENTER_Y, z: 1 }, 3);
+    expect(sim.penalties).toContainEqual(expect.objectContaining({ kind: 'illegal_forward_pass', reason: 'beyond_line' }));
+    const legal = nativeSim(), passer = legal.qb;
+    passer.body.pos = { x: 40, y: CENTER_Y }; legal.ball = { kind: 'held', carrier: passer };
+    legal.throwBall(passer, legal.slot('X')!, { x: 10, y: 0, z: 2 }, { x: 50, y: CENTER_Y, z: 1 }, 3);
+    expect(legal.penalties.some(p => p.kind === 'illegal_forward_pass')).toBe(false);
+  });
+});
+
+describe('endzone-origin impetus and original momentum facts', () => {
+  it('preserves an established own-endzone original-momentum exception without a five-yard limit', () => {
+    expect(fumbleOutOfBounds({ fumbleX: 113, outX: 116, lastPossessionTeam: 'D',
+      impetusTeam: 'O', momentumSpotX: 102 }))
+      .toEqual({ kind: 'spot', possession: 'D', spotX: 102, rule: '8-7-3' });
+  });
+  it('does not restore the momentum spot automatically when an endzone-origin fumble exits in the field', () => {
+    expect(fumbleOutOfBounds({ fumbleX: 113, outX: 108, lastPossessionTeam: 'D',
+      impetusTeam: 'O', momentumSpotX: 102 }))
+      .toEqual({ kind: 'unresolved', rule: '8-7-3', missing: 'impetus_or_momentum' });
+  });
+  it('uses the proven impetus when an endzone-origin fumble exits into the field', () => {
+    expect(fumbleOutOfBounds({ fumbleX: 113, outX: 108, lastPossessionTeam: 'D',
+      impetusTeam: 'O', momentumExceptionExcluded: true }))
+      .toEqual({ kind: 'touchback', possession: 'D', spotX: 90, rule: '8-7-3' });
+    expect(fumbleOutOfBounds({ fumbleX: 113, outX: 108, lastPossessionTeam: 'D',
+      impetusTeam: 'D', momentumExceptionExcluded: true }))
+      .toEqual({ kind: 'safety', scoringTeam: 'O', rule: '8-7-3' });
+  });
+});
+
+describe('airborne loose-ball boundary history', () => {
+  const p = (x: number, y: number, z = 2) => ({ x, y, z });
+  it('does not whistle an airborne sideline-plane crossing', () => {
+    const result = looseBallBoundaryStep(undefined, p(44.9, .2), p(43.9, -.2), false);
+    expect(result).toEqual({ outside: true, dead: false, exit: { x: 44.4, y: 0 } });
+  });
+  it('retains the crossing until actual outside ground contact', () => {
+    const air = looseBallBoundaryStep(undefined, p(44.9, .2), p(43.9, -.2), false);
+    const dead = looseBallBoundaryStep(air.exit, p(43.9, -.2), p(42.9, -.6, 0), true);
+    expect(dead).toEqual({ outside: true, dead: true, exit: { x: 44.4, y: 0 } });
+  });
+  it('allows airborne reentry and replaces the old spot on a subsequent exit', () => {
+    const reentered = looseBallBoundaryStep({ x: 44.4, y: 0 }, p(43.9, -.2), p(43, .2), false);
+    expect(reentered).toEqual({ outside: false, dead: false });
+    const next = looseBallBoundaryStep(reentered.exit, p(43, .2), p(42, -.2, 0), true);
+    expect(next).toEqual({ outside: true, dead: true, exit: { x: 42.5, y: 0 } });
+  });
+  it('supports actual ground rolling contact and endline exits', () => {
+    expect(looseBallBoundaryStep(undefined, p(119.5, 20, 0), p(120.5, 20, 0), true))
+      .toEqual({ outside: true, dead: true, exit: { x: 120, y: 20 } });
+  });
+  it('does not fabricate an exit for a historyless ball already outside', () => {
+    expect(looseBallBoundaryStep(undefined, p(40, -2), p(39, -3, 0), true))
+      .toEqual({ outside: true, dead: true });
+  });
+});
+
+describe('native airborne loose-ball and momentum controls', () => {
+  function airborneFumble() {
+    const sim = nativeSim(), rb = sim.slot('RB')!;
+    rb.body.pos = { x: 48, y: CENTER_Y }; sim.ball = { kind: 'held', carrier: rb }; sim.fumble(rb, null);
+    const ball = sim.ball as BallState;
+    if (ball.kind !== 'loose') throw new Error('Native fumble missing');
+    ball.flight = { pos: { x: 44.9, y: .2, z: 2 }, vel: { x: -20, y: -8, z: 0 }, drag: 0 };
+    (sim as unknown as { updateBall(): void }).updateBall();
+    return { sim, ball };
+  }
+  it('keeps an actual airborne sideline exit live until outside ground contact and retains its crossing spot', () => {
+    const { sim, ball } = airborneFumble();
+    expect(sim.phase).toBe('live'); expect(sim.ball.kind).toBe('loose');
+    expect(ball.boundaryExit?.x).toBeCloseTo(44.4, 9);
+    ball.flight.pos.z = .01; ball.flight.vel = { x: -20, y: -8, z: -1 };
+    (sim as unknown as { updateBall(): void }).updateBall();
+    expect(sim.phase).toBe('dead'); expect(sim.outcome).toBe('oob');
+    expect(sim.endSpot?.x).toBeCloseTo(44.4, 9);
+  });
+  it('permits actual airborne reentry and discards the obsolete exit', () => {
+    const { sim, ball } = airborneFumble();
+    ball.flight.vel = { x: -20, y: 8, z: 0 };
+    (sim as unknown as { updateBall(): void }).updateBall();
+    expect(sim.phase).toBe('live'); expect(ball.flight.pos.y).toBeGreaterThan(0);
+    expect(ball.boundaryExit).toBeUndefined();
+  });
+  function acquireDefender(acquisitionX: number, vx: number) {
+    const sim = nativeSim(), qb = sim.qb, defender = sim.slot('FS')!;
+    qb.body.pos = { x: 35, y: CENTER_Y }; sim.ball = { kind: 'held', carrier: qb };
+    sim.throwBall(qb, sim.slot('X')!, { x: 10, y: 0, z: 2 }, { x: acquisitionX, y: CENTER_Y, z: 1 }, 3);
+    defender.body.pos = { x: acquisitionX, y: CENTER_Y }; defender.body.vel = { x: vx, y: 0 }; defender.downUntil = -1;
+    sim.possess(defender, 'interception');
+    return { sim, defender };
+  }
+  it('returns an original-momentum endzone stop to the field acquisition without a five-yard cutoff', () => {
+    const { sim, defender } = acquireDefender(102, 4);
+    defender.body.pos.x = 112;
+    sim.finishCarry('tackle', defender.pos);
+    expect(sim.outcome).toBe('tackle'); expect(sim.endSpot?.x).toBe(102);
+    expect(sim.buildResult().score).toBeNull();
+    expect(sim.events.some(e => e.type === 'momentum')).toBe(true);
+  });
+  it('spots an inside-one momentum acquisition at the one-yard line', () => {
+    const { sim, defender } = acquireDefender(109.6, 4);
+    defender.body.pos.x = 112;
+    sim.finishCarry('tackle', defender.pos);
+    expect(sim.endSpot?.x).toBe(109);
+    expect(sim.buildResult().score).toBeNull();
+  });
+  it('keeps an opponent-impetus acquisition in the endzone a touchback', () => {
+    const { sim, defender } = acquireDefender(112, 0);
+    sim.finishCarry('tackle', defender.pos);
+    expect(sim.outcome).toBe('touchback'); expect(sim.buildResult().score).toBeNull();
+  });
+  it('does not preserve original momentum after actual inward commanded ground drive', () => {
+    const { sim, defender } = acquireDefender(109.6, 2);
+    defender.body.pos.x = 109.9;
+    vi.spyOn(defender.behavior, 'update').mockReturnValue({ vel: { x: 8, y: 0 }, facing: 0 });
+    sim.tick();
+    expect(sim.lastStep!.groundImpulse[defender.idx].x).toBeGreaterThan(0);
+    defender.body.pos.x = 112;
+    sim.finishCarry('tackle', defender.pos);
+    expect(sim.outcome).toBe('safety');
+    expect(sim.buildResult().score).toEqual({ kind: 'safety', team: 'O' });
+  });
+});
+
+describe('native backward-pitch boundary continuity', () => {
+  it('retains an airborne pitch exit until actual outside ground contact', () => {
+    const sim = nativeSim(), from = sim.slot('RB')!, to = sim.slot('Y')!;
+    from.downUntil = to.downUntil = -1;
+    from.body.pos = { x: 48, y: CENTER_Y }; to.body.pos = { x: 47, y: CENTER_Y };
+    sim.ball = { kind: 'held', carrier: from }; expect(sim.pitchBall(from, to)).toBe(true);
+    const pitch = sim.ball as BallState;
+    if (pitch.kind !== 'pitch') throw new Error('Native pitch missing');
+    pitch.flight = { pos: { x: 44.9, y: .2, z: 2 }, vel: { x: -20, y: -8, z: 0 }, drag: 0 };
+    (sim as unknown as { updateBall(): void }).updateBall();
+    expect(sim.phase).toBe('live'); expect(sim.ball.kind).toBe('pitch');
+    expect(pitch.boundaryExit?.x).toBeCloseTo(44.4, 9);
+    pitch.flight.pos.z = .01; pitch.flight.vel.z = -1;
+    (sim as unknown as { updateBall(): void }).updateBall();
+    expect(sim.phase).toBe('dead'); expect(sim.outcome).toBe('oob');
+    expect(sim.endSpot?.x).toBeCloseTo(44.4, 9);
+    expect(sim.stats.fumbles).toEqual([expect.objectContaining({ playerId: from.player.id, team: 'O', lost: false })]);
+  });
+  it('uses the return team\'s direction for a real backward pitch', () => {
+    const sim = nativeSim(), from = sim.slot('FS')!, to = sim.slot('SS')!;
+    from.downUntil = to.downUntil = -1;
+    from.body.pos = { x: 70, y: CENTER_Y }; to.body.pos = { x: 72, y: CENTER_Y };
+    sim.possession = 'D'; sim.ball = { kind: 'held', carrier: from };
+    expect(sim.pitchBall(from, to)).toBe(true);
+    const pitch = sim.ball as BallState;
+    if (pitch.kind !== 'pitch') throw new Error('Native pitch missing');
+    expect(pitch.flight.vel.x).toBeGreaterThan(0);
+    expect(pitch.intended.x).toBe(72);
+    expect(sim.penalties.some(p => p.kind === 'illegal_forward_pass')).toBe(false);
+  });
+});
+
+describe('native backward-pitch contact with an out-of-bounds person', () => {
+  function pitchToContact(receiverY: number) {
+    const sim = nativeSim(), from = sim.slot('RB')!, target = sim.slot('Y')!, defender = sim.slot('FS')!;
+    from.downUntil = target.downUntil = -1;
+    from.body.pos = { x: 48, y: CENTER_Y }; target.body.pos = { x: 47, y: CENTER_Y };
+    sim.ball = { kind: 'held', carrier: from }; expect(sim.pitchBall(from, target)).toBe(true);
+    const pitch = sim.ball as BallState;
+    if (pitch.kind !== 'pitch') throw new Error('Missing backward pitch');
+    pitch.releaseT = sim.t - .2;
+    pitch.flight = { pos: { x: 44.9, y: .2, z: .5 }, vel: { x: -20, y: -8, z: 0 }, drag: 0 };
+    defender.downUntil = -1; defender.body.pos = { x: 44.6, y: receiverY };
+    (sim as unknown as { updateBall(): void }).updateBall();
+    return { sim, defender, from };
+  }
+  it('ends the backward pass at native ball/person contact before a later plane exit without awarding possession', () => {
+    const { sim, defender, from } = pitchToContact(-.1);
+    // Selected native swept-reach contact occurs at s=.42/1.16, while
+    // the ball is still infield; the later geometric exit is x44.4.
+    expect(sim.phase).toBe('dead'); expect(sim.outcome).toBe('oob');
+    expect(sim.possession).toBe('O'); expect(sim.carrier).toBeNull();
+    expect(sim.endSpot?.x).toBeCloseTo(44.9 - .42 / 1.16, 9);
+    expect(sim.endSpot?.x).not.toBeCloseTo(44.4, 9);
+    expect(sim.stats.fumbles).toEqual([expect.objectContaining({ playerId: from.player.id, team: 'O', lost: false })]);
+    expect(sim.events.some(e => e.type === 'pitch_catch' && e.a === defender.idx)).toBe(false);
+    expect(sim.events.some(e => e.type === 'recovery')).toBe(false);
+  });
+  it('preserves an inbounds opponent collection and its real possession change', () => {
+    const { sim, defender, from } = pitchToContact(.3);
+    expect(sim.phase).toBe('live'); expect(sim.possession).toBe('D'); expect(sim.carrier).toBe(defender);
+    expect(sim.stats.fumbles).toEqual([expect.objectContaining({ playerId: from.player.id, team: 'O', lost: true,
+      recoveredBy: defender.player.id })]);
+    expect(sim.events.some(e => e.type === 'recovery' && e.a === defender.idx)).toBe(true);
   });
 });
