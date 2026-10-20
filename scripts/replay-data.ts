@@ -38,7 +38,11 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
 };
 const SHOWN_EVENTS = new Set(['pressure', 'pitch', 'pitch_catch', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_abandon', 'block_log', 'block_climb', 'squeeze']);
-const tenth = (v: number) => Math.round(v * 10);
+/** Frame coordinates in hundredths: tenths at 10 Hz alias anyone slower than
+ * about 1 yd/s into stop-and-go steps on playback (tracking and the sim both
+ * carry 0.01 yd). The viewer reads the scale from the frames. */
+const FRAME_SCALE = 100;
+const scaled = (v: number) => Math.round(v * FRAME_SCALE);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
 export function replayConcept(p: PlayLog) {
@@ -108,10 +112,11 @@ export function packReplayPlay(p: PlayLog, game: number) {
     ev: rp.events.filter((e) => SHOWN_EVENTS.has(e.type)).map((e) => [r2(e.t), e.type]),
     frames: {
       t: rp.frames.map((f) => f.t),
-      p: rp.frames.flatMap((f) => f.agents.map(tenth)),
-      b: rp.frames.flatMap((f) => f.ball.map(tenth)),
+      scale: FRAME_SCALE,
+      p: rp.frames.flatMap((f) => f.agents.map(scaled)),
+      b: rp.frames.flatMap((f) => f.ball.map(scaled)),
       c: rp.frames.map((f) => f.carrier),
-      s: rp.frames.flatMap((f) => (f.carrierPosture ?? [0, 0]).map(tenth)),
+      s: rp.frames.flatMap((f) => (f.carrierPosture ?? [0, 0]).map(scaled)),
     },
   };
 }

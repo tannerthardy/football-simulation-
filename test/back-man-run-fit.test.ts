@@ -66,6 +66,8 @@ function alleyStage(carrying: Perceived['carrying'] = true, side = 1, read: Read
     manPrefs: targetSlot === 'F' || formationId === 'gun_empty_11' ? { overrides: { FS: targetSlot } } : undefined,
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3, record: !!recordLevel, recordLevel });
   const a = sim.slot('FS')!, r = sim.slot(targetSlot)!;
+  // Capture installed geometry before the saved deep-mesh body staging.
+  const installedLongitudinalSeparation = a.pos.x - r.pos.x;
   expect(a.behavior).toBeInstanceOf(ManCoverage);
   const behavior = a.behavior as ManCoverage;
   expect(behavior.target).toBe(r);
@@ -81,7 +83,7 @@ function alleyStage(carrying: Perceived['carrying'] = true, side = 1, read: Read
     facing: 0, pose: 'up', age: .25, carrying };
   const originalSee = sim.see.bind(sim);
   sim.see = (observer, target, delay) => target === r ? picture : originalSee(observer, target, delay);
-  return { sim, a, r, behavior, update: () => behavior.update(a, sim),
+  return { sim, a, r, behavior, installedLongitudinalSeparation, update: () => behavior.update(a, sim),
     picture: () => picture, setPicture: (next: Perceived) => { picture = next; } };
 }
 
@@ -293,7 +295,7 @@ describe('back man markers preserve their installed alley support instead of rec
     const fit = alleyStage(), man = alleyStage(null);
     expect(fit.a.runFit!.kind).toBe('alley');
     expect(fit.sim.offAlign.spots.RB.backfield).toBe(true);
-    expect(fit.behavior.recordedTechnique().initialCushion).toBeCloseTo(10.2, 10);
+    expect(fit.behavior.recordedTechnique().initialCushion).toBeCloseTo(fit.installedLongitudinalSeparation, 10);
     const command = fit.update(), ordinary = man.update(), direct = chase(fit.sim, fit.a, fit.r, 3.5);
     // A known runner at a deep mesh is not permission to collapse this FS
     // into the LB insertion or chase the ball directly into the backfield.

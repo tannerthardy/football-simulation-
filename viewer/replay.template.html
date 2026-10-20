@@ -271,15 +271,17 @@ window.TELEMETRY_READY = Promise.resolve(true);
   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const familyNames = { zone: 'Zone runs', gap: 'Gap runs', 'other-run': 'Other runs', quick: 'Quick game', dropback: 'Dropback passes', playaction: 'Play action', screen: 'Screens', other: 'Other plays' };
   const familyOrder = Object.keys(familyNames);
-  // Positions, facings and ball coordinates arrive in tenths.
+  // Positions, facings and ball coordinates arrive in tenths, or in the
+  // frames' own scale (hundredths in newer replays).
   for (const p of plays) {
     p.game ??= 0;
     p.id ??= `G${p.game + 1}-P${String(p.index + 1).padStart(3, '0')}`;
     p.concept ??= { id: p.kindLabel, name: p.kindLabel, family: 'other' };
     if (!p.frames) continue;
-    p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
-    p.frames.b = Float32Array.from(p.frames.b, (v) => v / 10);
-    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / 10);
+    const scale = p.frames.scale || 10;
+    p.frames.p = Float32Array.from(p.frames.p, (v) => v / scale);
+    p.frames.b = Float32Array.from(p.frames.b, (v) => v / scale);
+    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / scale);
   }
   const filmed = plays.map((p, i) => p.frames ? i : -1).filter((i) => i >= 0);
   const teams = { [meta.home.abbr]: meta.home, [meta.away.abbr]: meta.away };

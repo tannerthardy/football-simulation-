@@ -806,7 +806,7 @@ interface RunStackRead {
   hold?: { y: number; until: number };
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
-const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean }>();
+const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: number }>();
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
@@ -879,20 +879,42 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   let desired = { x: d.pos.x, y };
   if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
   else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
+  let flow: number | undefined;
+  if (stack && job!.kind === 'interior' && job!.technique !== 'lag' && d.recog?.read === 'run' && back) {
+    // The runner has left this first-level fit laterally. Work along the
+    // line with inside-out leverage instead of recentering on an obsolete
+    // blocker shoulder. Possession comes from acquired backfield pictures;
+    // the live holder, offensive call and private blocker work are not keys.
+    const qbSeen = sim.see(d, sim.qb), backSeen = backPicture ?? sim.see(d, back);
+    const horizon = 2 * d.mind.decisionInterval;
+    const fresh = (age: number | undefined) => age !== undefined && Number.isFinite(age)
+      && age >= 0 && age <= d.profile.reactionTime + horizon;
+    const trail = d.profile.radius + back.profile.radius + d.profile.reach * .65;
+    const side = Math.sign(backSeen.vel.y);
+    if (backSeen.carrying === true && qbSeen.carrying === false
+      && fresh(backSeen.age) && fresh(qbSeen.age) && Math.abs(backSeen.vel.y) > 1.5
+      && backSeen.pos.x <= sim.los - 1.6
+      && (backSeen.pos.y - d.pos.y) * side > trail) {
+      // The movement planner advances this held point with `flow` once.
+      desired = { x: d.pos.x, y: backSeen.pos.y - side * trail };
+      flow = backSeen.vel.y;
+    }
+  }
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
   // Support contacts hold the selected target mode too. A safety's acquired
   // runner aim must not keep being treated as an undeclared force landmark.
   if (runTargets.get(e)?.aim !== aim)
-    runTargets.set(e, { aim, runner: declared && (!edge || advanced) });
+    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced), flow });
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
   // advanced carrier supplies urgency even after an original pass read.
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
-  return { aim, reading, threat, declared: runTargets.get(e)!.runner, stack, acquiredBackfield: !!acquired };
+  return { aim, reading, threat, declared: runTargets.get(e)!.runner,
+    flow: runTargets.get(e)!.flow, stack, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1156,7 +1178,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
-    heldFlow: read.stack?.flow, fit: d.runFit });
+    heldFlow: read.stack?.flow, heldTargetFlow: read.flow, fit: d.runFit });
   // Follow acquired flow while preserving the chosen shoulder. Control/lag
   // replace feet toward their remembered contact depth; attack retains useful
   // forward intent. These are finite requests, not stronger ground support.
@@ -1172,7 +1194,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // acceleration (the law the zone blockers plan with), so a lineman who is
   // being reached works laterally to keep his gap instead of lagging it.
   // DL_FLOW=0 restores the proportional follow.
-  const held = read.declared ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
+  const held = read.declared ? 0 : read.flow ?? read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
   const flow = clamp(DL_FLOW
     ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
     : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);

@@ -12,6 +12,7 @@ import { PlaySim } from '../src/sim/playsim.js';
 import { containCoverage } from '../src/sim/coverage-space.js';
 import { END_LINE_X } from '../src/core/field.js';
 import { zoneLandmark } from '../src/playbook/alignment.js';
+import { movementObjective } from '../src/sim/movement-objective.js';
 
 const home = generateTeam(new Rng(7).fork('offense'), 'Home', 'HOM', { strength: 0.6 });
 const away = generateTeam(new Rng(7).fork('defense'), 'Away', 'AWY', { strength: 0.6 });
@@ -172,7 +173,14 @@ describe('coverage footwork and distribution', () => {
     s.t = 1; d.recog!.read = 'pass';
     const cmd = b.update(d, s);
     expect(b.target).toBe(r);
-    expect(cmd.vel.x).toBeLessThan(6);
+    // The contract is a receiver-relative objective, not a command-speed
+    // ceiling which mistakes burst demand for achieved movement.
+    const goal = movementObjective(cmd);
+    expect(goal?.kind).toBe('moving');
+    expect(goal!.point.x).toBeLessThan(zoneLandmark(b.zone, s.offAlign).x);
+    const start = { ...d.pos };
+    stepBody(d.body, cmd, .05);
+    expect(d.pos.x - start.x).toBeLessThan(.1);
   });
 
   it('a match defender opens his hips to carry a crosser rather than shuffling forever', () => {

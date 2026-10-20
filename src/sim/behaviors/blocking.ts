@@ -30,6 +30,7 @@ import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
+import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -412,6 +413,10 @@ export interface RunBlockPlan {
   pullRole?: 'kick' | 'lead' | 'trap';
   /** Explicit GH installation: first guard/end relationship known at the snap. */
   pullSurface?: { blocker: Agent; defender: Agent };
+  /** This exact installed perimeter defender uses a moving near-surface stalk. */
+  perimeterStalk?: Agent;
+  /** This exact installed inside defender needs an attainable ordinary strike. */
+  insideStalk?: Agent;
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
@@ -688,12 +693,22 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
   const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
+  // Alignment class is not ownership: shallow press/apex bodies can be in dl
+  // without an inline job. Keep actual current/future assignments reserved,
+  // including the explicitly installed GH H/backer, before restoring free dl.
+  const reserved = new Set<Agent>();
+  for (const p of plans.values()) {
+    if (p.target) reserved.add(p.target);
+    if (p.climbTo) reserved.add(p.climbTo);
+    if (p.combination?.backer) reserved.add(p.combination.backer);
+  }
+  const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
   const stalkTargets = new Map<Agent, Agent | null>();
   if (STALK_CLAIM) {
     // Receivers share one ledger: closest unclaimed pairs first, skipping
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
-    const open = [...db, ...lb.filter((l) => !claimedLB.has(l))];
+    const open = stalkPool.filter(d => !reserved.has(d));
     const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
@@ -703,7 +718,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     let best: Agent | null = stalkTargets.get(a) ?? null;
     if (!best) {
       let bd = Infinity;
-      for (const d of [...db, ...lb]) {
+      for (const d of stalkPool) {
         const dd = near(a, d);
         if (dd < bd) {
           bd = dd;
@@ -711,7 +726,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         }
       }
     }
-    plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })) });
+    plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })),
+      perimeterStalk: best && db.includes(best) ? best : undefined,
+      insideStalk: best && lb.includes(best) ? best : undefined });
   }
   // Save the finalized installation, including backside cutoff and Draw's
   // pass-influence conversion, rather than an intermediate owner label.
@@ -769,6 +786,7 @@ export class RunBlocker implements Behavior {
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
+  private climbAccess: ClimbAccess | null = null;
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
@@ -942,8 +960,23 @@ export class RunBlocker implements Behavior {
       // Stay square on the DB until the run comes; engage when he closes.
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
-      const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
-      return goTo(a, fit, { speed: 0.85, through: 1 });
+      const seen = sim.see(a, target);
+      if (plan.perimeterStalk === target) {
+        const capacity = a.body.support
+          ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+        const surface = a.profile.radius + target.profile.radius + .15;
+        const aim = { x: seen.pos.x-plan.drive.x*surface, y: seen.pos.y-plan.drive.y*surface };
+        return { vel: movingArrivalVelocity(a.body, aim, seen.vel, a.profile.vmax * .85, .1, 1, 1, capacity),
+          facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
+      }
+      // The inside stalk must actually enter its unchanged contact envelope.
+      // A fixed 1.2yd stand-off can strand him outside reach of a waiting or
+      // retreating backer. Keep this ordinary approach distinct from the
+      // installed perimeter interception above.
+      const fit = plan.insideStalk === target
+        ? { x: seen.pos.x - (a.profile.radius + target.profile.radius + .15), y: seen.pos.y }
+        : { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
+      return goTo(a, fit, { speed: .85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
   }
@@ -978,12 +1011,25 @@ export class RunBlocker implements Behavior {
       }
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
+      this.climbAccess = null;
+      if (Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
+        // A backer assignment does not remove the bodies between us. Read
+        // first-level surfaces on the same beat; never inspect their private
+        // assignments, engagement state or future controller requests.
+        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
+          ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
+          .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
+          .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
+        const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
+        this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
+      }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
         chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
         cue: 'one acquired picture of the backer, previewed with own free movement',
         options: ['attainable meeting point', 'closest approach (no attainable fit)'],
         detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
     }
+    if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
     const r = this.climbRead!;
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -1052,10 +1098,13 @@ export class RunBlocker implements Behavior {
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
     // ordinary reach and useful helper contact still decide whether he joins.
-    const partnerOwns = target?.engagement && plan.combination && !plan.combination.released
+    const partnerOwns = plan.combination && !plan.combination.released && target?.engagement
       && plan.combination.defender === target && plan.combination.members.includes(a)
       && plan.combination.members.includes(target.engagement.blocker);
-    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
+    // A named stalk is still his job when a teammate momentarily gets hands
+    // on that defender. Private engagement ownership is not an acquired
+    // handoff; real spacing and contact eligibility still govern any help.
+    if (!target || target.isDown(t) || (plan.kind !== 'stalk' && target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
       if (t >= this.retarget) {
         this.retarget = t + a.mind.decisionInterval;
         const previous = target;
@@ -1172,11 +1221,16 @@ export class RunBlocker implements Behavior {
     // leverage boundary as an established run block, without a time grace.
     const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
       : zone ? { x: 1, y: 0 } : plan.drive;
-    const lost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    const installedLost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    const runnerFit = !sim.world.joints.some(j => j.a === a.body || j.b === a.body)
+      ? this.runnerSideFit(a, sim, target, seen) : null;
+    const lost = runnerFit ? runnerFit.lost : installedLost;
     // A solo drive still strikes downhill from an ordinary fit. Once the
     // personally observed shoulder is gone, replace the feet before reaching
     // again, using the same bounded recovery as other first-level blocks.
-    const fit = fitCandidate && (plan.kind !== 'drive' || lost);
+    // Once the carrying back is acquired, crossing the old drive normal need
+    // not lose useful screening position. Do not recover to its opposite side.
+    const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
     if (!lost && dd < contact) {
       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
       if (e) {
@@ -1248,7 +1302,7 @@ export class RunBlocker implements Behavior {
         const bodyContact = a.profile.radius + target.profile.radius;
         // Interception supplies the approach, not permission to run through
         // the man. Use the same acquired near-strike fit as other climbs.
-        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+        if (!this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
           return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
             placementError, contact, bodyContact, fit, sim.t);
         return fit;
@@ -1261,6 +1315,9 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     const original = runThrough(a, aim, { speed: 1 });
+    if (runnerFit?.lost) return chooseRunBlockFit(a, seen,
+      { x: -runnerFit.axis.x, y: -runnerFit.axis.y }, runnerFit.aim, placementError,
+      contact, a.profile.radius + target.profile.radius, original, sim.t, true);
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
       !!zone || !!contactFit, zone ? 2.4 : 0) : original;
@@ -1396,6 +1453,29 @@ export class RunBlocker implements Behavior {
     delete p.contactFit;
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
+  }
+
+  /** A free first-level blocker recovers between his defender and the back
+   * he has acquired, rather than blindly returning to the original drive
+   * angle. This chooses feet only: target, drive and contact frame stay owned
+   * by the installation. Unknown possession and a snap-carrying QB keep it.
+   */
+  private runnerSideFit(a: Agent, sim: PlaySim, target: Agent, seen: Perceived):
+    { axis: Vec2; aim: Vec2; lost: boolean } | null {
+    if (!(isOL(a) || sim.offAlign.spots[a.slot]?.inline)
+      || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
+      || (this.plan.combination && !this.plan.combination.released)) return null;
+    const ref = this.workReference(a, sim);
+    if (this.workPicture?.source !== 'acquired' || this.workPicture.carrier !== sim.slot('RB')?.idx) return null;
+    // Existing run-contact continuation ends once the runner has passed the
+    // defender by this depth. This recovery does not renew an obsolete job.
+    if ((ref.x - seen.pos.x) * sim.attackDir(a.team) > 2.5) return null;
+    const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, distance = Math.hypot(dx, dy);
+    if (distance < 1e-9) return null;
+    const axis = { x: dx / distance, y: dy / distance }, drive = { x: -axis.x, y: -axis.y };
+    const sep = a.profile.radius + target.profile.radius + .15;
+    return { axis, aim: { x: seen.pos.x + axis.x * sep, y: seen.pos.y + axis.y * sep },
+      lost: Math.abs(observedBlockLeverage(a, seen, drive)) >= 1.1 };
   }
 
   private workReference(a: Agent, sim: PlaySim): Vec2 {

@@ -54,8 +54,10 @@ describe('replay export', () => {
     expect(packReplayPlay(play(), 2).id).toBe('G3-P005');
     expect(p.roster[0]).toEqual(['O', 'RB', 'Example Runner', 28]);
     expect(p.frames.t).toEqual([-0.5, 0]);
-    expect(p.frames.p).toEqual([312, 267, 7, 313, 267, 9]);
-    expect(p.frames.s).toEqual([0, 0, 8, 9]);
+    // Hundredths: tenths at 10 Hz alias a slow mover into stop-and-go steps.
+    expect(p.frames.scale).toBe(100);
+    expect(p.frames.p).toEqual([3124, 2667, 70, 3131, 2674, 90]);
+    expect(p.frames.s).toEqual([0, 0, 80, 90]);
     expect(p.ev).toEqual([[0, 'carrier_contact'], [0, 'block_exchange']]);
   });
 
