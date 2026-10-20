@@ -905,8 +905,15 @@ export class RunBlocker implements Behavior {
           }
         }
       }
-      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
-      const wp = plan.pullPath[this.pullIdx];
+      const observedCorner = !plan.pullSurface && target &&
+        (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead');
+      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) {
+        // Resolve the flat leg against its acquired rear surface below, not
+        // against a snap x coordinate that may now lie inside the down wall.
+        if (this.pullIdx === 1 && observedCorner) break;
+        this.pullIdx++;
+      }
+      let wp = plan.pullPath[this.pullIdx];
       if (wp) {
         // Clear the wall with the feet before fitting the moving kick/trap
         // target. Reaching a waypoint's tolerance does not establish that
@@ -914,8 +921,20 @@ export class RunBlocker implements Behavior {
         // distance of the puller to become relevant work.
         const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
+        const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         if (read) {
           this.pullCleared ||= a.pos.x + a.profile.radius <= read.clearanceX;
+          // A cleared puller may pass the moving corner deeper than its old
+          // snap landmark. Do not make him return upfield to finish that
+          // waypoint, or add another retreat solely for being near a teammate.
+          // An actually obstructed rear surface still requires gaining depth.
+          const stationY = this.pullCleared && plan.pullRole !== 'lead'
+            ? read.seen.pos.y - ps * .65 : wp.y;
+          if (observedCorner && this.pullIdx === 1 &&
+              a.pos.x + a.profile.radius <= read.clearanceX && (stationY-a.pos.y)*ps < .65) {
+            this.pullIdx++;
+            wp = plan.pullPath[this.pullIdx];
+          }
           const distance = Math.hypot(read.seen.pos.x-a.pos.x, read.seen.pos.y-a.pos.y);
           const lead = Math.min(.4, distance / Math.max(1, a.profile.vmax));
           const approachingDepth = read.seen.pos.x + Math.min(0, read.seen.vel.x) * lead;
@@ -929,7 +948,6 @@ export class RunBlocker implements Behavior {
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
-        const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
@@ -941,8 +959,14 @@ export class RunBlocker implements Behavior {
             const elapsed=t-this.wrapTrafficAt,x=p.pos.x+p.vel.x*elapsed,y=p.pos.y+p.vel.y*elapsed;
             return Math.hypot(x-a.pos.x,y-a.pos.y)<1.2 && x>a.pos.x;
           })
-          : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
-        if (this.pullIdx === 1 && nearWall) {
+          : !read && sim.offense.some(o => {
+            if (o === a || !isOL(o)) return false;
+            const seen=sim.see(a,o);
+            return Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<1.2 && seen.pos.x>a.pos.x;
+          });
+        if (this.pullIdx === 1 && observedCorner && read) {
+          path = {x:Math.min(wp.x,read.clearanceX-a.profile.radius),y:path.y};
+        } else if (this.pullIdx === 1 && nearWall) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
         const next = plan.pullPath[this.pullIdx+1];
