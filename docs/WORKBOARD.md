@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Run/Catching contact reference — 2026-10-20
+
+Run composes only exact #174 runoff+drive source/tests onto Catching's existing
+#169+#171+#177 source2302b48 on `codex/run-contact-workoff-reference`. This is a
+portable interaction reference, not a new integration baseline or an expanded
+#174 production scope. Accepted develop2c98bed9/queue6575988f refreshed.
+No #185, physics, capacity, defaults, release or new work-off policy. Test only
+the shared stepRunRep producer/consumer seam; reuse prior native outcomes and
+Catching's65-check source-qualified evidence. Return exact merged engagement
+hunks and a focused receipt to both owners/Integration, preserving all adverse
+endings. #174 remains the sole #172+#174 boundary; never apply #172 again.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
