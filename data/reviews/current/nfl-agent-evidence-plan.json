@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-19 America/Phoenix",
+  "scope": "NFL-use workflow investigation and proposed rollout; documentation only",
+  "acceptedPin": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "queuePin": "9a6bb795179a4b2e61ed59d25bcf23ca5e40f423",
+  "claudeInspectedPin": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+  "sources": [
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "docs/reviews/run-game-v3.md",
+      "bytes": 44216,
+      "sha256": "8641b826e906a38c2b0c1cd4f00fdbe7dd5697a3c8f0bba710420fe40c1a5a71",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/docs/reviews/run-game-v3.md",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "docs/reviews/run-game-v3-pr153-response.md",
+      "bytes": 18811,
+      "sha256": "078b502cc8905a84ef7129ca119da40daa953dbc682cda64baffb8a256b5d575",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/docs/reviews/run-game-v3-pr153-response.md",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/open-field/arm.mjs",
+      "bytes": 5229,
+      "sha256": "9ee98af05a830a288285a3de822362da1a9407206bd294f95db584cd046bc8f4",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/open-field/arm.mjs",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/stretch/paired.py",
+      "bytes": 1677,
+      "sha256": "4380469c697b211f649f3fe8d43cb95347c606f4e0f9d65f31644405a66926d7",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/stretch/paired.py",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/stretch/film-page.ts",
+      "bytes": 9066,
+      "sha256": "646f22852d18fe5c47f207e99174d93ebdcd5be325078dd02df2116ea0843ce1",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/stretch/film-page.ts",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/stretch/film.ts",
+      "bytes": 3941,
+      "sha256": "6c7355a19f0dde6e839a9ae6a3575f1516ebb03a72f49e178c27f4dfa0689d3a",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/stretch/film.ts",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/stretch/film-cases.txt",
+      "bytes": 1852,
+      "sha256": "85681669c819447020e2c03657ff5551670dcbedea198768421482dc3dc7873a",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/stretch/film-cases.txt",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "scripts/diag/stretch/seal.py",
+      "bytes": 4132,
+      "sha256": "17e40df0b73e30d816f8f79cc53e5f50097445e59d587917e25144f439bb9d58",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/scripts/diag/stretch/seal.py",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f",
+      "path": "docs/reviews/run-game-v3/v7/v7dcgap.manifest.json",
+      "bytes": 3632,
+      "sha256": "31da22c30a9a67245e507d1610d615b84d24062033ab3a3de88b7238b5bf701e",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/65db81d710bc0ff75fcd6a81cc4fa8b5f1b89e5f/docs/reviews/run-game-v3/v7/v7dcgap.manifest.json",
+      "reviewType": "static source/recorded report inspection; no re-execution"
+    },
+    {
+      "commit": "410a36983dadbe6e8cc2d917a8fb12665a63ccab",
+      "path": "docs/reviews/p045-nfl-expanded-interpretation-2026-10-15.md",
+      "bytes": 14313,
+      "sha256": "65ab7cd4b28685f9c3edb38051063f9f5e525d163a263939fb3f055e42558066",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/410a36983dadbe6e8cc2d917a8fb12665a63ccab/docs/reviews/p045-nfl-expanded-interpretation-2026-10-15.md",
+      "reviewType": "completed study reused; no query or raw remeasurement"
+    },
+    {
+      "commit": "410a36983dadbe6e8cc2d917a8fb12665a63ccab",
+      "path": "docs/reviews/p045-nfl-restoration-handoff-2026-10-15.md",
+      "bytes": 5969,
+      "sha256": "442bf57342c05c6edae59f0f84233db04c0f3ce50246b303cabc29431be3b9a9",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/410a36983dadbe6e8cc2d917a8fb12665a63ccab/docs/reviews/p045-nfl-restoration-handoff-2026-10-15.md",
+      "reviewType": "completed study reused; no query or raw remeasurement"
+    },
+    {
+      "commit": "410a36983dadbe6e8cc2d917a8fb12665a63ccab",
+      "path": "docs/reviews/amf-source-review-2026-10-15.md",
+      "bytes": 16305,
+      "sha256": "74fbb70e9276f906358f5333324860fb44dec59e10e409df34d8634b1263b545",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/410a36983dadbe6e8cc2d917a8fb12665a63ccab/docs/reviews/amf-source-review-2026-10-15.md",
+      "reviewType": "completed study reused; no query or raw remeasurement"
+    },
+    {
+      "commit": "410a36983dadbe6e8cc2d917a8fb12665a63ccab",
+      "path": "docs/reviews/amf-protection-access-2026-10-15.md",
+      "bytes": 16301,
+      "sha256": "6099e8543e0cb69e91cc958653446a02b22c18083c055f06ccfa8cc7231ec525",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/410a36983dadbe6e8cc2d917a8fb12665a63ccab/docs/reviews/amf-protection-access-2026-10-15.md",
+      "reviewType": "completed study reused; no query or raw remeasurement"
+    },
+    {
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "path": "docs/NFL_DATA.md",
+      "bytes": 9751,
+      "sha256": "7d77f0d67c139aaf3acb7f0805714635c7600c77084fbd74be09d7aec506e6b2",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/f4146275ce7539816bf57b4ed55a0d2be10e48c7/docs/NFL_DATA.md",
+      "reviewType": "existing accepted workflow/definitions"
+    },
+    {
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "path": "docs/TESTING_COSTS.md",
+      "bytes": 15180,
+      "sha256": "a0469b94edb7578bdc304dd0aee895197382d5f0db03ccdf1d1563ac3120cd92",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/f4146275ce7539816bf57b4ed55a0d2be10e48c7/docs/TESTING_COSTS.md",
+      "reviewType": "existing accepted workflow/definitions"
+    },
+    {
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "path": "docs/BEHAVIOR_REVIEW.md",
+      "bytes": 15375,
+      "sha256": "663f55171922f4c9dbc4e7bf5e7519fc47b417212db4cd82bca5b18c80e40787",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/f4146275ce7539816bf57b4ed55a0d2be10e48c7/docs/BEHAVIOR_REVIEW.md",
+      "reviewType": "existing accepted workflow/definitions"
+    },
+    {
+      "commit": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "path": "scripts/mechanics/metrics.py",
+      "bytes": 20494,
+      "sha256": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/f4146275ce7539816bf57b4ed55a0d2be10e48c7/scripts/mechanics/metrics.py",
+      "reviewType": "existing accepted workflow/definitions"
+    }
+  ],
+  "accessChecked": [
+    {
+      "path": "/workspace/football-nfl-agent-plan/out/mechanics/nfl-plays.jsonl.gz",
+      "existsHere": false,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    },
+    {
+      "path": "/workspace/football-nfl-agent-plan/out/mechanics/nfl-ytg.json",
+      "existsHere": false,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    },
+    {
+      "path": "/workspace/football-nfl-agent-plan/out/mechanics/nfl-formation.json",
+      "existsHere": false,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/mechanics/nfl-plays.jsonl.gz",
+      "existsHere": false,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    },
+    {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
+      "existsHere": false,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    },
+    {
+      "path": "/workspace/datasets/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220911_TB_DAL.json.gz",
+      "existsHere": true,
+      "meaning": "Presence check only; no raw checksum or query performed in this review"
+    }
+  ],
+  "filmSelection": {
+    "sourceListedSimCases": 25,
+    "selectedWitnessOrAdverse": 6,
+    "listedRandomOrdinary": 19,
+    "plannedNFLExamples": 15,
+    "families": 6,
+    "seed": 20261019,
+    "selectionHistoryIndependentlyVerified": false,
+    "notes": [
+      "Source comments state selection before outcomes; not a newly validated sampling history.",
+      "Synthetic ball, motion-derived facing, generic body sizes/display identities, and hardcoded displayed tackle ending must not be interpreted as observed channels."
+    ]
+  },
+  "existingStudyPreservation": {
+    "P045": "weeks1-9 six qualifiers (4 contained,2 middle,0 explosive); narrow filtered comparison completed, no rerun/broadening",
+    "AMF": "existing one-game protection source-consistent examples only; dynamically usable access/causal delay unsupported; restrictions retained"
+  },
+  "proposedPilots": [
+    {
+      "owner": "Measurement + current data holder",
+      "decision": "Establish one usable verified data/cache handoff",
+      "status": "proposed; current host/path confirmation required; no download authorized by this plan"
+    },
+    {
+      "owner": "Catching And Defensive Pursuit + Measurement",
+      "PRs": [
+        159,
+        160
+      ],
+      "decision": "Same-defender lateral displacement/depth from handoff to runner arrival, related to current native cause",
+      "status": "proposed cached-data comparison; no new query or native run launched"
+    },
+    {
+      "owner": "Run Game",
+      "PRs": [
+        153
+      ],
+      "decision": "Useful same-player blocking geometry through runner arrival versus passing defender",
+      "status": "reuse existing Part5 NFL/operator/witness/control first"
+    },
+    {
+      "owner": "Measurement",
+      "PRs": [
+        156
+      ],
+      "decision": "Nominal offset shotgun alignment and reachable exchange",
+      "status": "already delivered example; no rerun"
+    },
+    {
+      "owner": "Integration",
+      "decision": "Named cross-unit transfer after meaningful accepted batch",
+      "status": "proposed one existing small panel only if needed; no automatic panel/game job"
+    }
+  ],
+  "policyTreatment": {
+    "rootAgentInstructionsChanged": false,
+    "newMandatoryBenchmark": false,
+    "newCollectorOrFramework": false,
+    "NFLGuideClarification": "discover existing cheap reference loop; align full-report wording with standing selective-testing policy"
+  },
+  "newNFLQueries": 0,
+  "newEngineTicks": 0,
+  "newGames": 0,
+  "newDownloads": 0
+}
