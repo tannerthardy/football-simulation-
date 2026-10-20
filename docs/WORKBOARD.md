@@ -14,6 +14,17 @@ and held contact/solver work remain unchanged. Integration owns the eventual
 exact combined verification; workers provide focused evidence. No shared-suite,
 game campaign or experimental promotion is implied by this diagnostic claim.
 
+Bounded milestone: `2637558` extracts #162 onto accepted code; `aadac6d`
+adds an independently reviewed, exact unsaturated-flow shortcut.114 focused
+checks/typecheck pass; final Toss94-tick state/request/RNG parity is exact;
+body-facing reversals fall84.4% in567 native windows. Mechanics accepted by
+independent Physics/source/native reviewers. Adoption remains **HOLD**:
+clean repeated native Toss paired-p95 cost1.267× exceeds declared1.25×,
+despite passing typical cost. No budget waiver or further micro-tuning.
+Source/evidence preserved; original #162 and all other owners' branches remain.
+[Report](reviews/loaded-movement.md). The separately demonstrated target-as-
+achieved teammate-spacing prediction is the next request-boundary candidate.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
