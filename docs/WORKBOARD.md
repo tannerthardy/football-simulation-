@@ -1,5 +1,26 @@
 # Current work ownership
 
+## NFL contact, ball and official rulings — 2026-10-20 UTC
+
+CEO continues on `codex/nfl-contact-rules`, an explicit dependency on independently
+useful #178@7d475e5, with accepted develop still2c98bed9 and queue6575988. No
+experimental ancestry or new worktree. CEO owns shared types/PlaySim/catching,
+Game/clock/stat adapters and final composition. Pass owns pass-interference;
+Holding owns contact-holding and engagement's holding producer; Contact owns
+contact-legality plus observation-only World contact evidence; Ball owns ball-rules
+and pass-legality; Enforcement owns penalty-enforcement/catalog; official-rules
+owns presnap-rules/eligibility. Each owns its new focused tests. File boundaries
+exclude overlapping edits; workers send narrow hooks to CEO. Implement actual
+native calls and official results, retaining legal exceptions; no fake anatomy,
+penalty-rate tuning, physics-law/capacity/default experiment or per-worker suite.
+CEO owns assembled verification and publishes exact coverage/remaining conditions.
+Protected candidate `a5af57a` passes 2,821 TS/225 files,145 Python,typecheck/build
+in266.066s, all44 accepted settings/components1, no skips/errors/input drift.
+Independent bounded reviews accepted the implemented scopes. First failed receipt
+and fixes remain preserved. Source boundary released; publication is metadata only.
+[Scope, remaining represented-action limits and receipts](reviews/nfl-contact-rules-2026-10-20.md).
+Integration owns adoption after dependency #178; develop/queue/default unchanged.
+
 ## Native NFL rules implementation — 2026-10-20 America/Phoenix
 
 CEO owns `codex/nfl-rules-engine` from accepted `2c98bed9`, the PlaySim/type/Game
