@@ -1,5 +1,27 @@
 # Current work ownership
 
+## Complete run-mechanism reference — 2026-10-20
+
+Measurement publishes `codex/run-mechanism-reference` from accepted
+`2c98bed94adad8087c65f381d4090444ad283985` / queue `4cc3337d`.
+Bounded scope: one small saved-data NFL/native run-sequence query and its
+definition/identity/validity controls, a frozen outcome-independent witness
+selection, compact results/receipt and a guide linked from docs/NFL_DATA.md.
+Reuse existing readers and geometry; preserve stored velocities, stable IDs,
+event provenance, missingness, actual terminal status, exposure and adverse
+examples. Raw/cache files remain outside the repository. Verify available
+cache first; source-listed BDB2025 acquisition is authorized if needed, with
+cost/access recorded. No engine/controller/default changes, new games/panel,
+P045 rerun, AMF expansion or general-purpose framework. Root owns acquisition
+and any query execution. Bounded implementation files:
+`scripts/diag/trench/{run-sequence,native-run-sequence}.py`,
+`test/test_run_sequence.py`, `config/run-sequence-reference.json`,
+`docs/reviews/run-mechanism-reference.md`,
+`data/reviews/current/run-mechanism-reference.json`, NFL guide and this claim.
+Two delegated implementers owned separate script files; independent review was
+read-only. Source scopes released after publication; the NFL execution handoff
+remains open because this executor's supplied download endpoint is blocked.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
