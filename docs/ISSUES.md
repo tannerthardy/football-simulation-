@@ -10,15 +10,17 @@ Older entries retain their dated integration history; consult the canonical
 The previous register header's `90edc525` was the accepted reference at its publication,
 not the current development instruction.
 
-Latest accepted develop is `914f4d56a3b7ef2845ff0208f55d626c0ff5f880` through documentation-only #144/#145. Runtime and the issue dispositions below remain unchanged from0000e560; handbook proposals are not adopted fixes.
+Latest accepted develop is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` through151. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
 
-Current runtime disposition: #128 acquired quarter-flat force-support correction is adopted through #130 as `0000e560e0dbe31905151465152d412ba838803d`; #128 closed by extraction, branch/evidence retained; #126 held for exact zone-reach planned-double contract adjudication by Run/nonauthor reviewer; #127 broad approach trials remain held. [Full receipt, limits and preserved failure](../data/reviews/current/zone-force-integration/final-receipt.json). The70b4 audit remains measured historical evidence, not a later-source result.
+Current runtime preparation: #168 minimally extracts reviewed131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; final adoption awaits mutable-ref/tree check. Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
 audit or a claim that every old research concern affects today's engine.
 Use [STATUS](STATUS.md) for the short priority list, [INTEGRATION](INTEGRATION.md)
 for candidate/receipt decisions, and [WORKBOARD](WORKBOARD.md) before shared edits.
+
+The old131 caller,141 contract and148/149/150 independent-review gates are resolved within the named168 extraction. Original160 hidden-holder activation is excluded; only own-recognition repair is accepted.164/165 were removed after combined failures, with all failures and traces preserved. Their useful-access/motion contracts remain held;162 yaw/GAIT_STEP promotion is separate. Preserve receiver traffic, comeback space, delayed shotgun exchange/unproved loaded protection, contact lifetime, wide-zone/combo and deep-pursuit risks. Finer film changes output-derived measurement near thresholds, not physical trajectories. [Current dispositions and exact pins](reviews/latest-reviewed-checkpoint.md). Older dated rows retain their original evidence; the canonical queue governs live status.
 
 ## Status and evidence rules
 
@@ -49,8 +51,9 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
+| [RUN-009](#RUN-009) | Mesh tempo/geometry and repeated runner-passed re-grabs | Recorded mechanism changes; causal/football interpretation pending | Draft #153; not an accepted six-flag package | Independent Run/contact dispositions, Measurement semantics and author-published saved witnesses; [review packet](reviews/run-game-v3-review-intake.md) |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
-| [RUN-006](#RUN-006) | Riding cadence repaired; failed-exchange continuation still missing | Accepted cadence fix / current observed continuation failure | Continuation active; cadence scope resolved in #63 | Run Game; four70b4 prefixes, first acquired failure/recovery cue, preserve normal mesh and reach |
+| [RUN-006](#RUN-006) | Cadence and observed passed-exchange secure/carry | Cadence63 / continuation136 accepted | Bounded scope resolved via151; initial spacing and broader recovery separate | Run; preserve real transfer-first reach/ordinary PA and source-qualified composed witness |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Second-level access is next bounded priority | Run Game; A018/A030 plus useful access contrast, preserve earlier lane/P037 evidence |
 | [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 accepted via #78 at90edc525, preserved by #82 | Integration/Run; complete, no repeat review; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
@@ -83,6 +86,21 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [REPO-001](#REPO-001) | GitHub default is still the old engine branch | Confirmed navigation problem | Open administrative item | Integration; separate reviewed default-branch decision |
 | [REPO-002](#REPO-002) | Legacy PR/branch retirement and external evidence preservation | Historical cleanup holds; current disposition needs recheck | Parked | Integration + affected owners; refreshed preservation manifest |
 
+<a id="RUN-009"></a>
+## RUN-009 — Run-game v3 mesh and block-lifecycle review
+
+Draft #153 preserves research head1c578afb/runtimec8d63808 directly on accepted
+f4146275. Recorded repeated re-grabs, mesh timing and achieved movement merit
+independent review; the new cooldown trigger and six-flag package are not
+accepted correctness repairs. Run/controller reviews tempo/geometry and older
+flags; contact reviewer adjudicates reachable re-acquisition with Run consulting;
+Measurement qualifies NFL contact/proxy/provenance claims. Author publishes
+existing selected witnesses, no recollection. Power/gun adverse cases and rejected
+trials remain. [Exact scopes, evidence pins and bounded prompts](reviews/run-game-v3-review-intake.md).
+No engine/flags/baseline changes or new simulation/suite. Return condition:
+nonauthor disposition of an isolated scope, then exact Integration verification
+if appropriate; parked Physics and other blocked items remain independent.
+
 ## Accepted70b4 saved-cohort additions — source-qualified audit
 
 These rows extend this register, not a separate backlog. [Coverage, evidence and
@@ -96,9 +114,12 @@ No runtime correction or promotion is claimed by this audit.
 | [BALL-001](#BALL-001) | Final-body/swept-ball catch query mixes times | Physics + Catching; local relative query and exact opportunity inputs; native incidence unresolved |
 | [COV-004](#COV-004) | Shallow cut admission and retention disagree near8–9yd | Pass; coherent existing predicate, preserve legitimate release/vertical exit |
 | [COV-005](#COV-005) | Trips fast-#3 flat takeover responsibility is unclear | Pass; one installed-duty/attainable-handover diagnosis, no automatic extra defender |
-| [GAME-004](#GAME-004) | Defensive TD, safety and pressure-scramble branches omit credits | Measurement + Integration; independent small result-contract fixes, safety yardage convention unresolved |
+| [GAME-004](#GAME-004) | Official giveaway, safety sack/tackle/goal-plane and pressure-scramble credits | Resolved bounded branches via133/151 | Measurement; physical archived observations/YAC/elapsed hold conventions unchanged |
 
 <a id="CTRL-001"></a>
+
+**Current151 disposition:** 132 acquired committed-QB pursuit and134 observer-local contradicted mesh retirement adopted through151; wider authoritative-possession/conversion debt remains. Historical composed P087/P140 evidence is source-qualified, not an ending guarantee on the larger accepted tree.
+
 ### CTRL-001 — Acquired QB continuation
 
 Six official scramble witnesses (G1-P086/P127, G2-P174, G3-P093,
@@ -144,6 +165,9 @@ alone is not a defect. [Pass evidence and opposing #2/wheel controls](https://gi
 Ready#128 is narrower force-duty preservation, not this takeover or CTRL-001.
 
 <a id="GAME-004"></a>
+
+**Current151 disposition:** Bounded credit repairs are adopted through133/151. Safety statistical loss is own-goal-plane5yd for the saved case; physical endX/native−7.50 remains archived. No new game or silent historical rewrite.
+
 ### GAME-004 — Result branches lose existing credits
 
 G1-P156's pick-six bypasses team turnover credit; G2-P140's valid safety bypasses
@@ -201,6 +225,9 @@ initialization and first changed request. Earlier zone/Duo/clearance/detour work
 in its parent history is separate, not a dependency. **Resolved gap-identity scope in accepted #63.**
 
 <a id="RUN-006"></a>
+
+**Current151 disposition:** 136 observed closing→passed/out-of-reach/separating exchange now secures the QB carry under transfer-first real reach, through151. Initial failed-mesh cause and broader recovery remain separate; old caps keep unknown endings.
+
 ### RUN-006 — Riding departure starts before the mesh window
 
 Current-source checkpoint on accepted70b4db6 corroborates the unresolved exchange/continuation class: G3-P003/P087/P141 and G4-P142 are under-center I/Offset-I Outside Zone, QB retains the snap through25-second caps without exchange or carrier contact. This does not establish the same initial F-crossing cause or a new regression. Run reuses#101 evidence and traces the earliest cue/request/reach plus failed-exchange continuation; no new census or physics capacity change. [Exact cohort and audit handoff](https://github.com/tannerthardy/football-simulation-/blob/94f25c64cf2c471220f6297cb7cddd86a1fc3d4e/docs/reviews/accepted-game-checkpoint-2026-10-16.md).
@@ -553,6 +580,9 @@ opposed by hidden divergence and an observed cutback; do not add RB yielding pol
 [D01 source-pinned evidence](https://github.com/tannerthardy/football-simulation-/blob/1fbc013008faaa8ab0f677328d81c183c0b8c032/docs/reviews/run-drills/d01-analysis.md).
 
 <a id="INFO-002"></a>
+
+**Current151 disposition:** 135 immutable installed receiver prior/acquired QB estimate is adopted through151. Unseen live progress/path no longer seeds that forecast; other anticipation/readiness/transport consumers remain distinct.
+
 ### INFO-002 — Anticipation must not inherit hidden execution
 
 The spacing call adjustment starts from the refreshed teammate picture.
@@ -565,6 +595,9 @@ installed call and acquired cues, without exposing live private branches.
 [Code](../src/sim/behaviors/blocking.ts), [spacing adapter](../src/sim/playsim.ts).
 
 <a id="INFO-003"></a>
+
+**Current151 disposition:** 135 forecast and147 blocker-work reference are scoped adoptions through151. Live eligibility, availability, window/protection/pocket/scramble/option-route and unconditional conversion readers remain named debt, not globally repaired.
+
 ### INFO-003 — Related consumers, not a global AI rewrite
 
 Current bounded correction: `runReadAim` opponent risk reads acquired pose/motion

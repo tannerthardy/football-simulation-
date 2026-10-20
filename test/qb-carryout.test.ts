@@ -35,7 +35,9 @@ async function carryOut(on: boolean, run: string, drift: number, flip: boolean) 
 describe('QB_CARRYOUT', () => {
   it.each([['duo', false], ['duo', true], ['power', false], ['power', true]] as const)(
     'carries out away from the play even after drifting play side of the mesh, %s flip=%s', async (run, flip) => {
-      expect(await carryOut(false, run, .3, flip)).toBeGreaterThan(0);
+      // Accepted develop carries the fake away from the installed play with
+      // the flag off too (#153 extraction); the flag adds the drop-through.
+      expect(await carryOut(false, run, .3, flip)).toBeLessThan(0);
       expect(await carryOut(true, run, .3, flip)).toBeLessThan(0);
       expect(await carryOut(true, run, -.3, flip)).toBeLessThan(0);
     });

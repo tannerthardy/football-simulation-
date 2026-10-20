@@ -84,11 +84,9 @@ export class RouteRunner implements Behavior {
     const release = this.handleRelease(a, sim);
     if (release) return release;
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
-    // Ball thrown to someone else: finish the route at a jog and find someone to block.
-    if (sim.ball.kind === 'air' && sim.ball.target !== a) {
-      const cmd = this.steer(a.body, { idx: this.idx }, a.r('routeRunning'), 1);
-      if (cmd) return { ...cmd, effort: 0.55 };
-    }
+    // Keep the installed route's pace and progress. Private throw attribution
+    // does not tell this receiver that his responsibility has ended; the
+    // existing catch/assignment transition owns the change to blocking.
 
     // Option routes read the coverage once.
     if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {

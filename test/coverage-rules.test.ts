@@ -14,6 +14,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { PassConcept, SkillSlot } from '../src/playbook/types.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import type { Perceived } from '../src/sim/perception.js';
 
 const offense = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
 const defense = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });
@@ -64,13 +65,40 @@ describe('Quarters', () => {
     expect(deep).toContain('man:X');
     expect(deep[deep.length - 1]).toBe('man:X');
     const under = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'slant', 2: 'seam' }).jobs('CB_W');
-    expect(under[under.length - 1]).toBe('zone:quarter_w_out');
+    // MOD releases #1 before any later rescue of a different uncapped vertical.
+    const carry = under.indexOf('man:X');
+    expect(carry).toBeGreaterThanOrEqual(0);
+    expect(under.slice(carry + 1)).toContain('zone:quarter_w_out');
   });
 
-  it('safety carries #2 vertical, and helps on #1 when #2 goes out', () => {
+  it('safety carries acquired #2 vertical and does not infer an out from the private route', () => {
     expect(run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'seam' }).jobs('FS')).toContain('man:H');
-    const out = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' }).jobs('FS');
-    expect(out.some((j) => j === 'man:X' || j === 'rob:X')).toBe(true);
+    const out = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' });
+    const safety = out.sim.slot('FS')!.behavior as CoverageDefender;
+    // H has not declared the out in this prefix. Previous #1 help was an
+    // emergency override after the corner lost X, not the coached out rule.
+    const observed = safety.recordedRule(out.sim.t - .05);
+    expect(observed.reads.find(r => r.slot === 'H')?.release).toBe('vertical');
+    // This constrains the rule's cause. Emergency #1 help is still legal;
+    // it must not be mistaken for a declaration that #2 went out.
+    expect(observed.mode).not.toBe('one');
+  });
+
+  it('safety helps #1 after acquiring #2 out, using the same installed call', () => {
+    const { sim } = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'go' }, { until: 0 });
+    const a = sim.slot('FS')!, b = a.behavior as CoverageDefender;
+    const one = sim.slot(sim.offAlign.numbering.W1!)!, two = sim.slot(sim.offAlign.numbering.W2!)!;
+    const pictures = new Map<number, Perceived>(sim.agents.map(r => [r.idx, { pos: { x: sim.los - 3, y: r.pos.y },
+      vel: { x: 0, y: 0 }, facing: 0, stance: null, pose: 'up', carrying: false, age: .2 }]));
+    const sign = Math.sign(two.pos.y - sim.ballY) || 1;
+    pictures.set(one.idx, { ...pictures.get(one.idx)!, pos: { x: sim.los + 8, y: one.pos.y }, vel: { x: 6, y: 0 } });
+    pictures.set(two.idx, { ...pictures.get(two.idx)!, pos: { x: sim.los + 2, y: two.pos.y + sign * 2 }, vel: { x: 0, y: sign * 5 } });
+    sim.see = (_observer, target) => pictures.get(target.idx)!;
+    a.recog!.read = 'pass';
+    for (const t of [1.5, 1.8]) { sim.t = t; b.update(a, sim); }
+    expect(b.recordedRule(sim.t).mode).toBe('one');
+    expect(['out', 'flat']).toContain(b.recordedRule(sim.t).reads.find(r => r.target === two.idx)?.release);
+    expect(b.job).toBe(`man:${one.slot}`);
   });
 
   it('checks to Poach or Stubbie against trips by the coordinator\'s preference', () => {

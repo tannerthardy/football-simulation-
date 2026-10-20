@@ -6,7 +6,10 @@ import type { Formation } from './types.js';
 
 const ON = 0.6;
 const OFF = 1.2;
-const GUN_RB = 5.2;
+// Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
+// and 0.5 yd behind him. Empty and pistol use their own placements.
+const GUN_RB_SPLIT = 2.3;
+const GUN_RB_DEPTH = 5.5;
 
 export const FORMATIONS: Formation[] = [
   // ---------------------------------------------------------------- 11
@@ -17,7 +20,7 @@ export const FORMATIONS: Formation[] = [
       H: { side: 'L', split: 'slot', depth: OFF },
       Z: { side: 'R', split: 'wide', depth: OFF },
       Y: { side: 'R', split: 'inline', depth: ON },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {
@@ -27,7 +30,7 @@ export const FORMATIONS: Formation[] = [
       Z: { side: 'R', split: 'wide', depth: ON },
       H: { side: 'R', split: 'slot', depth: OFF },
       Y: { side: 'R', split: 'slot2', depth: OFF },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {
@@ -37,7 +40,7 @@ export const FORMATIONS: Formation[] = [
       Z: { side: 'R', split: 'wide', depth: OFF },
       H: { side: 'R', split: 'slot', depth: OFF },
       Y: { side: 'R', split: 'inline', depth: ON },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {
@@ -47,7 +50,7 @@ export const FORMATIONS: Formation[] = [
       Y: { side: 'R', split: 7.5, depth: ON },
       Z: { side: 'R', split: 9, depth: 1.7 },
       H: { side: 'R', split: 6.2, depth: 1.9 },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {
@@ -98,7 +101,7 @@ export const FORMATIONS: Formation[] = [
       Y: { side: 'L', split: 'slot', depth: OFF },
       Z: { side: 'R', split: 'wide', depth: ON },
       H: { side: 'R', split: 'slot', depth: OFF },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {
@@ -108,7 +111,7 @@ export const FORMATIONS: Formation[] = [
       Z: { side: 'R', split: 'wide', depth: ON },
       H: { side: 'R', split: 'slot', depth: OFF },
       Y: { side: 'R', split: 'slot2', depth: OFF },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   // ---------------------------------------------------------------- 12
@@ -131,7 +134,7 @@ export const FORMATIONS: Formation[] = [
       Y: { side: 'R', split: 'inline', depth: ON },
       H: { side: 'R', split: 'wing', depth: 1.4 },
       Z: { side: 'R', split: 'wide', depth: OFF },
-      RB: { side: 'L', split: 1.6, depth: GUN_RB },
+      RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
   },
   {

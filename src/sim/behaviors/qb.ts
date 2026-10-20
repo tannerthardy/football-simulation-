@@ -654,11 +654,12 @@ export class QBHandoff implements Behavior {
     private readonly through = 0,
   ) {}
 
-  /** Carry out the fake away from the play. */
+  /** Carry out the fake away from the installed play, even after the
+   * exchange has taken the QB slightly across his own mesh spot. */
   private carryOut(a: Agent, sim: PlaySim): MoveCommand {
     const run = sim.offCall.run;
     const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
-    const side = QB_CARRYOUT && playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1);
+    const side = playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1);
     if (this.drop) {
       // Keep dropping: straight back, bending away from the play.
       const go = Math.max(0, a.pos.x - (sim.los - CARRY_DEPTH));

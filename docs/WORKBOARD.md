@@ -1,8 +1,27 @@
 # Current work ownership
 
-## Active accepted-controller checkpoint — 2026-10-17 America/Phoenix
+## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
-Integration owns only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; publication/adoption pending. Component receipts reused. Pending Run reviews137/148/149/150 and three141 contract dispositions hold only themselves;131 lacks caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
+Integration owns only minimal extraction/composition and exact verification on
+`codex/latest-reviewed-checkpoint`, starting accepted developf4146275 plus queue9a6bb795.
+Six subagents completed independent reviews; exact freeze25a7a591 passes2248 TS/145 Python/typecheck/build in261.757s.13 PR scopes plus narrow153 QB-away/film precision;50 protected files/17 source files.164/165 were removed by normal reverts after preserved combined failures. All44 flags/physical defaults/dependencies unchanged. Root owns only publication/final ref check/routine merge and canonical metadata/owner disposition; no additional simulation campaign. Original owners/checkouts/branches/evidence remain. Assembly boundary releases on actual merged-pin publication. [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json), [scope/risks](reviews/latest-reviewed-checkpoint.md).
+
+## Completed #153 review preparation — 2026-10-19 UTC
+
+Integration owns only the #153 review packet, new hash inventory and current
+queue/status/issue metadata on `codex/integration-queue`; preparation boundary
+released after publication. No source/test/settings/committed receipt edits,
+runtime freeze, suite or simulation. Author's `claude/run-game-v3@1c578afb` and
+all original/rejected evidence remain untouched. Bounded review requests are
+for independent Run/controller, contact/Physics with Run consulting, and
+Measurement; no reviewer acceptance or new edit claim is assumed. Author
+supplies existing shared witnesses/provenance. Original owners retain their
+files; do not import this branch to simplify extraction. Acceptedf4146275 and
+other ready scopes continue independently. [Review packet](reviews/run-game-v3-review-intake.md).
+
+## Completed #151 accepted-controller checkpoint — 2026-10-17 America/Phoenix
+
+Integration completed only minimal composition/exact verification in `codex/controller-checkpoint` from accepted914f4d5 plus current canonical metadata. Scope126/132/133/134/135/136/138/140/143/146/147: acquired information/continuation, result credits, combo contract, contact-support intent and explicit manual GH. Shared blocking.ts preserves each owned function/conditional; shared qb.ts separates QBPass forecast from QBHandoff. No Physics/spacing/default or author research ancestry. [Pinned intake/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json). Root completed one exact combined check at638b1d8: 2113 TS/145 Python/typecheck/build in209.041s,no drift/skips; adopted asf4146275; assembly boundary released. Component receipts reused. At that checkpoint, then-pending Run reviews137/148/149/150 and three141 contract dispositions held only themselves;131 still lacked caller integration. Original owners continue independently and reconcile accepted changes at clean checkpoints.
 
 ## Completed handbook/reference documentation integration
 
@@ -29,7 +48,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-The unchanged runtime acceptance is0000e560; accepted develop now914f4d5 adds documentation only. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
+That earlier runtime acceptance was0000e560; the current accepted code isf4146275 through151, with both handbooks retained. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix
