@@ -1,0 +1,140 @@
+diff --git a/src/physics/kinematics.ts b/src/physics/kinematics.ts
+index bd65a9e1..b971e938 100644
+--- a/src/physics/kinematics.ts
++++ b/src/physics/kinematics.ts
+@@ -15,7 +15,7 @@ import { angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
+ import type { PhysicalProfile } from '../players/physical.js';
+ import type { Support } from './support.js';
+ import { supportParams } from './support.js';
+-import { turnBody } from './actuation.js';
++import { turnBodyResponse } from './actuation.js';
+ 
+ export interface Body {
+   pos: Vec2;
+@@ -264,7 +264,9 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
+   const traction = supportParams(body.profile).traction;
+   const force = Math.hypot(a.x,a.y) * body.profile.massKg;
+   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }
+-  turnBody(body,target,dt,dt,turnRate,1,Math.min(force,traction));
++  // Preview the same bounded motor used by World, toward the actual requested
++  // facing. `target` above remains the existing gait estimate for this step.
++  turnBodyResponse(body,commandFacing(body,cmd),dt,turnRate,1,Math.min(force,traction));
+   const nvx = body.vel.x + a.x * dt;
+   const nvy = body.vel.y + a.y * dt;
+   body.pos = { x: body.pos.x + 0.5 * (body.vel.x + nvx) * dt, y: body.pos.y + 0.5 * (body.vel.y + nvy) * dt };
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index d036ca62..6faf4925 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -35,7 +35,7 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
+ import { bodyRadius } from './bodyshape.js';
+ import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
+ import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
+-import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
++import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
+ import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
+ import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
+ import { integrateFilteredFollow } from './filtered-follow.js';
+@@ -961,7 +961,12 @@ export class World {
+     if (this.handContact === 'center') b.facing = facing;
+     const acc = locomotionAccel(b, cmd, dt, a);
+     b.facing = saved;
+-    return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
++    // The yaw motor needs the requested angle to plan its own braking. The
++    // rate-clipped pose above is only the existing gait estimate; making it
++    // a new stopping target each tick turns a smooth rotation into a chase.
++    return { ...none, ax: acc.x, ay: acc.y,
++      facing: this.handContact === 'center' ? commandFacing(b, intent) : facing,
++      cut: intent.cutSkill ?? 1 };
+   }
+ 
+   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
+@@ -1539,9 +1544,8 @@ export class World {
+         this.braceX[i] = px; this.braceY[i] = py;
+         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
+         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
+-        const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
+-          ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
+-          : turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
++        const yaw: { impulse: number; work: number; peakTorque?: number } =
++          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy));
+         // Strength limits drive+correction; traction also pays for yaw at
+         // the physical support radius. Difference-of-squares keeps the
+         // near-saturation subtraction well conditioned. Passive compliance
+diff --git a/test/movement-yaw-continuity.test.ts b/test/movement-yaw-continuity.test.ts
+new file mode 100644
+index 00000000..d573490b
+--- /dev/null
++++ b/test/movement-yaw-continuity.test.ts
+@@ -0,0 +1,71 @@
++import { describe, expect, it } from 'vitest';
++import { angleDiff } from '../src/core/vec.js';
++import type { PhysicalProfile } from '../src/players/physical.js';
++import { stepBody, type Body } from '../src/physics/kinematics.js';
++import { World } from '../src/physics/world.js';
++
++const profile: PhysicalProfile = { massKg:100, radius:.3, reach:1, heightYd:2.05,
++  vmax:9, tau:1.3, brake:6, lateral:6, turnRate:8, backpedal:.6, shuffle:.55,
++  maxCatchHeight:3, reactReach:2.6, reactionTime:.25, power:100, balance:.5 };
++const body = (): Body => ({ pos:{x:0,y:0}, vel:{x:0,y:0}, facing:0,
++  energy:1, profile:{...profile} });
++
++describe('requested facing through the ordinary movement motor', () => {
++  it.each([-.2,.2,-Math.PI/2,Math.PI/2])('settles a reachable constant turn without reversing it (%s)', target => {
++    for (const useWorld of [false,true]) {
++      const b=body(), world=new World([b]);
++      let previous=0;
++      for(let k=0;k<30;k++) {
++        const command={vel:{x:0,y:0},facing:target};
++        if(useWorld) {
++          const report=world.step([command],.05);
++          expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++        } else stepBody(b,command,.05);
++        const progress=Math.sign(target)*b.facing;
++        expect(progress).toBeGreaterThanOrEqual(previous-1e-12);
++        expect(progress).toBeLessThanOrEqual(Math.abs(target)+1e-12);
++        expect(Math.abs(b.spin??0)).toBeLessThanOrEqual(profile.turnRate+1e-12);
++        previous=progress;
++      }
++      expect(Math.abs(angleDiff(b.facing,target))).toBeLessThan(1e-6);
++    }
++  });
++
++  it('plans braking against the requested angle, rather than stopping at a new rate-clipped angle each tick', () => {
++    const b=body(),world=new World([b]);
++    for(let k=0;k<3;k++)world.step([{vel:{x:0,y:0},facing:Math.PI/2}],.05);
++    // With the existing acceleration bound this turn is still accelerating
++    // toward the existing rate limit. A 0.4rad intermediate stopping target
++    // prematurely brakes it to about 3rad/s instead.
++    expect(b.spin).toBeCloseTo(profile.turnRate,8);
++    expect(b.facing).toBeGreaterThan(.65);
++  });
++
++  it('keeps a purposeful reversal responsive instead of holding the previous turn', () => {
++    const b=body(),world=new World([b]);
++    world.step([{vel:{x:0,y:0},facing:Math.PI/2}],.05);
++    const spin=b.spin!;
++    world.step([{vel:{x:0,y:0},facing:-Math.PI/2}],.05);
++    expect(b.spin).toBeLessThan(spin);
++    for(let k=0;k<20;k++)world.step([{vel:{x:0,y:0},facing:-Math.PI/2}],.05);
++    expect(Math.abs(angleDiff(b.facing,-Math.PI/2))).toBeLessThan(1e-4);
++  });
++
++  it('retains externally acquired spin until finite counter torque can remove it', () => {
++    const b=body();b.spin=20;
++    const world=new World([b]);
++    const report=world.step([{vel:{x:0,y:0},facing:0}],.05);
++    expect(b.spin).toBeGreaterThan(profile.turnRate);
++    expect(b.spin).toBeLessThan(20);
++    expect(b.facing).toBeGreaterThan(0);
++    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  });
++
++  it('has no turning work or motion when its requested pose and incoming spin agree', () => {
++    const b=body(),world=new World([b]);
++    const report=world.step([{vel:{x:0,y:0},facing:0}],.05);
++    expect(b.facing).toBe(0);expect(b.spin).toBe(0);
++    expect(report.groundYawImpulse[0]).toBe(0);
++    expect(report.groundYawWork[0]).toBe(0);
++  });
++});

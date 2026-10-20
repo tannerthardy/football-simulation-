@@ -1,0 +1,75 @@
+{
+  "base": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "baseSourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "reviewer": "independent Integration subagent; no runtime authorship",
+  "newEngineTicks": 0,
+  "newTests": 0,
+  "newGames": 0,
+  "sharedSuiteRepeated": false,
+  "scopes": {
+    "162": {
+      "head": "abd2dd266b46e87d323cc8bfbb8de341633cbbfa",
+      "paths": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/movement-yaw-continuity.test.ts"
+      ],
+      "sourceSha256": "51351a24096a139cecd658b527c54f73d391dfa14dacd20c8772bfc770383648",
+      "portablePatch": "pr162-portable.patch",
+      "patchSha256": "7f4b5050b6869b3bb192cedaec74cdc138d2c0b8aacfc2c85ffd9c027e3d60a1",
+      "appliesToAcceptedBase": true,
+      "testBlob": "d573490b745fc083c3a0f164e0c282203cb0ef93",
+      "disposition": "HOLD promotion: technically supported shared motor-law and peak-torque recovery policy change; original Physics reservation retained"
+    },
+    "165": {
+      "head": "d922b7c27ec00536637aade935e6d9b2d07a9244",
+      "paths": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/gait-achieved-pose.test.ts"
+      ],
+      "sourceSha256": "ee292a6a4396e81a50112f62cf344c759f62402cb9e3eb0bae8a257d00a5c2d1",
+      "portablePatch": "pr165-portable.patch",
+      "patchSha256": "d774d3c41a43b075bf399b433aa08031ffb0029f0337c77b36b56a3691e887b4",
+      "appliesToAcceptedBase": true,
+      "testBlob": "9fed87aac83b429ccf05f7b3b2450a775d1cd3b9",
+      "disposition": "ACCEPT technical isolated existing-law execution-order correction; explicitly adjudicates attained-start-pose convention, final authority classification and combined verification remain Integration"
+    }
+  },
+  "evidenceChecks": [
+    {
+      "commit": "e39866c0339163443065df1d456a064fe3a73d9c",
+      "archive": "data/reviews/movement-continuation-2026-10-19/common.tar.gz",
+      "sha256": "d7485e37e2661047d7f817cd3430b34262d9cb9a152064a29f52c32600ef3374",
+      "bytes": 415311,
+      "membersVerified": 67
+    },
+    {
+      "commit": "e39866c0339163443065df1d456a064fe3a73d9c",
+      "archive": "data/reviews/movement-continuation-2026-10-19/gait.tar.gz",
+      "sha256": "95d823af3c56a2961db5e1c717f1d87814409f90dc639c0b9939fe0c9df383f0",
+      "bytes": 3115920,
+      "membersVerified": 18
+    },
+    {
+      "commit": "e39866c0339163443065df1d456a064fe3a73d9c",
+      "archive": "data/reviews/movement-continuation-2026-10-19/interaction.tar.gz",
+      "sha256": "978aca853011840b4f60ee7f7dc0d9cf05e0a1e8486584041fd7cb782fd995dc",
+      "bytes": 3737481,
+      "membersVerified": 11
+    },
+    {
+      "commit": "ed6ebd21911a28f07a085094c393ea2613abeb69",
+      "archive": "data/reviews/movement-continuity/common.tar.gz",
+      "sha256": "82d82db057a804ecdee71eba0038a17810acbea0dfb9c155941f7c649759ac60",
+      "bytes": 382985,
+      "membersVerified": 54
+    }
+  ],
+  "gaitStep": {
+    "value": "0.3",
+    "disposition": "HOLD experimental gait-law/default activation",
+    "requiredAcceptedValue": "0",
+    "adverseZone20Plus": "28 -> 63 per 1200 on research package; not accepted-source causal transfer"
+  }
+}

@@ -977,3 +977,10 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+## Completed independent movement review — Integration subagent
+
+Bounded ownership: new `docs/reviews/latest-mechanical-review/` only; no runtime
+implementation or other owner checkout modified. [Review and portable patches](reviews/latest-mechanical-review/README.md):
+#165 technical ACCEPT with explicit convention/reservation disposition; #162
+and GAIT_STEP promotion remain held. Exact combined verification stays with Integration.
