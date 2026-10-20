@@ -22,9 +22,13 @@ function stage(side=1){
  sim.t=.8;
  let cue:Perceived={pos:{x:41,y:a.pos.y-side*.5},vel:{x:4,y:side*.2},facing:0,stance:'low',pose:'up',carrying:false,age:.25};
  const far:Perceived={pos:{x:70,y:50},vel:{x:0,y:0},facing:0,stance:'high',pose:'up',carrying:false,age:.25};
- sim.see=(_observer,target)=>structuredClone(target===r?cue:target===sim.qb?{...far,pos:{x:36,y:26},carrying:true}:target===sim.slot('RB')?{...far,pos:{x:36,y:25}}:far);
+ let qbCue:Perceived={...far,pos:{x:36,y:26},carrying:true};
+ let backCue:Perceived={...far,pos:{x:36,y:25}};
+ sim.see=(_observer,target)=>structuredClone(target===r?cue:target===sim.qb?qbCue:target===sim.slot('RB')?backCue:far);
  const man=new ManCoverage(a,sim,r,false,'D',side,{initialPosition:cue.pos});a.behavior=man;
- return{sim,a,r,man,cue:()=>cue,set:(delta:Partial<Perceived>)=>{cue={...cue,...delta};},update:()=>man.update(a,sim)};
+ return{sim,a,r,man,cue:()=>cue,set:(delta:Partial<Perceived>)=>{cue={...cue,...delta};},
+  setBack:(delta:Partial<Perceived>)=>{backCue={...backCue,...delta};},setQB:(delta:Partial<Perceived>)=>{qbCue={...qbCue,...delta};},
+  backfield:()=>({backfield:{back:sim.slot('RB')!,backCue,qbCue}}),update:()=>man.update(a,sim)};
 }
 function accept(f:ReturnType<typeof stage>){expect(showsBlock(f.a,f.sim,f.r,f.cue())).toBe(true);f.update();f.sim.t=1.2;}
 function flight(f:ReturnType<typeof stage>,recognized=false){
@@ -98,5 +102,46 @@ describe('a man marker distinguishes blocking admission from continued evidence'
  it('does not call an upright waiting receiver a blocker merely because time passed',()=>{
   const f=stage();f.set({stance:'high',vel:{x:0,y:0}});
   for(const t of[.8,2,5]){f.sim.t=t;expect(f.update()).toEqual(f.man.trackReceiver(f.a,f.sim));}
+ });
+
+ it('keeps acquired runner support independent of hidden holder, exchange flags and unrecognized flight',()=>{
+  const held=stage(),hidden=stage(),air=stage();
+  for(const f of[held,hidden,air]){
+   accept(f);f.set({pos:{x:43.4,y:f.cue().pos.y}});
+   f.setQB({carrying:false});f.setBack({pos:{x:41,y:30},vel:{x:3,y:1},carrying:true});
+  }
+  held.sim.ball={kind:'held',carrier:held.sim.slot('RB')!};
+  hidden.sim.ball={kind:'held',carrier:hidden.sim.qb};hidden.sim.scrambled=true;hidden.sim.handoffAt=-1;
+  flight(air);
+  expect(sawThrow(air.a,air.sim,air.r)).toBe(false);
+  expect(hidden.update()).toEqual(held.update());expect(air.update()).toEqual(held.update());
+ });
+
+ it('retires the expected back after acquired empty-back / carrying-QB contradiction, even when hidden possession disagrees',()=>{
+  const f=stage(),expected=stage();
+  for(const s of[f,expected]){
+   accept(s);s.set({pos:{x:43.4,y:s.cue().pos.y}});
+   s.setQB({pos:{x:39,y:26},carrying:true});s.setBack({pos:{x:43,y:30},carrying:false});
+  }
+  f.sim.ball={kind:'held',carrier:f.sim.slot('RB')!};expected.sim.scrambled=true;
+  expect(f.update()).toEqual(runFit(expected.a,expected.sim,'D',1));
+  // A later returning empty back cannot reinstall the retired expectation.
+  f.sim.t+=.25;expected.sim.t+=.25;f.setBack({pos:{x:36,y:10}});expected.setBack({pos:{x:36,y:10}});
+  expect(f.update()).toEqual(runFit(expected.a,expected.sim,'D',1));
+ });
+
+ it.each([[true,true],[null,false],[true,null]] as const)('does not resolve ambiguous backfield possession from hidden truth: QB=%s back=%s',(qb,back)=>{
+  const f=stage(),hidden=stage();
+  for(const s of[f,hidden]){accept(s);s.set({pos:{x:43.4,y:s.cue().pos.y}});s.setQB({carrying:qb});s.setBack({carrying:back});}
+  hidden.sim.ball={kind:'held',carrier:hidden.sim.slot('RB')!};hidden.sim.scrambled=true;hidden.sim.handoffAt=.1;
+  expect(hidden.update()).toEqual(f.update());expect(hidden.sim.rng).toEqual(f.sim.rng);
+ });
+
+ it('keeps installed-picture force pursuit distinct from an affirmative keyed-runner fit',()=>{
+  const pictured=stage(),keyed=stage();
+  for(const f of[pictured,keyed]){f.a.runFit!.kind='force';f.setQB({carrying:false});f.setBack({pos:{x:41,y:30},carrying:true});}
+  const p=runFit(pictured.a,pictured.sim,'D',1,pictured.backfield());
+  const k=runFit(keyed.a,keyed.sim,'D',1,{target:keyed.sim.slot('RB')!,cue:keyed.backfield().backfield.backCue});
+  expect(p).not.toEqual(k);expect(p.facing).toBe(Math.PI);
  });
 });

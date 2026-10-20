@@ -265,25 +265,33 @@ export class ManCoverage implements Behavior {
     // not discard pursuit. No private scramble/handoff state is required.
     const qbCue = sim.see(a, sim.qb);
     if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
+    const run = believesRun(sim, a);
+    const blockingLook = this.blockingRun
+      ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
+    // Once admitted, this informed duty owns its backfield interpretation.
+    // A hidden holder change must not switch it through the legacy live-
+    // carrier pursuit gate. Recognized flight already retired it in update.
+    if (this.blockingRun && run && blockingLook) return this.blockingSupport(a, sim, qbCue);
+    this.blockingRun = false;
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    const blockingLook = this.blockingRun
-      ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
-    this.blockingRun = believesRun(sim, a) && blockingLook;
-    if (this.blockingRun) {
-      const back = sim.slot('RB');
-      // A block read admits installed support, not private holder knowledge.
-      // Use the same acquired/expected backfield in held and unrecognized
-      // flight. The fit retains its existing failed-exchange retirement.
-      const read = back && sim.offAlign.spots[back.slot]?.backfield
-        ? { backfield: { back, backCue: sim.see(a, back), qbCue } } : undefined;
-      return runFit(a, sim, this.gap, this.gapSign, read);
-    }
+    this.blockingRun = run && blockingLook;
+    if (this.blockingRun) return this.blockingSupport(a, sim, qbCue);
 
     return this.trackReceiver(a, sim);
+  }
+
+  private blockingSupport(a: Agent, sim: PlaySim, qbCue: Perceived): MoveCommand {
+    const back = sim.slot('RB');
+    // A block read admits installed support, not private holder knowledge.
+    // Use the same acquired/expected backfield in held and unrecognized
+    // flight. The fit retains its existing failed-exchange retirement.
+    const read = back && sim.offAlign.spots[back.slot]?.backfield
+      ? { backfield: { back, backCue: sim.see(a, back), qbCue } } : undefined;
+    return runFit(a, sim, this.gap, this.gapSign, read);
   }
 
   /** Release movement only; provisional zone readers retain their own
