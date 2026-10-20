@@ -1,0 +1,18 @@
+[
+  {
+    "pr": 175,
+    "head": "628ae0c09f4854513bb87fb03b6e54a9116ecadb",
+    "path": "src/sim/behaviors/common.ts",
+    "clean": true,
+    "projectionSha256": "cd734d12a7004a010bcd0e859c19ba3ae1967228b77ba5bda2a77caeecc97b89",
+    "nativeAcceptance": false
+  },
+  {
+    "pr": 176,
+    "head": "0b2addbece94bc47f69ea729af27911398cf85fd",
+    "path": "src/sim/run-fits.ts",
+    "clean": true,
+    "projectionSha256": "b276dbffabdd345f9d33a9c8e0e29af5d3e1adc4d229d04f9c09bb93f57ad34e",
+    "nativeAcceptance": false
+  }
+]

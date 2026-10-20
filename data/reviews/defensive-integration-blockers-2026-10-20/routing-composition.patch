@@ -1,0 +1,3245 @@
+diff --git a/scripts/diag/navigation/joint-projection.ts b/scripts/diag/navigation/joint-projection.ts
+new file mode 100644
+index 0000000..543205e
+--- /dev/null
++++ b/scripts/diag/navigation/joint-projection.ts
+@@ -0,0 +1,138 @@
++/** Staged two-neighbor command projection, using a saved real RT body/profile.
++ * No native football outcome or recurrence is claimed. Both physical arms have
++ * identical initial bodies and hold their complete requests for 0.6 seconds.
++ * Peer pictures are explicit acquired inputs; live peer getters must not run.
++ */
++import { createHash } from 'node:crypto';
++import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
++import { dirname, resolve } from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { enduranceFactor, fatigueFactor, followAccel, type Body } from '../../../src/physics/kinematics.js';
++import { availability, newSupport, supportParams } from '../../../src/physics/support.js';
++import { World, type Intent } from '../../../src/physics/world.js';
++import type { Agent } from '../../../src/sim/agent.js';
++import { movementObjective, withMovementObjective } from '../../../src/sim/movement-objective.js';
++import type { Perceived } from '../../../src/sim/perception.js';
++import { spaceTeammates } from '../../../src/sim/spacing.js';
++import { sourceVersion } from '../../source-version.js';
++
++type Kind = 'ordinary' | 'clear' | 'loaded' | 'obstruction';
++interface Peer { idx: number; body: Body; seen: Perceived }
++interface Limit { nx: number; ny: number; speed: number }
++const fixturePath = new URL('../../../test/fixtures/joint-spacing.json', import.meta.url);
++
++export function projectionScene(kind: Kind = 'ordinary') {
++  const fixture = JSON.parse(readFileSync(fixturePath, 'utf8'))[0];
++  const body: Body = structuredClone(fixture.body);
++  // The saved JSON uses null for the upright body's -Infinity support time.
++  if (body.support?.since === null) body.support.since = -Infinity;
++  const raw: Intent = withMovementObjective({ ...fixture.raw, vel: { x: 2, y: 2 } },
++    { kind: 'fixed', point: { x: body.pos.x + 6, y: body.pos.y + 6 } });
++  const vectors = [{ x: 1, y: 0 }, { x: .5, y: Math.sqrt(3) / 2 }];
++  const peers: Peer[] = vectors.map((normal, i) => {
++    const distance = .9 * (body.profile.radius + body.profile.radius) + .02;
++    const peer: Body = { pos: { x: body.pos.x + normal.x * distance, y: body.pos.y + normal.y * distance },
++      vel: { x: i * normal.x, y: i * normal.y }, facing: i ? Math.PI / 3 : 0,
++      energy: 1, profile: structuredClone(body.profile), support: newSupport() };
++    return { idx: i + 1, body: peer, seen: { pos: { ...peer.pos }, vel: { ...peer.vel },
++      facing: peer.facing, stance: null, age: 0, pose: 'up', carrying: false } };
++  });
++  if (kind === 'clear') for (const peer of peers) {
++    peer.body.pos.x += 20; peer.seen.pos.x += 20;
++  }
++  if (kind === 'obstruction') {
++    body.vel = { x: 4, y: 0 }; body.facing = 0;
++    raw.vel = { x: 4, y: 0 };
++    peers.splice(1);
++    // An explicitly staged incoming runner, too close to remove momentum.
++    return { kind, body, raw: withMovementObjective(raw,
++      { kind: 'fixed', point: { x: body.pos.x + 6, y: body.pos.y } }), peers };
++  }
++  return { kind, body, raw, peers };
++}
++
++/** Derive only the two declared radial half-planes. This is an independent
++ * algebraic oracle for a two-active-boundary projection, not a crowd planner.
++ */
++export function projectionOracle(scene: ReturnType<typeof projectionScene>) {
++  const { body, raw, peers } = scene;
++  const capacity = availability(body.support!, supportParams(body.profile), fatigueFactor(body.energy));
++  const limits: Limit[] = peers.map(peer => {
++    const dx = peer.seen.pos.x - body.pos.x, dy = peer.seen.pos.y - body.pos.y;
++    const distance = Math.hypot(dx, dy), nx = dx / distance, ny = dy / distance;
++    const gap = distance - .9 * (body.profile.radius + peer.body.profile.radius);
++    const brake = followAccel(body, { x: -nx * 1e3, y: -ny * 1e3 }, raw.cutSkill ?? 1, capacity);
++    const decel = Math.max(.1, -brake.x * nx - brake.y * ny);
++    const allowed = Math.sqrt((decel * .3) ** 2 + 2 * decel * Math.max(0, gap)) - decel * .3;
++    return { nx, ny, speed: allowed + peer.seen.vel.x * nx + peer.seen.vel.y * ny };
++  });
++  let ordinary = { ...raw.vel };
++  for (const limit of limits) {
++    const excess = ordinary.x * limit.nx + ordinary.y * limit.ny - limit.speed;
++    if (excess > 0) ordinary = { x: ordinary.x - limit.nx * excess, y: ordinary.y - limit.ny * excess };
++  }
++  const cap = body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - .08 * (body.squeeze ?? 0));
++  const scale = Math.min(1, cap / Math.max(1e-9, Math.hypot(ordinary.x, ordinary.y)));
++  ordinary = { x: ordinary.x * scale, y: ordinary.y * scale };
++  const closest = scene.kind === 'clear' ? {...raw.vel} : limits.length === 2 ? {
++    x: limits[0].speed,
++    y: (limits[1].speed - limits[1].nx * limits[0].speed) / limits[1].ny,
++  } : ordinary;
++  return { limits, ordinary, closest, cap };
++}
++
++export function selectProjection(scene: ReturnType<typeof projectionScene>) {
++  const body = structuredClone(scene.body), before = structuredClone(body);
++  const picturesBefore = structuredClone(scene.peers.map(peer => peer.seen));
++  const a = { idx: 0, team: 'O', behavior: { kind: 'run-block' }, body, profile: body.profile,
++    get pos() { return body.pos; }, get vel() { return body.vel; },
++    get speedScale() { return fatigueFactor(body.energy) * enduranceFactor(body) * (1 - .08 * (body.squeeze ?? 0)); },
++    isDown() { return false; } } as unknown as Agent;
++  const peers = scene.peers.map(peer => ({ idx: peer.idx, team: 'O', profile: peer.body.profile,
++    get pos() { throw Error('Private peer position'); }, get vel() { throw Error('Private peer velocity'); },
++    get body() { throw Error('Private peer body'); }, get engagement() { throw Error('Private peer engagement'); } } as unknown as Agent));
++  const commands: Intent[] = [scene.raw, ...peers.map(() => ({ vel: { x: 0, y: 0 }, free: true }))];
++  let reads = 0;
++  spaceTeammates([a, ...peers], commands, (_a, peer) => {
++    reads++; return scene.peers.find(p => p.idx === peer.idx)!.seen;
++  }, { now: 1.25, constrained: scene.kind === 'loaded' ? new Set([body]) : undefined });
++  return { command: commands[0], goal: movementObjective(commands[0]), reads,
++    ownUnchanged: JSON.stringify(body) === JSON.stringify(before),
++    picturesUnchanged: JSON.stringify(scene.peers.map(peer => peer.seen)) === JSON.stringify(picturesBefore) };
++}
++
++export function executeProjection(scene: ReturnType<typeof projectionScene>, command: Intent) {
++  const own = structuredClone(scene.body), peers = scene.peers.map(peer => structuredClone(peer.body));
++  const world = new World([own, ...peers]); world.time = 1.25;
++  const commands: Intent[] = [command, ...peers.map(peer => ({ vel: { ...peer.vel }, facing: peer.facing }))];
++  let contacts = 0, maxWorkResidual = 0, maxMotorExcess = 0, upright = true;
++  for (let k = 0; k < 12; k++) {
++    const report = world.step(commands, .05);
++    contacts += report.contacts.filter(contact => contact.impulse > 0).length;
++    maxWorkResidual = Math.max(maxWorkResidual, Math.abs(report.work.residual));
++    maxMotorExcess = Math.max(maxMotorExcess, ...report.supportMotorWork.map((work, i) => work - report.supportMotorWorkLimit[i]));
++    upright &&= own.support?.state === 'up';
++  }
++  const goal = movementObjective(scene.raw)!, speed = Math.hypot(scene.raw.vel.x, scene.raw.vel.y);
++  return { own, peers, contacts, upright, maxWorkResidual, maxMotorExcess,
++    progress: ((own.pos.x - scene.body.pos.x) * scene.raw.vel.x + (own.pos.y - scene.body.pos.y) * scene.raw.vel.y) / speed,
++    goalError: Math.hypot(own.pos.x - goal.point.x, own.pos.y - goal.point.y) };
++}
++
++function main() {
++  if (process.argv.length !== 3) throw Error('Specify one output JSON path');
++  const started = performance.now(), source = sourceVersion();
++  const rows = (['ordinary', 'clear', 'loaded', 'obstruction'] as const).map(kind => {
++    const scene = projectionScene(kind), oracle = projectionOracle(scene), selected = selectProjection(scene);
++    const ordinary = { ...scene.raw, vel: oracle.ordinary };
++    return { kind, incoming: scene, oracle, selected,
++      physical: kind === 'loaded' ? null : { ordinary: executeProjection(scene, ordinary),
++        closest: executeProjection(scene, {...scene.raw,vel:oracle.closest}),selected: executeProjection(scene, selected.command) } };
++  });
++  if (sourceVersion() !== source) throw Error('Source changed during mechanical collection');
++  const output = resolve(process.argv[2]); mkdirSync(dirname(output), { recursive: true });
++  writeFileSync(output, JSON.stringify({ scope: 'Staged fixed-request physical comparison, not reacting native football or recurrence evidence',
++    source, node: process.version, fixtureSha256: createHash('sha256').update(readFileSync(fixturePath)).digest('hex'),
++    rows, elapsedMs: performance.now() - started }, null, 2) + '\n');
++}
++if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
+diff --git a/scripts/diag/navigation/local-passage.ts b/scripts/diag/navigation/local-passage.ts
+new file mode 100644
+index 0000000..c54c4aa
+--- /dev/null
++++ b/scripts/diag/navigation/local-passage.ts
+@@ -0,0 +1,73 @@
++/** A staged local movement question, not a new football policy or population
++ * claim. The actor repeatedly tracks the same owned goal through real World
++ * movement, using delayed acquired peer pictures. Teammates keep standing;
++ * contacts remain physical. No future route or live peer state is supplied.
++ */
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
++import {dirname} from 'node:path';
++import {gunzipSync} from 'node:zlib';
++import {pathToFileURL} from 'node:url';
++import {CENTER_Y} from '../../../src/core/field.js';
++import {newSupport} from '../../../src/physics/support.js';
++import {World,type Intent} from '../../../src/physics/world.js';
++import type {Body} from '../../../src/physics/kinematics.js';
++import {Agent} from '../../../src/sim/agent.js';
++import {track} from '../../../src/sim/behaviors/common.js';
++import {movementObjective} from '../../../src/sim/movement-objective.js';
++import {PerceptionBuffer} from '../../../src/sim/perception.js';
++import {spaceTeammates} from '../../../src/sim/spacing.js';
++import {sourceVersion} from '../../source-version.js';
++
++const fixturePath='test/fixtures/traffic-step.json.gz';
++const fixture=JSON.parse(gunzipSync(readFileSync(fixturePath)).toString());
++const modes=['single','mirror','head-on','cluster','clear'] as const;
++export function localPassage(mode:typeof modes[number]) {
++  const side=mode==='mirror'?-1:1;
++  const own:Body={...structuredClone(fixture.rows[0].body),pos:{x:50,y:CENTER_Y},vel:{x:4,y:0},
++    facing:0,energy:1,support:newSupport(),spin:0,squeeze:0};
++  const a=new Agent(0,'D','SS',fixture.player,own.profile,own,{kind:'zone',update(){throw Error('The selected goal is supplied, not a new football read');}});
++  const goal={x:58,y:CENTER_Y};
++  const positions=mode==='clear'?[{x:53,y:CENTER_Y+4}]
++    :mode==='cluster'?[{x:53,y:CENTER_Y},...[-1,1].map(n=>({x:52.4,y:CENTER_Y+n*.8}))]
++    :mode==='head-on'?[{x:53,y:CENTER_Y}]
++    :[{x:53,y:CENTER_Y+side*.1}];
++  const peers=positions.map((pos,i)=>{
++    const profile=fixture.rows[0].peers[i].profile;
++    const body:Body={pos,vel:{x:0,y:0},facing:0,energy:1,profile,support:newSupport(),spin:0};
++    return new Agent(i+1,'D','FS',fixture.player,profile,body,{kind:'zone',update(){throw Error('Stationary peer control');}});
++  });
++  const agents=[a,...peers],world=new World(agents.map(a=>a.body));world.time=2;
++  const pictures=new PerceptionBuffer(agents.length,.05);pictures.record(agents);
++  const initial=structuredClone(agents.map(a=>a.body)),states=[];
++  for(let k=0;k<60;k++) {
++    const now=2+k*.05,raw=track(a,goal,{x:0,y:0},{speed:.7,gain:3,facing:0});
++    const commands:Intent[]=[raw,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
++    const acquired:unknown[]=[];
++    spaceTeammates(agents,commands,(_actor,peer)=>{
++      const picture=pictures.perceive(peer.idx,.05);acquired.push({peer:peer.idx,picture:structuredClone(picture)});return picture;
++    },{now});
++    const before=structuredClone(agents.map(a=>a.body)),report=world.step(commands,.05);pictures.record(agents);
++    states.push({t:now,before:before.map(b=>({pos:b.pos,vel:b.vel,state:b.support?.state})),raw:{...raw,objective:movementObjective(raw)},
++      acquired,command:structuredClone(commands[0]),after:agents.map(a=>({pos:{...a.pos},vel:{...a.vel},state:a.body.support?.state})),
++      contacts:report.contacts,workResidual:report.work.residual});
++  }
++  return {mode,side,goal,initial,states,result:{progress:a.pos.x-50,goalError:Math.hypot(goal.x-a.pos.x,goal.y-a.pos.y),
++    lateral:a.pos.y-CENTER_Y,speed:Math.hypot(a.vel.x,a.vel.y),state:a.body.support?.state,
++    contactIntervals:states.filter(s=>s.contacts.length).map(s=>({t:s.t,contacts:s.contacts})),
++    maximumWorkResidual:Math.max(...states.map(s=>Math.abs(s.workResidual)))}};
++}
++function main(){
++const start=performance.now(),output=process.argv[2];assert.equal(process.argv.length,3,'Usage: local-passage.ts OUTPUT.json');
++const source=sourceVersion(),rows=modes.map(localPassage);assert.equal(sourceVersion(),source);
++const result={question:'Can the existing local traffic controller pass an acquired stationary teammate and resume its owned goal?',
++  source,node:process.version,toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
++  fixtureSha256:createHash('sha256').update(readFileSync(fixturePath)).digest('hex'),
++  limitations:['Staged command/World mechanism test, not natural football transfer.','Peer stance is an ordinary zero request, not frozen or collision-disabled body.',
++    'Every actor receives its acquired picture with original delay; no extra physical information enters the controller.','The baseline bounded maneuver is still restricted to existing man/zone behaviors.'],
++  rows,wallSeconds:(performance.now()-start)/1000};
++mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
++console.log(JSON.stringify({output,source,rows:rows.map(r=>({mode:r.mode,result:r.result})),wallSeconds:result.wallSeconds},null,2));
++}
++if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main();
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 61015e2..7b2814c 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -16,6 +16,7 @@ import type { Agent } from './agent.js';
+ import type {Perceived} from './perception.js';
+ import { movementObjective } from './movement-objective.js';
+ import { containCoverage } from './coverage-space.js';
++import { localTrafficRoute } from './traffic-route.js';
+ 
+ /** Time a player gives himself to close the gap to a teammate, s. */
+ const CLOSE_HORIZON = 0.3;
+@@ -58,11 +59,17 @@ function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:numbe
+   limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
+   const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
+     &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
+-  if(feasible(ordinary))return ordinary;
+-  let best:{x:number;y:number}|undefined,bestError=Infinity;
++  // Sequential corrections can be feasible yet farther from the selected
++  // request than a joint solution. Keep that response as a fallback, then
++  // evaluate the same boundary candidates before accepting its diversion.
++  let best:{x:number;y:number}|undefined=feasible(ordinary)?ordinary:undefined;
++  let bestError=best?(best.x-raw.x)**2+(best.y-raw.y)**2:Infinity;
+   function consider(x:number,y:number):void {
+     const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
+-    if(error<bestError&&feasible(v)){best=v;bestError=error;}
++    // Algebraically equivalent projections can differ by a few rounding
++    // units. Retain the existing request on that numerical tie.
++    const tie=16*Number.EPSILON*Math.max(1,error,bestError);
++    if((!best||error<bestError-tie)&&feasible(v)){best=v;bestError=error;}
+   }
+   const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
+   consider(raw.x*scale,raw.y*scale);
+@@ -343,6 +350,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       return samples;
+     };
+     const gathered=gatherForMotion(a,spaced,peers,forecast,context);
+-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
++    const ordinary=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
++    const s=a.body.support;
++    const free=!!context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement
++      &&!context.constrained?.has(a.body)&&!ia.free&&!ia.dive&&!ia.lunge
++      &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
++      &&!!s&&s.state==='up'&&!s.foot&&!s.strike
++      &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
++    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
+   }
+ }
+diff --git a/src/sim/traffic-distance.ts b/src/sim/traffic-distance.ts
+new file mode 100644
+index 0000000..729dc43
+--- /dev/null
++++ b/src/sim/traffic-distance.ts
+@@ -0,0 +1,85 @@
++/** Joint route geometry with explicit constraint generation.
++ * Current plane shortest paths give a lower bound for every added obstacle.
++ * Return that bound only after continuous full-disc and field validation.
++ */
++import type { Vec2 } from '../core/vec.js';
++import { trafficPath, type TrafficBounds, type TrafficDisc, type TrafficPiece, type TrafficPath } from './traffic-path.js';
++
++const EPS = 1e-9, TAU = 2 * Math.PI;
++const angle = (value: number) => (value % TAU + TAU) % TAU;
++const finite = (point: Vec2) => Number.isFinite(point.x) && Number.isFinite(point.y);
++const inside = (point: Vec2, disc: TrafficDisc) => Math.hypot(point.x - disc.center.x, point.y - disc.center.y) < disc.radius - EPS;
++
++function entersSegment(from: Vec2, to: Vec2, disc: TrafficDisc): boolean {
++  const dx = to.x - from.x, dy = to.y - from.y, length2 = dx * dx + dy * dy;
++  const t = length2 ? Math.max(0, Math.min(1,
++    ((disc.center.x - from.x) * dx + (disc.center.y - from.y) * dy) / length2)) : 0;
++  return inside({ x: from.x + t * dx, y: from.y + t * dy }, disc);
++}
++
++function onSweep(theta: number, start: number, sweep: number): boolean {
++  return sweep >= 0 ? angle(theta - start) <= sweep + EPS : angle(start - theta) <= -sweep + EPS;
++}
++
++function entersPiece(piece: TrafficPiece, disc: TrafficDisc): boolean {
++  if (piece.kind === 'line') return entersSegment(piece.from, piece.to, disc);
++  if (inside(piece.from, disc) || inside(piece.to, disc)) return true;
++  // The distance from a fixed center to a circular arc is minimized at an
++  // endpoint or its radial bearing, including a clockwise returned arc.
++  const bearing = Math.atan2(disc.center.y - piece.center.y, disc.center.x - piece.center.x);
++  if (!onSweep(bearing, piece.startAngle, piece.sweep)) return false;
++  return inside({ x: piece.center.x + piece.radius * Math.cos(bearing),
++    y: piece.center.y + piece.radius * Math.sin(bearing) }, disc);
++}
++
++function within(point: Vec2, bounds?: TrafficBounds): boolean {
++  return !bounds || (point.x >= bounds.minX - EPS && point.x <= bounds.maxX + EPS
++    && point.y >= bounds.minY - EPS && point.y <= bounds.maxY + EPS);
++}
++
++function pieceWithin(piece: TrafficPiece, bounds?: TrafficBounds): boolean {
++  if (!within(piece.from, bounds) || !within(piece.to, bounds)) return false;
++  if (!bounds || piece.kind === 'line') return true;
++  return [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2].every(theta => !onSweep(theta, piece.startAngle, piece.sweep)
++    || within({ x: piece.center.x + piece.radius * Math.cos(theta),
++      y: piece.center.y + piece.radius * Math.sin(theta) }, bounds));
++}
++
++/** A shortest plane relaxation is a lower bound for every added obstacle.
++ * Accept its path only after checking all explicit discs and field bounds.
++ * Equal-distance path ties may differ from the full graph; the consumer must
++ * still evaluate its first direction through achievable movement previews.
++ */
++export function trafficRoute(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): TrafficPath | null {
++  if (!finite(start) || !finite(goal) || discs.length > 10
++    || discs.some(d => !finite(d.center) || !Number.isFinite(d.radius) || d.radius < 0)
++    || bounds && (![bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].every(Number.isFinite)
++      || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY)
++    || !within(start, bounds) || !within(goal, bounds)
++    || discs.some(d => inside(start, d) || inside(goal, d))) return null;
++  const active = new Set<number>();
++  for (let i = 0; i < discs.length; i++) if (entersSegment(start, goal, discs[i])) active.add(i);
++  if (!active.size) return trafficPath(start, goal, [], bounds);
++  // Every failed iteration adds an actual violated explicit disc, so there
++  // are at most ten subset solves. No peer is discarded for being distant.
++  for (let iteration = 0; iteration < discs.length; iteration++) {
++    const subset = discs.filter((_disc, index) => active.has(index));
++    const path = trafficPath(start, goal, subset);
++    if (!path || path.pieces.some(piece => !pieceWithin(piece, bounds)))
++      return trafficPath(start, goal, discs, bounds);
++    const added: number[] = [];
++    for (let i = 0; i < discs.length; i++)
++      if (!active.has(i) && path.pieces.some(piece => entersPiece(piece, discs[i]))) added.push(i);
++    if (!added.length) {
++      const indices=discs.flatMap((_disc,index)=>active.has(index)?[index]:[]);
++      const pieces=path.pieces.map(piece=>piece.kind==='arc'?{...piece,disc:indices[piece.disc]}:piece);
++      return {...path,pieces,firstPiece:pieces[0]??null};
++    }
++    for (const index of added) active.add(index);
++  }
++  return trafficPath(start, goal, discs, bounds);
++}
++
++export function trafficDistance(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): number | null {
++  return trafficRoute(start,goal,discs,bounds)?.distance??null;
++}
+diff --git a/src/sim/traffic-path.ts b/src/sim/traffic-path.ts
+new file mode 100644
+index 0000000..4454e2e
+--- /dev/null
++++ b/src/sim/traffic-path.ts
+@@ -0,0 +1,194 @@
++/** Static geometry of acquired teammate touch discs. This proposes a route to
++ * the actor's existing goal; it does not predict future cuts, certify physical
++ * execution, or change any body's radius. Optional bounds remove represented
++ * paths which leave the caller's existing field limits; no wall waypoints or
++ * field/circle intersections are invented to make a route exist.
++ */
++import type { Vec2 } from '../core/vec.js';
++
++export interface TrafficDisc { center: Vec2; radius: number }
++export interface TrafficBounds { minX: number; maxX: number; minY: number; maxY: number }
++export interface TrafficLine {
++  kind: 'line'; from: Vec2; to: Vec2; length: number;
++}
++export interface TrafficArc {
++  kind: 'arc'; from: Vec2; to: Vec2; length: number;
++  center: Vec2; radius: number; startAngle: number; sweep: number; disc: number;
++}
++export type TrafficPiece = TrafficLine | TrafficArc;
++export interface TrafficPath {
++  distance: number;
++  pieces: TrafficPiece[];
++  firstPiece: TrafficPiece | null;
++  firstDirection: Vec2;
++}
++
++// Numerical comparison tolerance only; disc radii remain caller supplied.
++const EPS = 1e-9, TAU = 2 * Math.PI;
++const copy = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
++const distance = (a: Vec2, b: Vec2) => Math.hypot(a.x - b.x, a.y - b.y);
++const finite = (v: Vec2) => Number.isFinite(v.x) && Number.isFinite(v.y);
++const angle = (a: number) => (a % TAU + TAU) % TAU;
++const inside = (p: Vec2, c: TrafficDisc) => distance(p, c.center) < c.radius - EPS;
++
++interface Circle extends TrafficDisc { original: number }
++interface Node { point: Vec2; circles: Set<number> }
++interface Edge { to: number; piece: TrafficPiece }
++
++function segmentClear(a: Vec2, b: Vec2, circles: readonly TrafficDisc[]): boolean {
++  const dx = b.x - a.x, dy = b.y - a.y, length2 = dx * dx + dy * dy;
++  return circles.every(c => {
++    const t = length2 ? Math.max(0, Math.min(1,
++      ((c.center.x - a.x) * dx + (c.center.y - a.y) * dy) / length2)) : 0;
++    return !inside({ x: a.x + t * dx, y: a.y + t * dy }, c);
++  });
++}
++
++function reverse(piece: TrafficPiece): TrafficPiece {
++  if (piece.kind === 'line') return { ...piece, from: copy(piece.to), to: copy(piece.from) };
++  return { ...piece, from: copy(piece.to), to: copy(piece.from),
++    startAngle: piece.startAngle + piece.sweep, sweep: -piece.sweep };
++}
++
++/** Shortest path in the represented union of at most ten static discs.
++ * Straight visibility edges and exposed circular boundary arcs share exact
++ * tangent/intersection nodes. Overlap intersections partition arcs even when
++ * a third disc covers the intersection; covered nodes/arcs remain unusable.
++ * Boundary touch is permitted. A start/goal inside a disc has no free route.
++ */
++export function trafficPath(start: Vec2, goal: Vec2, discs: readonly TrafficDisc[], bounds?: TrafficBounds): TrafficPath | null {
++  if (!finite(start) || !finite(goal) || discs.length > 10
++    || discs.some(c => !finite(c.center) || !Number.isFinite(c.radius) || c.radius < 0)
++    || bounds && (![bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].every(Number.isFinite)
++      || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY)) return null;
++  const within = (p: Vec2) => !bounds || (p.x >= bounds.minX - EPS && p.x <= bounds.maxX + EPS
++    && p.y >= bounds.minY - EPS && p.y <= bounds.maxY + EPS);
++  if (!within(start) || !within(goal)) return null;
++  const nonzero = discs.map((c, original) => ({ center: copy(c.center), radius: c.radius, original }))
++    .filter(c => c.radius > 0);
++  if (nonzero.some(c => inside(start, c) || inside(goal, c))) return null;
++  // A contained disc adds no boundary to the same union. Retain one copy of
++  // equal coincident discs, rather than dividing by a zero center distance.
++  const circles: Circle[] = nonzero.filter((c, i) => !nonzero.some((d, j) => i !== j
++    && distance(c.center, d.center) + c.radius <= d.radius + EPS
++    && (d.radius > c.radius + EPS || j < i)));
++  if (segmentClear(start, goal, circles)) {
++    const length = distance(start, goal);
++    const piece: TrafficLine = { kind: 'line', from: copy(start), to: copy(goal), length };
++    return { distance: length, pieces: length ? [piece] : [], firstPiece: length ? piece : null,
++      firstDirection: length ? { x: (goal.x - start.x) / length, y: (goal.y - start.y) / length } : { x: 0, y: 0 } };
++  }
++
++  const nodes: Node[] = [];
++  function node(point: Vec2, circle?: number): number {
++    let index = nodes.findIndex(n => distance(n.point, point) <= EPS);
++    if (index < 0) { index = nodes.length; nodes.push({ point: copy(point), circles: new Set() }); }
++    if (circle !== undefined) nodes[index].circles.add(circle);
++    return index;
++  }
++  const first = node(start), last = node(goal);
++  for (let i = 0; i < circles.length; i++) {
++    const c = circles[i];
++    for (const p of [start, goal]) {
++      const d = distance(p, c.center);
++      if (Math.abs(d - c.radius) <= EPS) { node(p, i); continue; }
++      const heading = Math.atan2(p.y - c.center.y, p.x - c.center.x);
++      const offset = Math.acos(Math.min(1, c.radius / d));
++      for (const sign of [-1, 1]) {
++        const theta = heading + sign * offset;
++        node({ x: c.center.x + c.radius * Math.cos(theta), y: c.center.y + c.radius * Math.sin(theta) }, i);
++      }
++    }
++    for (let j = 0; j < i; j++) {
++      const d = circles[j], dx = d.center.x - c.center.x, dy = d.center.y - c.center.y;
++      const length2 = dx * dx + dy * dy, length = Math.sqrt(length2);
++      // Both external and internal common tangents, when they exist. Their
++      // straight edges are still checked against every disc below.
++      for (const orientation of [-1, 1]) {
++        const delta = c.radius - orientation * d.radius;
++        const height2 = length2 - delta * delta;
++        if (height2 < -EPS) continue;
++        const height = Math.sqrt(Math.max(0, height2));
++        for (const sign of [-1, 1]) {
++          const nx = (dx * delta - dy * height * sign) / length2;
++          const ny = (dy * delta + dx * height * sign) / length2;
++          node({ x: c.center.x + c.radius * nx, y: c.center.y + c.radius * ny }, i);
++          node({ x: d.center.x + orientation * d.radius * nx, y: d.center.y + orientation * d.radius * ny }, j);
++        }
++      }
++      if (length > c.radius + d.radius + EPS || length < Math.abs(c.radius - d.radius) - EPS) continue;
++      const along = (c.radius * c.radius - d.radius * d.radius + length2) / (2 * length);
++      const height = Math.sqrt(Math.max(0, c.radius * c.radius - along * along));
++      const x = c.center.x + along * dx / length, y = c.center.y + along * dy / length;
++      for (const sign of [-1, 1]) {
++        const p = { x: x - sign * height * dy / length, y: y + sign * height * dx / length };
++        node(p, i); node(p, j);
++      }
++    }
++  }
++
++  const exposed = nodes.map(n => within(n.point) && circles.every(c => !inside(n.point, c)));
++  const graph: Edge[][] = nodes.map(() => []);
++  function edge(a: number, b: number, piece: TrafficPiece) {
++    if (a === b || piece.length <= EPS || !exposed[a] || !exposed[b]) return;
++    graph[a].push({ to: b, piece }); graph[b].push({ to: a, piece: reverse(piece) });
++  }
++  for (let i = 0; i < nodes.length; i++) {
++    if (!exposed[i]) continue;
++    for (let j = 0; j < i; j++) {
++      if (!exposed[j] || !segmentClear(nodes[i].point, nodes[j].point, circles)) continue;
++      edge(i, j, { kind: 'line', from: copy(nodes[i].point), to: copy(nodes[j].point),
++        length: distance(nodes[i].point, nodes[j].point) });
++    }
++  }
++  for (let i = 0; i < circles.length; i++) {
++    const c = circles[i];
++    const ring = nodes.map((n, index) => ({ index, theta: angle(Math.atan2(n.point.y - c.center.y, n.point.x - c.center.x)) }))
++      .filter(n => nodes[n.index].circles.has(i)).sort((a, b) => a.theta - b.theta);
++    for (let j = 0; j < ring.length; j++) {
++      const from = ring[j], to = ring[(j + 1) % ring.length];
++      const sweep = angle(to.theta - from.theta);
++      if (sweep <= EPS) continue;
++      const middle = from.theta + sweep / 2;
++      const point = { x: c.center.x + c.radius * Math.cos(middle), y: c.center.y + c.radius * Math.sin(middle) };
++      if (!within(point) || circles.some((d, k) => k !== i && inside(point, d))) continue;
++      // Rectangular extrema occur at an endpoint or cardinal circle angle.
++      // Endpoints are checked by edge(); the remaining extrema prevent a
++      // clear-looking midpoint from hiding an out-of-bounds arc excursion.
++      if ([0, Math.PI / 2, Math.PI, 3 * Math.PI / 2].some(theta => angle(theta - from.theta) <= sweep + EPS
++        && !within({ x: c.center.x + c.radius * Math.cos(theta), y: c.center.y + c.radius * Math.sin(theta) }))) continue;
++      edge(from.index, to.index, { kind: 'arc', from: copy(nodes[from.index].point), to: copy(nodes[to.index].point),
++        center: copy(c.center), radius: c.radius, startAngle: from.theta, sweep,
++        length: c.radius * sweep, disc: c.original });
++    }
++  }
++
++  const costs = nodes.map(() => Infinity), visited = nodes.map(() => false);
++  const previous: ({ from: number; piece: TrafficPiece } | undefined)[] = nodes.map(() => undefined);
++  costs[first] = 0;
++  for (let k = 0; k < nodes.length; k++) {
++    let nearest = -1;
++    for (let i = 0; i < nodes.length; i++)
++      if (!visited[i] && (nearest < 0 || costs[i] < costs[nearest])) nearest = i;
++    if (nearest < 0 || !Number.isFinite(costs[nearest])) break;
++    if (nearest === last) break;
++    visited[nearest] = true;
++    for (const next of graph[nearest]) {
++      const cost = costs[nearest] + next.piece.length;
++      if (cost < costs[next.to]) { costs[next.to] = cost; previous[next.to] = { from: nearest, piece: next.piece }; }
++    }
++  }
++  if (!Number.isFinite(costs[last])) return null;
++  const pieces: TrafficPiece[] = [];
++  for (let index = last; index !== first;) {
++    const entry = previous[index];
++    if (!entry) return null;
++    pieces.push(entry.piece); index = entry.from;
++  }
++  pieces.reverse();
++  const piece = pieces[0];
++  const firstDirection = piece.kind === 'line'
++    ? { x: (piece.to.x - piece.from.x) / piece.length, y: (piece.to.y - piece.from.y) / piece.length }
++    : { x: -Math.sin(piece.startAngle) * Math.sign(piece.sweep), y: Math.cos(piece.startAngle) * Math.sign(piece.sweep) };
++  return { distance: costs[last], pieces, firstPiece: piece, firstDirection };
++}
+diff --git a/src/sim/traffic-route.ts b/src/sim/traffic-route.ts
+new file mode 100644
+index 0000000..6eb21fc
+--- /dev/null
++++ b/src/sim/traffic-route.ts
+@@ -0,0 +1,91 @@
++/** Local routes keep the football goal and use only acquired teammate pictures.
++ * Static geometry proposes the detour; ordinary movement previews decide which
++ * short command is achievable. Neither predicts a teammate's future decision.
++ */
++import {END_LINE_X,FIELD_WIDTH} from '../core/field.js';
++import type {MovementSample} from '../physics/movement-preview.js';
++import type {Intent} from '../physics/world.js';
++import type {Agent} from './agent.js';
++import {containCoverage} from './coverage-space.js';
++import {movementObjective} from './movement-objective.js';
++import type {TrafficDisc} from './traffic-path.js';
++import {trafficDistance,trafficRoute} from './traffic-distance.js';
++
++export interface TrafficPeer {
++  key:number; age?:number; pos:{x:number;y:number}; vel:{x:number;y:number}; touch:number;
++}
++type Forecast=(command:Intent)=>MovementSample[];
++const routing=new WeakSet<Agent>();
++const HORIZON=.6,EPS=1e-9;
++
++/** Swept touch geometry and incoming normal speed from the same achieved
++ * preview. Less eventual overlap alone can hide an earlier, harder impact.
++ * This is a contact-risk comparison, not a prediction of delivered impulse.
++ */
++function encounter(a:Agent,path:readonly MovementSample[],peer:TrafficPeer):{gap:number;closing:number} {
++  let x=a.pos.x-peer.pos.x,y=a.pos.y-peer.pos.y,least=Math.hypot(x,y)-peer.touch;
++  let closing:number|undefined,time=0;
++  if(least < -EPS)closing=Math.max(0,-(x*(a.vel.x-peer.vel.x)+y*(a.vel.y-peer.vel.y))/Math.max(EPS,Math.hypot(x,y)));
++  for(const sample of path){
++    const xx=sample.pos.x-peer.pos.x-peer.vel.x*sample.t;
++    const yy=sample.pos.y-peer.pos.y-peer.vel.y*sample.t;
++    const dx=xx-x,dy=yy-y;
++    const along=Math.max(0,Math.min(1,-(x*dx+y*dy)/Math.max(1e-12,dx*dx+dy*dy)));
++    const gap=Math.hypot(x+along*dx,y+along*dy)-peer.touch;
++    if(closing===undefined&&gap < -EPS){
++      const aa=dx*dx+dy*dy,bb=2*(x*dx+y*dy),cc=x*x+y*y-peer.touch*peer.touch;
++      const first=cc<=0?0:Math.max(0,Math.min(1,(-bb-Math.sqrt(Math.max(0,bb*bb-4*aa*cc)))/(2*aa)));
++      const rx=x+first*dx,ry=y+first*dy;
++      closing=Math.max(0,-(rx*dx+ry*dy)/(Math.max(EPS,sample.t-time)*Math.max(EPS,Math.hypot(rx,ry))));
++    }
++    least=Math.min(least,gap);x=xx;y=yy;time=sample.t;
++  }
++  return {gap:least,closing:closing??0};
++}
++
++/** Existing man/zone free-footwork scope only. Start when ordinary spacing
++ * restricts the selected request and its existing compound action found no
++ * alternative. Continue to reconsider the local route while the acquired
++ * obstacle still blocks that same goal; no fixed hold timer or peer memory.
++ */
++export function localTrafficRoute(a:Agent,raw:Intent,ordinary:Intent,peers:readonly TrafficPeer[],
++  forecast:Forecast,eligible:boolean,allowStart:boolean):Intent {
++  const clear=()=>{routing.delete(a);return ordinary;};
++  const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
++  if(!eligible||(a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<EPS
++    ||![goal.point.x,goal.point.y].every(Number.isFinite)
++    ||peers.some(p=>!Number.isFinite(p.age)||p.age!<0
++      ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y,p.touch].every(Number.isFinite)))return clear();
++  const flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity;
++  if(!flow||![flow.x,flow.y].every(Number.isFinite))return clear();
++  if(!routing.has(a)&&(!allowStart||(ordinary.vel.x===raw.vel.x&&ordinary.vel.y===raw.vel.y)))return ordinary;
++  const margin=a.profile.radius+.5;
++  const bounds={minX:margin,maxX:END_LINE_X-margin,minY:margin,maxY:FIELD_WIDTH-margin};
++  const futureGoal={x:goal.point.x+flow.x*HORIZON,y:goal.point.y+flow.y*HORIZON};
++  const discs:TrafficDisc[]=peers.map(peer=>({center:peer.pos,radius:peer.touch}));
++  const route=trafficRoute(a.pos,futureGoal,discs,bounds);
++  if(!route||route.distance<=Math.hypot(a.pos.x-futureGoal.x,a.pos.y-futureGoal.y)+EPS)return clear();
++  const futureDiscs=peers.map(peer=>({center:{x:peer.pos.x+peer.vel.x*HORIZON,
++    y:peer.pos.y+peer.vel.y*HORIZON},radius:peer.touch}));
++  const cost=(point:{x:number;y:number})=>trafficDistance(point,futureGoal,futureDiscs,bounds)??Infinity;
++  const oldPath=forecast(ordinary),oldEncounters=peers.map(peer=>encounter(a,oldPath,peer));
++  const oldCost=cost(oldPath[oldPath.length-1].pos);
++  let best=ordinary,bestCost=oldCost;
++  // A turn can require a real brake before the body can follow its tangent.
++  // These are the actor's existing raw pace, restricted pace, and gather;
++  // direction comes from joint geometry rather than extra sampled angles.
++  const paces=[speed,Math.hypot(ordinary.vel.x,ordinary.vel.y),0].filter((v,i,all)=>all.indexOf(v)===i);
++  for(const pace of paces){
++    const command=containCoverage(a,{...raw,vel:{x:route.firstDirection.x*pace,y:route.firstDirection.y*pace}});
++    const path=forecast(command);
++    if(path.some(sample=>sample.support!=='up')
++      ||peers.some((peer,i)=>{
++        const next=encounter(a,path,peer),old=oldEncounters[i];
++        return next.gap<Math.min(0,old.gap)-EPS||next.closing>old.closing+EPS;
++      }))continue;
++    const remaining=cost(path[path.length-1].pos);
++    if(remaining<bestCost-EPS){best=command;bestCost=remaining;}
++  }
++  if(best!==ordinary)routing.add(a);
++  return best;
++}
+diff --git a/test/fixtures/navigation-A042-setup.json b/test/fixtures/navigation-A042-setup.json
+new file mode 100644
+index 0000000..b47da1f
+--- /dev/null
++++ b/test/fixtures/navigation-A042-setup.json
+@@ -0,0 +1,1862 @@
++{
++  "case": "A042",
++  "setup": {
++    "offense": {
++      "QB": {
++        "id": "S69O-QB1",
++        "firstName": "Jordan",
++        "lastName": "Hill",
++        "jersey": 4,
++        "position": "QB",
++        "age": 26,
++        "experience": 3,
++        "measurables": {
++          "heightIn": 75.3,
++          "weightLb": 194,
++          "armIn": 33.5,
++          "handIn": 9.7,
++          "forty": 4.52,
++          "tenSplit": 1.52,
++          "shuttle": 4.16,
++          "threeCone": 6.83,
++          "vertical": 36.8,
++          "broad": 119,
++          "bench": 0
++        },
++        "ratings": {
++          "strength": 40,
++          "stamina": 73,
++          "balance": 34,
++          "toughness": 58,
++          "throwPower": 75,
++          "accShort": 61,
++          "accMid": 71,
++          "accDeep": 87,
++          "release": 75,
++          "throwOnRun": 72,
++          "touch": 75,
++          "pocketPresence": 78,
++          "vision": 50,
++          "elusiveness": 63,
++          "breakTackle": 33,
++          "ballSecurity": 65,
++          "patience": 30,
++          "routeRunning": 38,
++          "releaseVsPress": 35,
++          "hands": 20,
++          "contestedCatch": 28,
++          "ballTracking": 28,
++          "passBlock": 35,
++          "runBlock": 41,
++          "handTechnique": 13,
++          "leadBlock": 31,
++          "passRushPower": 29,
++          "passRushFinesse": 31,
++          "blockShedding": 28,
++          "tackling": 25,
++          "hitPower": 50,
++          "pursuit": 38,
++          "manCoverage": 35,
++          "zoneCoverage": 41,
++          "press": 35,
++          "ballSkills": 19,
++          "kickPower": 40,
++          "kickAccuracy": 21,
++          "puntPower": 28,
++          "puntAccuracy": 26,
++          "awareness": 84,
++          "playRecognition": 80,
++          "decisionMaking": 75,
++          "composure": 93,
++          "discipline": 65,
++          "anticipation": 82,
++          "consistency": 77,
++          "workRate": 69
++        },
++        "familiarity": {},
++        "archetype": "Gunslinger"
++      },
++      "LT": {
++        "id": "S69O-OT2",
++        "firstName": "Kobe",
++        "lastName": "Crawford",
++        "jersey": 68,
++        "position": "OT",
++        "age": 23,
++        "experience": 0,
++        "measurables": {
++          "heightIn": 79.5,
++          "weightLb": 316,
++          "armIn": 33.4,
++          "handIn": 11,
++          "forty": 5.21,
++          "tenSplit": 1.8,
++          "shuttle": 4.72,
++          "threeCone": 7.71,
++          "vertical": 31.5,
++          "broad": 97,
++          "bench": 24
++        },
++        "ratings": {
++          "strength": 78,
++          "stamina": 71,
++          "balance": 63,
++          "toughness": 49,
++          "throwPower": 23,
++          "accShort": 34,
++          "accMid": 34,
++          "accDeep": 32,
++          "release": 38,
++          "throwOnRun": 32,
++          "touch": 40,
++          "pocketPresence": 29,
++          "vision": 38,
++          "elusiveness": 22,
++          "breakTackle": 41,
++          "ballSecurity": 28,
++          "patience": 28,
++          "routeRunning": 24,
++          "releaseVsPress": 32,
++          "hands": 44,
++          "contestedCatch": 37,
++          "ballTracking": 20,
++          "passBlock": 78,
++          "runBlock": 67,
++          "handTechnique": 70,
++          "leadBlock": 37,
++          "passRushPower": 22,
++          "passRushFinesse": 25,
++          "blockShedding": 14,
++          "tackling": 24,
++          "hitPower": 50,
++          "pursuit": 28,
++          "manCoverage": 33,
++          "zoneCoverage": 24,
++          "press": 37,
++          "ballSkills": 32,
++          "kickPower": 21,
++          "kickAccuracy": 28,
++          "puntPower": 24,
++          "puntAccuracy": 22,
++          "awareness": 64,
++          "playRecognition": 40,
++          "decisionMaking": 59,
++          "composure": 56,
++          "discipline": 41,
++          "anticipation": 30,
++          "consistency": 66,
++          "workRate": 49
++        },
++        "familiarity": {
++          "OG": 0.75,
++          "C": 0.4
++        },
++        "archetype": "Pass Protector"
++      },
++      "RT": {
++        "id": "S69O-OG2",
++        "firstName": "Grant",
++        "lastName": "Washington",
++        "jersey": 76,
++        "position": "OG",
++        "age": 23,
++        "experience": 1,
++        "measurables": {
++          "heightIn": 77.1,
++          "weightLb": 324,
++          "armIn": 33.1,
++          "handIn": 10.4,
++          "forty": 5.15,
++          "tenSplit": 1.74,
++          "shuttle": 4.75,
++          "threeCone": 7.75,
++          "vertical": 31.5,
++          "broad": 98,
++          "bench": 36
++        },
++        "ratings": {
++          "strength": 97,
++          "stamina": 82,
++          "balance": 79,
++          "toughness": 53,
++          "throwPower": 43,
++          "accShort": 36,
++          "accMid": 39,
++          "accDeep": 50,
++          "release": 14,
++          "throwOnRun": 21,
++          "touch": 27,
++          "pocketPresence": 34,
++          "vision": 40,
++          "elusiveness": 39,
++          "breakTackle": 34,
++          "ballSecurity": 28,
++          "patience": 28,
++          "routeRunning": 29,
++          "releaseVsPress": 41,
++          "hands": 44,
++          "contestedCatch": 36,
++          "ballTracking": 28,
++          "passBlock": 92,
++          "runBlock": 85,
++          "handTechnique": 87,
++          "leadBlock": 27,
++          "passRushPower": 34,
++          "passRushFinesse": 43,
++          "blockShedding": 38,
++          "tackling": 47,
++          "hitPower": 52,
++          "pursuit": 34,
++          "manCoverage": 34,
++          "zoneCoverage": 27,
++          "press": 32,
++          "ballSkills": 27,
++          "kickPower": 35,
++          "kickAccuracy": 45,
++          "puntPower": 22,
++          "puntAccuracy": 20,
++          "awareness": 60,
++          "playRecognition": 75,
++          "decisionMaking": 70,
++          "composure": 70,
++          "discipline": 72,
++          "anticipation": 35,
++          "consistency": 72,
++          "workRate": 63
++        },
++        "familiarity": {
++          "OT": 0.6,
++          "C": 0.7
++        },
++        "archetype": "Mauler"
++      },
++      "C": {
++        "id": "S69O-C1",
++        "firstName": "Zion",
++        "lastName": "Evans",
++        "jersey": 60,
++        "position": "C",
++        "age": 29,
++        "experience": 7,
++        "measurables": {
++          "heightIn": 75.2,
++          "weightLb": 299,
++          "armIn": 32.2,
++          "handIn": 10.2,
++          "forty": 4.84,
++          "tenSplit": 1.61,
++          "shuttle": 4.4,
++          "threeCone": 7.28,
++          "vertical": 39,
++          "broad": 115,
++          "bench": 25
++        },
++        "ratings": {
++          "strength": 75,
++          "stamina": 81,
++          "balance": 76,
++          "toughness": 63,
++          "throwPower": 26,
++          "accShort": 24,
++          "accMid": 39,
++          "accDeep": 34,
++          "release": 21,
++          "throwOnRun": 34,
++          "touch": 36,
++          "pocketPresence": 28,
++          "vision": 15,
++          "elusiveness": 36,
++          "breakTackle": 13,
++          "ballSecurity": 21,
++          "patience": 31,
++          "routeRunning": 29,
++          "releaseVsPress": 24,
++          "hands": 32,
++          "contestedCatch": 41,
++          "ballTracking": 37,
++          "passBlock": 74,
++          "runBlock": 66,
++          "handTechnique": 82,
++          "leadBlock": 35,
++          "passRushPower": 38,
++          "passRushFinesse": 36,
++          "blockShedding": 29,
++          "tackling": 34,
++          "hitPower": 48,
++          "pursuit": 43,
++          "manCoverage": 33,
++          "zoneCoverage": 32,
++          "press": 36,
++          "ballSkills": 22,
++          "kickPower": 34,
++          "kickAccuracy": 36,
++          "puntPower": 20,
++          "puntAccuracy": 31,
++          "awareness": 77,
++          "playRecognition": 79,
++          "decisionMaking": 66,
++          "composure": 71,
++          "discipline": 51,
++          "anticipation": 22,
++          "consistency": 65,
++          "workRate": 65
++        },
++        "familiarity": {
++          "OG": 0.8,
++          "OT": 0.4
++        },
++        "archetype": "Zone Athlete"
++      },
++      "LG": {
++        "id": "S69O-OG1",
++        "firstName": "Derek",
++        "lastName": "Powell",
++        "jersey": 66,
++        "position": "OG",
++        "age": 23,
++        "experience": 0,
++        "measurables": {
++          "heightIn": 75.8,
++          "weightLb": 323,
++          "armIn": 32.5,
++          "handIn": 10.1,
++          "forty": 5.31,
++          "tenSplit": 1.83,
++          "shuttle": 4.56,
++          "threeCone": 7.75,
++          "vertical": 27.3,
++          "broad": 98,
++          "bench": 34
++        },
++        "ratings": {
++          "strength": 78,
++          "stamina": 74,
++          "balance": 70,
++          "toughness": 66,
++          "throwPower": 34,
++          "accShort": 25,
++          "accMid": 28,
++          "accDeep": 17,
++          "release": 35,
++          "throwOnRun": 32,
++          "touch": 14,
++          "pocketPresence": 21,
++          "vision": 19,
++          "elusiveness": 22,
++          "breakTackle": 16,
++          "ballSecurity": 22,
++          "patience": 45,
++          "routeRunning": 39,
++          "releaseVsPress": 45,
++          "hands": 34,
++          "contestedCatch": 29,
++          "ballTracking": 38,
++          "passBlock": 70,
++          "runBlock": 72,
++          "handTechnique": 80,
++          "leadBlock": 22,
++          "passRushPower": 33,
++          "passRushFinesse": 28,
++          "blockShedding": 15,
++          "tackling": 27,
++          "hitPower": 55,
++          "pursuit": 22,
++          "manCoverage": 34,
++          "zoneCoverage": 37,
++          "press": 32,
++          "ballSkills": 27,
++          "kickPower": 31,
++          "kickAccuracy": 30,
++          "puntPower": 31,
++          "puntAccuracy": 33,
++          "awareness": 60,
++          "playRecognition": 71,
++          "decisionMaking": 60,
++          "composure": 81,
++          "discipline": 62,
++          "anticipation": 30,
++          "consistency": 67,
++          "workRate": 65
++        },
++        "familiarity": {
++          "OT": 0.6,
++          "C": 0.7
++        },
++        "archetype": "Mauler"
++      },
++      "RG": {
++        "id": "S69O-OG4",
++        "firstName": "Ryan",
++        "lastName": "Knight",
++        "jersey": 72,
++        "position": "OG",
++        "age": 21,
++        "experience": 0,
++        "measurables": {
++          "heightIn": 74.8,
++          "weightLb": 316,
++          "armIn": 32.7,
++          "handIn": 9.7,
++          "forty": 5.28,
++          "tenSplit": 1.79,
++          "shuttle": 4.8,
++          "threeCone": 7.85,
++          "vertical": 30.1,
++          "broad": 106,
++          "bench": 34
++        },
++        "ratings": {
++          "strength": 89,
++          "stamina": 66,
++          "balance": 49,
++          "toughness": 59,
++          "throwPower": 27,
++          "accShort": 27,
++          "accMid": 28,
++          "accDeep": 18,
++          "release": 44,
++          "throwOnRun": 28,
++          "touch": 32,
++          "pocketPresence": 26,
++          "vision": 23,
++          "elusiveness": 36,
++          "breakTackle": 30,
++          "ballSecurity": 35,
++          "patience": 22,
++          "routeRunning": 36,
++          "releaseVsPress": 30,
++          "hands": 19,
++          "contestedCatch": 23,
++          "ballTracking": 19,
++          "passBlock": 48,
++          "runBlock": 66,
++          "handTechnique": 60,
++          "leadBlock": 37,
++          "passRushPower": 22,
++          "passRushFinesse": 26,
++          "blockShedding": 28,
++          "tackling": 33,
++          "hitPower": 38,
++          "pursuit": 15,
++          "manCoverage": 34,
++          "zoneCoverage": 16,
++          "press": 32,
++          "ballSkills": 27,
++          "kickPower": 44,
++          "kickAccuracy": 29,
++          "puntPower": 16,
++          "puntAccuracy": 29,
++          "awareness": 38,
++          "playRecognition": 68,
++          "decisionMaking": 60,
++          "composure": 65,
++          "discipline": 64,
++          "anticipation": 28,
++          "consistency": 68,
++          "workRate": 45
++        },
++        "familiarity": {
++          "OT": 0.6,
++          "C": 0.7
++        },
++        "archetype": "Mauler"
++      },
++      "RB": {
++        "id": "S69O-RB1",
++        "firstName": "Mason",
++        "lastName": "Clark",
++        "jersey": 39,
++        "position": "RB",
++        "age": 23,
++        "experience": 0,
++        "measurables": {
++          "heightIn": 71.3,
++          "weightLb": 203,
++          "armIn": 32,
++          "handIn": 10,
++          "forty": 4.47,
++          "tenSplit": 1.5,
++          "shuttle": 4.3,
++          "threeCone": 7.07,
++          "vertical": 39.9,
++          "broad": 124,
++          "bench": 11
++        },
++        "ratings": {
++          "strength": 48,
++          "stamina": 75,
++          "balance": 75,
++          "toughness": 58,
++          "throwPower": 26,
++          "accShort": 34,
++          "accMid": 33,
++          "accDeep": 32,
++          "release": 34,
++          "throwOnRun": 29,
++          "touch": 31,
++          "pocketPresence": 31,
++          "vision": 79,
++          "elusiveness": 81,
++          "breakTackle": 75,
++          "ballSecurity": 74,
++          "patience": 75,
++          "routeRunning": 54,
++          "releaseVsPress": 28,
++          "hands": 74,
++          "contestedCatch": 37,
++          "ballTracking": 53,
++          "passBlock": 49,
++          "runBlock": 34,
++          "handTechnique": 28,
++          "leadBlock": 20,
++          "passRushPower": 30,
++          "passRushFinesse": 26,
++          "blockShedding": 34,
++          "tackling": 31,
++          "hitPower": 28,
++          "pursuit": 35,
++          "manCoverage": 20,
++          "zoneCoverage": 44,
++          "press": 33,
++          "ballSkills": 28,
++          "kickPower": 42,
++          "kickAccuracy": 35,
++          "puntPower": 21,
++          "puntAccuracy": 37,
++          "awareness": 67,
++          "playRecognition": 65,
++          "decisionMaking": 56,
++          "composure": 64,
++          "discipline": 77,
++          "anticipation": 30,
++          "consistency": 77,
++          "workRate": 71
++        },
++        "familiarity": {
++          "FB": 0.55,
++          "WR": 0.4
++        },
++        "archetype": "Workhorse"
++      },
++      "Y": {
++        "id": "S69O-TE2",
++        "firstName": "Kyle",
++        "lastName": "Hayes",
++        "jersey": 40,
++        "position": "TE",
++        "age": 32,
++        "experience": 10,
++        "measurables": {
++          "heightIn": 78,
++          "weightLb": 241,
++          "armIn": 33.7,
++          "handIn": 10.3,
++          "forty": 4.51,
++          "tenSplit": 1.53,
++          "shuttle": 4.11,
++          "threeCone": 6.84,
++          "vertical": 34.2,
++          "broad": 121,
++          "bench": 17
++        },
++        "ratings": {
++          "strength": 53,
++          "stamina": 75,
++          "balance": 26,
++          "toughness": 72,
++          "throwPower": 38,
++          "accShort": 42,
++          "accMid": 27,
++          "accDeep": 22,
++          "release": 16,
++          "throwOnRun": 39,
++          "touch": 36,
++          "pocketPresence": 34,
++          "vision": 32,
++          "elusiveness": 24,
++          "breakTackle": 63,
++          "ballSecurity": 26,
++          "patience": 25,
++          "routeRunning": 84,
++          "releaseVsPress": 73,
++          "hands": 92,
++          "contestedCatch": 90,
++          "ballTracking": 64,
++          "passBlock": 56,
++          "runBlock": 73,
++          "handTechnique": 54,
++          "leadBlock": 59,
++          "passRushPower": 30,
++          "passRushFinesse": 34,
++          "blockShedding": 36,
++          "tackling": 27,
++          "hitPower": 55,
++          "pursuit": 41,
++          "manCoverage": 31,
++          "zoneCoverage": 28,
++          "press": 31,
++          "ballSkills": 27,
++          "kickPower": 30,
++          "kickAccuracy": 31,
++          "puntPower": 29,
++          "puntAccuracy": 41,
++          "awareness": 70,
++          "playRecognition": 88,
++          "decisionMaking": 62,
++          "composure": 91,
++          "discipline": 68,
++          "anticipation": 16,
++          "consistency": 49,
++          "workRate": 73
++        },
++        "familiarity": {
++          "FB": 0.6,
++          "WR": 0.45
++        },
++        "archetype": "Move TE"
++      },
++      "X": {
++        "id": "S69O-WR1",
++        "firstName": "Ricky",
++        "lastName": "Hollins",
++        "jersey": 87,
++        "position": "WR",
++        "age": 27,
++        "experience": 4,
++        "measurables": {
++          "heightIn": 70.7,
++          "weightLb": 189,
++          "armIn": 30.8,
++          "handIn": 9.5,
++          "forty": 4.35,
++          "tenSplit": 1.48,
++          "shuttle": 4.19,
++          "threeCone": 6.95,
++          "vertical": 37.4,
++          "broad": 135,
++          "bench": 12
++        },
++        "ratings": {
++          "strength": 40,
++          "stamina": 77,
++          "balance": 64,
++          "toughness": 70,
++          "throwPower": 28,
++          "accShort": 35,
++          "accMid": 21,
++          "accDeep": 25,
++          "release": 32,
++          "throwOnRun": 28,
++          "touch": 25,
++          "pocketPresence": 34,
++          "vision": 44,
++          "elusiveness": 55,
++          "breakTackle": 64,
++          "ballSecurity": 51,
++          "patience": 28,
++          "routeRunning": 70,
++          "releaseVsPress": 75,
++          "hands": 76,
++          "contestedCatch": 62,
++          "ballTracking": 80,
++          "passBlock": 22,
++          "runBlock": 29,
++          "handTechnique": 27,
++          "leadBlock": 36,
++          "passRushPower": 40,
++          "passRushFinesse": 38,
++          "blockShedding": 17,
++          "tackling": 26,
++          "hitPower": 35,
++          "pursuit": 21,
++          "manCoverage": 40,
++          "zoneCoverage": 37,
++          "press": 13,
++          "ballSkills": 28,
++          "kickPower": 15,
++          "kickAccuracy": 33,
++          "puntPower": 29,
++          "puntAccuracy": 37,
++          "awareness": 69,
++          "playRecognition": 65,
++          "decisionMaking": 75,
++          "composure": 59,
++          "discipline": 41,
++          "anticipation": 27,
++          "consistency": 51,
++          "workRate": 64
++        },
++        "familiarity": {
++          "RB": 0.3,
++          "TE": 0.25
++        },
++        "archetype": "Deep Threat"
++      },
++      "Z": {
++        "id": "S69O-WR2",
++        "firstName": "Keith",
++        "lastName": "Fisher",
++        "jersey": 85,
++        "position": "WR",
++        "age": 28,
++        "experience": 5,
++        "measurables": {
++          "heightIn": 71.6,
++          "weightLb": 189,
++          "armIn": 32.1,
++          "handIn": 8.9,
++          "forty": 4.44,
++          "tenSplit": 1.55,
++          "shuttle": 4,
++          "threeCone": 6.59,
++          "vertical": 37.4,
++          "broad": 120,
++          "bench": 12
++        },
++        "ratings": {
++          "strength": 41,
++          "stamina": 78,
++          "balance": 64,
++          "toughness": 57,
++          "throwPower": 25,
++          "accShort": 16,
++          "accMid": 26,
++          "accDeep": 19,
++          "release": 21,
++          "throwOnRun": 25,
++          "touch": 29,
++          "pocketPresence": 25,
++          "vision": 48,
++          "elusiveness": 60,
++          "breakTackle": 65,
++          "ballSecurity": 60,
++          "patience": 29,
++          "routeRunning": 75,
++          "releaseVsPress": 56,
++          "hands": 73,
++          "contestedCatch": 71,
++          "ballTracking": 79,
++          "passBlock": 27,
++          "runBlock": 17,
++          "handTechnique": 31,
++          "leadBlock": 37,
++          "passRushPower": 27,
++          "passRushFinesse": 19,
++          "blockShedding": 19,
++          "tackling": 31,
++          "hitPower": 26,
++          "pursuit": 25,
++          "manCoverage": 38,
++          "zoneCoverage": 39,
++          "press": 28,
++          "ballSkills": 16,
++          "kickPower": 36,
++          "kickAccuracy": 32,
++          "puntPower": 35,
++          "puntAccuracy": 15,
++          "awareness": 60,
++          "playRecognition": 68,
++          "decisionMaking": 81,
++          "composure": 70,
++          "discipline": 60,
++          "anticipation": 29,
++          "consistency": 73,
++          "workRate": 58
++        },
++        "familiarity": {
++          "RB": 0.3,
++          "TE": 0.25
++        },
++        "archetype": "Slot"
++      },
++      "H": {
++        "id": "S69O-WR3",
++        "firstName": "Javon",
++        "lastName": "Lindqvist",
++        "jersey": 19,
++        "position": "WR",
++        "age": 28,
++        "experience": 6,
++        "measurables": {
++          "heightIn": 68.6,
++          "weightLb": 178,
++          "armIn": 31,
++          "handIn": 9.4,
++          "forty": 4.44,
++          "tenSplit": 1.49,
++          "shuttle": 3.87,
++          "threeCone": 6.4,
++          "vertical": 38,
++          "broad": 124,
++          "bench": 7
++        },
++        "ratings": {
++          "strength": 31,
++          "stamina": 59,
++          "balance": 40,
++          "toughness": 52,
++          "throwPower": 24,
++          "accShort": 22,
++          "accMid": 27,
++          "accDeep": 28,
++          "release": 25,
++          "throwOnRun": 43,
++          "touch": 22,
++          "pocketPresence": 40,
++          "vision": 33,
++          "elusiveness": 35,
++          "breakTackle": 31,
++          "ballSecurity": 66,
++          "patience": 24,
++          "routeRunning": 69,
++          "releaseVsPress": 48,
++          "hands": 58,
++          "contestedCatch": 49,
++          "ballTracking": 49,
++          "passBlock": 17,
++          "runBlock": 21,
++          "handTechnique": 14,
++          "leadBlock": 33,
++          "passRushPower": 25,
++          "passRushFinesse": 32,
++          "blockShedding": 29,
++          "tackling": 38,
++          "hitPower": 13,
++          "pursuit": 32,
++          "manCoverage": 20,
++          "zoneCoverage": 41,
++          "press": 23,
++          "ballSkills": 20,
++          "kickPower": 14,
++          "kickAccuracy": 9,
++          "puntPower": 33,
++          "puntAccuracy": 33,
++          "awareness": 54,
++          "playRecognition": 56,
++          "decisionMaking": 63,
++          "composure": 61,
++          "discipline": 47,
++          "anticipation": 21,
++          "consistency": 53,
++          "workRate": 55
++        },
++        "familiarity": {
++          "RB": 0.3,
++          "TE": 0.25
++        },
++        "archetype": "Slot"
++      }
++    },
++    "defense": {
++      "DE_W": {
++        "id": "S69D-EDGE1",
++        "firstName": "Jeremiah",
++        "lastName": "Jordan",
++        "jersey": 59,
++        "position": "EDGE",
++        "age": 29,
++        "experience": 6,
++        "measurables": {
++          "heightIn": 76.4,
++          "weightLb": 268,
++          "armIn": 33.8,
++          "handIn": 10.3,
++          "forty": 4.64,
++          "tenSplit": 1.53,
++          "shuttle": 4.47,
++          "threeCone": 7.13,
++          "vertical": 37.4,
++          "broad": 121,
++          "bench": 24
++        },
++        "ratings": {
++          "strength": 65,
++          "stamina": 83,
++          "balance": 38,
++          "toughness": 73,
++          "throwPower": 24,
++          "accShort": 20,
++          "accMid": 44,
++          "accDeep": 29,
++          "release": 36,
++          "throwOnRun": 26,
++          "touch": 43,
++          "pocketPresence": 30,
++          "vision": 30,
++          "elusiveness": 23,
++          "breakTackle": 30,
++          "ballSecurity": 35,
++          "patience": 33,
++          "routeRunning": 18,
++          "releaseVsPress": 29,
++          "hands": 44,
++          "contestedCatch": 27,
++          "ballTracking": 17,
++          "passBlock": 36,
++          "runBlock": 27,
++          "handTechnique": 32,
++          "leadBlock": 33,
++          "passRushPower": 60,
++          "passRushFinesse": 91,
++          "blockShedding": 67,
++          "tackling": 67,
++          "hitPower": 65,
++          "pursuit": 78,
++          "manCoverage": 38,
++          "zoneCoverage": 31,
++          "press": 33,
++          "ballSkills": 19,
++          "kickPower": 14,
++          "kickAccuracy": 31,
++          "puntPower": 28,
++          "puntAccuracy": 26,
++          "awareness": 65,
++          "playRecognition": 55,
++          "decisionMaking": 65,
++          "composure": 62,
++          "discipline": 75,
++          "anticipation": 23,
++          "consistency": 64,
++          "workRate": 47
++        },
++        "familiarity": {
++          "LB": 0.55,
++          "DT": 0.5
++        },
++        "archetype": "Speed Rusher"
++      },
++      "DE_S": {
++        "id": "S69D-LB3",
++        "firstName": "Trey",
++        "lastName": "Fisher",
++        "jersey": 41,
++        "position": "LB",
++        "age": 27,
++        "experience": 5,
++        "measurables": {
++          "heightIn": 76.1,
++          "weightLb": 236,
++          "armIn": 33.8,
++          "handIn": 10.4,
++          "forty": 4.58,
++          "tenSplit": 1.59,
++          "shuttle": 4.16,
++          "threeCone": 7.11,
++          "vertical": 33.9,
++          "broad": 118,
++          "bench": 19
++        },
++        "ratings": {
++          "strength": 57,
++          "stamina": 65,
++          "balance": 32,
++          "toughness": 73,
++          "throwPower": 27,
++          "accShort": 34,
++          "accMid": 40,
++          "accDeep": 26,
++          "release": 37,
++          "throwOnRun": 45,
++          "touch": 25,
++          "pocketPresence": 32,
++          "vision": 21,
++          "elusiveness": 41,
++          "breakTackle": 37,
++          "ballSecurity": 42,
++          "patience": 40,
++          "routeRunning": 38,
++          "releaseVsPress": 33,
++          "hands": 48,
++          "contestedCatch": 30,
++          "ballTracking": 34,
++          "passBlock": 44,
++          "runBlock": 32,
++          "handTechnique": 24,
++          "leadBlock": 42,
++          "passRushPower": 56,
++          "passRushFinesse": 31,
++          "blockShedding": 99,
++          "tackling": 94,
++          "hitPower": 83,
++          "pursuit": 88,
++          "manCoverage": 69,
++          "zoneCoverage": 69,
++          "press": 35,
++          "ballSkills": 31,
++          "kickPower": 30,
++          "kickAccuracy": 21,
++          "puntPower": 37,
++          "puntAccuracy": 30,
++          "awareness": 81,
++          "playRecognition": 90,
++          "decisionMaking": 81,
++          "composure": 78,
++          "discipline": 74,
++          "anticipation": 59,
++          "consistency": 52,
++          "workRate": 56
++        },
++        "familiarity": {
++          "EDGE": 0.5,
++          "S": 0.35
++        },
++        "archetype": "Thumper"
++      },
++      "DT_S": {
++        "id": "S69D-EDGE3",
++        "firstName": "Zion",
++        "lastName": "Phillips",
++        "jersey": 57,
++        "position": "EDGE",
++        "age": 26,
++        "experience": 4,
++        "measurables": {
++          "heightIn": 75.8,
++          "weightLb": 242,
++          "armIn": 33.8,
++          "handIn": 10.5,
++          "forty": 4.48,
++          "tenSplit": 1.49,
++          "shuttle": 4.16,
++          "threeCone": 6.91,
++          "vertical": 36.7,
++          "broad": 133,
++          "bench": 22
++        },
++        "ratings": {
++          "strength": 69,
++          "stamina": 55,
++          "balance": 53,
++          "toughness": 51,
++          "throwPower": 35,
++          "accShort": 18,
++          "accMid": 32,
++          "accDeep": 21,
++          "release": 40,
++          "throwOnRun": 34,
++          "touch": 29,
++          "pocketPresence": 17,
++          "vision": 20,
++          "elusiveness": 25,
++          "breakTackle": 43,
++          "ballSecurity": 13,
++          "patience": 25,
++          "routeRunning": 22,
++          "releaseVsPress": 35,
++          "hands": 22,
++          "contestedCatch": 17,
++          "ballTracking": 25,
++          "passBlock": 16,
++          "runBlock": 27,
++          "handTechnique": 41,
++          "leadBlock": 25,
++          "passRushPower": 61,
++          "passRushFinesse": 68,
++          "blockShedding": 67,
++          "tackling": 61,
++          "hitPower": 65,
++          "pursuit": 64,
++          "manCoverage": 31,
++          "zoneCoverage": 28,
++          "press": 25,
++          "ballSkills": 23,
++          "kickPower": 36,
++          "kickAccuracy": 33,
++          "puntPower": 18,
++          "puntAccuracy": 33,
++          "awareness": 57,
++          "playRecognition": 38,
++          "decisionMaking": 51,
++          "composure": 60,
++          "discipline": 60,
++          "anticipation": 37,
++          "consistency": 74,
++          "workRate": 73
++        },
++        "familiarity": {
++          "LB": 0.55,
++          "DT": 0.5
++        },
++        "archetype": "Speed Rusher"
++      },
++      "DT_W": {
++        "id": "S69D-EDGE2",
++        "firstName": "Damien",
++        "lastName": "Brooks",
++        "jersey": 99,
++        "position": "EDGE",
++        "age": 25,
++        "experience": 3,
++        "measurables": {
++          "heightIn": 77.8,
++          "weightLb": 265,
++          "armIn": 35.2,
++          "handIn": 10.2,
++          "forty": 4.59,
++          "tenSplit": 1.57,
++          "shuttle": 4.22,
++          "threeCone": 7.03,
++          "vertical": 35.7,
++          "broad": 121,
++          "bench": 27
++        },
++        "ratings": {
++          "strength": 70,
++          "stamina": 71,
++          "balance": 62,
++          "toughness": 56,
++          "throwPower": 20,
++          "accShort": 21,
++          "accMid": 34,
++          "accDeep": 40,
++          "release": 15,
++          "throwOnRun": 28,
++          "touch": 37,
++          "pocketPresence": 35,
++          "vision": 19,
++          "elusiveness": 30,
++          "breakTackle": 31,
++          "ballSecurity": 27,
++          "patience": 33,
++          "routeRunning": 38,
++          "releaseVsPress": 35,
++          "hands": 40,
++          "contestedCatch": 33,
++          "ballTracking": 31,
++          "passBlock": 34,
++          "runBlock": 37,
++          "handTechnique": 30,
++          "leadBlock": 20,
++          "passRushPower": 85,
++          "passRushFinesse": 66,
++          "blockShedding": 68,
++          "tackling": 77,
++          "hitPower": 56,
++          "pursuit": 69,
++          "manCoverage": 21,
++          "zoneCoverage": 29,
++          "press": 34,
++          "ballSkills": 19,
++          "kickPower": 32,
++          "kickAccuracy": 26,
++          "puntPower": 23,
++          "puntAccuracy": 31,
++          "awareness": 74,
++          "playRecognition": 69,
++          "decisionMaking": 42,
++          "composure": 44,
++          "discipline": 69,
++          "anticipation": 41,
++          "consistency": 69,
++          "workRate": 75
++        },
++        "familiarity": {
++          "LB": 0.55,
++          "DT": 0.5
++        },
++        "archetype": "Power Rusher"
++      },
++      "LB_M": {
++        "id": "S69D-LB1",
++        "firstName": "Victor",
++        "lastName": "Knight",
++        "jersey": 47,
++        "position": "LB",
++        "age": 24,
++        "experience": 1,
++        "measurables": {
++          "heightIn": 75.3,
++          "weightLb": 248,
++          "armIn": 34.6,
++          "handIn": 9.3,
++          "forty": 4.67,
++          "tenSplit": 1.61,
++          "shuttle": 4.32,
++          "threeCone": 7.08,
++          "vertical": 30.9,
++          "broad": 124,
++          "bench": 26
++        },
++        "ratings": {
++          "strength": 59,
++          "stamina": 77,
++          "balance": 20,
++          "toughness": 59,
++          "throwPower": 30,
++          "accShort": 34,
++          "accMid": 29,
++          "accDeep": 25,
++          "release": 28,
++          "throwOnRun": 42,
++          "touch": 42,
++          "pocketPresence": 24,
++          "vision": 36,
++          "elusiveness": 37,
++          "breakTackle": 26,
++          "ballSecurity": 47,
++          "patience": 29,
++          "routeRunning": 24,
++          "releaseVsPress": 46,
++          "hands": 36,
++          "contestedCatch": 43,
++          "ballTracking": 22,
++          "passBlock": 27,
++          "runBlock": 23,
++          "handTechnique": 22,
++          "leadBlock": 39,
++          "passRushPower": 58,
++          "passRushFinesse": 34,
++          "blockShedding": 73,
++          "tackling": 79,
++          "hitPower": 68,
++          "pursuit": 64,
++          "manCoverage": 62,
++          "zoneCoverage": 52,
++          "press": 45,
++          "ballSkills": 23,
++          "kickPower": 19,
++          "kickAccuracy": 24,
++          "puntPower": 20,
++          "puntAccuracy": 13,
++          "awareness": 72,
++          "playRecognition": 74,
++          "decisionMaking": 54,
++          "composure": 53,
++          "discipline": 55,
++          "anticipation": 51,
++          "consistency": 60,
++          "workRate": 68
++        },
++        "familiarity": {
++          "EDGE": 0.5,
++          "S": 0.35
++        },
++        "archetype": "Field General"
++      },
++      "LB_W": {
++        "id": "S69D-LB2",
++        "firstName": "Ty",
++        "lastName": "Cook",
++        "jersey": 58,
++        "position": "LB",
++        "age": 25,
++        "experience": 2,
++        "measurables": {
++          "heightIn": 75,
++          "weightLb": 239,
++          "armIn": 30.9,
++          "handIn": 9.9,
++          "forty": 4.57,
++          "tenSplit": 1.53,
++          "shuttle": 4.22,
++          "threeCone": 7,
++          "vertical": 39.1,
++          "broad": 124,
++          "bench": 22
++        },
++        "ratings": {
++          "strength": 58,
++          "stamina": 73,
++          "balance": 19,
++          "toughness": 57,
++          "throwPower": 27,
++          "accShort": 25,
++          "accMid": 17,
++          "accDeep": 38,
++          "release": 16,
++          "throwOnRun": 21,
++          "touch": 30,
++          "pocketPresence": 31,
++          "vision": 9,
++          "elusiveness": 20,
++          "breakTackle": 24,
++          "ballSecurity": 23,
++          "patience": 38,
++          "routeRunning": 22,
++          "releaseVsPress": 26,
++          "hands": 31,
++          "contestedCatch": 26,
++          "ballTracking": 21,
++          "passBlock": 28,
++          "runBlock": 27,
++          "handTechnique": 26,
++          "leadBlock": 25,
++          "passRushPower": 44,
++          "passRushFinesse": 38,
++          "blockShedding": 79,
++          "tackling": 70,
++          "hitPower": 74,
++          "pursuit": 65,
++          "manCoverage": 33,
++          "zoneCoverage": 42,
++          "press": 23,
++          "ballSkills": 29,
++          "kickPower": 14,
++          "kickAccuracy": 24,
++          "puntPower": 34,
++          "puntAccuracy": 21,
++          "awareness": 61,
++          "playRecognition": 73,
++          "decisionMaking": 60,
++          "composure": 68,
++          "discipline": 52,
++          "anticipation": 52,
++          "consistency": 46,
++          "workRate": 59
++        },
++        "familiarity": {
++          "EDGE": 0.5,
++          "S": 0.35
++        },
++        "archetype": "Thumper"
++      },
++      "CB_S": {
++        "id": "S69D-CB1",
++        "firstName": "Jalen",
++        "lastName": "Mitchell",
++        "jersey": 21,
++        "position": "CB",
++        "age": 25,
++        "experience": 3,
++        "measurables": {
++          "heightIn": 72.6,
++          "weightLb": 212,
++          "armIn": 30.8,
++          "handIn": 9.2,
++          "forty": 4.52,
++          "tenSplit": 1.54,
++          "shuttle": 4.26,
++          "threeCone": 7.03,
++          "vertical": 35,
++          "broad": 118,
++          "bench": 16
++        },
++        "ratings": {
++          "strength": 40,
++          "stamina": 73,
++          "balance": 41,
++          "toughness": 53,
++          "throwPower": 31,
++          "accShort": 35,
++          "accMid": 35,
++          "accDeep": 31,
++          "release": 31,
++          "throwOnRun": 32,
++          "touch": 35,
++          "pocketPresence": 22,
++          "vision": 47,
++          "elusiveness": 31,
++          "breakTackle": 29,
++          "ballSecurity": 27,
++          "patience": 27,
++          "routeRunning": 33,
++          "releaseVsPress": 30,
++          "hands": 70,
++          "contestedCatch": 26,
++          "ballTracking": 35,
++          "passBlock": 41,
++          "runBlock": 29,
++          "handTechnique": 25,
++          "leadBlock": 30,
++          "passRushPower": 23,
++          "passRushFinesse": 44,
++          "blockShedding": 26,
++          "tackling": 64,
++          "hitPower": 33,
++          "pursuit": 78,
++          "manCoverage": 81,
++          "zoneCoverage": 73,
++          "press": 86,
++          "ballSkills": 71,
++          "kickPower": 43,
++          "kickAccuracy": 31,
++          "puntPower": 37,
++          "puntAccuracy": 36,
++          "awareness": 66,
++          "playRecognition": 79,
++          "decisionMaking": 63,
++          "composure": 51,
++          "discipline": 48,
++          "anticipation": 79,
++          "consistency": 56,
++          "workRate": 55
++        },
++        "familiarity": {
++          "S": 0.6
++        },
++        "archetype": "Press Corner"
++      },
++      "CB_W": {
++        "id": "S69D-CB2",
++        "firstName": "Julian",
++        "lastName": "Baker",
++        "jersey": 39,
++        "position": "CB",
++        "age": 29,
++        "experience": 6,
++        "measurables": {
++          "heightIn": 73.5,
++          "weightLb": 203,
++          "armIn": 32.8,
++          "handIn": 9.6,
++          "forty": 4.43,
++          "tenSplit": 1.54,
++          "shuttle": 4.12,
++          "threeCone": 6.95,
++          "vertical": 35.7,
++          "broad": 125,
++          "bench": 17
++        },
++        "ratings": {
++          "strength": 57,
++          "stamina": 82,
++          "balance": 26,
++          "toughness": 53,
++          "throwPower": 35,
++          "accShort": 29,
++          "accMid": 52,
++          "accDeep": 39,
++          "release": 35,
++          "throwOnRun": 30,
++          "touch": 35,
++          "pocketPresence": 8,
++          "vision": 28,
++          "elusiveness": 39,
++          "breakTackle": 40,
++          "ballSecurity": 32,
++          "patience": 26,
++          "routeRunning": 16,
++          "releaseVsPress": 43,
++          "hands": 56,
++          "contestedCatch": 20,
++          "ballTracking": 16,
++          "passBlock": 24,
++          "runBlock": 32,
++          "handTechnique": 35,
++          "leadBlock": 28,
++          "passRushPower": 34,
++          "passRushFinesse": 39,
++          "blockShedding": 31,
++          "tackling": 55,
++          "hitPower": 37,
++          "pursuit": 56,
++          "manCoverage": 78,
++          "zoneCoverage": 72,
++          "press": 63,
++          "ballSkills": 70,
++          "kickPower": 34,
++          "kickAccuracy": 35,
++          "puntPower": 26,
++          "puntAccuracy": 38,
++          "awareness": 71,
++          "playRecognition": 93,
++          "decisionMaking": 72,
++          "composure": 66,
++          "discipline": 59,
++          "anticipation": 73,
++          "consistency": 68,
++          "workRate": 58
++        },
++        "familiarity": {
++          "S": 0.6
++        },
++        "archetype": "Zone Corner"
++      },
++      "NB": {
++        "id": "S69D-S2",
++        "firstName": "Devonte",
++        "lastName": "McCoy",
++        "jersey": 26,
++        "position": "S",
++        "age": 25,
++        "experience": 3,
++        "measurables": {
++          "heightIn": 71.7,
++          "weightLb": 197,
++          "armIn": 31,
++          "handIn": 9.1,
++          "forty": 4.4,
++          "tenSplit": 1.5,
++          "shuttle": 4.06,
++          "threeCone": 6.85,
++          "vertical": 38,
++          "broad": 123,
++          "bench": 7
++        },
++        "ratings": {
++          "strength": 42,
++          "stamina": 80,
++          "balance": 36,
++          "toughness": 71,
++          "throwPower": 47,
++          "accShort": 26,
++          "accMid": 22,
++          "accDeep": 23,
++          "release": 50,
++          "throwOnRun": 42,
++          "touch": 36,
++          "pocketPresence": 28,
++          "vision": 54,
++          "elusiveness": 41,
++          "breakTackle": 33,
++          "ballSecurity": 30,
++          "patience": 28,
++          "routeRunning": 40,
++          "releaseVsPress": 37,
++          "hands": 55,
++          "contestedCatch": 31,
++          "ballTracking": 25,
++          "passBlock": 44,
++          "runBlock": 24,
++          "handTechnique": 26,
++          "leadBlock": 45,
++          "passRushPower": 33,
++          "passRushFinesse": 26,
++          "blockShedding": 48,
++          "tackling": 71,
++          "hitPower": 53,
++          "pursuit": 84,
++          "manCoverage": 72,
++          "zoneCoverage": 97,
++          "press": 27,
++          "ballSkills": 90,
++          "kickPower": 28,
++          "kickAccuracy": 26,
++          "puntPower": 43,
++          "puntAccuracy": 31,
++          "awareness": 87,
++          "playRecognition": 71,
++          "decisionMaking": 59,
++          "composure": 66,
++          "discipline": 70,
++          "anticipation": 85,
++          "consistency": 55,
++          "workRate": 70
++        },
++        "familiarity": {
++          "CB": 0.6,
++          "LB": 0.45
++        },
++        "archetype": "Centerfielder"
++      },
++      "FS": {
++        "id": "S69D-CB3",
++        "firstName": "Drew",
++        "lastName": "Smith",
++        "jersey": 33,
++        "position": "CB",
++        "age": 27,
++        "experience": 4,
++        "measurables": {
++          "heightIn": 69.1,
++          "weightLb": 178,
++          "armIn": 30.4,
++          "handIn": 9,
++          "forty": 4.33,
++          "tenSplit": 1.45,
++          "shuttle": 4.13,
++          "threeCone": 7.05,
++          "vertical": 44.5,
++          "broad": 136,
++          "bench": 13
++        },
++        "ratings": {
++          "strength": 43,
++          "stamina": 61,
++          "balance": 36,
++          "toughness": 76,
++          "throwPower": 26,
++          "accShort": 19,
++          "accMid": 28,
++          "accDeep": 24,
++          "release": 18,
++          "throwOnRun": 35,
++          "touch": 28,
++          "pocketPresence": 37,
++          "vision": 24,
++          "elusiveness": 44,
++          "breakTackle": 36,
++          "ballSecurity": 20,
++          "patience": 27,
++          "routeRunning": 42,
++          "releaseVsPress": 34,
++          "hands": 63,
++          "contestedCatch": 28,
++          "ballTracking": 29,
++          "passBlock": 30,
++          "runBlock": 28,
++          "handTechnique": 27,
++          "leadBlock": 39,
++          "passRushPower": 34,
++          "passRushFinesse": 40,
++          "blockShedding": 25,
++          "tackling": 61,
++          "hitPower": 25,
++          "pursuit": 59,
++          "manCoverage": 72,
++          "zoneCoverage": 77,
++          "press": 64,
++          "ballSkills": 60,
++          "kickPower": 29,
++          "kickAccuracy": 24,
++          "puntPower": 23,
++          "puntAccuracy": 24,
++          "awareness": 58,
++          "playRecognition": 86,
++          "decisionMaking": 64,
++          "composure": 68,
++          "discipline": 60,
++          "anticipation": 76,
++          "consistency": 47,
++          "workRate": 77
++        },
++        "familiarity": {
++          "S": 0.6
++        },
++        "archetype": "Speed Corner"
++      },
++      "SS": {
++        "id": "S69D-S1",
++        "firstName": "Josh",
++        "lastName": "Webb",
++        "jersey": 40,
++        "position": "S",
++        "age": 30,
++        "experience": 8,
++        "measurables": {
++          "heightIn": 72.6,
++          "weightLb": 207,
++          "armIn": 32.6,
++          "handIn": 9.8,
++          "forty": 4.58,
++          "tenSplit": 1.55,
++          "shuttle": 4.28,
++          "threeCone": 6.92,
++          "vertical": 35.8,
++          "broad": 121,
++          "bench": 19
++        },
++        "ratings": {
++          "strength": 63,
++          "stamina": 71,
++          "balance": 27,
++          "toughness": 43,
++          "throwPower": 40,
++          "accShort": 31,
++          "accMid": 37,
++          "accDeep": 40,
++          "release": 23,
++          "throwOnRun": 31,
++          "touch": 21,
++          "pocketPresence": 29,
++          "vision": 43,
++          "elusiveness": 20,
++          "breakTackle": 29,
++          "ballSecurity": 30,
++          "patience": 22,
++          "routeRunning": 21,
++          "releaseVsPress": 17,
++          "hands": 72,
++          "contestedCatch": 36,
++          "ballTracking": 23,
++          "passBlock": 24,
++          "runBlock": 36,
++          "handTechnique": 41,
++          "leadBlock": 33,
++          "passRushPower": 35,
++          "passRushFinesse": 41,
++          "blockShedding": 54,
++          "tackling": 77,
++          "hitPower": 53,
++          "pursuit": 70,
++          "manCoverage": 77,
++          "zoneCoverage": 73,
++          "press": 46,
++          "ballSkills": 78,
++          "kickPower": 23,
++          "kickAccuracy": 31,
++          "puntPower": 29,
++          "puntAccuracy": 19,
++          "awareness": 84,
++          "playRecognition": 87,
++          "decisionMaking": 70,
++          "composure": 64,
++          "discipline": 52,
++          "anticipation": 75,
++          "consistency": 68,
++          "workRate": 69
++        },
++        "familiarity": {
++          "CB": 0.6,
++          "LB": 0.45
++        },
++        "archetype": "Hybrid"
++      }
++    },
++    "offCall": {
++      "formation": {
++        "id": "ace_11",
++        "name": "Singleback Ace",
++        "personnel": "11",
++        "qb": "under",
++        "tags": [
++          "pro",
++          "2x2"
++        ],
++        "slots": {
++          "X": {
++            "side": "L",
++            "split": "wide",
++            "depth": 0.6
++          },
++          "H": {
++            "side": "L",
++            "split": "slot",
++            "depth": 1.2
++          },
++          "Y": {
++            "side": "R",
++            "split": "inline",
++            "depth": 0.6
++          },
++          "Z": {
++            "side": "R",
++            "split": "wide",
++            "depth": 1.2
++          },
++          "RB": {
++            "side": "C",
++            "split": 0,
++            "depth": 6.8
++          }
++        }
++      },
++      "flip": false,
++      "kind": "run",
++      "run": {
++        "id": "duo",
++        "name": "Duo",
++        "scheme": "duo",
++        "direction": "strong",
++        "aim": "A",
++        "meshTime": 1.2,
++        "pullers": [],
++        "beats": [
++          "heavy-box",
++          "two-high"
++        ]
++      },
++      "label": "Singleback Ace \u00b7 Duo"
++    },
++    "defCall": {
++      "personnel": "nickel",
++      "front": {
++        "id": "wide9",
++        "name": "Wide-9 Nickel",
++        "personnel": [
++          "nickel",
++          "dime"
++        ],
++        "slots": {
++          "DE_S": {
++            "tech": "w9",
++            "side": "S",
++            "depth": 0.9
++          },
++          "DT_S": {
++            "tech": "3",
++            "side": "S",
++            "depth": 0.9
++          },
++          "DT_W": {
++            "tech": "2i",
++            "side": "W",
++            "depth": 0.9
++          },
++          "DE_W": {
++            "tech": "w9",
++            "side": "W",
++            "depth": 0.9
++          },
++          "LB_M": {
++            "tech": "2",
++            "side": "S",
++            "depth": 4.8999999999999995
++          },
++          "LB_W": {
++            "tech": "2",
++            "side": "W",
++            "depth": 4.6
++          }
++        }
++      },
++      "coverage": {
++        "id": "cover4",
++        "name": "Quarters (MOD)",
++        "family": "cover4",
++        "shell": "two-high",
++        "man": false,
++        "press": false,
++        "note": "Corners MOD on #1; safeties read #2 (vertical: carry; out/under: help #1); apexes wall #2.",
++        "roles": {
++          "CB_S": {
++            "kind": "zone",
++            "zone": "quarter_s_out",
++            "rule": "q_corner_mod"
++          },
++          "SS": {
++            "kind": "zone",
++            "zone": "quarter_s_in",
++            "rule": "q_safety"
++          },
++          "CB_W": {
++            "kind": "zone",
++            "zone": "quarter_w_out",
++            "rule": "q_corner_mod"
++          },
++          "FS": {
++            "kind": "zone",
++            "zone": "quarter_w_in",
++            "rule": "q_safety"
++          }
++        },
++        "underneath": [
++          {
++            "zone": "curl_flat_s",
++            "rule": "q_apex"
++          },
++          {
++            "zone": "curl_flat_w",
++            "rule": "q_apex"
++          },
++          {
++            "zone": "hook_mid",
++            "rule": "mike_3"
++          },
++          "hook_s",
++          "hook_w"
++        ],
++        "checks": {
++          "3x1": [
++            "cover4_poach",
++            "cover4_stubbie"
++          ]
++        }
++      },
++      "pressure": null,
++      "label": "Wide-9 Nickel \u00b7 Quarters (MOD)"
++    },
++    "los": 35,
++    "ballY": 26.666666666666668,
++    "firstDownX": 45,
++    "down": 1,
++    "seed": 71002,
++    "audibles": false,
++    "record": true,
++    "recordEvery": 1,
++    "recordLevel": "full"
++  },
++  "inputSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
++  "originalCaseSha256": "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0",
++  "purpose": "#87 with accepted #89; max3.8s, all22 natural reactions; only if static/unit inspection leaves an actual interaction question."
++}
+diff --git a/test/fixtures/traffic-route-impact.json b/test/fixtures/traffic-route-impact.json
+new file mode 100644
+index 0000000..d82619c
+--- /dev/null
++++ b/test/fixtures/traffic-route-impact.json
+@@ -0,0 +1,250 @@
++{
++  "inputSha256": "d72f11b3e38913a5a9207b3ff61141b0b745d765ea336a4c6e6727c8db28d55d",
++  "t": 1.95,
++  "idx": 15,
++  "body": {
++    "pos": {
++      "x": 37.54908747540832,
++      "y": 26.4421612852699
++    },
++    "vel": {
++      "x": -0.6835628158789077,
++      "y": 1.6064874926721937
++    },
++    "facing": 3.204774301974286,
++    "energy": 0.987559075762981,
++    "profile": {
++      "vmax": 9.076817613371945,
++      "tau": 1.3397936959756922,
++      "brake": 6.147403628117912,
++      "lateral": 6.296676870748302,
++      "turnRate": 8.617777777777778,
++      "backpedal": 0.6122448979591837,
++      "shuffle": 0.5888,
++      "massKg": 112.49090776,
++      "heightYd": 2.091666666666667,
++      "radius": 0.3018181818181818,
++      "reach": 1.0669444444444445,
++      "maxCatchHeight": 3.468583333333333,
++      "reactReach": 3.0394166666666664,
++      "reactionTime": 0.2229387755102041,
++      "power": 112.68030571694285,
++      "balance": 0.19387755102040816,
++      "bend": 0.5127755102040817,
++      "stepSpeed": 3.389215419501133,
++      "getUp": 0.9557777777777778
++    },
++    "support": {
++      "xi": {
++        "x": 0,
++        "y": 0
++      },
++      "state": "up",
++      "since": null,
++      "posture": 0.19756125468843772,
++      "lean": {
++        "x": 0,
++        "y": 0
++      },
++      "load": {
++        "x": 0,
++        "y": 0
++      },
++      "felt": {
++        "x": 0,
++        "y": 0
++      },
++      "feetLock": 0,
++      "feetVel": {
++        "x": 0,
++        "y": 0
++      },
++      "fall": {
++        "x": 0,
++        "y": 0
++      },
++      "peak": 0,
++      "out": 0,
++      "feltTip": {
++        "x": 0,
++        "y": 0
++      },
++      "causes": {
++        "contact": 0,
++        "legs": 0,
++        "overspeed": 0
++      },
++      "accel": {
++        "x": 3.301536863108991,
++        "y": -3.3636827487935306
++      },
++      "tipAccel": {
++        "x": 0,
++        "y": 0
++      }
++    },
++    "spin": 2.527265935379723,
++    "squeeze": 0,
++    "sprintLoad": 0,
++    "squeezeHeading": -4.41705876141949
++  },
++  "raw": {
++    "request": {
++      "vel": {
++        "x": -2.5859974436405224,
++        "y": -9.076817613371945
++      },
++      "facing": -1.8483442273457844
++    },
++    "goal": {
++      "kind": "moving",
++      "point": {
++        "x": 36.5,
++        "y": 25.350723274526555
++      },
++      "velocity": {
++        "x": 0,
++        "y": 0
++      }
++    }
++  },
++  "ordinary": {
++    "vel": {
++      "x": 3.5899727904208216,
++      "y": -0.7656481655607994
++    },
++    "facing": -1.8483442273457844
++  },
++  "peers": [
++    {
++      "key": 11,
++      "age": 0.05,
++      "pos": {
++        "x": 34.08688574905692,
++        "y": 31.198308847822954
++      },
++      "vel": {
++        "x": 1.1566422173113486,
++        "y": 0.550667814945843
++      },
++      "touch": 0.5596363636363637
++    },
++    {
++      "key": 12,
++      "age": 0.05,
++      "pos": {
++        "x": 35.05897924311493,
++        "y": 19.408793132397054
++      },
++      "vel": {
++        "x": -0.38974339480173786,
++        "y": -0.7695927244605472
++      },
++      "touch": 0.5334545454545455
++    },
++    {
++      "key": 13,
++      "age": 0.05,
++      "pos": {
++        "x": 37.09087783906974,
++        "y": 25.825536239179687
++      },
++      "vel": {
++        "x": 1.483158443815617,
++        "y": 1.6066427807216965
++      },
++      "touch": 0.5383636363636364
++    },
++    {
++      "key": 14,
++      "age": 0.05,
++      "pos": {
++        "x": 37.05364903424972,
++        "y": 29.49089377286815
++      },
++      "vel": {
++        "x": 1.537156550446803,
++        "y": 2.1259341773738933
++      },
++      "touch": 0.5571818181818182
++    },
++    {
++      "key": 16,
++      "age": 0.05,
++      "pos": {
++        "x": 37.286679246989195,
++        "y": 27.625838443540676
++      },
++      "vel": {
++        "x": -1.6107332032667938,
++        "y": -0.7321699977104015
++      },
++      "touch": 0.5359090909090909
++    },
++    {
++      "key": 17,
++      "age": 0.05,
++      "pos": {
++        "x": 42.213360718175345,
++        "y": 11.018590209121635
++      },
++      "vel": {
++        "x": 0.7607159520849722,
++        "y": 2.4214686526800064
++      },
++      "touch": 0.5138181818181818
++    },
++    {
++      "key": 18,
++      "age": 0.05,
++      "pos": {
++        "x": 43.48572185720864,
++        "y": 42.763342032563
++      },
++      "vel": {
++        "x": 2.2305202912094524,
++        "y": -1.8847992970088354
++      },
++      "touch": 0.5064545454545455
++    },
++    {
++      "key": 19,
++      "age": 0.05,
++      "pos": {
++        "x": 38.32368819322482,
++        "y": 32.223184519076035
++      },
++      "vel": {
++        "x": -2.4753445156948586,
++        "y": -1.8174000982930902
++      },
++      "touch": 0.5015454545454545
++    },
++    {
++      "key": 20,
++      "age": 0.05,
++      "pos": {
++        "x": 45.09020147170544,
++        "y": 30.59587723244362
++      },
++      "vel": {
++        "x": -1.4823666135368772,
++        "y": -4.849874181711718
++      },
++      "touch": 0.48600000000000004
++    },
++    {
++      "key": 21,
++      "age": 0.05,
++      "pos": {
++        "x": 44.29505216804487,
++        "y": 21.09188947643207
++      },
++      "vel": {
++        "x": -2.7689085129139714,
++        "y": 2.9164951404639465
++      },
++      "touch": 0.5097272727272728
++    }
++  ]
++}
+diff --git a/test/joint-spacing-projection.test.ts b/test/joint-spacing-projection.test.ts
+new file mode 100644
+index 0000000..e70cd2c
+--- /dev/null
++++ b/test/joint-spacing-projection.test.ts
+@@ -0,0 +1,45 @@
++import { describe, expect, it } from 'vitest';
++import { movementObjective } from '../src/sim/movement-objective.js';
++import { executeProjection, projectionOracle, projectionScene, selectProjection } from '../scripts/diag/navigation/joint-projection.js';
++
++describe('joint headway retains the nearest feasible free-footwork request', () => {
++  it('removes a feasible sequential overcorrection and improves achievable progress toward the same goal', () => {
++    const scene = projectionScene(), before = structuredClone(scene), goalBefore=structuredClone(movementObjective(scene.raw)), oracle = projectionOracle(scene);
++    const selected = selectProjection(scene), closest = oracle.closest;
++    expect(oracle.limits.every(c => oracle.ordinary.x * c.nx + oracle.ordinary.y * c.ny <= c.speed + 1e-9)).toBe(true);
++    // Positive multipliers certify this two-active-boundary intersection is
++    // the closest point to raw, rather than another implementation's golden.
++    const secondMultiplier = (scene.raw.vel.y - closest.y) / oracle.limits[1].ny;
++    const firstMultiplier = scene.raw.vel.x - closest.x - secondMultiplier * oracle.limits[1].nx;
++    expect(secondMultiplier).toBeGreaterThan(0); expect(firstMultiplier).toBeGreaterThan(0);
++    expect(selected.command.vel.x).toBeCloseTo(closest.x, 9);
++    expect(selected.command.vel.y).toBeCloseTo(closest.y, 9);
++    expect({ ...selected.command, vel: undefined }).toEqual({ ...scene.raw, vel: undefined });
++    expect(movementObjective(selected.command)).toEqual(movementObjective(scene.raw));
++    expect(selected.reads).toBe(2); expect(selected.ownUnchanged && selected.picturesUnchanged).toBe(true);
++    const old = executeProjection(scene, { ...scene.raw, vel: oracle.ordinary });
++    const next = executeProjection(scene, selected.command);
++    expect(next.upright).toBe(true); expect(next.contacts).toBe(0);
++    expect(next.progress).toBeGreaterThan(old.progress);
++    expect(next.goalError).toBeLessThan(old.goalError);
++    expect(next.maxWorkResidual).toBeLessThan(1e-8); expect(next.maxMotorExcess).toBeLessThan(1e-8);
++    expect(structuredClone(scene)).toEqual(before);
++    expect(movementObjective(scene.raw)).toEqual(goalBefore);
++  });
++
++  it('preserves the full clear request and tactile-owned ordinary contact response', () => {
++    const clear = projectionScene('clear'), selected = selectProjection(clear);
++    expect(selected.command).toEqual(clear.raw);
++    const loaded = projectionScene('loaded'), oracle = projectionOracle(loaded);
++    const held=selectProjection(loaded).command;
++    expect(held.vel.x).toBeCloseTo(oracle.ordinary.x,12);
++    expect(held.vel.y).toBeCloseTo(oracle.ordinary.y,12);
++    expect({...held,vel:undefined}).toEqual({...loaded.raw,vel:undefined});
++  });
++
++  it('retains single-neighbor braking and the real collision when residual momentum cannot stop in time', () => {
++    const scene = projectionScene('obstruction'), oracle = projectionOracle(scene), selected = selectProjection(scene);
++    expect(selected.command).toEqual({ ...scene.raw, vel: oracle.ordinary });
++    expect(executeProjection(scene, selected.command).contacts).toBeGreaterThan(0);
++  });
++});
+diff --git a/test/local-traffic-route.test.ts b/test/local-traffic-route.test.ts
+new file mode 100644
+index 0000000..1f22c24
+--- /dev/null
++++ b/test/local-traffic-route.test.ts
+@@ -0,0 +1,220 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import { localPassage } from '../scripts/diag/navigation/local-passage.js';
++import { CENTER_Y } from '../src/core/field.js';
++import type { Body } from '../src/physics/kinematics.js';
++import * as Preview from '../src/physics/movement-preview.js';
++import { newSupport } from '../src/physics/support.js';
++import { World, type Intent } from '../src/physics/world.js';
++import { Agent } from '../src/sim/agent.js';
++import { track } from '../src/sim/behaviors/common.js';
++import { movementObjective, withMovementObjective } from '../src/sim/movement-objective.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { spaceTeammates } from '../src/sim/spacing.js';
++import { localTrafficRoute, type TrafficPeer } from '../src/sim/traffic-route.js';
++
++const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz', import.meta.url))).toString());
++const goal = { x: 58, y: CENTER_Y };
++
++function actor() {
++  const body: Body = { ...structuredClone(fixture.rows[0].body), pos: { x: 50, y: CENTER_Y },
++    vel: { x: 4, y: 0 }, facing: 0, energy: 1, support: newSupport(), spin: 0, squeeze: 0 };
++  return new Agent(0, 'D', 'SS', fixture.player, body.profile, body,
++    { kind: 'zone', update() { throw Error('The selected football goal is already supplied'); } });
++}
++
++function picture(a: Agent): TrafficPeer {
++  return { key: 1, pos: { x: 53, y: CENTER_Y }, vel: { x: 0, y: 0 }, age: .05,
++    touch: .9 * (a.profile.radius + fixture.rows[0].peers[0].profile.radius) };
++}
++
++function request(a: Agent): Intent {
++  return { ...track(a, goal, { x: 0, y: 0 }, { speed: .7, gain: 3, facing: 0 }),
++    posture: .25, effort: .9, cutSkill: .85 };
++}
++
++function usefulPassage(row: ReturnType<typeof localPassage>) {
++  // Reaching the far side is achieved movement, not a nominal detour request.
++  expect(row.result.progress).toBeGreaterThan(7);
++  expect(row.result.goalError).toBeLessThan(1);
++  expect(row.states.every(s => s.after[0].state === 'up')).toBe(true);
++  expect(row.states.every(s => s.command.facing === s.raw.facing)).toBe(true);
++  expect(row.result.maximumWorkResidual).toBeLessThan(1e-8);
++  // A tangent can produce a reported touch with zero delivered impulse.
++  // Such a record is not a physical teammate impact or a failed passage.
++  expect(row.result.contactIntervals.flatMap(s => s.contacts)
++    .every(c => c.impulse <= 1e-8)).toBe(true);
++}
++
++describe('local traffic routing preserves an owned goal through achieved movement', () => {
++  it.each(['head-on', 'cluster'] as const)('passes %s traffic and resumes the same goal over three seconds', mode => {
++    const row = localPassage(mode);
++    usefulPassage(row);
++    expect(row.states.some(s => Math.abs(s.after[0].pos.y - row.initial[0].pos.y) > row.initial[0].profile.radius)).toBe(true);
++    expect(row.states.every(s => s.raw.objective?.kind === 'moving'
++      && s.raw.objective.point.x === row.goal.x && s.raw.objective.point.y === row.goal.y
++      && s.raw.objective.velocity?.x === 0 && s.raw.objective.velocity?.y === 0)).toBe(true);
++  });
++
++  it('preserves useful offset passage in both mirrors, allowing harmless touch records', () => {
++    const ordinary = localPassage('single'), mirrored = localPassage('mirror');
++    usefulPassage(ordinary); usefulPassage(mirrored);
++    expect(ordinary.result.progress).toBeCloseTo(mirrored.result.progress, 8);
++    expect(ordinary.result.goalError).toBeCloseTo(mirrored.result.goalError, 8);
++    for (let i = 0; i < ordinary.states.length; i++) {
++      expect(ordinary.states[i].after[0].pos.x).toBeCloseTo(mirrored.states[i].after[0].pos.x, 8);
++      expect(ordinary.states[i].after[0].pos.y - CENTER_Y)
++        .toBeCloseTo(CENTER_Y - mirrored.states[i].after[0].pos.y, 8);
++    }
++  });
++
++  it('keeps the clear track unchanged without any movement previews', () => {
++    const preview = vi.spyOn(Preview, 'previewFreeMovement');
++    try {
++      const row = localPassage('clear');
++      usefulPassage(row);
++      expect(row.states.every(s => s.command.vel.x === s.raw.vel.x && s.command.vel.y === s.raw.vel.y)).toBe(true);
++      expect(preview).not.toHaveBeenCalled();
++    } finally { preview.mockRestore(); }
++  });
++
++  it('uses acquired peer pictures at the production hook while preserving body, pictures and command modifiers', () => {
++    const a = actor(), raw = request(a), seen: Perceived = { pos: { x: 53, y: CENTER_Y },
++      vel: { x: 0, y: 0 }, age: .05, facing: 0, stance: null };
++    const peer = { idx: 1, team: 'D', profile: fixture.rows[0].peers[0].profile,
++      get pos() { throw Error('Private peer position'); },
++      get vel() { throw Error('Private peer velocity'); },
++      get body() { throw Error('Private peer body'); } } as unknown as Agent;
++    const beforeBody = structuredClone(a.body), beforePicture = structuredClone(seen);
++    const intents: Intent[] = [raw, { vel: { x: 0, y: 0 }, free: true }];
++    let reads = 0;
++    spaceTeammates([a, peer], intents, (_observer, target) => {
++      expect(target).toBe(peer); reads++; return seen;
++    }, { now: 2 });
++    expect(reads).toBe(1);
++    expect(a.body).toEqual(beforeBody); expect(seen).toEqual(beforePicture);
++    expect({ ...intents[0], vel: undefined }).toEqual({ ...raw, vel: undefined });
++    expect(movementObjective(intents[0])).toEqual(movementObjective(raw));
++  });
++
++  it('distinguishes acquired stationary motion from unknown motion, age and objective flow', () => {
++    for (const kind of ['known-stationary', 'unknown-motion', 'unknown-age', 'unknown-flow'] as const) {
++      const a = actor(), peer = picture(a);
++      let raw = request(a);
++      if (kind === 'unknown-motion') peer.vel = { x: NaN, y: 0 };
++      if (kind === 'unknown-age') delete peer.age;
++      if (kind === 'unknown-flow') raw = withMovementObjective(raw, { kind: 'moving', point: goal });
++      const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++      const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++      const before = structuredClone({ body: a.body, peer });
++      const chosen = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++      if (kind === 'known-stationary') expect(forecast).toHaveBeenCalled();
++      else { expect(chosen).toBe(ordinary); expect(forecast).not.toHaveBeenCalled(); }
++      expect(a.body).toEqual(before.body); expect(peer).toEqual(before.peer);
++    }
++  });
++
++  it('leaves an occupied goal and unsupported or constrained action with its ordinary response', () => {
++    for (const kind of ['occupied-goal', 'unsupported-role', 'constrained'] as const) {
++      const a = actor(), peer = picture(a), raw = request(a);
++      if (kind === 'occupied-goal') peer.pos = { ...goal };
++      if (kind === 'unsupported-role') a.behavior = { kind: 'idle', update() { throw Error('No new role scope'); } };
++      const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++      const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++      expect(localTrafficRoute(a, raw, ordinary, [peer], forecast, kind !== 'constrained', true)).toBe(ordinary);
++      expect(forecast).not.toHaveBeenCalled();
++    }
++  });
++
++  it('retains a real impact when current momentum cannot avoid a close obstruction', () => {
++    const a = actor(), body: Body = { pos: { x: a.pos.x + .7, y: CENTER_Y },
++      vel: { x: 0, y: 0 }, facing: 0, energy: 1,
++      profile: structuredClone(fixture.rows[0].peers[0].profile), support: newSupport(), spin: 0 };
++    const peer = new Agent(1, 'D', 'FS', fixture.player, body.profile, body,
++      { kind: 'zone', update() { throw Error('Known stationary obstruction'); } });
++    const world = new World([a.body, body]); world.time = 2;
++    const seen: Perceived = { pos: { ...body.pos }, vel: { x: 0, y: 0 }, age: .05, facing: 0, stance: null };
++    const intents: Intent[] = [request(a), { vel: { x: 0, y: 0 }, free: true }];
++    spaceTeammates([a, peer], intents, () => seen, { now: 2 });
++    const report = world.step(intents, .05);
++    expect(report.contacts.some(c => c.impulse > 0)).toBe(true);
++    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  });
++  it('reconsiders acquired motion and retires its old detour when the owned goal changes', () => {
++    const a = actor(), peer = picture(a), raw = request(a);
++    const ordinary = { ...raw, vel: { x: 4.5, y: 0 } };
++    const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(a.body, command, 2, 12));
++    const initial = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++    expect(Math.abs(initial.vel.y)).toBeGreaterThan(0);
++    expect(movementObjective(initial)).toEqual(movementObjective(raw));
++
++    // This is newly acquired transverse motion, not an unseen future cut or
++    // a route read from the teammate. The ordinary request now has room as
++    // that picture moves; a retained maneuver must reconsider its command.
++    const crossing = { ...peer, vel: { x: 0, y: 4 } };
++    const before = structuredClone({ own: a.body, crossing });
++    expect(localTrafficRoute(a, raw, raw, [crossing], forecast, true, false)).toBe(raw);
++    expect(a.body).toEqual(before.own); expect(crossing).toEqual(before.crossing);
++
++    // The original producer supplies a different legitimate owned goal. This
++    // checks goal semantics only; execution of its turn remains with ordinary
++    // spacing and World, rather than being certified by this route helper.
++    const cut = withMovementObjective({ ...raw, vel: { x: 0, y: Math.hypot(raw.vel.x, raw.vel.y) } },
++      { kind: 'moving', point: { x: a.pos.x, y: a.pos.y + 8 }, velocity: { x: 0, y: 0 } });
++    const ordinaryCut = { ...cut, vel: { x: 0, y: 1 } };
++    forecast.mockClear();
++    expect(localTrafficRoute(a, cut, ordinaryCut, [peer], forecast, true, false)).toBe(ordinaryCut);
++    expect(forecast).not.toHaveBeenCalled();
++    // With starting disallowed, the old maneuver cannot silently reactivate
++    // after yielding to the new goal. No fixed hold timer supplies continuity.
++    expect(localTrafficRoute(a, raw, ordinary, [peer], forecast, true, false)).toBe(ordinary);
++    expect(forecast).not.toHaveBeenCalled();
++  });
++  it('does not trade shallower predicted overlap for the harder first hit in the saved native encounter', () => {
++    const saved = JSON.parse(readFileSync(new URL('./fixtures/traffic-route-impact.json', import.meta.url), 'utf8'));
++    const body: Body = structuredClone(saved.body);
++    const a = new Agent(saved.idx, 'D', 'LB_M', fixture.player, body.profile, body,
++      { kind: 'zone', update() { throw Error('Replay only the already consumed goal'); } });
++    const raw: Intent = withMovementObjective(structuredClone(saved.raw.request), structuredClone(saved.raw.goal));
++    const ordinary: Intent = structuredClone(saved.ordinary);
++    const peers: TrafficPeer[] = structuredClone(saved.peers);
++    const before = structuredClone({ body, peers });
++    const forecast = vi.fn((command: Intent) => Preview.previewFreeMovement(body, command, saved.t, 12));
++    const selected = localTrafficRoute(a, raw, ordinary, peers, forecast, true, true);
++    // The saved ordinary preview enters acquired peer13 at .2403s / .825yd/s.
++    // Gather has less eventual overlap (-.227 vs -.493yd), but enters earlier
++    // and harder (.1769s / 1.335yd/s). The other detours create a peer16 hit.
++    // That lesser minimum overlap is not permission for the harder first hit.
++    expect(forecast.mock.calls.some(([command]) => command.vel.x === 0 && command.vel.y === 0)).toBe(true);
++    expect(selected).toBe(ordinary);
++    expect(body).toEqual(before.body); expect(peers).toEqual(before.peers);
++  });
++
++  it('permits a shallower, lower-closing glancing forecast instead of banning every overlap', () => {
++    const a = actor(), raw = request(a), peer = picture(a);
++    peer.pos.x = a.pos.x + 2;
++    const ordinary: Intent = { ...raw, vel: { x: 4, y: 0 } };
++    // Controlled forecast streams isolate the consumer comparison, not World
++    // contact physics. Both move4yd/s forward. The alternative adds an outward
++    // lateral curve (4.5yd/s² for.2s, then .9yd/s); at first touch its outward
++    // motion reduces normal closing below the ordinary4yd/s. It still overlaps
++    // the disc and later leaves it. No body radius or contact law is changed.
++    const forecast = (command: Intent) => Array.from({ length: 12 }, (_, k) => {
++      const t = (k + 1) * .05;
++      const bends = command !== ordinary && Math.abs(command.vel.y) > 0;
++      const sign = Math.sign(command.vel.y);
++      const lateral = t <= .2 ? .5 * 4.5 * t * t : .09 + .9 * (t - .2);
++      return { t, pos: { x: a.pos.x + 4 * t, y: a.pos.y + (bends ? sign * lateral : 0) },
++        vel: { x: 4, y: bends ? sign * Math.min(.9, 4.5 * t) : 0 }, support: 'up' as const };
++    });
++    const selected = localTrafficRoute(a, raw, ordinary, [peer], forecast, true, true);
++    expect(selected).not.toBe(ordinary);
++    expect(Math.abs(selected.vel.y)).toBeGreaterThan(0);
++    const path = forecast(selected), end = path.at(-1)!;
++    expect(path.some(sample => Math.hypot(sample.pos.x - peer.pos.x, sample.pos.y - peer.pos.y) < peer.touch)).toBe(true);
++    expect(Math.hypot(end.pos.x - peer.pos.x, end.pos.y - peer.pos.y)).toBeGreaterThan(peer.touch);
++    expect(movementObjective(selected)).toEqual(movementObjective(raw));
++    expect({ ...selected, vel: undefined }).toEqual({ ...raw, vel: undefined });
++  });
++});
+diff --git a/test/traffic-distance.test.ts b/test/traffic-distance.test.ts
+new file mode 100644
+index 0000000..0a1253d
+--- /dev/null
++++ b/test/traffic-distance.test.ts
+@@ -0,0 +1,50 @@
++import {describe,expect,it} from 'vitest';
++import {trafficDistance,trafficRoute} from '../src/sim/traffic-distance.js';
++import {trafficPath,type TrafficDisc} from '../src/sim/traffic-path.js';
++
++const start={x:-3,y:0},goal={x:3,y:0};
++function same(discs:TrafficDisc[],bounds?:{minX:number;maxX:number;minY:number;maxY:number}) {
++  const before=structuredClone(discs),proposal=trafficPath(start,goal,discs,bounds);
++  expect(trafficDistance(start,goal,discs,bounds)).toBe(proposal?.distance??null);
++  const selected=trafficRoute(start,goal,discs,bounds);
++  expect(selected?.distance??null).toBe(proposal?.distance??null);
++  if(selected){
++    expect(selected.firstPiece).toEqual(selected.pieces[0]??null);
++    for(const piece of selected.pieces){
++      if(piece.kind==='arc')expect(discs[piece.disc]).toEqual({center:piece.center,radius:piece.radius});
++      for(let k=0;k<=80;k++){
++        const t=k/80;
++        const p=piece.kind==='line'?{x:piece.from.x+(piece.to.x-piece.from.x)*t,y:piece.from.y+(piece.to.y-piece.from.y)*t}
++          :{x:piece.center.x+piece.radius*Math.cos(piece.startAngle+piece.sweep*t),y:piece.center.y+piece.radius*Math.sin(piece.startAngle+piece.sweep*t)};
++        for(const disc of discs)expect(Math.hypot(p.x-disc.center.x,p.y-disc.center.y)).toBeGreaterThanOrEqual(disc.radius-1e-8);
++        if(bounds){expect(p.x).toBeGreaterThanOrEqual(bounds.minX-1e-8);expect(p.x).toBeLessThanOrEqual(bounds.maxX+1e-8);expect(p.y).toBeGreaterThanOrEqual(bounds.minY-1e-8);expect(p.y).toBeLessThanOrEqual(bounds.maxY+1e-8);}
++      }
++    }
++  }
++  expect(discs).toEqual(before);
++  expect(trafficPath(start,goal,discs,bounds)).toEqual(proposal);
++}
++describe('scalar route cost retains the full geometry problem',()=>{
++  it.each([-1,1])('checks an omitted obstacle inside the proposed arc in mirror %i',side=>{
++    // These small circles miss the initial straight segment. Checking only
++    // tangent lines or arc endpoints would incorrectly accept the shorter arc.
++    same([{center:{x:0,y:.2*side},radius:1},{center:{x:0,y:-.95*side},radius:.25}]);
++    same([{center:{x:0,y:0},radius:1},{center:{x:0,y:1.15},radius:.25},{center:{x:0,y:-1.15},radius:.25}]);
++  });
++  it('keeps all constraints while avoiding needless distant-disc graph nodes',()=>{
++    same([{center:{x:0,y:0},radius:1},...Array.from({length:9},(_,i)=>({center:{x:i*2,y:20},radius:1}))]);
++    same(Array.from({length:10},(_,i)=>({center:{x:i*2,y:20},radius:1})));
++    same([{center:{x:0,y:0},radius:1},{center:{x:0,y:0},radius:1},{center:{x:.2,y:.1},radius:.3}]);
++  });
++  it.each([.5,.1])('retains the bounded full solve when the plane shortcut leaves the field (%s)',maxY=>{
++    const discs=[{center:{x:0,y:-.35},radius:1}];
++    same(discs,{minX:-4,maxX:4,minY:maxY===.5?-2:-.1,maxY});
++  });
++  it('keeps unknown, invalid, inside-body and excessive-peer cases unavailable',()=>{
++    expect(trafficDistance({x:NaN,y:0},goal,[])).toBeNull();
++    expect(trafficDistance(start,goal,[{center:{x:0,y:0},radius:NaN}])).toBeNull();
++    expect(trafficDistance(start,goal,[{center:start,radius:1}])).toBeNull();
++    expect(trafficDistance(start,goal,Array.from({length:11},()=>({center:{x:0,y:20},radius:1})))).toBeNull();
++    expect(trafficDistance(start,start,[])).toBe(0);
++  });
++});
+diff --git a/test/traffic-path.test.ts b/test/traffic-path.test.ts
+new file mode 100644
+index 0000000..241da69
+--- /dev/null
++++ b/test/traffic-path.test.ts
+@@ -0,0 +1,123 @@
++import { describe, expect, it } from 'vitest';
++import { trafficPath, type TrafficDisc, type TrafficPath } from '../src/sim/traffic-path.js';
++import type { Vec2 } from '../src/core/vec.js';
++
++function checkPath(path: TrafficPath | null, start: Vec2, goal: Vec2, discs: TrafficDisc[]) {
++  expect(path).not.toBeNull();
++  const result = path!;
++  expect(result.distance).toBeCloseTo(result.pieces.reduce((sum, p) => sum + p.length, 0), 8);
++  expect(result.pieces[0].from.x).toBeCloseTo(start.x, 8);
++  expect(result.pieces[0].from.y).toBeCloseTo(start.y, 8);
++  expect(result.pieces.at(-1)!.to.x).toBeCloseTo(goal.x, 8);
++  expect(result.pieces.at(-1)!.to.y).toBeCloseTo(goal.y, 8);
++  expect(Math.hypot(result.firstDirection.x, result.firstDirection.y)).toBeCloseTo(1, 8);
++  for (let i = 0; i < result.pieces.length; i++) {
++    const piece = result.pieces[i];
++    if (i) {
++      expect(piece.from.x).toBeCloseTo(result.pieces[i - 1].to.x, 8);
++      expect(piece.from.y).toBeCloseTo(result.pieces[i - 1].to.y, 8);
++    }
++    // Independently sample each returned physical-radius boundary/line,
++    // including endpoints and covered overlap seams. The exact one-disc
++    // length below separately rejects a merely sampled/chord detour.
++    for (let k = 0; k <= 80; k++) {
++      const t = k / 80;
++      const p = piece.kind === 'line'
++        ? { x: piece.from.x + (piece.to.x - piece.from.x) * t, y: piece.from.y + (piece.to.y - piece.from.y) * t }
++        : { x: piece.center.x + piece.radius * Math.cos(piece.startAngle + piece.sweep * t),
++          y: piece.center.y + piece.radius * Math.sin(piece.startAngle + piece.sweep * t) };
++      for (const disc of discs) expect(Math.hypot(p.x - disc.center.x, p.y - disc.center.y))
++        .toBeGreaterThanOrEqual(disc.radius - 1e-8);
++    }
++  }
++}
++
++describe('the same football point through represented teammate-disc geometry', () => {
++  it('retains a direct clear path without changing inputs', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: 0, y: 2 }, radius: 1 }], before = structuredClone({ start, goal, discs });
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBe(6); expect(path!.pieces).toHaveLength(1);
++    expect(path!.firstDirection).toEqual({ x: 1, y: 0 });
++    expect({ start, goal, discs }).toEqual(before);
++  });
++
++  it('uses the exact tangent-plus-arc distance around one physical disc', () => {
++    const start = { x: -2, y: 0 }, goal = { x: 2, y: 0 }, discs = [{ center: { x: 0, y: 0 }, radius: 1 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeCloseTo(2 * Math.sqrt(3) + Math.PI / 3, 8);
++    expect(path!.distance).toBeGreaterThan(4);
++    expect(path!.pieces.some(p => p.kind === 'arc')).toBe(true);
++  });
++
++  it.each([2, 3])('plans around %i overlapping bodies together without entering a covered seam', count => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: -.6, y: 0 }, radius: 1 },
++      { center: { x: .6, y: 0 }, radius: 1 }, { center: { x: 0, y: -.65 }, radius: 1 }].slice(0, count);
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeGreaterThan(6);
++    expect(path!.pieces.some(p => p.kind === 'arc')).toBe(true);
++  });
++
++  it('mirrors a uniquely shorter side and its initial physical direction', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const a = trafficPath(start, goal, [{ center: { x: 0, y: .35 }, radius: 1 }])!;
++    const b = trafficPath(start, goal, [{ center: { x: 0, y: -.35 }, radius: 1 }])!;
++    expect(a.distance).toBeCloseTo(b.distance, 8);
++    expect(a.firstDirection.x).toBeCloseTo(b.firstDirection.x, 8);
++    expect(a.firstDirection.y).toBeCloseTo(-b.firstDirection.y, 8);
++    expect(a.firstDirection.y).toBeLessThan(0);
++  });
++
++  it('keeps contained/duplicate discs equivalent to their actual union', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const outer = { center: { x: 0, y: 0 }, radius: 1 };
++    const discs = [outer, structuredClone(outer), { center: { x: .2, y: .1 }, radius: .3 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.distance).toBeCloseTo(trafficPath(start, goal, [outer])!.distance, 8);
++  });
++
++  it('allows physical boundary touch while retaining inside-body and invalid-input blockers', () => {
++    const discs = [{ center: { x: 0, y: 1 }, radius: 1 }, { center: { x: 0, y: -1 }, radius: 1 }];
++    const path = trafficPath({ x: -3, y: 0 }, { x: 3, y: 0 }, discs);
++    expect(path!.distance).toBe(6); expect(path!.pieces).toHaveLength(1);
++    expect(trafficPath({ x: 0, y: 1 }, { x: 3, y: 0 }, discs)).toBeNull();
++    expect(trafficPath({ x: -3, y: 0 }, { x: 0, y: -1 }, discs)).toBeNull();
++    expect(trafficPath({ x: NaN, y: 0 }, { x: 1, y: 0 }, [])).toBeNull();
++    expect(trafficPath({ x: 0, y: 0 }, { x: 1, y: 0 }, [{ center: { x: 0, y: 2 }, radius: -1 }])).toBeNull();
++    expect(trafficPath({ x: 0, y: 0 }, { x: 1, y: 0 }, Array.from({ length: 11 }, () => discs[0]))).toBeNull();
++    expect(trafficPath({ x: 2, y: 0 }, { x: 2, y: 0 }, [])).toEqual({
++      distance: 0, pieces: [], firstPiece: null, firstDirection: { x: 0, y: 0 } });
++  });
++
++  it('can begin with a real boundary arc rather than a chord through the body', () => {
++    const start = { x: 1, y: 0 }, goal = { x: -3, y: 0 }, discs = [{ center: { x: 0, y: 0 }, radius: 1 }];
++    const path = trafficPath(start, goal, discs);
++    checkPath(path, start, goal, discs);
++    expect(path!.firstPiece!.kind).toBe('arc');
++    expect(Math.abs(path!.firstDirection.y)).toBeCloseTo(1, 8);
++  });
++
++  it('chooses a represented in-field side when the shorter arc leaves existing bounds', () => {
++    const start = { x: -3, y: 0 }, goal = { x: 3, y: 0 };
++    const discs = [{ center: { x: 0, y: -.35 }, radius: 1 }];
++    const bounds = { minX: -4, maxX: 4, minY: -2, maxY: .5 };
++    const free = trafficPath(start, goal, discs)!, bounded = trafficPath(start, goal, discs, bounds)!;
++    checkPath(bounded, start, goal, discs);
++    expect(free.firstDirection.y).toBeGreaterThan(0);
++    expect(bounded.firstDirection.y).toBeLessThan(0);
++    expect(bounded.distance).toBeGreaterThan(free.distance);
++    for (const piece of bounded.pieces) for (let k = 0; k <= 80; k++) {
++      const t = k / 80, y = piece.kind === 'line' ? piece.from.y + (piece.to.y - piece.from.y) * t
++        : piece.center.y + piece.radius * Math.sin(piece.startAngle + piece.sweep * t);
++      expect(y).toBeGreaterThanOrEqual(bounds.minY - 1e-8);
++      expect(y).toBeLessThanOrEqual(bounds.maxY + 1e-8);
++    }
++    expect(trafficPath(start, goal, discs, { ...bounds, minY: -.1, maxY: .1 })).toBeNull();
++    expect(trafficPath(start, goal, discs, { ...bounds, minX: 0 })).toBeNull();
++  });
++});

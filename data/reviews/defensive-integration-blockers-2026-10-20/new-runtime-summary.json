@@ -1,0 +1,69 @@
+{
+  "records": [
+    {
+      "path": "out/integration-blockers/pursuit-focused.json",
+      "source": "12fb7db0a362bc6410367de560c71962bb9798ef9fb730030a737f1d09ce581d",
+      "exitCode": 0,
+      "seconds": 2.634113132
+    },
+    {
+      "path": "out/integration-blockers/real-caller-red.json",
+      "source": "dcffa72534943ed22d32a8a602ef7191c1e5e03eb75a0b0e0e17b8ec02dae1b2",
+      "exitCode": 1,
+      "seconds": 2.3804708420000003
+    },
+    {
+      "path": "out/integration-blockers/pursuit-typecheck.json",
+      "source": "12fb7db0a362bc6410367de560c71962bb9798ef9fb730030a737f1d09ce581d",
+      "exitCode": 0,
+      "seconds": 12.209422179999999
+    },
+    {
+      "path": "out/integration-blockers/routing-baseline-run.json",
+      "source": "12fb7db0a362bc6410367de560c71962bb9798ef9fb730030a737f1d09ce581d",
+      "exitCode": 0,
+      "seconds": 2.6540146439999996
+    },
+    {
+      "path": "/workspace/football-pursuit-routing-interaction/out/routing-interaction/native-run.json",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "exitCode": 0,
+      "seconds": 3.2777018900000003
+    },
+    {
+      "path": "/workspace/football-pursuit-routing-interaction/out/routing-interaction/typecheck-final.json",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "exitCode": 0,
+      "seconds": 11.981081411
+    },
+    {
+      "path": "/workspace/football-pursuit-routing-interaction/out/routing-interaction/focused.json",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "exitCode": 1,
+      "seconds": 2.409202178
+    },
+    {
+      "path": "/workspace/football-pursuit-routing-interaction/out/routing-interaction/focused-final.json",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "exitCode": 0,
+      "seconds": 2.67114446
+    },
+    {
+      "path": "/workspace/football-pursuit-routing-interaction/out/routing-interaction/typecheck.json",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "exitCode": 1,
+      "seconds": 12.249179985000001
+    },
+    {
+      "path": "/workspace/football-pursuit-projection-control/out/routing-interaction/projection-native-run.json",
+      "source": "574aaadcd70f56443b05b57209634b55d3d52d59ad06be2e4625016eea4502ce",
+      "exitCode": 0,
+      "seconds": 2.743608999
+    }
+  ],
+  "commandSeconds": 55.209939721,
+  "newNativeSnaps": 6,
+  "reusedSupportNativeSnaps": 6,
+  "reusedSupportCandidateCases": 3,
+  "qualification": "Failed port checks retained. Six reused support native arms are three pair and three triple comparisons, not six new cases. No full-suite or NFL query."
+}

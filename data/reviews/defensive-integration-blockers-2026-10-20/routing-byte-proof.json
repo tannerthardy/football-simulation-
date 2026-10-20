@@ -1,0 +1,55 @@
+{
+  "candidate": "a00b070d789b7d4dcb056e58ab6963fa18131513",
+  "reviewed186": "7b70c343cf30f0066fc46f223ad134d1249f6188",
+  "183IncludedOnce": true,
+  "exactBytes": [
+    {
+      "path": "src/sim/spacing.ts",
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c"
+    },
+    {
+      "path": "src/sim/traffic-distance.ts",
+      "sha256": "a3aa22df1f725107eb1a62f46e6532f44412c442ff09f190181acdd2e5c59325"
+    },
+    {
+      "path": "src/sim/traffic-path.ts",
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061"
+    },
+    {
+      "path": "src/sim/traffic-route.ts",
+      "sha256": "1f6c6ddec5ad479cf5f07d19b3dfcc57f4c4c50ad4adbe0ed5decc4dd483b4ce"
+    },
+    {
+      "path": "scripts/diag/navigation/joint-projection.ts",
+      "sha256": "3f834e63bd6bc4d73dc7a9956e166c6c3f73f5f280f60053a9619ad4fcd5904b"
+    },
+    {
+      "path": "scripts/diag/navigation/local-passage.ts",
+      "sha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e"
+    },
+    {
+      "path": "test/local-traffic-route.test.ts",
+      "sha256": "6395eef2028253bd1bbd92a6922ecc4aac4e5babd55c5814db3e6c1b0257acb2"
+    },
+    {
+      "path": "test/joint-spacing-projection.test.ts",
+      "sha256": "42209bf644f3fe425e7381eb0885212dfad8e78767c4f434abc32ef1a980ed55"
+    },
+    {
+      "path": "test/traffic-distance.test.ts",
+      "sha256": "f53d2d29d0fb87e3942101d2bd2576b75deda14ae092543dbf8ff303f1fae20b"
+    },
+    {
+      "path": "test/traffic-path.test.ts",
+      "sha256": "7b381d2c2a8efab8b587bb20be05481428ec42a8af4bb041d54d424c532a87e1"
+    },
+    {
+      "path": "test/fixtures/navigation-A042-setup.json",
+      "sha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa"
+    },
+    {
+      "path": "test/fixtures/traffic-route-impact.json",
+      "sha256": "b7adeb30890530c852563c0529d134b0e4167008d9577fbad399fb98fccf1db2"
+    }
+  ]
+}

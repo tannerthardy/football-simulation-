@@ -1,0 +1,351 @@
+{
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "versions": {
+    "support": {
+      "commit": "2302b48fb56298605ec17aaa39cc7950f62b6c08",
+      "source": "cfee04784b7f3ae7cd5050db641b4471361b8f3f892d679d24a6275a7a8b70f2",
+      "newSimulations": 0,
+      "reusedFocusedChecks": 65,
+      "reusedCompletePairs": 3
+    },
+    "pursuitPair": {
+      "commit": "f7662569ba6c89e3b8796fe7da2702ca6ea93661",
+      "source": "12fb7db0a362bc6410367de560c71962bb9798ef9fb730030a737f1d09ce581d",
+      "newFocusedChecks": 46
+    },
+    "projectionControl": {
+      "commit": "73438eb40c7f4d6f79cfd5ed629db1615dffee58",
+      "source": "574aaadcd70f56443b05b57209634b55d3d52d59ad06be2e4625016eea4502ce"
+    },
+    "routing": {
+      "runtimeCommit": "b2cbab1a125a5756001ee1cc0de3704edf83917d",
+      "testCompleteCommit": "a00b070d789b7d4dcb056e58ab6963fa18131513",
+      "source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+      "reviewed186": "7b70c343cf30f0066fc46f223ad134d1249f6188",
+      "183IncludedOnce": true,
+      "focusedChecks": 38
+    }
+  },
+  "settings": "Node22.23.3;44 unchanged flags;components1,GAIT_STEP0,CF_FLOW unset;all World/physics/capacities fixed. Exact dictionaries in original wrapper receipts.",
+  "newNativeCases": 6,
+  "archives": [
+    {
+      "path": "pursuit-composition.tar.gz",
+      "bytes": 4621649,
+      "sha256": "db6ad980daced9d5177d2c52647d1770827a210d2193fc97abee5ae5cf63af80",
+      "members": [
+        {
+          "path": "out/integration-blockers/capture.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "out/integration-blockers/coordination.md",
+          "bytes": 1855,
+          "sha256": "f9ab260d47e8f6c6adbcc7612fabb893e99b93523aa7088c4e094532039dbd5d"
+        },
+        {
+          "path": "out/integration-blockers/force-projections.json",
+          "bytes": 523,
+          "sha256": "6c6f202cbc20bd36ce1fa3763291aecc2b0ebef874a8fef96772e8510e77b432"
+        },
+        {
+          "path": "out/integration-blockers/new-runtime-summary.json",
+          "bytes": 2730,
+          "sha256": "e164c91c1b9808c3d15bf7d8b6422ece9ff134de25cd1afaf9c114020dcefb39"
+        },
+        {
+          "path": "out/integration-blockers/projected-175-common.ts",
+          "bytes": 13124,
+          "sha256": "cd734d12a7004a010bcd0e859c19ba3ae1967228b77ba5bda2a77caeecc97b89"
+        },
+        {
+          "path": "out/integration-blockers/projected-176-run-fits.ts",
+          "bytes": 24160,
+          "sha256": "b276dbffabdd345f9d33a9c8e0e29af5d3e1adc4d229d04f9c09bb93f57ad34e"
+        },
+        {
+          "path": "out/integration-blockers/projection-control.patch",
+          "bytes": 77105,
+          "sha256": "b117a11febea1a62cfc64974a06d21126c196f6ba7c6638fd69f22a3721d61bf"
+        },
+        {
+          "path": "out/integration-blockers/pursuit-composition.patch",
+          "bytes": 17986,
+          "sha256": "7725b5bbce2ff69f1193c3c6b6845ded9573c8b1a1a94a9774c0cf42cb1ed8a4"
+        },
+        {
+          "path": "out/integration-blockers/pursuit-focused.json",
+          "bytes": 2418,
+          "sha256": "80aee5317fe1090692960843dd6afdf645f0f7e1616db244b59a04a1dea57dd8"
+        },
+        {
+          "path": "out/integration-blockers/pursuit-typecheck.json",
+          "bytes": 2179,
+          "sha256": "7964107d7d937bb2c97eefff1c750d4c30c822319b9484054c6df1e925ba0089"
+        },
+        {
+          "path": "out/integration-blockers/pursuit-update.patch",
+          "bytes": 12198,
+          "sha256": "9c1e92c2518c9b8a84787eeb61ac56435d28da488f2b4a220a6c8181462062b4"
+        },
+        {
+          "path": "out/integration-blockers/real-caller-red.json",
+          "bytes": 2295,
+          "sha256": "4098e05e6027264ca6092a9d9d7178cb9634ffe4872bdf59deaea16f84592fae"
+        },
+        {
+          "path": "out/integration-blockers/routing-baseline-run.json",
+          "bytes": 2368,
+          "sha256": "2ada57fd4f089870fc699249fd6146e473cf6fa383649f076cdda683431a706d"
+        },
+        {
+          "path": "out/integration-blockers/routing-baseline/OZ4.json.gz",
+          "bytes": 2711351,
+          "sha256": "7f6f90e416341d1698f0cd2819135222aa503c17fbc7d05eef8c8b9e7599a8ba"
+        },
+        {
+          "path": "out/integration-blockers/routing-baseline/WZORD.json.gz",
+          "bytes": 1784351,
+          "sha256": "4b4d68d76c065a8dd318a0118fc07b436e058bee359cd70d96b37be8e4490c9f"
+        },
+        {
+          "path": "out/integration-blockers/routing-baseline/receipt.json",
+          "bytes": 857,
+          "sha256": "4021a796bb77f8fd0e8a006dea1a2e61839f0e44a8b19acb6d9bb8aa5c951421"
+        },
+        {
+          "path": "out/integration-blockers/routing-byte-proof.json",
+          "bytes": 1917,
+          "sha256": "90cb896d89f7afd9179e9fdc8ad6645390c985ac4153bf634e6a4483fdee3fc2"
+        },
+        {
+          "path": "out/integration-blockers/routing-composition.patch",
+          "bytes": 122433,
+          "sha256": "3978072922c0a2135b696b8f0e3e4191b9b6cea1b5217836bfe1bd8e404c6efe"
+        },
+        {
+          "path": "out/integration-blockers/routing-inputs.json.gz",
+          "bytes": 7222,
+          "sha256": "855c7a8c09905437ebc83c8101130ba79ba75382a9dfabf9764a28a5c9cb92eb"
+        },
+        {
+          "path": "out/integration-blockers/routing-result.md",
+          "bytes": 2794,
+          "sha256": "f6722bd8518b296eb4038aca108583c020e562027ca76d2f0ab0620442e011e6"
+        },
+        {
+          "path": "out/integration-blockers/run-support-overlap.md",
+          "bytes": 1310,
+          "sha256": "727d064bc5a20ff15cd3b23054fa077f51286109c13a0589632dd6b866ed2104"
+        },
+        {
+          "path": "out/integration-blockers/support-174-engagement-projection.ts",
+          "bytes": 71862,
+          "sha256": "3f41b3373e7946f99bfcd437c3ec01f24da0be5676bb3e973dd6336ec4091c58"
+        },
+        {
+          "path": "out/integration-blockers/support-composition-proof.json",
+          "bytes": 2068,
+          "sha256": "b46c49abf4b06aa301d0daaa689c4e51f0b0c42a715fafdeb7cac86cd2cb9eca"
+        },
+        {
+          "path": "out/integration-blockers/support-composition.patch",
+          "bytes": 41112,
+          "sha256": "ec558b32253cce8c9915fba0b62150759a0f2e773c113bcf41c19e7373e451af"
+        },
+        {
+          "path": "out/integration-blockers/support-reused-INTERACTION-MEMO.md",
+          "bytes": 5885,
+          "sha256": "f65a10c97e156a210fcb33214f916b1404e7adf2ac0738cc087d4d1c3adf7fff"
+        },
+        {
+          "path": "out/integration-blockers/support-reused-focused.json",
+          "bytes": 2341,
+          "sha256": "459750b5e44c21b96b87a79b30186651034dc8e2f7ffb9e89f3844d0616c9c28"
+        },
+        {
+          "path": "out/integration-blockers/support-reused-interaction-analysis-sha256.json",
+          "bytes": 299,
+          "sha256": "95a69145b207f275d64f2fe1090898f55434e0a5d07d8838382b92f8b7a5a4e9"
+        },
+        {
+          "path": "out/integration-blockers/support-reused-interaction-comparison.json",
+          "bytes": 334848,
+          "sha256": "36e81cfa2be7208a028b2b51bff6e1d89a2d1c3a0792db50dae134de4afb47c7"
+        },
+        {
+          "path": "out/integration-blockers/support-reused-native-launch.json",
+          "bytes": 2341,
+          "sha256": "2e9d4fcaab434649e322f050c505620897e730f6addeb0bf6f03c0a10bec80e6"
+        }
+      ]
+    },
+    {
+      "path": "routing-candidate.tar.gz",
+      "bytes": 4646930,
+      "sha256": "83ff77bf1826e616693334a2cc66f7724d5ac811e5ff605c8aeb315bb0d4dc55",
+      "members": [
+        {
+          "path": "out/routing-interaction/analysis.json",
+          "bytes": 1327879,
+          "sha256": "c2bc2640d34dfc0ac72e7009fe2ff299476bbeb7b9eb061e3dfe34ec7bcfc702"
+        },
+        {
+          "path": "out/routing-interaction/analyze.py",
+          "bytes": 4696,
+          "sha256": "569c1bff8785295c77601d085a6d009c31c354bd521dc8e686281c2f2c456e7b"
+        },
+        {
+          "path": "out/routing-interaction/capture.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "out/routing-interaction/compare.py",
+          "bytes": 4339,
+          "sha256": "8192a2b4cf5ec1fa18ebc06e69097acbc65385e2dc83acc3cca5d93f6dbef711"
+        },
+        {
+          "path": "out/routing-interaction/compare_projection.py",
+          "bytes": 4330,
+          "sha256": "6d2d7f8e34efc57fd1c498ff5dd6fae71c5e3822de07d9ba48b44c86f477f4d0"
+        },
+        {
+          "path": "out/routing-interaction/extraction.json",
+          "bytes": 925,
+          "sha256": "eb814dd7bad8e2c468a46b5be95b66d1b56d05fbe2b928fbd6693409af804a63"
+        },
+        {
+          "path": "out/routing-interaction/focused-final.json",
+          "bytes": 2462,
+          "sha256": "7a3213ce70b3937bcdd07212e5fddf20946ceaec9ab77a8384f2e429a43c5c6b"
+        },
+        {
+          "path": "out/routing-interaction/focused.json",
+          "bytes": 2463,
+          "sha256": "234a494f63bbbf5e430a9e94ac6517f2558cfa82dcf847f72e36389dc0437cc7"
+        },
+        {
+          "path": "out/routing-interaction/inputs.json.gz",
+          "bytes": 7222,
+          "sha256": "855c7a8c09905437ebc83c8101130ba79ba75382a9dfabf9764a28a5c9cb92eb"
+        },
+        {
+          "path": "out/routing-interaction/native-comparison.json",
+          "bytes": 1061972,
+          "sha256": "79e278e501a8469f98cb167c2fd42afa27adffeb017bea09bcae8cf5c1a936e8"
+        },
+        {
+          "path": "out/routing-interaction/native-run.json",
+          "bytes": 2346,
+          "sha256": "d5dde94c3878d26be48a6a44a1432bb2fbf57be4ad3e488c60d85d60d46f0d9a"
+        },
+        {
+          "path": "out/routing-interaction/native/OZ4.json.gz",
+          "bytes": 2708347,
+          "sha256": "612a78b84761061bb6a62608cdf163ebe14627f1e5deabf4c34c3939c302ec6a"
+        },
+        {
+          "path": "out/routing-interaction/native/WZORD.json.gz",
+          "bytes": 1783493,
+          "sha256": "5aeb8778685e9305bc651833567c26e28dc4f07e3937e1181b695e178d473f5a"
+        },
+        {
+          "path": "out/routing-interaction/native/receipt.json",
+          "bytes": 857,
+          "sha256": "705e486dd0ad3440f390c53527503f611b8ac46037cc7436dd727c64cebd1db0"
+        },
+        {
+          "path": "out/routing-interaction/typecheck-final.json",
+          "bytes": 2172,
+          "sha256": "429549977f1932291897363b8dbc483a530f58f42175b346d773265ed6c47ec2"
+        },
+        {
+          "path": "out/routing-interaction/typecheck.json",
+          "bytes": 2178,
+          "sha256": "157015a76c2b3b6eff8cb6234b2572eff4ece1c61160740c51172ff39868ffcd"
+        }
+      ]
+    },
+    {
+      "path": "projection-control.tar.gz",
+      "bytes": 4494498,
+      "sha256": "63cc54efd2cb558440edbbeb1d5c5189a81a0d1eeee253305ecadf144ea94376",
+      "members": [
+        {
+          "path": "out/routing-interaction/capture.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "out/routing-interaction/inputs.json.gz",
+          "bytes": 7222,
+          "sha256": "855c7a8c09905437ebc83c8101130ba79ba75382a9dfabf9764a28a5c9cb92eb"
+        },
+        {
+          "path": "out/routing-interaction/native/OZ4.json.gz",
+          "bytes": 2726553,
+          "sha256": "48c256b22fe50e0253c2f266eefeb80df150656fca34efaec2853909ba9d8264"
+        },
+        {
+          "path": "out/routing-interaction/native/WZORD.json.gz",
+          "bytes": 1784485,
+          "sha256": "5d1106fe12fa94a33b12bc16fac6b378a9c2be53ec2c8fc4eb41971cc32138eb"
+        },
+        {
+          "path": "out/routing-interaction/native/receipt.json",
+          "bytes": 864,
+          "sha256": "9bbbb045203c1fac865ad5487776f2510535ad7a705b27d361a9cd2cae1fe559"
+        }
+      ]
+    }
+  ],
+  "otherFiles": [
+    {
+      "path": "README.md",
+      "sha256": "eaf9f3c1d27d0b246423b437f71d7d4e065f04399c47ebf7fc41d2b88f31f81f"
+    },
+    {
+      "path": "force-projections.json",
+      "sha256": "6c6f202cbc20bd36ce1fa3763291aecc2b0ebef874a8fef96772e8510e77b432"
+    },
+    {
+      "path": "new-runtime-summary.json",
+      "sha256": "e164c91c1b9808c3d15bf7d8b6422ece9ff134de25cd1afaf9c114020dcefb39"
+    },
+    {
+      "path": "projection-control.patch",
+      "sha256": "b117a11febea1a62cfc64974a06d21126c196f6ba7c6638fd69f22a3721d61bf"
+    },
+    {
+      "path": "pursuit-composition.patch",
+      "sha256": "7725b5bbce2ff69f1193c3c6b6845ded9573c8b1a1a94a9774c0cf42cb1ed8a4"
+    },
+    {
+      "path": "pursuit-update.patch",
+      "sha256": "9c1e92c2518c9b8a84787eeb61ac56435d28da488f2b4a220a6c8181462062b4"
+    },
+    {
+      "path": "routing-byte-proof.json",
+      "sha256": "90cb896d89f7afd9179e9fdc8ad6645390c985ac4153bf634e6a4483fdee3fc2"
+    },
+    {
+      "path": "routing-composition.patch",
+      "sha256": "3978072922c0a2135b696b8f0e3e4191b9b6cea1b5217836bfe1bd8e404c6efe"
+    },
+    {
+      "path": "support-174-engagement-projection.ts",
+      "sha256": "3f41b3373e7946f99bfcd437c3ec01f24da0be5676bb3e973dd6336ec4091c58"
+    },
+    {
+      "path": "support-composition-proof.json",
+      "sha256": "b46c49abf4b06aa301d0daaa689c4e51f0b0c42a715fafdeb7cac86cd2cb9eca"
+    },
+    {
+      "path": "support-composition.patch",
+      "sha256": "ec558b32253cce8c9915fba0b62150759a0f2e773c113bcf41c19e7373e451af"
+    }
+  ]
+}
