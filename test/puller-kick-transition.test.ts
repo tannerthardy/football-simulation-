@@ -30,6 +30,8 @@ describe('kick phase follows a personally read end after the flat track',()=>{
   const before=structuredClone(a.body);const next=controller.update(a,sim);
   expect(next.facing).toBeDefined();expect(next.vel.x).toBeGreaterThan(0);expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
   Reflect.set(controller,'pullCleared',false);Reflect.set(controller,'pullIdx',0);
-  expect(controller.update(a,sim).facing).toBeUndefined();
+  const clearance=controller.update(a,sim);
+  expect(clearance.facing).toBe(0); // Square depth clearance, not an early strike.
+  expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
  });
 });
