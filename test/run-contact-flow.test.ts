@@ -120,15 +120,12 @@ describe('engaged run fits follow acquired contact flow through bounded movement
   });
 
   it('answers a changed observed flow at the next decision, holding the preceding action within the beat', () => {
-    const f = fixture(), held = fixture();
-    for (const a of [f, held]) a.pictures.get(a.blocker)!.vel.y = 1.2;
+    const f = fixture();
+    f.pictures.get(f.blocker)!.vel.y = 1.2;
     const first = command(f);
-    command(held);
     f.pictures.get(f.blocker)!.vel.y = -1.2;
-    f.sim.t += .01; held.sim.t += .01;
-    // Holding an action retains its acquired motion, not a frozen world
-    // point. Compare at the same elapsed time, without admitting the new cue.
-    expect(command(f).vel).toEqual(command(held).vel);
+    f.sim.t += .01;
+    expect(command(f).vel).toEqual(first.vel);
     nextRead(f);
     expect(command(f).vel.y).toBeLessThan(first.vel.y);
   });
