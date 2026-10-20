@@ -20,7 +20,7 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
-import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
+import { executeRunFit, type RunFitRead } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -151,8 +151,8 @@ export class Blitzer implements Behavior {
  * Gap-sound run defense: defend the assigned gap until the carrier commits,
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
-export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, keyed?: KeyedRunFit): MoveCommand {
-  return executeRunFit(a, sim, gap, gapSign, keyed);
+export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead): MoveCommand {
+  return executeRunFit(a, sim, gap, gapSign, read);
 }
 
 export class RunDefender implements Behavior {
@@ -273,7 +273,15 @@ export class ManCoverage implements Behavior {
     const blockingLook = this.blockingRun
       ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
     this.blockingRun = believesRun(sim, a) && blockingLook;
-    if (this.blockingRun) return runFit(a, sim, this.gap, this.gapSign);
+    if (this.blockingRun) {
+      const back = sim.slot('RB');
+      // A block read admits installed support, not private holder knowledge.
+      // Use the same acquired/expected backfield in held and unrecognized
+      // flight. The fit retains its existing failed-exchange retirement.
+      const read = back && sim.offAlign.spots[back.slot]?.backfield
+        ? { backfield: { back, backCue: sim.see(a, back), qbCue } } : undefined;
+      return runFit(a, sim, this.gap, this.gapSign, read);
+    }
 
     return this.trackReceiver(a, sim);
   }
