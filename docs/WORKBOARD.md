@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Announced teammate motion versus achieved motion — 2026-10-20 UTC
+
+Physics/movement owns only PlaySim's called-track spacing picture and a pure
+acquired-state prediction helper/tests on `codex/announced-motion`, from accepted
+`2c98bed94adad8087c65f381d4090444ad283985` / queue
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`. The saved WZ seed3 RG/C case
+substitutes an announced−3.392yd/s track for observed−.800yd/s velocity,
+creating an unnecessary final spacing command. Test a bounded one-tick free
+estimate using existing gait/traction, acquired pose and public profile only;
+preserve actual fast-teammate avoidance and ordinary unknown/loaded uncertainty.
+Run retains assignments/contact technique. No shared World, force law,
+capacities, recovery, caller decisions or flags are changed. #180's reviewed
+yaw candidate stays independently held on paired tail cost; it is not a parent.
+Integration owns exact combined verification after independent review.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
