@@ -12,6 +12,12 @@ physics/call probabilities remain legacy-qualified; no new World/capacity or
 other worker branch imports. Root owns one combined candidate verification;
 workers run focused checks only. Independent rule/native-path review is required
 before integration; no merge/default-reference or unrelated experiment adoption.
+Implementation frozen at `ad494e5`: independent bounded review accepts; one
+exact combined run passes 2,354 TS/210 files, 145 Python, typecheck/build in
+255.525s with no skips/drift and all44 accepted settings. Source edit boundary
+released; CEO publishes only documentation/evidence afterward. Integration owns
+adoption/changed-candidate composition; no unchanged verification repeat.
+[Scope, remaining gaps and exact receipt](reviews/native-nfl-rules-2026-10-20.md).
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 

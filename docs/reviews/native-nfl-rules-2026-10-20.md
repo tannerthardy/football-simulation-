@@ -43,6 +43,11 @@ Targeted opposing controls cover the corrected branches.
 
 Exact combined results and fingerprints are published in
 [`native-nfl-rules-verification.json`](../../data/reviews/current/native-nfl-rules-verification.json).
+Frozen `ad494e5ca952ee237708f8dd13422025cf4bb3ca` passed **2,354 TypeScript
+checks in 210 files, 145 Python checks, typecheck and build** in 255.525 command
+seconds, with no skips or input drift. The four new files add 106 focused tests.
+All 44 resolved flags retain the accepted settings, including components=1.
+The official-rules reviewer accepted this exact pin within the stated scopes.
 Integration owns final adoption. If accepted source, inputs and settings remain
 compatible, reuse this receipt; a changed assembled candidate requires its
 own proportionate composition check. No merge or new baseline is designated.
