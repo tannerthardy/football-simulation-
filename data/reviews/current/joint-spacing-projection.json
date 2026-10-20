@@ -1,0 +1,1030 @@
+{
+  "schema": "joint-spacing-projection-review-v1",
+  "dateUtc": "2026-10-20",
+  "recommendation": "ACCEPT narrow closest-request contract for Integration review; independent technical acceptance is not Integration adoption or proof of a new native football win.",
+  "pins": {
+    "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+    "runtimeCommit": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+    "finalCodeCommit": "0491f07b5728a149c3f4ac35008ceba14e392694",
+    "evidenceCommit": null,
+    "branch": "codex/joint-spacing-projection",
+    "acceptedSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "firstCandidateSourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+    "finalSourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+    "receiptHeadExplanation": "Contributor receipts were collected on accepted HEAD with tracked candidate changes. The final isolated code pin contains exactly the reviewed spacing source and published test/operators; final standalone typecheck records that branch."
+  },
+  "scope": {
+    "production": [
+      "src/sim/spacing.ts:jointClosingRequest"
+    ],
+    "change": "Initialize the best feasible request with the ordinary sequential response, then evaluate existing joint boundary/cap candidates even when ordinary is feasible. Retain ordinary on a numerical tie of 16*Number.EPSILON*max(1,error,bestError).",
+    "constraintsPreserved": [
+      "existing closing half-planes and cap",
+      "free-footwork eligibility",
+      "tactile/contact ownership",
+      "every non-velocity command field",
+      "existing acquired information",
+      "real collisions"
+    ],
+    "noNew": [
+      "avoidance option",
+      "route or assignment",
+      "perception read",
+      "memory/vision policy",
+      "random draw",
+      "body/strength/capability",
+      "physics law",
+      "experimental local-passage helper"
+    ]
+  },
+  "proofLevels": {
+    "defect": "Accepted early return preserves a feasible sequential response that is not the closest admissible request; two active constraints and positive optimality multipliers give an independent oracle.",
+    "mechanism": "One staged matched-body World comparison improves forward progress and same-goal error without contact, falling or excess motor work. Final focused tests repeat the physical contract.",
+    "transfer": "Current accepted native A042 has an actual projection change at2.25 and modest local trajectory change; ending timing remains the same. Native goal-error benefit and recurring importance are not established."
+  },
+  "independentReview": {
+    "status": "ACCEPT narrow closest-request contract; broader football-benefit claims remain unsupported.",
+    "reviewer": "middle_evidence (independent agent; owner will publish review link)",
+    "integrationAdopted": false
+  },
+  "environment": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "mechanical": {
+    "operator": "scripts/diag/navigation/joint-projection.ts",
+    "operatorSha256": "3f834e63bd6bc4d73dc7a9956e166c6c3f73f5f280f60053a9619ad4fcd5904b",
+    "producingSourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+    "fixtureSha256": "05afa9dd4b7402e9f0950aec543df6b2f5f60a7e25cdf89274959415873836d0",
+    "scene": "Saved real RT body/profile from joint-spacing fixture A028t1.25, with explicitly staged two acquired neighbor geometries (normals1,0 and0.5,sqrt(3)/2,0.02yd gap) and raw velocity2,2. This is not the historical A028 restoration trial or an original native scene.",
+    "durationSeconds": 0.6,
+    "baselineAndSelectedDefinition": "Both reported physical arms are generated in one final published operator version on the same incoming bodies, complete held requests, peer movement and unchanged World. The ordinary arm executes the independently derived sequential projection beside the selected production request.",
+    "sourceCompatibility": "Physical tape source490b2f precedes the final16-unit numerical-tie guard. The final24-check run at253ddf repeats the same material oracle/physical contract; final physics are unchanged. No mechanical tape rerun is claimed.",
+    "rows": [
+      {
+        "kind": "ordinary",
+        "selected": {
+          "command": {
+            "vel": {
+              "x": 0.06510220817972989,
+              "y": 1.1923761445879821
+            },
+            "posture": 0.7
+          },
+          "goal": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.15861161490273,
+              "y": 31.256440220594122
+            }
+          },
+          "reads": 2,
+          "ownUnchanged": true,
+          "picturesUnchanged": true
+        },
+        "oracle": {
+          "limits": [
+            {
+              "nx": 1,
+              "ny": 0,
+              "speed": 0.06510220817972989
+            },
+            {
+              "nx": 0.4999999999999979,
+              "ny": 0.8660254037844398,
+              "speed": 1.0651791361696055
+            }
+          ],
+          "ordinary": {
+            "x": -0.28460917956483806,
+            "y": 1.3942821084409849
+          },
+          "closest": {
+            "x": 0.06510220817972989,
+            "y": 1.1923761445879821
+          },
+          "cap": 7.423064255050667
+        },
+        "physical": {
+          "ordinary": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 2.5579538487363607e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.39629009566338613,
+            "goalError": 8.108017701311391
+          },
+          "closest": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 1.5631940186722204e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.48527049609572237,
+            "goalError": 8.01156367968116
+          },
+          "selected": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 1.5631940186722204e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.48527049609572237,
+            "goalError": 8.01156367968116
+          }
+        }
+      },
+      {
+        "kind": "clear",
+        "selected": {
+          "command": {
+            "vel": {
+              "x": 2,
+              "y": 2
+            },
+            "posture": 0.7
+          },
+          "goal": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.15861161490273,
+              "y": 31.256440220594122
+            }
+          },
+          "reads": 2,
+          "ownUnchanged": true,
+          "picturesUnchanged": true
+        },
+        "oracle": {
+          "limits": [
+            {
+              "nx": 1,
+              "ny": 0,
+              "speed": 12.159253393604876
+            },
+            {
+              "nx": 0.9995678279442202,
+              "ny": 0.029396553180163078,
+              "speed": 12.576068440715309
+            }
+          ],
+          "ordinary": {
+            "x": 2,
+            "y": 2
+          },
+          "closest": {
+            "x": 2,
+            "y": 2
+          },
+          "cap": 7.423064255050667
+        },
+        "physical": {
+          "ordinary": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 6.394884621840902e-14,
+            "maxMotorExcess": 0,
+            "progress": 0.8430416428984926,
+            "goalError": 7.642357093868868
+          },
+          "closest": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 6.394884621840902e-14,
+            "maxMotorExcess": 0,
+            "progress": 0.8430416428984926,
+            "goalError": 7.642357093868868
+          },
+          "selected": {
+            "contacts": 0,
+            "upright": true,
+            "maxWorkResidual": 6.394884621840902e-14,
+            "maxMotorExcess": 0,
+            "progress": 0.8430416428984926,
+            "goalError": 7.642357093868868
+          }
+        }
+      },
+      {
+        "kind": "loaded",
+        "selected": {
+          "command": {
+            "vel": {
+              "x": -0.2846091795648381,
+              "y": 1.3942821084409847
+            },
+            "posture": 0.7
+          },
+          "goal": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.15861161490273,
+              "y": 31.256440220594122
+            }
+          },
+          "reads": 2,
+          "ownUnchanged": true,
+          "picturesUnchanged": true
+        },
+        "oracle": {
+          "limits": [
+            {
+              "nx": 1,
+              "ny": 0,
+              "speed": 0.06510220817972989
+            },
+            {
+              "nx": 0.4999999999999979,
+              "ny": 0.8660254037844398,
+              "speed": 1.0651791361696055
+            }
+          ],
+          "ordinary": {
+            "x": -0.28460917956483806,
+            "y": 1.3942821084409849
+          },
+          "closest": {
+            "x": 0.06510220817972989,
+            "y": 1.1923761445879821
+          },
+          "cap": 7.423064255050667
+        },
+        "physical": null
+      },
+      {
+        "kind": "obstruction",
+        "selected": {
+          "command": {
+            "vel": {
+              "x": 0.06518622811879204,
+              "y": 0
+            },
+            "posture": 0.7
+          },
+          "goal": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.15861161490273,
+              "y": 25.256440220594122
+            }
+          },
+          "reads": 1,
+          "ownUnchanged": true,
+          "picturesUnchanged": true
+        },
+        "oracle": {
+          "limits": [
+            {
+              "nx": 1,
+              "ny": 0,
+              "speed": 0.06518622811879227
+            }
+          ],
+          "ordinary": {
+            "x": 0.06518622811879204,
+            "y": 0
+          },
+          "closest": {
+            "x": 0.06518622811879204,
+            "y": 0
+          },
+          "cap": 7.423064255050667
+        },
+        "physical": {
+          "ordinary": {
+            "contacts": 5,
+            "upright": true,
+            "maxWorkResidual": 5.027089855502709e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.7592171836579453,
+            "goalError": 5.241651122300953
+          },
+          "closest": {
+            "contacts": 5,
+            "upright": true,
+            "maxWorkResidual": 5.027089855502709e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.7592171836579453,
+            "goalError": 5.241651122300953
+          },
+          "selected": {
+            "contacts": 5,
+            "upright": true,
+            "maxWorkResidual": 5.027089855502709e-13,
+            "maxMotorExcess": 0,
+            "progress": 0.7592171836579453,
+            "goalError": 5.241651122300953
+          }
+        }
+      }
+    ],
+    "acceptedProducerConfirmation": {
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "ordinarySelected": {
+        "command": {
+          "vel": {
+            "x": -0.2846091795648381,
+            "y": 1.3942821084409847
+          },
+          "posture": 0.7
+        },
+        "goal": {
+          "kind": "fixed",
+          "point": {
+            "x": 41.15861161490273,
+            "y": 31.256440220594122
+          }
+        },
+        "reads": 2,
+        "ownUnchanged": true,
+        "picturesUnchanged": true
+      },
+      "path": "out/navigation/joint-baseline.json",
+      "excluded": "The baseline report has an erroneous unused clear-scene closest diagnostic; it is excluded. Clear control claims use the final operator selected arm and focused tests."
+    }
+  },
+  "native": {
+    "case": "A042",
+    "offense": "Singleback Ace Duo strong",
+    "defense": "Wide9 nickel Quarters MOD",
+    "seed": 71002,
+    "los": 35,
+    "ballY": 26.666666666666668,
+    "maxTime": 4.25,
+    "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "candidateSource": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+    "toolSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+    "inputSha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa",
+    "setupSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
+    "observerNeutrality": {
+      "baseline": true,
+      "candidate": true
+    },
+    "beforeFirstChange": {
+      "throughTExclusive": 2.25,
+      "appliedCommandsExactlyEqual": true,
+      "enteringBodiesDecisionsAndConsumedPicturesEqualAt2_25": true
+    },
+    "firstChangedWitness": {
+      "t": 2.25,
+      "end": 2.3,
+      "actor": {
+        "idx": 16,
+        "slot": "LB_W"
+      },
+      "raw": {
+        "request": {
+          "vel": {
+            "x": 5.665000172974673,
+            "y": -7.175767377680787
+          },
+          "effort": 1
+        },
+        "objective": null
+      },
+      "baselineApplied": {
+        "request": {
+          "vel": {
+            "x": 0.2381468836087226,
+            "y": -0.29617568402250516
+          },
+          "effort": 1
+        },
+        "objective": null
+      },
+      "candidateApplied": {
+        "request": {
+          "vel": {
+            "x": -1.1918913832752596,
+            "y": -2.312392186188366
+          },
+          "effort": 1
+        },
+        "objective": null
+      },
+      "incomingOwn": {
+        "pos": {
+          "x": 36.795712041263805,
+          "y": 27.396466311154143
+        },
+        "vel": {
+          "x": -1.5376521378548946,
+          "y": -1.0125136530032408
+        },
+        "facing": 3.401365391987792,
+        "energy": 0.9865597089091157
+      },
+      "baselineAchieved": {
+        "pos": {
+          "x": 36.72628843378619,
+          "y": 27.348849507564662
+        },
+        "vel": {
+          "x": -1.2392921612497818,
+          "y": -0.8921584905759674
+        },
+        "displacement": {
+          "x": -0.06942360747761711,
+          "y": -0.04761680358948084
+        }
+      },
+      "candidateAchieved": {
+        "pos": {
+          "x": 36.72235306841275,
+          "y": 27.338977341117133
+        },
+        "vel": {
+          "x": -1.3967067761871461,
+          "y": -1.2870451484773973
+        },
+        "displacement": {
+          "x": -0.07335897285105375,
+          "y": -0.057488970037010034
+        }
+      },
+      "squaredRequestError": {
+        "baseline": 76.77951849575406,
+        "candidate": 70.66938006739556
+      },
+      "goalLimit": "No command-local pursuit-point metadata exists at this first changed request. Do not infer improved native goal error from this tape."
+    },
+    "actorPositionDifferences": {
+      "2.25": {
+        "positionDifferenceYd": 0.010627641835805595
+      },
+      "2.5": {
+        "positionDifferenceYd": 0.07854765938914347
+      },
+      "2.75": {
+        "positionDifferenceYd": 0.13443722578190043
+      },
+      "3": {
+        "positionDifferenceYd": 0.1780867174161877
+      },
+      "4.05": {
+        "positionDifferenceYd": 0.5555293197422562
+      }
+    },
+    "results": {
+      "baseline": {
+        "phase": "dead",
+        "outcome": "tackle",
+        "t": 4.1,
+        "carrier": null,
+        "endSpot": {
+          "x": 43.89056703920959,
+          "y": 16.5232888141597
+        },
+        "rbPos": {
+          "x": 43.64736826836831,
+          "y": 16.5232888141597
+        }
+      },
+      "candidate": {
+        "phase": "dead",
+        "outcome": "tackle",
+        "t": 4.1,
+        "carrier": null,
+        "endSpot": {
+          "x": 43.890568111683194,
+          "y": 16.52332097104532
+        },
+        "rbPos": {
+          "x": 43.64736934084191,
+          "y": 16.52332097104532
+        }
+      },
+      "endSpotDelta": {
+        "x": 1.0724736014822156e-06,
+        "y": 3.2156885620082676e-05
+      }
+    },
+    "retainedFootball": {
+      "handoffAt": 1.35,
+      "initialSSGripAt": 3.3,
+      "runnerFallAt": 3.65,
+      "FSAssistAt": 3.65,
+      "tackleEventAt": 4.05,
+      "recordedEndingAt": 4.1
+    },
+    "contactReview": {
+      "actorContacts": [
+        {
+          "arm": "baseline",
+          "lbWPositiveTorsoContacts": [
+            {
+              "t": 2.45,
+              "i": 5,
+              "j": 16,
+              "impulse": 88.21896265962285,
+              "closing": 1.4240082514470995
+            }
+          ],
+          "lbWTeammatePositiveTorsoContacts": []
+        },
+        {
+          "arm": "candidate",
+          "lbWPositiveTorsoContacts": [
+            {
+              "t": 2.45,
+              "i": 5,
+              "j": 16,
+              "impulse": 98.6512453298581,
+              "closing": 1.5930467351010114
+            }
+          ],
+          "lbWTeammatePositiveTorsoContacts": []
+        }
+      ],
+      "addedPositiveContactPairTicks": [
+        {
+          "t": 3.65,
+          "pair": [
+            5,
+            14
+          ]
+        },
+        {
+          "t": 3.7,
+          "pair": [
+            3,
+            14
+          ]
+        }
+      ],
+      "removedPositiveContactPairTicks": [
+        {
+          "t": 3.3,
+          "pair": [
+            5,
+            15
+          ]
+        },
+        {
+          "t": 3.35,
+          "pair": [
+            5,
+            15
+          ]
+        },
+        {
+          "t": 3.4,
+          "pair": [
+            5,
+            15
+          ]
+        },
+        {
+          "t": 4.05,
+          "pair": [
+            5,
+            14
+          ]
+        }
+      ],
+      "noneAddedOrRemovedBefore3_00": true,
+      "interpretation": "Earned RG5/LB_W16 torso contact remains2.45 with greater impulse; no LB_W teammate torso contacts occur. Later contact pair/tick changes and block_contact timing are retained, not called unchanged blocking load.",
+      "changedNominalBlockContact": {
+        "pair": [
+          5,
+          15
+        ],
+        "baselineAt": 3.5,
+        "candidateAt": 3.45
+      }
+    },
+    "historicalLimit": "Older captures did not establish recurring current prevalence; no importance estimate is inferred."
+  },
+  "checks": {
+    "baselineRed": {
+      "tests": 3,
+      "failed": 2,
+      "passed": 1,
+      "firstFailure": "closest-request mismatch -0.2846091796 versus oracle+0.0651022082, not a physical or information limitation",
+      "otherFailure": "overstrict exact floating-point equality in ordinary loaded-response comparison; corrected to numeric tolerance while preserving full non-velocity fields"
+    },
+    "firstCandidate": {
+      "tests": 24,
+      "failed": 1,
+      "passed": 23,
+      "failure": "structuredClone drops symbol own-goal bookkeeping; separate explicit goal snapshots and cloned-scene comparison correct the assertion without changing behavior"
+    },
+    "final": {
+      "tests": 24,
+      "passed": 24,
+      "files": [
+        "test/joint-spacing-projection.test.ts",
+        "test/joint-spacing.test.ts",
+        "test/traffic-control.test.ts",
+        "test/traffic-step.test.ts",
+        "test/spacing-residual-motion.test.ts"
+      ],
+      "receipt": "out/navigation/joint-focused-final.json"
+    },
+    "typecheck": {
+      "receipt": "out/navigation/joint-typecheck.json",
+      "exitCode": 0,
+      "seconds": 11.449613383
+    },
+    "numericalTie": "The first candidate caused an approximately1e-15 QB request change at0.95. Final16-unit scaled machine-epsilon tie retention removes it; applied commands remain exactly equal before the actual2.25 LB_W change. This is numerical stability, not a football clearance margin.",
+    "noBroadSuiteOrCampaign": true
+  },
+  "cost": {
+    "jointScopeRecordedCommandSeconds": 32.651926306,
+    "includedReusedA042BaselineSeconds": 4.582455991,
+    "remainingJointCommandSeconds": 28.069470315,
+    "note": "Only these10 joint-scope receipts are counted, including expected failures, test corrections and initial/final source runs. Excludes all tangent/local-passage/gather-goal navigation research. Reused A042baseline is shared evidence and must not be billed again in an overall combined total."
+  },
+  "fileChecksums": [
+    {
+      "path": "src/sim/spacing.ts",
+      "sha256": "7a872651b3d697f766da5c899829cd580e5572b9553511af36d856183a90fa38"
+    },
+    {
+      "path": "scripts/diag/navigation/joint-projection.ts",
+      "sha256": "3f834e63bd6bc4d73dc7a9956e166c6c3f73f5f280f60053a9619ad4fcd5904b"
+    },
+    {
+      "path": "scripts/diag/navigation/native-traffic.ts",
+      "sha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f"
+    },
+    {
+      "path": "test/joint-spacing-projection.test.ts",
+      "sha256": "42209bf644f3fe425e7381eb0885212dfad8e78767c4f434abc32ef1a980ed55"
+    },
+    {
+      "path": "test/fixtures/joint-spacing.json",
+      "sha256": "05afa9dd4b7402e9f0950aec543df6b2f5f60a7e25cdf89274959415873836d0"
+    },
+    {
+      "path": "test/fixtures/navigation-A042-setup.json",
+      "sha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "out/navigation/joint-baseline.json",
+      "sha256": "9daefb177ce1bbd0bcf4549217870e96abf2a45fa6047ed1a0984e6ebd960bd0",
+      "bytes": 97532
+    },
+    {
+      "path": "out/navigation/joint-candidate.json",
+      "sha256": "56cfcb4ddfd0d9d0ab8932ebf84da30e2a5830acbe943ee855bef00ed8cde8cb",
+      "bytes": 97483
+    },
+    {
+      "path": "out/navigation/A042-baseline.json.gz",
+      "sha256": "0ecfb2375cc7e3c0e2c16d9e420303cbeec00ae7c13b4b1b6c8edb693c65ccae",
+      "bytes": 1688187
+    },
+    {
+      "path": "out/navigation/A042-joint-final.json.gz",
+      "sha256": "844af90a97963984eda48a36b5cfd71663eb74fba609e713484d0724c466d0ab",
+      "bytes": 1687274
+    },
+    {
+      "path": "out/navigation/A042-joint.json.gz",
+      "originalWorkspace": "/workspace/teammate-navigation",
+      "sha256": "77f2ffaca1040883a86aae435270ecc5e7bf91a84a45f3f46b79edb0a8aa0476",
+      "bytes": 1687266,
+      "status": "Pre-tie numerical-noise native trial retained in original navigation workspace; not final promotion evidence."
+    }
+  ],
+  "receipts": [
+    {
+      "path": "out/navigation/joint-red.json",
+      "sha256": "1a6cca11e65ba51a064f02d48895b397f452995bfeca07a4328b4e0c590c3815",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "e3754a0c07103ca3319f6d87df1ccaf7cdea70ce0435d6408907928f50845fac",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/joint-spacing-projection.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.545856322
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "startedAt": "2026-10-20T20:25:21.853Z",
+      "finishedAt": "2026-10-20T20:25:23.402Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-baseline-launch.json",
+      "sha256": "55719db3ec62484767426dc7eee132643d405bdb3d7594f711c2cbe33f40ba46",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "e3754a0c07103ca3319f6d87df1ccaf7cdea70ce0435d6408907928f50845fac",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/joint-projection.ts",
+            "out/navigation/joint-baseline.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.5435840080000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:25:21.849Z",
+      "finishedAt": "2026-10-20T20:25:22.395Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-candidate-launch.json",
+      "sha256": "330e3e25500f54a2438a438512a22664c5d8e023b62febcea734b7178a52ab85",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "c0eaa7cdbee8e4f474fed7b2fdda7243c6f47a944774001e7c12bd1df94d366e",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/joint-projection.ts",
+            "out/navigation/joint-candidate.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.521290633
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:26:11.828Z",
+      "finishedAt": "2026-10-20T20:26:12.355Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-focused.json",
+      "sha256": "634311bd0ff31b63d242b23d80893018b70ab6d73d9800e14c62096ec7539724",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "c0eaa7cdbee8e4f474fed7b2fdda7243c6f47a944774001e7c12bd1df94d366e",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/joint-spacing-projection.test.ts",
+            "test/joint-spacing.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-residual-motion.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.950460333
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "startedAt": "2026-10-20T20:26:10.520Z",
+      "finishedAt": "2026-10-20T20:26:12.472Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-focused-fixed.json",
+      "sha256": "0e8e85fd6ad58277c0347170d684d91bb10b5be2963badc9fca0fae3963da472",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/joint-spacing-projection.test.ts",
+            "test/joint-spacing.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-residual-motion.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.074362224
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:26:49.472Z",
+      "finishedAt": "2026-10-20T20:26:51.549Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-focused-final.json",
+      "sha256": "784ea06a3648b430ec5534699e3d880ea3091d68094e7399051155a2371c0751",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/joint-spacing-projection.test.ts",
+            "test/joint-spacing.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-residual-motion.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.0546576290000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:31:54.843Z",
+      "finishedAt": "2026-10-20T20:31:56.900Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/native-baseline-launch.json",
+      "sha256": "c29d44cc565e09d5f1074fc5ad8a1ce69fa528a0e7260d8fcf23e7a662eadb79",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "e3754a0c07103ca3319f6d87df1ccaf7cdea70ce0435d6408907928f50845fac",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "out/navigation/A042-baseline.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.582455991
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:25:21.861Z",
+      "finishedAt": "2026-10-20T20:25:26.446Z",
+      "reusedNativeBaseline": true
+    },
+    {
+      "path": "out/navigation/native-joint-launch.json",
+      "sha256": "19a0a141c011497316b2d647d95315d1bda35c2d3c3b25896d595fbba6b570c5",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "out/navigation/A042-joint.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.962249877
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:26:50.774Z",
+      "finishedAt": "2026-10-20T20:26:54.739Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/native-joint-final-launch.json",
+      "sha256": "78bd991e906f06e8a1f2b4d4cb227d4102ae186a360f915677cef6392514f8a7",
+      "branchAtCollection": "codex/teammate-navigation",
+      "headAtCollection": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "out/navigation/A042-joint-final.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.9673959059999997
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:31:56.184Z",
+      "finishedAt": "2026-10-20T20:32:00.156Z",
+      "reusedNativeBaseline": false
+    },
+    {
+      "path": "out/navigation/joint-typecheck.json",
+      "sha256": "bc3ac7b64ec6b52e546eb9997996d82993413ddb47400698c5aaedc3ac1655da",
+      "branchAtCollection": "codex/joint-spacing-projection",
+      "headAtCollection": "0491f07b5728a149c3f4ac35008ceba14e392694",
+      "sourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+      "validationSha256": "6b6555ce12e169ea9cf20c9b33812716492865c9d32acf63a6976df4177b7b71",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.449613383
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:39:46.725Z",
+      "finishedAt": "2026-10-20T20:39:58.177Z",
+      "reusedNativeBaseline": false
+    }
+  ]
+}
