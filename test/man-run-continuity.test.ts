@@ -171,7 +171,7 @@ describe('release readers retain admitted blocking on the same acquired evidence
   const f=readStage();f.set({pos:{x:43.4,y:f.cue().pos.y},vel:{x:6,y:0},stance:'high'});
   expect(f.read(1).release).toBe('block');expect(f.read(1.2).release).toBe('vertical');
   const out=Math.sign(f.r.pos.y-f.sim.ballY)||1;
-  f.set({vel:{x:0,y:out*5}});expect(f.read(1.4).release).toBe('vertical');expect(f.read(1.6).release).toBe('out');
+  f.set({pos:{x:44,y:f.cue().pos.y},vel:{x:0,y:out*5}});expect(f.read(1.4).release).toBe('vertical');expect(f.read(1.6).release).toBe('out');
   f.set({pos:{x:48,y:f.cue().pos.y+out*2},vel:{x:6,y:0}});
   expect(f.read(1.8).release).toBe('out');expect(f.read(2).release).toBe('vertical');
  });
