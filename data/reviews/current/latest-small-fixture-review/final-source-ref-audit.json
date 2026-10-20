@@ -1,0 +1,224 @@
+{
+  "reviewer": "Independent Integration subagent latest_small_docs_review",
+  "reviewDate": "2026-10-19 America/Phoenix",
+  "candidate": "25a7a5919b8eb6de24bf8b604b8d859263052dd9",
+  "acceptedParent": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "decision": "ACCEPT source/ref scope; exact required combined run remains Root responsibility",
+  "newTests": 0,
+  "newEngineTicks": 0,
+  "newGames": 0,
+  "verifiedProtectedPaths": [
+    "config/stalk-visual-request-witness.json",
+    "scripts/replay-data.ts",
+    "src/physics/catch-opportunity.ts",
+    "src/playbook/coverages.ts",
+    "src/playbook/formations.ts",
+    "src/playbook/types.ts",
+    "src/sim/assign.ts",
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/behaviors/qb.ts",
+    "src/sim/behaviors/receiver.ts",
+    "src/sim/catching.ts",
+    "src/sim/climb-access.ts",
+    "src/sim/coverage-leverage.ts",
+    "src/sim/coverage/defender.ts",
+    "src/sim/engagement.ts",
+    "src/sim/playsim.ts",
+    "src/sim/qbmind.ts",
+    "src/sim/run-fits.ts",
+    "test/back-man-run-fit.test.ts",
+    "test/catch-caller-interval.test.ts",
+    "test/catch-opportunity.test.ts",
+    "test/climb-access.test.ts",
+    "test/coverage-mechanics.test.ts",
+    "test/coverage-rules.test.ts",
+    "test/deep-coverage-leverage.test.ts",
+    "test/dl-acquired-flow.test.ts",
+    "test/fixtures/catch-caller-inputs.json",
+    "test/fixtures/climb-traffic.json.gz",
+    "test/fixtures/deep-coverage-plant.json",
+    "test/fixtures/receiver-run-assignment-g1-p018.json",
+    "test/fixtures/run-fit-crossover.json.gz",
+    "test/fixtures/runner-side-recovery.json.gz",
+    "test/fixtures/same-time-catch.json",
+    "test/inside-stalk-access.test.ts",
+    "test/qb-carryout-direction.test.ts",
+    "test/qb-installed-box-count.test.ts",
+    "test/qb-rusher-recording.test.ts",
+    "test/receiver-eligibility-gh.test.ts",
+    "test/receiver-route-effort.test.ts",
+    "test/receiver-run-eligibility.test.ts",
+    "test/replay-export.test.ts",
+    "test/replay-recording-precision.test.ts",
+    "test/run-fit-crossover.test.ts",
+    "test/runner-side-recovery.test.ts",
+    "test/shotgun-rb-alignment.test.ts",
+    "test/stalk-moving-surface.test.ts",
+    "test/stalk-visual-request.test.ts",
+    "test/support/stalk-visual-request.ts",
+    "viewer/replay.template.html"
+  ],
+  "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "flagSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "unchangedDependenciesVerifierWorldAndKinematics": [
+    "config/baseline.json",
+    "package.json",
+    "package-lock.json",
+    ".nvmrc",
+    "vitest.config.ts",
+    "scripts/baseline.mjs",
+    "scripts/source-version.ts",
+    "src/physics/world.ts",
+    "src/physics/kinematics.ts"
+  ],
+  "engagementEqualsCorrected160": "1b5668c89cc0f5c98bc2314a0b57afb8cd14a65a",
+  "independentReconstruction": {
+    "all50ProtectedBlobsMatch": true,
+    "reconstructionTree": "f3ddf653dd5a653f87e1d9dab2409e68aec8e1f3",
+    "steps": [
+      {
+        "type": "exact reviewed blobs",
+        "label": "131 caller/helper",
+        "ref": "fc48a8f147b515850b231431c64e09bb889195b9",
+        "paths": [
+          "src/physics/catch-opportunity.ts",
+          "src/sim/catching.ts",
+          "src/sim/playsim.ts",
+          "test/catch-caller-interval.test.ts",
+          "test/catch-opportunity.test.ts",
+          "test/fixtures/catch-caller-inputs.json",
+          "test/fixtures/same-time-catch.json"
+        ]
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "141 portable six runtime/four tests",
+        "ref": "12487de7e4237369fe12a6232b6673d5fe950e51",
+        "paths": [
+          "src/playbook/coverages.ts",
+          "src/playbook/types.ts",
+          "src/sim/assign.ts",
+          "src/sim/behaviors/defense.ts",
+          "src/sim/coverage-leverage.ts",
+          "src/sim/coverage/defender.ts",
+          "test/coverage-mechanics.test.ts",
+          "test/coverage-rules.test.ts",
+          "test/deep-coverage-leverage.test.ts",
+          "test/fixtures/deep-coverage-plant.json"
+        ]
+      },
+      {
+        "type": "independent review patch",
+        "label": "155,148->149,167",
+        "ref": "3ba572851cb03d3693748aaad74cace90fae6d8d",
+        "path": "docs/reviews/latest-receiver-independent-review-2026-10-19/combined-reviewed-extraction.patch"
+      },
+      {
+        "type": "independent review patch",
+        "label": "150 portable",
+        "ref": "e8ad18a3c9c010f632348c375ff9205fc1dddffb",
+        "path": "docs/reviews/latest-blocking-review-2026-10-19/patches/pr150-portable.patch"
+      },
+      {
+        "type": "independent review patch",
+        "label": "150 real Will load contract",
+        "ref": "e8ad18a3c9c010f632348c375ff9205fc1dddffb",
+        "path": "docs/reviews/latest-blocking-review-2026-10-19/patches/pr150-composed-contract.patch"
+      },
+      {
+        "type": "independent review patch",
+        "label": "152 recovery",
+        "ref": "e8ad18a3c9c010f632348c375ff9205fc1dddffb",
+        "path": "docs/reviews/latest-blocking-review-2026-10-19/patches/pr152.patch"
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "156",
+        "ref": "aacfce18865f345b59b96a192d2ed9064403853e",
+        "paths": [
+          "src/playbook/formations.ts",
+          "test/shotgun-rb-alignment.test.ts"
+        ]
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "157",
+        "ref": "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+        "paths": [
+          "src/sim/qbmind.ts",
+          "test/qb-installed-box-count.test.ts"
+        ]
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "159",
+        "ref": "57b05b0995d05d9c4f44a8611496c6b966e3e72f",
+        "paths": [
+          "src/sim/run-fits.ts",
+          "test/fixtures/run-fit-crossover.json.gz",
+          "test/run-fit-crossover.test.ts"
+        ]
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "160 recognition-corrected minimal extraction",
+        "ref": "1b5668c89cc0f5c98bc2314a0b57afb8cd14a65a",
+        "paths": [
+          "src/sim/engagement.ts",
+          "test/dl-acquired-flow.test.ts"
+        ]
+      },
+      {
+        "type": "independent review patch",
+        "label": "153 narrow qb-carryout-direction",
+        "ref": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+        "path": "docs/reviews/latest-run-game-v3-review/qb-carryout-direction.patch"
+      },
+      {
+        "type": "independent review patch",
+        "label": "153 narrow viewer-precision",
+        "ref": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+        "path": "docs/reviews/latest-run-game-v3-review/viewer-precision.patch"
+      },
+      {
+        "type": "independent review patch",
+        "label": "153 narrow native-recording-precision",
+        "ref": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+        "path": "docs/reviews/latest-run-game-v3-review/native-recording-precision.patch"
+      },
+      {
+        "type": "exact reviewed blobs",
+        "label": "FS installed cushion",
+        "ref": "463048139550dd233ab47feaa69bd8bedecbcb6e",
+        "paths": [
+          "test/back-man-run-fit.test.ts"
+        ]
+      },
+      {
+        "type": "independent review patch",
+        "label": "QB base-coaching positive control",
+        "ref": "41df9f009fefeb14294b92c1a199e6e194a96df6",
+        "path": "docs/reviews/qb-scramble-coverage-discriminator-2026-10-19/historical-base-coaching-test.patch"
+      }
+    ]
+  },
+  "nonImportedAuthorHeads": [
+    "fc48a8f147b515850b231431c64e09bb889195b9",
+    "055f78ded6821336ce90c708b892e881ea9b7f08",
+    "6fd13e4782a08497383912272b693e6a59747d80",
+    "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+    "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+    "346421f9e47938cdb4e53f491c69d656a052783c",
+    "2866f88232dd9e794469a46b084d51f735cbb7b9",
+    "aacfce18865f345b59b96a192d2ed9064403853e",
+    "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+    "57b05b0995d05d9c4f44a8611496c6b966e3e72f",
+    "3828370a8b6905a7de2af761b72e0be5c41500cd",
+    "b6e993392669fd0ebcea7e9329ca957eebd80569",
+    "fb8cf7ecbd151c6d3817c6835531a7197c753ba7",
+    "6184040fb0e2190b8799a2bd925df9e8af6494da"
+  ],
+  "originalFailedReceiptAndLogImmutable": true,
+  "elapsedStaticSeconds": 0.9032000829975004
+}
