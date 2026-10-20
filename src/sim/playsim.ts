@@ -28,6 +28,7 @@ import { createEngagement, releaseJoints, updateEngagements } from './engagement
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
+import { predictCalledMotion } from './called-motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
@@ -587,13 +588,11 @@ export class PlaySim {
     for(const contact of this.lastStep?.contacts??[]){
       constrained.add(this.agents[contact.i].body);constrained.add(this.agents[contact.j].body);
     }
-    // A teammate's delayed picture lags motion the call itself announces (a
-    // rehearsed track on the snap count); predict him from the call there.
+    // A called track is an announced target, not already achieved velocity.
+    // Advance the acquired picture only by the bounded free response to it.
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
-      if (!called) return seen;
-      const age = seen.age ?? 0;
-      return { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
+      return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
