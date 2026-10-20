@@ -6,8 +6,9 @@
  * defenders who are in phase (facing the ball) contest.
  */
 import { FIELD_WIDTH } from '../core/field.js';
-import { clamp, type Vec3 } from '../core/vec.js';
+import { clamp, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_TUMBLE } from '../physics/ball.js';
+import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -34,15 +35,16 @@ function facingBall(a: Agent, ballVel: Vec3): boolean {
   return c > -0.35;
 }
 
-export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3): void {
+/** bodyStarts, when supplied, is indexed by agent and spans the same interval
+ * as prev/cur. Omitted endpoints describe an explicit stationary-body query;
+ * never reuse a previous tick's positions or extrapolate from velocity. */
+export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
+  bodyStarts?: readonly Readonly<Vec2>[]): void {
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const tAir = sim.t - ball.releaseT;
   if (tAir < 0.1) return;
   const opps: Opp[] = [];
-  const sx = cur.x - prev.x;
-  const sy = cur.y - prev.y;
-  const sl2 = sx * sx + sy * sy;
   for (const a of sim.agents) {
     if (a === ball.thrower || a.isDown(sim.t) || sim.t < a.noCatchUntil) continue;
     if (a.team === 'O' && INELIGIBLE.has(a.slot)) continue;
@@ -52,19 +54,16 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3): 
     // else on offense must have acquired this flight before reaching for it;
     // legal eligibility or an installed outlet alone does not provide eyes.
     if (a.team === 'O' && !a.tags.has('onBall') && !sim.incidentalCatchReadiness.query(a, sim.t)) continue;
-    let s = sl2 > 1e-9 ? ((a.pos.x - prev.x) * sx + (a.pos.y - prev.y) * sy) / sl2 : 0;
-    s = clamp(s, 0, 1);
-    const px = prev.x + sx * s;
-    const py = prev.y + sy * s;
-    const dh = Math.hypot(a.pos.x - px, a.pos.y - py);
-    const z = prev.z + (cur.z - prev.z) * s;
     const tracking = a === ball.target || a.tags.has('onBall');
     const reach = a.profile.reach + (tracking ? TRACKING_REACH_BONUS : 0);
     // Receivers tracking the ball time a full leap; defenders playing it get a
     // partial leap; everyone else only gets hands up.
     const p = a.profile;
     const top = a.team === 'O' && tracking ? p.maxCatchHeight : tracking ? p.reactReach + 0.5 * (p.maxCatchHeight - p.reactReach) : batWindow ? p.reactReach * 0.95 : p.reactReach;
-    if (dh <= reach && z >= 0.1 && z <= top) opps.push({ a, s, dh, z });
+    const body0 = bodyStarts ? bodyStarts[a.idx] : a.pos;
+    if (!body0) continue; // An incomplete supplied interval cannot grant reach.
+    const opportunity = closestCatchOpportunity(body0, a.pos, prev, cur, { reach, low: .1, top });
+    if (opportunity) opps.push({ a, ...opportunity });
   }
   if (opps.length === 0) return;
   opps.sort((p, q) => p.s - q.s);
