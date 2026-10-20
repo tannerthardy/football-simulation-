@@ -1,0 +1,86 @@
+{
+  "evidenceCommit": "d56a4509db0c26210b472d8ee1882064c0151ef9",
+  "operator": "For every movement observer sample with heldTargetFlow present, look up defender own recognition in same tick reads[]; no simulation.",
+  "rows": [
+    {
+      "case": "dl-interior/COUNTER2.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "33b7753f9c963b0e3038ab626281c03369afdbb7178417289b1313d4b2d04203",
+      "activeHeldFlowSamples": 25,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/DUO.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "63a64d01d0b9e98973aefe764bfbbada87cf9b9c46f1db4590916fc8afcc250e",
+      "activeHeldFlowSamples": 5,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/FTOSS-L.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "4587e6ec785aace49468599aba7c6e12c4dd1ebe3ea02d7fda2a56008c674c10",
+      "activeHeldFlowSamples": 35,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/FTOSS.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "6da09f0d74ae157b86cf760839968090775424a398470143501d269f14ee7c9e",
+      "activeHeldFlowSamples": 46,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/IZ.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "dc916ef7543adcd41dd65d8739399a4828b66ba954e1f7d269afa905aeed1c64",
+      "activeHeldFlowSamples": 10,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/OZ24.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "1af372b1e955ca54324c305e64a91c0b53d80b3271f9ea9b480cd95b5ac7d8d0",
+      "activeHeldFlowSamples": 0,
+      "nonRunSamples": []
+    },
+    {
+      "case": "dl-interior/TOSS.json.gz",
+      "source": "5b1b4a5bf5a99c8bdc7d2be4d4d24a43bdfa03ddef8efce5394b88199fad9864",
+      "memberSha256": "9982667c4ae75f21a22d2c855137d8c68582cdce41c0df46e49c858144822edd",
+      "activeHeldFlowSamples": 35,
+      "nonRunSamples": []
+    },
+    {
+      "case": "combined-interior/COUNTER2.json.gz",
+      "source": "d0009088b8ad4dc3c043fe94f2cee1655b032c75e8fc50e58b5a1f1d8e40d401",
+      "memberSha256": "c21c4f97d0c41c62cbfc0f228a99a7e1b3a7fdc598088e1b0e682d988b122b87",
+      "activeHeldFlowSamples": 25,
+      "nonRunSamples": []
+    },
+    {
+      "case": "combined-interior/FTOSS.json.gz",
+      "source": "d0009088b8ad4dc3c043fe94f2cee1655b032c75e8fc50e58b5a1f1d8e40d401",
+      "memberSha256": "ab20d4e67e179218d5f637ea3dfcf7f83aff013202056ed6166bd355c32790c4",
+      "activeHeldFlowSamples": 46,
+      "nonRunSamples": []
+    },
+    {
+      "case": "combined-interior/PA.json.gz",
+      "source": "d0009088b8ad4dc3c043fe94f2cee1655b032c75e8fc50e58b5a1f1d8e40d401",
+      "memberSha256": "07376af7f9a7e8de111990d62dd2b791aad2a9ec4a8b68c1bfa4594fa3dbf034",
+      "activeHeldFlowSamples": 0,
+      "nonRunSamples": []
+    },
+    {
+      "case": "combined-interior/TOSS.json.gz",
+      "source": "d0009088b8ad4dc3c043fe94f2cee1655b032c75e8fc50e58b5a1f1d8e40d401",
+      "memberSha256": "1b26c9ae0c801dd7cdb020f59930f2100776546c24db45c2e60b9af8bc13f495",
+      "activeHeldFlowSamples": 35,
+      "nonRunSamples": []
+    }
+  ],
+  "totalActiveSamples": 262,
+  "totalNonRunSamples": 0,
+  "qualification": "Source-specific compatibility for narrow recogrun gate only. Does not qualify additional merged runtime or a #164 composition."
+}

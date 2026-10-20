@@ -177,3 +177,43 @@ published native prefixes /40 completed /10 censored /43.42s and eight reused
 baselines describe the author's multi-arm study, **not newly executed review
 work**. Final #160 inactive pass controls are prior-source compatible evidence,
 not final-source executions; the report states that limitation correctly.
+
+## Follow-up: bounded gate repair, awaiting Integration's independent review
+
+At Integration's request, the separate repair is published as
+[`1b5668c89cc0f5c98bc2314a0b57afb8cd14a65a`](https://github.com/tannerthardy/football-simulation-/commit/1b5668c89cc0f5c98bc2314a0b57afb8cd14a65a)
+on `codex/dl-flow-recognition-repair`. Its parent is the exact original #160
+head; the [portable repair](recognition-gate-repair.patch) changes one production
+condition and adds two direct tests. Original #160 remains held at its reviewed
+head. This reviewer authored the follow-up, so Integration must independently
+adjudicate it before extraction. No self-approval is asserted.
+
+The new mode requires `d.recog?.read==='run'` instead of the legacy `reading`
+alias. Pass/unsure states now cannot activate the new deep lateral mode through
+a hidden advanced-holder alias. Original16 plus two new directly affected checks
+pass: [receipt](recognition-gate-focused.json), [log](recognition-gate-focused.log);
+source SHA256 `a9a5b96909a810fe8ba0688bbf9fb3fa8f9cdad1f2f66327a0f64d768de91d1e`.
+No additional typecheck, native continuation or suite was run for this patch.
+
+The initial proposed tests equated *all* output aims/commands under pass/unsure.
+That was too broad: after suppressing the new mode, unchanged legacy `declared`
+can still choose the observed advanced-but-empty QB via hidden live ownership.
+The first repair run was16 passes/two failures; its [receipt](overbroad-assertion-focused.json)
+and [log](overbroad-assertion-focused.log) remain. The retained two tests explicitly
+assert only that neither hidden holder activates **new heldTargetFlow**. Existing
+run-recognized tests continue asserting full request invariance. This is a new-
+consumer contract repair, not a claim that legacy contact information is cured.
+Do not broaden to that older declaration policy in this extraction.
+
+Zero-tick reanalysis of all seven final DL and four final diagnostic-composition
+tapes found262 active heldTargetFlow samples, each with the defender's own
+recorded recognition `run`; member hashes match the published manifest.
+[Per-case source/hash/sample counts](native-gate-reuse.json). Under a run read,
+the old `reading` and new condition are both true, so the one changed clause
+leaves those activation decisions unchanged. This supports compatible reuse
+for this clause, not any other newly combined engine or #164 movement law.
+
+The gate repair's first focused command took1.652s and the passing corrected
+command took1.528s according to their launcher receipts (Vitest1.30/1.15s).
+No new full plays or games were collected. The earlier original-source
+1.730s failing diagnostic is separately preserved above.
