@@ -25,7 +25,9 @@ direct checks after guard cleanup; A018 earned keeper/climb retained. Weak C
 earns seal 2.10; strong line transports more but DT contacts RB earlier; Tite
 C loses late Will collection by 3 s. All costs retained, three paired inputs,
 15.639 s collector/51.423 s all command time, no games/full suite/Physics changes.
-Recommend narrow independent integration review, no package activation.
+Independent disposition ACCEPT at runtime 859d0255/head 9bd54cf;
+[review](reviews/zone-contact-execution-independent.md) reuses existing evidence,
+zero new tests/sims. Integration owns combined verification; no package activation.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
