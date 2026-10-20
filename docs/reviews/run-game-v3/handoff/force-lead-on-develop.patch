@@ -1,0 +1,146 @@
+From 6224282702b123bbce71addf32cdd38b9f3c4419 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 20 Oct 2026 21:42:57 +0000
+Subject: [PATCH] Experimental FORCE_LEAD (off): force fit leverages the
+ acquired lateral track
+
+Extracted from claude/run-game-v3 3cfad552 onto accepted develop 2c98bed9.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01A6JfZiaGFGyJ9mLcAx7JM5
+---
+ config/baseline.json    |  1 +
+ src/sim/run-fits.ts     | 27 +++++++++++++++++++--
+ test/force-lead.test.ts | 52 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+), 2 deletions(-)
+ create mode 100644 test/force-lead.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 0074124c..fc113ba7 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -15,6 +15,7 @@
+     "DL_HANDS": "0",
+     "FLOW_READ": "1",
+     "FLOW_RELEASE": "1",
++    "FORCE_LEAD": "0",
+     "GAIT_STEP": "0",
+     "HAND_FIGHT": "0",
+     "HAND_MOTOR": "0",
+diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts
+index db40e40b..a9ea2d01 100644
+--- a/src/sim/run-fits.ts
++++ b/src/sim/run-fits.ts
+@@ -12,6 +12,8 @@ import { CF_FLOW } from './counterfactual.js';
+ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
+ import { requestToCover } from './motion-plan.js';
+ import { handoffReach } from './ball-transfer.js';
++import { interceptPoint } from '../physics/reach.js';
++import { FIELD_WIDTH } from '../core/field.js';
+ 
+ export interface RunFitJob {
+   gap: Gap;
+@@ -141,6 +143,12 @@ const PULL_READ = process.env.PULL_READ !== '0';
+ /** Diagnostic pull acquisition from observed departure, independent of an
+  * opponent's current engagement. Default off pending matched controls. */
+ const PULL_CUE = process.env.PULL_CUE === '1';
++/** Experimental (FORCE_LEAD=1, off): a force defender keeps leverage on the
++ * runner's acquired lateral track, not his current spot. He aims his margin
++ * outside the earliest point of that track his own body can reach first at
++ * his fit depth, moves with the track's lateral speed, and opens to run while
++ * that needs more lateral speed than a square shuffle. */
++const FORCE_LEAD = process.env.FORCE_LEAD === '1';
+ /** How far ahead a puller's seen path is carried (about one decision beat), the
+  * leverage kept on his arrival, and how far a fit will flow to it. */
+ const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
+@@ -244,12 +252,27 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+       // kickout. The blocker can answer with a log; no outcome is prescribed.
+       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
+       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
+-    } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
++    }
+     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
+     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
+     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
++    // The track's lateral speed when it widens toward this side, else none.
++    const widen = FORCE_LEAD && job.kind === 'force' && seen.vel.y * job.side > 1 ? seen.vel.y : 0;
++    if (!kick && job.kind === 'force') {
++      let ry = seen.pos.y;
++      if (widen) {
++        const margin = job.side * .7;
++        const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale },
++          (t) => ({ x, y: clamp(seen.pos.y + widen * t + margin, 0, FIELD_WIDTH) }), { horizon: 2, radius: .3 });
++        ry = ip.point.y - margin;
++      }
++      gy = job.side > 0 ? Math.max(surface+.5,ry+.7) : Math.min(surface-.5,ry-.7);
++    }
+     const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
+-    const fit = track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
++    let fit = track(a,aim,{x:0,y:widen},{speed:.9,gain:3,facing:Math.PI});
++    // A lateral sprint is run with open hips, not shuffled square.
++    if (widen && Math.abs(fit.vel.y) > Math.max(Math.abs(fit.vel.x), 2.5))
++      fit = { ...fit, facing: Math.atan2(fit.vel.y, fit.vel.x) };
+     // A fit landmark is not permission to run through an approaching back.
+     // Gather for a personally identified runner threatening this surface,
+     // even before he crosses the old LOS pursuit gate. Keep the installed
+diff --git a/test/force-lead.test.ts b/test/force-lead.test.ts
+new file mode 100644
+index 00000000..83e14136
+--- /dev/null
++++ b/test/force-lead.test.ts
+@@ -0,0 +1,52 @@
++/** FORCE_LEAD (experimental, off): a force defender keeps leverage on the
++ * runner's acquired lateral track rather than his current spot, so on a
++ * stretch toward him he is wider outside the runner when the runner reaches
++ * the line. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++
++const offense = generateTeam(new Rng(51), 'O', 'O', { strength: .55 });
++const defense = generateTeam(new Rng(52), 'D', 'D', { strength: .55 });
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++/** The playside force defender's lateral margin outside the carrier (yd) on
++ * the first tick the carrier is past the line, for three outside-zone seeds. */
++async function margins(on: boolean) {
++  vi.stubEnv('FORCE_LEAD', on ? '1' : '0');
++  vi.resetModules();
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const formation = FORMATION_BY_ID.ace_12;
++  const out: number[] = [];
++  for (const seed of [5, 6, 7]) {
++    const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
++      offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'oz_strong' },
++      defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over' },
++      los: 40, ballY: CENTER_Y, firstDownX: 50, seed });
++    while (sim.phase === 'live' && sim.t < 5) {
++      sim.tick();
++      const c = sim.carrier;
++      if (!c || c === sim.qb || c.pos.x < sim.los) continue;
++      const side = Math.sign(c.pos.y - sim.ballY);
++      const force = sim.defense.find((d) => d.runFit?.kind === 'force' && d.runFit.side === side)!;
++      out.push((force.pos.y - c.pos.y) * side);
++      break;
++    }
++  }
++  return out;
++}
++
++describe('FORCE_LEAD', () => {
++  it('on: the force defender is wider outside the stretch runner at the line', async () => {
++    const off = await margins(false), on = await margins(true);
++    expect(off).toHaveLength(3);
++    expect(on).toHaveLength(3);
++    const mean = (v: number[]) => v.reduce((s, x) => s + x, 0) / v.length;
++    expect(mean(on)).toBeGreaterThan(mean(off) + .75);
++    on.forEach((m, i) => expect(m).toBeGreaterThan(off[i]));
++  });
++});
+-- 
+2.43.0
+

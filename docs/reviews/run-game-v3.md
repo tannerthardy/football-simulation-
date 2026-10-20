@@ -1944,3 +1944,11 @@ reruns them: `st2co`, `st2gap`, `tr1gap` against `fl4gap`/`fl1co`). Keep
 outcomes. Lead pullers are still late through the corner (waypoint path makes
 a near-stop square turn, ~1.6 yd/s): a rounded arrival path is the next
 puller repair.
+
+### Part 13 integration handoff (2026-10-20)
+
+Exact patches, dependencies, successor map, ready/experimental status, the
+AFTER-04/14 attribution (the possession gate, not the interception lead,
+turns AFTER-04 on #176), the completed TRAP_READ arm (trap negatives
+25 → 40 of 200, p 0.001) and the unrun `SPACE_STEER=2` arms are in
+[run-game-v3/handoff](run-game-v3/handoff/README.md).
