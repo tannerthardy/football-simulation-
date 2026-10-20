@@ -20,6 +20,16 @@ audit or a claim that every old research concern affects today's engine.
 Use [STATUS](STATUS.md) for the short priority list, [INTEGRATION](INTEGRATION.md)
 for candidate/receipt decisions, and [WORKBOARD](WORKBOARD.md) before shared edits.
 
+Latest preparation resolves the old independent-review gates for131 caller,
+141's three contracts/comeback cost and148/149/150 within the named minimal
+scopes. They are included in the pending combined candidate, not yet accepted
+develop.160's original hidden-holder activation fails; only the separately
+reviewed own-recognition correction is included.165 is current-facing execution
+order, not162 yaw/GAIT_STEP promotion. Preserve receiver traffic, delayed shotgun
+exchange, contact lifetime, wide-zone/combo and deep-pursuit risks. [Current
+intake/dispositions](reviews/latest-reviewed-checkpoint.md). Older dated held
+rows below retain original evidence; the canonical queue determines live status.
+
 ## Status and evidence rules
 
 - **Active:** a named owner is working on a bounded next action.

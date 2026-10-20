@@ -49,6 +49,22 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
+### Latest reviewed checkpoint — prepared, verification pending
+
+Accepted develop remains `f4146275ce7539816bf57b4ed55a0d2be10e48c7`.
+`codex/latest-reviewed-checkpoint` minimally composes independently accepted
+131/141/148/149/150/152/155/156/157/159/corrected160/161/164/165/167,
+plus153's narrow QB-away and end-to-end film precision extractions. 53 protected
+files/19 source files; all44 flags unchanged, components1/GAIT_STEP0/CF_FLOW unset.
+Independent root disposition of160's recognition repair,150's real-load contract
+and165's existing-law attained pose is explicit. Exact shared engagement has
+independent source acceptance;54 targeted overlap checks pass in2.083s.
+[Scope/review/adverse decisions](reviews/latest-reviewed-checkpoint.md) and
+[pins/file fingerprints](../data/reviews/current/latest-reviewed-checkpoint/intake.json).
+One required combined verification is pending; no standalone game campaign.
+162/new yaw,GAIT_STEP activation,158/163/166,137 joint policy and broader153
+experiments remain separate; original failures/branches/data histories retained.
+
 ### #153 run-game v3 — review intake, no promotion
 
 [Draft #153](https://github.com/tannerthardy/football-simulation-/pull/153) pins
