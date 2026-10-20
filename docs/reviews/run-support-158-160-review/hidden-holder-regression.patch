@@ -1,0 +1,17 @@
+--- a/test/dl-acquired-flow.test.ts
++++ b/test/dl-acquired-flow.test.ts
+@@ -72,3 +72,14 @@
+   expect(cmd(left).vel).toEqual(cmd(right).vel);
+  });
+ });
++
++// Review diagnostic: does hidden authoritative holder select reading when acquired pictures stay fixed?
++describe('independent review hidden-holder gate',()=>{
++ it('uses the same acquired lateral target while still reading pass',()=>{
++  const a=stage(),b=stage();
++  for(const f of [a,b]) {f.defender.recog!.read='pass'; f.qbCue.pos.x=f.sim.los+3;}
++  b.sim.ball={kind:'held',carrier:b.sim.qb};
++  const observed=(f:Scene)=>{const samples:Record<string,unknown>[]=[];runContactObservers.set(f.sim,(_e,p,d)=>{if(p==='movement')samples.push(d);});try{const command=cmd(f);return{command,aim:samples[0].defensiveAim,flow:samples[0].heldTargetFlow,reading:samples[0].reading};}finally{runContactObservers.delete(f.sim);}};
++  const aa=observed(a),bb=observed(b);console.log(JSON.stringify({rbHolder:aa,qbHolder:bb}));expect(bb).toEqual(aa);
++ });
++});

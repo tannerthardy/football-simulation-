@@ -1,0 +1,36 @@
+{
+  "reviewedHead": "3828370a8b6905a7de2af761b72e0be5c41500cd",
+  "implementation": "c5c852b88cf4d04bd324209c7755edacab1cd963",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "diagnosticDecision": "HOLD: new lateral mode activation depends on hidden authoritative holder through legacy reading/advanced alias",
+  "scene": "Reuse published stage(); set own recognition read=pass and acquired QB empty at LOS+3 in both; acquire same deep moving RB carrying=true. Change only sim.ball holder RB\u2192QB.",
+  "rbHolder": {
+    "aim": {
+      "x": 40.82874309978464,
+      "y": 27.137802721312227
+    },
+    "flow": null,
+    "reading": false,
+    "requestedVy": 1.4466504128438247
+  },
+  "qbHolder": {
+    "aim": {
+      "x": 40.82874309978464,
+      "y": 31.356681818181823
+    },
+    "flow": 3,
+    "reading": true,
+    "requestedVy": 2.8411076533541832
+  },
+  "result": {
+    "failed": 1,
+    "skippedExisting": 16,
+    "vitestDurationSeconds": 1.28,
+    "testMilliseconds": 53,
+    "newEngineWorldSteps": 2,
+    "newNativePrefixes": 0,
+    "games": 0,
+    "fullSuites": 0
+  },
+  "qualification": "Two existing stage() setups each execute their one warm-up World step. No running PlaySim continuation, snap, roster screen or game. Failed target/command equality, not yardage. Existing tests skipped because only one new question needed resolution."
+}
