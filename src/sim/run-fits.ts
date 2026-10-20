@@ -31,6 +31,15 @@ export interface KeyedRunFit {
   cue: Perceived;
 }
 
+/** Installed exchange expectation and this observer's backfield picture.
+ * This is not an affirmative runner key: retain normal pursuit boundaries
+ * and let acquired empty-back/QB evidence retire the existing expectation.
+ */
+export interface BackfieldRunFit {
+  backfield: { back: Agent; backCue: Perceived; qbCue: Perceived };
+}
+export type RunFitRead = KeyedRunFit | BackfieldRunFit;
+
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
   const policy = sim.defCall.runPolicy ?? { edge: 'box', linebacker: 'stack' };
@@ -177,20 +186,24 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 // sight of the empty back later does not reinstall the expected exchange.
 const contradictedMesh = new WeakSet<Agent>();
 
-export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
+export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
-  const c = keyed?.target ?? sim.carrier;
-  const back = sim.slot('RB');
+  const keyed = input && 'target' in input ? input : undefined;
+  const picture = input && 'backfield' in input ? input.backfield : undefined;
+  const back = picture?.back ?? sim.slot('RB');
+  const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
+  const c = picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
-  let premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
+  let premesh = picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
-  let seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  let seen = picture ? premesh || c === back ? picture.backCue : picture.qbCue
+    : keyed?.cue ?? sim.see(a, premesh ? back! : c);
   if (!keyed && premesh) {
-    const qb = sim.see(a, sim.qb);
+    const qb = picture?.qbCue ?? sim.see(a, sim.qb);
     // Snap possession is expected. An empty back already beyond the line
     // and out of handoff reach contradicts that expectation; a personally
     // acquired committed QB also retires it. Neither uses a failure clock.
