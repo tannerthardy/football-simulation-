@@ -1,5 +1,7 @@
 # Independent review: isolated drive-connection extraction
 
+> Historical standalone disposition. The later [current coherent composition](run-contact-composition.md) has independent ACCEPT for its bounded scope; the original historical-tail attribution remains qualified.
+
 Reviewed runtime `52d66d9ded86757a3b7e2175e62b01c60ba8c43f`, accepted base `2c98bed94adad8087c65f381d4090444ad283985`. Source SHA256 `ef9934bdcea4fd7691e560d7c4496a3ebd61f53883828fae658e00bfb8c2c6a9`; changed runtime blob `src/sim/engagement.ts@6eece70`. Read-only source/test/receipt review; no independently repeated checks or native runs.
 
 **Source disposition: ACCEPT the isolated extraction and focused mechanism correction. Adoption disposition: HOLD**, retaining the single unanswered historical added-OZ-tail attribution. This source acceptance is not permission to activate/merge, a claim of current native transfer, or approval of Claude's broader package.

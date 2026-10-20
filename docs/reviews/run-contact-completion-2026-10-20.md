@@ -1,5 +1,7 @@
 # Run contact: completion decisions and isolated drive correction
 
+> Historical standalone disposition. The later [current coherent composition](run-contact-composition.md) has independent ACCEPT for its bounded scope; the original historical-tail attribution remains qualified.
+
 Reviewed 2026-10-20. Accepted `develop`:
 `2c98bed94adad8087c65f381d4090444ad283985`; queue `4cc3337d`.
 Claude research: `bae3fe80d189a7d792aaafbc4eea1ae2baa79573`.

@@ -17,6 +17,15 @@ defender access through runner arrival, traffic and transition costs, not gain
 or standalone success. Preserve physics/capacities/rosters/flags, defensive
 work-off, mesh, spacing and release gates. Integration owns combined suite.
 Source-only drive and original-runoff PRs/holds remain separately preserved.
+Combined runtime5e55a1cc/sourcef8f2f9bc: 39 focused/typecheck pass.
+Independent combined and Power reviewers ACCEPT this bounded current scope;
+strong exposed DT access, weak traffic refinement and Power loaded-but-exposed
+Will win remain visible. Seven new native prefixes14.319s, all command33.802s;
+four final Ace arms reused. [Combined report](reviews/run-contact-composition.md).
+Recommend #174's coherent scope including #172 once for Integration verification;
+Publish this working branch by fast-forwarding owned PR #174 head
+`codex/drive-connection-controller`; runtime remains the tested5e55a1cc.
+prior standalone hold remains historical, not a demand for positive gains alone.
 
 
 ## Drive-connection completion — 2026-10-20

@@ -1,0 +1,659 @@
+{
+  "cases": {
+    "strong": {
+      "id": "oz/strong/ace_12/over3/pair11/77",
+      "inputSha256": "0f3a33aebca432f715d9372a95316260b6acb9dd1b7172b4a63be2e537789b96",
+      "arms": {
+        "baseline": {
+          "censored": true,
+          "end": 8,
+          "result": null,
+          "runnerLOS": 2.5,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RT",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 23.63
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 3.55,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "CB_S",
+              "pos": {
+                "x": 45.49,
+                "y": 16.38
+              },
+              "note": "grasp"
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 1.500910506990749e-11,
+            "armImpulseExcess": 2.842170943040401e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "runoff": {
+          "censored": true,
+          "end": 8,
+          "result": null,
+          "runnerLOS": 2.5,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RT",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 23.63
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 2.5,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "DT_S",
+              "pos": {
+                "x": 40.31,
+                "y": 21.48
+              },
+              "note": "body collision"
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 2.002076282536791e-11,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "drive": {
+          "censored": true,
+          "end": 8,
+          "result": null,
+          "runnerLOS": 2.5,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RT",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 23.63
+              },
+              "note": "secured DT_S; RG stays"
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 2.369304752392054e-11,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "both": {
+          "censored": true,
+          "end": 8,
+          "result": null,
+          "runnerLOS": 2.5,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RT",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 23.63
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 2.5,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "DT_S",
+              "pos": {
+                "x": 40.31,
+                "y": 21.48
+              },
+              "note": "body collision"
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 1.8626877817951026e-11,
+            "armImpulseExcess": 2.1316282072803006e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        }
+      },
+      "firstChanges": {
+        "baseline->drive": {
+          "requestAt": 1.6,
+          "executionEnds": 1.6500000000000001,
+          "actors": [
+            "C"
+          ]
+        },
+        "baseline->both": {
+          "requestAt": 0.7,
+          "executionEnds": 0.75,
+          "actors": [
+            "LG"
+          ]
+        },
+        "runoff->both": {
+          "requestAt": 1.6,
+          "executionEnds": 1.6500000000000001,
+          "actors": [
+            "C"
+          ]
+        },
+        "drive->both": {
+          "requestAt": 0.7,
+          "executionEnds": 0.75,
+          "actors": [
+            "LG"
+          ]
+        }
+      }
+    },
+    "weak": {
+      "id": "wz/weak/ace_12/over2/pair31/1",
+      "inputSha256": "a14753ed8257d7c434271f9bc0b2ef25aa4fe2ede2a7fd11e5972a1111bde820",
+      "arms": {
+        "baseline": {
+          "censored": false,
+          "end": 3.55,
+          "result": {
+            "gain": 2.89,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 2.5999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RG",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 25.83
+              },
+              "note": "secured DT_S; RT stays"
+            },
+            {
+              "t": 2.75,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 41.13,
+                "y": 33.46
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.5,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 43.05,
+                "y": 35.13
+              }
+            }
+          ],
+          "centerPhases": [
+            {
+              "t": 0.3,
+              "phase": "reach"
+            },
+            {
+              "t": 0.9,
+              "phase": "runoff"
+            }
+          ],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 1.4248158208829409e-11,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "runoff": {
+          "censored": false,
+          "end": 3.65,
+          "result": {
+            "gain": 2.91,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 2.5999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RG",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 25.83
+              },
+              "note": "secured DT_S; RT stays"
+            },
+            {
+              "t": 2.75,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 41.13,
+                "y": 33.46
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.6,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 43.14,
+                "y": 35.83
+              }
+            }
+          ],
+          "centerPhases": [
+            {
+              "t": 0.3,
+              "phase": "reach"
+            },
+            {
+              "t": 0.9,
+              "phase": "runoff"
+            },
+            {
+              "t": 1.9,
+              "phase": "reach"
+            },
+            {
+              "t": 2.1,
+              "phase": "seal"
+            }
+          ],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 1.5006662579253316e-11,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "drive": {
+          "censored": false,
+          "end": 3.3499999999999996,
+          "result": {
+            "gain": 1.85,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 2.5999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RG",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 25.83
+              },
+              "note": "secured DT_S; RT stays"
+            },
+            {
+              "t": 2.65,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 40.62,
+                "y": 32.54
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.3,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 42.27,
+                "y": 33.54
+              }
+            }
+          ],
+          "centerPhases": [
+            {
+              "t": 0.3,
+              "phase": "reach"
+            },
+            {
+              "t": 0.9,
+              "phase": "runoff"
+            }
+          ],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 1.1894485396624077e-11,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "both": {
+          "censored": false,
+          "end": 3.3,
+          "result": {
+            "gain": 1.6,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 2.5999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "RG",
+              "b": "LB_S",
+              "pos": {
+                "x": 39.98,
+                "y": 25.83
+              },
+              "note": "secured DT_S; RT stays"
+            },
+            {
+              "t": 2.65,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 40.68,
+                "y": 32.27
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.25,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 42.1,
+                "y": 33.16
+              }
+            }
+          ],
+          "centerPhases": [
+            {
+              "t": 0.3,
+              "phase": "reach"
+            },
+            {
+              "t": 0.9,
+              "phase": "runoff"
+            },
+            {
+              "t": 1.9,
+              "phase": "seal"
+            }
+          ],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 7.958078640513122e-12,
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        }
+      },
+      "firstChanges": {
+        "baseline->drive": {
+          "requestAt": 0.45,
+          "executionEnds": 0.5,
+          "actors": [
+            "Y"
+          ]
+        },
+        "baseline->both": {
+          "requestAt": 0.45,
+          "executionEnds": 0.5,
+          "actors": [
+            "Y"
+          ]
+        },
+        "runoff->both": {
+          "requestAt": 0.45,
+          "executionEnds": 0.5,
+          "actors": [
+            "Y"
+          ]
+        },
+        "drive->both": {
+          "requestAt": 0.9,
+          "executionEnds": 0.9500000000000001,
+          "actors": [
+            "C"
+          ]
+        }
+      }
+    },
+    "power": {
+      "id": "power/strong/ace_12/under3/pair31/77",
+      "inputSha256": "28d6ab8f6c73784b679b3d08a903f0f21b64f34491fc395f7818c6df62e956a6",
+      "arms": {
+        "baseline": {
+          "censored": false,
+          "end": 4.5,
+          "result": {
+            "gain": 4.15,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 3.1999999999999997,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "Y",
+              "b": "LB_M",
+              "pos": {
+                "x": 40.88,
+                "y": 23.4
+              },
+              "note": "secured DE_S; RT stays"
+            },
+            {
+              "t": 3.5,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 41.74,
+                "y": 28.41
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 4.45,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 43.96,
+                "y": 30.01
+              }
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 5.717204487609706e-12,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "drive": {
+          "censored": false,
+          "end": 3.8,
+          "result": {
+            "gain": 0.77,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 3.0999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "Y",
+              "b": "LB_M",
+              "pos": {
+                "x": 40.88,
+                "y": 23.4
+              },
+              "note": "secured DE_S; RT stays"
+            },
+            {
+              "t": 3.1,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 40.32,
+                "y": 27.31
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.75,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 41.14,
+                "y": 28.36
+              }
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 5.444533712761768e-12,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        },
+        "both": {
+          "censored": false,
+          "end": 3.8,
+          "result": {
+            "gain": 0.77,
+            "outcome": "tackle"
+          },
+          "runnerLOS": 3.0999999999999996,
+          "events": [
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": "Y",
+              "b": "LB_M",
+              "pos": {
+                "x": 40.88,
+                "y": 23.4
+              },
+              "note": "secured DE_S; RT stays"
+            },
+            {
+              "t": 3.1,
+              "type": "carrier_contact",
+              "a": "RB",
+              "b": "LB_W",
+              "pos": {
+                "x": 40.32,
+                "y": 27.31
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.75,
+              "type": "tackle",
+              "a": "LB_W",
+              "b": "RB",
+              "pos": {
+                "x": 41.14,
+                "y": 28.36
+              }
+            }
+          ],
+          "centerPhases": [],
+          "teammateContacts": [],
+          "budgetMaxima": {
+            "workResidual": 5.444533712761768e-12,
+            "armImpulseExcess": 7.105427357601002e-15,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0
+          }
+        }
+      },
+      "firstChanges": {
+        "baseline->drive": {
+          "requestAt": 0.6,
+          "executionEnds": 0.65,
+          "actors": [
+            "RT",
+            "H"
+          ]
+        },
+        "baseline->both": {
+          "requestAt": 0.6,
+          "executionEnds": 0.65,
+          "actors": [
+            "RT",
+            "H"
+          ]
+        },
+        "drive->both": null
+      },
+      "driveBothIdentical": {
+        "setup": true,
+        "profiles": true,
+        "frames": true,
+        "events": true,
+        "result": true
+      },
+      "runoffOnly": "Not rerun: this contribution is inactive in Power; drive/both identity checked."
+    }
+  },
+  "newNativePrefixes": 7,
+  "reusedNativePrefixes": 4,
+  "newCommandSeconds": 33.801511552,
+  "newCollectorSeconds": 14.319293521999999
+}
