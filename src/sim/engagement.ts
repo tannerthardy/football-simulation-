@@ -654,7 +654,7 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
-const runSheds = new WeakMap<Engagement, { until: number; side: number; aim?: Vec2 }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -1033,14 +1033,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // continuing across the old surface is no longer the exit objective.
         // Loaded hands supply the local body position; an extended, unloaded
         // reach supplies only this observer's acquired blocker picture.
-        let aim: Vec2 | undefined;
+        let runner = false;
         if (supportRunner) {
           const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
           const blocker = loaded ? b.pos : sim.see(d, b).pos;
           if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
-            aim = { ...read.aim };
+            runner = true;
         }
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, aim });
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1240,7 +1240,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
-  const exit = shed?.aim ? norm(sub(shed.aim, d.pos)) : null;
+  // The contact technique does not own a second, older runner waypoint.
+  // Follow the existing read's held objective as it legitimately refreshes;
+  // lost/contradictory acquisition retains the ordinary across-face response.
+  const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
+  const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
     : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
@@ -1262,7 +1266,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
     declared: read.declared, supportRunner, defensiveAim: read.aim,
-    exitAim: shedding ? shed!.aim : undefined, workOff, command: intents[d.idx] });
+    exitAim, workOff, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
