@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Native NFL rules implementation — 2026-10-20 America/Phoenix
+
+CEO owns `codex/nfl-rules-engine` from accepted `2c98bed9`, the PlaySim/type/Game
+adapters, native composition tests and publication. Three bounded workers own
+only new `game/penalty-enforcement.ts`, `sim/pass-interference.ts`,
+`sim/ball-rules.ts` and their respective focused tests. Scope: actual called OPI
+and supported illegal passes, plural called-foul/evidence preservation, bounded
+Rule 14 resolution and fumble advancement/spot correctness. Existing holding
+physics/call probabilities remain legacy-qualified; no new World/capacity or
+other worker branch imports. Root owns one combined candidate verification;
+workers run focused checks only. Independent rule/native-path review is required
+before integration; no merge/default-reference or unrelated experiment adoption.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
