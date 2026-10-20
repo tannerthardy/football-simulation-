@@ -1,16 +1,24 @@
 # Current work ownership
 
-## Active man-marker run-duty continuation — 2026-10-20 America/Phoenix
+## Reviewed man-marker run-duty continuation — 2026-10-20 America/Phoenix
 
 Catching reviews Claude `MAN_RUN_COMMIT` at `bae3fe80`, from accepted develop
 `2c98bed94adad8087c65f381d4090444ad283985` / canonical queue `4cc3337`.
-Bounded claim: `ManCoverage.coverMan`, acquired blocking cues and their focused
-contracts. Separate from #169's engagement-start wait; no engagement/physics,
+Bounded scope: `ManCoverage.coverMan`, acquired blocking cues, explicit acquired/
+expected backfield input to the existing fit, and prior-block continuation in
+the shared release reader. Separate from #169's engagement-start wait; no engagement/physics,
 capacity/default, spacing, whole coverage-system or offensive stalk changes.
 Reuse current accepted saved witnesses and distinguish provisional cues,
 continuing duty, contradictory acquired evidence and recognized throw priority.
-No permanent run latch, private throw/call cue or timer-only release. Run retains
-its experimental stack; Integration owns combined verification.
+No permanent run latch, private throw/call cue or timer-only release. Independent
+review approves runtime11ef170 / source925eb44; final test0dca4f0 passes129 focused
+checks plus typecheck. Seven final native endings complete, four common-field
+controls unchanged, fresh Quarters purpose transfer; OZ4 remains adverse17.09
+versus15.59. Failed contracts/recording attempt and all developmental tapes
+retained. [Report and exact pins](reviews/man-run-continuity-2026-10-20.md).
+Run retains its experimental stack; Integration owns combined verification.
+Local behavior variants stop here; physical escape/attainable approach remains
+a separate next question, not a claimed tail fix.
 
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
