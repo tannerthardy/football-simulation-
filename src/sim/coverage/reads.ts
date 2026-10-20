@@ -14,7 +14,7 @@ import { clamp, type Vec2 } from '../../core/vec.js';
 import type { ReceiverRef } from '../../playbook/types.js';
 import type { Agent } from '../agent.js';
 import { RouteObservation } from '../coverage-read.js';
-import { showsBlock } from '../coverage-cues.js';
+import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import type { PlaySim } from '../playsim.js';
 
 export type Release = 'none' | 'block' | 'vertical' | 'out' | 'flat' | 'under' | 'in' | 'stop';
@@ -96,7 +96,12 @@ export class ReleaseReader {
     const speed = Math.hypot(seen.vel.x, seen.vel.y);
     if (depth > 7 && vx > 2.5) m.climbed = true;
     let now: Release = 'none';
-    if (showsBlock(a, sim, r, seen)) now = 'block';
+    // A run reader need not invent a new vertical when his already accepted
+    // blocker crosses the shallow admission boundary. Keep requiring current
+    // acquired pads/contact evidence; real releases retain normal confirmation.
+    const blocking = m.release === 'block' && a.recog?.read === 'run'
+      ? observedBlocking(a, sim, r, seen) : showsBlock(a, sim, r, seen);
+    if (blocking) now = 'block';
     // Breaks count once the path leans about 30° off vertical: a slant is an
     // in-breaker from its first step inside, not when it flattens.
     else if (vOut > 1.8 && vOut > Math.abs(vx) * 0.6) now = depth < 3.5 && !m.climbed ? 'flat' : 'out';
