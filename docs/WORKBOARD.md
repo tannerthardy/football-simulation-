@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Catching integration blockers only — 2026-10-20 UTC
+
+Continue PR182 on codex/pursuit-objective-continuity from its accepted2c98bed
+base/head4f29315039a0a9b397e53424354355eba108c839; current queue6575988f.
+Catching owns only the literal181+182 pure composer reconciliation in chase,
+181's already reviewed approach-control/run-fit caller, and focused boundary
+contracts/evidence. Existing169+171+177 assembly2302b48f and65 checks/three
+native interactions will be surfaced without rerunning. No new support policy.
+Coordinate unchanged183+186 routing with Do-It-All on one exact OZ4 blocked
+Will encounter plus WZORD success, in an isolated diagnostic source. No spacing
+algorithm edits,184/180/175/176 adoption, new goal/physics/capacity/flag variants,
+broad campaign or full suite. Integration owns final multi-component checks.
+
 ## Acquired pursuit objective continuity — 2026-10-20 UTC
 
 Catching owns only common.ts/chase's own-objective producer and direct tests
