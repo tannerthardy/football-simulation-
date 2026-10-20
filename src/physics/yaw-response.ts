@@ -24,6 +24,35 @@ export function integrateYaw(error: number, spin: number, h: number,
   if (alpha === 0) return { error: error - spin * h, spin,
     angleDelta: spin * h, maxAcceleration: 0, events };
 
+  // Most short motor intervals remain entirely inside the acceleration and
+  // rate bounds. Certify the extrema of that exact critical flow once rather
+  // than constructing boundary searches for a segment with no boundary event.
+  // Saturated, externally overspeed and boundary cases retain the event solver.
+  const initialAcceleration = aOf(error, spin);
+  if (Math.abs(initialAcceleration) < alpha - roundA && Math.abs(spin) < rate - roundRate) {
+    const B = error / tau - spin, A = error - 2 * tau * spin;
+    const decay = Math.exp(-h / tau);
+    const endError = (error + B * h) * decay;
+    const endSpin = (spin + B * h / tau) * decay;
+    const endAcceleration = (A - B * h) * decay / (tau * tau);
+    const accelerationStationary = B !== 0 ? tau + A / B : Infinity;
+    const spinStationary = B !== 0 ? A / B : Infinity;
+    let peakAcceleration = Math.max(Math.abs(initialAcceleration), Math.abs(endAcceleration));
+    let peakSpin = Math.max(Math.abs(spin), Math.abs(endSpin));
+    if (accelerationStationary > 0 && accelerationStationary < h) {
+      peakAcceleration = Math.max(peakAcceleration, Math.abs(
+        (A - B * accelerationStationary) * Math.exp(-accelerationStationary / tau) / (tau * tau)));
+    }
+    if (spinStationary > 0 && spinStationary < h) {
+      peakSpin = Math.max(peakSpin, Math.abs(
+        (spin + B * spinStationary / tau) * Math.exp(-spinStationary / tau)));
+    }
+    if (peakAcceleration < alpha && peakSpin < rate) {
+      return { error: endError, spin: endSpin, angleDelta: error - endError,
+        maxAcceleration: peakAcceleration, events };
+    }
+  }
+
   function mode(): Mode {
     // Exception for externally acquired excess spin: physically brake toward
     // the existing rate limit at finite alpha; never project initial spin.
