@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Engaged zone contact execution — 2026-10-20
+
+Run owns bounded controller diagnosis on `codex/zone-contact-execution`,
+accepted base `2c98bed94adad8087c65f381d4090444ad283985`, canonical queue
+`4cc3337df24faa6d857b612ae62e3df3109a5296`. Compare Claude research
+`bae3fe80d189a7d792aaafbc4eea1ae2baa79573` Parts9/12/13 with current accepted
+native zone cases. Proposed edit boundary, only after a demonstrated error:
+`stepRunRep` offensive loaded footwork in `src/sim/engagement.ts`, related
+direct controls and observation-only diagnostics. Preserve #160 acquired
+defensive reference and #164's held useful-departure/access regression;
+do not reintroduce #164 or change defender policy, shared movement/spacing,
+World/kinematics/capacities, active hands, mesh, release timers or defaults.
+Physics retains solver ownership. First distinguish raw/final requests,
+execution and achieved protection; no NFL distance/speed target or broad lab.
+Parallel subagents provide read-only controller/evidence audits.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
