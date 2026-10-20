@@ -11,8 +11,8 @@ remain; no experimental/default activation or data-only history import.
 typecheck/build passed; Python was deliberately skipped. Original receipt/log
 are preserved as `failed-initial-combined.*`. #164 and #165 were removed by
 normal revert commits; they are not in the final promotion scope. All other
-independently reviewed scopes continue. The new candidate requires its own
-complete verification; the failed run is never presented as a pass.
+independently reviewed scopes continue. The reduced candidate required its own
+complete verification, now passed below; the failed run is never presented as a pass.
 
 **Final verification PASS:** exact reduced freeze
 `25a7a5919b8eb6de24bf8b604b8d859263052dd9`, source SHA256

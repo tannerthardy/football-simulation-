@@ -99,7 +99,7 @@ combo duration/displacement, re-latch, chattering and deep-pursuit tails.
 
 #126's strict installed-half assertion is independently adjudicated, original failure retained. #140/#143/#146 have pinned nonauthor review0319d2a; GH requires140 and stays outside automatic calling. Shared143 kick allowance preserves140 lead/trap/uncleared gates. QBPass forecast135 and QBHandoff136 remain distinct; reversible projection proves only reviewed hunks. Existing laws/capacities/spacing/carrier/settings/tooling stay accepted. [Pins/dependencies/risks](../data/reviews/current/controller-checkpoint/intake.json).
 
-Held independently:137/148/149/150 await Run/nonauthor controller dispositions;141 has three existing-contract reconciliations/comeback tradeoff;131 is a pure helper without Catching caller hookup. Tooling101/106 and experiments retain their existing holds. A blocked item holds itself. [Posted Run review task](https://github.com/tannerthardy/football-simulation-/pull/150#issuecomment-6245714067). Older checkpoint dispositions below retain their historical evidence; this intake is current.
+Held independently:137/148/149/150 await Run/nonauthor controller dispositions;141 has three existing-contract reconciliations/comeback tradeoff;131 is a pure helper without Catching caller hookup. Tooling101/106 and experiments retain their existing holds. A blocked item holds itself. [Posted Run review task](https://github.com/tannerthardy/football-simulation-/pull/150#issuecomment-6245714067). Older checkpoint dispositions below retain their historical evidence; this intake was current at151.
 
 
 **`develop@f4146275ce7539816bf57b4ed55a0d2be10e48c7`** is accepted through
