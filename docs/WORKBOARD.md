@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Composed pursuit preview — 2026-10-20 UTC
+
+Catching/Awareness owns only `chooseApproach` in approach-control.ts, its two
+composition call sites in common.ts/chase and run-fits.ts/edge approach, and
+focused contracts on `codex/pursuit-composed-preview`. Base accepted develop
+2c98bed94adad8087c65f381d4090444ad283985, canonical queue
+6575988fe9e72bd0aaf9e3573787f0dcb81ebf52. Question: does ranking the actual
+partially gathered command repair approach choices currently ranked before
+velocity/facing/technique composition? Start with saved WZ7/OZ4 and successful
+WZORD, then bounded native transfer only if consequential. No new observation,
+reach/gather policy, physics, capacity, contact or flag change. #175 and #176
+remain frozen independent candidates; preserve their force policies and flag
+shared call-site overlap. #177 stays separate. Integration owns combined checks.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
