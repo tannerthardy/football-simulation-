@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import * as MovementPreview from '../src/physics/movement-preview.js';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
@@ -31,6 +32,34 @@ function stage(close = false, side = 1) {
 }
 
 describe('pursuit carries its acquired responsibility through teammate navigation', () => {
+  it('returns the exact complete pursuit request scored by the preview through a partial gather', () => {
+    const { sim, runner, defender, picture } = stage();
+    defender.body.pos = { x: 52, y: picture.pos.y + 3 };
+    defender.body.vel = { x: 6, y: -6 };
+    defender.body.facing = -Math.PI / 4;
+    const contact = runner.profile.radius + defender.profile.radius + defender.profile.reach * .65;
+    const distance = Math.hypot(picture.pos.x - defender.pos.x, picture.pos.y - defender.pos.y);
+    const offset = leverage(defender, picture.pos.y) * Math.max(0, Math.min(1, (distance - contact) / 6));
+    const { gather } = gatheringApproach(defender, picture, contact, offset);
+    expect(gather).toBeGreaterThan(0);
+    expect(gather).toBeLessThan(1);
+    // Pass-through spy: all samples still come from the production World.
+    const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
+    try {
+      const command = chase(sim, defender, runner);
+      expect(preview).toHaveBeenCalledTimes(3);
+      const scored = preview.mock.calls.map(call => call[1]);
+      expect(scored).toContain(command);
+      for (const candidate of scored) {
+        expect(movementObjective(candidate)).toEqual(movementObjective(command));
+        expect(candidate.facing).toBeDefined();
+        expect(candidate.posture).toBeDefined();
+        expect(candidate.cutSkill).toBeDefined();
+      }
+      expect(movementObjective(command)!.point.x).toBe(picture.pos.x);
+    } finally { preview.mockRestore(); }
+  });
+
   it.each([false, true])('advertises the current moving hip, not the future intercept; close=%s', close => {
     const { sim, runner, defender, picture } = stage(close);
     const contact = runner.profile.radius + defender.profile.radius + defender.profile.reach * .65;

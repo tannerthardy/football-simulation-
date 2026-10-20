@@ -222,8 +222,8 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const original = { ...runThrough(a, p, { speed: effort }), effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) return original;
-  const far = chooseApproach(a, seen, contact, offset, original, sim.t);
-  return ownApproach(blendApproach(far, near, gather));
+  return chooseApproach(a, seen, contact, offset, original, sim.t,
+    command => ownApproach(blendApproach(command, near, gather)));
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {

@@ -263,8 +263,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (!premesh && seen.carrying === true && free && job.side * (seen.pos.y - gy) >= -contact) {
       const offset = aim.y-seen.pos.y;
       const { near, gather } = gatheringApproach(a,seen,contact,offset);
-      const approach = chooseApproach(a,seen,contact,offset,fit,sim.t);
-      return blendApproach(approach,near,gather);
+      return chooseApproach(a,seen,contact,offset,fit,sim.t,
+        command => blendApproach(command,near,gather));
     }
     return fit;
   }
