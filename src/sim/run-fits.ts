@@ -343,7 +343,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
   const horizon = 2 * a.mind.decisionInterval;
   const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
-  return { ...fit, vel: { x: fit.vel.x, y: vy } };
+  // Once the acquired track calls for lateral running, use a crossover
+  // rather than holding square shoulders and limiting that request to a
+  // shuffle. Interior/lag/cutback and still-patient landmarks stay square.
+  const facing = job.kind === 'insert' && flowing && Math.abs(vy) > Math.abs(fit.vel.x)
+    ? Math.atan2(vy, fit.vel.x) : fit.facing;
+  return { ...fit, vel: { x: fit.vel.x, y: vy }, facing };
 }
 
 /** Counterfactual free fit (diagnostic): `hold` keeps the snap landmark with no
