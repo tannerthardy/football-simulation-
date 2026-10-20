@@ -1,0 +1,6 @@
+k0gap vs k1gap: paired 1600 (only in k0gap: 0, only in k1gap: 0)
+  >= 4  : k0gap  780 -> k1gap  810 | both 445, only k0gap 335, only k1gap 365 | McNemar exact p 0.273
+  >= 10 : k0gap  183 -> k1gap  213 | both 30, only k0gap 153, only k1gap 183 | McNemar exact p 0.113
+  >= 20 : k0gap  105 -> k1gap  122 | both 12, only k0gap 93, only k1gap 110 | McNemar exact p 0.261
+  >= 40 : k0gap   87 -> k1gap   90 | both 9, only k0gap 78, only k1gap 81 | McNemar exact p 0.874
+  < 0   : k0gap   93 -> k1gap  138 | both 18, only k0gap 75, only k1gap 120 | McNemar exact p 0.002

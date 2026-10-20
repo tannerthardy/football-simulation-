@@ -1,0 +1,29 @@
+k1co-common.jsonl.gz
+  plateau 1.5-2.5 all    n  7610 rise p25/p50/p75 0.2/0.2/0.3 s
+  plateau 1.5-2.5 D DB   n   618 rise p25/p50/p75 0.1/0.2/0.2 s
+  plateau 1.5-2.5 D DL   n  1314 rise p25/p50/p75 0.2/0.5/0.6 s
+  plateau 1.5-2.5 D LB   n   780 rise p25/p50/p75 0.1/0.2/0.3 s
+  plateau 1.5-2.5 O OL   n  3000 rise p25/p50/p75 0.2/0.2/0.3 s
+  plateau 1.5-2.5 O TE   n  1092 rise p25/p50/p75 0.2/0.2/0.2 s
+  plateau 1.5-2.5 O WR   n   783 rise p25/p50/p75 0.2/0.2/0.2 s
+  plateau 2.5-3.5 all    n  4640 rise p25/p50/p75 0.3/0.4/0.5 s
+  plateau 2.5-3.5 D DB   n  1115 rise p25/p50/p75 0.2/0.3/0.3 s
+  plateau 2.5-3.5 D DL   n   494 rise p25/p50/p75 0.5/0.6/0.8 s
+  plateau 2.5-3.5 D LB   n   733 rise p25/p50/p75 0.3/0.4/0.5 s
+  plateau 2.5-3.5 O OL   n   961 rise p25/p50/p75 0.4/0.5/0.6 s
+  plateau 2.5-3.5 O QB   n   780 rise p25/p50/p75 0.3/0.5/0.5 s
+  plateau 2.5-3.5 O TE   n   490 rise p25/p50/p75 0.3/0.4/0.7 s
+  plateau 2.5-3.5 O WR   n    66 rise p25/p50/p75 0.2/0.2/0.2 s
+  plateau 3.5-4.5 all    n  2438 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 3.5-4.5 D DB   n   645 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 3.5-4.5 D DL   n    91 rise p25/p50/p75 0.6/0.9/1.3 s
+  plateau 3.5-4.5 D LB   n   797 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 3.5-4.5 O OL   n   199 rise p25/p50/p75 0.6/0.8/0.8 s
+  plateau 3.5-4.5 O QB   n   400 rise p25/p50/p75 0.5/0.5/0.5 s
+  plateau 3.5-4.5 O TE   n   280 rise p25/p50/p75 0.9/1.2/1.4 s
+  plateau 4.5-6 all    n  2901 rise p25/p50/p75 0.7/0.8/1.0 s
+  plateau 4.5-6 D DB   n   740 rise p25/p50/p75 0.9/1.0/1.3 s
+  plateau 4.5-6 D LB   n   739 rise p25/p50/p75 0.8/0.9/1.1 s
+  plateau 4.5-6 O OL   n    36 rise p25/p50/p75 1.1/1.2/1.3 s
+  plateau 4.5-6 O RB   n   839 rise p25/p50/p75 0.6/0.7/0.8 s
+  plateau 4.5-6 O WR   n   517 rise p25/p50/p75 0.6/0.6/0.7 s

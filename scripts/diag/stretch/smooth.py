@@ -10,9 +10,14 @@ group (and the carrier separately, after the handoff):
   lat rev/s  reversals per second of lateral velocity (beyond 0.5 yd/s)
 Each count is also split by whether the player was within 1.2 yd of an
 opponent at that frame (contact or about to be) or free; seconds likewise.
-Raw coordinates (not metrics.Play, which rounds to 0.1 yd).
+Raw coordinates (not metrics.Play, which rounds to 0.1 yd). A coarser scale,
+for what filtering of the tracking positions cannot erase:
+SMOOTH_STRIDE=3 samples every 0.3 s, SMOOTH_SWING / SMOOTH_TURN set the
+speed swing (yd/s) and turn (degrees per sample) thresholds.
 usage: smooth.py FILE [--ytg60] [--concepts power,counter] (sim id prefixes or NFL labels)"""
-import gzip, json, math, sys
+import gzip, json, math, os, sys
+STRIDE = int(os.environ.get('SMOOTH_STRIDE', 1))
+SWING, TURN = float(os.environ.get('SMOOTH_SWING', .5)), float(os.environ.get('SMOOTH_TURN', 5))
 opt = lambda n, d=None: sys.argv[sys.argv.index(n) + 1] if n in sys.argv else d
 path = sys.argv[1]
 ytg = json.load(open('out/mechanics/nfl-ytg.json')) if '--ytg60' in sys.argv else None
@@ -30,24 +35,25 @@ def add(key, **vals):
 
 
 def measure(xy, i, k0, k1, dt, opp):
-    pts = [(xy[k][2 * i], xy[k][2 * i + 1]) for k in range(k0, k1 + 1)]
+    ks = list(range(k0, k1 + 1, STRIDE)); dt = dt * STRIDE
+    pts = [(xy[k][2 * i], xy[k][2 * i + 1]) for k in ks]
     if any(p[0] is None for p in pts) or len(pts) < 6: return None
-    near = [any(xy[k][2 * j] is not None and math.hypot(xy[k][2 * j] - pts[k - k0][0], xy[k][2 * j + 1] - pts[k - k0][1]) < 1.2 for j in opp)
-            for k in range(k0, k1 + 1)][1:-1]
+    near = [any(xy[k][2 * j] is not None and math.hypot(xy[k][2 * j] - pts[n][0], xy[k][2 * j + 1] - pts[n][1]) < 1.2 for j in opp)
+            for n, k in enumerate(ks)][1:-1]
     v = [((pts[k + 1][0] - pts[k - 1][0]) / (2 * dt), (pts[k + 1][1] - pts[k - 1][1]) / (2 * dt)) for k in range(1, len(pts) - 1)]
     s = [math.hypot(*u) for u in v]
     # Speed extrema with a swing of at least 0.5 yd/s (hysteresis).
     ext, extc, last, direction = 0, 0, s[0], 0
     for idx, x in enumerate(s[1:], 1):
-        if direction >= 0 and x < last - .5: ext += direction > 0; extc += direction > 0 and near[idx]; direction, last = -1, x
-        elif direction <= 0 and x > last + .5: ext += direction < 0; extc += direction < 0 and near[idx]; direction, last = 1, x
+        if direction >= 0 and x < last - SWING: ext += direction > 0; extc += direction > 0 and near[idx]; direction, last = -1, x
+        elif direction <= 0 and x > last + SWING: ext += direction < 0; extc += direction < 0 and near[idx]; direction, last = 1, x
         elif (direction >= 0 and x > last) or (direction <= 0 and x < last): last = x
     turns, wob, wobc, sign = [], 0, 0, 0
     for idx, (a, b, sa, sb) in enumerate(zip(v, v[1:], s, s[1:])):
         if sa < 2 or sb < 2: continue
         d = math.degrees(math.atan2(a[0] * b[1] - a[1] * b[0], a[0] * b[0] + a[1] * b[1]))
         turns.append(abs(d))
-        sg = (d > 5) - (d < -5)
+        sg = (d > TURN) - (d < -TURN)
         if sg and sign and sg != sign: wob += 1; wobc += near[idx + 1]
         if sg: sign = sg
     lat, ls = 0, 0

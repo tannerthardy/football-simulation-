@@ -1,0 +1,338 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 93dea400..8d4ee8d6 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -6,11 +6,13 @@
+   "engineCommit": "5db48d58747767bc62f2ebb061ceb19a637ee0a8",
+   "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+   "flags": {
++    "AIM_REACH": "0",
+     "ANCHOR_SPLIT": "1",
+     "BACK_CHASE": "0",
+     "CF_FLOW": null,
+     "CLIMB_INTERCEPT": "1",
+     "CLIMB_PLAN": "1",
++    "COMMIT_AIM": "0",
+     "DEEP_CAP": "0",
+     "DEF_GETOFF": "1",
+     "DEPART_TEMPO": "0",
+@@ -28,6 +30,7 @@
+     "HOLD_SUBSTEPS": "0",
+     "IN_STRIDE_CATCH": "0",
+     "KEEPER_TORSO": "1",
++    "LB_GLIDE": "0",
+     "LB_KEY": "0",
+     "LB_PLAN": "1",
+     "LEG_BRACE": "0",
+@@ -35,9 +38,11 @@
+     "LIVE_AIM": "1",
+     "LIVE_GAPS": "1",
+     "MESH_TEMPO": "0",
++    "MOTOR_HZ": "0",
+     "OL_ALIGN": "0",
+     "PACE_LEAD": "0",
+     "PASS_SINK": "0",
++    "PERCEIVE_FLOW": "0",
+     "PULL_CUE": "0",
+     "PULL_PLAN": "0",
+     "PULL_READ": "1",
+@@ -57,6 +62,7 @@
+     "SHED_PHYSICAL": "1",
+     "SHED_PURSUE": "0",
+     "STALK_CLAIM": "1",
++    "STALK_MIRROR": "0",
+     "STRETCH_FLAT": "0",
+     "STRETCH_MESH": "1",
+     "STRETCH_REACH": "1",
+diff --git a/scripts/baseline.mjs b/scripts/baseline.mjs
+index 7d7270bc..ad671193 100644
+--- a/scripts/baseline.mjs
++++ b/scripts/baseline.mjs
+@@ -27,7 +27,7 @@ export function environment(ambient, overrides = []) {
+     if (key === 'CF_FLOW') {
+       if (!['none', 'hold', 'over'].includes(value)) throw new Error('CF_FLOW must be none, hold or over');
+       if (value === 'none') delete env[key]; else env[key] = value;
+-    } else if (['GAIT_STEP', 'HOLD_SUBSTEPS'].includes(key)) {
++    } else if (['GAIT_STEP', 'HOLD_SUBSTEPS', 'MOTOR_HZ'].includes(key)) {
+       if (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < 0
+         || (key === 'HOLD_SUBSTEPS' && !Number.isInteger(Number(value)))) throw new Error(`Invalid numeric flag: ${setting}`);
+       env[key] = value;
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 6bb6fade..e16d5ec0 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -151,6 +151,8 @@ export class Agent {
+   ) {
+     // Visual get-off is a shortened simple response, compared with identifying
+     // a route break. This mapping is an assumption, not fitted latency.
++    mind.position = () => this.body.pos;
++    mind.topSpeed = profile.vmax;
+     this.snapReadyAt = team === 'O' ? mind.snapDelay
+       : mind.snapDelay + DEF_GETOFF * profile.reactionTime * (1 - 0.4 * this.r('anticipation'));
+   }
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index bda709c1..ad7bbf07 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -763,6 +763,9 @@ const DEPART_TEMPO = process.env.DEPART_TEMPO === '1';
+  * sim fullback ran straight up the QB's drop line at his man's intercept, so
+  * the two met head-on 0.85 yd apart and both stalled in the spacing layer. */
+ const FB_TRACK = process.env.FB_TRACK === '1';
++/** Experimental (STALK_MIRROR=1, off): a stalking receiver mirrors the DB's
++ * observed motion instead of arriving at a moving point every tick. */
++const STALK_MIRROR = process.env.STALK_MIRROR === '1';
+ 
+ /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
+ const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
+@@ -970,6 +973,16 @@ export class RunBlocker implements Behavior {
+       // Stay square on the DB until the run comes; engage when he closes.
+       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
+       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
++      if (STALK_MIRROR) {
++        // Mirror the DB from his own picture: hold the spot in front of him as
++        // it moves, matching his motion and closing within braking, without
++        // giving ground. Arriving at that spot each tick stops and restarts.
++        const seen = sim.see(a, target), dir = sim.attackDir(a.team);
++        const command = track(a, { x: seen.pos.x - dir * 1.2, y: seen.pos.y }, seen.vel,
++          { speed: 0.85, gain: 3, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
++        if (command.vel.x * dir < 0) command.vel = { x: 0, y: command.vel.y };
++        return command;
++      }
+       const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
+       return goTo(a, fit, { speed: 0.85, through: 1 });
+     }
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index fd72a9a7..0068cd05 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -633,6 +633,9 @@ export class QBPass implements Behavior {
+ const QB_CARRYOUT = process.env.QB_CARRYOUT === '1';
+ /** QB_CARRYOUT: depth behind the line where the under-center carry-out ends. */
+ const CARRY_DEPTH = 8;
++/** QB_CARRYOUT: the carry-out's easing deceleration, yd/s² (a jog winding
++ * down, well inside his braking). */
++const CARRY_EASE = 2;
+ /** QB_CARRYOUT: the QB's offset beside the back's track at the exchange
+  * (tracked under center: 0.8-0.9 yd, gap and duo, scripts/diag/stretch/meshgeo.py). */
+ const MESH_POCKET = .8;
+@@ -662,7 +665,11 @@ export class QBHandoff implements Behavior {
+     if (this.drop) {
+       // Keep dropping: straight back, bending away from the play.
+       const go = Math.max(0, a.pos.x - (sim.los - CARRY_DEPTH));
+-      return goTo(a, { x: a.pos.x - go, y: a.pos.y + .3 * side * go }, { speed: this.through / a.profile.vmax });
++      // He eases off over the last yards rather than braking to a stop on a
++      // spot: a fake that ends, not a landmark he must hit.
++      const d = Math.hypot(go, .3 * go), speed = Math.min(this.through, Math.sqrt(2 * CARRY_EASE * go));
++      if (d < 1e-3) return stand();
++      return { vel: { x: -go / d * speed, y: .3 * side * go / d * speed } };
+     }
+     const away = a.pos.y + side * 4;
+     return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
+diff --git a/src/sim/mind.ts b/src/sim/mind.ts
+index 8342a326..b8229df6 100644
+--- a/src/sim/mind.ts
++++ b/src/sim/mind.ts
+@@ -8,6 +8,18 @@ import { Rng } from '../core/rng.js';
+ import { clamp, type Vec2 } from '../core/vec.js';
+ import { r01, type Player } from '../players/types.js';
+ 
++/** Experimental (COMMIT_AIM=1, AIM_REACH=1, off). A held target that flips to the other side
++ * of the player is the largest source of free-defender wobble: linebacker
++ * fit targets jump more than a yard 0.75 times a second and cross to his
++ * other side 0.26 times a second (scripts/diag/stretch/aimjumps.ts), where
++ * tracked defenders reverse their turning about 0.02 times a second.
++ *  - COMMIT_AIM: commitment. A new target that would reverse the lateral direction
++ *    he is asked to go is adopted only when a second consecutive read agrees;
++ *    meanwhile he keeps the target he has. Evidence, not a timer: two reads.
++ *  - AIM_REACH: continuity. Between reads a held target moves toward the new
++ *    one no faster than the player can run, rather than jumping. */
++const COMMIT_AIM = process.env.COMMIT_AIM === '1', AIM_REACH = process.env.AIM_REACH === '1';
++
+ export class SnapMind {
+   readonly alignmentError: number;
+   readonly executionError: number;
+@@ -22,7 +34,10 @@ export class SnapMind {
+   private readonly discipline: number;
+   private readonly recognition: number;
+   private readonly reaction: number;
+-  private readonly aims = new Map<string, { pos: Vec2; until: number }>();
++  private readonly aims = new Map<string, { pos: Vec2; until: number; proposed?: number }>();
++  /** COMMIT_AIM: where the player stands now, and his top speed. */
++  position: (() => Vec2) | null = null;
++  topSpeed = Infinity;
+   private readonly judgments = new Map<string, number>();
+ 
+   constructor(player: Player, private readonly rng: Rng, energy = 1) {
+@@ -73,8 +88,22 @@ export class SnapMind {
+   aim(job: string, desired: Vec2, t: number): Vec2 {
+     const previous = this.aims.get(job);
+     if (previous && t < previous.until) return previous.pos;
+-    const pos = { ...desired };
+-    this.aims.set(job, { pos, until: t + this.decisionInterval });
++    let pos = { ...desired };
++    let proposed: number | undefined;
++    if ((COMMIT_AIM || AIM_REACH) && previous && this.position && t - previous.until <= this.decisionInterval) {
++      const me = this.position();
++      const side = (y: number) => Math.abs(y - me.y) > .5 ? Math.sign(y - me.y) : 0;
++      const was = side(previous.pos.y), now = side(desired.y);
++      if (COMMIT_AIM && was && now && was !== now && previous.proposed !== now) {
++        // First read of a reversal: keep the current target, note the proposal.
++        pos = previous.pos; proposed = now;
++      } else if (AIM_REACH) {
++        const dx = desired.x - previous.pos.x, dy = desired.y - previous.pos.y, d = Math.hypot(dx, dy);
++        const reach = this.topSpeed * this.decisionInterval;
++        if (d > reach) pos = { x: previous.pos.x + dx / d * reach, y: previous.pos.y + dy / d * reach };
++      }
++    }
++    this.aims.set(job, { pos, until: t + this.decisionInterval, proposed });
+     return pos;
+   }
+ 
+diff --git a/src/sim/perception.ts b/src/sim/perception.ts
+index b03e613f..22a1309a 100644
+--- a/src/sim/perception.ts
++++ b/src/sim/perception.ts
+@@ -9,6 +9,15 @@ import type { Vec2 } from '../core/vec.js';
+ 
+ const HISTORY = 24;
+ const STRIDE = 8;
++/** Experimental (PERCEIVE_FLOW=1, off): seen motion is the displacement over
++ * a short window before the sampled moment, as the eye integrates motion,
++ * rather than the body's instantaneous velocity. The delayed picture is
++ * dead-reckoned along it, so a momentary speed or heading wobble in the
++ * target is no longer multiplied by the whole observation delay into a jump
++ * of the perceived position (and of every aim built on it). */
++const PERCEIVE_FLOW = process.env.PERCEIVE_FLOW === '1';
++/** PERCEIVE_FLOW: the motion-integration window, s. */
++const FLOW_WINDOW = 0.2;
+ 
+ /** Coarse visible body pose, separate from pad-level technique or capability. */
+ export type VisiblePose = 'up' | 'down' | 'rising';
+@@ -69,8 +78,16 @@ export class PerceptionBuffer {
+     const o = idx * this.n * STRIDE + i * STRIDE;
+     const x = this.data[o];
+     const y = this.data[o + 1];
+-    const vx = this.data[o + 2];
+-    const vy = this.data[o + 3];
++    let vx = this.data[o + 2];
++    let vy = this.data[o + 3];
++    if (PERCEIVE_FLOW) {
++      const k = Math.min(this.count - 1 - back, Math.round(FLOW_WINDOW / this.dt));
++      if (k > 0) {
++        const p = ((this.head - back - k) % HISTORY + HISTORY) % HISTORY * this.n * STRIDE + i * STRIDE;
++        vx = (x - this.data[p]) / (k * this.dt);
++        vy = (y - this.data[p + 1]) / (k * this.dt);
++      }
++    }
+     const lag = back * this.dt;
+     const stance = this.data[o + 4];
+     const pose = this.data[o + 6];
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 268b107a..0e909883 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -34,6 +34,9 @@ import { ReplayTrace } from './telemetry.js';
+ import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
+ import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
+ 
++/** Experimental (MOTOR_HZ=<Hz>, 0 = off): see PlaySim.motorPlan. */
++const MOTOR_HZ = Number(process.env.MOTOR_HZ ?? 0);
++
+ export interface PlaySetup {
+   offense: Partial<Record<OffSlot, Player>>;
+   /** The defense's scouting of this offense (run/pass tendencies so far). */
+@@ -542,6 +545,27 @@ export class PlaySim {
+     return this.buildResult();
+   }
+ 
++  /** MOTOR_HZ: each player's two-stage planned velocity, per agent. */
++  private motor: { u: Vec2; v: Vec2 }[] = [];
++
++  /** MOTOR_HZ (experimental, 0 = off): the legs follow the decided velocity
++   * through a critically damped response at the motor system's bandwidth
++   * (two equal first-order stages, exact at any tick), instead of stepping to
++   * a new setpoint every tick. Decisions, targets and information are
++   * unchanged; a lunge or dive passes untouched. */
++  private motorPlan(): void {
++    const g = 1 - Math.exp(-2 * Math.PI * MOTOR_HZ * this.dt);
++    for (const a of this.agents) {
++      const it = this.intents[a.idx], m = this.motor[a.idx] ??= { u: { ...a.vel }, v: { ...a.vel } };
++      if (it.dive || it.lunge || a.isDown(this.t)) { m.u = { ...it.vel }; m.v = { ...it.vel }; continue; }
++      for (const k of ['x', 'y'] as const) {
++        m.u[k] += (it.vel[k] - m.u[k]) * g;
++        m.v[k] += (m.u[k] - m.v[k]) * g;
++      }
++      this.intents[a.idx] = { ...it, vel: { ...m.v } };
++    }
++  }
++
+   tick(): void {
+     const t = this.t;
+     this.perception.record(this.agents, this.carrier?.idx ?? null);
+@@ -600,6 +624,7 @@ export class PlaySim {
+       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
+         push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
+     }
++    if (MOTOR_HZ > 0) this.motorPlan();
+ 
+     // Physics: feet, contacts, holds and balance, in substeps.
+     if (this.phase === 'live') {
+diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts
+index e3428b4e..54b12015 100644
+--- a/src/sim/run-fits.ts
++++ b/src/sim/run-fits.ts
+@@ -1,5 +1,6 @@
+ /** A support contract derived from the called front AND coverage, not the run call. */
+-import { gaitLag } from '../physics/kinematics.js';
++import { fatigueFactor, gaitLag, movingArrivalVelocity } from '../physics/kinematics.js';
++import { availability, supportParams } from '../physics/support.js';
+ import { clamp, type Vec2 } from '../core/vec.js';
+ import { gapY, isDeepZone } from '../playbook/alignment.js';
+ import type { DefSlot, Gap } from '../playbook/types.js';
+@@ -132,6 +133,13 @@ const LB_PLAN = process.env.LB_PLAN !== '0';
+ /** Experimental activation of the same planner for an observed pull-adjusted
+  * insertion. Default off while matched containment/misdirection controls run. */
+ const PULL_PLAN = process.env.PULL_PLAN === '1';
++/** Experimental (LB_GLIDE=1, off): a free fit's lateral work follows its
++ * landmark as a moving point every tick: the landmark's own observed velocity
++ * (the gap's bounding bodies, the back's declared track, or an adopted pull)
++ * plus the closure his braking allows, instead of LB_PLAN's gated two-read
++ * cover request. That request inverts the sprint lag; on a responsive gait it
++ * saturates and reverses within a read, and its gate switches it on and off. */
++const LB_GLIDE = process.env.LB_GLIDE === '1';
+ 
+ /** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
+ const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
+@@ -338,7 +346,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+   const gap = liveGap(sim, a, job.gap, job.side);
+   const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
+     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
+-  let pullSide = 0;
++  let pullSide = 0, pullVel = 0;
+   if (PULL_READ) {
+     // Read the guards: every puller this player sees crossing behind the line
+     // shows where an extra blocker will turn up. Flow with him to keep the
+@@ -348,7 +356,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
+       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
+       if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
+-        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
++        gy = target; pullSide = dir; pullVel = p.vel.y; a.tags.add('fit-pull-read');
+       }
+     }
+   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
+@@ -384,6 +392,14 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+   // beat. Do not amplify the still-held action away from that observed pull.
+   const planPull = PULL_PLAN && job.kind === 'insert' && job.technique !== 'lag'
+     && (aim.y - a.pos.y) * pullSide > 0;
++  if (LB_GLIDE) {
++    // The landmark's lateral velocity, from the same pictures that placed it.
++    const moving = flowing ? seen.vel.y : pullSide ? pullVel : SCRAPE ? gap.vel : 0;
++    const vmax = a.profile.vmax * (.78 + .15 * a.mind.urgency);
++    const capacity = a.body.support ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
++    const vy = movingArrivalVelocity(a.body, { x: a.pos.x, y: aim.y }, { x: 0, y: moving }, vmax, 0, 0, 1, capacity).y;
++    return { ...fit, vel: { x: fit.vel.x, y: vy } };
++  }
+   if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
+   const horizon = 2 * a.mind.decisionInterval;
+   const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);

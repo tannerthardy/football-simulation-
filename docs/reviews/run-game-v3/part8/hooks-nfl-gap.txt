@@ -1,0 +1,10 @@
+nfl-plays.jsonl.gz power,counter,man
+  group  path yd p50 net lateral p50  1s straightness p10/p25/p50 scribble share
+  D DB           8.3             4.1         0.83/0.95/0.99             3%
+  D DL           5.3             2.4         0.79/0.92/0.98             4%
+  D LB           6.9             3.1         0.78/0.93/0.98             4%
+  O OL           5.1             2.0         0.86/0.95/0.98             2%
+  O QB           7.8             1.4         0.90/0.97/1.00             2%
+  O RB          10.6             6.4         0.92/0.98/0.99             1%
+  O TE           6.5             3.0         0.85/0.95/0.98             3%
+  O WR          10.2             4.5         0.94/0.98/0.99             1%

@@ -1,0 +1,37 @@
+nfl-plays.jsonl.gz
+  plateau 1.5-2.5 all    n 11142 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 D DB   n  1735 rise p25/p50/p75 0.3/0.4/0.5 s
+  plateau 1.5-2.5 D DL   n  2516 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 D LB   n  2091 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 O OL   n  3155 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 O QB   n   302 rise p25/p50/p75 0.3/0.4/0.5 s
+  plateau 1.5-2.5 O RB   n   104 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 O TE   n   760 rise p25/p50/p75 0.3/0.3/0.4 s
+  plateau 1.5-2.5 O WR   n   479 rise p25/p50/p75 0.3/0.4/0.4 s
+  plateau 2.5-3.5 all    n  9852 rise p25/p50/p75 0.5/0.5/0.7 s
+  plateau 2.5-3.5 D DB   n  1939 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 2.5-3.5 D DL   n  1798 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 2.5-3.5 D LB   n  1861 rise p25/p50/p75 0.4/0.5/0.6 s
+  plateau 2.5-3.5 O OL   n  2086 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 2.5-3.5 O QB   n   313 rise p25/p50/p75 0.5/0.6/0.7 s
+  plateau 2.5-3.5 O RB   n   155 rise p25/p50/p75 0.4/0.5/0.6 s
+  plateau 2.5-3.5 O TE   n   814 rise p25/p50/p75 0.4/0.5/0.6 s
+  plateau 2.5-3.5 O WR   n   886 rise p25/p50/p75 0.5/0.5/0.6 s
+  plateau 3.5-4.5 all    n  8945 rise p25/p50/p75 0.6/0.7/0.8 s
+  plateau 3.5-4.5 D DB   n  1801 rise p25/p50/p75 0.6/0.7/0.9 s
+  plateau 3.5-4.5 D DL   n  1005 rise p25/p50/p75 0.7/0.8/1.0 s
+  plateau 3.5-4.5 D LB   n  1435 rise p25/p50/p75 0.6/0.7/0.8 s
+  plateau 3.5-4.5 O OL   n  1117 rise p25/p50/p75 0.6/0.7/0.9 s
+  plateau 3.5-4.5 O QB   n   968 rise p25/p50/p75 0.6/0.7/0.8 s
+  plateau 3.5-4.5 O RB   n   597 rise p25/p50/p75 0.6/0.7/0.8 s
+  plateau 3.5-4.5 O TE   n   662 rise p25/p50/p75 0.6/0.6/0.8 s
+  plateau 3.5-4.5 O WR   n  1360 rise p25/p50/p75 0.6/0.7/0.7 s
+  plateau 4.5-6 all    n  8396 rise p25/p50/p75 0.7/0.9/1.0 s
+  plateau 4.5-6 D DB   n  2005 rise p25/p50/p75 0.8/0.9/1.1 s
+  plateau 4.5-6 D DL   n   409 rise p25/p50/p75 0.9/1.1/1.3 s
+  plateau 4.5-6 D LB   n  1094 rise p25/p50/p75 0.7/0.9/1.0 s
+  plateau 4.5-6 O OL   n   433 rise p25/p50/p75 0.9/1.0/1.2 s
+  plateau 4.5-6 O QB   n   432 rise p25/p50/p75 0.6/0.7/0.9 s
+  plateau 4.5-6 O RB   n  1272 rise p25/p50/p75 0.7/0.8/1.0 s
+  plateau 4.5-6 O TE   n   584 rise p25/p50/p75 0.7/0.8/1.0 s
+  plateau 4.5-6 O WR   n  2166 rise p25/p50/p75 0.7/0.8/0.9 s

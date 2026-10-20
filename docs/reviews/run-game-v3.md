@@ -1195,3 +1195,175 @@ this branch's off-by-default cue for that.
 2. **Puller start-up** before `FB_TRACK` (and `OL_ALIGN`).
 3. **Linebacker flow on gap runs:** a read of the pull, then #159/#160's
    execution.
+
+## Part 8 — why our movement is not smooth: the body's speed-up law, then transitions (2026-10-20)
+
+The film review asked why NFL clips look smooth, with players going where
+they need to go, while ours look jittery. The user accepted outcome
+regressions where movement realism improves. Receipts are in
+[`part8/`](run-game-v3/part8/). Arms on this branch, same cases, package
+flags `UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD`:
+
+- `k0co` and `k1co`: zone, 1,200 plays each.
+- `k0gap` and `k1gap`: gap, 1,600 plays each.
+- `k1` differs only by `GAIT_STEP=0.3`, an existing physics flag.
+
+### First cause: the speed-up law
+
+`locomotionAccel` brakes and cuts almost immediately. Speeding up toward
+a wanted speed, though, follows the sprint time constant (τ ≈ 1.3–1.45 s)
+for every speed.
+
+- A lineman who asks for 3 yd/s needs more than a second to get there.
+- Each dip in his request costs a long climb back.
+- Bodies sag below what they ask for, and engaged pairs barely move.
+
+`GAIT_STEP` (already in kinematics) pushes on the force-velocity curve
+and levels off over about two steps.
+
+**Reproducer:** `oz/strong/ace_12/over3/pair11/77`, the RG's reach on
+DT_S.
+
+- With coherent lateral requests of about 2 yd/s, both bodies slide at
+  0.4–0.8 yd/s until 1.6 s.
+- Cutting the lean willingness to 5% did not change that. Lean is not the
+  limiter: locomotion already has priority in the traction budget.
+- With `GAIT_STEP=0.3`, the pair slides at 2.0–2.7 yd/s by 1.2 s.
+
+Movement against NFL60 (`hooks.py`: path length and net lateral
+displacement from the snap to 3.5 s, medians):
+
+| Zone runs | NFL | Current body | `GAIT_STEP=0.3` |
+|---|---|---|---|
+| OL path / lateral (yd) | 7.8 / 6.1 | 5.4 / 4.1 | 7.0 / 5.8 |
+| DL | 7.8 / 5.8 | 4.8 / 3.4 | 6.1 / 4.8 |
+| LB | 8.7 / 5.9 | 6.8 / 4.8 | 8.0 / 5.7 |
+| TE | 9.2 / 6.9 | 6.0 / 2.9 | 7.1 / 4.1 |
+| DB | 9.0 / 5.0 | 9.2 / 6.9 | 10.6 / 7.3 |
+
+| Gap runs | NFL | Current body | `GAIT_STEP=0.3` |
+|---|---|---|---|
+| OL path / lateral (yd) | 5.1 / 2.0 | 5.2 / 2.7 | 6.2 / 3.4 |
+| DL | 5.3 / 2.4 | 4.2 / 1.4 | 5.0 / 1.9 |
+| LB | 6.9 / 3.1 | 5.7 / 2.4 | 6.5 / 2.5 |
+
+Cruising speeds (`rise.py`, zone): episodes where a player rises from
+below 0.8 yd/s and holds a plateau for 0.5 s, per play.
+
+- **DL at 2.5–3.5 yd/s:** NFL 0.68, current 0.19, `GAIT_STEP` 0.41.
+- **DL at 3.5–4.5 yd/s:** NFL 0.38, current 0.03, `GAIT_STEP` 0.08.
+- **OL at 2.5–3.5 yd/s:** NFL 0.79, current 0.49, `GAIT_STEP` 0.80.
+- When a plateau is reached, the rise time is NFL-like in both arms
+  (0.5–0.6 s to 2.5–3.5 yd/s). Our players simply rarely asked for, or
+  held, those speeds long enough to get there.
+
+At a 0.3 s scale (`smooth.py` with `SMOOTH_STRIDE=3 SMOOTH_SWING=1
+SMOOTH_TURN=15`), the current body is smoother than tracking in the
+trenches but slow:
+
+| | DL pulses | OL pulses | LB pulses | DB pulses | DL speed p50/p90 (yd/s) |
+|---|---|---|---|---|---|
+| NFL | 0.05 | 0.05 | 0.13 | 0.08 | 1.88 / 4.01 |
+| Current body | 0.01 | 0.01 | 0.14 | 0.08 | 1.25 / 2.57 |
+| `GAIT_STEP` | 0.05 | 0.04 | 0.25 | 0.17 | 1.65 / 3.06 |
+
+### Second cause: the slow body hid chattering requests
+
+With a responsive body, players follow their requests faithfully. At
+10 Hz, pulses rise: DB 0.19 → 0.60, LB 0.31 → 0.63, OL 0.07 → 0.26 per
+second. Pulses are speed swings of at least 0.5 yd/s.
+
+**Census.** `branches.ts` runs in an instrumented copy from
+`instrument.sh`. Every behavior return is tagged `file.function@line`, and
+each pulse, reversal and scribble is attributed to the branch path that
+produced the request. About half of free defenders' events coincide with
+a switch of branch.
+
+**Non-causes, each tested by a toggle** (achieved pulses within ±0.05/s):
+- updating aim points every tick instead of holding them for a decision
+  beat;
+- replacing the station-keeping law `track` with the planned
+  `movingArrivalVelocity`;
+- dropping explicit facing.
+
+**The body itself is smooth** (`lone.ts`): a constant request gives a
+constant speed.
+
+**Scribbles are 1 s windows whose net displacement is under 60% of the
+path travelled** (`hooks.py`):
+
+| | NFL zone | Sim zone | NFL gap | Sim gap |
+|---|---|---|---|---|
+| DL | 2% | 8–9% | 4% | 14–15% |
+| TE | 1% | 6% | 3% | 7% |
+| LB | 3% | 5% | 4% | 8–9% |
+
+They sit at transitions, not in steady steering:
+- **DL:** get-off, contact, then driven back or turned. Inside-zone DL end
+  2.6 yd deep at 3 s against 1.4 for the NFL. Doubles last 1.9–2.1 s
+  against 1.1–1.5.
+- **TE/FB:** latch, release, then a full-speed reversal to re-latch. Case
+  `iz/weak/ace_12/over3/pair31/1`, Y on DE_S.
+- **Man defenders:** they switch between run fit and the receiver each
+  tick (`coverMan`: `believesRun && showsBlock`).
+- **Alley fits:** `track` ↔ `chase` at the `los−2.5` threshold.
+
+### Tried and removed (flags off, patch in `part8/experiments-off.patch`)
+
+| Experiment | Result |
+|---|---|
+| `COMMIT_AIM`, `AIM_REACH` (held aims need two reads to flip side; bounded movement) | No effect |
+| `PERCEIVE_FLOW` (seen velocity over 0.2 s) | No effect |
+| `MOTOR_HZ` (two-stage velocity filter) | Modest. A filter, not a mechanism |
+| `LB_GLIDE` (fit lateral as a moving landmark, replacing the gated `requestToCover`) | LB pulses 0.96 → 0.94 |
+| `STALK_MIRROR` | Worse. It mirrors the noisy perceived velocity: WR request pulses 0.11 → 0.82 |
+| QB carry-out ease | No change |
+| `ANCHOR_BLEND` (scratch tree with #162/#164/#165) | Coherent reach-pair requests, no aggregate change |
+
+### Outcomes (`paired.py`) and open risk
+
+**Zone runs:**
+- 4+ yards: 411 → 473 (p 0.003).
+- 20+: 28 → 63 (p<0.001).
+- 40+: 22 → 48.
+- Negatives: 216 → 191.
+
+**Gap runs:**
+- 4+ yards: 780 → 810 (p 0.27).
+- 20+: 105 → 122 (p 0.26).
+- Negatives: 93 → 138 (p 0.002).
+
+**Long runs.** Converting 20+ yards into 40+ was already far above
+tracking: P(40+ | 20+) 0.79 current, 0.39 NFL. With the responsive body,
+breaks double on zone. The diagnostic (approach records,
+`wz/strong/ace_12/over4/pair11/7`, `oz/strong/ace_12/tite4/pair31/4`):
+the carrier reaches 8.6–9 yd/s while the deep DBs trail 2–3 yd behind and
+never come in range. Deep pursuit and support are unresolved.
+
+### Film and viewer
+
+`film-movement-cases.txt` holds 10 random ordinary cases, drawn before
+outcomes were seen. Each runs with both bodies, beside 12 NFL clips.
+
+Replay frames are now packed at 0.01 yd/rad (`frames.scale = 100`). At
+0.1, a lineman moving 0.5 yd/s advanced 0.1 yd every other frame, and the
+viewer showed that as stutter. Older pages decode with scale 10.
+
+The user's review: "the biggest gain I've seen in the project". It also
+noted that wide zone still lacks flow and lateral movement, and that
+combo blocks drive defenders too far, leaving linebackers stuck behind
+them. Both are measured above.
+
+### Handoffs and next
+
+- **Physics.** Evidence for promoting `GAIT_STEP` (or an equivalent
+  speed-up law), with the reproducer above. The world is not changed here.
+- **Coverage/Catching.** Man defenders' per-tick run/receiver switch in
+  `coverMan`. Cue acceptance should continue the duty until new contrary
+  evidence.
+- **Run (this branch).**
+  - Wide/outside-zone flow (OL lateral at 2 s: 3.1 against 4.9 yd).
+  - Doubles that drive too far and too long.
+  - TE/FB re-latch reversals.
+  - Gap-run DL scribbles.
+  - The deep pursuit tail.

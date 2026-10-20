@@ -1,0 +1,10 @@
+nfl-plays.jsonl.gz outside zone,inside zone
+  group  path yd p50 net lateral p50  1s straightness p10/p25/p50 scribble share
+  D DB           9.0             5.0         0.86/0.95/0.99             3%
+  D DL           7.8             5.8         0.89/0.96/0.99             2%
+  D LB           8.7             5.9         0.85/0.95/0.99             3%
+  O OL           7.8             6.1         0.94/0.98/0.99             1%
+  O QB           9.6             2.9         0.92/0.95/0.98             1%
+  O RB          11.8             8.8         0.94/0.98/0.99             1%
+  O TE           9.2             6.9         0.93/0.98/0.99             1%
+  O WR          11.0             5.3         0.95/0.98/0.99             1%

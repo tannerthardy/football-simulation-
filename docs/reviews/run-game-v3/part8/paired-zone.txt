@@ -1,0 +1,6 @@
+k0co vs k1co: paired 1200 (only in k0co: 0, only in k1co: 0)
+  >= 4  : k0co  411 -> k1co  473 | both 226, only k0co 185, only k1co 247 | McNemar exact p 0.003
+  >= 10 : k0co   66 -> k1co   94 | both 17, only k0co 49, only k1co 77 | McNemar exact p 0.016
+  >= 20 : k0co   28 -> k1co   63 | both 5, only k0co 23, only k1co 58 | McNemar exact p 0.000
+  >= 40 : k0co   22 -> k1co   48 | both 5, only k0co 17, only k1co 43 | McNemar exact p 0.001
+  < 0   : k0co  216 -> k1co  191 | both 93, only k0co 123, only k1co 98 | McNemar exact p 0.106

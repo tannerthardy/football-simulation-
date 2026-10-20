@@ -1,0 +1,13 @@
+# Film cases for the movement review (Part 8). A random ordinary sample drawn with Python
+# random.Random(20261021) before any outcome was looked at: zone runs from ace_12, gap runs
+# from i_pro_21 and ace_12. The same cases run in every arm.
+wz/weak/ace_12/over2/pair31/1	Random ordinary
+wz/strong/ace_12/over2/pair31/77	Random ordinary
+iz/strong/ace_12/mike1/pair11/77	Random ordinary
+oz/weak/ace_12/under3/pair31/1	Random ordinary
+iz/strong/ace_12/under3/pair11/77	Random ordinary
+duo/strong/ace_12/wide9/pair31/77	Random ordinary
+duo/weak/ace_12/off1/pair11/71001	Random ordinary
+power/weak/ace_12/under3/pair11/3	Random ordinary
+power/weak/i_pro_21/over2/pair31/71001	Random ordinary
+duo/strong/i_pro_21/bear1/pair31/3	Random ordinary

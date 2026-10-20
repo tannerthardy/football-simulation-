@@ -1,0 +1,9 @@
+k1co-common.jsonl.gz 
+  group  path yd p50 net lateral p50  1s straightness p10/p25/p50 scribble share
+  D DB          10.6             7.3         0.76/0.91/0.97             5%
+  D DL           6.1             4.8         0.64/0.85/0.96             8%
+  D LB           8.0             5.7         0.74/0.89/0.96             5%
+  O OL           7.0             5.8         0.91/0.96/0.98             1%
+  O QB           7.7             2.4         0.93/0.96/0.99             0%
+  O TE           7.1             4.1         0.71/0.87/0.95             6%
+  O WR          12.4             6.3         0.94/0.97/0.99             0%
