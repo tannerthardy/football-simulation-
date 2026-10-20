@@ -1,13 +1,9 @@
 {
   "schema": "run-mechanism-reference-v1",
   "acceptedPin": "2c98bed94adad8087c65f381d4090444ad283985",
-  "queuePin": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "queuePin": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
   "purpose": "Evidence tool and selected saved-data demonstration; no controller acceptance or NFL calibration",
   "nfl": {
-    "status": "blocked",
-    "requested": 12,
-    "measured": 0,
-    "trackingGroupsAttempted": 0,
     "selectedIds": [
       {
         "gameId": "2022091200",
@@ -97,33 +93,148 @@
       "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
       "url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view"
     },
-    "cacheHere": "No BDB raw/converted tracking located",
-    "existingDataHost": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
-    "downloadAttempts": [
-      {
-        "method": "HEAD",
-        "httpStatus": 403
-      },
-      {
-        "method": "GET range0-1023",
-        "result": "proxy CONNECT tunnel HTTP403",
-        "archiveBytesReceived": 0
-      }
-    ],
-    "restoredSmallPacket": {
-      "commit": "ed6ebd21911a28f07a085094c393ea2613abeb69",
-      "bytes": 382985,
-      "sha256": "82d82db057a804ecdee71eba0038a17810acbea0dfb9c155941f7c649759ac60",
-      "contents": "Existing metadata, selection/operators/results; no raw/converted NFL trajectories"
-    },
-    "nextDecision": "Execute this frozen query once on existing verified host; return compact permitted result. Alternative local restore needs reachable approved source or permitted exact four-file transfer.",
     "localRestoreCost": {
       "archiveBytes": 1219840421,
       "fourExtractedFileBytes": 1030934666,
       "archivePlusFourFilesBytes": 2250775087,
       "allNineTrackingExtractedBytes": 8111559585
     },
-    "executionHandoff": "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300891519"
+    "status": "complete",
+    "requested": 12,
+    "measured": 12,
+    "trackingGroupsAttempted": 12,
+    "exclusions": {},
+    "cacheHere": "/workspace/datasets/nfl/bdb2025/big-data-bowl-data",
+    "result": "/workspace/datasets/nfl/run-sequence-09a8780/nfl.json",
+    "summary": "data/reviews/current/run-mechanism-reference/summary.json",
+    "executionReceipt": "data/reviews/current/run-mechanism-reference/source-manifest-execution.json",
+    "acquisitionReceipt": "data/reviews/current/run-mechanism-reference/input-manifest-acquisition.json",
+    "resultSha256": "0ffa01542282b81451f0ac6ca9ea6aa594e8120ebb48ecd087495cdd4f34c8d3",
+    "elapsedSeconds": 4.986239,
+    "priorBlockedAttempt": {
+      "publicationCommit": "066add740055c6ce7900a0a7fb9b822f3f673f33",
+      "status": "blocked",
+      "requested": 12,
+      "measured": 0,
+      "trackingGroupsAttempted": 0,
+      "selectedIds": [
+        {
+          "gameId": "2022091200",
+          "playId": "64",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "180",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "315",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "375",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "446",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "601",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "622",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "643",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "716",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "741",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "810",
+          "week": 1
+        },
+        {
+          "gameId": "2022091200",
+          "playId": "910",
+          "week": 1
+        }
+      ],
+      "sourceFilePins": [
+        {
+          "file": "players.csv",
+          "bytes": 104749,
+          "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+        },
+        {
+          "file": "plays.csv",
+          "bytes": 6892353,
+          "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+        },
+        {
+          "file": "player_play.csv",
+          "bytes": 52533762,
+          "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+        },
+        {
+          "file": "tracking_week_1.csv",
+          "bytes": 971403802,
+          "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+        }
+      ],
+      "archive": {
+        "bytes": 1219840421,
+        "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+        "url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view"
+      },
+      "cacheHere": "No BDB raw/converted tracking located",
+      "existingDataHost": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data",
+      "downloadAttempts": [
+        {
+          "method": "HEAD",
+          "httpStatus": 403
+        },
+        {
+          "method": "GET range0-1023",
+          "result": "proxy CONNECT tunnel HTTP403",
+          "archiveBytesReceived": 0
+        }
+      ],
+      "restoredSmallPacket": {
+        "commit": "ed6ebd21911a28f07a085094c393ea2613abeb69",
+        "bytes": 382985,
+        "sha256": "82d82db057a804ecdee71eba0038a17810acbea0dfb9c155941f7c649759ac60",
+        "contents": "Existing metadata, selection/operators/results; no raw/converted NFL trajectories"
+      },
+      "nextDecision": "Execute this frozen query once on existing verified host; return compact permitted result. Alternative local restore needs reachable approved source or permitted exact four-file transfer.",
+      "localRestoreCost": {
+        "archiveBytes": 1219840421,
+        "fourExtractedFileBytes": 1030934666,
+        "archivePlusFourFilesBytes": 2250775087,
+        "allNineTrackingExtractedBytes": 8111559585
+      },
+      "executionHandoff": "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300891519"
+    },
+    "nextDecision": "Use the fixed-ID phase evidence with existing native witnesses; additional collection needs a named unresolved mechanism. No controller acceptance or pooled calibration."
   },
   "operators": [
     {
@@ -1593,11 +1704,12 @@
       "nfl": "a317bc1faa905f14e9c8b861a7753a12560e25349e15c2ca2a639621c96ffacf",
       "native": "83bcfb8387469d091331977ce380034cc42f75503ad6c52b332eaa3f8a47fa24"
     },
-    "preservedDevelopment": "Initial14,then17,then19 controls passed; final26 cover end-to-end and native/exposure fixes. Provisional18.18MB then6.03MB saved-data reductions preserved locally; final rebinds exact operator hashes after measurement repair."
+    "preservedDevelopment": "Initial14,then17,then19 controls passed; final26 cover end-to-end and native/exposure fixes. Provisional18.18MB then6.03MB saved-data reductions preserved locally; final rebinds exact operator hashes after measurement repair.",
+    "reuse": "Operator/helper/selection/tests unchanged from reviewed09a8780; reuse26 focused controls and independent tooling/evidence-meaning review. Receipt/docs-only completion needs provenance/consistency checks, no engine rerun."
   },
   "newEngineTicks": 0,
   "newNativeRuns": 0,
   "newGames": 0,
-  "newMeasuredNFLPlays": 0,
+  "newMeasuredNFLPlays": 12,
   "productionChanges": false
 }

@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Completed Measurement frozen run-sequence — 2026-10-20 America/Phoenix
+
+Measurement continues #179 on `codex/run-mechanism-reference`, retaining operator/
+selection freeze `09a8780da98b5ca8fa511e77247fc5aecef9c684`. Bounded ownership:
+`docs/reviews/run-mechanism-reference.md`, its existing compact receipt and new
+NFL result/acquisition receipts under `data/reviews/current/run-mechanism-reference/`.
+All four supplied archives are downloaded outside the repository and size/SHA256
+verified. One successful local execution measured all 12 selected runs with zero
+exclusions in 4.986239 seconds and supersedes the pending
+remote-data-holder request, coordinated on #171/#179. No P045 rerun, new cohort,
+season conversion, engine run or production change. Fresh develop and canonical
+queue `6575988fe9e72bd0aaf9e3573787f0dcb81ebf52` agree on accepted
+`2c98bed94adad8087c65f381d4090444ad283985`. Compact summaries/manifests are
+published; full generated output remains in the
+external local cache. The bounded evidence-edit claim is released at publication.
+Integration retains acceptance.
+
 ## Complete run-mechanism reference — 2026-10-20
 
 Measurement publishes `codex/run-mechanism-reference` from accepted
@@ -19,8 +36,8 @@ and any query execution. Bounded implementation files:
 `docs/reviews/run-mechanism-reference.md`,
 `data/reviews/current/run-mechanism-reference.json`, NFL guide and this claim.
 Two delegated implementers owned separate script files; independent review was
-read-only. Source scopes released after publication; the NFL execution handoff
-remains open because this executor's supplied download endpoint is blocked.
+read-only. Source scopes released after initial publication; its blocked NFL
+execution handoff is now completed by the local measurement recorded above.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
