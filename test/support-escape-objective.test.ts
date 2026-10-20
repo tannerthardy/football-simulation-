@@ -124,6 +124,18 @@ describe('qualified support can leave toward its held runner objective',()=>{
   expect(f.engagement.nextMoveAt).toBeGreaterThan(f.sim.t);
  });
 
+ it('follows the owning runner read when it refreshes before the work-off attempt expires',()=>{
+  const f=scene(),firstGoal=f.goal(),first=f.command(),until=f.engagement.nextMoveAt;
+  f.setRunner({pos:{x:44,y:CENTER_Y-3},vel:{x:2,y:-2}});
+  f.sim.t+=f.defender.mind.decisionInterval+.01;
+  expect(f.sim.t).toBeLessThan(until);
+  const refreshed=f.command();
+  expect(f.engagement.nextMoveAt).toBe(until);
+  expect(toward(refreshed,f)).toBeCloseTo(1,12);
+  expect(toward(refreshed,f,firstGoal)).toBeLessThan(.5);
+  expect(speed(refreshed)).toBeCloseTo(speed(first),12);
+ });
+
  it('does not turn an unadvanced force picture into permission for the new exit',()=>{
   const f=scene({kind:'force'});f.setRunner({pos:{x:39,y:CENTER_Y+6}});
   f.command();
