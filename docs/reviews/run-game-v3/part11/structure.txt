@@ -1,0 +1,225 @@
+# Part 11 structure receipts: NFL (2022 tracking, runs with 60+ yd to go) vs sim lab arms.
+# d0co = develop defaults (ece674aa, zone 1,200 plays); t1co = + DEEP_CAP; x3co = + the full stack (see outcomes.txt).
+
+## Survival of gains (survival.py)
+NFL60      n  2633 P(>=3|>=0) 0.67 P(>=5|>=3) 0.62 P(>=10|>=5) 0.34 P(>=15|>=10) 0.48 P(>=20|>=15) 0.48 P(>=30|>=20) 0.53 P(>=40|>=30) 0.74
+d0co       n  1200 P(>=3|>=0) 0.60 P(>=5|>=3) 0.67 P(>=10|>=5) 0.38 P(>=15|>=10) 0.83 P(>=20|>=15) 0.92 P(>=30|>=20) 0.95 P(>=40|>=30) 0.99
+t1co       n  1200 P(>=3|>=0) 0.64 P(>=5|>=3) 0.72 P(>=10|>=5) 0.69 P(>=15|>=10) 0.52 P(>=20|>=15) 0.72 P(>=30|>=20) 0.83 P(>=40|>=30) 0.95
+x3co       n  1200 P(>=3|>=0) 0.64 P(>=5|>=3) 0.72 P(>=10|>=5) 0.59 P(>=15|>=10) 0.45 P(>=20|>=15) 0.66 P(>=30|>=20) 0.79 P(>=40|>=30) 0.91
+
+## Nearest defender when runs ending in [5 10) stop (stopper.py)
+nfl-plays.jsonl.gz  runs 2633, ending in [5,10): 663 (25.2%) | nearest at the end, share by group/snap depth:
+   LB/box<5 30%  DL/box<5 20%  DB/deep10+ 15%  DB/mid5-10 14%  DB/box<5 12%  LB/mid5-10 8%  LB/deep10+ 0%
+d0co.jsonl.gz  runs 1200, ending in [5,10): 251 (20.9%) | nearest at the end, share by group/snap depth:
+   DB/deep10+ 65%  DB/mid5-10 17%  LB/mid5-10 6%  LB/box<5 6%  DB/box<5 4%  DL/box<5 2%
+t1co.jsonl.gz  runs 1200, ending in [5,10): 145 (12.1%) | nearest at the end, share by group/snap depth:
+   DB/mid5-10 33%  LB/box<5 22%  DB/deep10+ 21%  LB/mid5-10 13%  DB/box<5 6%  DL/box<5 4%
+
+## Nearest defender when runs ending in [10 20) stop (stopper.py)
+nfl-plays.jsonl.gz  runs 2633, ending in [10,20): 265 (10.1%) | nearest at the end, share by group/snap depth:
+   DB/deep10+ 36%  DB/mid5-10 23%  LB/box<5 15%  DB/box<5 13%  LB/mid5-10 7%  DL/box<5 5%  LB/deep10+ 0%
+d0co.jsonl.gz  runs 1200, ending in [10,20): 37 (3.1%) | nearest at the end, share by group/snap depth:
+   DB/deep10+ 76%  DB/box<5 11%  DB/mid5-10 8%  LB/mid5-10 3%  LB/box<5 3%
+t1co.jsonl.gz  runs 1200, ending in [10,20): 206 (17.2%) | nearest at the end, share by group/snap depth:
+   DB/deep10+ 88%  DB/mid5-10 8%  DB/box<5 2%  LB/box<5 1%  LB/mid5-10 0%
+
+## Two deepest defenders at the snap, by shell 3 (dbdepth.py --shell)
+nfl-plays.jsonl.gz     runs 1228
+  deepest two at snap : depth p50 14.2 / 8.0  (p25 12.6 / 6.8)
+  deepest two at h+.5 : depth p50 15.9 / 8.2  (p25 13.9 / 5.6)
+  deepest two at cross: depth p50 14.2 / 7.1  (p25 11.1 / 4.2)
+  downhill speed at crossing: deepest 2.7 second 0.2 yd/s (p75 3.8 / 1.2)
+d0co.jsonl.gz          runs 480
+  deepest two at snap : depth p50 13 / 7.5  (p25 13 / 7.5)
+  deepest two at h+.5 : depth p50 10.1 / 4.3  (p25 9.7 / 4.2)
+  deepest two at cross: depth p50 7.1 / 3.8  (p25 6.4 / 3.5)
+  downhill speed at crossing: deepest 4.5 second 1.7 yd/s (p75 5.0 / 2.2)
+
+## Two deepest defenders at the snap, by shell 1 (dbdepth.py --shell)
+nfl-plays.jsonl.gz     runs 537
+  deepest two at snap : depth p50 14.1 / 6.4  (p25 12.2 / 5.0)
+  deepest two at h+.5 : depth p50 15.3 / 5.7  (p25 12.6 / 3.0)
+  deepest two at cross: depth p50 13.3 / 5.0  (p25 10.0 / 2.5)
+  downhill speed at crossing: deepest 2.5 second 0.0 yd/s (p75 3.8 / 1.2)
+d0co.jsonl.gz          runs 360
+  deepest two at snap : depth p50 13 / 5  (p25 5 / 4)
+  deepest two at h+.5 : depth p50 9.6 / 2.6  (p25 3.0 / 1.9)
+  deepest two at cross: depth p50 6.8 / 2.7  (p25 1.9 / 1.6)
+  downhill speed at crossing: deepest 3.8 second 0.0 yd/s (p75 4.7 / 1.0)
+
+## Two deepest defenders at the snap, by shell 2 (dbdepth.py --shell)
+nfl-plays.jsonl.gz     runs 751
+  deepest two at snap : depth p50 13.2 / 10.6  (p25 11.9 / 8.9)
+  deepest two at h+.5 : depth p50 14.4 / 11.4  (p25 12.2 / 9.2)
+  deepest two at cross: depth p50 12.9 / 9.9  (p25 9.6 / 7.1)
+  downhill speed at crossing: deepest 2.2 second 1.8 yd/s (p75 3.5 / 3.0)
+d0co.jsonl.gz          runs 360
+  deepest two at snap : depth p50 12 / 12  (p25 12 / 12)
+  deepest two at h+.5 : depth p50 10.1 / 9.9  (p25 8.9 / 8.9)
+  deepest two at cross: depth p50 7.6 / 7.6  (p25 6.6 / 6.7)
+  downhill speed at crossing: deepest 3.0 second 3.3 yd/s (p75 4.0 / 4.2)
+
+## Each DB at +8 by snap alignment (dbwhere.py)
+nfl-plays.jsonl.gz       runs reaching 8: 470
+  deep      1.35/run | near 34%  ahead 61%  behind 4%  far 1% | WR/TE within 1 yd 5%
+  off-wide  1.14/run | near 19%  ahead 67%  behind 6%  far 8% | WR/TE within 1 yd 14%
+  mid-in    0.53/run | near 39%  ahead 29%  behind 13%  far 19% | WR/TE within 1 yd 8%
+  up        1.68/run | near 17%  ahead 45%  behind 11%  far 27% | WR/TE within 1 yd 14%
+d0co-common.jsonl.gz     runs reaching 8: 200
+  deep      1.36/run | near 50%  ahead 9%  behind 33%  far 8% | WR/TE within 1 yd 6%
+  off-wide  1.74/run | near 19%  ahead 53%  behind 16%  far 12% | WR/TE within 1 yd 27%
+  mid-in    0.47/run | near 7%  ahead 0%  behind 65%  far 28% | WR/TE within 1 yd 6%
+  up        0.46/run | near 14%  ahead 19%  behind 18%  far 49% | WR/TE within 1 yd 20%
+t1co-common.jsonl.gz     runs reaching 8: 358
+  deep      1.30/run | near 57%  ahead 42%  behind 0%  far 0% | WR/TE within 1 yd 2%
+  off-wide  1.79/run | near 14%  ahead 54%  behind 11%  far 21% | WR/TE within 1 yd 30%
+  mid-in    0.56/run | near 7%  ahead 3%  behind 27%  far 64% | WR/TE within 1 yd 3%
+  up        0.41/run | near 14%  ahead 20%  behind 15%  far 52% | WR/TE within 1 yd 17%
+x3co-common.jsonl.gz     runs reaching 8: 320
+  deep      1.27/run | near 66%  ahead 33%  behind 0%  far 0% | WR/TE within 1 yd 0%
+  off-wide  1.77/run | near 17%  ahead 55%  behind 16%  far 12% | WR/TE within 1 yd 13%
+  mid-in    0.59/run | near 9%  ahead 45%  behind 24%  far 22% | WR/TE within 1 yd 8%
+  up        0.42/run | near 18%  ahead 18%  behind 23%  far 41% | WR/TE within 1 yd 10%
+
+## Feasible interceptors at +10 and how they missed (angles.py)
+nfl-plays.jsonl.gz       at +10
+  <40: runs 316 | feasible interceptors 2.16/run, got within 1.5 yd 79% | missed: closest while behind him 30%, level/ahead but wide 70% | next-second speed / peak: missed p50 0.74, got p50 0.67
+  40+: runs 31 | feasible interceptors 1.94/run, got within 1.5 yd 70% | missed: closest while behind him 50%, level/ahead but wide 50% | next-second speed / peak: missed p50 0.58, got p50 0.72
+d0co-common.jsonl.gz     at +10
+  <40: runs 41 | feasible interceptors 0.80/run, got within 1.5 yd 97% | missed: closest while behind him 100%, level/ahead but wide 0% | next-second speed / peak: missed p50 0.76, got p50 0.87
+  40+: runs 113 | feasible interceptors 0.19/run, got within 1.5 yd 45% | missed: closest while behind him 83%, level/ahead but wide 17% | next-second speed / peak: missed p50 0.56, got p50 0.76
+t1co-common.jsonl.gz     at +10
+  <40: runs 228 | feasible interceptors 0.91/run, got within 1.5 yd 94% | missed: closest while behind him 69%, level/ahead but wide 31% | next-second speed / peak: missed p50 0.75, got p50 0.81
+  40+: runs 95 | feasible interceptors 0.85/run, got within 1.5 yd 35% | missed: closest while behind him 85%, level/ahead but wide 15% | next-second speed / peak: missed p50 0.69, got p50 0.73
+x3co-common.jsonl.gz     at +10
+  <40: runs 207 | feasible interceptors 0.93/run, got within 1.5 yd 94% | missed: closest while behind him 100%, level/ahead but wide 0% | next-second speed / peak: missed p50 0.61, got p50 0.83
+  40+: runs 59 | feasible interceptors 0.75/run, got within 1.5 yd 57% | missed: closest while behind him 74%, level/ahead but wide 26% | next-second speed / peak: missed p50 0.75, got p50 0.79
+
+## Encounters past +5 and +8 (openfield.py)
+nfl-plays.jsonl.gz     runs reaching 8: 470, encounters 882 (1.88/run)
+  carrier at 8-20  n  804 | ended   71% broken    9% slowed   20% | carrier speed p50 4.59 defender 3.91
+  carrier at 20+   n   78 | ended   76% broken   19% slowed    5% | carrier speed p50 7.81 defender 7.81
+d0co-common.jsonl.gz   runs reaching 8: 200, encounters 117 (0.58/run)
+  carrier at 8-20  n  109 | ended   90% broken   10% slowed    0% | carrier speed p50 6.02 defender 6.05
+  carrier at 20+   n    8 | ended   88% broken   12% slowed    0% | carrier speed p50 7.6 defender 9.1
+t1co-common.jsonl.gz   runs reaching 8: 358, encounters 358 (1.00/run)
+  carrier at 8-20  n  333 | ended   90% broken    8% slowed    2% | carrier speed p50 6.5 defender 5.3
+  carrier at 20+   n   25 | ended   92% broken    8% slowed    0% | carrier speed p50 8.28 defender 9.39
+x3co-common.jsonl.gz   runs reaching 8: 320, encounters 373 (1.17/run)
+  carrier at 8-20  n  338 | ended   91% broken    6% slowed    3% | carrier speed p50 6.52 defender 6.01
+  carrier at 20+   n   35 | ended   83% broken   17% slowed    0% | carrier speed p50 8.1 defender 9.26
+nfl-plays.jsonl.gz     runs reaching 5: 949, encounters 2026 (2.13/run)
+  carrier at 8-20  n 1948 | ended   69% broken    7% slowed   24% | carrier speed p50 3.81 defender 3.16
+  carrier at 20+   n   78 | ended   76% broken   19% slowed    5% | carrier speed p50 7.81 defender 7.81
+d0co-common.jsonl.gz   runs reaching 5: 389, encounters 431 (1.11/run)
+  carrier at 8-20  n  424 | ended   91% broken    8% slowed    2% | carrier speed p50 5.26 defender 4.19
+  carrier at 20+   n    7 | ended   86% broken   14% slowed    0% | carrier speed p50 7.6 defender 9.1
+t1co-common.jsonl.gz   runs reaching 5: 460, encounters 497 (1.08/run)
+  carrier at 8-20  n  472 | ended   89% broken    9% slowed    3% | carrier speed p50 6.13 defender 4.47
+  carrier at 20+   n   25 | ended   92% broken    8% slowed    0% | carrier speed p50 8.28 defender 9.39
+x3co-common.jsonl.gz   runs reaching 5: 449, encounters 609 (1.36/run)
+  carrier at 8-20  n  574 | ended   88% broken    8% slowed    4% | carrier speed p50 6.13 defender 4.26
+  carrier at 20+   n   35 | ended   83% broken   17% slowed    0% | carrier speed p50 8.1 defender 9.26
+
+## Carrier pace on runs reaching 10 (carrierpace.py)
+nfl-plays.jsonl.gz     runs reaching 10: 347, own peak p50 7.77
+  at + 2: speed p25/50/75 6.01/6.77/7.62 | nearest defender p50 1.8 yd | within 3 yd p50 2 (p75 3)
+  at + 5: speed p25/50/75 6.01/7.08/7.85 | nearest defender p50 1.91 yd | within 3 yd p50 2 (p75 3)
+  at + 8: speed p25/50/75 5.53/6.86/7.98 | nearest defender p50 1.53 yd | within 3 yd p50 2 (p75 3)
+  at +12: speed p25/50/75 5.01/6.62/8.31 | nearest defender p50 1.3 yd | within 3 yd p50 2 (p75 3)
+d0co-common.jsonl.gz   runs reaching 10: 154, own peak p50 9.37
+  at + 2: speed p25/50/75 6.73/7.08/7.29 | nearest defender p50 2.14 yd | within 3 yd p50 2 (p75 3)
+  at + 5: speed p25/50/75 7.21/7.62/7.85 | nearest defender p50 1.73 yd | within 3 yd p50 1 (p75 2)
+  at + 8: speed p25/50/75 7.35/7.85/8.17 | nearest defender p50 2.31 yd | within 3 yd p50 1 (p75 2)
+  at +12: speed p25/50/75 7.95/8.38/8.55 | nearest defender p50 3.64 yd | within 3 yd p50 0 (p75 1)
+
+## Speed kept through encounters that do not end the play (contactloss.py)
+nfl-plays.jsonl.gz       encounters past +5 that the run continues 3+ yd beyond:
+  side/head-on  n   68 | carrier speed at approach p50 5.26 | lowest next 0.5 s p50 4.12 | speed lost p25/p50/p75 0.33/0.76/1.22
+  behind        n  409 | carrier speed at approach p50 6.13 | lowest next 0.5 s p50 5.06 | speed lost p25/p50/p75 0.35/0.89/1.39
+d0co-common.jsonl.gz     encounters past +5 that the run continues 3+ yd beyond:
+  side/head-on  n   24 | carrier speed at approach p50 6.66 | lowest next 0.5 s p50 6.05 | speed lost p25/p50/p75 0.06/0.46/1.12
+  behind        n   58 | carrier speed at approach p50 7.2 | lowest next 0.5 s p50 6.67 | speed lost p25/p50/p75 0.13/0.47/0.85
+x3co-common.jsonl.gz     encounters past +5 that the run continues 3+ yd beyond:
+  side/head-on  n   45 | carrier speed at approach p50 7.43 | lowest next 0.5 s p50 6.56 | speed lost p25/p50/p75 0.12/0.76/1.72
+  behind        n  137 | carrier speed at approach p50 7.72 | lowest next 0.5 s p50 7.03 | speed lost p25/p50/p75 0.15/0.5/1.12
+
+## Front defenders within 3 yd at the crossing: do they reach the runner? (nearreach.py)
+nfl-plays.jsonl.gz oz runs crossing 668; carrier gain over next 1.0s p50 3.0 p75 4.2
+  DL: free 0.33/run reach 67% | blocked 1.37/run reach 53%
+  LB: free 0.41/run reach 69% | blocked 0.85/run reach 56%
+  DB: free 0.16/run reach 74% | blocked 0.16/run reach 46%
+    DL free: dist at crossing p50 1.7, min next 1.0s p25/p50 0.4/0.8, speed p50 3.8, toward carrier p50 2.3, depth rel carrier p50 0.1
+    DL blocked: dist at crossing p50 1.8, min next 1.0s p25/p50 0.6/1.1, speed p50 2.8, toward carrier p50 0.2, depth rel carrier p50 0.6
+    LB free: dist at crossing p50 2.0, min next 1.0s p25/p50 0.4/0.7, speed p50 3.4, toward carrier p50 1.8, depth rel carrier p50 0.8
+    LB blocked: dist at crossing p50 2.0, min next 1.0s p25/p50 0.6/1.1, speed p50 2.6, toward carrier p50 -0.1, depth rel carrier p50 0.8
+d0co.jsonl.gz oz runs crossing 332; carrier gain over next 1.0s p50 2.8 p75 4.4
+  DL: free 0.19/run reach 26% | blocked 1.05/run reach 21%
+  LB: free 0.72/run reach 59% | blocked 1.07/run reach 36%
+  DB: free 0.06/run reach 42% | blocked 0.05/run reach 25%
+    DL free: dist at crossing p50 1.8, min next 1.0s p25/p50 1.1/1.8, speed p50 1.3, toward carrier p50 -0.1, depth rel carrier p50 -1.3
+    DL blocked: dist at crossing p50 1.8, min next 1.0s p25/p50 1.3/1.7, speed p50 2.1, toward carrier p50 1.6, depth rel carrier p50 -0.2
+    LB free: dist at crossing p50 1.7, min next 1.0s p25/p50 0.5/0.7, speed p50 3.2, toward carrier p50 2.0, depth rel carrier p50 1.0
+    LB blocked: dist at crossing p50 1.9, min next 1.0s p25/p50 0.8/1.6, speed p50 2.5, toward carrier p50 1.5, depth rel carrier p50 1.0
+nfl-plays.jsonl.gz iz runs crossing 516; carrier gain over next 1.0s p50 2.9 p75 4.2
+  DL: free 0.21/run reach 68% | blocked 1.65/run reach 56%
+  LB: free 0.32/run reach 66% | blocked 0.72/run reach 53%
+  DB: free 0.16/run reach 81% | blocked 0.14/run reach 64%
+    DL free: dist at crossing p50 1.5, min next 1.0s p25/p50 0.4/0.8, speed p50 2.8, toward carrier p50 2.0, depth rel carrier p50 0.0
+    DL blocked: dist at crossing p50 1.8, min next 1.0s p25/p50 0.6/1.0, speed p50 1.7, toward carrier p50 -0.1, depth rel carrier p50 0.8
+    LB free: dist at crossing p50 2.1, min next 1.0s p25/p50 0.4/0.7, speed p50 2.5, toward carrier p50 1.2, depth rel carrier p50 1.3
+    LB blocked: dist at crossing p50 2.1, min next 1.0s p25/p50 0.7/1.1, speed p50 1.8, toward carrier p50 0.2, depth rel carrier p50 1.3
+d0co.jsonl.gz iz runs crossing 380; carrier gain over next 1.0s p50 3.8 p75 5.0
+  DL: free 0.13/run reach 33% | blocked 1.05/run reach 31%
+  LB: free 0.44/run reach 64% | blocked 0.54/run reach 40%
+  DB: free 0.02/run reach 100% | blocked 0.01/run reach 0%
+    DL free: dist at crossing p50 1.9, min next 1.0s p25/p50 0.6/1.7, speed p50 1.8, toward carrier p50 1.2, depth rel carrier p50 -0.9
+    DL blocked: dist at crossing p50 2.1, min next 1.0s p25/p50 1.1/1.5, speed p50 1.8, toward carrier p50 0.9, depth rel carrier p50 1.0
+    LB free: dist at crossing p50 1.9, min next 1.0s p25/p50 0.5/0.5, speed p50 2.1, toward carrier p50 1.1, depth rel carrier p50 1.2
+    LB blocked: dist at crossing p50 2.2, min next 1.0s p25/p50 0.5/1.5, speed p50 1.7, toward carrier p50 0.6, depth rel carrier p50 1.4
+
+## Linebackers relative to the runner (lbspot.py)
+nfl-plays.jsonl.gz oz
+  carrier at +0 (runs 668): LBs per run within3 1.25 (blocked 64%, dx 0.8, |dy| 1.1, vy->carrier 0.5) | ahead 1.05 (blocked 58%, dx 3.0, |dy| 2.9, vy->carrier 2.0) | beaten 0.35 (blocked 63%, dx -1.6, |dy| 3.9, vy->carrier -0.0) | wide6+ 0.51 (blocked 34%, dx 1.7, |dy| 8.1, vy->carrier 3.0)
+  carrier at +5 (runs 252): LBs per run within3 1.23 (blocked 48%, dx -0.3, |dy| 0.8, vy->carrier 0.8) | ahead 0.30 (blocked 27%, dx 1.6, |dy| 3.9, vy->carrier 3.8) | beaten 1.06 (blocked 39%, dx -3.6, |dy| 3.1, vy->carrier 0.8) | wide6+ 0.60 (blocked 20%, dx -1.4, |dy| 9.5, vy->carrier 3.2)
+d0co.jsonl.gz oz
+  carrier at +0 (runs 332): LBs per run within3 1.79 (blocked 60%, dx 1.0, |dy| 1.3, vy->carrier 2.3) | ahead 0.78 (blocked 71%, dx 2.3, |dy| 3.2, vy->carrier 1.7) | beaten 0.17 (blocked 96%, dx -1.5, |dy| 4.1, vy->carrier -4.3) | wide6+ 0.43 (blocked 51%, dx 0.5, |dy| 9.6, vy->carrier 1.0)
+  carrier at +5 (runs 115): LBs per run within3 0.48 (blocked 36%, dx -1.4, |dy| 1.1, vy->carrier 3.8) | ahead 0.04 (blocked 60%, dx 0.6, |dy| 4.5, vy->carrier 2.7) | beaten 1.85 (blocked 52%, dx -2.8, |dy| 3.9, vy->carrier 2.8) | wide6+ 0.88 (blocked 62%, dx -3.2, |dy| 9.0, vy->carrier 2.2)
+nfl-plays.jsonl.gz iz
+  carrier at +0 (runs 516): LBs per run within3 1.04 (blocked 67%, dx 1.3, |dy| 1.1, vy->carrier 0.8) | ahead 1.21 (blocked 57%, dx 3.0, |dy| 3.0, vy->carrier 1.0) | beaten 0.31 (blocked 72%, dx -1.4, |dy| 3.9, vy->carrier 0.2) | wide6+ 0.44 (blocked 41%, dx 1.5, |dy| 7.9, vy->carrier 1.2)
+  carrier at +5 (runs 194): LBs per run within3 1.36 (blocked 52%, dx -0.1, |dy| 0.8, vy->carrier 1.0) | ahead 0.26 (blocked 18%, dx 1.4, |dy| 3.7, vy->carrier 3.3) | beaten 0.84 (blocked 48%, dx -3.7, |dy| 3.1, vy->carrier 0.5) | wide6+ 0.59 (blocked 18%, dx -0.7, |dy| 8.5, vy->carrier 2.7)
+d0co.jsonl.gz iz
+  carrier at +0 (runs 380): LBs per run within3 0.98 (blocked 55%, dx 1.3, |dy| 1.3, vy->carrier 1.5) | ahead 1.62 (blocked 68%, dx 2.2, |dy| 3.5, vy->carrier 0.0) | beaten 0.00 (blocked 0%, dx -1.0, |dy| 5.0, vy->carrier -3.5) | wide6+ 0.59 (blocked 59%, dx 1.4, |dy| 7.7, vy->carrier 0.5)
+  carrier at +5 (runs 171): LBs per run within3 0.58 (blocked 53%, dx -1.0, |dy| 1.2, vy->carrier 1.7) | ahead 0.12 (blocked 76%, dx 0.6, |dy| 4.9, vy->carrier 2.0) | beaten 1.18 (blocked 50%, dx -2.3, |dy| 4.1, vy->carrier 1.7) | wide6+ 1.21 (blocked 69%, dx -2.2, |dy| 8.4, vy->carrier 1.2)
+
+## Front-seven release after the crossing (release.py)
+nfl-plays.jsonl.gz     runs 1909 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 76% +0.5s 66% +1.0s 57% | 0.5 s after: free closing p50 -0.5 speed 3.64 (n 2090) | tied closing -0.46 speed 2.06
+  LB: tied up at crossing +0s 62% +0.5s 58% +1.0s 49% | 0.5 s after: free closing p50 0.83 speed 3.91 (n 2507) | tied closing 0.16 speed 2.3
+d0co.jsonl.gz          runs 555 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 82% +0.5s 81% +1.0s 79% | 0.5 s after: free closing p50 -4.03 speed 1.9 (n 393) | tied closing -3.43 speed 2.46
+  LB: tied up at crossing +0s 67% +0.5s 62% +1.0s 57% | 0.5 s after: free closing p50 -1.3 speed 3.51 (n 677) | tied closing -2.53 speed 2.36
+u1co.jsonl.gz          runs 559 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 82% +0.5s 81% +1.0s 71% | 0.5 s after: free closing p50 -4.11 speed 1.8 (n 411) | tied closing -3.49 speed 2.26
+  LB: tied up at crossing +0s 66% +0.5s 61% +1.0s 53% | 0.5 s after: free closing p50 -1.28 speed 3.51 (n 689) | tied closing -2.35 speed 2.37
+t1co.jsonl.gz          runs 593 (crossed, 1 s live after)
+  DL: tied up at crossing +0s 82% +0.5s 81% +1.0s 79% | 0.5 s after: free closing p50 -4.15 speed 1.95 (n 421) | tied closing -3.41 speed 2.46
+  LB: tied up at crossing +0s 68% +0.5s 61% +1.0s 57% | 0.5 s after: free closing p50 -1.28 speed 3.54 (n 738) | tied closing -2.59 speed 2.36
+
+## Receivers on DBs (dbstalk.py; r148 = develop with #148/#149 reverted, Part 9)
+nfl-plays.jsonl.gz           runs 2633: DBs/run 4.64, stalked/run 1.36 (29% of DBs) | reach carrier: stalked 26%  not 20% | first to reach: stalked 0.05/run  not 0.10/run | runs to +10 with a stalked DB 307/347, stalked DB reached carrier on 53%
+   stalk starts p25/p50/p75 1.8/2.4/3.2 s at DB depth 2.0/4.0/7.2 yd | while stalked: DB speed toward carrier p25/p50/p75 -1.18/0.17/1.41, gap closing -0.54/1.31/3.4 yd/s
+   by the carrier's closest approach while stalked: <2 n 795 reach 87% | 2-4 n 582 reach 18% | 4-6 n 486 reach 14% | 6+ n 1725 reach 4%
+   stalk start relative to the carrier's line crossing p25/p50/p75 -1.0/-0.3/0.5 s | time stalked per stalked DB p25/p50/p75 0.7/1.1/1.8 s
+p0co-0.jsonl.gz              runs 1200: DBs/run 4.00, stalked/run 0.43 (11% of DBs) | reach carrier: stalked 19%  not 24% | first to reach: stalked 0.01/run  not 0.17/run | runs to +10 with a stalked DB 45/114, stalked DB reached carrier on 20%
+   stalk starts p25/p50/p75 2.5/2.6/3.3 s at DB depth 2.8/5.2/6.1 yd | while stalked: DB speed toward carrier p25/p50/p75 0.49/1.89/2.3, gap closing -1.43/0.39/4.15 yd/s
+   by the carrier's closest approach while stalked: <2 n 101 reach 72% | 2-4 n 80 reach 10% | 4-6 n 44 reach 9% | 6+ n 288 reach 4%
+   stalk start relative to the carrier's line crossing p25/p50/p75 -0.4/-0.1/0.4 s | time stalked per stalked DB p25/p50/p75 0.5/0.8/1.2 s
+d0co-0.jsonl.gz              runs 1200: DBs/run 4.00, stalked/run 2.04 (51% of DBs) | reach carrier: stalked 11%  not 24% | first to reach: stalked 0.03/run  not 0.12/run | runs to +10 with a stalked DB 154/154, stalked DB reached carrier on 42%
+   stalk starts p25/p50/p75 2.1/2.2/2.3 s at DB depth 4.4/7.0/7.8 yd | while stalked: DB speed toward carrier p25/p50/p75 1.35/2.26/3.77, gap closing 0.81/3.61/6.17 yd/s
+   by the carrier's closest approach while stalked: <2 n 165 reach 75% | 2-4 n 208 reach 11% | 4-6 n 207 reach 10% | 6+ n 1870 reach 5%
+   stalk start relative to the carrier's line crossing p25/p50/p75 -0.8/-0.5/-0.3 s | time stalked per stalked DB p25/p50/p75 0.7/0.9/1.3 s
+r148-0.jsonl.gz              runs 1200: DBs/run 4.00, stalked/run 0.47 (12% of DBs) | reach carrier: stalked 22%  not 22% | first to reach: stalked 0.02/run  not 0.15/run | runs to +10 with a stalked DB 66/104, stalked DB reached carrier on 38%
+   stalk starts p25/p50/p75 2.5/2.7/3.5 s at DB depth 2.8/5.1/6.3 yd | while stalked: DB speed toward carrier p25/p50/p75 0.56/1.82/2.36, gap closing -1.68/0.25/3.68 yd/s
+   by the carrier's closest approach while stalked: <2 n 121 reach 74% | 2-4 n 89 reach 17% | 4-6 n 56 reach 11% | 6+ n 294 reach 5%
+   stalk start relative to the carrier's line crossing p25/p50/p75 -0.4/-0.1/0.6 s | time stalked per stalked DB p25/p50/p75 0.5/0.7/1.2 s

@@ -61,7 +61,7 @@
     "RUN_READ": "0",
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",
-    "SHED_FACE": "0",
+    "SHED_AWAY": "0",
     "SHED_PHYSICAL": "1",
     "SHED_PURSUE": "0",
     "STALK_CLAIM": "1",

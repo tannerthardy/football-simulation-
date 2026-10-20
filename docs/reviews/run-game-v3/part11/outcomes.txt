@@ -1,0 +1,122 @@
+# Part 11 outcomes. Zone: ace_12 iz/oz/wz, 10 looks, 2 rosters, 1,200 plays; gap: i_pro_21+ace_12 power/counter/duo/trap, 1,600 plays.
+# Flags per arm are in LABEL.manifest.json (everything else develop defaults at ece674aa + the default-off flags of this branch).
+# d0 develop | t1 DEEP_CAP | t2 DEEP_CAP MAN_RUN_COMMIT BLOCK_FRONT | u1 SHED_PURSUE | u2 u1+MAN_RUN_COMMIT BLOCK_FRONT | u3 u2+DEEP_CAP
+# v1 EDGE_SQUEEZE | v2 EDGE_SQUEEZE SHED_PURSUE MAN_RUN_COMMIT BLOCK_FRONT | v3 v2+DEEP_CAP | w1 FORCE_DEPTH | w2 w1+DEEP_CAP | w3 v3+FORCE_DEPTH
+# x1 SHED_AWAY BLOCK_FRONT SHED_PURSUE | x2 v3+SHED_AWAY | x3 w3+SHED_AWAY | y1 x3 without DEEP_CAP | g0 GAIT_STEP=0.3 (physics flag, context) | z1 v2+GAIT_STEP=0.3 | x3g x3+GAIT_STEP=0.3
+
+## report.py headline (zone)
+d0co    sim   n  1200 mean  9.65 p10  -0.7 p50   3.1 p90  19.2 | neg 14.2% 4+ 43.0% 10+ 13.1% 20+ 10.0% 40+ 9.42%
+t1co    sim   n  1200 mean 10.20 p10  -0.7 p50   3.6 p90  20.4 | neg 14.5% 4+ 46.4% 10+ 27.2% 20+ 10.1% 40+ 7.92%
+t2co    sim   n  1200 mean  8.41 p10  -0.6 p50   3.4 p90  16.5 | neg 14.5% 4+ 44.9% 10+ 24.9% 20+  7.2% 40+ 5.33%
+u1co    sim   n  1200 mean  9.70 p10  -0.7 p50   3.1 p90  24.0 | neg 14.2% 4+ 42.8% 10+ 14.1% 20+ 10.5% 40+ 9.25%
+u2co    sim   n  1200 mean  8.50 p10  -0.5 p50   3.1 p90  12.7 | neg 13.9% 4+ 41.0% 10+ 12.0% 20+  8.2% 40+ 7.58%
+u3co    sim   n  1200 mean  8.87 p10  -0.6 p50   3.4 p90  17.7 | neg 14.5% 4+ 45.2% 10+ 24.8% 20+  8.3% 40+ 6.08%
+v1co    sim   n  1200 mean  9.30 p10  -0.7 p50   3.1 p90  15.6 | neg 14.2% 4+ 42.4% 10+ 12.8% 20+  9.8% 40+ 8.92%
+v2co    sim   n  1200 mean  8.12 p10  -0.5 p50   3.0 p90  10.9 | neg 13.9% 4+ 40.3% 10+ 10.9% 20+  7.7% 40+ 7.25%
+v3co    sim   n  1200 mean  8.71 p10  -0.6 p50   3.4 p90  16.7 | neg 14.6% 4+ 44.6% 10+ 23.8% 20+  8.0% 40+ 6.08%
+w1co    sim   n  1200 mean  9.97 p10  -0.7 p50   3.2 p90  22.5 | neg 14.5% 4+ 44.6% 10+ 13.8% 20+ 10.6% 40+ 9.67%
+w2co    sim   n  1200 mean 10.82 p10  -0.7 p50   3.7 p90  23.8 | neg 14.9% 4+ 47.8% 10+ 28.8% 20+ 11.4% 40+ 8.75%
+w3co    sim   n  1200 mean  8.79 p10  -0.7 p50   3.6 p90  16.9 | neg 15.1% 4+ 46.4% 10+ 25.1% 20+  7.8% 40+ 5.83%
+x1co    sim   n  1200 mean  9.89 p10  -0.6 p50   3.1 p90  27.2 | neg 14.2% 4+ 42.8% 10+ 14.6% 20+ 10.9% 40+ 9.58%
+x2co    sim   n  1200 mean  8.29 p10  -0.6 p50   3.4 p90  15.8 | neg 14.6% 4+ 44.7% 10+ 21.9% 20+  7.7% 40+ 5.50%
+x3co    sim   n  1200 mean  8.05 p10  -0.7 p50   3.6 p90  15.5 | neg 15.1% 4+ 46.7% 10+ 23.0% 20+  6.8% 40+ 4.92%
+y1co    sim   n  1200 mean  9.05 p10  -0.6 p50   3.1 p90  16.0 | neg 14.4% 4+ 42.1% 10+ 13.1% 20+  9.6% 40+ 8.42%
+g0co    sim   n  1200 mean  7.29 p10  -1.0 p50   2.7 p90  10.0 | neg 20.0% 4+ 37.1% 10+ 10.0% 20+  7.3% 40+ 6.33%
+z1co    sim   n  1200 mean  5.60 p10  -1.0 p50   2.5 p90   8.3 | neg 19.4% 4+ 35.6% 10+  7.7% 20+  5.0% 40+ 3.83%
+x3g     sim   n  1200 mean  6.14 p10  -1.0 p50   2.8 p90  12.0 | neg 19.3% 4+ 38.8% 10+ 16.4% 20+  4.8% 40+ 3.50%
+
+## report.py headline (gap)
+d0gap   sim   n  1600 mean 10.18 p10  -0.2 p50   4.2 p90  19.1 | neg 10.7% 4+ 51.6% 10+ 14.1% 20+  9.9% 40+ 9.00%
+v2gap   sim   n  1600 mean  7.42 p10  -0.2 p50   3.7 p90   9.3 | neg 10.8% 4+ 45.8% 10+  9.2% 20+  6.1% 40+ 5.44%
+y1gap   sim   n  1600 mean  8.02 p10  -0.2 p50   3.8 p90  10.5 | neg 10.9% 4+ 47.8% 10+ 10.4% 20+  7.4% 40+ 5.94%
+z1gap   sim   n  1600 mean  6.58 p10  -0.5 p50   3.2 p90   9.9 | neg 13.8% 4+ 40.7% 10+  9.8% 20+  6.1% 40+ 4.44%
+x3gap   sim   n  1600 mean  9.41 p10  -0.2 p50   5.2 p90  16.8 | neg 10.9% 4+ 56.2% 10+ 32.8% 20+  7.8% 40+ 4.69%
+
+## Gain bands and total variation distance from NFL60 (bands.py)
+NFL60 zone   <0   7.6 0-3  44.7 4-9  36.8 10-19   8.6 20-39   1.5 40+   0.8
+d0co         <0  14.2 0-3  42.8 4-9  29.9 10-19   3.1 20-39   0.6 40+   9.4 | TVD 15.2
+t1co         <0  14.5 0-3  39.1 4-9  19.2 10-19  17.2 20-39   2.2 40+   7.9 | TVD 23.3
+v2co         <0  13.9 0-3  45.8 4-9  29.4 10-19   3.2 20-39   0.4 40+   7.2 | TVD 13.8
+v3co         <0  14.6 0-3  40.8 4-9  20.8 10-19  15.8 20-39   1.9 40+   6.1 | TVD 20.0
+x3co         <0  15.1 0-3  38.2 4-9  23.7 10-19  16.2 20-39   1.9 40+   4.9 | TVD 19.6
+y1co         <0  14.4 0-3  43.5 4-9  29.0 10-19   3.5 20-39   1.2 40+   8.4 | TVD 14.5
+g0co         <0  20.0 0-3  42.9 4-9  27.1 10-19   2.7 20-39   1.0 40+   6.3 | TVD 18.0
+z1co         <0  19.4 0-3  45.0 4-9  27.9 10-19   2.7 20-39   1.2 40+   3.8 | TVD 15.2
+x3g          <0  19.3 0-3  41.9 4-9  22.3 10-19  11.7 20-39   1.2 40+   3.5 | TVD 17.6
+NFL60 gap    <0   7.4 0-3  36.8 4-9  39.2 10-19  11.3 20-39   3.3 40+   2.0
+d0gap        <0  10.7 0-3  37.7 4-9  37.6 10-19   4.2 20-39   0.9 40+   9.0 | TVD 11.2
+v2gap        <0  10.8 0-3  43.4 4-9  36.6 10-19   3.1 20-39   0.6 40+   5.4 | TVD 13.4
+y1gap        <0  10.9 0-3  41.2 4-9  37.4 10-19   3.1 20-39   1.4 40+   5.9 | TVD 11.9
+z1gap        <0  13.8 0-3  45.6 4-9  30.9 10-19   3.8 20-39   1.6 40+   4.4 | TVD 17.6
+x3gap        <0  10.9 0-3  32.9 4-9  23.4 10-19  25.1 20-39   3.1 40+   4.7 | TVD 20.0
+
+## Survival (survival.py)
+NFL60      n  2633 P(>=3|>=0) 0.67 P(>=5|>=3) 0.62 P(>=10|>=5) 0.34 P(>=15|>=10) 0.48 P(>=20|>=15) 0.48 P(>=30|>=20) 0.53 P(>=40|>=30) 0.74
+d0co       n  1200 P(>=3|>=0) 0.60 P(>=5|>=3) 0.67 P(>=10|>=5) 0.38 P(>=15|>=10) 0.83 P(>=20|>=15) 0.92 P(>=30|>=20) 0.95 P(>=40|>=30) 0.99
+t1co       n  1200 P(>=3|>=0) 0.64 P(>=5|>=3) 0.72 P(>=10|>=5) 0.69 P(>=15|>=10) 0.52 P(>=20|>=15) 0.72 P(>=30|>=20) 0.83 P(>=40|>=30) 0.95
+v2co       n  1200 P(>=3|>=0) 0.59 P(>=5|>=3) 0.63 P(>=10|>=5) 0.34 P(>=15|>=10) 0.75 P(>=20|>=15) 0.94 P(>=30|>=20) 0.96 P(>=40|>=30) 0.99
+x3co       n  1200 P(>=3|>=0) 0.64 P(>=5|>=3) 0.72 P(>=10|>=5) 0.59 P(>=15|>=10) 0.45 P(>=20|>=15) 0.66 P(>=30|>=20) 0.79 P(>=40|>=30) 0.91
+y1co       n  1200 P(>=3|>=0) 0.60 P(>=5|>=3) 0.65 P(>=10|>=5) 0.39 P(>=15|>=10) 0.80 P(>=20|>=15) 0.92 P(>=30|>=20) 0.91 P(>=40|>=30) 0.96
+z1co       n  1200 P(>=3|>=0) 0.55 P(>=5|>=3) 0.57 P(>=10|>=5) 0.31 P(>=15|>=10) 0.71 P(>=20|>=15) 0.92 P(>=30|>=20) 0.87 P(>=40|>=30) 0.88
+x3g        n  1200 P(>=3|>=0) 0.60 P(>=5|>=3) 0.69 P(>=10|>=5) 0.50 P(>=15|>=10) 0.39 P(>=20|>=15) 0.74 P(>=30|>=20) 0.86 P(>=40|>=30) 0.86
+
+## How 40+ runs escape (tailwhy.py)
+== d0co: 1200 runs, 40+ 113 (9.4%)
+  attempt failed 54 (48%), nobody near 44 (39%), near, no attempt 15 (13%)
+  events on 40+ runs: broken_tackle 78, tackle_wrap 51, missed_tackle 29, hit 6, tackle 3
+  closest defender DB: 100 runs | min 1.41 yd, his speed 6.8, carrier 7.8, ahead -0.57, closing -0.1, engaged 17%
+  closest defender LB: 6 runs | min 2.67 yd, his speed 6.9, carrier 8.0, ahead -1.40, closing -0.8, engaged 17%
+  closest defender DL: 3 runs | min 1.32 yd, his speed 3.7, carrier 5.6, ahead -0.39, closing -1.3, engaged 100%
+== t1co: 1200 runs, 40+ 95 (7.9%)
+  attempt failed 49 (52%), near, no attempt 27 (28%), nobody near 19 (20%)
+  events on 40+ runs: tackle_wrap 84, broken_tackle 79, missed_tackle 25, hit 14, tackle 2
+  closest defender DB: 95 runs | min 1.23 yd, his speed 4.6, carrier 7.9, ahead -0.36, closing +0.0, engaged 9%
+== v3co: 1200 runs, 40+ 73 (6.1%)
+  attempt failed 39 (53%), near, no attempt 20 (27%), nobody near 14 (19%)
+  events on 40+ runs: tackle_wrap 82, broken_tackle 67, missed_tackle 30, tackle 8, hit 8
+  closest defender DB: 72 runs | min 1.32 yd, his speed 7.3, carrier 8.1, ahead -0.48, closing +0.0, engaged 6%
+  closest defender LB: 1 runs | min 1.43 yd, his speed 4.8, carrier 7.1, ahead -1.28, closing -1.3, engaged 0%
+== x3co: 1200 runs, 40+ 59 (4.9%)
+  attempt failed 30 (51%), nobody near 15 (25%), near, no attempt 14 (24%)
+  events on 40+ runs: tackle_wrap 74, broken_tackle 59, missed_tackle 29, tackle 9, hit 8
+  closest defender DB: 59 runs | min 1.12 yd, his speed 7.7, carrier 8.1, ahead -0.45, closing +0.1, engaged 5%
+
+## Open-field solo holds (openholds.py)
+== d0co plays 1200 holds 1869 enc 1348
+  open solo initial all        n  142 broken  33.1%  run 20+  38.0%  grip0 p50 0.63 ds p50 6.6 cs p50 7.9
+   by DL                       n    1 broken   0.0%  run 20+   0.0%  grip0 p50 1.00 ds p50 1.8 cs p50 5.8
+   by LB                       n    6 broken  33.3%  run 20+  33.3%  grip0 p50 0.47 ds p50 4.9 cs p50 7.2
+   by DB                       n  135 broken  33.3%  run 20+  38.5%  grip0 p50 0.63 ds p50 6.6 cs p50 8.0
+   front cosA>.3               n   26 broken  19.2%  run 20+  15.4%  grip0 p50 0.80 ds p50 2.4 cs p50 7.2
+   side                        n   33 broken  21.2%  run 20+  21.2%  grip0 p50 0.85 ds p50 3.4 cs p50 7.7
+   behind cosA<-.3             n   83 broken  42.2%  run 20+  51.8%  grip0 p50 0.50 ds p50 7.3 cs p50 8.1
+   ds<3                        n   31 broken  35.5%  run 20+  19.4%  grip0 p50 0.63 ds p50 2.2 cs p50 7.7
+   ds 3-6                      n   33 broken  27.3%  run 20+  27.3%  grip0 p50 0.63 ds p50 3.8 cs p50 7.7
+   ds 6+                       n   78 broken  34.6%  run 20+  50.0%  grip0 p50 0.65 ds p50 7.4 cs p50 8.1
+   origin form                 n   64 broken   3.1%  run 20+  12.5%  grip0 p50 0.95 ds p50 6.4 cs p50 7.7
+   origin reach                n   50 broken  52.0%  run 20+  60.0%  grip0 p50 0.47 ds p50 7.1 cs p50 8.1
+   origin lunge                n   25 broken  68.0%  run 20+  56.0%  grip0 p50 0.26 ds p50 6.8 cs p50 7.9
+   origin dive                 n    2 broken 100.0%  run 20+ 100.0%  grip0 p50 0.30 ds p50 4.0 cs p50 8.4
+   origin block                n    1 broken   0.0%  run 20+   0.0%  grip0 p50 0.82 ds p50 1.7 cs p50 7.3
+  open encounters (depth>5, no bond): 82 {'miss': 13, 'dive-miss': 1, 'wrap': 58, 'none': 8, 'dive-hit': 2}
+   LB n 1  {'wrap': '100%'}
+   DB n 81  {'miss': '16%', 'dive-miss': '1%', 'wrap': '70%', 'none': '10%', 'dive-hit': '2%'}
+== x3co plays 1200 holds 1938 enc 1357
+  open solo initial all        n  335 broken  29.0%  run 20+  29.9%  grip0 p50 0.59 ds p50 6.2 cs p50 8.1
+   by DL                       n    2 broken  50.0%  run 20+   0.0%  grip0 p50 0.32 ds p50 5.5 cs p50 6.3
+   by LB                       n   13 broken  38.5%  run 20+  30.8%  grip0 p50 0.30 ds p50 5.9 cs p50 7.2
+   by DB                       n  320 broken  28.4%  run 20+  30.0%  grip0 p50 0.61 ds p50 6.2 cs p50 8.1
+   front cosA>.3               n   67 broken  20.9%  run 20+  10.4%  grip0 p50 0.84 ds p50 2.6 cs p50 7.3
+   side                        n   84 broken  34.5%  run 20+  23.8%  grip0 p50 0.68 ds p50 3.9 cs p50 7.9
+   behind cosA<-.3             n  184 broken  29.3%  run 20+  39.7%  grip0 p50 0.45 ds p50 7.0 cs p50 8.5
+   ds<3                        n   78 broken  47.4%  run 20+  26.9%  grip0 p50 0.63 ds p50 2.1 cs p50 7.7
+   ds 3-6                      n   80 broken  36.2%  run 20+  17.5%  grip0 p50 0.48 ds p50 4.3 cs p50 7.5
+   ds 6+                       n  177 broken  17.5%  run 20+  36.7%  grip0 p50 0.62 ds p50 7.1 cs p50 8.5
+   origin form                 n  149 broken   6.7%  run 20+  16.1%  grip0 p50 0.89 ds p50 6.2 cs p50 7.9
+   origin reach                n  123 broken  33.3%  run 20+  34.1%  grip0 p50 0.42 ds p50 6.2 cs p50 8.2
+   origin lunge                n   55 broken  69.1%  run 20+  54.5%  grip0 p50 0.23 ds p50 6.2 cs p50 8.3
+   origin dive                 n    5 broken 100.0%  run 20+  80.0%  grip0 p50 0.30 ds p50 5.5 cs p50 7.6
+   origin block                n    3 broken 100.0%  run 20+   0.0%  grip0 p50 0.46 ds p50 3.0 cs p50 7.5
+  open encounters (depth>5, no bond): 374 {'wrap': 288, 'none': 61, 'dive-miss': 4, 'miss': 20, 'dive-hit': 1}
+   LB n 3  {'miss': '33%', 'wrap': '33%', 'none': '33%'}
+   DB n 371  {'wrap': '77%', 'none': '16%', 'dive-miss': '1%', 'miss': '5%', 'dive-hit': '0%'}

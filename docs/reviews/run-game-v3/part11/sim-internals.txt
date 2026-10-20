@@ -1,0 +1,161 @@
+# Part 11 sim-internal receipts (zone lab ace_12 iz/oz/wz, seeds 77,1; 240 plays). Observation only.
+
+## Free front seven after the crossing: requested vs achieved (dlpursuit.ts)
+
+### flags: develop defaults
+DL at crossing+0.3s: n 872, engaged 626, in tackle 22, free 224 (down/not up 11)
+  free & up: requested speed p25/p50/p75 3.7/5.0/5.8 | achieved 1.0/1.6/2.5 | request off carrier bearing p50 61.2 deg | facing off carrier bearing p50 92.3 deg | dist p50 7.4 | carrier past him 94%
+  behaviors: rush/edge 182, rush/interior 31
+  free & up requesting a facing > 45 deg off their requested travel: 157 (74%) | achieved p50 1.4 vs others 2.2 | rush/edge 154, rush/interior 3
+  free & up requesting < 3 yd/s: 45 | facing off p50 84.0 dist p50 5.3
+  free & up requesting >= 5 yd/s: 106 | achieved p50 1.4 facing off p50 84.2
+LB at crossing+0.3s: n 539, engaged 184, in tackle 100, free 255 (down/not up 41)
+  free & up: requested speed p25/p50/p75 5.1/8.0/9.2 | achieved 2.1/3.1/3.9 | request off carrier bearing p50 37.6 deg | facing off carrier bearing p50 23.0 deg | dist p50 3.3 | carrier past him 28%
+  behaviors: zone/insert 84, zone/force 59, man/force 36, man/insert 28, blitz/insert 4, rush/edge 3
+  free & up requesting a facing > 45 deg off their requested travel: 54 (25%) | achieved p50 2.2 vs others 3.2 | zone/force 13, zone/insert 13, man/force 16, man/insert 8, blitz/insert 1, rush/edge 3
+  free & up requesting < 3 yd/s: 24 | facing off p50 49.3 dist p50 2.8
+  free & up requesting >= 5 yd/s: 162 | achieved p50 3.2 facing off p50 21.9
+
+### flags: develop defaults
+DL at crossing+0.5s: n 832, engaged 548, in tackle 19, free 265 (down/not up 10)
+  free & up: requested speed p25/p50/p75 5.0/7.7/8.8 | achieved 1.2/2.0/2.6 | request off carrier bearing p50 26.9 deg | facing off carrier bearing p50 84.5 deg | dist p50 7.3 | carrier past him 97%
+  behaviors: rush/edge 181, rush/interior 74
+  free & up requesting a facing > 45 deg off their requested travel: 67 (26%) | achieved p50 1.6 vs others 2.1 | rush/edge 66, rush/interior 1
+  free & up requesting < 3 yd/s: 42 | facing off p50 96.4 dist p50 5.4
+  free & up requesting >= 5 yd/s: 193 | achieved p50 1.9 facing off p50 85.2
+LB at crossing+0.5s: n 517, engaged 166, in tackle 105, free 246 (down/not up 36)
+  free & up: requested speed p25/p50/p75 5.7/9.0/9.2 | achieved 1.9/3.2/4.0 | request off carrier bearing p50 30.7 deg | facing off carrier bearing p50 25.5 deg | dist p50 3.7 | carrier past him 56%
+  behaviors: zone/insert 74, zone/force 58, man/force 38, man/insert 26, blitz/insert 8, rush/edge 6
+  free & up requesting a facing > 45 deg off their requested travel: 25 (12%) | achieved p50 2.1 vs others 3.4 | zone/force 5, zone/insert 5, man/force 10, rush/edge 2, man/insert 3
+  free & up requesting < 3 yd/s: 21 | facing off p50 14.2 dist p50 2.9
+  free & up requesting >= 5 yd/s: 166 | achieved p50 3.4 facing off p50 27.3
+
+### flags: develop defaults
+DL at crossing+1s: n 499, engaged 361, in tackle 2, free 136 (down/not up 6)
+  free & up: requested speed p25/p50/p75 6.8/8.0/9.0 | achieved 2.1/2.7/3.2 | request off carrier bearing p50 16.2 deg | facing off carrier bearing p50 32.6 deg | dist p50 7.5 | carrier past him 98%
+  behaviors: rush/edge 75, rush/interior 55
+  free & up requesting a facing > 45 deg off their requested travel: 3 (2%) | achieved p50 2.7 vs others 2.7 | rush/edge 3
+  free & up requesting < 3 yd/s: 25 | facing off p50 84.1 dist p50 6.6
+  free & up requesting >= 5 yd/s: 99 | achieved p50 2.8 facing off p50 23.6
+LB at crossing+1s: n 312, engaged 105, in tackle 38, free 169 (down/not up 22)
+  free & up: requested speed p25/p50/p75 7.9/9.2/9.3 | achieved 2.8/3.6/5.0 | request off carrier bearing p50 21.2 deg | facing off carrier bearing p50 21.7 deg | dist p50 5.0 | carrier past him 88%
+  behaviors: zone/insert 46, zone/force 41, man/force 22, man/insert 22, blitz/insert 10, rush/edge 6
+  free & up requesting a facing > 45 deg off their requested travel: 1 (1%) | achieved p50 0.9 vs others 3.6 | man/force 1
+  free & up requesting < 3 yd/s: 8 | facing off p50 27.6 dist p50 3.0
+  free & up requesting >= 5 yd/s: 123 | achieved p50 3.8 facing off p50 22.6
+
+### flags: --flag EDGE_SQUEEZE=1
+DL at crossing+0.3s: n 872, engaged 624, in tackle 21, free 227 (down/not up 11)
+  free & up: requested speed p25/p50/p75 5.7/8.1/9.1 | achieved 1.2/2.3/3.1 | request off carrier bearing p50 30.5 deg | facing off carrier bearing p50 46.8 deg | dist p50 7.0 | carrier past him 94%
+  behaviors: rush/edge 185, rush/interior 31
+  free & up requesting a facing > 45 deg off their requested travel: 26 (12%) | achieved p50 1.1 vs others 2.4 | rush/interior 3, rush/edge 23
+  free & up requesting < 3 yd/s: 40 | facing off p50 74.4 dist p50 4.9
+  free & up requesting >= 5 yd/s: 170 | achieved p50 2.4 facing off p50 43.1
+LB at crossing+0.3s: n 539, engaged 184, in tackle 99, free 256 (down/not up 41)
+  free & up: requested speed p25/p50/p75 5.8/8.7/9.2 | achieved 2.1/3.1/3.9 | request off carrier bearing p50 36.5 deg | facing off carrier bearing p50 21.9 deg | dist p50 3.3 | carrier past him 26%
+  behaviors: zone/insert 85, zone/force 59, man/force 36, man/insert 28, blitz/insert 4, rush/edge 3
+  free & up requesting a facing > 45 deg off their requested travel: 41 (19%) | achieved p50 3.0 vs others 3.1 | zone/force 13, zone/insert 14, man/insert 8, blitz/insert 1, man/force 5
+  free & up requesting < 3 yd/s: 18 | facing off p50 15.9 dist p50 2.1
+  free & up requesting >= 5 yd/s: 174 | achieved p50 3.2 facing off p50 23.0
+
+### flags: --flag GAIT_STEP=0.3
+DL at crossing+0.5s: n 778, engaged 465, in tackle 14, free 299 (down/not up 19)
+  free & up: requested speed p25/p50/p75 5.0/7.7/8.8 | achieved 1.5/2.5/3.3 | request off carrier bearing p50 24.3 deg | facing off carrier bearing p50 82.2 deg | dist p50 7.4 | carrier past him 95%
+  behaviors: rush/edge 206, rush/interior 74
+  free & up requesting a facing > 45 deg off their requested travel: 71 (25%) | achieved p50 2.0 vs others 2.6 | rush/edge 68, rush/interior 3
+  free & up requesting < 3 yd/s: 36 | facing off p50 102.0 dist p50 5.8
+  free & up requesting >= 5 yd/s: 208 | achieved p50 2.5 facing off p50 69.0
+LB at crossing+0.5s: n 483, engaged 104, in tackle 87, free 292 (down/not up 70)
+  free & up: requested speed p25/p50/p75 4.8/9.0/9.2 | achieved 2.3/3.4/4.3 | request off carrier bearing p50 29.5 deg | facing off carrier bearing p50 28.1 deg | dist p50 3.6 | carrier past him 59%
+  behaviors: zone/insert 79, zone/force 51, man/force 43, man/insert 37, blitz/insert 7, rush/edge 5
+  free & up requesting a facing > 45 deg off their requested travel: 26 (12%) | achieved p50 2.3 vs others 3.5 | zone/insert 6, zone/force 7, rush/edge 1, man/force 10, man/insert 2
+  free & up requesting < 3 yd/s: 24 | facing off p50 12.4 dist p50 3.1
+  free & up requesting >= 5 yd/s: 163 | achieved p50 3.6 facing off p50 31.8
+
+## Re-blocks after the crossing (relatch2.ts)
+
+### flags: develop defaults
+plays 240; re-blocks after the crossing (a new rep after an earlier one ended): 1303 (5.43/play)
+  DL: 996 (4.15/play) | free before p25/p50 0.05/0.05 s | same blocker 95% | blocker behind his facing 10% | runner already past him 97% | by TE 465, OT 296, OG 168, C 67
+  LB: 227 (0.95/play) | free before p25/p50 0.05/0.05 s | same blocker 98% | blocker behind his facing 5% | runner already past him 94% | by OT 73, OG 72, TE 71, C 11
+  DB: 80 (0.33/play) | free before p25/p50 0.05/0.70 s | same blocker 100% | blocker behind his facing 38% | runner already past him 64% | by WR 73, OT 4, TE 3
+
+### flags: --flag SHED_PURSUE=1
+plays 240; re-blocks after the crossing (a new rep after an earlier one ended): 448 (1.87/play)
+  DL: 326 (1.36/play) | free before p25/p50 0.60/0.60 s | same blocker 81% | blocker behind his facing 69% | runner already past him 96% | by TE 176, OT 74, OG 51, C 25
+  LB: 74 (0.31/play) | free before p25/p50 0.60/0.70 s | same blocker 92% | blocker behind his facing 49% | runner already past him 85% | by OT 26, OG 26, TE 17, C 5
+  DB: 48 (0.20/play) | free before p25/p50 0.70/0.85 s | same blocker 100% | blocker behind his facing 69% | runner already past him 42% | by WR 44, OT 3, TE 1
+
+### flags: --flag SHED_AWAY=1 --flag BLOCK_FRONT=1
+plays 240; re-blocks after the crossing (a new rep after an earlier one ended): 1357 (5.65/play)
+  DL: 1169 (4.87/play) | free before p25/p50 0.05/0.05 s | same blocker 95% | blocker behind his facing 3% | runner already past him 96% | by TE 515, OT 367, OG 204, C 83
+  LB: 161 (0.67/play) | free before p25/p50 0.05/0.05 s | same blocker 98% | blocker behind his facing 5% | runner already past him 93% | by OT 56, TE 55, OG 41, C 9
+  DB: 27 (0.11/play) | free before p25/p50 0.05/0.70 s | same blocker 96% | blocker behind his facing 41% | runner already past him 52% | by WR 20, OT 4, TE 2, OG 1
+
+## Receiver-on-DB reps as the runner goes by (stalkpass.ts)
+
+### flags: develop defaults
+WR-on-DB reps 506; by the carrier's closest approach to the engaged DB during the rep:
+  <2   reps   19 | shed attempt 100% | DB touched carrier later 47% | carrier past DB at rep end 21% | ends (engaged at end) 11, separation 7, body down 1
+  2-4  reps   45 | shed attempt 82% | DB touched carrier later 11% | carrier past DB at rep end 18% | ends separation 24, (engaged at end) 15, runner passed defender 5, body down 1
+  4-6  reps   42 | shed attempt 67% | DB touched carrier later 17% | carrier past DB at rep end 2% | ends separation 29, (engaged at end) 12, runner passed defender 1
+  6+   reps  400 | shed attempt 76% | DB touched carrier later 6% | carrier past DB at rep end 12% | ends separation 239, (engaged at end) 122, runner passed defender 35, body down 4
+
+## Engaged defenders the runner passes within arm's reach (engreach.ts)
+
+### flags: develop defaults
+plays 160; engaged defenders the carrier passed within full arm reach: 163 (1.02/play)
+  win>=0.6 (eligible to reach) 43% | shed attempt tagged 93% | got a hold this play 33%
+  runner depth -9..0: n 88 eligible 43% held 40% | win p50 0.47
+  runner depth 0..2: n 37 eligible 49% held 24% | win p50 0.59
+  runner depth 2..9: n 38 eligible 37% held 26% | win p50 0.5
+
+## Secondary depth by slot (dbslots.ts)
+
+### flags: develop defaults
+coverage   slot   n   depth snap / h+.5 / cross   downhill at cross   job at cross
+cover1     CB_S   40   1.2 /  2.5 /  3.5    -1.8   alley 40
+cover1     CB_W   40   1.2 /  2.2 /  3.4    -1.9   alley 40
+cover1     FS     19  13.0 /  9.7 /  7.4     4.1   alley 19
+cover1     SS     40   4.0 /  2.5 /  2.2     1.2   force 40
+cover1_off CB_S   20   6.0 /  7.0 /  7.4     0.8   alley 20
+cover1_off CB_W   20   6.0 /  6.8 /  7.1     0.5   alley 20
+cover1_off FS     20  13.0 / 10.0 /  7.2     4.2   alley 20
+cover1_off SS     20   4.0 /  2.4 /  2.1     1.1   force 20
+cover2     CB_S   19   6.0 /  4.5 /  3.8     1.0   force 19
+cover2     CB_W   19   6.0 /  4.6 /  3.9     1.1   force 19
+cover2     FS     19  12.0 /  9.9 /  7.5     3.4   alley 19
+cover2     SS     19  12.0 / 10.7 /  8.8     2.9   alley 19
+cover3     CB_S   82   7.0 /  7.3 /  7.1    -0.2   alley 82
+cover3     CB_W   82   7.0 /  7.5 /  7.3    -0.2   alley 82
+cover3     FS     82  13.0 /  9.8 /  7.2     4.6   alley 82
+cover3     NB     18   5.0 /  5.1 /  4.7     1.3   alley 18
+cover3     SS     82   7.5 /  4.3 /  3.8     1.8   force 82
+cover4     CB_S   42   6.0 /  8.6 /  9.8    -1.3   alley 42
+cover4     CB_W   42   6.0 /  8.1 /  9.2    -1.3   alley 42
+cover4     FS     42  12.0 /  9.3 /  7.8     3.0   alley 42
+cover4     SS     42  12.0 /  9.8 /  7.8     3.1   alley 42
+
+### flags: --flag FORCE_DEPTH=1
+coverage   slot   n   depth snap / h+.5 / cross   downhill at cross   job at cross
+cover1     CB_S   40   1.2 /  2.5 /  3.5    -1.8   alley 40
+cover1     CB_W   40   1.2 /  2.2 /  3.4    -1.9   alley 40
+cover1     FS     19  13.0 /  9.7 /  7.4     4.1   alley 19
+cover1     SS     40   4.0 /  2.5 /  2.2     1.2   force 40
+cover1_off CB_S   20   6.0 /  7.0 /  7.4     0.8   alley 20
+cover1_off CB_W   20   6.0 /  6.8 /  7.1     0.5   alley 20
+cover1_off FS     20  13.0 / 10.0 /  7.2     4.2   alley 20
+cover1_off SS     20   4.0 /  2.4 /  2.1     1.1   force 20
+cover2     CB_S   19   6.0 /  5.7 /  5.9    -0.4   force 19
+cover2     CB_W   19   6.0 /  5.7 /  5.9    -0.4   force 19
+cover2     FS     19  12.0 /  9.9 /  7.5     3.1   alley 19
+cover2     SS     19  12.0 / 10.7 /  8.8     2.6   alley 19
+cover3     CB_S   83   7.0 /  7.3 /  7.1    -0.1   alley 83
+cover3     CB_W   83   7.0 /  7.5 /  7.2    -0.2   alley 83
+cover3     FS     83  13.0 /  9.8 /  7.2     4.6   alley 83
+cover3     NB     19   5.0 /  5.1 /  4.4     1.7   alley 19
+cover3     SS     83   7.5 /  7.5 /  7.5    -0.0   force 83
+cover4     CB_S   42   6.0 /  8.6 /  9.8    -1.3   alley 42
+cover4     CB_W   42   6.0 /  8.1 /  9.2    -1.3   alley 42
+cover4     FS     42  12.0 /  9.3 /  7.8     3.0   alley 42
+cover4     SS     42  12.0 /  9.8 /  7.8     3.1   alley 42

@@ -1575,3 +1575,172 @@ after he escapes.
 
 The spin film is `spin-review.html`: the flow candidate against the flow
 candidate with the four fixes.
+
+## Part 11 — the long-run tail: why runners who get past the box are never caught (2026-10-20)
+
+Receipts are in [`part11/`](run-game-v3/part11/):
+- `structure.txt`: NFL vs sim, same operators.
+- `sim-internals.txt`: sim observers.
+- `outcomes.txt`: every arm.
+- `LABEL.manifest.json`: flags and provenance per arm.
+
+NFL here means 2022 tracking, runs with 60+ yd to go. Develop is `d0co` (zone)
+and `d0gap` (gap) from Part 9.
+
+### Where the tail is
+
+Survival of gains: the chance a run reaching one mark goes on to the next.
+
+| | 5→10 | 10→15 | 15→20 | 20→30 | 30→40 |
+|---|---|---|---|---|---|
+| NFL | 0.34 | 0.48 | 0.48 | 0.53 | 0.74 |
+| Develop | 0.38 | 0.83 | 0.92 | 0.95 | 0.99 |
+| `DEEP_CAP` | 0.69 | 0.52 | 0.72 | 0.83 | 0.95 |
+
+Develop's distribution is bimodal:
+- Zone 10–39 yd runs are 3.7% of plays (NFL 10.1%).
+- 40+ runs are 9.4% (NFL 0.8% on zone concepts).
+
+The NFL runner who escapes the box is caught downfield. The sim runner is
+not. With the deep safety held back (`DEEP_CAP`), 10→15 matches the NFL,
+but 5→10 leaks instead, and past 15 the runner still mostly goes.
+
+### Why nobody catches him
+
+**1. Nobody is there.**
+
+| | NFL | Develop | `DEEP_CAP` |
+|---|---|---|---|
+| Defenders who could cut off the runner's actual path within 30 yd, from his position at +10 (`angles.py`, straight-line test at each one's own peak speed), per run | 2.16 | 0.80 | 0.91 |
+| Defenders within a yard after +8 (`openfield.py`), per run | 1.88 | 0.58 | 1.00 |
+
+On runs reaching 10 (`carrierpace.py`):
+- At +12 the NFL runner has slowed to 6.6 yd/s with 2 defenders within 3 yd.
+- The sim runner has sped up to 8.4 yd/s with none within 3 yd (nearest
+  3.6 yd).
+
+**2. The secondary comes down from the snap** (`dbdepth.py --shell`). Deepest
+defender at the snap, then when the runner crosses the line:
+
+| Shell | NFL | Develop |
+|---|---|---|
+| Cover 3 | 14.2 → 14.2 yd | 13 → 7.1 yd |
+| Cover 1 | 14.1 → 13.3 yd | 13 → 6.8 yd |
+| Two-high | 13.2 → 12.9 yd | 12 → 7.6 yd |
+
+- The NFL deep man first gains depth (15.9 yd at handoff + 0.5 s in Cover 3).
+- The cause in the sim: an alley defender chases as soon as the back is
+  within 2.5 yd of the line.
+- Per DB at +8 (`dbwhere.py`): deep-aligned DBs are ahead of the runner 61%
+  in the NFL, 9% in develop, 42% with `DEEP_CAP`.
+- The Cover 3/1 force safety (5–10 yd, inside) is near or ahead of the
+  runner 68% in the NFL vs 7% in the sim. His force fit squeezes to the
+  line before the back gets there.
+
+**3. The front seven never follows the runner.** Nearest defender when a
+5–9 yd run ends (`stopper.py`):
+
+| | LB | DL | DB |
+|---|---|---|---|
+| NFL | 38% | 20% | 41% |
+| Develop | 12% | 2% | 86% |
+
+Pile timing can bias this measure, so it is not used on its own. Supporting
+evidence:
+- **Free defensive linemen are slow.** Half a second after the crossing they
+  move at 1.9 yd/s (NFL 3.6) while asking for 7.7 (`dlpursuit.ts`).
+- **Edge fits face the line.** At +0.3 s, 74% of free linemen are edge fits
+  told to face the line while the runner is inside them. That fit holds
+  until the runner is 2 yd past the line.
+- **They don't accelerate.** At +1.0 s, facing within 33° of the runner, they
+  still reach only 2.7 yd/s. That is the body's speed-up law (physics).
+- **The re-block loop.** After the crossing, a lineman is re-blocked 4.15
+  times a play, by the same blocker (95%), after one tick free
+  (`relatch2.ts`). This is the Part 3 loop. `SHED_PURSUE` breaks it for
+  0.6 s.
+- **Near the hole, linemen don't get a hand on the runner.** Of DL within
+  3 yd of the runner at the crossing, NFL ones get within 1.2 yd of him in
+  the next second 53–68% of the time; sim ones 21–33% (`nearreach.py`).
+
+**4. Receivers take two DBs out of every play** (`dbstalk.py`, proximity
+proxy).
+- Stalked DBs per run: 2.04 (NFL 1.36; 0.43 before #148/#149).
+- Per encounter, a stalked DB reaches the runner about as often as an NFL
+  one (runner within 2 yd: 75% vs 87%).
+- The stalks happen where the run isn't: 76% with the runner never within
+  6 yd (NFL 48%).
+- Inside a rep, the run-rep law overrides a pursuing DB's request with
+  "work across the face." The backside corner in `oz/weak/ace_12/over3/
+  pair11/3` asks for 9.9 yd/s for 1.2 s and moves at 0.5.
+
+**5. Contact that doesn't end the play doesn't slow the runner**
+(`contactloss.py`, `openholds.py`).
+- At NFL encounters past +5 the runner is going 5.3–6.1 yd/s; in the sim
+  6.7–7.7.
+- A broken open-field hold costs the sim runner 0.5 yd/s (8.0 → 7.4) over
+  0.25 s.
+- Sim encounters end the play or do nothing (ended 90%, slowed 0–4%; NFL
+  71% / 20%).
+
+### Candidates (default-off)
+
+| Flag | What it does | Where |
+|---|---|---|
+| `EDGE_SQUEEZE` | An edge/force fit whose carrying runner is inside him at the line pursues instead of holding his landmark square to the line | `run-fits.ts` |
+| `FORCE_DEPTH` | A force defender aligned 5+ yd off the ball keeps his installed depth while the runner he sees is behind the line (Cover 3 SS at the crossing: 3.8 → 7.5 yd; NFL second-deepest 7.1) | `run-fits.ts` |
+| `SHED_AWAY` | A blocked defender whose runner is past the line on the far side from his blocker asks for his own pursuit instead of the rep's work-off; contact and hands still decide | `engagement.ts` `stepRunRep` |
+
+`test/long-run-tail.test.ts` holds each flag's on/off contract.
+
+Tried and removed:
+- **`SHED_FACE`**: the rep's facing follows the rip. Free linemen's facing
+  did not move.
+
+### Results
+
+Total variation distance (TVD) is measured against NFL zone-concept runs
+(zone arms) or NFL power/counter/duo/trap runs (gap arms) (`bands.py`).
+
+| Arm (zone unless noted) | 40+ | 10–19 | TVD |
+|---|---|---|---|
+| Develop | 9.4% | 3.1% | 15.2 |
+| `EDGE_SQUEEZE SHED_PURSUE MAN_RUN_COMMIT BLOCK_FRONT` (`v2`) | 7.2% | 3.2% | **13.8** |
+| `v2` + `FORCE_DEPTH SHED_AWAY` (`y1`) | 8.4% | 3.5% | 14.5 |
+| `y1` + `DEEP_CAP` (`x3`) | 4.9% | 16.2% | 19.6 |
+| `GAIT_STEP=0.3` alone (physics flag, context) | 6.3% | 2.7% | 18.0 |
+| `v2` + `GAIT_STEP=0.3` | 3.8% | 2.7% | 15.2 |
+| Gap: develop | 9.0% | 4.2% | 11.2 |
+| Gap: `v2` | 5.4% | 3.1% | 13.4 |
+| Gap: `y1` | 5.9% | 3.1% | 11.9 |
+| Gap: `x3` | 4.7% | 25.1% | 20.0 |
+
+Every candidate moves the 40+ mass somewhere, but not into the 10–39 band:
+- **Without `DEEP_CAP`:** it lands in stops at 0–3 yd (gap 0–3: 37.7 →
+  43.4%).
+- **With `DEEP_CAP`:** it lands in 10–19, because the box then stops fewer
+  4–9 yd runs.
+- **With `GAIT_STEP`:** negatives rise to 19–20%.
+
+`v2` is the only zone arm closer to NFL than develop, and only slightly.
+Nothing here fixes the tail. The pieces are measured, and none is proposed
+as a package.
+
+### What the tail needs, by owner
+
+1. **Physics** (in order of consequence):
+   - **Pursuer start-up.** Free defenders reach a third of the speed they
+     ask for in the first second. `GAIT_STEP=0.3` alone takes zone 40+ from
+     9.4 to 6.3% but raises negatives to 20%.
+   - **Contact that slows without ending.** Broken holds barely slow the
+     runner; NFL contact does.
+   - **The engaged-tackle gate** in `tackle.ts` (`win < 0.6`, arms × 0.4).
+     Engaged linemen the runner passes within arm's reach get a hold 33% of
+     the time.
+2. **Coverage / DB run support:**
+   - The receiver's stalk of a corner 7 yd off, before the run declares.
+   - The DB's technique against it (Part 9 handoff, now quantified).
+3. **Controller (this branch), next:**
+   - Make the box stop 4–9 yd runs so the deep safety can stay deep. The
+     limiting step is the front seven's arrival, which waits on the physics
+     items above.
+   - Re-test `DEEP_CAP` + `v2` once pursuer start-up changes.

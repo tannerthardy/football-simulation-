@@ -706,10 +706,12 @@ const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
 /** A run shed is a decision executed by the body (SHED_PHYSICAL=0: rolled outcome). */
 const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
-/** Experimental (SHED_FACE=1, off): a defender working off a run block turns
- * his shoulders with the rip, toward the side he is working to, instead of
- * keeping his chest squared to the blocker. World still limits the turn. */
-const SHED_FACE = process.env.SHED_FACE === '1';
+/** Experimental (SHED_AWAY=1, off): once the carrying runner a blocked
+ * defender sees is past the line and on the far side of him from his blocker,
+ * there is no blocker's face to work across: he asks for his own pursuit
+ * (his behavior's request) instead of the rep's work-off. Contact and the
+ * hands still decide whether he gets away. */
+const SHED_AWAY = process.env.SHED_AWAY === '1';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -1329,9 +1331,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       : clamp(requestToCover(gaitLag(d.profile), home - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
     cf = { x: depth, y };
   }
+  // The behavior's own request is still in place before the rep sets it.
+  const own = SHED_AWAY ? intents[d.idx]?.vel : undefined;
+  if (own && read.threat?.carrying === true && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0
+    && Math.hypot(own.x, own.y) > 1) {
+    const toR = Math.atan2(read.threat.pos.y - d.pos.y, read.threat.pos.x - d.pos.x);
+    const toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x);
+    if (Math.abs(Math.atan2(Math.sin(toR - toB), Math.cos(toR - toB))) > Math.PI / 2) {
+      d.tags.add('shed-away');
+      helperIntents(sim, e, intents, axis);
+      return;
+    }
+  }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
-    facing: SHED_FACE && workOff ? Math.atan2(workOff.y, workOff.x) : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+    facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
