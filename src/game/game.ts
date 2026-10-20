@@ -14,10 +14,11 @@ import { pickDefense, pickOffense, specialist, type Team } from '../league/team.
 import { PlaySim } from '../sim/playsim.js';
 import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
-import type { Frame, PlayResult } from '../sim/types.js';
+import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
 import { BoxScore } from './stats.js';
 import { DefensiveCoordinator, OffensiveCoordinator, type Situation } from './playcaller.js';
 import { fieldGoalRange, kickFieldGoal, kickoff, punt } from './specialteams.js';
+import { resolveLivePenalties } from './penalty-enforcement.js';
 import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
 
 export type Side = 'home' | 'away';
@@ -43,12 +44,18 @@ export interface PlayLog {
   segments?: PlayResult['segments'];
   /**
    * An accepted foul wiped the play out. `stats` then describe what physically
-   * happened; nothing from the play enters the box score, and official
-   * calibration excludes it.
+   * happened; official calibration excludes the raw result. Ordinarily none
+   * of its stats enter the box score; a post-possession foul can retain only
+   * the preceding official takeaway, identified in `official`.
    */
   nullified?: boolean;
   /** Foul during the play and its resolution. */
   foul?: { kind: string; team: string; yards: number; accepted: boolean };
+  fouls?: Array<{ kind: string; team: string; yards: number; accepted: boolean; offset: boolean; rule?: string }>;
+  foulRecords?: PlayResult['foulRecords'];
+  ruleLimitations?: string[];
+  official?: { treatment: 'enforce' | 'offset'; possession: Side; spotX: number;
+    down: number; distance: number; stats: 'none' | 'before_change_of_possession' };
   /** The calls on a scrimmage snap, for tendency analysis (same fields as the NFL extractor). */
   plan?: PlayPlan;
   outcome?: PlayResult['outcome'];
@@ -172,6 +179,8 @@ export class Game {
   private readonly kicks: Rng;
   private readonly tempo: Rng;
   private readonly calls: Rng;
+  /** Accepted defensive/live double-foul extension, not extra game-clock time. */
+  private untimedDown = false;
   private readonly rules: GameRules;
   private readonly teams: Record<Side, Team>;
   private readonly oc: Record<Side, OffensiveCoordinator>;
@@ -257,7 +266,7 @@ export class Game {
 
   private checkPeriodEnd(): void {
     const s = this.s;
-    if (s.over || s.clock > 0) return;
+    if (s.over || s.clock > 0 || this.untimedDown) return;
     this.quarterScores.push({ ...s.score });
     if (s.quarter === 2) {
       // Halftime: the team that kicked first receives.
@@ -495,6 +504,7 @@ export class Game {
   }
 
   private kneel(): void {
+    this.untimedDown = false;
     const s = this.s;
     this.log.push(this.entry('kneel', 'QB kneels', -1, 'Victory', ''));
     this.countDown(this.off, s.down, false);
@@ -539,6 +549,7 @@ export class Game {
       this.enforceDeadBall(foul, offCall.label);
       return;
     }
+    this.untimedDown = false;
 
     const los = 10 + s.yardline;
     const firstDownX = Math.min(110, los + s.distance);
@@ -558,6 +569,7 @@ export class Game {
       manPrefs: prefs,
       hurry: sit.hurry,
       down: s.down,
+      afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120),
       audibles: true,
       scouting: this.scouting[defSide],
       coverageScouting: this.coverageScouting[offSide],
@@ -574,7 +586,6 @@ export class Game {
 
     const startDown = s.down;
     const startDist = s.distance;
-    const lineToGain = s.yardline + s.distance;
     const offTD = r.score?.kind === 'TD' && r.score.team === 'O';
     const converted = offTD || (!r.turnover && !r.score && r.outcome !== 'incomplete' && Math.round(r.yards * 10) / 10 >= startDist - 1e-6);
     const text = describe(sim, r, offTeam, defTeam);
@@ -617,43 +628,80 @@ export class Game {
       };
     }
 
-    // A foul during the play is resolved before anything becomes official.
-    const hold = this.holdingDecision(r, los, startDown, startDist);
-    if (hold) {
-      const who = nameOf(offTeam, hold.playerId);
-      logEntry.foul = { kind: 'holding', team: offTeam.abbr, yards: hold.yards, accepted: hold.accepted };
-      if (!hold.accepted) {
-        logEntry.text += ` (holding on ${who} declined)`;
+    // Called acts are retained before a legal enforcement option is selected.
+    // Legacy hooks/replays that contain only `penalty` remain supported.
+    const calls = calledFouls(r);
+    logEntry.foulRecords = r.foulRecords;
+    logEntry.ruleLimitations = r.ruleLimitations;
+    const resolution = resolveLivePenalties({ calls, los, startDown, startDistance: startDist, result: r });
+    if (resolution.status === 'unsupported') {
+      // A called act cannot silently become a legal official gain. This
+      // explicit boundary is preferable to an invented offset/spot decision.
+      throw new Error(`Unsupported NFL foul enforcement: ${resolution.reason}`);
+    }
+    if (resolution.status === 'resolved') {
+      const selected = resolution.options.find(o => o.id === resolution.recommendedId)!;
+      logEntry.fouls = calls.map((p, i) => ({ kind: p.kind,
+        team: p.against === 'O' ? offTeam.abbr : defTeam.abbr,
+        yards: selected.kind === 'enforce' && selected.callIndices.includes(i) ? selected.yards : 0,
+        accepted: selected.kind === 'enforce' && selected.callIndices.includes(i),
+        offset: selected.kind === 'offset', rule: p.rule }));
+      const first = logEntry.fouls.find(f => f.accepted) ?? logEntry.fouls[0];
+      logEntry.foul = { kind: first.kind, team: first.team, yards: first.yards, accepted: first.accepted };
+      if (selected.kind === 'decline') {
+        logEntry.text += ` (${calls.map(p => `${p.kind} declined`).join(', ')})`;
       } else {
         logEntry.nullified = true;
-        logEntry.firstDown = false;
-        logEntry.yards = -hold.yards;
-        logEntry.text += ` — PENALTY: holding on ${who}, ${fmtYds(hold.yards)} (accepted), play nullified`;
-        this.box.team(offTeam.abbr).penalties++;
-        this.box.team(offTeam.abbr).penaltyYds += hold.yards;
-        const line = this.box.players.get(hold.playerId);
-        if (line) line.penalties++;
+        logEntry.firstDown = selected.possession === 'O' && selected.nextDown === 1
+          && (selected.autoFirst || selected.spotX >= firstDownX - 1e-6);
+        logEntry.yards = selected.kind === 'offset' ? 0 : selected.spotX - los;
+        logEntry.official = { treatment: selected.kind,
+          possession: selected.possession === 'O' ? offSide : defSide, spotX: selected.spotX,
+          down: selected.nextDown, distance: selected.nextDistance,
+          stats: selected.preserveBeforeChangeOfPossession ? 'before_change_of_possession' : 'none' };
+        logEntry.text += selected.kind === 'offset' ? ' — PENALTIES OFFSET, down replayed'
+          : ` — PENALTY: ${first.kind}, ${fmtYds(selected.yards)} (accepted), physical result superseded`;
+        if (selected.kind === 'enforce') {
+          const call = calls[selected.callIndices[0]];
+          const team = call.against === 'O' ? offTeam : defTeam;
+          this.box.team(team.abbr).penalties++;
+          this.box.team(team.abbr).penaltyYds += selected.yards;
+          const player = this.box.players.get(call.playerId);
+          if (player) player.penalties++;
+        }
+        if (selected.preserveBeforeChangeOfPossession) {
+          this.recordStats(sim, { ...r, score: null,
+            stats: r.statsBeforeIllegalPass ?? r.stats }, offTeam, defTeam);
+          this.countDown(offTeam, startDown, false);
+        }
         this.log.push(logEntry);
         const warned = this.runClock(r.duration, true);
         this.observe(offSide, ranCall, defCall, 0);
-        if (hold.safety) {
+        if (selected.safety) {
           logEntry.text += ' in the end zone — SAFETY';
           this.addScore(defSide, 2);
           this.recoverAll(r.duration + 60);
           if (!this.otDecided(defSide)) this.safetyKick(offTeam, defTeam);
           return;
         }
-        s.yardline = hold.newYard;
-        if (s.yardline >= lineToGain - 1e-6) {
-          s.down = 1;
-          s.distance = Math.min(10, 100 - s.yardline);
+        if (selected.possession === 'D') {
+          this.changePossession(110 - selected.spotX, clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y));
+          // Penalty half-distance spots may be inside the ordinary template's
+          // one-yard placement floor. Preserve the legal enforced spot.
+          s.yardline = 110 - selected.spotX;
         } else {
-          s.distance = lineToGain - s.yardline;
+          s.yardline = selected.spotX - OWN_GOAL_X;
+          if (logEntry.firstDown) this.box.team(offTeam.abbr).firstDowns++;
         }
-        s.distance = Math.max(1, Math.round(s.distance));
-        // After the enforcement the clock starts on the ready signal, or on the snap late in a half
-        // (NFL: about 19 s from the whistle to the next snap after an accepted foul).
-        const running = !warned && !r.clockStops && !this.lateHalf();
+        s.down = selected.nextDown;
+        s.distance = selected.nextDistance;
+        if (selected.lossDown) this.countDown(offTeam, startDown, false);
+        s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);
+        // 4-8-2(a/h): the ordinary policy elects an available untimed down.
+        if (s.clock === 0 && ((selected.kind === 'enforce' && calls[selected.callIndices[0]].against === 'D'
+          && !selected.preserveBeforeChangeOfPossession)
+          || (selected.kind === 'offset' && (s.quarter === 2 || s.quarter >= 4)))) this.untimedDown = true;
+        const running = !this.untimedDown && !warned && !r.clockStops && !this.lateHalf();
         const warnedAfter = this.runClock(running ? this.tempo.normal(19, 3) : 0);
         this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: running && !warnedAfter };
         this.recoverAll(r.duration + 30);
@@ -687,19 +735,29 @@ export class Game {
       return;
     }
     if (r.score?.kind === 'safety') {
-      this.addScore(defSide, 2);
+      const scoringSide = r.score.team === 'O' ? offSide : defSide;
+      this.addScore(scoringSide, 2);
       logEntry.text += ' — SAFETY';
       this.recoverAll(60);
-      if (!this.otDecided(defSide)) this.safetyKick(offTeam, defTeam);
+      if (!this.otDecided(scoringSide)) {
+        s.possession = other(scoringSide);
+        this.safetyKick(this.teams[other(scoringSide)], this.teams[scoringSide]);
+      }
       return;
     }
-    if (r.turnover) {
-      const yl = r.outcome === 'touchback' ? 20 : 110 - r.endX;
-      this.changePossession(yl, s.ballY);
+    if (r.outcome === 'touchback') {
+      if (r.possession === 'D') this.changePossession(20, s.ballY);
+      else this.newSeriesAfterRegain(r, 20, s.ballY);
       this.recoverAll(r.duration + 40);
       return;
     }
-    this.moveChains(r.outcome === 'incomplete' ? 0 : r.yards);
+    if (r.turnover) {
+      this.changePossession(110 - r.endX, s.ballY);
+      this.recoverAll(r.duration + 40);
+      return;
+    }
+    if (r.segments.some(g => g.team === 'D')) this.newSeriesAfterRegain(r, r.endX - OWN_GOAL_X, s.ballY);
+    else this.moveChains(r.outcome === 'incomplete' ? 0 : r.yards);
     const clockRunning = !warned && (!r.clockStops || (r.outcome === 'oob' && !this.lateHalf()));
     const between = this.betweenPlays(clockRunning, r.outcome === 'oob', r.stats.sacked);
     this.maybeTimeout(clockRunning);
@@ -707,6 +765,25 @@ export class Game {
     this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: clockRunning && !this.lastTimeoutUsed && !warnedBetween };
     this.lastTimeoutUsed = false;
     this.recoverAll(r.duration + Math.max(between, 25));
+  }
+
+  /** Losing and regaining possession creates a new series, even short of the
+   * old line to gain. This is independent of whether any foul was called. */
+  private newSeriesAfterRegain(result: PlayResult, yardline: number, ballY: number): void {
+    const s = this.s;
+    s.yardline = yardline;
+    s.down = 1;
+    s.distance = Math.min(10, 100 - yardline);
+    s.ballY = ballY;
+    s.driveStartYard = yardline;
+    s.inRedZone = false;
+    if (s.quarter >= 5) {
+      let team = 'O';
+      for (const segment of result.segments) if (segment.team !== team) {
+        team = segment.team;
+        this.otCheckPossession();
+      }
+    }
   }
 
   private preSnapFoul(offDiscipline: number, defDiscipline: number): 'false_start' | 'offside' | null {
@@ -748,37 +825,6 @@ export class Game {
     // NFL offenses snap with about 8 s left on the play clock.
     const warned = this.runClock(running ? this.tempo.normal(17, 3) : 0);
     this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: running && !warned };
-  }
-
-  /**
-   * Offensive holding during a live play. The defense keeps a takeaway or a
-   * score of its own, declines when the play already stopped a third or
-   * fourth down short, and otherwise takes the penalty unless the play lost
-   * nearly as much. Pass plays enforce from the previous spot; running plays
-   * from the spot of the foul when it was behind the end of the run. The
-   * previous spot is the enforcement floor (NFL 14-3-6, exceptions 1/3),
-   * including a sack without a forward pass. A hold in the offense's
-   * own end zone is a safety.
-   */
-  private holdingDecision(r: PlayResult, los: number, down: number, dist: number): { playerId: string; yards: number; accepted: boolean; safety: boolean; newYard: number } | null {
-    const p = r.penalty;
-    if (!p || p.kind !== 'holding' || p.against !== 'O') return null;
-    const s = this.s;
-    const foulX = p.spotX ?? los;
-    const passPlay = r.stats.attempted;
-    const basicX = passPlay ? los : Math.max(los, r.endX);
-    const fromX = passPlay ? los : Math.max(los, Math.min(basicX, foulX));
-    const safety = foulX <= OWN_GOAL_X;
-    const yards = safety ? 0 : Math.min(10, (fromX - OWN_GOAL_X) / 2);
-    const newYard = Math.max(0.5, fromX - yards - 10);
-    const decision = { playerId: p.playerId, yards, safety, newYard };
-    const defenseScored = r.score !== null && r.score.team === 'D';
-    if (r.turnover || defenseScored) return { ...decision, accepted: false };
-    if (r.score?.kind === 'TD') return { ...decision, accepted: true };
-    if (safety) return { ...decision, accepted: true };
-    const gain = r.outcome === 'incomplete' ? 0 : r.yards;
-    if (down >= 3 && gain < dist - 1e-6) return { ...decision, accepted: false };
-    return { ...decision, accepted: s.yardline + gain - newYard > 2 };
   }
 
   /** Free kick after a safety. */
@@ -883,17 +929,76 @@ export class Game {
     s.down = 1;
     s.distance = 2;
     s.ballY = CENTER_Y;
-    const sit = this.situation();
-    const offCall = this.oc[scorer].call({ ...sit, down: 3, distance: 2 }, this.def);
-    const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
-    const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
-    const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
-    const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(), energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact });
-    const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
-    for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
-    const good = r.score?.kind === 'TD' && r.score.team === 'O';
-    this.log.push(this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label));
-    return good;
+    // Rule 11-3: a foul on a successful Try can require a re-Try, not an
+    // ordinary replayed scrimmage series. The game clock never runs here.
+    for (;;) {
+      const sit = this.situation();
+      const offCall = this.oc[scorer].call({ ...sit, down: 3, distance: s.distance }, this.def);
+      const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
+      const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
+      const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
+      const los = OWN_GOAL_X + s.yardline;
+      const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall,
+        los, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(),
+        energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact, down: 1, isTry: true,
+        afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120) });
+      const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
+      for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
+      const good = r.score?.kind === 'TD' && r.score.team === 'O';
+      const entry = this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label);
+      entry.foulRecords = r.foulRecords; entry.ruleLimitations = r.ruleLimitations;
+      const calls = calledFouls(r);
+      if (calls.length) {
+        const onlyOffense = calls.every(p => p.against === 'O'
+          && ['holding', 'opi', 'illegal_forward_pass'].includes(p.kind) && !p.possessionChanges);
+        const onlyDpi = calls.every(p => p.against === 'D' && p.kind === 'dpi' && !p.possessionChanges);
+        if (!onlyOffense && !onlyDpi) throw new Error('Unsupported NFL Try foul/possession combination');
+        // The defense may decline an offensive loss-of-down foul and keep
+        // its own Try score; acceptance must not erase a defensive return.
+        const failedOffensiveLossDown = onlyOffense && r.score?.team !== 'D'
+          && calls.some(p => p.kind === 'illegal_forward_pass' && p.lossDown !== false);
+        const resolution = resolveLivePenalties({ calls, los, startDown: 1,
+          startDistance: 110 - los, result: r });
+        if (resolution.status !== 'resolved') throw new Error(`Unsupported NFL Try enforcement: ${resolution.reason}`);
+        const options = resolution.options.filter(o => o.kind === 'enforce');
+        const penaltySafety = onlyOffense && r.score?.team !== 'D' && options.some(o => o.safety);
+        const enforce = penaltySafety || failedOffensiveLossDown || (onlyOffense ? r.score?.team === 'O' : !good);
+        if (enforce) {
+          const selected = [...options].sort((a, b) => Number(b.safety) - Number(a.safety)
+            || (failedOffensiveLossDown ? Number(b.lossDown) - Number(a.lossDown) : 0)
+            || (onlyOffense ? a.spotX - b.spotX : b.spotX - a.spotX))[0];
+          if (!selected) throw new Error('NFL Try has no supported enforcement option');
+          const index = selected.callIndices[0], call = calls[index];
+          const team = call.against === 'O' ? this.teams[scorer] : this.teams[other(scorer)];
+          this.box.team(team.abbr).penalties++; this.box.team(team.abbr).penaltyYds += selected.yards;
+          const player = this.box.players.get(call.playerId); if (player) player.penalties++;
+          entry.fouls = calls.map((p, i) => ({ kind: p.kind,
+            team: p.against === 'O' ? this.teams[scorer].abbr : this.teams[other(scorer)].abbr,
+            yards: i === index ? selected.yards : 0, accepted: i === index, offset: false, rule: p.rule }));
+          entry.foul = entry.fouls[index]; entry.nullified = true;
+          entry.text += selected.safety ? ` — ${call.kind} accepted, one-point safety`
+            : selected.lossDown ? ' — loss of down, Try unsuccessful'
+              : ` — ${call.kind} accepted, re-Try after ${fmtYds(selected.yards)}`;
+          this.log.push(entry);
+          if (selected.safety) { this.addScore(other(scorer), 1); return false; }
+          if (selected.lossDown) return false;
+          s.yardline = selected.spotX - OWN_GOAL_X; s.distance = 110 - selected.spotX;
+          continue;
+        }
+        entry.fouls = calls.map(p => ({ kind: p.kind,
+          team: p.against === 'O' ? this.teams[scorer].abbr : this.teams[other(scorer)].abbr,
+          yards: 0, accepted: false, offset: false, rule: p.rule }));
+        entry.foul = entry.fouls[0]; entry.text += ' — penalty declined';
+      }
+      if (r.score?.kind === 'TD' && r.score.team === 'D') {
+        this.addScore(other(scorer), 2); entry.text += ' — defensive two points';
+      } else if (r.score?.kind === 'safety') {
+        this.addScore(r.score.team === 'O' ? scorer : other(scorer), 1);
+        entry.text += ' — one-point safety';
+      }
+      this.log.push(entry);
+      return good;
+    }
   }
 
   private doKickoff(kicking: Side): void {
@@ -927,6 +1032,7 @@ export class Game {
   }
 
   private doPunt(): void {
+    this.untimedDown = false;
     const s = this.s;
     const kTeam = this.off;
     const rTeam = this.def;
@@ -955,6 +1061,7 @@ export class Game {
   }
 
   private doFieldGoal(): void {
+    this.untimedDown = false;
     const s = this.s;
     const k = specialist(this.off, 'K');
     const dist = Math.round(100 - s.yardline + 17);
@@ -1098,6 +1205,17 @@ export class Game {
 }
 
 // ------------------------------------------------------------------ text
+
+/** A replay may contain both the plural ledger and a copied legacy alias. */
+function calledFouls(result: PlayResult): PenaltyCall[] {
+  const all = [...(result.penalties ?? []), ...(result.penalty ? [result.penalty] : [])];
+  const seen = new Set<string>();
+  return all.filter(p => {
+    const key = p.id ?? [p.kind, p.against, p.playerId, p.t, p.spotX, p.rule, p.reason].join(':');
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+}
 
 function nameOf(team: Team, id: string): string {
   const p = team.roster.find((x) => x.id === id);
