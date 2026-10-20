@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Flex integration-overlap audit — 2026-10-20
+
+Flex owns only `docs/reviews/integration-overlap-audit-2026-10-20.md` and its
+compact inventory under `data/reviews/current/integration-overlap-audit/` on
+`codex/integration-overlap-audit`, from accepted develop
+`2c98bed94adad8087c65f381d4090444ad283985` and queue
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52`. Read-only source/PR/owner-evidence
+review and temporary-index portability checks; no engine changes, simulation,
+full-suite rerun, candidate adoption or canonical queue edits. Integration
+retains assembly, exact combined verification and merge authority. Original
+owners retain their branches and source boundaries.
+
+Published review inventories all70 open PRs,17 recent source boundaries and19
+pairwise shared-runtime merges. Two source conflicts (169/177 and181/182),
+172-in174 duplication and remaining semantic/receipt handoffs are explicit.
+No source changes or engine/test campaigns. Bounded documentation claim releases
+on publication; Integration and feature owners retain their existing work.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
