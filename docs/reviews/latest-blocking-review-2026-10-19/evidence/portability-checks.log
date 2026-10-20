@@ -1,0 +1,42 @@
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 150178aec2797e9a32df69fe888f7bd1f1888ac9220ab4ff4c08d3ef8c549b27
+Running /tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node node_modules/vitest/vitest.mjs run --project core test/climb-access.test.ts test/runner-side-recovery.test.ts test/run-rep-lateral-arrival.test.ts test/run-contact-flow.test.ts
+
+ RUN  v3.2.4 /workspace/football-latest-blocking-portability
+
+ ✓ |core| test/runner-side-recovery.test.ts (11 tests) 74ms
+ ✓ |core| test/run-rep-lateral-arrival.test.ts (10 tests) 79ms
+ ✓ |core| test/run-contact-flow.test.ts (23 tests) 287ms
+ ❯ |core| test/climb-access.test.ts (3 tests | 1 failed) 308ms
+   ✓ assigned climb clears acquired first-level traffic > retains the linebacker objective while responding to acquired obstruction, not hidden movement 83ms
+   ✓ assigned climb clears acquired first-level traffic > holds the acquired access objective through the ordinary read beat without extra surface reads or randomness 16ms
+   × assigned climb clears acquired first-level traffic > clears the end and acquires real assigned-backer load in the native all22 continuation 207ms
+     → expected 73.0209311743722 to be +0 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/climb-access.test.ts > assigned climb clears acquired first-level traffic > clears the end and acquires real assigned-backer load in the native all22 continuation
+AssertionError: expected 73.0209311743722 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 73.0209311743722
+
+ ❯ test/climb-access.test.ts:81:31
+     79|       for(const a of [y,end,backer])expect(report.armImpulse[a.idx]).t…
+     80|     }
+     81|     expect(incidentalImpulse).toBe(0);
+       |                               ^
+     82|     expect(firstLoad).not.toBeNull();expect(firstLoad!).toBeLessThanOr…
+     83|     expect(positiveNormal).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 46 passed (47)
+   Start at  00:40:24
+   Duration  1.66s (transform 878ms, setup 0ms, collect 2.34s, tests 748ms, environment 1ms, prepare 299ms)
+
+Validation receipt: /tmp/latest-blocking-review/portability-checks.json; exit 1

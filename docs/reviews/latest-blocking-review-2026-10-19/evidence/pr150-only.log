@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit f4146275ce7539816bf57b4ed55a0d2be10e48c7, source 3c8b6083adb4df4d55b343665254ddf80dbc784b45ba6ea6e22a4cce0043b1c3
+Running /tmp/football-run-review-npm/_npx/d18f28baf1132559/node_modules/node/bin/node node_modules/vitest/vitest.mjs run --project core test/climb-access.test.ts
+
+ RUN  v3.2.4 /workspace/football-latest-blocking-portability
+
+ ✓ |core| test/climb-access.test.ts (3 tests) 370ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:40:41
+   Duration  1.31s (transform 583ms, setup 0ms, collect 759ms, tests 370ms, environment 0ms, prepare 52ms)
+
+Validation receipt: out/latest-blocking-review/pr150-only.json; exit 0
