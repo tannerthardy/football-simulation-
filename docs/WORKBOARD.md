@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Active acquired support exit objective — 2026-10-20 America/Phoenix
+
+Catching/Awareness owns only stepRunRep's defensive work-off objective and its
+local runSheds state plus focused contracts, consulting Run. Branch
+codex/support-escape-objective starts accepted2c98bed94adad8087c65f381d4090444ad283985,
+queue4cc3337df24faa6d857b612ae62e3df3109a5296. Saved WZ7 shows an already acquired/
+declared support runner ahead and the WR body behind, but continued across-face
+work eventually requests negative runner progress. Oppose WZORD's useful
+undeclared escape and OZ4's genuinely occupied path. No block/hand/physical
+release/capacity/gait/facing law, common.ts pursuit (Do-It-All), offensive stalk,
+fit/recognition/admission or flag change. #169 and #171 remain separate.
+The moving-fit issue is diagnosed separately; its arrival semantics remain held.
+Use current exact saved cases and smallest native transfer after a contract
+supports intervention. Integration owns combined verification.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
