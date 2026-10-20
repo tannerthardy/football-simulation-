@@ -1,0 +1,1176 @@
+{
+  "schema": "local-traffic-route-packet-v1",
+  "candidate": "5248e884fd450b44045e753caaf782a306710e0c",
+  "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+  "dependency": "dceec577baee5ea9b4f7fcf24d63bbef94385177",
+  "runtimeSourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+  "transport": "Native gzip outputs are decoded without changing a JSON byte; manifest records both original gzip and published payload checksums. Paths are provenance, not required external files. Source overlays reconstruct each stated runtime fingerprint on accepted base. Draft operators retain original environment paths; rewrite only path locations when replaying.",
+  "members": [
+    {
+      "path": "figures/local-passage.png",
+      "bytes": 135053,
+      "sha256": "1a35dbbc4ab44acba0326ace773abe4618fc4506da8d6a9c79c7eacabd5555b1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-passage.png",
+      "originalBytes": 135053,
+      "originalSha256": "1a35dbbc4ab44acba0326ace773abe4618fc4506da8d6a9c79c7eacabd5555b1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "figures/local-passage.svg",
+      "bytes": 90107,
+      "sha256": "345e4d1a5b7aa782e47f11d43c1013587fcbce8eae1a071c678aca0f6dfdb13a",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-passage.svg",
+      "originalBytes": 90107,
+      "originalSha256": "345e4d1a5b7aa782e47f11d43c1013587fcbce8eae1a071c678aca0f6dfdb13a",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "inputs/A008-setup.json",
+      "bytes": 48271,
+      "sha256": "cb3da2924dbef7f9d3cfdb6201954dd2432fa3369eb0691a76913f46f3318bda",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/input/A008-setup.json",
+      "originalBytes": 48271,
+      "originalSha256": "cb3da2924dbef7f9d3cfdb6201954dd2432fa3369eb0691a76913f46f3318bda",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "inputs/A042-setup.json",
+      "bytes": 47998,
+      "sha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa",
+      "originalPath": "/workspace/teammate-navigation/test/fixtures/navigation-A042-setup.json",
+      "originalBytes": 47998,
+      "originalSha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "inputs/A044-setup.json",
+      "bytes": 48264,
+      "sha256": "c14c809f68ef566c260e35067d82f6c3718a10b4ad8c9892008a19d16a3af8d0",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/input/A044-setup.json",
+      "originalBytes": 48264,
+      "originalSha256": "c14c809f68ef566c260e35067d82f6c3718a10b4ad8c9892008a19d16a3af8d0",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "inputs/traffic-route-impact.json",
+      "bytes": 5069,
+      "sha256": "b7adeb30890530c852563c0529d134b0e4167008d9577fbad399fb98fccf1db2",
+      "originalPath": "/workspace/teammate-navigation/test/fixtures/traffic-route-impact.json",
+      "originalBytes": 5069,
+      "originalSha256": "b7adeb30890530c852563c0529d134b0e4167008d9577fbad399fb98fccf1db2",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "inputs/traffic-step.json.gz",
+      "bytes": 8829,
+      "sha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "originalPath": "/workspace/teammate-navigation/test/fixtures/traffic-step.json.gz",
+      "originalBytes": 8829,
+      "originalSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A008-cost-route.log",
+      "bytes": 1174,
+      "sha256": "fd2dfe90d44b263fd6621f4e17cd6c86268aba853ae7f22092006adf341b7a15",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-cost-route.log",
+      "originalBytes": 1174,
+      "originalSha256": "fd2dfe90d44b263fd6621f4e17cd6c86268aba853ae7f22092006adf341b7a15",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A008-impact-route.log",
+      "bytes": 1094,
+      "sha256": "4762ec8084bf4a23900b82c1ddeb7b39c43d66f397c3f020f07b529ed22797b1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-impact-route.log",
+      "originalBytes": 1094,
+      "originalSha256": "4762ec8084bf4a23900b82c1ddeb7b39c43d66f397c3f020f07b529ed22797b1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A008-lazy-path.log",
+      "bytes": 1185,
+      "sha256": "548738fad67c7d848482a163eff5cc98110f5fc2d7f54ef3ec559e953e16a408",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-lazy-path.log",
+      "originalBytes": 1185,
+      "originalSha256": "548738fad67c7d848482a163eff5cc98110f5fc2d7f54ef3ec559e953e16a408",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A008-route.log",
+      "bytes": 1073,
+      "sha256": "d5ea835db0de77cd9da16f5c32564da4b109043d53e5b1fe214fdc6c7f41a8d4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-route.log",
+      "originalBytes": 1073,
+      "originalSha256": "d5ea835db0de77cd9da16f5c32564da4b109043d53e5b1fe214fdc6c7f41a8d4",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A042-impact-route.log",
+      "bytes": 1117,
+      "sha256": "812c9f46113996afc9ea52c278f3b8d9ea5787d011570995fbaa763281c3170e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-impact-route.log",
+      "originalBytes": 1117,
+      "originalSha256": "812c9f46113996afc9ea52c278f3b8d9ea5787d011570995fbaa763281c3170e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A042-lazy-path.log",
+      "bytes": 1192,
+      "sha256": "6ac2d20eec88d8756e1e5da07dc2093082699a7aba649ad92cc8b3a27a8e9f69",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-lazy-path.log",
+      "originalBytes": 1192,
+      "originalSha256": "6ac2d20eec88d8756e1e5da07dc2093082699a7aba649ad92cc8b3a27a8e9f69",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A044-impact-route.log",
+      "bytes": 1103,
+      "sha256": "f1179265ecc99cbf43a240412aa4237b9c720b3e250731fcd076f7fb491a67ac",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-impact-route.log",
+      "originalBytes": 1103,
+      "originalSha256": "f1179265ecc99cbf43a240412aa4237b9c720b3e250731fcd076f7fb491a67ac",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A044-lazy-path.log",
+      "bytes": 1180,
+      "sha256": "e7df06d5535dde9894a78df2459c365f16380bad66e6544973b34b929139bafd",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-lazy-path.log",
+      "originalBytes": 1180,
+      "originalSha256": "e7df06d5535dde9894a78df2459c365f16380bad66e6544973b34b929139bafd",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/A044-route.log",
+      "bytes": 1068,
+      "sha256": "b84e714b67c9316e12d1f9fc91eb67148354f063e5486bc6fa7ebe2f83fda3c8",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-route.log",
+      "originalBytes": 1068,
+      "originalSha256": "b84e714b67c9316e12d1f9fc91eb67148354f063e5486bc6fa7ebe2f83fda3c8",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-baseline.log",
+      "bytes": 1804,
+      "sha256": "82338a80fa38cf3d473f66a5472c96bc6190ef909d6339889fad8c15ca58e706",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-baseline.log",
+      "originalBytes": 1804,
+      "originalSha256": "82338a80fa38cf3d473f66a5472c96bc6190ef909d6339889fad8c15ca58e706",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-centered.log",
+      "bytes": 2121,
+      "sha256": "fa6e49eb2c2a419a3ee6e306b0272cd1ac5f0fbc41ccd6880390733798e41aa0",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-centered.log",
+      "originalBytes": 2121,
+      "originalSha256": "fa6e49eb2c2a419a3ee6e306b0272cd1ac5f0fbc41ccd6880390733798e41aa0",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-final.log",
+      "bytes": 2659,
+      "sha256": "f8aa9dcc455c8aeb2e0220dfe8cd6c2378239daf8abc37cd77a5d9664bc344f1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-final.log",
+      "originalBytes": 2659,
+      "originalSha256": "f8aa9dcc455c8aeb2e0220dfe8cd6c2378239daf8abc37cd77a5d9664bc344f1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-joint-route.log",
+      "bytes": 2677,
+      "sha256": "328af17681957eef03d492355c60454f12465c753cec40e2a3c3bf6ebdeab7d3",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-joint-route.log",
+      "originalBytes": 2677,
+      "originalSha256": "328af17681957eef03d492355c60454f12465c753cec40e2a3c3bf6ebdeab7d3",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-lazy-path.log",
+      "bytes": 2764,
+      "sha256": "f58b41f29f91bf80a8536a4e8aaefdfe20856dfce71999266f0608cc0da5f18f",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-lazy-path.log",
+      "originalBytes": 2764,
+      "originalSha256": "f58b41f29f91bf80a8536a4e8aaefdfe20856dfce71999266f0608cc0da5f18f",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/local-retained.log",
+      "bytes": 2673,
+      "sha256": "a44df272f5c3d3387f9e9c0f9f6c69d4b2176d53f6450677c143622d8a540c94",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-retained.log",
+      "originalBytes": 2673,
+      "originalSha256": "a44df272f5c3d3387f9e9c0f9f6c69d4b2176d53f6450677c143622d8a540c94",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/native-baseline.log",
+      "bytes": 1104,
+      "sha256": "d1d387dd9d01fc029b28c16375441a34fcbbb5b8506f5c545e3dc975c090d090",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/native-baseline.log",
+      "originalBytes": 1104,
+      "originalSha256": "d1d387dd9d01fc029b28c16375441a34fcbbb5b8506f5c545e3dc975c090d090",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/native-route.log",
+      "bytes": 1088,
+      "sha256": "55de192baeae684ed030d54bfb2923d477bf39abdf6063e4e294620edc7e2419",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/native-route.log",
+      "originalBytes": 1088,
+      "originalSha256": "55de192baeae684ed030d54bfb2923d477bf39abdf6063e4e294620edc7e2419",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/package.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/package.log",
+      "originalBytes": 0,
+      "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/path-geometry.log",
+      "bytes": 591,
+      "sha256": "e330e3e5790630fca47b0e6b2214696ea21f18a2cd8231718910eb0f45b5dd21",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/path-geometry.log",
+      "originalBytes": 591,
+      "originalSha256": "e330e3e5790630fca47b0e6b2214696ea21f18a2cd8231718910eb0f45b5dd21",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-cost-focused.log",
+      "bytes": 743,
+      "sha256": "0817a4f5a2a64f6e8c773511b2b0b13772b2f724a2ad2fe4379cfcf369250934",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-cost-focused.log",
+      "originalBytes": 743,
+      "originalSha256": "0817a4f5a2a64f6e8c773511b2b0b13772b2f724a2ad2fe4379cfcf369250934",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-cost-typecheck.log",
+      "bytes": 339,
+      "sha256": "daf8a4b72992eb7eeb60218220b9c9c669e2eddc23f8056f883854298cebc87f",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-cost-typecheck.log",
+      "originalBytes": 339,
+      "originalSha256": "daf8a4b72992eb7eeb60218220b9c9c669e2eddc23f8056f883854298cebc87f",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-decision-impact.log",
+      "bytes": 2275,
+      "sha256": "3ed996f5f1619d9898783a5d3d2d8fe1c3f6609c6e4ec87aafeaa5b147f18fd4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision-impact.log",
+      "originalBytes": 2275,
+      "originalSha256": "3ed996f5f1619d9898783a5d3d2d8fe1c3f6609c6e4ec87aafeaa5b147f18fd4",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-decision.log",
+      "bytes": 2226,
+      "sha256": "6be1b018c29aeb602425d4f08a15530e11bec737de5571fc78015218f04e4787",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision.log",
+      "originalBytes": 2226,
+      "originalSha256": "6be1b018c29aeb602425d4f08a15530e11bec737de5571fc78015218f04e4787",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-final-focused.log",
+      "bytes": 1038,
+      "sha256": "a9c83cdd9d96698ed5114b1d4c30a71d4d63447177c3408972a1e7c01bb2e952",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-final-focused.log",
+      "originalBytes": 1038,
+      "originalSha256": "a9c83cdd9d96698ed5114b1d4c30a71d4d63447177c3408972a1e7c01bb2e952",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-final-typecheck.log",
+      "bytes": 309,
+      "sha256": "301cbfa2aaab805a224e4e2dcbd3ee552af359304cde5de6545766bd6a116735",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-final-typecheck.log",
+      "originalBytes": 309,
+      "originalSha256": "301cbfa2aaab805a224e4e2dcbd3ee552af359304cde5de6545766bd6a116735",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-focused.log",
+      "bytes": 1466,
+      "sha256": "45574ca8325bf86361c97cf4db4588c28d7a65e9203a96f3e0360d04bda0c286",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-focused.log",
+      "originalBytes": 1466,
+      "originalSha256": "45574ca8325bf86361c97cf4db4588c28d7a65e9203a96f3e0360d04bda0c286",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-impact-focused.log",
+      "bytes": 1038,
+      "sha256": "ac714b04200f73adb3fd7c5326bf13594a36424e037555ba3a4510cbcc36b80d",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-impact-focused.log",
+      "originalBytes": 1038,
+      "originalSha256": "ac714b04200f73adb3fd7c5326bf13594a36424e037555ba3a4510cbcc36b80d",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-lazy-path-focused.log",
+      "bytes": 1029,
+      "sha256": "a06c01906f6044450c2da98f43c224d318e942692c60691fa17849a8a60b9e88",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-lazy-path-focused.log",
+      "originalBytes": 1029,
+      "originalSha256": "a06c01906f6044450c2da98f43c224d318e942692c60691fa17849a8a60b9e88",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-lazy-path-typecheck.log",
+      "bytes": 344,
+      "sha256": "665c021639bac23d25425cb1152c2c465b9756e4e0f1b37da09c09f7b4e20273",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-lazy-path-typecheck.log",
+      "originalBytes": 344,
+      "originalSha256": "665c021639bac23d25425cb1152c2c465b9756e4e0f1b37da09c09f7b4e20273",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/route-typecheck.log",
+      "bytes": 303,
+      "sha256": "6454047940824ed70a16f723af9c58f07e06ed88afe0e94cedb84a367e8e91ac",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-typecheck.log",
+      "originalBytes": 303,
+      "originalSha256": "6454047940824ed70a16f723af9c58f07e06ed88afe0e94cedb84a367e8e91ac",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/tangent-probe-v2.log",
+      "bytes": 58452,
+      "sha256": "4781f5667e49a404aae417fad0dfe3e7999672517a00d99b8237bfc9417c8af9",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe-v2.log",
+      "originalBytes": 58452,
+      "originalSha256": "4781f5667e49a404aae417fad0dfe3e7999672517a00d99b8237bfc9417c8af9",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "logs/tangent-probe.log",
+      "bytes": 37018,
+      "sha256": "9f4f6c55d6ff2012c228c6d52871dfe8e612b3c5477bf69c49d0351c76ea190e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe.log",
+      "originalBytes": 37018,
+      "originalSha256": "9f4f6c55d6ff2012c228c6d52871dfe8e612b3c5477bf69c49d0351c76ea190e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "native/A008/accepted.json",
+      "bytes": 11934999,
+      "sha256": "9c1f440dacda2c6eb06477242c20ebbffcb9b798e93dd69a60a7413b1451c9a0",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/A008-baseline.json.gz",
+      "originalBytes": 1140313,
+      "originalSha256": "b627865ee021d9d0a07bf5730dd669327dc2a164539f8d852773b7647dc59ef5",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A008/corrected-full.json",
+      "bytes": 11934533,
+      "sha256": "dd32fb10c785d98d9b0e70883dd65c53341d1868b0f8cc35a0651e19d13044bb",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-impact-route.json.gz",
+      "originalBytes": 1140317,
+      "originalSha256": "08062ab93e0cd439db4c5373f214e08f3916f6f9a0cb1233c3dc56169ca6aef2",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A008/final.json",
+      "bytes": 11934540,
+      "sha256": "9cc2b241193f3526035673aa8a05258a4cdf130d732cbc8651dd9350bb9e0d20",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-lazy-path.json.gz",
+      "originalBytes": 1140317,
+      "originalSha256": "bfecf021283ec859107a1359b870b5bfd10efe4e0862b780ca6879a90f7b87dd",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A008/rejected-overlap.json",
+      "bytes": 11934753,
+      "sha256": "302a1e62795a4ca17bd3f2af4ad61a3259e9dc55743a5f3a09caab85e4bc97d4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-route.json.gz",
+      "originalBytes": 1140269,
+      "originalSha256": "a3765dc050a22166dd38dca7f11149b2f0b1ffa8177fbd95d6d75bbd86b6068b",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A008/scalar-only.json",
+      "bytes": 11934526,
+      "sha256": "9ce60bdf5562b80329eaccc154b39a96c197fda119c3e5533fcfd457be708ee3",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-cost-route.json.gz",
+      "originalBytes": 1140309,
+      "originalSha256": "f5acbb3135174a1dcb9487b1b089cda7bf074c465ef89876a2d62fe0619993c5",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A042/accepted.json",
+      "bytes": 18779472,
+      "sha256": "12cba882581d6b4c77f5154d8966594eb4b91014ca2fda6f9020023f2723ad50",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-baseline.json.gz",
+      "originalBytes": 1688187,
+      "originalSha256": "0ecfb2375cc7e3c0e2c16d9e420303cbeec00ae7c13b4b1b6c8edb693c65ccae",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A042/corrected-full.json",
+      "bytes": 18775119,
+      "sha256": "81787a4a108e9dd60595765b911afcd1766fcc7bf7e1be90ef27d9955631c4a6",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-impact-route.json.gz",
+      "originalBytes": 1687281,
+      "originalSha256": "dc88ce54ab17baf2b53ff8088002ca7f581c15da76f38c0b15b798e565d4b65a",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A042/final.json",
+      "bytes": 18775110,
+      "sha256": "4c221ddd553b5b436dc1bb71448e0098f080c7847d02ca58ac4a2d9220ccdf2e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-lazy-path.json.gz",
+      "originalBytes": 1687277,
+      "originalSha256": "0d2acef3279b79cbd38c52f474211dc5ffa0002f0b47430f0b610c053561654f",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A042/joint-only.json",
+      "bytes": 18775112,
+      "sha256": "0c38163bcc56e0b0e7e422dcf941a0f722fb975cbfd482a63000d2aeffe41682",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-joint-final.json.gz",
+      "originalBytes": 1687274,
+      "originalSha256": "844af90a97963984eda48a36b5cfd71663eb74fba609e713484d0724c466d0ab",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A042/rejected-overlap.json",
+      "bytes": 18334579,
+      "sha256": "810b7b4f0687334c33efb76be41cc0dc35743110dfc506c73b939d3f6ff75dcf",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-route.json.gz",
+      "originalBytes": 1634330,
+      "originalSha256": "d72f11b3e38913a5a9207b3ff61141b0b745d765ea336a4c6e6727c8db28d55d",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A044/accepted.json",
+      "bytes": 10850043,
+      "sha256": "9329092f73118ee572961bf18ba6740b3d629da6d1d3e3eaec12f0e41e278904",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/A044-baseline.json.gz",
+      "originalBytes": 1004400,
+      "originalSha256": "2994c75b425c7bc1c49e556c504361a66e80c1a069d27e9827329aeaf1ec0147",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A044/corrected-full.json",
+      "bytes": 10849603,
+      "sha256": "1def8cbbea0d607373c977044981127410fd3c772d2ebb39a314f3721e6f6fe1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-impact-route.json.gz",
+      "originalBytes": 1004126,
+      "originalSha256": "ce12812755767776193bb5e4663a38ce5323de62e9cf13500b30874ebc418ff8",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A044/final.json",
+      "bytes": 10849596,
+      "sha256": "c32f9ab5308234f45ee5508a847117582d9bd5ac7c5a51ba99f34891fa594132",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-lazy-path.json.gz",
+      "originalBytes": 1004119,
+      "originalSha256": "51c6b4a88b8f547a9fff0d9734e0ebf36257181726e3fba1d62a42d71cfd2aaa",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "native/A044/rejected-overlap.json",
+      "bytes": 10849589,
+      "sha256": "3e604f3dfa5e5a59449fd4145ecc7570773e7328be689091382c7233b669feb3",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-route.json.gz",
+      "originalBytes": 1004118,
+      "originalSha256": "9513969f6a46b7665a5b135816a9ddf20613bdc9854b0bfb8a29b57a12daee74",
+      "encoding": "original gzip decoded byte-for-byte"
+    },
+    {
+      "path": "operators/compare-native-navigation.py",
+      "bytes": 2286,
+      "sha256": "588195d4a90a3a516290ecee2f1c45e3c5ab4e24a9eb081947a9e84a30a1e49f",
+      "originalPath": "/tmp/compare-native-navigation.py",
+      "originalBytes": 2286,
+      "originalSha256": "588195d4a90a3a516290ecee2f1c45e3c5ab4e24a9eb081947a9e84a30a1e49f",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/distance-lazy-probe.ts",
+      "bytes": 6500,
+      "sha256": "61bef9aef1649ee8fd74ef7f4a48de3258929bc042b2fc55aec7d4ec4568b7d5",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe.ts",
+      "originalBytes": 6500,
+      "originalSha256": "61bef9aef1649ee8fd74ef7f4a48de3258929bc042b2fc55aec7d4ec4568b7d5",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/local-passage-original.ts",
+      "sha256": "498eec7e64859a745736f0e46cf5d5d6311e02a669e0d7f88c3dc45396931fa9",
+      "bytes": 5018,
+      "originalCommit": "ed7249bd06af20d2026c9422fbddf6cf18b43c48"
+    },
+    {
+      "path": "operators/local-passage.ts",
+      "bytes": 5177,
+      "sha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e",
+      "originalPath": "/workspace/teammate-navigation/scripts/diag/navigation/local-passage.ts",
+      "originalBytes": 5177,
+      "originalSha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/native-traffic.ts",
+      "bytes": 12470,
+      "sha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+      "originalPath": "/workspace/teammate-navigation/scripts/diag/navigation/native-traffic.ts",
+      "originalBytes": 12470,
+      "originalSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/plot-local-passage.py",
+      "bytes": 2044,
+      "sha256": "b6bdaf7c6861e040990614d767f1db9d7e2b6898815c6a432c26fbfbf5fe2f31",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/plot-local-passage.py",
+      "originalBytes": 2044,
+      "originalSha256": "b6bdaf7c6861e040990614d767f1db9d7e2b6898815c6a432c26fbfbf5fe2f31",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/reconstruct-route.py",
+      "bytes": 1802,
+      "sha256": "c55f04c027a1a3cb743cb6eb2986a717d9397880b9ffb126476149d4f6e63b97",
+      "originalPath": "/tmp/reconstruct-route.py",
+      "originalBytes": 1802,
+      "originalSha256": "c55f04c027a1a3cb743cb6eb2986a717d9397880b9ffb126476149d4f6e63b97",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/distance-lazy-probe.json",
+      "bytes": 10453,
+      "sha256": "d2631b94ccedfa88cde52b946146af7830c078b2d445bed1c193281ce3d666fc",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe.json",
+      "originalBytes": 10453,
+      "originalSha256": "d2631b94ccedfa88cde52b946146af7830c078b2d445bed1c193281ce3d666fc",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-baseline.json",
+      "bytes": 699599,
+      "sha256": "b5b69b3d72e7c8eb2c065c5256076310966e526dbabf3816eba6f6b9e83673c4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-baseline.json",
+      "originalBytes": 699599,
+      "originalSha256": "b5b69b3d72e7c8eb2c065c5256076310966e526dbabf3816eba6f6b9e83673c4",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-centered.json",
+      "bytes": 842731,
+      "sha256": "726cb042bebb6b85acd2d95d30d7cf9af41049d01cd249cad544e616a001c5e4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-centered.json",
+      "originalBytes": 842731,
+      "originalSha256": "726cb042bebb6b85acd2d95d30d7cf9af41049d01cd249cad544e616a001c5e4",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-final.json",
+      "bytes": 861471,
+      "sha256": "5e6862d42611cc538d230661feda266d0fbd52c2dc1acb4fc315c6a400a9f8e7",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-final.json",
+      "originalBytes": 861471,
+      "originalSha256": "5e6862d42611cc538d230661feda266d0fbd52c2dc1acb4fc315c6a400a9f8e7",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-joint-route.json",
+      "bytes": 861471,
+      "sha256": "d9e037dc6e5189526bb28de9ae7a085f8611b46ae1f3096e6f1d5cc0cdf1f0b1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-joint-route.json",
+      "originalBytes": 861471,
+      "originalSha256": "d9e037dc6e5189526bb28de9ae7a085f8611b46ae1f3096e6f1d5cc0cdf1f0b1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-lazy-path.json",
+      "bytes": 861471,
+      "sha256": "8dacf818c3dfb021af4d33e6d13caff3f14cf7d4be6fda0dbfa782dc7f014afd",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-lazy-path.json",
+      "originalBytes": 861471,
+      "originalSha256": "8dacf818c3dfb021af4d33e6d13caff3f14cf7d4be6fda0dbfa782dc7f014afd",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-matched-baseline.json",
+      "bytes": 842739,
+      "sha256": "e2ba54c1208b90772e0cb1ecdc4a43232c05e777c5fc66b38e7a2358d69beacd",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/local-matched-baseline.json",
+      "originalBytes": 842739,
+      "originalSha256": "e2ba54c1208b90772e0cb1ecdc4a43232c05e777c5fc66b38e7a2358d69beacd",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/local-retained.json",
+      "bytes": 866675,
+      "sha256": "de93edd11f65cb5052828bfa7b3f8ce4cbfa9705df4689da6de647c847c8a04c",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-retained.json",
+      "originalBytes": 866675,
+      "originalSha256": "de93edd11f65cb5052828bfa7b3f8ce4cbfa9705df4689da6de647c847c8a04c",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/route-decision-impact.json",
+      "bytes": 31046,
+      "sha256": "970a6b78c2a57d01422abea6b56b84d628d99f6e872d2fa7b7849102be566438",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision-impact.json",
+      "originalBytes": 31046,
+      "originalSha256": "970a6b78c2a57d01422abea6b56b84d628d99f6e872d2fa7b7849102be566438",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/route-decision.json",
+      "bytes": 31011,
+      "sha256": "5898896b3a4c26499c749f37fcb32de7a7d6370d29e4e35a1e76dd4630225823",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision.json",
+      "originalBytes": 31011,
+      "originalSha256": "5898896b3a4c26499c749f37fcb32de7a7d6370d29e4e35a1e76dd4630225823",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/tangent-probe-v2.json",
+      "bytes": 4596115,
+      "sha256": "00909e320e6be4057a8a9c45bf5eb04b5f5eab117edbf70b543f28d37e88f517",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe-v2.json",
+      "originalBytes": 4596115,
+      "originalSha256": "00909e320e6be4057a8a9c45bf5eb04b5f5eab117edbf70b543f28d37e88f517",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/results/tangent-probe.json",
+      "bytes": 3723295,
+      "sha256": "48b4a833ecc4fc5b1c1596a3cc9de6f3c68837de849d4365ae24283a02125a3c",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe.json",
+      "originalBytes": 3723295,
+      "originalSha256": "48b4a833ecc4fc5b1c1596a3cc9de6f3c68837de849d4365ae24283a02125a3c",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/route-decision-impact.ts",
+      "bytes": 3561,
+      "sha256": "7dbe25303f7e01c71215e755dc84c419ad298644afff2d991d8217792113f4fc",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision-impact.ts",
+      "originalBytes": 3561,
+      "originalSha256": "7dbe25303f7e01c71215e755dc84c419ad298644afff2d991d8217792113f4fc",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/route-decision.ts",
+      "bytes": 3554,
+      "sha256": "6513e6998bf60ef335de55a093470f2202640f330b4ff8216d283b756956342e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision.ts",
+      "originalBytes": 3554,
+      "originalSha256": "6513e6998bf60ef335de55a093470f2202640f330b4ff8216d283b756956342e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/tangent-probe-v2.ts",
+      "bytes": 9978,
+      "sha256": "bfc6476555426ffd683b6d773d5f6bdcec16e28dc43ac1bc1a72345d2cda7032",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe-v2.ts",
+      "originalBytes": 9978,
+      "originalSha256": "bfc6476555426ffd683b6d773d5f6bdcec16e28dc43ac1bc1a72345d2cda7032",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/tangent-probe.ts",
+      "bytes": 9226,
+      "sha256": "daed0d76dd7338e496fff10d3845a9e7142dcc250dd272bc2bfb2e3d5968e2de",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe.ts",
+      "originalBytes": 9226,
+      "originalSha256": "daed0d76dd7338e496fff10d3845a9e7142dcc250dd272bc2bfb2e3d5968e2de",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/traffic-distance-draft.mts",
+      "bytes": 4572,
+      "sha256": "0f2429cbba5d1d52a2934255fe93837263adb222f341832c5e8825b36308e1ab",
+      "originalPath": "/tmp/traffic-path-optimized.mts",
+      "originalBytes": 4572,
+      "originalSha256": "0f2429cbba5d1d52a2934255fe93837263adb222f341832c5e8825b36308e1ab",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "operators/traffic-distance-draft.ts",
+      "bytes": 4572,
+      "sha256": "0f2429cbba5d1d52a2934255fe93837263adb222f341832c5e8825b36308e1ab",
+      "originalPath": "/tmp/traffic-path-optimized.ts",
+      "originalBytes": 4572,
+      "originalSha256": "0f2429cbba5d1d52a2934255fe93837263adb222f341832c5e8825b36308e1ab",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A008-cost-route-launch.json",
+      "bytes": 2402,
+      "sha256": "6c1345e8721b216c52d90d091ee0f6ba0e995746fe80baacfd721fa8cc69c8ac",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-cost-route-launch.json",
+      "originalBytes": 2402,
+      "originalSha256": "6c1345e8721b216c52d90d091ee0f6ba0e995746fe80baacfd721fa8cc69c8ac",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A008-impact-route-launch.json",
+      "bytes": 2414,
+      "sha256": "3e222d26398ac9390a11aa88889ec64ba8e0eba6a32cfd3f8ef2213b21247b15",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-impact-route-launch.json",
+      "originalBytes": 2414,
+      "originalSha256": "3e222d26398ac9390a11aa88889ec64ba8e0eba6a32cfd3f8ef2213b21247b15",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A008-lazy-path-launch.json",
+      "bytes": 2466,
+      "sha256": "918b547bfb0db9e0b2273ef1f1c91933f446ec129580e5e49f52117983ba3698",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-lazy-path-launch.json",
+      "originalBytes": 2466,
+      "originalSha256": "918b547bfb0db9e0b2273ef1f1c91933f446ec129580e5e49f52117983ba3698",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A008-route-launch.json",
+      "bytes": 2406,
+      "sha256": "28d32385134cb61f1ea42326dfc8345862f74b8a179cebcc3bac1c912996f631",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A008-route-launch.json",
+      "originalBytes": 2406,
+      "originalSha256": "28d32385134cb61f1ea42326dfc8345862f74b8a179cebcc3bac1c912996f631",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A042-impact-route-launch.json",
+      "bytes": 2418,
+      "sha256": "c8c7e578876024835dc19ab3f440ca4bc45f90d321671ae4b2d6bf774f6d6704",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-impact-route-launch.json",
+      "originalBytes": 2418,
+      "originalSha256": "c8c7e578876024835dc19ab3f440ca4bc45f90d321671ae4b2d6bf774f6d6704",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A042-lazy-path-launch.json",
+      "bytes": 2470,
+      "sha256": "ca0ea6afe9684fe762e55135d54dcfe2656091b08cebadc5f10f2c2148ac5cb1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A042-lazy-path-launch.json",
+      "originalBytes": 2470,
+      "originalSha256": "ca0ea6afe9684fe762e55135d54dcfe2656091b08cebadc5f10f2c2148ac5cb1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A044-impact-route-launch.json",
+      "bytes": 2414,
+      "sha256": "1af74580c23c8cedbe2b21385808d1f92d8e6d32d39ca5dfa19245c1e6c18477",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-impact-route-launch.json",
+      "originalBytes": 2414,
+      "originalSha256": "1af74580c23c8cedbe2b21385808d1f92d8e6d32d39ca5dfa19245c1e6c18477",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A044-lazy-path-launch.json",
+      "bytes": 2465,
+      "sha256": "552a13cb7f7701f9e8e50f487dccb91cba6640301266b60508cb3002ad3abd51",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-lazy-path-launch.json",
+      "originalBytes": 2465,
+      "originalSha256": "552a13cb7f7701f9e8e50f487dccb91cba6640301266b60508cb3002ad3abd51",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/A044-route-launch.json",
+      "bytes": 2407,
+      "sha256": "6c9fa76fbb1569f0d962e0edefc9338a4c03fdc4d6106ad273da747112423743",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/A044-route-launch.json",
+      "originalBytes": 2407,
+      "originalSha256": "6c9fa76fbb1569f0d962e0edefc9338a4c03fdc4d6106ad273da747112423743",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/distance-lazy-probe-launch.json",
+      "bytes": 2275,
+      "sha256": "666a976349d91c35c9c8a172aeaedaf1481501c6abcfafe3157f2a25e7b5322e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe-launch.json",
+      "originalBytes": 2275,
+      "originalSha256": "666a976349d91c35c9c8a172aeaedaf1481501c6abcfafe3157f2a25e7b5322e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/distance-lazy-probe-retry-launch.json",
+      "bytes": 2274,
+      "sha256": "4c5f31cc3a07e0666fae773984ceca2824a689305a2cf35c07338ca04b81eb5b",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe-retry-launch.json",
+      "originalBytes": 2274,
+      "originalSha256": "4c5f31cc3a07e0666fae773984ceca2824a689305a2cf35c07338ca04b81eb5b",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-baseline-launch.json",
+      "bytes": 2296,
+      "sha256": "347d00926bc47ca54c6ee7a8d88a6ef271b2468b44215fb2856a9176580c376e",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-baseline-launch.json",
+      "originalBytes": 2296,
+      "originalSha256": "347d00926bc47ca54c6ee7a8d88a6ef271b2468b44215fb2856a9176580c376e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-centered-launch.json",
+      "bytes": 2296,
+      "sha256": "0de902dd0f38b99a65dd569bc7f9fa17c1389bce2d9b67a635a2c8995ac4c731",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-centered-launch.json",
+      "originalBytes": 2296,
+      "originalSha256": "0de902dd0f38b99a65dd569bc7f9fa17c1389bce2d9b67a635a2c8995ac4c731",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-final-launch.json",
+      "bytes": 2340,
+      "sha256": "20345effc2fba617806c4bf0f59e383798913e2c6057147e53d59a1e9995a296",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-final-launch.json",
+      "originalBytes": 2340,
+      "originalSha256": "20345effc2fba617806c4bf0f59e383798913e2c6057147e53d59a1e9995a296",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-joint-route-launch.json",
+      "bytes": 2298,
+      "sha256": "65afc5149cde0b62a3c887cfacdc32cf81ee0212dcc63d2a9624ef16368b3ea5",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-joint-route-launch.json",
+      "originalBytes": 2298,
+      "originalSha256": "65afc5149cde0b62a3c887cfacdc32cf81ee0212dcc63d2a9624ef16368b3ea5",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-lazy-path-launch.json",
+      "bytes": 2399,
+      "sha256": "8ba447bcd8817037b0906e4fdf363864abb4e2a8683781607df77662071cc52b",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-lazy-path-launch.json",
+      "originalBytes": 2399,
+      "originalSha256": "8ba447bcd8817037b0906e4fdf363864abb4e2a8683781607df77662071cc52b",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/local-retained-launch.json",
+      "bytes": 2296,
+      "sha256": "76a12ce3c9c6f773a4e1717fbe2a110c9c2a0e13602207187e9e31a4c24e5cdc",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/local-retained-launch.json",
+      "originalBytes": 2296,
+      "originalSha256": "76a12ce3c9c6f773a4e1717fbe2a110c9c2a0e13602207187e9e31a4c24e5cdc",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/native-baseline-launch.json",
+      "bytes": 2359,
+      "sha256": "c29d44cc565e09d5f1074fc5ad8a1ce69fa528a0e7260d8fcf23e7a662eadb79",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/native-baseline-launch.json",
+      "originalBytes": 2359,
+      "originalSha256": "c29d44cc565e09d5f1074fc5ad8a1ce69fa528a0e7260d8fcf23e7a662eadb79",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/native-route-launch.json",
+      "bytes": 2411,
+      "sha256": "78fc28257f512716b5a33ebea5d1a0890328c4fb19c4dc3c877631b2971696a0",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/native-route-launch.json",
+      "originalBytes": 2411,
+      "originalSha256": "78fc28257f512716b5a33ebea5d1a0890328c4fb19c4dc3c877631b2971696a0",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/path-geometry.json",
+      "bytes": 2259,
+      "sha256": "ed73fa26bf9c7b83bc3a8fcfb33debb2b8d37d34a288fa99267c0f2d8ac088a8",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/path-geometry.json",
+      "originalBytes": 2259,
+      "originalSha256": "ed73fa26bf9c7b83bc3a8fcfb33debb2b8d37d34a288fa99267c0f2d8ac088a8",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/reference-A008-baseline-launch.json",
+      "bytes": 2345,
+      "sha256": "01257f5fba87933156a47dd8bac331a0f1aa64830167e1fe5a7fbfeb351dac29",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/A008-baseline-launch.json",
+      "originalBytes": 2345,
+      "originalSha256": "01257f5fba87933156a47dd8bac331a0f1aa64830167e1fe5a7fbfeb351dac29",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/reference-A044-baseline-launch.json",
+      "bytes": 2338,
+      "sha256": "d64ead4a91ab0b6e6ef6e08bb739fffe98342998a31687ad8248438ff88b2ee0",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/A044-baseline-launch.json",
+      "originalBytes": 2338,
+      "originalSha256": "d64ead4a91ab0b6e6ef6e08bb739fffe98342998a31687ad8248438ff88b2ee0",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/reference-local-matched-baseline-launch.json",
+      "bytes": 2279,
+      "sha256": "ef6ceb9676d219e65bce761aebc07d412fb8ded5c4d3f704bcc0c18c18868b5e",
+      "originalPath": "/workspace/navigation-accepted-reference/out/navigation/local-matched-baseline-launch.json",
+      "originalBytes": 2279,
+      "originalSha256": "ef6ceb9676d219e65bce761aebc07d412fb8ded5c4d3f704bcc0c18c18868b5e",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-cost-focused-launch.json",
+      "bytes": 2341,
+      "sha256": "76391af0ce7eaae502424d37ef25964b7a6322febe73e072974e29ccb7adc161",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-cost-focused-launch.json",
+      "originalBytes": 2341,
+      "originalSha256": "76391af0ce7eaae502424d37ef25964b7a6322febe73e072974e29ccb7adc161",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-cost-typecheck-launch.json",
+      "bytes": 2271,
+      "sha256": "a8fba09f75c527d34baa9bc2b4574788d3098de101957ce5ca52510e832c6124",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-cost-typecheck-launch.json",
+      "originalBytes": 2271,
+      "originalSha256": "a8fba09f75c527d34baa9bc2b4574788d3098de101957ce5ca52510e832c6124",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-decision-impact-launch.json",
+      "bytes": 2303,
+      "sha256": "684e7b3f0718fbf70aca5c7d858b70e6cfc8d5c83049ad7e3067a59bb5909dd6",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision-impact-launch.json",
+      "originalBytes": 2303,
+      "originalSha256": "684e7b3f0718fbf70aca5c7d858b70e6cfc8d5c83049ad7e3067a59bb5909dd6",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-decision-launch.json",
+      "bytes": 2289,
+      "sha256": "b6fc88a6ba5416bb93b5918771cf2d565ccce41c53ef6cc96f10889f5bffa3cd",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-decision-launch.json",
+      "originalBytes": 2289,
+      "originalSha256": "b6fc88a6ba5416bb93b5918771cf2d565ccce41c53ef6cc96f10889f5bffa3cd",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-final-focused-launch.json",
+      "bytes": 2487,
+      "sha256": "623f9a9ec24728958434fdfc9baa1a372a3051c3fc2d0f9904f1a1d7e6f61bac",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-final-focused-launch.json",
+      "originalBytes": 2487,
+      "originalSha256": "623f9a9ec24728958434fdfc9baa1a372a3051c3fc2d0f9904f1a1d7e6f61bac",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-final-typecheck-launch.json",
+      "bytes": 2312,
+      "sha256": "8c02469401099a6e08abf3600dafe25bea3584d65a2ad408a37304ae7e79a8b4",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-final-typecheck-launch.json",
+      "originalBytes": 2312,
+      "originalSha256": "8c02469401099a6e08abf3600dafe25bea3584d65a2ad408a37304ae7e79a8b4",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-focused-launch.json",
+      "bytes": 2684,
+      "sha256": "cd0f02d9a6add8381b5cdb4b24f1d0ee8815dfab34e29e441a6e9f0c12a3f4f0",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-focused-launch.json",
+      "originalBytes": 2684,
+      "originalSha256": "cd0f02d9a6add8381b5cdb4b24f1d0ee8815dfab34e29e441a6e9f0c12a3f4f0",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-impact-focused-launch.json",
+      "bytes": 2487,
+      "sha256": "3fb7b06b20b951a672eb36e5187a5f6534d31bfc43f3c9a98f1791e6745d46b5",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-impact-focused-launch.json",
+      "originalBytes": 2487,
+      "originalSha256": "3fb7b06b20b951a672eb36e5187a5f6534d31bfc43f3c9a98f1791e6745d46b5",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-lazy-path-focused-launch.json",
+      "bytes": 2544,
+      "sha256": "224480d03ad7292d077e91138483d00dd5862909983ee29ddc94bd6168b15d9f",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-lazy-path-focused-launch.json",
+      "originalBytes": 2544,
+      "originalSha256": "224480d03ad7292d077e91138483d00dd5862909983ee29ddc94bd6168b15d9f",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-lazy-path-typecheck-launch.json",
+      "bytes": 2337,
+      "sha256": "93f1d8d59a87517918d1da4b100433ea15548c926771c26d0293818774b04ac1",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-lazy-path-typecheck-launch.json",
+      "originalBytes": 2337,
+      "originalSha256": "93f1d8d59a87517918d1da4b100433ea15548c926771c26d0293818774b04ac1",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/route-typecheck-launch.json",
+      "bytes": 2319,
+      "sha256": "8aab9e6c63a2f3cdbfcfb329e5f7366fc8e07b759a09e6afd7d13fd7678b0fec",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/route-typecheck-launch.json",
+      "originalBytes": 2319,
+      "originalSha256": "8aab9e6c63a2f3cdbfcfb329e5f7366fc8e07b759a09e6afd7d13fd7678b0fec",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/tangent-probe-launch.json",
+      "bytes": 2267,
+      "sha256": "612aa24b2424c47630a9724a1ee5b9166d166cac820ff630eec79b03b599c966",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe-launch.json",
+      "originalBytes": 2267,
+      "originalSha256": "612aa24b2424c47630a9724a1ee5b9166d166cac820ff630eec79b03b599c966",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "receipts/tangent-probe-v2-launch.json",
+      "bytes": 2262,
+      "sha256": "c99102307f5a790d03e4b34cbdd381ec21f17d50460f8d78e71300c950366f97",
+      "originalPath": "/workspace/teammate-navigation/out/navigation/tangent-probe-v2-launch.json",
+      "originalBytes": 2262,
+      "originalSha256": "c99102307f5a790d03e4b34cbdd381ec21f17d50460f8d78e71300c950366f97",
+      "encoding": "original bytes"
+    },
+    {
+      "path": "sources/corrected-full/source.json",
+      "sha256": "3965c41278f473efa38c88188bed225ee8e78adb27160a5e760fca90bd9823b8",
+      "bytes": 339
+    },
+    {
+      "path": "sources/corrected-full/src/sim/spacing.ts",
+      "bytes": 19132,
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c",
+      "originalCommit": "dbb32f044d81ea7d995eb589ab46a1f629a1874c"
+    },
+    {
+      "path": "sources/corrected-full/src/sim/traffic-path.ts",
+      "bytes": 10319,
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061",
+      "originalCommit": "dbb32f044d81ea7d995eb589ab46a1f629a1874c"
+    },
+    {
+      "path": "sources/corrected-full/src/sim/traffic-route.ts",
+      "bytes": 5173,
+      "sha256": "64af1716beb43e21a000e35ddb89b6d835d2961155f5edd9301b30acb9bc0be0",
+      "originalCommit": "dbb32f044d81ea7d995eb589ab46a1f629a1874c"
+    },
+    {
+      "path": "sources/early-joint/source.json",
+      "sha256": "7521a0341f2e9537930a2f091bf06ecaaaf7f42dbaba6e3e612c75d8053d1ea4",
+      "bytes": 238
+    },
+    {
+      "path": "sources/early-joint/src/sim/spacing.ts",
+      "bytes": 18369,
+      "sha256": "811d9fc3374543ae86a7f66ab541ab33dcc1088a8f53796868737c733ecc9946",
+      "originalCommit": null
+    },
+    {
+      "path": "sources/final/source.json",
+      "sha256": "efeb71735c7db71a562b39269442b8033d18fff00f140dadc6120d8881060364",
+      "bytes": 374
+    },
+    {
+      "path": "sources/final/src/sim/spacing.ts",
+      "bytes": 19132,
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c",
+      "originalCommit": "5248e884fd450b44045e753caaf782a306710e0c"
+    },
+    {
+      "path": "sources/final/src/sim/traffic-distance.ts",
+      "bytes": 4882,
+      "sha256": "a3aa22df1f725107eb1a62f46e6532f44412c442ff09f190181acdd2e5c59325",
+      "originalCommit": "5248e884fd450b44045e753caaf782a306710e0c"
+    },
+    {
+      "path": "sources/final/src/sim/traffic-path.ts",
+      "bytes": 10319,
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061",
+      "originalCommit": "5248e884fd450b44045e753caaf782a306710e0c"
+    },
+    {
+      "path": "sources/final/src/sim/traffic-route.ts",
+      "bytes": 5224,
+      "sha256": "1f6c6ddec5ad479cf5f07d19b3dfcc57f4c4c50ad4adbe0ed5decc4dd483b4ce",
+      "originalCommit": "5248e884fd450b44045e753caaf782a306710e0c"
+    },
+    {
+      "path": "sources/joint-only/source.json",
+      "sha256": "950c419050dab144b8163c9b0002d5f87a3fc04187c34276e844f5c699418551",
+      "bytes": 276
+    },
+    {
+      "path": "sources/joint-only/src/sim/spacing.ts",
+      "bytes": 18581,
+      "sha256": "7a872651b3d697f766da5c899829cd580e5572b9553511af36d856183a90fa38",
+      "originalCommit": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79"
+    },
+    {
+      "path": "sources/rejected-overlap/source.json",
+      "sha256": "09c47a5181a96b8fe94dc6dd4d09c0a86d838d12201d047a417ce1348d1f08e9",
+      "bytes": 301
+    },
+    {
+      "path": "sources/rejected-overlap/src/sim/spacing.ts",
+      "bytes": 19132,
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c",
+      "originalCommit": null
+    },
+    {
+      "path": "sources/rejected-overlap/src/sim/traffic-path.ts",
+      "bytes": 10319,
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061",
+      "originalCommit": null
+    },
+    {
+      "path": "sources/rejected-overlap/src/sim/traffic-route.ts",
+      "bytes": 4226,
+      "sha256": "d282856ecee260549bd1e24ec2a3d3151465036ec93dd92de9a75d8712f6dcea",
+      "originalCommit": null
+    },
+    {
+      "path": "sources/retained-failure/source.json",
+      "sha256": "64dfa96e6ee48c4fa67b5f2953d256844218db64a7ed3b8d1b6a525c9c90cb2c",
+      "bytes": 308
+    },
+    {
+      "path": "sources/retained-failure/src/sim/spacing.ts",
+      "bytes": 19132,
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c",
+      "originalCommit": "ed7249bd06af20d2026c9422fbddf6cf18b43c48"
+    },
+    {
+      "path": "sources/retained-failure/src/sim/traffic-route.ts",
+      "bytes": 6877,
+      "sha256": "2062b54ae6dda7b8d222dfec899196709fa76c37455adbfd7ebdb6806080dc73",
+      "originalCommit": "ed7249bd06af20d2026c9422fbddf6cf18b43c48"
+    },
+    {
+      "path": "sources/scalar-only/source.json",
+      "sha256": "9ddf37ff70c438aaece06f638111528519b5ab5d39241075bfbe482cb576a42e",
+      "bytes": 374
+    },
+    {
+      "path": "sources/scalar-only/src/sim/spacing.ts",
+      "bytes": 19132,
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c",
+      "originalCommit": "5402d71d15ded211766c6fe6e34fecfb4ac0787c"
+    },
+    {
+      "path": "sources/scalar-only/src/sim/traffic-distance.ts",
+      "bytes": 4494,
+      "sha256": "7cb07592774a7a3f24f9b6f01045479f8815bd96a5d57f90d6c5567873626143",
+      "originalCommit": "5402d71d15ded211766c6fe6e34fecfb4ac0787c"
+    },
+    {
+      "path": "sources/scalar-only/src/sim/traffic-path.ts",
+      "bytes": 10319,
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061",
+      "originalCommit": "5402d71d15ded211766c6fe6e34fecfb4ac0787c"
+    },
+    {
+      "path": "sources/scalar-only/src/sim/traffic-route.ts",
+      "bytes": 5222,
+      "sha256": "82bdf15b9398f9231d2306857b22254dcdf0000469ec88d747724b140de15a77",
+      "originalCommit": "5402d71d15ded211766c6fe6e34fecfb4ac0787c"
+    }
+  ]
+}

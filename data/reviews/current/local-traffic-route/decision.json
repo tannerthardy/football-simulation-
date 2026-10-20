@@ -1,0 +1,5131 @@
+{
+  "schema": "local-traffic-route-draft-v1",
+  "status": "ADOPT the bounded correction after independent review and Integration exact combined verification; publication is not adoption.",
+  "base": "2c98bed94adad8087c65f381d4090444ad283985",
+  "codeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+  "evidenceCommit": "This publication commit; runtime code pin is immutable5248e884fd450b44045e753caaf782a306710e0c",
+  "requiredSeparateDependency": {
+    "pr": 183,
+    "runtimeCommit": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+    "finalCodeCommit": "0491f07b5728a149c3f4ac35008ceba14e392694",
+    "finalSourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+    "recordedJointSeconds": 32.651926306,
+    "includedSharedA042BaselineSeconds": 4.582455991,
+    "costRule": "Separate #183 evidence. Do not add either the32.652s scope or shared4.582s A042baseline to new local-route costs again."
+  },
+  "question": "Can a man/zone actor preserve its existing football goal while making an achievable short adjustment around acquired stationary teammate traffic, including a multi-body cluster?",
+  "demonstratedMechanism": "Matching a stationary peer transverse velocity alone proposes no lateral departure on a head-on approach. Single-disc lower-bound ranking/side retention still stalls in the cluster. Joint represented disc geometry plus short achievable-command ranking and gather pace solves this staged sequence.",
+  "change": {
+    "proposal": "trafficPath proposes an initial direction from visible tangent lines and exposed arcs of the union of up to10 acquired physical touch discs, with existing caller field bounds. Covered overlap seams cannot become free shortcuts.",
+    "selection": "trafficRoute uses raw/restricted/gather paces in that geometry-derived direction; same existing facing/posture/effort and coverage containment; scores actual .6s free-World endpoints by remaining represented joint path distance, rejecting falls or worse peer interference.",
+    "retention": "Only whether the actor is maneuvering is retained; peer motion is reread from this tick's acquired pictures. Missing/invalid data, changed goal geometry, or direct route clears optional routing.",
+    "scope": "Existing eligible free man/zone actors and existing command-local own goals only; no role-wide policy expansion, private peer state, body-radius change, physics/capability change or new observation policy.",
+    "limit": "Static represented geometry proposes actions and ranks progress; it does not certify all possible physical paths or future teammate motion. The ordinary controller remains fallback when the optional route is unavailable.",
+    "contactGuard": "In addition to no worse minimum penetration, reject an action that increases normal relative closing speed at the first predicted touch with any acquired teammate, measured from the same achieved preview. This is a risk comparison, not delivered impulse prediction; it can still admit contact and adds no tuned clearance bubble.",
+    "finalGeometryOptimization": {
+      "currentProposalAndCost": "trafficRoute/trafficDistance solve a plane relaxation using initially violated explicit discs, then add every omitted disc intersected by any returned continuous line or circular arc. Field-bound validation is continuous, including arc extrema. Only a path validated against ALL omitted discs/bounds is returned.",
+      "fallback": "Original trafficPath full graph unchanged; fallback on failed/insufficient representation. Arc disc indices remapped to original input identifiers.",
+      "limit": "Equal-distance side ties may differ on other geometries; observed saved-case equality is not a global first-direction equivalence theorem. Achievable movement/contact checks still evaluate the chosen direction.",
+      "scalarOnlyTrial": "Source989/commit5402 made no live cost gain in A008; source d291 also reduces current proposal work.",
+      "physics": "No new physics, settings, sensing or memory policy."
+    }
+  },
+  "pairedStaged": {
+    "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "candidateSource": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+    "operatorSha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e",
+    "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+    "operatorIdenticalAcrossArms": true,
+    "durationSeconds": 3,
+    "steps": 60,
+    "stepSeconds": 0.05,
+    "constructor": "Own x50,yCENTER,velocity4,0,facing0; existing track to fixedx58,yCENTER at speed.7/gain3/facing0. Physical peers request zero/free, use delayed PerceptionBuffer pictures with original ages, and remain collidable. single/mirror centerx53,yCENTER\u00b1.1; head-onx53,yCENTER; cluster alsox52.4,yCENTER\u00b1.8; clearx53,yCENTER+4.",
+    "sourceQualification": "Finalfa behavior includes separate#183 joint projection and the first-touch-normal-closing guard. Accepted baseline was recollected with the same d514 collector; its full states exactly equal earlier498e accepted states. Finalfa states exactly equal903 staged states. Collector498e\u2192d514 changes exports/main guard only, with matched identity proved. V1/V2 source490 is discovery only.",
+    "rows": [
+      {
+        "mode": "single",
+        "sameInitialBodiesAndGoal": true,
+        "goal": {
+          "x": 58,
+          "y": 26.666666666666668
+        },
+        "baselineResult": {
+          "progress": 7.928799714530584,
+          "goalError": 0.07210782204798927,
+          "lateral": -0.011404268919054772,
+          "speed": 0.2590261367491198,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 8.313350008393172e-13
+        },
+        "candidateResult": {
+          "progress": 7.9839036386333575,
+          "goalError": 0.01617455024306963,
+          "lateral": -0.0015884666568872774,
+          "speed": 0.05809815122705461,
+          "state": "up",
+          "contactIntervals": [
+            {
+              "t": 2.9,
+              "contacts": [
+                {
+                  "i": 0,
+                  "j": 1,
+                  "impulse": 0,
+                  "closing": 0.00261051020155445
+                }
+              ]
+            }
+          ],
+          "maximumWorkResidual": 8.562039965909207e-13
+        },
+        "retainedTrialResult": {
+          "progress": 7.9839036386333575,
+          "goalError": 0.016174550243069283,
+          "lateral": -0.0015884666568837247,
+          "speed": 0.05809815122705355,
+          "state": "up",
+          "contactIntervals": [
+            {
+              "t": 2.9,
+              "contacts": [
+                {
+                  "i": 0,
+                  "j": 1,
+                  "impulse": 0,
+                  "closing": 0.0026105101940623876
+                }
+              ]
+            }
+          ],
+          "maximumWorkResidual": 6.892264536872972e-13
+        },
+        "allStatesExact": false,
+        "directionFlips": {
+          "baseline": {
+            "requested": 3,
+            "achieved": 3
+          },
+          "retainedTrial": {
+            "requested": 1,
+            "achieved": 1
+          },
+          "candidate": {
+            "requested": 1,
+            "achieved": 1
+          }
+        },
+        "allRecordedBodiesUpright": true,
+        "positiveTorsoContactSamples": 0,
+        "firstChanged": {
+          "t": 2,
+          "sameIncomingBodies": true,
+          "sameAcquiredPictures": true,
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "baselineCommand": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "candidateCommand": {
+            "vel": {
+              "x": 6.548829669890179,
+              "y": -0.9419510667313314
+            },
+            "facing": 0
+          },
+          "baselineAchievedOwn": {
+            "pos": {
+              "x": 50.20055202730351,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 4.022081092140387,
+              "y": 0
+            },
+            "state": "up"
+          },
+          "candidateAchievedOwn": {
+            "pos": {
+              "x": 50.202632305614074,
+              "y": 26.659989223830063
+            },
+            "vel": {
+              "x": 4.105292224563048,
+              "y": -0.2670977134641922
+            },
+            "state": "up"
+          }
+        },
+        "matchedRecollectionIdentity": {
+          "acceptedStatesEqualEarlier498eOperator": true,
+          "finalFaStatesEqualEarlier903Candidate": true
+        }
+      },
+      {
+        "mode": "mirror",
+        "sameInitialBodiesAndGoal": true,
+        "goal": {
+          "x": 58,
+          "y": 26.666666666666668
+        },
+        "baselineResult": {
+          "progress": 7.928799714530584,
+          "goalError": 0.07210782204798927,
+          "lateral": 0.011404268919054772,
+          "speed": 0.2590261367491198,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 8.313350008393172e-13
+        },
+        "candidateResult": {
+          "progress": 7.9839036386333575,
+          "goalError": 0.01617455024306963,
+          "lateral": 0.0015884666568872774,
+          "speed": 0.05809815122705461,
+          "state": "up",
+          "contactIntervals": [
+            {
+              "t": 2.9,
+              "contacts": [
+                {
+                  "i": 0,
+                  "j": 1,
+                  "impulse": 0,
+                  "closing": 0.00261051020155445
+                }
+              ]
+            }
+          ],
+          "maximumWorkResidual": 8.562039965909207e-13
+        },
+        "retainedTrialResult": {
+          "progress": 7.9839036386333575,
+          "goalError": 0.016174550243069283,
+          "lateral": 0.0015884666568837247,
+          "speed": 0.05809815122705355,
+          "state": "up",
+          "contactIntervals": [
+            {
+              "t": 2.9,
+              "contacts": [
+                {
+                  "i": 0,
+                  "j": 1,
+                  "impulse": 0,
+                  "closing": 0.0026105101940623876
+                }
+              ]
+            }
+          ],
+          "maximumWorkResidual": 6.892264536872972e-13
+        },
+        "allStatesExact": false,
+        "directionFlips": {
+          "baseline": {
+            "requested": 3,
+            "achieved": 3
+          },
+          "retainedTrial": {
+            "requested": 1,
+            "achieved": 1
+          },
+          "candidate": {
+            "requested": 1,
+            "achieved": 1
+          }
+        },
+        "allRecordedBodiesUpright": true,
+        "positiveTorsoContactSamples": 0,
+        "firstChanged": {
+          "t": 2,
+          "sameIncomingBodies": true,
+          "sameAcquiredPictures": true,
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "baselineCommand": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "candidateCommand": {
+            "vel": {
+              "x": 6.548829669890179,
+              "y": 0.9419510667313314
+            },
+            "facing": 0
+          },
+          "baselineAchievedOwn": {
+            "pos": {
+              "x": 50.20055202730351,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 4.022081092140387,
+              "y": 0
+            },
+            "state": "up"
+          },
+          "candidateAchievedOwn": {
+            "pos": {
+              "x": 50.202632305614074,
+              "y": 26.673344109503272
+            },
+            "vel": {
+              "x": 4.105292224563048,
+              "y": 0.2670977134641922
+            },
+            "state": "up"
+          }
+        },
+        "matchedRecollectionIdentity": {
+          "acceptedStatesEqualEarlier498eOperator": true,
+          "finalFaStatesEqualEarlier903Candidate": true
+        }
+      },
+      {
+        "mode": "head-on",
+        "sameInitialBodiesAndGoal": true,
+        "goal": {
+          "x": 58,
+          "y": 26.666666666666668
+        },
+        "baselineResult": {
+          "progress": 2.4737992855304896,
+          "goalError": 5.5262007144695104,
+          "lateral": 0,
+          "speed": 0.00044941161317257894,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 1.7053025658242404e-13
+        },
+        "candidateResult": {
+          "progress": 7.980210799040293,
+          "goalError": 0.01996617283850486,
+          "lateral": 0.002652467378382539,
+          "speed": 0.07171746426781296,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 8.064660050877137e-13
+        },
+        "retainedTrialResult": {
+          "progress": 7.980210799040293,
+          "goalError": 0.01996617283850486,
+          "lateral": -0.002652467378382539,
+          "speed": 0.07171746426781296,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 7.176481631177012e-13
+        },
+        "allStatesExact": false,
+        "directionFlips": {
+          "baseline": {
+            "requested": 0,
+            "achieved": 0
+          },
+          "retainedTrial": {
+            "requested": 1,
+            "achieved": 1
+          },
+          "candidate": {
+            "requested": 1,
+            "achieved": 1
+          }
+        },
+        "allRecordedBodiesUpright": true,
+        "positiveTorsoContactSamples": 0,
+        "firstChanged": {
+          "t": 2,
+          "sameIncomingBodies": true,
+          "sameAcquiredPictures": true,
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "baselineCommand": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "candidateCommand": {
+            "vel": {
+              "x": 4.478167948082632,
+              "y": 0.7976687049794405
+            },
+            "facing": 0
+          },
+          "baselineAchievedOwn": {
+            "pos": {
+              "x": 50.20055202730351,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 4.022081092140387,
+              "y": 0
+            },
+            "state": "up"
+          },
+          "candidateAchievedOwn": {
+            "pos": {
+              "x": 50.20055202730351,
+              "y": 26.674239120121747
+            },
+            "vel": {
+              "x": 4.022081092140387,
+              "y": 0.3028981382032061
+            },
+            "state": "up"
+          }
+        },
+        "matchedRecollectionIdentity": {
+          "acceptedStatesEqualEarlier498eOperator": true,
+          "finalFaStatesEqualEarlier903Candidate": true
+        }
+      },
+      {
+        "mode": "cluster",
+        "sameInitialBodiesAndGoal": true,
+        "goal": {
+          "x": 58,
+          "y": 26.666666666666668
+        },
+        "baselineResult": {
+          "progress": 2.4737992855304896,
+          "goalError": 5.5262007144695104,
+          "lateral": 0,
+          "speed": 0.00044941161317257894,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 1.7053025658242404e-13
+        },
+        "candidateResult": {
+          "progress": 7.6550389974033095,
+          "goalError": 0.3857990684791896,
+          "lateral": -0.17275076823822388,
+          "speed": 1.9251971806523034,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 7.887024366937112e-13
+        },
+        "retainedTrialResult": {
+          "progress": 2.584114940746595,
+          "goalError": 5.425830795031827,
+          "lateral": -0.3283730215341407,
+          "speed": 0.0764647888838941,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 1.7053025658242404e-13
+        },
+        "allStatesExact": false,
+        "directionFlips": {
+          "baseline": {
+            "requested": 0,
+            "achieved": 0
+          },
+          "retainedTrial": {
+            "requested": 10,
+            "achieved": 8
+          },
+          "candidate": {
+            "requested": 1,
+            "achieved": 1
+          }
+        },
+        "allRecordedBodiesUpright": true,
+        "positiveTorsoContactSamples": 0,
+        "firstChanged": {
+          "t": 2,
+          "sameIncomingBodies": true,
+          "sameAcquiredPictures": true,
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "baselineCommand": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "candidateCommand": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "baselineAchievedOwn": {
+            "pos": {
+              "x": 50.20055202730351,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 4.022081092140387,
+              "y": 0
+            },
+            "state": "up"
+          },
+          "candidateAchievedOwn": {
+            "pos": {
+              "x": 50.19210403911565,
+              "y": 26.666666666666668
+            },
+            "vel": {
+              "x": 3.6841615646258505,
+              "y": 0
+            },
+            "state": "up"
+          }
+        },
+        "matchedRecollectionIdentity": {
+          "acceptedStatesEqualEarlier498eOperator": true,
+          "finalFaStatesEqualEarlier903Candidate": true
+        }
+      },
+      {
+        "mode": "clear",
+        "sameInitialBodiesAndGoal": true,
+        "goal": {
+          "x": 58,
+          "y": 26.666666666666668
+        },
+        "baselineResult": {
+          "progress": 7.997166022118051,
+          "goalError": 0.0028339778819486128,
+          "lateral": 0,
+          "speed": 0.010179502557107867,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 3.481659405224491e-13
+        },
+        "candidateResult": {
+          "progress": 7.997166022118051,
+          "goalError": 0.0028339778819486128,
+          "lateral": 0,
+          "speed": 0.010179502557107867,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 3.481659405224491e-13
+        },
+        "retainedTrialResult": {
+          "progress": 7.997166022118051,
+          "goalError": 0.0028339778819486128,
+          "lateral": 0,
+          "speed": 0.010179502557107867,
+          "state": "up",
+          "contactIntervals": [],
+          "maximumWorkResidual": 3.481659405224491e-13
+        },
+        "allStatesExact": true,
+        "directionFlips": {
+          "baseline": {
+            "requested": 0,
+            "achieved": 0
+          },
+          "retainedTrial": {
+            "requested": 0,
+            "achieved": 0
+          },
+          "candidate": {
+            "requested": 0,
+            "achieved": 0
+          }
+        },
+        "allRecordedBodiesUpright": true,
+        "positiveTorsoContactSamples": 0,
+        "firstChanged": null,
+        "matchedRecollectionIdentity": {
+          "acceptedStatesEqualEarlier498eOperator": true,
+          "finalFaStatesEqualEarlier903Candidate": true
+        }
+      }
+    ],
+    "matchedBaseline": "/workspace/navigation-accepted-reference/out/navigation/local-matched-baseline.json",
+    "candidate": "out/navigation/local-final.json",
+    "finalOptimized": {
+      "source": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "codeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "toolSha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e",
+      "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "allRowsExactlyEqualGuardedFa": true
+    }
+  },
+  "failedDiscovery": {
+    "initialCollector": "local-baseline.json used an earlier4-mode operator and named the head-on scene blocked. local-centered.json uses the final5-mode operator and is the paired baseline. A finite stationary teammate is not proven an impassable wall.",
+    "trials": [
+      {
+        "path": "out/navigation/tangent-probe.json",
+        "sha256": "48b4a833ecc4fc5b1c1596a3cc9de6f3c68837de849d4365ae24283a02125a3c",
+        "source": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+        "operatorSha256": "daed0d76dd7338e496fff10d3845a9e7142dcc250dd272bc2bfb2e3d5968e2de",
+        "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "baselineSha256": "726cb042bebb6b85acd2d95d30d7cf9af41049d01cd249cad544e616a001c5e4",
+        "construction": "Native requested pace, unchanged raw facing/posture/effort; tangent on each side of the connected acquired-disc angular silhouette. Replan every.05s.",
+        "ranking": "Minimize max exact one-disc remaining path cost at achieved0.6s endpoint; that is only a lower bound for joint traffic. Reject worse peer interference; no future route is read.",
+        "limitations": [
+          "Staged feasibility only. Baseline may differ by the root joint-projection source change; source pins explicit.",
+          "Acquired peer motion is held constant for0.6s, with timestamps/age retained. No new perception calls, hidden routes or future body states enter selection.",
+          "Maximum of individual geometric detours does not certify a joint path. Radius is the existing physical touch distance, with no new buffer.",
+          "Peers receive free:true exactly as the saved staged experiment; bodies can move/collide, but this is not live football reaction."
+        ],
+        "rows": [
+          {
+            "mode": "head-on",
+            "result": {
+              "progress": 7.948992050429794,
+              "goalError": 0.05139545837394051,
+              "lateral": -0.006299382676960619,
+              "speed": 0.18460999869033345,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 15,
+              "maximumWorkResidual": 9.023892744153272e-13
+            },
+            "firstChangeAt": 2
+          },
+          {
+            "mode": "cluster",
+            "result": {
+              "progress": 2.5986604508911455,
+              "goalError": 5.412064822422651,
+              "lateral": -0.3405535454774764,
+              "speed": 0.008201561397455585,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 2,
+              "maximumWorkResidual": 1.7053025658242404e-13
+            },
+            "firstChangeAt": 2.95
+          },
+          {
+            "mode": "clear",
+            "result": {
+              "progress": 7.997166022118051,
+              "goalError": 0.0028339778819486128,
+              "lateral": 0,
+              "speed": 0.010179502557107867,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 0,
+              "maximumWorkResidual": 3.481659405224491e-13
+            },
+            "firstChangeAt": null
+          }
+        ]
+      },
+      {
+        "path": "out/navigation/tangent-probe-v2.json",
+        "sha256": "00909e320e6be4057a8a9c45bf5eb04b5f5eab117edbf70b543f28d37e88f517",
+        "source": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+        "operatorSha256": "bfc6476555426ffd683b6d773d5f6bdcec16e28dc43ac1bc1a72345d2cda7032",
+        "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "baselineSha256": "726cb042bebb6b85acd2d95d30d7cf9af41049d01cd249cad544e616a001c5e4",
+        "construction": "Native AND raw requested paces, unchanged raw facing/posture/effort; same tangent on each side of the connected acquired-disc angular silhouette. No positive-forward gate. Replan every.05s.",
+        "ranking": "Minimize max exact one-disc remaining path cost at achieved0.6s endpoint; that is only a lower bound for joint traffic. Reject worse peer interference; no future route is read.",
+        "limitations": [
+          "Staged feasibility only. Baseline may differ by the root joint-projection source change; source pins explicit.",
+          "Acquired peer motion is held constant for0.6s, with timestamps/age retained. No new perception calls, hidden routes or future body states enter selection.",
+          "Maximum of individual geometric detours does not certify a joint path. Radius is the existing physical touch distance, with no new buffer.",
+          "Peers receive free:true exactly as the saved staged experiment; bodies can move/collide, but this is not live football reaction."
+        ],
+        "rows": [
+          {
+            "mode": "head-on",
+            "result": {
+              "progress": 7.980210799040293,
+              "goalError": 0.01996617283850486,
+              "lateral": -0.002652467378382539,
+              "speed": 0.07171746426781296,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 21,
+              "directionFlips": {
+                "definition": "Nonzero lateral signs relative to the original+x goal, ignoring magnitudes<=1e-9 only for roundoff.",
+                "requested": 1,
+                "achieved": 1
+              },
+              "maximumWorkResidual": 7.176481631177012e-13
+            },
+            "firstChangeAt": 2
+          },
+          {
+            "mode": "cluster",
+            "result": {
+              "progress": 2.3425896878292747,
+              "goalError": 5.662375204357653,
+              "lateral": -0.23706858642323425,
+              "speed": 0.049052253134006046,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 26,
+              "directionFlips": {
+                "definition": "Nonzero lateral signs relative to the original+x goal, ignoring magnitudes<=1e-9 only for roundoff.",
+                "requested": 18,
+                "achieved": 12
+              },
+              "maximumWorkResidual": 1.7053025658242404e-13
+            },
+            "firstChangeAt": 2.95
+          },
+          {
+            "mode": "clear",
+            "result": {
+              "progress": 7.997166022118051,
+              "goalError": 0.0028339778819486128,
+              "lateral": 0,
+              "speed": 0.010179502557107867,
+              "state": "up",
+              "contactIntervals": [],
+              "tangentTicks": 0,
+              "directionFlips": {
+                "definition": "Nonzero lateral signs relative to the original+x goal, ignoring magnitudes<=1e-9 only for roundoff.",
+                "requested": 0,
+                "achieved": 0
+              },
+              "maximumWorkResidual": 3.481659405224491e-13
+            },
+            "firstChangeAt": null
+          }
+        ]
+      }
+    ],
+    "retainedTrial": {
+      "source": "9be7bcd59d66db8997e93b6dc498ef58cb0593c4eaf185744fae353314711af9",
+      "operatorSha256": "498eec7e64859a745736f0e46cf5d5d6311e02a669e0d7f88c3dc45396931fa9",
+      "clusterGoalError": 5.425830795031827,
+      "clusterDirectionFlips": {
+        "requested": 10,
+        "achieved": 8
+      },
+      "finding": "Same-side retention solves neither joint remaining-path ranking nor momentum/pace; it is superseded, not accepted as the final policy."
+    },
+    "firstCoupledRouteHold": {
+      "source": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "case": "A042",
+      "firstDecisionAt": 1.95,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": -1.8483442273457844
+      },
+      "ordinary": {
+        "vel": {
+          "x": 3.5899727904208216,
+          "y": -0.7656481655607994
+        },
+        "facing": -1.8483442273457844
+      },
+      "entries": [
+        {
+          "command": {
+            "vel": {
+              "x": 3.5899727904208216,
+              "y": -0.7656481655607994
+            },
+            "facing": -1.8483442273457844
+          },
+          "predictedDT13Encounter": {
+            "peer": 13,
+            "min": -0.493198392057091,
+            "first": {
+              "t": 0.24030215209598893,
+              "closing": 0.825177668149459
+            }
+          },
+          "remainingJointCost": null
+        },
+        {
+          "command": {
+            "vel": {
+              "x": -9.324513588082276,
+              "y": -1.4592625228530565
+            },
+            "facing": -1.8483442273457844
+          },
+          "predictedDT13Encounter": {
+            "peer": 13,
+            "min": 0.041979810570121345,
+            "first": null
+          },
+          "remainingJointCost": null
+        },
+        {
+          "command": {
+            "vel": {
+              "x": -3.626569999898364,
+              "y": -0.5675489276050589
+            },
+            "facing": -1.8483442273457844
+          },
+          "predictedDT13Encounter": {
+            "peer": 13,
+            "min": 0.006572226939789094,
+            "first": null
+          },
+          "remainingJointCost": null
+        },
+        {
+          "command": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": -1.8483442273457844
+          },
+          "predictedDT13Encounter": {
+            "peer": 13,
+            "min": -0.22666710811651247,
+            "first": {
+              "t": 0.17692535733594705,
+              "closing": 1.3351372333097293
+            }
+          },
+          "remainingJointCost": 1.6294469729715129
+        }
+      ],
+      "actualOriginalDT13Impact": {
+        "t": 2.2,
+        "impulse": 29.46136098579473
+      },
+      "actualRejectedRouteDT13Impact": {
+        "t": 2.1,
+        "impulse": 84.17380373231832
+      },
+      "finding": "Less maximum penetration did not justify an earlier/harder encounter. Initial903 is held as a complete navigation candidate. Guardedfa retains ordinary at this decision and exactly matches#183 nativeA042 rows/events/signature.",
+      "guardedSelected": {
+        "vel": {
+          "x": 3.5899727904208216,
+          "y": -0.7656481655607994
+        },
+        "facing": -1.8483442273457844
+      },
+      "retainedOrdinary": true
+    }
+  },
+  "controls": {
+    "clear": "Full staged clear-route states exactly match accepted baseline.",
+    "mirror": "Offset/mirror movement stays useful; candidate records one boundary-touch sample with zero normal impulse at2.90 in each. Do not call it an impact or hide it as no contact.",
+    "blockedOrUnknown": "Finalfa local-route contracts pass, including occupied goal, unknown peer motion/age/goal flow, constrained actor, real unavoidable close obstruction and the historical moving-contact first-touch-risk regression. Contact is allowed; it is not a universal zero-contact veto.",
+    "geometry": "path-geometry.json passes its focused traffic-path command at sourcee5bf7ce. Exact one-circle arc length, overlap seams, mirrored side, contained duplicates, boundary/start/invalid-input cases and represented bounds are in the test. This is not final runtime or native validation."
+  },
+  "portableEvidencePlan": {
+    "published": "Selected matched native arms, staged/failed trial results, exact source overlays, operators, inputs, figure and all scoped receipts; see publishedPacket and member manifest.",
+    "provenance": "Original local paths in receipts/artifacts are recorded provenance, not missing external dependencies. Selected payloads are published inside the archive.",
+    "sourceOverlayRule": "Load accepted base2c98 source and overlay sources/<arm>/src from packet; source.json verifies each whole runtime fingerprint."
+  },
+  "selectedTapes": [
+    {
+      "mode": "head-on",
+      "initialBodies": [
+        {
+          "pos": {
+            "x": 50,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 4,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 9.45175092917949,
+            "tau": 1.2423641257855118,
+            "brake": 6.316768707482992,
+            "lateral": 6.651894557823131,
+            "turnRate": 9.026666666666667,
+            "backpedal": 0.7075510204081633,
+            "shuffle": 0.6152,
+            "massKg": 93.89362059,
+            "heightYd": 2.0166666666666666,
+            "radius": 0.26454545454545453,
+            "reach": 1.0197222222222222,
+            "maxCatchHeight": 3.477722222222222,
+            "reactReach": 2.9804999999999997,
+            "reactionTime": 0.19195918367346942,
+            "power": 92.44210186353213,
+            "balance": 0.2653061224489796,
+            "bend": 0.6477278911564627,
+            "stepSpeed": 3.7018503401360543,
+            "getUp": 0.8678333333333333
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -1.765177013081027
+        },
+        {
+          "pos": {
+            "x": 53,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 8.685242656193026,
+            "tau": 1.047086886615699,
+            "brake": 5.810294784580499,
+            "lateral": 6.314823129251702,
+            "turnRate": 8.184444444444445,
+            "backpedal": 0.5377551020408163,
+            "shuffle": 0.5268,
+            "massKg": 121.56275516000001,
+            "heightYd": 2.1222222222222222,
+            "radius": 0.32,
+            "reach": 1.0480555555555555,
+            "maxCatchHeight": 3.653666666666667,
+            "reactReach": 3.1342222222222222,
+            "reactionTime": 0.25918367346938775,
+            "power": 124.33513023941428,
+            "balance": 0.37755102040816324,
+            "bend": 0.46084353741496614,
+            "stepSpeed": 3.2794195011337868,
+            "getUp": 1.0207777777777778
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0
+        }
+      ],
+      "goal": {
+        "x": 58,
+        "y": 26.666666666666668
+      },
+      "times": [
+        2,
+        4.95
+      ],
+      "baselineFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.20055202730351,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4.022081092140387,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -6.217248937900877e-14
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 52.47377425414092,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.000551843969725851,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0.00044941161317257894,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 52.47379928553049,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.00044941161317257894,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -8.470329472543003e-22
+        }
+      ],
+      "candidateFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 4.478167948082632,
+              "y": 0.7976687049794405
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.20055202730351,
+                "y": 26.674239120121747
+              },
+              "vel": {
+                "x": 4.022081092140387,
+                "y": 0.3028981382032061
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -1.1191048088221578e-13
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 57.97630606986801,
+                "y": 26.669842508726624
+              },
+              "vel": {
+                "x": 0.08510737649550036,
+                "y": -0.011407461083127401
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 0.07108179039597219,
+              "y": -0.009527526179869739
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0.07108179039597219,
+              "y": -0.009527526179869739
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 57.98021079904029,
+                "y": 26.66931913404505
+              },
+              "vel": {
+                "x": 0.07108179039597219,
+                "y": -0.009527526179869739
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -5.551115123125783e-17
+        }
+      ],
+      "reproductionLimit": "These excerpts attribute requests and observed motion. Replay from the full initial bodies through the published collector/fixture; compact midstep fields do not restore complete support/controller state."
+    },
+    {
+      "mode": "cluster",
+      "initialBodies": [
+        {
+          "pos": {
+            "x": 50,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 4,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 9.45175092917949,
+            "tau": 1.2423641257855118,
+            "brake": 6.316768707482992,
+            "lateral": 6.651894557823131,
+            "turnRate": 9.026666666666667,
+            "backpedal": 0.7075510204081633,
+            "shuffle": 0.6152,
+            "massKg": 93.89362059,
+            "heightYd": 2.0166666666666666,
+            "radius": 0.26454545454545453,
+            "reach": 1.0197222222222222,
+            "maxCatchHeight": 3.477722222222222,
+            "reactReach": 2.9804999999999997,
+            "reactionTime": 0.19195918367346942,
+            "power": 92.44210186353213,
+            "balance": 0.2653061224489796,
+            "bend": 0.6477278911564627,
+            "stepSpeed": 3.7018503401360543,
+            "getUp": 0.8678333333333333
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -1.765177013081027
+        },
+        {
+          "pos": {
+            "x": 53,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 8.685242656193026,
+            "tau": 1.047086886615699,
+            "brake": 5.810294784580499,
+            "lateral": 6.314823129251702,
+            "turnRate": 8.184444444444445,
+            "backpedal": 0.5377551020408163,
+            "shuffle": 0.5268,
+            "massKg": 121.56275516000001,
+            "heightYd": 2.1222222222222222,
+            "radius": 0.32,
+            "reach": 1.0480555555555555,
+            "maxCatchHeight": 3.653666666666667,
+            "reactReach": 3.1342222222222222,
+            "reactionTime": 0.25918367346938775,
+            "power": 124.33513023941428,
+            "balance": 0.37755102040816324,
+            "bend": 0.46084353741496614,
+            "stepSpeed": 3.2794195011337868,
+            "getUp": 1.0207777777777778
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0
+        },
+        {
+          "pos": {
+            "x": 52.4,
+            "y": 25.866666666666667
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 9.40754637702692,
+            "tau": 1.3740865587203592,
+            "brake": 6.717108843537414,
+            "lateral": 6.350666666666668,
+            "turnRate": 8.913333333333332,
+            "backpedal": 0.6193877551020408,
+            "shuffle": 0.5876,
+            "massKg": 107.04779932000001,
+            "heightYd": 2.113888888888889,
+            "radius": 0.2909090909090909,
+            "reach": 1.0480555555555555,
+            "maxCatchHeight": 3.5648055555555556,
+            "reactReach": 3.093972222222222,
+            "reactionTime": 0.1897551020408164,
+            "power": 101.95210560747145,
+            "balance": 0.3163265306122449,
+            "bend": 0.5645986394557823,
+            "stepSpeed": 3.6211292517006797,
+            "getUp": 0.9101666666666668
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0
+        },
+        {
+          "pos": {
+            "x": 52.4,
+            "y": 27.46666666666667
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 9.258832053253572,
+            "tau": 1.080681652732213,
+            "brake": 6.858537414965985,
+            "lateral": 6.883081632653062,
+            "turnRate": 9.313333333333333,
+            "backpedal": 0.5306122448979592,
+            "shuffle": 0.5356000000000001,
+            "massKg": 109.76935354000001,
+            "heightYd": 2.1055555555555556,
+            "radius": 0.2963636363636364,
+            "reach": 1.0480555555555555,
+            "maxCatchHeight": 3.6159444444444446,
+            "reactReach": 3.1062222222222227,
+            "reactionTime": 0.29310204081632657,
+            "power": 113.41526421115,
+            "balance": 0.5306122448979592,
+            "bend": 0.680122448979592,
+            "stepSpeed": 3.819034013605442,
+            "getUp": 0.8958333333333333
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0
+        }
+      ],
+      "goal": {
+        "x": 58,
+        "y": 26.666666666666668
+      },
+      "times": [
+        2,
+        4.95
+      ],
+      "baselineFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 2,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 25.866666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 3,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 27.46666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 4.548655134667629,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.20055202730351,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4.022081092140387,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -6.217248937900877e-14
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 52.47377425414092,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.000551843969725851,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 2,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 25.866666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 3,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 27.46666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0.00044941161317257894,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 52.47379928553049,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.00044941161317257894,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -8.470329472543003e-22
+        }
+      ],
+      "candidateFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 2,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 25.866666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 3,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 27.46666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.19210403911565,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 3.6841615646258505,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": 7.105427357601002e-14
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 57.561909142084716,
+                "y": 26.44727800622875
+              },
+              "vel": {
+                "x": 2.0037853139301007,
+                "y": 1.0034625646383903
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 1.3142725737458534,
+              "y": 0.6581659813137541
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 26.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 2,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 25.866666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            },
+            {
+              "peer": 3,
+              "picture": {
+                "pos": {
+                  "x": 52.4,
+                  "y": 27.46666666666667
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 1.3142725737458534,
+              "y": 0.6581659813137541
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 57.65503899740331,
+                "y": 26.493915898428444
+              },
+              "vel": {
+                "x": 1.7214088988137626,
+                "y": 0.8620531233493485
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 25.866666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 52.4,
+                "y": 27.46666666666667
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": -5.684341886080802e-14
+        }
+      ],
+      "reproductionLimit": "These excerpts attribute requests and observed motion. Replay from the full initial bodies through the published collector/fixture; compact midstep fields do not restore complete support/controller state."
+    },
+    {
+      "mode": "clear",
+      "initialBodies": [
+        {
+          "pos": {
+            "x": 50,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 4,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 9.45175092917949,
+            "tau": 1.2423641257855118,
+            "brake": 6.316768707482992,
+            "lateral": 6.651894557823131,
+            "turnRate": 9.026666666666667,
+            "backpedal": 0.7075510204081633,
+            "shuffle": 0.6152,
+            "massKg": 93.89362059,
+            "heightYd": 2.0166666666666666,
+            "radius": 0.26454545454545453,
+            "reach": 1.0197222222222222,
+            "maxCatchHeight": 3.477722222222222,
+            "reactReach": 2.9804999999999997,
+            "reactionTime": 0.19195918367346942,
+            "power": 92.44210186353213,
+            "balance": 0.2653061224489796,
+            "bend": 0.6477278911564627,
+            "stepSpeed": 3.7018503401360543,
+            "getUp": 0.8678333333333333
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -1.765177013081027
+        },
+        {
+          "pos": {
+            "x": 53,
+            "y": 30.666666666666668
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "energy": 1,
+          "profile": {
+            "vmax": 8.685242656193026,
+            "tau": 1.047086886615699,
+            "brake": 5.810294784580499,
+            "lateral": 6.314823129251702,
+            "turnRate": 8.184444444444445,
+            "backpedal": 0.5377551020408163,
+            "shuffle": 0.5268,
+            "massKg": 121.56275516000001,
+            "heightYd": 2.1222222222222222,
+            "radius": 0.32,
+            "reach": 1.0480555555555555,
+            "maxCatchHeight": 3.653666666666667,
+            "reactReach": 3.1342222222222222,
+            "reactionTime": 0.25918367346938775,
+            "power": 124.33513023941428,
+            "balance": 0.37755102040816324,
+            "bend": 0.46084353741496614,
+            "stepSpeed": 3.2794195011337868,
+            "getUp": 1.0207777777777778
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.2,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0
+          },
+          "spin": 0
+        }
+      ],
+      "goal": {
+        "x": 58,
+        "y": 26.666666666666668
+      },
+      "times": [
+        2,
+        4.95
+      ],
+      "baselineFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 30.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.202632305614074,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4.105292224563048,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": 9.947598300641403e-14
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 57.996606832480964,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.01218808292637874,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 0.010179502557107867,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 30.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0.010179502557107867,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 57.99716602211805,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.010179502557107867,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": 0
+        }
+      ],
+      "candidateFrames": [
+        {
+          "t": 2,
+          "before": [
+            {
+              "pos": {
+                "x": 50,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 30.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 6.616225650425642,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 50.202632305614074,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 4.105292224563048,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": 9.947598300641403e-14
+        },
+        {
+          "t": 4.95,
+          "before": [
+            {
+              "pos": {
+                "x": 57.996606832480964,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.01218808292637874,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "raw": {
+            "vel": {
+              "x": 0.010179502557107867,
+              "y": 0
+            },
+            "facing": 0,
+            "objective": {
+              "kind": "moving",
+              "point": {
+                "x": 58,
+                "y": 26.666666666666668
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "acquired": [
+            {
+              "peer": 1,
+              "picture": {
+                "pos": {
+                  "x": 53,
+                  "y": 30.666666666666668
+                },
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": null
+              }
+            }
+          ],
+          "command": {
+            "vel": {
+              "x": 0.010179502557107867,
+              "y": 0
+            },
+            "facing": 0
+          },
+          "after": [
+            {
+              "pos": {
+                "x": 57.99716602211805,
+                "y": 26.666666666666668
+              },
+              "vel": {
+                "x": 0.010179502557107867,
+                "y": 0
+              },
+              "state": "up"
+            },
+            {
+              "pos": {
+                "x": 53,
+                "y": 30.666666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up"
+            }
+          ],
+          "contacts": [],
+          "workResidual": 0
+        }
+      ],
+      "reproductionLimit": "These excerpts attribute requests and observed motion. Replay from the full initial bodies through the published collector/fixture; compact midstep fields do not restore complete support/controller state."
+    }
+  ],
+  "environment": {
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "fileSnapshotsAtDraft": [
+    {
+      "path": "src/sim/spacing.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "3d859cb4ccd635e8b3c40751828ea2090d15932a377cec275ad3dac9806d9a8c"
+    },
+    {
+      "path": "src/sim/traffic-path.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "ece9269a00140c0d1848b9038905dccf30876f9d342bedc5f4b36454ade80061"
+    },
+    {
+      "path": "src/sim/traffic-distance.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "a3aa22df1f725107eb1a62f46e6532f44412c442ff09f190181acdd2e5c59325"
+    },
+    {
+      "path": "src/sim/traffic-route.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "1f6c6ddec5ad479cf5f07d19b3dfcc57f4c4c50ad4adbe0ed5decc4dd483b4ce"
+    },
+    {
+      "path": "scripts/diag/navigation/local-passage.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "d514ccc8c64fffd23fb8b030d3c563c537d256e36c0d00b8f172ef1597abc05e"
+    },
+    {
+      "path": "scripts/diag/navigation/native-traffic.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f"
+    },
+    {
+      "path": "test/traffic-distance.test.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "f53d2d29d0fb87e3942101d2bd2576b75deda14ae092543dbf8ff303f1fae20b"
+    },
+    {
+      "path": "test/local-traffic-route.test.ts",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "6395eef2028253bd1bbd92a6922ecc4aac4e5babd55c5814db3e6c1b0257acb2"
+    },
+    {
+      "path": "test/fixtures/traffic-route-impact.json",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "b7adeb30890530c852563c0529d134b0e4167008d9577fbad399fb98fccf1db2"
+    },
+    {
+      "path": "test/fixtures/traffic-step.json.gz",
+      "commit": "5248e884fd450b44045e753caaf782a306710e0c",
+      "sha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "out/navigation/local-baseline.json",
+      "sha256": "b5b69b3d72e7c8eb2c065c5256076310966e526dbabf3816eba6f6b9e83673c4",
+      "bytes": 699599,
+      "producingSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "operatorSha256": "0d6603af5546513dbb680ecbac62f99824dc43c1a6d7cc56b2169d80b7bf5bf4",
+      "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "status": "discovery only; not a final paired arm"
+    },
+    {
+      "path": "out/navigation/local-centered.json",
+      "sha256": "726cb042bebb6b85acd2d95d30d7cf9af41049d01cd249cad544e616a001c5e4",
+      "bytes": 842731,
+      "producingSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "operatorSha256": "498eec7e64859a745736f0e46cf5d5d6311e02a669e0d7f88c3dc45396931fa9",
+      "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "status": "earlier accepted498collector; complete states exactlyequal final matched d514accepted"
+    },
+    {
+      "path": "out/navigation/tangent-probe.json",
+      "sha256": "48b4a833ecc4fc5b1c1596a3cc9de6f3c68837de849d4365ae24283a02125a3c",
+      "bytes": 3723295,
+      "producingSource": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "operatorSha256": "daed0d76dd7338e496fff10d3845a9e7142dcc250dd272bc2bfb2e3d5968e2de",
+      "fixtureSha256": null,
+      "status": "discovery only; not a final paired arm"
+    },
+    {
+      "path": "out/navigation/tangent-probe-v2.json",
+      "sha256": "00909e320e6be4057a8a9c45bf5eb04b5f5eab117edbf70b543f28d37e88f517",
+      "bytes": 4596115,
+      "producingSource": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "operatorSha256": "bfc6476555426ffd683b6d773d5f6bdcec16e28dc43ac1bc1a72345d2cda7032",
+      "fixtureSha256": null,
+      "status": "discovery only; not a final paired arm"
+    },
+    {
+      "path": "out/navigation/local-retained.json",
+      "sha256": "de93edd11f65cb5052828bfa7b3f8ce4cbfa9705df4689da6de647c847c8a04c",
+      "bytes": 866675,
+      "producingSource": "9be7bcd59d66db8997e93b6dc498ef58cb0593c4eaf185744fae353314711af9",
+      "operatorSha256": "498eec7e64859a745736f0e46cf5d5d6311e02a669e0d7f88c3dc45396931fa9",
+      "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "status": "discovery only; not a final paired arm"
+    },
+    {
+      "path": "out/navigation/local-joint-route.json",
+      "sha256": "d9e037dc6e5189526bb28de9ae7a085f8611b46ae1f3096e6f1d5cc0cdf1f0b1",
+      "bytes": 861471,
+      "producingSource": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "operatorSha256": "498eec7e64859a745736f0e46cf5d5d6311e02a669e0d7f88c3dc45396931fa9",
+      "fixtureSha256": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+      "status": "earlier903staged candidate; complete states exactlyequal guarded finalfa; not final native adoption"
+    },
+    {
+      "absolutePath": "/workspace/navigation-accepted-reference/out/navigation/local-matched-baseline.json",
+      "sha256": "e2ba54c1208b90772e0cb1ecdc4a43232c05e777c5fc66b38e7a2358d69beacd",
+      "bytes": 842739,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/local-final.json",
+      "sha256": "5e6862d42611cc538d230661feda266d0fbd52c2dc1acb4fc315c6a400a9f8e7",
+      "bytes": 861471,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/route-decision.json",
+      "sha256": "5898896b3a4c26499c749f37fcb32de7a7d6370d29e4e35a1e76dd4630225823",
+      "bytes": 31011,
+      "status": "held903first nativecontact-risk diagnostic"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/route-decision-impact.json",
+      "sha256": "970a6b78c2a57d01422abea6b56b84d628d99f6e872d2fa7b7849102be566438",
+      "bytes": 31046,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/navigation-accepted-reference/out/navigation/A008-baseline.json.gz",
+      "sha256": "b627865ee021d9d0a07bf5730dd669327dc2a164539f8d852773b7647dc59ef5",
+      "bytes": 1140313,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A008-impact-route.json.gz",
+      "sha256": "08062ab93e0cd439db4c5373f214e08f3916f6f9a0cb1233c3dc56169ca6aef2",
+      "bytes": 1140317,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/navigation-accepted-reference/out/navigation/A044-baseline.json.gz",
+      "sha256": "2994c75b425c7bc1c49e556c504361a66e80c1a069d27e9827329aeaf1ec0147",
+      "bytes": 1004400,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A044-impact-route.json.gz",
+      "sha256": "ce12812755767776193bb5e4663a38ce5323de62e9cf13500b30874ebc418ff8",
+      "bytes": 1004126,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A042-route.json.gz",
+      "sha256": "d72f11b3e38913a5a9207b3ff61141b0b745d765ea336a4c6e6727c8db28d55d",
+      "bytes": 1634330,
+      "status": "held903native discovery"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A042-impact-route.json.gz",
+      "sha256": "dc88ce54ab17baf2b53ff8088002ca7f581c15da76f38c0b15b798e565d4b65a",
+      "bytes": 1687281,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A042-joint-final.json.gz",
+      "sha256": "844af90a97963984eda48a36b5cfd71663eb74fba609e713484d0724c466d0ab",
+      "bytes": 1687274,
+      "status": "final matched/staged/native evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A008-cost-route.json.gz",
+      "sha256": "f5acbb3135174a1dcb9487b1b089cda7bf074c465ef89876a2d62fe0619993c5",
+      "bytes": 1140309,
+      "status": "scalar-only no-gain trial"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A008-lazy-path.json.gz",
+      "sha256": "bfecf021283ec859107a1359b870b5bfd10efe4e0862b780ca6879a90f7b87dd",
+      "bytes": 1140317,
+      "status": "final optimized or explicitly qualified pure geometry evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A042-lazy-path.json.gz",
+      "sha256": "0d2acef3279b79cbd38c52f474211dc5ffa0002f0b47430f0b610c053561654f",
+      "bytes": 1687277,
+      "status": "final optimized or explicitly qualified pure geometry evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/A044-lazy-path.json.gz",
+      "sha256": "51c6b4a88b8f547a9fff0d9734e0ebf36257181726e3fba1d62a42d71cfd2aaa",
+      "bytes": 1004119,
+      "status": "final optimized or explicitly qualified pure geometry evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/local-lazy-path.json",
+      "sha256": "8dacf818c3dfb021af4d33e6d13caff3f14cf7d4be6fda0dbfa782dc7f014afd",
+      "bytes": 861471,
+      "status": "final optimized or explicitly qualified pure geometry evidence"
+    },
+    {
+      "absolutePath": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe.json",
+      "sha256": "d2631b94ccedfa88cde52b946146af7830c078b2d445bed1c193281ce3d666fc",
+      "bytes": 10453,
+      "status": "final optimized or explicitly qualified pure geometry evidence"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A008-impact-route-launch.json",
+      "sha256": "3e222d26398ac9390a11aa88889ec64ba8e0eba6a32cfd3f8ef2213b21247b15",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A008-setup.json",
+            "out/navigation/A008-impact-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.277515596
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:58:36.855Z",
+      "finishedAt": "2026-10-20T20:58:40.134Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A008-route-launch.json",
+      "sha256": "28d32385134cb61f1ea42326dfc8345862f74b8a179cebcc3bac1c912996f631",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "4b7ccc9eea8f50fc1195f4f6f0fc142cad5512f6f231be302baa1d0cee1d60e5",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A008-setup.json",
+            "out/navigation/A008-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.12017584
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:52:54.581Z",
+      "finishedAt": "2026-10-20T20:52:57.704Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A042-impact-route-launch.json",
+      "sha256": "c8c7e578876024835dc19ab3f440ca4bc45f90d321671ae4b2d6bf774f6d6704",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "out/navigation/A042-impact-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.147636428
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:57:52.157Z",
+      "finishedAt": "2026-10-20T20:57:56.306Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A044-impact-route-launch.json",
+      "sha256": "1af74580c23c8cedbe2b21385808d1f92d8e6d32d39ca5dfa19245c1e6c18477",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A044-setup.json",
+            "out/navigation/A044-impact-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.646409172
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:58:57.790Z",
+      "finishedAt": "2026-10-20T20:59:00.439Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A044-route-launch.json",
+      "sha256": "6c9fa76fbb1569f0d962e0edefc9338a4c03fdc4d6106ad273da747112423743",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "4b7ccc9eea8f50fc1195f4f6f0fc142cad5512f6f231be302baa1d0cee1d60e5",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A044-setup.json",
+            "out/navigation/A044-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.605649598
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:53:27.014Z",
+      "finishedAt": "2026-10-20T20:53:29.622Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe-launch.json",
+      "sha256": "666a976349d91c35c9c8a172aeaedaf1481501c6abcfafe3157f2a25e7b5322e",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "1e33601d15e35576db0a7933bbd5da1508f735ccdc6693926c078f777c59d0e8",
+      "head": "dbb32f044d81ea7d995eb589ab46a1f629a1874c",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "/workspace/.football-tools/node-v22.23.3-linux-x64/bin/node",
+            "--import",
+            "tsx",
+            "out/navigation/distance-lazy-probe.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.24424139199999997
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "startedAt": "2026-10-20T21:06:57.646Z",
+      "finishedAt": "2026-10-20T21:06:57.893Z",
+      "scope": "pure-cost scalar diagnostic; failed first attempt retained, final implementation separately verified"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/distance-lazy-probe-retry-launch.json",
+      "sha256": "4c5f31cc3a07e0666fae773984ceca2824a689305a2cf35c07338ca04b81eb5b",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "1e33601d15e35576db0a7933bbd5da1508f735ccdc6693926c078f777c59d0e8",
+      "head": "dbb32f044d81ea7d995eb589ab46a1f629a1874c",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "/workspace/.football-tools/node-v22.23.3-linux-x64/bin/node",
+            "--import",
+            "tsx",
+            "out/navigation/distance-lazy-probe.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9587174970000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:07:14.914Z",
+      "finishedAt": "2026-10-20T21:07:15.876Z",
+      "scope": "pure-cost scalar diagnostic; failed first attempt retained, final implementation separately verified"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-baseline-launch.json",
+      "sha256": "347d00926bc47ca54c6ee7a8d88a6ef271b2468b44215fb2856a9176580c376e",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "c7eacfa5dae0d408f8c54e12c3ac029e7ad58f03113da7f0a9fe7a4396ed5910",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-baseline.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.46641515400000005
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:19:10.337Z",
+      "finishedAt": "2026-10-20T20:19:10.806Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-centered-launch.json",
+      "sha256": "0de902dd0f38b99a65dd569bc7f9fa17c1389bce2d9b67a635a2c8995ac4c731",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "08e1c577716fa9ad7269cd358b793abebb88de00917adf9b8606c06d14c7829b",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-centered.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.40192542299999995
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:19:40.004Z",
+      "finishedAt": "2026-10-20T20:19:40.408Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-final-launch.json",
+      "sha256": "20345effc2fba617806c4bf0f59e383798913e2c6057147e53d59a1e9995a296",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-final.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.548943367
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:59:28.077Z",
+      "finishedAt": "2026-10-20T20:59:28.628Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-joint-route-launch.json",
+      "sha256": "65afc5149cde0b62a3c887cfacdc32cf81ee0212dcc63d2a9624ef16368b3ea5",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "1446ff2a20736defa5add4f69c8d31f718671259ca0c53b2994f6d2a26fd2e0f",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-joint-route.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.530588593
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:45:00.438Z",
+      "finishedAt": "2026-10-20T20:45:00.971Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-retained-launch.json",
+      "sha256": "76a12ce3c9c6f773a4e1717fbe2a110c9c2a0e13602207187e9e31a4c24e5cdc",
+      "sourceSha256": "9be7bcd59d66db8997e93b6dc498ef58cb0593c4eaf185744fae353314711af9",
+      "validationSha256": "e61cd3e34ecfa56cd2c151ffa747c3d62d9d0e9f77d17d2ae63766834395d158",
+      "head": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-retained.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.5310576739999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:36:43.828Z",
+      "finishedAt": "2026-10-20T20:36:44.362Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/native-route-launch.json",
+      "sha256": "78fc28257f512716b5a33ebea5d1a0890328c4fb19c4dc3c877631b2971696a0",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "4b7ccc9eea8f50fc1195f4f6f0fc142cad5512f6f231be302baa1d0cee1d60e5",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "out/navigation/A042-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.227789256
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:52:24.651Z",
+      "finishedAt": "2026-10-20T20:52:28.881Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/path-geometry.json",
+      "sha256": "ed73fa26bf9c7b83bc3a8fcfb33debb2b8d37d34a288fa99267c0f2d8ac088a8",
+      "sourceSha256": "e5bf7ce821bdfc8294c517f31031295d9f875f313df0787679e012d35310327a",
+      "validationSha256": "1446ff2a20736defa5add4f69c8d31f718671259ca0c53b2994f6d2a26fd2e0f",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/traffic-path.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.828039263
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:43:39.577Z",
+      "finishedAt": "2026-10-20T20:43:40.407Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-decision-impact-launch.json",
+      "sha256": "684e7b3f0718fbf70aca5c7d858b70e6cfc8d5c83049ad7e3067a59bb5909dd6",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/navigation/route-decision-impact.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7978728650000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:57:24.671Z",
+      "finishedAt": "2026-10-20T20:57:25.471Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-decision-launch.json",
+      "sha256": "b6fc88a6ba5416bb93b5918771cf2d565ccce41c53ef6cc96f10889f5bffa3cd",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "2c839f9f2029847acf2a3ce98d317c8b22cda6814aee97d572391baecf796885",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/navigation/route-decision.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.786956224
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:55:57.325Z",
+      "finishedAt": "2026-10-20T20:55:58.115Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-final-focused-launch.json",
+      "sha256": "623f9a9ec24728958434fdfc9baa1a372a3051c3fc2d0f9904f1a1d7e6f61bac",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "1e33601d15e35576db0a7933bbd5da1508f735ccdc6693926c078f777c59d0e8",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/local-traffic-route.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-residual-motion.test.ts",
+            "test/spacing-forecast-reuse.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.8247796119999997
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:00:15.087Z",
+      "finishedAt": "2026-10-20T21:00:16.914Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-final-typecheck-launch.json",
+      "sha256": "8c02469401099a6e08abf3600dafe25bea3584d65a2ad408a37304ae7e79a8b4",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "1e33601d15e35576db0a7933bbd5da1508f735ccdc6693926c078f777c59d0e8",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "-p",
+            "tsconfig.json",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.53208042
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:00:31.640Z",
+      "finishedAt": "2026-10-20T21:00:43.174Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-focused-launch.json",
+      "sha256": "cd0f02d9a6add8381b5cdb4b24f1d0ee8815dfab34e29e441a6e9f0c12a3f4f0",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "2c839f9f2029847acf2a3ce98d317c8b22cda6814aee97d572391baecf796885",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/local-traffic-route.test.ts",
+            "test/traffic-path.test.ts",
+            "test/traffic-step.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-residual-motion.test.ts",
+            "test/spacing-forecast-reuse.test.ts",
+            "test/joint-spacing.test.ts",
+            "test/joint-spacing-projection.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.068168239
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:53:40.409Z",
+      "finishedAt": "2026-10-20T20:53:43.479Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-impact-focused-launch.json",
+      "sha256": "3fb7b06b20b951a672eb36e5187a5f6534d31bfc43f3c9a98f1791e6745d46b5",
+      "sourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "validationSha256": "be89ee997b1f32a33e5b44e500b5b09261f3b5c9ff264740b1a48f16a5f97163",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/local-traffic-route.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-residual-motion.test.ts",
+            "test/spacing-forecast-reuse.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.8692344459999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:57:25.713Z",
+      "finishedAt": "2026-10-20T20:57:27.585Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-typecheck-launch.json",
+      "sha256": "8aab9e6c63a2f3cdbfcfb329e5f7366fc8e07b759a09e6afd7d13fd7678b0fec",
+      "sourceSha256": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "validationSha256": "2c839f9f2029847acf2a3ce98d317c8b22cda6814aee97d572391baecf796885",
+      "head": "ed7249bd06af20d2026c9422fbddf6cf18b43c48",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "-p",
+            "tsconfig.json",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.369281581000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:53:53.007Z",
+      "finishedAt": "2026-10-20T20:54:04.379Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/tangent-probe-launch.json",
+      "sha256": "612aa24b2424c47630a9724a1ee5b9166d166cac820ff630eec79b03b599c966",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/navigation/tangent-probe.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.44411562200000004
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:27:10.315Z",
+      "finishedAt": "2026-10-20T20:27:10.762Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/tangent-probe-v2-launch.json",
+      "sha256": "c99102307f5a790d03e4b34cbdd381ec21f17d50460f8d78e71300c950366f97",
+      "sourceSha256": "490b2f273ea6d5bb7f2ebf5eb617545bd4a0df4ecdd6c758740b0b109c4c31c5",
+      "validationSha256": "42823a3f394bd9939858ac5484190c3e5f18526bb9109719dc2fc169c2bf0901",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/teammate-navigation",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/navigation/tangent-probe-v2.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.481979385
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:29:44.349Z",
+      "finishedAt": "2026-10-20T20:29:44.833Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/navigation-accepted-reference/out/navigation/A008-baseline-launch.json",
+      "sha256": "01257f5fba87933156a47dd8bac331a0f1aa64830167e1fe5a7fbfeb351dac29",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "0a13482779111767ed740625db16095b633a85da1236c0f431f919cd97a2df99",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/navigation-accepted-reference",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A008-setup.json",
+            "out/navigation/A008-baseline.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.6915408309999997
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:50:48.144Z",
+      "finishedAt": "2026-10-20T20:50:50.839Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/navigation-accepted-reference/out/navigation/A044-baseline-launch.json",
+      "sha256": "d64ead4a91ab0b6e6ef6e08bb739fffe98342998a31687ad8248438ff88b2ee0",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "0a13482779111767ed740625db16095b633a85da1236c0f431f919cd97a2df99",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/navigation-accepted-reference",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A044-setup.json",
+            "out/navigation/A044-baseline.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.570550231
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:53:15.962Z",
+      "finishedAt": "2026-10-20T20:53:18.536Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/navigation-accepted-reference/out/navigation/local-matched-baseline-launch.json",
+      "sha256": "ef6ceb9676d219e65bce761aebc07d412fb8ded5c4d3f704bcc0c18c18868b5e",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "validationSha256": "74036c8272ea8d06d858c1accede6664853b58bb748cab1b9bfb89f274c99a03",
+      "head": "2c98bed94adad8087c65f381d4090444ad283985",
+      "branch": "codex/navigation-accepted-reference",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "out/navigation/local-matched-baseline.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.389048909
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T20:59:57.675Z",
+      "finishedAt": "2026-10-20T20:59:58.066Z",
+      "scope": "local behavior, controls or verification"
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A008-cost-route-launch.json",
+      "sha256": "6c1345e8721b216c52d90d091ee0f6ba0e995746fe80baacfd721fa8cc69c8ac",
+      "sourceSha256": "98913cae17dff2381547e71e1970186011027a86349501cb7212bb6d0e66908b",
+      "validationSha256": "01dd708ed63b6b9b44a0547e615fc4dcd4cd137961d2d95dd5256994e33e6c6c",
+      "head": "bb458e8b3dcb49492db637591c0291bb4b4ea010",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A008-setup.json",
+            "/workspace/teammate-navigation/out/navigation/A008-cost-route.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.5889121420000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:08:33.902Z",
+      "finishedAt": "2026-10-20T21:08:37.493Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/A008-cost-route-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A008-lazy-path-launch.json",
+      "sha256": "918b547bfb0db9e0b2273ef1f1c91933f446ec129580e5e49f52117983ba3698",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A008-setup.json",
+            "/workspace/teammate-navigation/out/navigation/A008-lazy-path.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.696697537
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:10:42.195Z",
+      "finishedAt": "2026-10-20T21:10:44.894Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/A008-lazy-path-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A042-lazy-path-launch.json",
+      "sha256": "ca0ea6afe9684fe762e55135d54dcfe2656091b08cebadc5f10f2c2148ac5cb1",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "test/fixtures/navigation-A042-setup.json",
+            "/workspace/teammate-navigation/out/navigation/A042-lazy-path.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.856464214
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:10:53.654Z",
+      "finishedAt": "2026-10-20T21:10:57.512Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/A042-lazy-path-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/A044-lazy-path-launch.json",
+      "sha256": "552a13cb7f7701f9e8e50f487dccb91cba6640301266b60508cb3002ad3abd51",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/native-traffic.ts",
+            "out/navigation/input/A044-setup.json",
+            "/workspace/teammate-navigation/out/navigation/A044-lazy-path.json.gz",
+            "4.25"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.39633871
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:11:36.721Z",
+      "finishedAt": "2026-10-20T21:11:39.120Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/A044-lazy-path-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/local-lazy-path-launch.json",
+      "sha256": "8ba447bcd8817037b0906e4fdf363864abb4e2a8683781607df77662071cc52b",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/navigation/local-passage.ts",
+            "/workspace/teammate-navigation/out/navigation/local-lazy-path.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.537949449
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:11:55.460Z",
+      "finishedAt": "2026-10-20T21:11:56.000Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/local-lazy-path-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-cost-focused-launch.json",
+      "sha256": "76391af0ce7eaae502424d37ef25964b7a6322febe73e072974e29ccb7adc161",
+      "sourceSha256": "98913cae17dff2381547e71e1970186011027a86349501cb7212bb6d0e66908b",
+      "validationSha256": "01dd708ed63b6b9b44a0547e615fc4dcd4cd137961d2d95dd5256994e33e6c6c",
+      "head": "bb458e8b3dcb49492db637591c0291bb4b4ea010",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/traffic-distance.test.ts",
+            "test/local-traffic-route.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.960544348
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:08:21.775Z",
+      "finishedAt": "2026-10-20T21:08:23.738Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/route-cost-focused-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-cost-typecheck-launch.json",
+      "sha256": "a8fba09f75c527d34baa9bc2b4574788d3098de101957ce5ca52510e832c6124",
+      "sourceSha256": "98913cae17dff2381547e71e1970186011027a86349501cb7212bb6d0e66908b",
+      "validationSha256": "01dd708ed63b6b9b44a0547e615fc4dcd4cd137961d2d95dd5256994e33e6c6c",
+      "head": "bb458e8b3dcb49492db637591c0291bb4b4ea010",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "-p",
+            "tsconfig.json",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.193534642000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:08:51.457Z",
+      "finishedAt": "2026-10-20T21:09:02.653Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/route-cost-typecheck-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-lazy-path-focused-launch.json",
+      "sha256": "224480d03ad7292d077e91138483d00dd5862909983ee29ddc94bd6168b15d9f",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/traffic-distance.test.ts",
+            "test/local-traffic-route.test.ts",
+            "test/traffic-step.test.ts",
+            "test/spacing-forecast-reuse.test.ts",
+            "test/spacing-residual-motion.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.80670246
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:10:33.474Z",
+      "finishedAt": "2026-10-20T21:10:35.283Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/route-lazy-path-focused-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    },
+    {
+      "path": "/workspace/teammate-navigation/out/navigation/route-lazy-path-typecheck-launch.json",
+      "sha256": "93f1d8d59a87517918d1da4b100433ea15548c926771c26d0293818774b04ac1",
+      "sourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+      "validationSha256": "d5148515fe044f69eac8bf6c54276fbda17fe366de2ac57611ed22bba6de1d46",
+      "head": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+      "branch": "codex/local-traffic-route",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "-p",
+            "tsconfig.json",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.215760753
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "startedAt": "2026-10-20T21:11:56.789Z",
+      "finishedAt": "2026-10-20T21:12:08.007Z",
+      "scope": "portable geometry cost optimization and final verification",
+      "originalReceiptLocation": "/workspace/local-traffic-route/workspace/teammate-navigation/out/navigation/route-lazy-path-typecheck-launch.json",
+      "copyNote": "Launcher join(root,absoluteReceipt) created nested path; root copied exact bytes to canonical out/navigation. Producing branch/source/command retained."
+    }
+  ],
+  "cost": {
+    "newLocalScopeSeconds": 101.613616873,
+    "localReceipts": 35,
+    "nativeAndFinalVerificationAdditionalSeconds": "All completed final optimized native/staged/focused/typecheck and unsuccessful scalar-only trial included.",
+    "jointScopeSeparateReusedSeconds": 4.582455991,
+    "noDoubleBillSharedA042BaselineSeconds": 4.582455991,
+    "note": "35 local launch receipts, including rejected behavioral trials, failed/retried diagnostic, scalar-only no-gain trial, final validated geometry optimization and all accepted-reference controls. Joint#183 new28.069470315s and reused4.582455991s baseline are separate, never added to local. Copied nested-path receipts are counted once. No preparation simulations/tests.",
+    "behaviorAndVerificationSeconds": 61.157753729,
+    "behaviorAndVerificationReceipts": 24,
+    "pureCostProbeStatus": "Initial ignored scalar probe exit1; retry exit0. Both sourcefa and inputs stable;39scalar comparisons and72timing calls/arm only. Final implementation uses separately verified native/staged/focused/typecheck receipts.",
+    "portableOptimizationAndVerificationSeconds": 39.252904255,
+    "portableOptimizationAndVerificationReceipts": 9,
+    "jointScopeSeparateNewSeconds": 28.069470315,
+    "jointScopeTotalSeconds": 32.651926306,
+    "pureCostProbeSeconds": 1.202958889,
+    "pureCostProbeReceipts": 2,
+    "bothScopesNewCommandSeconds": 129.683087188
+  },
+  "behaviorSourceSha256": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+  "optimizedPublicationCodeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+  "independentReview": {
+    "reviewer": "middle_evidence",
+    "decision": "ACCEPT for scoped Integration review of final5248/d291",
+    "limits": "Integration still owns exact composition; not a general football-benefit, prevalence or performance benchmark claim."
+  },
+  "native": {
+    "A008": {
+      "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "candidateSource": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "inputSha256": "cb3da2924dbef7f9d3cfdb6201954dd2432fa3369eb0691a76913f46f3318bda",
+      "setupSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "operatorSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+      "sameInputAndOperator": true,
+      "observerNeutrality": {
+        "baseline": true,
+        "candidate": true
+      },
+      "results": {
+        "baseline": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 3.2,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.9874478283487,
+            "y": 41.10921598285898
+          }
+        },
+        "candidate": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 3.2,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.9874478283487,
+            "y": 41.10921598285898
+          }
+        }
+      },
+      "firstChanged": {
+        "t": 2.6,
+        "enteredBodiesEqual": true,
+        "consumedPicturesEqual": true,
+        "baselineRaw": {
+          "request": {
+            "vel": {
+              "x": -4.283477812633382,
+              "y": 7.312077051803781
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "candidateRaw": {
+          "request": {
+            "vel": {
+              "x": -4.283477812633382,
+              "y": 7.312077051803781
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "baselineApplied": {
+          "request": {
+            "vel": {
+              "x": -1.8918008569074494,
+              "y": -1.2320907282353595
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "candidateApplied": {
+          "request": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "baselineGoalErrorAfter": 3.923281142824952,
+        "candidateGoalErrorAfter": 3.9284536880343763,
+        "baselineAchieved": {
+          "pos": {
+            "x": 42.45787621040048,
+            "y": 27.782773399302364
+          },
+          "vel": {
+            "x": -1.6424800612434753,
+            "y": 0.7357311339785055
+          },
+          "displacement": {
+            "x": -0.08118634222171295,
+            "y": 0.04418726106570858
+          }
+        },
+        "candidateAchieved": {
+          "pos": {
+            "x": 42.4654940126612,
+            "y": 27.785879766382337
+          },
+          "vel": {
+            "x": -1.3377679708145003,
+            "y": 0.8599858171774467
+          },
+          "displacement": {
+            "x": -0.07356853996098778,
+            "y": 0.047293628145681055
+          }
+        }
+      },
+      "terminalMetrics": {
+        "15": {
+          "receiverDistance": {
+            "baseline": 3.103995466031465,
+            "candidate": 2.5884037918517326
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 3.140061423592688,
+            "candidate": 2.63053315380891
+          }
+        },
+        "19": {
+          "receiverDistance": {
+            "baseline": 0.4886846771043379,
+            "candidate": 0.4886846771043379
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": null,
+            "candidate": null
+          }
+        }
+      },
+      "lastInterval": {
+        "start": 3.15,
+        "end": 3.1999999999999997
+      },
+      "allOffensePhysicalRowsExactlyEqual": true,
+      "sameEvents": true,
+      "plainCost": {
+        "baseline": {
+          "wallSeconds": 0.6906638759999999,
+          "cpuSeconds": 0.863772
+        },
+        "candidate": {
+          "wallSeconds": 1.136137505,
+          "cpuSeconds": 1.783016
+        }
+      },
+      "costQualification": "One matched ordinary native pair, not a representative throughput benchmark; observed CPU/wall increase is an unresolved cost concern.",
+      "actualLBMMinimumSpeedAfterFirstChange": {
+        "baseline": 0.45270386200051344,
+        "candidate": 1.2726904628033417
+      },
+      "gatherRequestsAt": [
+        2.6,
+        2.65
+      ],
+      "otherActorQualification": "All other player positions exactly equal. SS21 has only floating-point velocity differences up to2.2861e-15 and no position difference; full all22 body identity is not claimed.",
+      "finalOptimized": {
+        "source": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+        "codeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+        "inputSha256": "cb3da2924dbef7f9d3cfdb6201954dd2432fa3369eb0691a76913f46f3318bda",
+        "setupSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+        "operatorSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+        "matchesGuardedFa": {
+          "rows": true,
+          "actors": true,
+          "signature": true,
+          "events": true,
+          "result": true
+        },
+        "observerNeutrality": true,
+        "plainCost": {
+          "wallSeconds": 0.8096714150000001,
+          "cpuSeconds": 0.960512
+        },
+        "result": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 3.2,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.9874478283487,
+            "y": 41.10921598285898
+          }
+        }
+      }
+    },
+    "A044": {
+      "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "candidateSource": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "inputSha256": "c14c809f68ef566c260e35067d82f6c3718a10b4ad8c9892008a19d16a3af8d0",
+      "setupSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+      "operatorSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+      "sameInputAndOperator": true,
+      "observerNeutrality": {
+        "baseline": true,
+        "candidate": true
+      },
+      "results": {
+        "baseline": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 2.95,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.53303228022495,
+            "y": 39.82725792490092
+          }
+        },
+        "candidate": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 2.95,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.53303228022495,
+            "y": 39.82725792490092
+          }
+        }
+      },
+      "firstChanged": {
+        "t": 2.45,
+        "enteredBodiesEqual": true,
+        "consumedPicturesEqual": true,
+        "baselineRaw": {
+          "request": {
+            "vel": {
+              "x": -2.030230523569715,
+              "y": 4.9434937612548016
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "candidateRaw": {
+          "request": {
+            "vel": {
+              "x": -2.030230523569715,
+              "y": 4.9434937612548016
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "baselineApplied": {
+          "request": {
+            "vel": {
+              "x": -0.12678287574291014,
+              "y": -1.330870579619491
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "candidateApplied": {
+          "request": {
+            "vel": {
+              "x": -0.6917826435100891,
+              "y": 1.1439961413468818
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "baselineGoalErrorAfter": 2.7358965977102,
+        "candidateGoalErrorAfter": 2.725122268859253,
+        "baselineAchieved": {
+          "pos": {
+            "x": 42.38279807844039,
+            "y": 27.635195962873194
+          },
+          "vel": {
+            "x": -1.3039826690022303,
+            "y": -0.04530520324348625
+          },
+          "displacement": {
+            "x": -0.07036589176760089,
+            "y": 0.003377117316230027
+          }
+        },
+        "candidateAchieved": {
+          "pos": {
+            "x": 42.382572098953474,
+            "y": 27.64665240516775
+          },
+          "vel": {
+            "x": -1.3130218484787677,
+            "y": 0.4129524885387138
+          },
+          "displacement": {
+            "x": -0.07059187125451416,
+            "y": 0.014833559610785585
+          }
+        }
+      },
+      "terminalMetrics": {
+        "15": {
+          "receiverDistance": {
+            "baseline": 0.6667909650605681,
+            "candidate": 0.8789354075028261
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 2.566993389132889,
+            "candidate": 2.359922484352196
+          }
+        },
+        "19": {
+          "receiverDistance": {
+            "baseline": 1.5676658591206438,
+            "candidate": 1.6713346736552417
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 3.400510746974909,
+            "candidate": 3.537780646540989
+          }
+        }
+      },
+      "lastInterval": {
+        "start": 2.9,
+        "end": 2.9499999999999997
+      },
+      "allOffensePhysicalRowsExactlyEqual": true,
+      "sameEvents": true,
+      "plainCost": {
+        "baseline": {
+          "wallSeconds": 0.6488831170000001,
+          "cpuSeconds": 0.861663
+        },
+        "candidate": {
+          "wallSeconds": 0.7880582070000001,
+          "cpuSeconds": 1.199274
+        }
+      },
+      "costQualification": "One matched ordinary native pair, not a representative throughput benchmark; observed CPU/wall increase is an unresolved cost concern.",
+      "guardedRowsEqualPrior903Route": true,
+      "baselineLBMSSPositiveContact": [
+        {
+          "t": 2.9,
+          "i": 15,
+          "j": 21,
+          "impulse": 49.14954514972101,
+          "closing": 0.9603800566122602
+        }
+      ],
+      "candidateLBMSSPositiveContact": [],
+      "historicalLaterBlock": "UNTESTED: both current arms end incomplete at2.95; do not infer post-catch pursuit or later offensive block preservation from this replay.",
+      "finalOptimized": {
+        "source": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+        "codeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+        "inputSha256": "c14c809f68ef566c260e35067d82f6c3718a10b4ad8c9892008a19d16a3af8d0",
+        "setupSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+        "operatorSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+        "matchesGuardedFa": {
+          "rows": true,
+          "actors": true,
+          "signature": true,
+          "events": true,
+          "result": true
+        },
+        "observerNeutrality": true,
+        "plainCost": {
+          "wallSeconds": 0.6549204319999999,
+          "cpuSeconds": 0.909712
+        },
+        "result": {
+          "phase": "dead",
+          "outcome": "incomplete",
+          "t": 2.95,
+          "carrier": null,
+          "endSpot": {
+            "x": 35,
+            "y": 26.666666666666668
+          },
+          "rbPos": {
+            "x": 35.53303228022495,
+            "y": 39.82725792490092
+          }
+        }
+      }
+    },
+    "A042": {
+      "candidateSource": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+      "jointControlSource": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508",
+      "allRowsEqualJointControl": true,
+      "allEventsEqualJointControl": true,
+      "allIdentitySignaturesEqualJointControl": true,
+      "result": {
+        "phase": "dead",
+        "outcome": "tackle",
+        "t": 4.1,
+        "carrier": null,
+        "endSpot": {
+          "x": 43.890568111683194,
+          "y": 16.52332097104532
+        },
+        "rbPos": {
+          "x": 43.64736934084191,
+          "y": 16.52332097104532
+        }
+      },
+      "interpretation": "No nativeA042 local-route benefit: guarded helper makes no additional observed change beyond the independent#183 projection correction.",
+      "finalOptimized": {
+        "source": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+        "codeCommit": "5248e884fd450b44045e753caaf782a306710e0c",
+        "inputSha256": "243da6adee0bad51af03e297dc12bb6687600997a2c13ccf11f29ab6f1fe71aa",
+        "setupSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
+        "operatorSha256": "c28bcecf6757a33687809b90688cd9874b6fc79f465b72bd2352bd4f6e88ce1f",
+        "matchesGuardedFa": {
+          "rows": true,
+          "actors": true,
+          "signature": true,
+          "events": true,
+          "result": true
+        },
+        "observerNeutrality": true,
+        "plainCost": {
+          "wallSeconds": 1.118586671,
+          "cpuSeconds": 1.900944
+        },
+        "result": {
+          "phase": "dead",
+          "outcome": "tackle",
+          "t": 4.1,
+          "carrier": null,
+          "endSpot": {
+            "x": 43.890568111683194,
+            "y": 16.52332097104532
+          },
+          "rbPos": {
+            "x": 43.64736934084191,
+            "y": 16.52332097104532
+          }
+        }
+      }
+    }
+  },
+  "selectedNativeTapes": [
+    {
+      "case": "A008",
+      "firstChanged": {
+        "t": 2.6,
+        "enteredBodiesEqual": true,
+        "consumedPicturesEqual": true,
+        "baselineRaw": {
+          "request": {
+            "vel": {
+              "x": -4.283477812633382,
+              "y": 7.312077051803781
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "candidateRaw": {
+          "request": {
+            "vel": {
+              "x": -4.283477812633382,
+              "y": 7.312077051803781
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "baselineApplied": {
+          "request": {
+            "vel": {
+              "x": -1.8918008569074494,
+              "y": -1.2320907282353595
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "candidateApplied": {
+          "request": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "objective": {
+            "kind": "moving",
+            "point": {
+              "x": 38.94350788834986,
+              "y": 29.453757274576894
+            },
+            "velocity": {
+              "x": 1.5966585747734134,
+              "y": 4.507102256220969
+            }
+          }
+        },
+        "baselineGoalErrorAfter": 3.923281142824952,
+        "candidateGoalErrorAfter": 3.9284536880343763,
+        "baselineAchieved": {
+          "pos": {
+            "x": 42.45787621040048,
+            "y": 27.782773399302364
+          },
+          "vel": {
+            "x": -1.6424800612434753,
+            "y": 0.7357311339785055
+          },
+          "displacement": {
+            "x": -0.08118634222171295,
+            "y": 0.04418726106570858
+          }
+        },
+        "candidateAchieved": {
+          "pos": {
+            "x": 42.4654940126612,
+            "y": 27.785879766382337
+          },
+          "vel": {
+            "x": -1.3377679708145003,
+            "y": 0.8599858171774467
+          },
+          "displacement": {
+            "x": -0.07356853996098778,
+            "y": 0.047293628145681055
+          }
+        }
+      },
+      "terminalMetrics": {
+        "15": {
+          "receiverDistance": {
+            "baseline": 3.103995466031465,
+            "candidate": 2.5884037918517326
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 3.140061423592688,
+            "candidate": 2.63053315380891
+          }
+        },
+        "19": {
+          "receiverDistance": {
+            "baseline": 0.4886846771043379,
+            "candidate": 0.4886846771043379
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": null,
+            "candidate": null
+          }
+        }
+      },
+      "definition": "Compact existing-value excerpts; full native/source archive is assembled separately by owner."
+    },
+    {
+      "case": "A044",
+      "firstChanged": {
+        "t": 2.45,
+        "enteredBodiesEqual": true,
+        "consumedPicturesEqual": true,
+        "baselineRaw": {
+          "request": {
+            "vel": {
+              "x": -2.030230523569715,
+              "y": 4.9434937612548016
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "candidateRaw": {
+          "request": {
+            "vel": {
+              "x": -2.030230523569715,
+              "y": 4.9434937612548016
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "baselineApplied": {
+          "request": {
+            "vel": {
+              "x": -0.12678287574291014,
+              "y": -1.330870579619491
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "candidateApplied": {
+          "request": {
+            "vel": {
+              "x": -0.6917826435100891,
+              "y": 1.1439961413468818
+            }
+          },
+          "objective": {
+            "kind": "fixed",
+            "point": {
+              "x": 41.40274410284607,
+              "y": 30.189530396396734
+            }
+          }
+        },
+        "baselineGoalErrorAfter": 2.7358965977102,
+        "candidateGoalErrorAfter": 2.725122268859253,
+        "baselineAchieved": {
+          "pos": {
+            "x": 42.38279807844039,
+            "y": 27.635195962873194
+          },
+          "vel": {
+            "x": -1.3039826690022303,
+            "y": -0.04530520324348625
+          },
+          "displacement": {
+            "x": -0.07036589176760089,
+            "y": 0.003377117316230027
+          }
+        },
+        "candidateAchieved": {
+          "pos": {
+            "x": 42.382572098953474,
+            "y": 27.64665240516775
+          },
+          "vel": {
+            "x": -1.3130218484787677,
+            "y": 0.4129524885387138
+          },
+          "displacement": {
+            "x": -0.07059187125451416,
+            "y": 0.014833559610785585
+          }
+        }
+      },
+      "terminalMetrics": {
+        "15": {
+          "receiverDistance": {
+            "baseline": 0.6667909650605681,
+            "candidate": 0.8789354075028261
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 2.566993389132889,
+            "candidate": 2.359922484352196
+          }
+        },
+        "19": {
+          "receiverDistance": {
+            "baseline": 1.5676658591206438,
+            "candidate": 1.6713346736552417
+          },
+          "goalErrorAtHeldGoalEnd": {
+            "baseline": 3.400510746974909,
+            "candidate": 3.537780646540989
+          }
+        }
+      },
+      "definition": "Compact existing-value excerpts; full native/source archive is assembled separately by owner."
+    }
+  ],
+  "verification": {
+    "compatibleEarlier": {
+      "receipt": "out/navigation/route-focused-launch.json",
+      "source": "903537e073e863941ba8a2ee95ca226c2b2657d19fbce71fbe9f6b88e52c1ad6",
+      "checks": 36,
+      "files": {
+        "test/traffic-path.test.ts": 9,
+        "test/traffic-control.test.ts": 3,
+        "test/traffic-turning.test.ts": 13,
+        "test/joint-spacing.test.ts": 8,
+        "test/joint-spacing-projection.test.ts": 3
+      },
+      "reuseReason": "The first-touch guard does not modify geometric helper or paths with no eligible goal/role. These separable checks are reused, not relabeled as a new single final-source59-check run."
+    },
+    "distinctChecks": 65,
+    "distinctFiles": 10,
+    "independentReview": "middle_evidence finalACCEPT for scoped Integration review.",
+    "priorGuardedSource": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+    "finalSource": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+    "guardedFocused": {
+      "receipt": "out/navigation/route-final-focused-launch.json",
+      "checks": 23,
+      "files": {
+        "test/local-traffic-route.test.ts": 11,
+        "test/traffic-step.test.ts": 8,
+        "test/spacing-residual-motion.test.ts": 2,
+        "test/spacing-forecast-reuse.test.ts": 2
+      }
+    },
+    "finalFocused": {
+      "receipt": "out/navigation/route-lazy-path-focused-launch.json",
+      "checks": 29,
+      "files": {
+        "test/traffic-distance.test.ts": 6,
+        "test/local-traffic-route.test.ts": 11,
+        "test/traffic-step.test.ts": 8,
+        "test/spacing-forecast-reuse.test.ts": 2,
+        "test/spacing-residual-motion.test.ts": 2
+      }
+    },
+    "priorGuardedTypecheck": {
+      "receipt": "out/navigation/route-final-typecheck-launch.json",
+      "seconds": 11.53208042,
+      "pass": true
+    },
+    "finalTypecheck": {
+      "receipt": "out/navigation/route-lazy-path-typecheck-launch.json",
+      "seconds": 11.215760753,
+      "pass": true
+    },
+    "countQualification": "29 final optimized checks in5files;36 earlier compatible/source-qualified checks in5files are reused, not a65-check final-source run.",
+    "geometryCostEvidence": {
+      "scalarProbe": {
+        "source": "fa06e89df8bec5a2e3c6b7f255e137faec26148dcaa78fcca2b362e639078481",
+        "draftSha256": "0f2429cbba5d1d52a2934255fe93837263adb222f341832c5e8825b36308e1ab",
+        "queryCount": 39,
+        "maxError": 0,
+        "mismatches": [],
+        "timing": [
+          {
+            "label": "full",
+            "queries": 24,
+            "repeats": 3,
+            "elapsedMs": 230.87188600000002,
+            "checksum": 336.07005181983106
+          },
+          {
+            "label": "lazy",
+            "queries": 24,
+            "repeats": 3,
+            "elapsedMs": 2.371046999999976,
+            "checksum": 336.07005181983106
+          }
+        ],
+        "qualification": "39 scalar comparisons and72 timing repetitions per arm; no physics, sensing or native execution. Ignored draft diagnostic, not a global geometry proof or final native benchmark."
+      },
+      "scalarOnlyLiveTrial": {
+        "source": "98913cae17dff2381547e71e1970186011027a86349501cb7212bb6d0e66908b",
+        "codeCommit": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+        "A008PlainCost": {
+          "wallSeconds": 1.176568252,
+          "cpuSeconds": 1.874023
+        },
+        "outcome": "No live gain vsfa; preserved as unsuccessful optimization."
+      },
+      "finalNativeQualification": "Three single plain paired captures show reduced candidate cost while saved observed rows matchfa exactly. Not a representative global benchmark."
+    }
+  },
+  "finalRuntimeSourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12",
+  "portableBranch": "codex/local-traffic-route",
+  "portableHost": "/workspace/local-traffic-route",
+  "portableLineage": {
+    "guardedFullGraph": "bb458e8b3dcb49492db637591c0291bb4b4ea010",
+    "scalarOnlyNoLiveGain": "5402d71d15ded211766c6fe6e34fecfb4ac0787c",
+    "finalValidatedProposalAndCost": "5248e884fd450b44045e753caaf782a306710e0c",
+    "noOldExperimentImport": "Portable parent is accepted2c98 plus#183; no181/182 imports. Original discovery sourceed724 lineage is not required by portable candidate.",
+    "oldDiscoveryIsAncestor": false
+  },
+  "portableDependencyHead": "dceec577baee5ea9b4f7fcf24d63bbef94385177",
+  "acceptedRefRecheck": {
+    "develop": "2c98bed94adad8087c65f381d4090444ad283985",
+    "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+    "refs": [
+      "refs/remotes/navigation-final/develop",
+      "refs/remotes/navigation-final/queue"
+    ],
+    "staleOriginRefNotUsed": true
+  },
+  "publishedPacket": {
+    "archive": "data/reviews/current/local-traffic-route/evidence.tar.xz",
+    "archiveSha256": "72d2c78cef2dbe2d20b2a94aaf2889fa2ce75fbe4c689a97688e32b575643ae3",
+    "archiveBytes": 9325220,
+    "manifest": "data/reviews/current/local-traffic-route/manifest.json",
+    "manifestSha256": "247e55c6a42e0e7b9e0999dee42441589c14414b60ee4882749f047887f4b092",
+    "transport": "Original selected native gzip outputs decoded byte-for-byte for compression across arms; manifest binds original gzip and published JSON payload. All140 members selected for this investigation only.",
+    "packagingSeconds": 31.899838137993356
+  }
+}
