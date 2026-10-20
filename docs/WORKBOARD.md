@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active moving run-fit objective — 2026-10-20 America/Phoenix
+## Held moving run-fit objective diagnosis — 2026-10-20 America/Phoenix
 
 Catching/Awareness owns a bounded continuation of held free-fit research, starting
 accepted2c98bed94adad8087c65f381d4090444ad283985 /queue4cc3337df24faa6d857b612ae62e3df3109a5296
@@ -14,6 +14,10 @@ no acquired backfield/input change (#171 separate), common.ts pursuit/leverage
 thresholds or ratings/default changes. Run keeps its research LB_GLIDE stack.
 Use saved native evidence plus one useful opposing fit/declaration control;
 Integration owns exact combined verification. No broad campaign.
+Source remains accepted; independent review exposes double prediction if velocity
+is added to the already-led target. No new behavior variant/test/simulation ran.
+[Decision](reviews/moving-fit-contract-hold-2026-10-20.md). Edit claim released;
+contact-exit work proceeds separately on codex/support-escape-objective.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
