@@ -22,6 +22,13 @@ Accepted develop was fetched before work and before publication:
 `bae3fe80d189a7d792aaafbc4eea1ae2baa79573`; it is not imported. The isolated
 candidate branch is `codex/support-escape-objective`.
 
+At the last publication check, queue metadata advanced to
+`6575988fe9e72bd0aaf9e3573787f0dcb81ebf52` while accepted develop stayed2c98bed.
+The intake's independently reconstructed #169/#171 runtime sourcef3ed945f equals
+the diagnostic pair used below. New #172ae6b1d9 overlaps stepRunRep's offensive
+runoff work; it is absent from these comparisons. Preserve that semantic overlap
+for Integration/Run review rather than infer a four-component acceptance.
+
 - Runtime: `e634fd15efb574965e92715247c1470ae4229c31`.
 - Final tests: `2220fdf99a472024607dc34e69d38219a4e056c2`.
 - Accepted full source: `4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571`.
