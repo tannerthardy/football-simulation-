@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Active DB stalk response — 2026-10-20 UTC
+
+Catching owns the bounded acquired run-support / perimeter work-off diagnosis
+on `codex/db-stalk-workoff`, from accepted
+`2c98bed94adad8087c65f381d4090444ad283985` (queue `4cc3337`). Inspect saved
+stalk encounters, successful escapes and legitimate sustained blocks first.
+Potential edits are confined to the defender's support/work-off objective in
+`engagement.ts` and directly affected contracts; coordinate shared functions
+with Run/Claude #153 before changing them. Preserve offensive stalk access,
+installed force/alley duties, personally acquired cues, physical laws, hands,
+capacities, experimental defaults and combo/climb behavior. No blanket block
+lifetime or guaranteed shed. Integration owns exact combined verification.
+
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
