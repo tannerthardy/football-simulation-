@@ -1,11 +1,26 @@
 import {describe,expect,it} from 'vitest';
-import {trafficDistance} from '../src/sim/traffic-distance.js';
+import {trafficDistance,trafficRoute} from '../src/sim/traffic-distance.js';
 import {trafficPath,type TrafficDisc} from '../src/sim/traffic-path.js';
 
 const start={x:-3,y:0},goal={x:3,y:0};
 function same(discs:TrafficDisc[],bounds?:{minX:number;maxX:number;minY:number;maxY:number}) {
   const before=structuredClone(discs),proposal=trafficPath(start,goal,discs,bounds);
   expect(trafficDistance(start,goal,discs,bounds)).toBe(proposal?.distance??null);
+  const selected=trafficRoute(start,goal,discs,bounds);
+  expect(selected?.distance??null).toBe(proposal?.distance??null);
+  if(selected){
+    expect(selected.firstPiece).toEqual(selected.pieces[0]??null);
+    for(const piece of selected.pieces){
+      if(piece.kind==='arc')expect(discs[piece.disc]).toEqual({center:piece.center,radius:piece.radius});
+      for(let k=0;k<=80;k++){
+        const t=k/80;
+        const p=piece.kind==='line'?{x:piece.from.x+(piece.to.x-piece.from.x)*t,y:piece.from.y+(piece.to.y-piece.from.y)*t}
+          :{x:piece.center.x+piece.radius*Math.cos(piece.startAngle+piece.sweep*t),y:piece.center.y+piece.radius*Math.sin(piece.startAngle+piece.sweep*t)};
+        for(const disc of discs)expect(Math.hypot(p.x-disc.center.x,p.y-disc.center.y)).toBeGreaterThanOrEqual(disc.radius-1e-8);
+        if(bounds){expect(p.x).toBeGreaterThanOrEqual(bounds.minX-1e-8);expect(p.x).toBeLessThanOrEqual(bounds.maxX+1e-8);expect(p.y).toBeGreaterThanOrEqual(bounds.minY-1e-8);expect(p.y).toBeLessThanOrEqual(bounds.maxY+1e-8);}
+      }
+    }
+  }
   expect(discs).toEqual(before);
   expect(trafficPath(start,goal,discs,bounds)).toEqual(proposal);
 }

@@ -8,8 +8,8 @@ import type {Intent} from '../physics/world.js';
 import type {Agent} from './agent.js';
 import {containCoverage} from './coverage-space.js';
 import {movementObjective} from './movement-objective.js';
-import {trafficPath,type TrafficDisc} from './traffic-path.js';
-import {trafficDistance} from './traffic-distance.js';
+import type {TrafficDisc} from './traffic-path.js';
+import {trafficDistance,trafficRoute} from './traffic-distance.js';
 
 export interface TrafficPeer {
   key:number; age?:number; pos:{x:number;y:number}; vel:{x:number;y:number}; touch:number;
@@ -63,7 +63,7 @@ export function localTrafficRoute(a:Agent,raw:Intent,ordinary:Intent,peers:reado
   const bounds={minX:margin,maxX:END_LINE_X-margin,minY:margin,maxY:FIELD_WIDTH-margin};
   const futureGoal={x:goal.point.x+flow.x*HORIZON,y:goal.point.y+flow.y*HORIZON};
   const discs:TrafficDisc[]=peers.map(peer=>({center:peer.pos,radius:peer.touch}));
-  const route=trafficPath(a.pos,futureGoal,discs,bounds);
+  const route=trafficRoute(a.pos,futureGoal,discs,bounds);
   if(!route||route.distance<=Math.hypot(a.pos.x-futureGoal.x,a.pos.y-futureGoal.y)+EPS)return clear();
   const futureDiscs=peers.map(peer=>({center:{x:peer.pos.x+peer.vel.x*HORIZON,
     y:peer.pos.y+peer.vel.y*HORIZON},radius:peer.touch}));
