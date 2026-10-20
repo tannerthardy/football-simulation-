@@ -6,6 +6,7 @@ import { PASS_BY_ID, RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { DeepCoverage } from '../src/sim/coverage-leverage.js';
 
 function fixture(seed: number, run = false) {
   return new PlaySim({
@@ -73,34 +74,41 @@ describe('recording the actual rushing player', () => {
     expect(result.offenseYards).toBe(11);
   });
 
-  it('records a native pass-call scramble without changing movement, observations or randomness', () => {
-    // This unmodified 11-on-11 fixture naturally scrambles. No forced QB
-    // phase, private transition invocation or mocked football decision.
-    const recorded = fixture(0), unrecorded = fixture(0);
-    Object.defineProperty(unrecorded.stats, 'rusher', {
-      configurable: true, enumerable: true, get: () => undefined, set: () => {},
-    });
-    const actual = observedRun(recorded), control = observedRun(unrecorded);
-    expect(actual.result.kind).toBe('pass');
-    expect(actual.result.stats.scramble).toBe(true);
-    expect(actual.result.stats.attempted).toBe(false);
-    expect(actual.result.stats.rusher).toBe(recorded.qb.player.id);
-    expect(actual.result.events.filter(e => e.type === 'scramble'))
-      .toEqual([expect.objectContaining({ a: recorded.qb.idx })]);
-    expect(actual.states).toEqual(control.states);
-    expect(actual.pictures.length).toBeGreaterThan(0);
-    expect(actual.pictures).toEqual(control.pictures);
-    expect(actual.randomCalls).toBe(control.randomCalls);
-    expect(actual.randomState).toEqual(control.randomState);
-    const withoutRusher = (result: typeof actual.result) => {
-      const { rusher: _rusher, ...stats } = result.stats;
-      return { ...result, stats };
-    };
-    expect(withoutRusher(actual.result)).toEqual(withoutRusher(control.result));
+  it('records a pass-call scramble under an explicit historical base-coaching response without bookkeeping effects', () => {
+    // Test-only historical coaching response: keep the base coverage command
+    // already computed by today's controller, bypassing only DeepCoverage's
+    // optional depth choice. This is not an unmodified current-coverage play.
+    // QB decisions and all 22 bodies still execute through the current engine;
+    // no QB phase, scramble transition, physical law or random draw is mocked.
+    const coaching = vi.spyOn(DeepCoverage.prototype, 'choose').mockImplementation(
+      (_a, _seen, _cue, _receiver, _cushion, original) => original);
+    try {
+      const recorded = fixture(0), unrecorded = fixture(0);
+      Object.defineProperty(unrecorded.stats, 'rusher', {
+        configurable: true, enumerable: true, get: () => undefined, set: () => {},
+      });
+      const actual = observedRun(recorded), control = observedRun(unrecorded);
+      expect(actual.result.kind).toBe('pass');
+      expect(actual.result.stats.scramble).toBe(true);
+      expect(actual.result.stats.attempted).toBe(false);
+      expect(actual.result.stats.rusher).toBe(recorded.qb.player.id);
+      expect(actual.result.events.filter(e => e.type === 'scramble'))
+        .toEqual([expect.objectContaining({ a: recorded.qb.idx })]);
+      expect(actual.states).toEqual(control.states);
+      expect(actual.pictures.length).toBeGreaterThan(0);
+      expect(actual.pictures).toEqual(control.pictures);
+      expect(actual.randomCalls).toBe(control.randomCalls);
+      expect(actual.randomState).toEqual(control.randomState);
+      const withoutRusher = (result: typeof actual.result) => {
+        const { rusher: _rusher, ...stats } = result.stats;
+        return { ...result, stats };
+      };
+      expect(withoutRusher(actual.result)).toEqual(withoutRusher(control.result));
+    } finally { coaching.mockRestore(); }
   });
 
-  it('does not label an ordinary native pass as a rush', () => {
-    const sim = fixture(1), result = sim.run();
+  it.each([0, 1])('does not label an unmodified native Cover 3 pass as a rush (seed=%s)', seed => {
+    const sim = fixture(seed), result = sim.run();
     expect(result.kind).toBe('pass');
     expect(result.stats.attempted).toBe(true);
     expect(result.stats.scramble).toBe(false);
