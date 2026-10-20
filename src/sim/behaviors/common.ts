@@ -208,16 +208,22 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
     * clamp((dist - contact) / 6, 0, 1);
+  // Teammate navigation needs the responsibility this request serves. This
+  // picture is already acquired and dead-reckoned to now; the intercept below
+  // is a future steering waypoint, not another current moving target.
+  const ownApproach = (command: MoveCommand): MoveCommand => withMovementObjective(command,
+    { kind: 'moving', point: { x: seen.pos.x,
+      y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) }, velocity: seen.vel });
   const { near, gather } = gatheringApproach(a, seen, contact, offset);
-  if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return near!;
+  if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return ownApproach(near!);
   const p = pursuitPoint(sim, a, target, horizon);
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   const original = { ...runThrough(a, p, { speed: effort }), effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) return original;
-  const far = chooseApproach(a, seen, contact, offset, original, sim.t);
-  return blendApproach(far, near, gather);
+  return chooseApproach(a, seen, contact, offset, original, sim.t,
+    command => ownApproach(blendApproach(command, near, gather)));
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {
