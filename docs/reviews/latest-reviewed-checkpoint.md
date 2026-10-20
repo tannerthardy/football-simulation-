@@ -6,6 +6,14 @@ Accepted parent `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue
 extraction and one exact combined verification. Original evidence and branches
 remain; no experimental/default activation or data-only history import.
 
+**Current disposition supersedes initial local acceptances below:** first freeze
+`bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f` failed13 of2262 TS checks after
+typecheck/build passed; Python was deliberately skipped. Original receipt/log
+are preserved as `failed-initial-combined.*`. #164 and #165 were removed by
+normal revert commits; they are not in the final promotion scope. All other
+independently reviewed scopes continue. The new candidate requires its own
+complete verification; the failed run is never presented as a pass.
+
 ## Independent #131 helper and caller disposition
 
 **ACCEPT for exact Integration verification:** author publication
@@ -84,9 +92,9 @@ targeted contract checks are reused; no repeated investigation or native panel.
 | #157 | Count installed F once, including centered half-per-side; existing QB policy/thresholds remain. |
 | #159 | Free linebackers turn into their already selected acquired lateral run fit; existing physical turning limits remain. |
 | #150/#152 | Assigned climb around acquired first-level traffic and free recovery toward acquired carrier side, preserving actual assigned work and legitimate defensive wins. |
-| #164 | Braking-bounded moving-shoulder contact intent, with a coherent held target/motion snapshot; no new force law or strength. |
+| #164 | **HOLD after combined verification.** Local/source acceptance and reference design remain preserved, but useful earned departure disappears under the shared execution. |
 | Corrected #160 | New acquired lateral mode requires own run recognition, not the legacy hidden-holder-derived `reading` alias. Root independently accepts subagent repair1b5668c after reviewing the failing original probe, two regression controls and262 compatible run-recognized saved samples. Legacy declaration shortcuts remain out of scope. |
-| #165 | Root accepts independent technical disposition as enforcement of the existing current-facing gait envelope. Remove hypothetical future-facing credit before finite yaw achieves it; force/traction/yaw response/capacities/settings remain. The50ms start-pose convention is explicitly adjudicated, not hidden as a new integrator. Original promotion reservation remains recorded; this is distinct from #162/GAIT_STEP. |
+| #165 | **HOLD after combined verification.** Independent technical disposition supports the current-facing correction; native motion/spacing and historical center-mode contracts still require reconciliation. No World/kinematics hunk or its new test remains in the final batch. |
 | #153 narrow extractions | Existing QB carry-out goes away from the installed own play regardless of mesh drift; retain speed.4/depth6/timing/recovery/fallback. Hundredth-yard exporter/viewer plus native recordFrame completion preserve legacy clips. No QB_CARRYOUT or other experimental flag activation. |
 | #161 | Existing NFL evidence navigation/source inventory with additive current-access note; no new collection requirement. |
 
@@ -126,6 +134,50 @@ contact/climb files**, all pass at8c2232d5. This includes the native climb
 fixture under the actual larger composition/attained-pose correction, rather
 than assuming the older diagnostic ending transfers. No other broad screen.
 
+The full suite exposed contexts that this small overlap did not cover. Untouched
+old combo/keeper/native-climb checks fail with164 active. Targeted isolation
+removing165 alone recovers one planned-climb case but six failures remain;
+removing164 too recovers all seven selected blocking contracts. At the first
+DT contact, bodies match through.45s and diverge at completed.50. Without164,
+RG earns release at1.05 with RT retaining the down defender; with164, the pair
+remains joined through2.65. No150 route or retarget causes that first divergence.
+This is an unresolved useful-access tradeoff, not a license to weaken old tests
+or proof of a Physics defect. [Preserved isolation and paired traces](https://github.com/tannerthardy/football-simulation-/blob/b271549928bb1a1b76e76162dd7f14488cabb87e/docs/reviews/latest-blocking-review-2026-10-19/README.md).
+
+#165 also contradicts previously preserved motion/spacing/center-mode controls.
+Technical support does not waive them; its promotion is held. Removing165 alone
+does not recover the old native QB-scramble prerequisite. [Exact failed control
+and source qualification](https://github.com/tannerthardy/football-simulation-/blob/c6c9ff5b7cfdab88c49071d3cbc32d2173bed4c3/docs/reviews/latest-mechanical-review/README.md).
+After both holds, P019's existing pass-protection check passes unchanged. Original
+World/kinematics blobs now exactly equal accepted develop. No source history or
+failed evidence was rewritten to reduce the batch.
+
+The FS cap test's old magic10.2 cushion assumes the old5.2yd RB installation.
+The newly installed5.5yd depth correctly yields10.5. Capture the installed
+longitudinal separation before saved-body staging and compare against that
+input, retaining every cap/chase/World/work/support assertion. The narrow test
+correction is independently reviewed; no runtime defender behavior changes.
+[Fixture review and source-qualified A/B](https://github.com/tannerthardy/football-simulation-/blob/463048139550dd233ab47feaa69bd8bedecbcb6e/docs/reviews/latest-small-fixture-review/README.md).
+
+The remaining native scramble prerequisite is caused by141's different defensive
+depth, not by the156 formation or bookkeeping. At1.90, QB/Y positions still
+match while FS is deeper and Y's evaluated completion estimate rises.401→.701.
+Current coverage throwsY at2.10 and ends incomplete4.05; reversing only141
+restores scramble3.05/slide5.50. One reasoned Cover2-Man substitute did not
+scramble; it was rejected and preserved, without a seed/coverage search.
+
+Root independently accepts the test-only input boundary atb27959af: the positive
+bookkeeping control explicitly selects the original/base defensive command
+already computed by current production, bypassing only the optional deep-depth
+choice. It is labeled historical base-coaching response, not an unmodified
+current-coverage snap or exact old runtime. No QB decision/phase, physical law,
+body or random draw is forced. Every scramble/event/rusher/movement/observation/
+RNG/result equality assertion remains, and the coaching spy restores in finally.
+Both unmodified current Cover3 seeds0/1 are ordinary-pass/no-rusher opposing
+controls. All six file checks pass with no skips. This preserves a mechanism
+test instead of requiring a valid new coverage choice to reproduce old football.
+[Exact discriminator, failed proposal and fixture receipt](https://github.com/tannerthardy/football-simulation-/blob/41df9f009fefeb14294b92c1a199e6e194a96df6/docs/reviews/qb-scramble-coverage-discriminator-2026-10-19/README.md).
+
 Finer film writes only output scalars, with no World/RNG/perception/controller
 feedback. The existing exporter-derived pressure2yd/ttp can change near its2yd
 threshold; that is a measurement-precision change and old output-derived
@@ -135,7 +187,7 @@ recertified on this new recorder.
 
 ## Held independently and verification boundary
 
-#162's ordinary yaw-response/recovery allocation and GAIT_STEP=.3 promotion
+#164/#165's combined-contract reconciliations, #162's ordinary yaw-response/recovery allocation and GAIT_STEP=.3 promotion
 remain held as law/default decisions. Preserve the package zone20+ rise28→63
 per1200. #158 unresolved power-rush duty/PA cost, #163 propulsion/caller,
 #166 objective/traffic policy, #137 joint allocation and the full153 mesh/
