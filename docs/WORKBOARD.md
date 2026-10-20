@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active acquired support exit objective — 2026-10-20 America/Phoenix
+## Reviewed acquired support exit objective — 2026-10-20 America/Phoenix
 
 Catching/Awareness owns only stepRunRep's defensive work-off objective and its
 local runSheds state plus focused contracts, consulting Run. Branch
@@ -12,8 +12,14 @@ undeclared escape and OZ4's genuinely occupied path. No block/hand/physical
 release/capacity/gait/facing law, common.ts pursuit (Do-It-All), offensive stalk,
 fit/recognition/admission or flag change. #169 and #171 remain separate.
 The moving-fit issue is diagnosed separately; its arrival semantics remain held.
-Use current exact saved cases and smallest native transfer after a contract
-supports intervention. Integration owns combined verification.
+Final runtimee634fd1 /sourcedb77ce91 is independently approved with adverse
+evidence; test2220fdf,57 distinct compatible focused checks/typecheck pass.
+Seven final cases complete, fresh activated support transfer plus physical
+WR wins preserved; WZ7/OZ4 standalone endings worsen and remain explicit.
+One stale-point pilot is retained separately. Three-case paired interaction
+with169/171 preserves defensive finishes;65 focused overlap checks pass.
+[Report and exact pins](reviews/support-escape-objective-2026-10-20.md).
+No further contact variant. Integration owns exact combined verification.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
