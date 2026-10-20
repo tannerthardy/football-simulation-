@@ -1,10 +1,10 @@
 {
   "schema": "integration-overlap-inventory-v1",
-  "checkedUtc": "2026-10-20T21:19:23.661646+00:00",
+  "checkedUtc": "2026-10-20T21:21:07.950036+00:00",
   "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
   "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
-  "openPrCount": 70,
-  "recentDetailedCount": 17,
+  "openPrCount": 71,
+  "recentDetailedCount": 18,
   "otherClassificationCounts": {
     "explicitHeld": 7,
     "toolingHeld": 2,
@@ -14,6 +14,53 @@
   },
   "scope": "Inventory and source/provenance/portability review, not independent football acceptance or combined verification.",
   "prs": [
+    {
+      "number": 186,
+      "title": "Preserve football goals through attainable local teammate routes",
+      "head": "7b70c343cf30f0066fc46f223ad134d1249f6188",
+      "branch": "codex/local-traffic-route",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "updated": "2026-10-20T21:19:28Z",
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/spacing.ts",
+        "src/sim/traffic-distance.ts",
+        "src/sim/traffic-path.ts",
+        "src/sim/traffic-route.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/navigation-A042-setup.json",
+        "test/fixtures/traffic-route-impact.json",
+        "test/joint-spacing-projection.test.ts",
+        "test/local-traffic-route.test.ts",
+        "test/traffic-distance.test.ts",
+        "test/traffic-path.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/spacing.ts": "7b2814c8e1345ff76359874b2b50353754d3014c",
+        "src/sim/traffic-distance.ts": "729dc43417a4e6fb4dae2d5f378f89a4483d4fc7",
+        "src/sim/traffic-path.ts": "4454e2e7ec92433a2e97729850e7ff8133a9f985",
+        "src/sim/traffic-route.ts": "6eb21fc952050f6ba465d98407deba777faed2a0",
+        "test/fixtures/navigation-A042-setup.json": "b47da1ff428a312fca4bb29c7367bba11c234ce2",
+        "test/fixtures/traffic-route-impact.json": "d82619ce177642ea47de00dc59f1dfbed198cee4",
+        "test/joint-spacing-projection.test.ts": "e70cd2c730994700320a492113cd5a339067ddcb",
+        "test/local-traffic-route.test.ts": "1f22c24838cdd0542f4811c2e92a6b19d051a810",
+        "test/traffic-distance.test.ts": "0a1253dd0bedda644561b2a625cb4a90497f678e",
+        "test/traffic-path.test.ts": "241da69084e51460bced459ca330e87c2ae4e618"
+      },
+      "requiredScope": {
+        "pr": 183,
+        "runtime": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+        "testsAndTools": "0491f07b5728a149c3f4ac35008ceba14e392694",
+        "publication": "dceec577baee5ea9b4f7fcf24d63bbef94385177"
+      }
+    },
     {
       "number": 185,
       "title": "Complete pull clearance commands and follow the acquired corner",
@@ -1760,5 +1807,6 @@
       "settingsFiles": null,
       "classification": "researchOrPrototype"
     }
-  ]
+  ],
+  "countDefinition": "71 candidate PRs including186, excluding this audit187; initial snapshot had70."
 }

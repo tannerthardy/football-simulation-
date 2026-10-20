@@ -256,6 +256,19 @@
         "docs/WORKBOARD.md"
       ],
       "productionConflicts": []
+    },
+    {
+      "a": 183,
+      "b": 186,
+      "sharedRuntimeFiles": [
+        "src/sim/spacing.ts"
+      ],
+      "exitCode": 1,
+      "tree": "d0bbcbd62c95f7ce3576109eb17d709c38d054f0",
+      "conflictFiles": [
+        "docs/WORKBOARD.md"
+      ],
+      "productionConflicts": []
     }
   ],
   "hunks": {
@@ -492,9 +505,28 @@
       "@@ -1022,3 +1021,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {",
       "diff --git a/test/support-work-off.test.ts b/test/support-work-off.test.ts",
       "@@ -23,2 +23,61 @@ function scene(kind:'force'|'insert'|'interior'='force',side=1){"
+    ],
+    "186": [
+      "diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts",
+      "@@ -18,2 +18,3 @@ import { movementObjective } from './movement-objective.js';",
+      "@@ -351,3 +352,10 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],",
+      "diff --git a/src/sim/traffic-distance.ts b/src/sim/traffic-distance.ts",
+      "@@ -0,0 +1,85 @@",
+      "diff --git a/src/sim/traffic-path.ts b/src/sim/traffic-path.ts",
+      "@@ -0,0 +1,194 @@",
+      "diff --git a/src/sim/traffic-route.ts b/src/sim/traffic-route.ts",
+      "@@ -0,0 +1,91 @@",
+      "diff --git a/test/fixtures/traffic-route-impact.json b/test/fixtures/traffic-route-impact.json",
+      "@@ -0,0 +1,250 @@",
+      "diff --git a/test/local-traffic-route.test.ts b/test/local-traffic-route.test.ts",
+      "@@ -0,0 +1,220 @@",
+      "diff --git a/test/traffic-distance.test.ts b/test/traffic-distance.test.ts",
+      "@@ -0,0 +1,50 @@",
+      "diff --git a/test/traffic-path.test.ts b/test/traffic-path.test.ts",
+      "@@ -0,0 +1,123 @@"
     ]
   },
-  "checkedUtc": "2026-10-20T21:19:23.661646+00:00",
+  "checkedUtc": "2026-10-20T21:21:07.950036+00:00",
   "method": "git merge-tree --write-tree --merge-base=<accepted> <headA> <headB>; only pairs sharing recent runtime files. Full branch documentation conflicts retained.",
   "productionConflictPairs": [
     {

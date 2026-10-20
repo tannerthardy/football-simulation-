@@ -12,7 +12,8 @@ full-suite rerun, candidate adoption or canonical queue edits. Integration
 retains assembly, exact combined verification and merge authority. Original
 owners retain their branches and source boundaries.
 
-Published review inventories all70 open PRs,17 recent source boundaries and19
+Published review inventories71 candidate PRs (including newly published186,
+excluding this audit187),18 recent source boundaries and20
 pairwise shared-runtime merges. Two source conflicts (169/177 and181/182),
 172-in174 duplication and remaining semantic/receipt handoffs are explicit.
 No source changes or engine/test campaigns. Bounded documentation claim releases

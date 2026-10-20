@@ -1,7 +1,7 @@
 # Integration overlap audit and owner handoff
 
 Checked 2026-10-20 UTC. **There is a substantial adoptable checkpoint here,
-but the 70 open PRs are not 70 independent changes waiting to merge.** The
+but the 71 candidate PRs are not 71 independent changes waiting to merge.** The
 recent work needs two explicit source reconciliations, one duplicate removal,
 and review of a few shared information/execution contracts. Do not merge the
 research stacks wholesale or make every held experiment a prerequisite.
@@ -20,13 +20,14 @@ Integration retains exact assembly, verification and adoption ownership.
   It includes current accepted develop but still contains ten changed source
   files and 75 research settings versus 44 accepted. Current ancestry does not
   make the whole package accepted.
-- Inventoried all 70 open PRs; inspected the recent #169–#185 source boundaries,
+- Inventoried the initial70 open PRs, then added newly published186 (excluding
+  this audit's own187); inspected the recent #169–#186 source boundaries,
   reports, PR handoffs and current owner summaries in detail. Earlier open
   work is classified from its published disposition; it was not all subjected
   to a new independent line-by-line football review.
-- Performed 19 pairwise `git merge-tree --write-tree --merge-base=<accepted>`
+- Performed 20 pairwise `git merge-tree --write-tree --merge-base=<accepted>`
   checks for recent pairs sharing runtime files. No checkout/index was merged.
-  Two pairs have source conflicts; all 19 have workboard conflicts. Those
+  Two pairs have source conflicts; all20 have workboard conflicts. Those
   administrative conflicts do not establish incompatible football behavior.
 - Zero engine runs, native plays, games, tracking queries, benchmarks or
   full-suite executions. Existing component reviews and receipts were read,
@@ -58,6 +59,7 @@ assembly; a later changed source requires a delta review.
 | [183](https://github.com/tannerthardy/football-simulation-/pull/183) | `dceec577baee5ea9b4f7fcf24d63bbef94385177` | Reviewed closest joint projection under unchanged limits. Ready label present at final refresh. Review link is still described as to-be-published in compact receipt; make existing disposition fetchable. |
 | [184](https://github.com/tannerthardy/football-simulation-/pull/184) | `0d13a208e233103fae11373ce67eca3d9b9c1d65` | Reviewed announced-versus-achieved teammate prediction. Independent from180. Preserve flipped-WZ climb/collection regression. |
 | [185](https://github.com/tannerthardy/football-simulation-/pull/185) | `d0f767666208f6f22081e8f81ad10c7f7461b288` | Reviewed square pull clearance/acquired corner; one blocking.ts file. Keep GH contract adjudication and adverse impacts; no propulsion or PULL_STEP activation. |
+| [186](https://github.com/tannerthardy/football-simulation-/pull/186) | `7b70c343cf30f0066fc46f223ad134d1249f6188` | Newly published, independently reviewed local man/zone routing. Requires183's source/test scope, included in its branch once; does not require181/182. Review the increment after183 and explicitly assess its new activation if182 is also chosen. |
 
 Draft state, readiness label, author recommendation and independent acceptance
 are different facts. Missing labels/links require a small handoff correction,
@@ -74,6 +76,7 @@ not a repeated native campaign or a declaration that the mechanism failed.
 |171+176+181, `run-fits.ts` | Pairwise source merges cleanly. They alter input resolution, retained moving force target and gather preview respectively. | Keep expected backfield separate from affirmative keyed runner; retain point and velocity on the same beat, use observation compensation once, and preserve complete gathered-command preview. No new live-holder cue or double lead. |
 |175+181+182, `common.ts` |175 merges textually with either. It changes actual force shoulder offset in both intercept and gather. | Use175's installed signed shoulder consistently in182's current-objective metadata and181's scored command. Generic midpoint fade/near-contact closure remain controls. |
 |183+184+182, spacing producer/consumer chain | No shared source files between these PRs, but184 changes peer inputs,182 supplies own goal, and183 chooses a closest feasible request. | Preserve source semantics: observed velocity is not an announced speed, current moving goal is not future intercept, and constraints remain acquired. Existing isolated native gains cannot be added or called a combined benefit. |
+|186+183;186+182/184/180 |186 includes183's runtime/test scope; their shared spacing.ts merges cleanly.186 routes eligible man/zone actors only when an own goal exists;182 adds that goal during pursuit.184 changes peer geometry and180 changes the physical preview. | Include183 once, retain186 as a separately reviewed increment. A clean merge does not establish its newly enabled pursuit behavior. Assess one saved blocked-pursuer encounter (OZ4 Will behind Mike is already named), retaining goal/unknown/load gates and first-touch closing guard.186's native passes end incomplete, so later pursuit/blocking is not established. Preserve residual A008 cost. |
 |185+174, `blocking.ts` | Clean pairwise source merge.185 changes pull/read/clearance;174 changes loaded contact hook. | Preserve the handoff from acquired corner/kick to loaded drive. No invented RT/Sam job or compulsory contact, private retarget, new clearance timer, or resurrected163 propulsion. |
 |178+184, `playsim.ts` | Clean source merge.184 changes spacing picture around old589;178 adds rules lifecycle, loaded-pair sampling and result resolution elsewhere. | Preserve world/contact/event order and the spacing callback; do not replace the entire old file from either branch. |
 |178+169/174/177, `engagement.ts` | Clean pairwise source merges.178 changes legacy holding bookkeeping in `tryHold`, not the work-off/runoff section. | Preserve legacy holding draw convention and actual-load OPI evidence. A changed block can change lawful foul facts; a changed official gain must not masquerade as changed physical protection. |
@@ -89,7 +92,7 @@ one branch's entire documentation or import all its ancestry.
 ### Integration
 
 1. Refresh accepted develop and all chosen heads. Update the canonical intake:
-   it still describes169+171(+172), while174 now incorporates172;177–185 add
+   it still describes169+171(+172), while174 now incorporates172;177–186 add
    separate reviewed boundaries. Link179's completed query and180's new readiness.
 2. Assemble minimal reviewed source/tests and necessary fixtures into one
    isolated candidate. Resolve the two source conflicts above explicitly,
@@ -102,6 +105,10 @@ one branch's entire documentation or import all its ancestry.
    explicitly. They may progress independently; if included in a larger freeze,
    its source/settings/test identity differs from their isolated receipts.
    Preserve separate scope/adoption decisions even if verification is batched.
+  186 can advance with its genuine183 dependency, or hold independently while
+   the smaller projection advances. If also choosing182, review the new route
+   activation before attributing a composed pursuit benefit; name the smallest
+   existing witness if static/saved evidence cannot settle that interaction.
 5. Reuse compatible component receipts. At the reconciled seams run the
    existing relevant controls once on the chosen combined source, then required
    exact combined verification once under the existing launcher/cost policy.
@@ -155,9 +162,17 @@ one branch's entire documentation or import all its ancestry.
 -183: link the existing `middle_evidence` review at its exact runtime7749e37a;
   readiness is now labeled. Preserve the unchanged constraints, actual earned
   strike/tackle and later contact/load changes. No repeated native campaign.
-- Review the goal/picture/projection seam with Catching and Physics. Keep the
-  unfinished broader joint-geometry navigation and held166 material-progress
-  policies out; they are not dependencies of183 or182.
+-186 is now published with its independent review, rather than still unfinished.
+  Supply its net increment after183 (bb458e8b/5402d71d/5248e884), keep183 once,
+  and assess its newly enabled pursuit scope with182's owner. Existing A008,
+  A042 and A044 recordings do not cover that composition or historical later
+  offensive blocking. Retain A044's worsened H/NB geometry and A042's no-benefit
+  result. A008's .810s versus accepted .691s is a single-capture cost, not a
+  representative benchmark or an established budget failure. Integration must
+  explicitly disposition residual cost; do not presume180's speed offsets it.
+- Review the goal/picture/projection/route seam with Catching and Physics.
+  Keep held166 material-progress policies and old discovery ancestry out;
+  neither is a dependency of183,182 or the portable186 increment.
 
 ### Physics Sim
 
@@ -212,7 +227,7 @@ one branch's entire documentation or import all its ancestry.
 
 ### Claude / research author
 
-- Keep153's experiments and evidence intact. Existing169/171/174/177/180/181–185
+- Keep153's experiments and evidence intact. Existing169/171/174/177/180/181–186
   successor boundaries do not justify importing153's settings/other hunks.
 - When continuing FORCE_LEAD or mesh/climb/lead/trap work, publish the smallest
   genuine dependency group with exact producing source/settings/inputs and
