@@ -47,6 +47,7 @@ describe('support players work off toward a personally declared carrier',()=>{
 
  it('does not restart a work-off choice every tick after the first support attempt',()=>{
   const f=scene();f.engagement.nextMoveAt=f.sim.t+.5;f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(true);
   const next=f.engagement.nextMoveAt;
   f.sim.t+=.01;f.setCue({pos:{x:43,y:CENTER_Y-6}});f.command();
   expect(f.engagement.nextMoveAt).toBe(next);
@@ -57,6 +58,20 @@ describe('support players work off toward a personally declared carrier',()=>{
   f.command();expect(f.defender.tags.has('shed-attempt')).toBe(false);
   expect(f.engagement.nextMoveAt).toBe(f.sim.t+.5);
  });
+
+ it.each(['lost','contradictory','force-unadvanced'] as const)(
+  'does not carry eligibility into a new contact after %s evidence',condition=>{
+   const f=scene();f.command();f.sim.disengage(f.engagement);
+   f.defender.tags.delete('shed-attempt');
+   if(condition==='lost')f.setCue({carrying:false});
+   if(condition==='contradictory')f.setQBCue({carrying:true});
+   if(condition==='force-unadvanced')f.setCue({pos:{x:39,y:CENTER_Y+6}});
+   f.sim.t+=f.defender.mind.decisionInterval+.01;
+   const next=f.sim.engage(f.blocker,f.defender,'run',f.engagement.drive)!;
+   expect(next).not.toBeNull();const pending=next.nextMoveAt;f.command();
+   expect(f.defender.tags.has('shed-attempt')).toBe(false);
+   expect(next.nextMoveAt).toBe(pending);
+  });
 
  it('retains initial contact timing for a close first-level threat',()=>{
   const f=scene('interior');f.setCue({pos:{x:41,y:CENTER_Y+1}});
