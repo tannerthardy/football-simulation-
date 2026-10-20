@@ -1,0 +1,75 @@
+Profile candidate: run-game-2026-10-13, commit 3828370a8b6905a7de2af761b72e0be5c41500cd, source a9a5b96909a810fe8ba0688bbf9fb3fa8f9cdad1f2f66327a0f64d768de91d1e
+Running node node_modules/vitest/vitest.mjs run --project core test/dl-acquired-flow.test.ts
+
+ RUN  v3.2.4 /workspace/football-run-160-contract-probe
+
+ ❯ |core| test/dl-acquired-flow.test.ts (18 tests | 2 failed) 183ms
+   ✓ first-level acquired lateral runner objective > advances the acquired moving point once, in the existing movement planner 27ms
+   ✓ first-level acquired lateral runner objective > works toward an acquired carrying back who has left the fit, side=-1 10ms
+   ✓ first-level acquired lateral runner objective > works toward an acquired carrying back who has left the fit, side=1 9ms
+   ✓ first-level acquired lateral runner objective > hidden holder, live motion and private give/keep flags do not choose the new flow, side=-1 8ms
+   ✓ first-level acquired lateral runner objective > hidden holder, live motion and private give/keep flags do not choose the new flow, side=1 9ms
+   ✓ first-level acquired lateral runner objective > unknown or negative observed possession=false does not fall back to the true live holder 10ms
+   ✓ first-level acquired lateral runner objective > unknown or negative observed possession=null does not fall back to the true live holder 7ms
+   ✓ first-level acquired lateral runner objective > unknown or negative observed possession=undefined does not fall back to the true live holder 7ms
+   ✓ first-level acquired lateral runner objective > rejects contradictory backfield possession and stale or unavailable evidence 26ms
+   ✓ first-level acquired lateral runner objective > preserves lag depth technique while deciding whether to flow 5ms
+   ✓ first-level acquired lateral runner objective > preserves control depth technique while deciding whether to flow 6ms
+   ✓ first-level acquired lateral runner objective > retains a frontside box shoulder and an uncertain stationary mesh 14ms
+   ✓ first-level acquired lateral runner objective > does not replace the installed box edge contract with an inside trail 5ms
+   ✓ first-level acquired lateral runner objective > does not replace the installed spill edge contract with an inside trail 6ms
+   ✓ first-level acquired lateral runner objective > holds acquired target and motion together within a decision, then answers contradictory evidence 5ms
+   ✓ first-level acquired lateral runner objective > hands a shallow acquired runner to the existing contact pursuit rather than preserving deep lateral flow 9ms
+   × acquired deep-flow activation does not use the hidden holder > keeps target/command invariant while personally reading pass 13ms
+     → expected { …(3) } to deeply equal { …(3) }
+   × acquired deep-flow activation does not use the hidden holder > keeps target/command invariant while personally reading unsure 6ms
+     → expected { …(3) } to deeply equal { …(3) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/dl-acquired-flow.test.ts > acquired deep-flow activation does not use the hidden holder > keeps target/command invariant while personally reading pass
+ FAIL  |core| test/dl-acquired-flow.test.ts > acquired deep-flow activation does not use the hidden holder > keeps target/command invariant while personally reading unsure
+AssertionError: expected { …(3) } to deeply equal { …(3) }
+
+- Expected
++ Received
+
+  {
+    "aim": {
+-     "x": 40.82874309978464,
+-     "y": 27.137802721312227,
++     "x": 43,
++     "y": 26.666666666666668,
+    },
+    "command": {
+      "cutSkill": 0.9701574742717601,
+      "facing": -2.875943853628997,
+      "posture": 0.85,
+      "push": 1,
+      "vel": {
+-       "x": -1.5,
+-       "y": 1.4466504128438247,
++       "x": 1.5,
++       "y": -2.8411076533541832,
+      },
+    },
+    "flow": undefined,
+  }
+
+ ❯ test/dl-acquired-flow.test.ts:90:52
+     88|    finally{runContactObservers.delete(f.sim);}
+     89|   };
+     90|   const a=emitted(left),b=emitted(right);expect(b).toEqual(a);expect(a…
+       |                                                    ^
+     91|  });
+     92| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  00:42:25
+   Duration  1.30s (transform 706ms, setup 0ms, collect 923ms, tests 183ms, environment 0ms, prepare 58ms)
+
+Validation receipt: out/review-dl-holder-repair/focused.json; exit 1

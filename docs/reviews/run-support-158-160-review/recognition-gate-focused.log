@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit 3828370a8b6905a7de2af761b72e0be5c41500cd, source a9a5b96909a810fe8ba0688bbf9fb3fa8f9cdad1f2f66327a0f64d768de91d1e
+Running node node_modules/vitest/vitest.mjs run --project core test/dl-acquired-flow.test.ts
+
+ RUN  v3.2.4 /workspace/football-run-160-contract-probe
+
+ ✓ |core| test/dl-acquired-flow.test.ts (18 tests) 169ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  00:42:46
+   Duration  1.15s (transform 580ms, setup 0ms, collect 773ms, tests 169ms, environment 0ms, prepare 62ms)
+
+Validation receipt: out/review-dl-holder-repair/focused.json; exit 0
