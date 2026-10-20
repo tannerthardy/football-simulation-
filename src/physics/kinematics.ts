@@ -209,7 +209,13 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     if (at > ease) {
       at = ease;
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
-      const want = (dvx * nx + dvy * ny) / dt;
+      // Easing forward drive reduces the attainable next parallel speed.
+      // Match that speed along the wanted bearing before restoring lateral
+      // demand; using the full transverse velocity would turn past the goal.
+      const wantedAlong = desired.x * tx + desired.y * ty;
+      const nextAlong = speed + at * dt;
+      const bearingScale = wantedAlong > nextAlong ? nextAlong / wantedAlong : 1;
+      const want = (dvx * nx + dvy * ny) / dt * bearingScale;
       an = clamp(want, -room, room);
     }
     ax = at * tx + an * nx;
