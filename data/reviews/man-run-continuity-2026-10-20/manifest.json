@@ -1,0 +1,822 @@
+{
+  "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "claudeResearch": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+  "runtime": "11ef1703a59b1ab13bbebf2eeb51ed7a8eba8e05",
+  "tests": "0dca4f09ec876a65949242221ad712f493ec51bf",
+  "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "candidateSource": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+  "reusedBaselineEvidence": {
+    "commit": "32977c642075c94f1b4ea7f1f6bb5aacc6161385",
+    "path": "data/reviews/db-stalk-workoff-2026-10-20",
+    "manifestSha256": "53f30c6429a29e75bb0957ddca10d3808922a044e7feca77551694bb35d94a3b"
+  },
+  "flags": "All44 unchanged, RUN_CONTACT_COMPONENTS1, GAIT_STEP0, CF_FLOWunset; full resolved flags and physical defaults in every launcher receipt.",
+  "cost": {
+    "commandSeconds": 95.922713936,
+    "nativeCommandSeconds": 36.204978956,
+    "focusedAndTypecheckCommandSeconds": 59.71773498,
+    "attemptedNativeCases": 22,
+    "savedTerminalCases": 21,
+    "reusedBaselineCases": 6,
+    "finalUniqueTerminalCases": 7,
+    "qualification": "Includes all developmental receipts and one failed aggregate recording attempt. Original PA attempt lacks a saved tape; tail retry completes the final seven-case evidence, without relabeling the failed batch as passing."
+  },
+  "focused": "129 distinct final-source checks and typecheck pass; earlier failures preserved, no full suite/games/NFL query.",
+  "finalCases": [
+    {
+      "case": "WZ7",
+      "inputSha256": "6a0f9a537ab5c54a8e7cdbdadb91ac336ab5d9ee1b3f782d4de1aaa8d746903f",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/WZ7.json.gz",
+        "sha256": "5598ec0a7ac274e3c8848e4aa137912b0c2959cfaa3f01750398b46892c679d1",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 25.85,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-candidate/WZ7.json.gz",
+        "sha256": "b1198091a8f378bc67a6da95ca49331c926aea2a11d0b605e75c95832320e9a1",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 5.87,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": {
+          "tick": 1.2,
+          "achievedAt": 1.25
+        },
+        "requests": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "intents": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "after": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "repBefore": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "reps": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "contacts": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "rng": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "ball": {
+          "differentLength": [
+            129,
+            87
+          ]
+        }
+      },
+      "allListedCommonFieldsIdentical": false,
+      "candidateCaseSeconds": 1.067439716,
+      "seed": 7,
+      "call": "wz",
+      "defense": "over4"
+    },
+    {
+      "case": "OZ4",
+      "inputSha256": "5140d5e6e69164f5db49622f7dcf16dd619e9362e6640f0ca73493b48d91a2d4",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/OZ4.json.gz",
+        "sha256": "a31ae0d5a9c847a11eb6cdc6352bd3b1c16794955ee3ff39f44b07435ef7c804",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 15.59,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-candidate/OZ4.json.gz",
+        "sha256": "880199b11fb00d01b9bb4085d88eacf65f8ae861c812f12bbf8959ef1b949809",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 17.09,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": {
+          "tick": 1.25,
+          "achievedAt": 1.3
+        },
+        "requests": {
+          "tick": 1.2,
+          "achievedAt": 1.25
+        },
+        "intents": {
+          "tick": 1.2,
+          "achievedAt": 1.25
+        },
+        "after": {
+          "tick": 1.2,
+          "achievedAt": 1.25
+        },
+        "repBefore": {
+          "tick": 1.9,
+          "achievedAt": 1.95
+        },
+        "reps": {
+          "tick": 1.9,
+          "achievedAt": 1.95
+        },
+        "contacts": {
+          "tick": 1.9,
+          "achievedAt": 1.95
+        },
+        "rng": {
+          "tick": 1.9,
+          "achievedAt": 1.95
+        },
+        "ball": {
+          "differentLength": [
+            94,
+            97
+          ]
+        }
+      },
+      "allListedCommonFieldsIdentical": false,
+      "candidateCaseSeconds": 0.8734261910000003,
+      "seed": 4,
+      "call": "oz",
+      "defense": "tite4"
+    },
+    {
+      "case": "WZORD",
+      "inputSha256": "a14753ed8257d7c434271f9bc0b2ef25aa4fe2ede2a7fd11e5972a1111bde820",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/WZORD.json.gz",
+        "sha256": "df12e1c1c00dc25a01bcdbd34e97c60ce9710762d10b180cc1b88ce4857e7829",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 2.89,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-candidate/WZORD.json.gz",
+        "sha256": "b6870789df453d27191386d3b700548045c48b3174ab1254f0000c379cc4086e",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 2.89,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": null,
+        "requests": null,
+        "intents": null,
+        "after": null,
+        "repBefore": null,
+        "reps": null,
+        "contacts": null,
+        "rng": null,
+        "ball": null
+      },
+      "allListedCommonFieldsIdentical": true,
+      "candidateCaseSeconds": 0.54751235,
+      "seed": 1,
+      "call": "wz",
+      "defense": "over2"
+    },
+    {
+      "case": "F_OZ",
+      "inputSha256": "ae5bcb23a362ca5af992338ccadae9030653ba8483dc4e0c8ba6fd5752daefb9",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/transfer-baseline/F_OZ.json.gz",
+        "sha256": "58be75e23776836ebc4642ca250440c1f02ea2913111b0d6ea1eb806914f99a9",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 1.49,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-candidate/F_OZ.json.gz",
+        "sha256": "d0593fc435a66e2f9595d8ed60c2c162b86ac2dc412ef07f8f3e1ae9e44facdb",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 1.49,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": null,
+        "requests": null,
+        "intents": null,
+        "after": null,
+        "repBefore": null,
+        "reps": null,
+        "contacts": null,
+        "rng": null,
+        "ball": null
+      },
+      "allListedCommonFieldsIdentical": true,
+      "candidateCaseSeconds": 0.4709333099999999,
+      "seed": 29,
+      "call": "F_OZ",
+      "defense": "F_OZ"
+    },
+    {
+      "case": "F_COUNTER",
+      "inputSha256": "0bf137337524a45abc1c43a146a1c02243760a40b4a56971565a4ec70fe4d937",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/transfer-baseline/F_COUNTER.json.gz",
+        "sha256": "0c03e1678764a206aaa0128442bfaebe30f68c0f3bb08cb9bb3e58a4efc47659",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 0.22,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-candidate/F_COUNTER.json.gz",
+        "sha256": "a8b0ee5e03204787f5eb41cad12c0c135fee94bb3a42d442e35e849351f1eb80",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 0.22,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": null,
+        "requests": null,
+        "intents": null,
+        "after": null,
+        "repBefore": null,
+        "reps": null,
+        "contacts": null,
+        "rng": null,
+        "ball": null
+      },
+      "allListedCommonFieldsIdentical": true,
+      "candidateCaseSeconds": 0.5882009689999995,
+      "seed": 19,
+      "call": "F_COUNTER",
+      "defense": "F_COUNTER"
+    },
+    {
+      "case": "PA13",
+      "inputSha256": "46810a9f4229295bc129ed3eb6350fdb00d7002505ebc2402301584d8cb943b5",
+      "baseline": {
+        "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/transfer-baseline/PA13.json.gz",
+        "sha256": "f2380dac7e566be8b1597ed5fe600698d9915cb92628486f65139ad1aaafa958",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 14.51,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-tail/PA13.json.gz",
+        "sha256": "00887bc1aeaf8748df7a8fdd9ee3913f47ca4256f4f3e4ef98d3b633fbaa5d3e",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 14.51,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": null,
+        "requests": null,
+        "intents": null,
+        "after": null,
+        "repBefore": null,
+        "reps": null,
+        "contacts": null,
+        "rng": null,
+        "ball": null
+      },
+      "allListedCommonFieldsIdentical": true,
+      "candidateCaseSeconds": 2.8266182200000003,
+      "seed": 13,
+      "call": "PA13",
+      "defense": "Over Cover3"
+    },
+    {
+      "case": "F_Q_OZ",
+      "inputSha256": "4e3785c6bf420e9e33dc49dbdfdcc61fab22f5077481e85252eba5d007583afe",
+      "baseline": {
+        "path": "/tmp/football-db-stalk-baseline/out/man-run-continuity/fresh-baseline/F_Q_OZ.json.gz",
+        "sha256": "a463e9f83b691bf78627272bb09e8af8a0da32016feb368d0bcc8d20ccb1bafd",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "gain": 4.67,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "candidate": {
+        "path": "out/man-run-continuity/reader-tail/F_Q_OZ.json.gz",
+        "sha256": "c3146e7188274d99f57e6a6e947676c0ade119b3418c4cba3fc8fa68f9039c0e",
+        "source": "925eb44e637929e5031553c7a3d44dd8c20aa26d05c31a799929faef1b1a740b",
+        "gain": 4.65,
+        "outcome": "tackle",
+        "terminal": true
+      },
+      "firstCommonFieldDifferences": {
+        "before": {
+          "tick": 1.2,
+          "achievedAt": 1.25
+        },
+        "requests": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "intents": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "after": {
+          "tick": 1.15,
+          "achievedAt": 1.2
+        },
+        "repBefore": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "reps": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "contacts": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "rng": {
+          "tick": 1.8,
+          "achievedAt": 1.85
+        },
+        "ball": {
+          "differentLength": [
+            82,
+            81
+          ]
+        }
+      },
+      "allListedCommonFieldsIdentical": false,
+      "candidateCaseSeconds": 2.6920111909999997,
+      "seed": 29,
+      "call": "F_OZ",
+      "defense": "Fresh quarters, weak OZ"
+    }
+  ],
+  "archives": [
+    {
+      "path": "final-native.tar.gz",
+      "bytes": 14530396,
+      "sha256": "67dcf17a6f2b9af6670c14fce41b121d2458552807e4f2eb51a846056ab21e10",
+      "members": [
+        {
+          "path": "reader-candidate/F_COUNTER.json.gz",
+          "bytes": 1855549,
+          "sha256": "a8b0ee5e03204787f5eb41cad12c0c135fee94bb3a42d442e35e849351f1eb80"
+        },
+        {
+          "path": "reader-candidate/F_OZ.json.gz",
+          "bytes": 1580935,
+          "sha256": "d0593fc435a66e2f9595d8ed60c2c162b86ac2dc412ef07f8f3e1ae9e44facdb"
+        },
+        {
+          "path": "reader-candidate/OZ4.json.gz",
+          "bytes": 2720703,
+          "sha256": "880199b11fb00d01b9bb4085d88eacf65f8ae861c812f12bbf8959ef1b949809"
+        },
+        {
+          "path": "reader-candidate/WZ7.json.gz",
+          "bytes": 2377112,
+          "sha256": "b1198091a8f378bc67a6da95ca49331c926aea2a11d0b605e75c95832320e9a1"
+        },
+        {
+          "path": "reader-candidate/WZORD.json.gz",
+          "bytes": 1779630,
+          "sha256": "b6870789df453d27191386d3b700548045c48b3174ab1254f0000c379cc4086e"
+        },
+        {
+          "path": "reader-tail/F_Q_OZ.json.gz",
+          "bytes": 2242496,
+          "sha256": "c3146e7188274d99f57e6a6e947676c0ade119b3418c4cba3fc8fa68f9039c0e"
+        },
+        {
+          "path": "reader-tail/PA13.json.gz",
+          "bytes": 2090301,
+          "sha256": "00887bc1aeaf8748df7a8fdd9ee3913f47ca4256f4f3e4ef98d3b633fbaa5d3e"
+        },
+        {
+          "path": "reader-tail/receipt.json",
+          "bytes": 865,
+          "sha256": "1b01feaed701af3f6eb50e1fd7643222ea1b4bf5f9502fecd157b460e81eddd2"
+        }
+      ]
+    },
+    {
+      "path": "developmental-native.tar.gz",
+      "bytes": 27203190,
+      "sha256": "10a9930fe0575f4af6cb04e3aaaa20a105ba3e02c1ea416223376ab1d415fbf4",
+      "members": [
+        {
+          "path": "candidate/OZ4.json.gz",
+          "bytes": 2582412,
+          "sha256": "1e2d9414f6c4b7801a9aabd27b80516bb444fdc53524635c1bb204b567453e6c"
+        },
+        {
+          "path": "candidate/WZ7.json.gz",
+          "bytes": 2229543,
+          "sha256": "6c0503758b0498f9740211cf3705cd37d49ce7a063dcab81a2fb559bc20503df"
+        },
+        {
+          "path": "candidate/WZORD.json.gz",
+          "bytes": 1775452,
+          "sha256": "45f1d50f256657a1c237d66cffb4ba5f23af77ad47baeff5864fc378827d64c0"
+        },
+        {
+          "path": "candidate/receipt.json",
+          "bytes": 1088,
+          "sha256": "970d57607648a0bd99da7cfaaa98d21494997e14e080ec3728351a441294d7de"
+        },
+        {
+          "path": "final-candidate/OZ4.json.gz",
+          "bytes": 2581990,
+          "sha256": "90d1086a86a720d88f1441076605758a2c3f90d9dce1412befd4372c80dd14e5"
+        },
+        {
+          "path": "final-candidate/WZ7.json.gz",
+          "bytes": 2229283,
+          "sha256": "3c231a3ec9f3ef9683e3e27d532e829039e0b504fa9dc88527a9bad65adb1cac"
+        },
+        {
+          "path": "final-candidate/WZORD.json.gz",
+          "bytes": 1775454,
+          "sha256": "7621f55c48c5d686ff1d47a574ce1ec7a1bd86c3886d8a05b1333cdd1fef12cf"
+        },
+        {
+          "path": "final-candidate/receipt.json",
+          "bytes": 1082,
+          "sha256": "f2e07fd6e69a66617adbd8abcb75ee6d21f3942743a4bec61c9323fa430a98a3"
+        },
+        {
+          "path": "guarded-candidate/F_COUNTER.json.gz",
+          "bytes": 1851581,
+          "sha256": "903baccb6bd586cb3339139165ce2c15ea834d3e7c991ec0eda279e76331d1a1"
+        },
+        {
+          "path": "guarded-candidate/F_OZ.json.gz",
+          "bytes": 1576780,
+          "sha256": "87058f3bb43056f4031b0d926f68fb8a6c150ed325c914be6cb4309adf68ff01"
+        },
+        {
+          "path": "guarded-candidate/OZ4.json.gz",
+          "bytes": 2581992,
+          "sha256": "d72cb44d56a4c77634f69df2cdfa607770b2328f7ed57fcbe0fa8a0775654413"
+        },
+        {
+          "path": "guarded-candidate/PA13.json.gz",
+          "bytes": 2075093,
+          "sha256": "175e5b4e25d9ad72b30ffccf00dc7dee640c348a5adaf226c5d1ccec87af6537"
+        },
+        {
+          "path": "guarded-candidate/WZ7.json.gz",
+          "bytes": 2229277,
+          "sha256": "b540ef051c9fab53fb81094aef7255cb2b80ddcf3da1844e3cc9ab7cde912eca"
+        },
+        {
+          "path": "guarded-candidate/WZORD.json.gz",
+          "bytes": 1775445,
+          "sha256": "c2ebadab7e640e126225f289c3858a342606cdce7b2837cb61620a0824237c34"
+        },
+        {
+          "path": "guarded-candidate/receipt.json",
+          "bytes": 1800,
+          "sha256": "e70bfac8d00028bf144406d70b9dc68e2e51ab2ec1b571dcf45e1a2890a0bbb9"
+        },
+        {
+          "path": "fresh-candidate/F_Q_OZ.json.gz",
+          "bytes": 2147594,
+          "sha256": "65441a85db5e878e5a33313814719a15e999372f686dfa57d3ad0dc1aaaa5afb"
+        },
+        {
+          "path": "fresh-candidate/receipt.json",
+          "bytes": 622,
+          "sha256": "539751d77847bc878de72c37b3fe53138f8a087f99e0a987a11ebbc6855f1e1a"
+        }
+      ]
+    },
+    {
+      "path": "fresh-baseline.tar.gz",
+      "bytes": 2166659,
+      "sha256": "72d1fdf8f791831c4edafbdc52ebe64ea6cc04ae83423bb76145d7fb61d8f9c8",
+      "members": [
+        {
+          "path": "fresh-baseline/F_Q_OZ.json.gz",
+          "bytes": 2179983,
+          "sha256": "a463e9f83b691bf78627272bb09e8af8a0da32016feb368d0bcc8d20ccb1bafd"
+        },
+        {
+          "path": "fresh-baseline/receipt.json",
+          "bytes": 629,
+          "sha256": "b05912b79994cc4828f801de3d58149cadc108f23ac871596dc030c973b43c12"
+        },
+        {
+          "path": "fresh-baseline-launch.json",
+          "bytes": 2322,
+          "sha256": "3910655b29e9283a50b575ec75150af3861b4c9c51f5060744d5f40642cd28c4"
+        }
+      ]
+    },
+    {
+      "path": "common.tar.gz",
+      "bytes": 495964,
+      "sha256": "1fb1ecdbf629c705257de2ae919792c57512be7849719caff36b4bf43dcfc8e8",
+      "members": [
+        {
+          "path": "accepted-contracts.json",
+          "bytes": 2239,
+          "sha256": "f99a4c08f4c3bfcd7cacda0f85847a7987b0e88737c161347c61a0554469ed3d"
+        },
+        {
+          "path": "adapter-coordination.md",
+          "bytes": 911,
+          "sha256": "d93372ecfcb8060531c77eb06939c5b27d383bdcbd6ffdaa5d0359683cd074fd"
+        },
+        {
+          "path": "adapter-focused.json",
+          "bytes": 2381,
+          "sha256": "e4933e2e2b4209986ea912345c601f71aaf77050275f7f0ccf1d89085b2ad8a4"
+        },
+        {
+          "path": "capture-rules.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "capture.mjs",
+          "bytes": 5008,
+          "sha256": "dccda29a51bb35bb4a7991f5a20174f35e76fd8446cf99a40e0dbee09036d6b5"
+        },
+        {
+          "path": "completion-ledger.json",
+          "bytes": 20089,
+          "sha256": "203f8c728d5eae89501d27a0cdeefc48ce5268788a30f5b232a32735ab34fcb7"
+        },
+        {
+          "path": "contracts.patch",
+          "bytes": 12180,
+          "sha256": "c4a99462219ec1acdb3f878ee3c22771257a59927c721f3d558d64072ece1c70"
+        },
+        {
+          "path": "final-back-man-checks.json",
+          "bytes": 2237,
+          "sha256": "3c192f47af2d4cbb188a8adbfb14d05b931a8a20e6a355cb1d0a14dfea08104e"
+        },
+        {
+          "path": "final-bounded-contracts.json",
+          "bytes": 2246,
+          "sha256": "16eede992d5e41221e9a027462484ba9ac6d9c86ddb024d61a001282707ebd0e"
+        },
+        {
+          "path": "final-contracts.json",
+          "bytes": 2512,
+          "sha256": "536364e5d47a79d8e4d30bda8444566d897afae76e5b2f58a780b8b3078b89d6"
+        },
+        {
+          "path": "final-native-launch.json",
+          "bytes": 2385,
+          "sha256": "81a2aaad387502f165c02c6447a932d1213e34513be19fb4f9a34b6ac8b1d9cd"
+        },
+        {
+          "path": "focused.json",
+          "bytes": 2370,
+          "sha256": "cc23a6f203ce8e5fac94f5b189a831041d1d6213e8853c0547bceca0be2a0c0b"
+        },
+        {
+          "path": "fresh-candidate-launch.json",
+          "bytes": 2340,
+          "sha256": "27de022618baf087a2c926efd01d163ee93521afb313a870a84c52fa928fbf80"
+        },
+        {
+          "path": "fresh-input.json.gz",
+          "bytes": 5988,
+          "sha256": "8288e01d8f84b9de55dde26ceeebfc3bf6620f1e1e1709e47f6e1a3f42059ca7"
+        },
+        {
+          "path": "guarded-native-launch.json",
+          "bytes": 2337,
+          "sha256": "23f3057348c0e6b2889ad9eaac0ff0457f248ffac5e61029324e06c5502410c5"
+        },
+        {
+          "path": "independent-review.md",
+          "bytes": 2782,
+          "sha256": "8f5d7dd3505002843afd66d7b16de13e1f966126790d790e3dc98ac9978da760"
+        },
+        {
+          "path": "inputs.json.gz",
+          "bytes": 19864,
+          "sha256": "4b9e5d07a428f9d2642a8132a68da761f1c96774ad245eca1b5529de1294bf66"
+        },
+        {
+          "path": "intelligence-contract.md",
+          "bytes": 5648,
+          "sha256": "452a7561bfd5e256a753fa40e886e3871665ceff6484b36ccd061dc79e9e3560"
+        },
+        {
+          "path": "make-fresh.mjs",
+          "bytes": 654,
+          "sha256": "9fb88b04b22339104ba077b061c0dd63022d91e348721e67b503ff92c0ae96d5"
+        },
+        {
+          "path": "native-launch.json",
+          "bytes": 2379,
+          "sha256": "65fe6cd67df0c37d61097adb2dd1412933abfdd2e7db7180df5323c75ea318e9"
+        },
+        {
+          "path": "owner-note.md",
+          "bytes": 1127,
+          "sha256": "3ca47095187ef115b27bace3144d3cc8b524865c6068550b77719dff6d66d363"
+        },
+        {
+          "path": "ownership-focused.json",
+          "bytes": 2239,
+          "sha256": "4cdb78f44a70bd3b3e6dc4b50de37568510a3bad5fd3af24fd5e812243fd71a5"
+        },
+        {
+          "path": "package.py",
+          "bytes": 4994,
+          "sha256": "ef7078d07904b2a84b904555409dfa07ebfe2624384a9c829b7934eb1e64a558"
+        },
+        {
+          "path": "reader-contracts-corrected-fixture.json",
+          "bytes": 2383,
+          "sha256": "d1d0121678b1317dcdbdda8407e38e88610e28224ae346e8727f31ba54ecd33b"
+        },
+        {
+          "path": "reader-focused.json",
+          "bytes": 2428,
+          "sha256": "ef91db3bf4b6830b7b2f2075a824b6f495c70e2b67b8b2ff7b1ffd27516bd564"
+        },
+        {
+          "path": "reader-native-launch.json",
+          "bytes": 2348,
+          "sha256": "d7475ba053612a4afce03248f0bc7a79aa623b86363bedca286ab9beffb563bb"
+        },
+        {
+          "path": "reader-red.json",
+          "bytes": 2280,
+          "sha256": "cfb72820036a852f4798c83f61ee7267ee9def8ea7033a72c24cee7216f71aaf"
+        },
+        {
+          "path": "reader-tail-inputs.json.gz",
+          "bytes": 10262,
+          "sha256": "3406dae57140646574eaee03e63cf36c92f666376d16701b88edc90835e799ac"
+        },
+        {
+          "path": "reader-tail-launch.json",
+          "bytes": 2349,
+          "sha256": "a9a8f57cbb206e45e04f3e42933f751e0037b31d0ca737eb1da533573af5548b"
+        },
+        {
+          "path": "reader-typecheck.json",
+          "bytes": 2163,
+          "sha256": "09897c127269ff90e3ad0dcd8b5959fdfbfb8091bfb10716be8ca04756fc2e79"
+        },
+        {
+          "path": "remaining-focused.json",
+          "bytes": 2383,
+          "sha256": "2a8b460ccc26a41f12073dcfb9bc239005cd087b27515fd67f68a5ecb65e509f"
+        },
+        {
+          "path": "runtime.patch",
+          "bytes": 10970,
+          "sha256": "56156cc930365e4707f6f35538c53305c7f1d1f0e261340fe050acb1be149705"
+        },
+        {
+          "path": "seven-inputs.json.gz",
+          "bytes": 24072,
+          "sha256": "3679d9ea760d8db6aff681db7ee3533f0d410ac08e9f8c615b7d408c56298769"
+        },
+        {
+          "path": "source-proof.json",
+          "bytes": 896,
+          "sha256": "8c9b31c05149a4a692d44c7c55d2212d1232a04158445b9783aa75e18b74fc2d"
+        },
+        {
+          "path": "summarize.py",
+          "bytes": 4821,
+          "sha256": "e8ff676f8a8336b327815aafa8e1a47b24bc16ce393418cf90e25cead96c7b58"
+        },
+        {
+          "path": "typecheck.json",
+          "bytes": 2163,
+          "sha256": "75aafd66fdeb9ad7d0938ad288209ed162a535ede4f6191a9b736a86a2ec4dbf"
+        },
+        {
+          "path": "claude-evidence/FINAL-NATIVE-MEMO.md",
+          "bytes": 6728,
+          "sha256": "f0f4c9e60e412a7018adad4958e8f62eaac288885ef82e701856d42b55fe7499"
+        },
+        {
+          "path": "claude-evidence/MEMO.md",
+          "bytes": 4795,
+          "sha256": "d6c29bc74e476617f78cb230455b47469319336888a43a957dc19ece35cd3542"
+        },
+        {
+          "path": "claude-evidence/READER-V2-NATIVE-MEMO.md",
+          "bytes": 4056,
+          "sha256": "d5e99efce5efbb70329e452576793ef14b8bbdaaf0f2dcfd85b6d259b71a9047"
+        },
+        {
+          "path": "claude-evidence/compare_final.py",
+          "bytes": 4570,
+          "sha256": "8e3e6ee148f20c6d9562aa4f16cd38b5a6bdcec3d74247300f773cd586752932"
+        },
+        {
+          "path": "claude-evidence/compare_reader_v2.py",
+          "bytes": 3815,
+          "sha256": "4446f3a1b6d7765dc94c5928aec0804c7b8c6e92afd5ed44cf1ed3f6fd4a9fb4"
+        },
+        {
+          "path": "claude-evidence/d0co.manifest.json",
+          "bytes": 3609,
+          "sha256": "9f66ad36d1fbfc42c7c43ca03cc9fa51791c46132d6ffcc941eeb4fa6c8a4baf"
+        },
+        {
+          "path": "claude-evidence/final-native-comparison.json",
+          "bytes": 477298,
+          "sha256": "cc8763c2643b1720f70843aa93829b2256f7ede2701f90c968a670093df37f1b"
+        },
+        {
+          "path": "claude-evidence/inspect_saved.py",
+          "bytes": 4689,
+          "sha256": "ba75fbf7ee4fa0e6ee573297f4e2a3045b7e72ea39cecf462903776701edf829"
+        },
+        {
+          "path": "claude-evidence/part10-outcomes.txt",
+          "bytes": 454,
+          "sha256": "4f42bd023a0777e2b9acae49aab3a2ac6938e8e222325ba263666fbbccdfd8ef"
+        },
+        {
+          "path": "claude-evidence/part10-pr169.txt",
+          "bytes": 583,
+          "sha256": "92372ed84fc1e08f441b2a8077841b859fb08697ca90de354c596b0110ac00cd"
+        },
+        {
+          "path": "claude-evidence/part11-sim-internals.txt",
+          "bytes": 12972,
+          "sha256": "4b3f4bb8669c7575b760f6891afa154edfab8b703e4df1363dcbb771425d406d"
+        },
+        {
+          "path": "claude-evidence/part11-structure.txt",
+          "bytes": 21851,
+          "sha256": "48095db24be4ba744f3810b2583be4855ba2557425aa449d47120e1a9710ed11"
+        },
+        {
+          "path": "claude-evidence/plot_continuity.py",
+          "bytes": 5716,
+          "sha256": "2a713f6d34150880273fb9cfffe80ce2cebfd5c597999ca8ccd8dc06794baa4a"
+        },
+        {
+          "path": "claude-evidence/purpose-continuity-provenance.json",
+          "bytes": 2042,
+          "sha256": "b66da3cd616a684736e9db8d9b4c9001b02155cae4883eb14df93dad2f41b20d"
+        },
+        {
+          "path": "claude-evidence/purpose-continuity.png",
+          "bytes": 313635,
+          "sha256": "244bd942b30a54a53ba673ecb5dae55fd030b52ae69c3c82d3fcd65344d9f78f"
+        },
+        {
+          "path": "claude-evidence/q0co.manifest.json",
+          "bytes": 3606,
+          "sha256": "432082f04d09ab895e0d0fd08fc387adb0d9f046596d703fea460e5bd5101e7f"
+        },
+        {
+          "path": "claude-evidence/reader-v2-native-comparison.json",
+          "bytes": 275949,
+          "sha256": "4ecf066fff2503a8ff7854afe86b799eb1909b2ebdd1a8019ec57aeba4a0ec41"
+        },
+        {
+          "path": "claude-evidence/s1co.manifest.json",
+          "bytes": 4062,
+          "sha256": "24ef07de25ee5dcc939718479a7aa0b310a84d1594422cc617cbd47b7a073d52"
+        },
+        {
+          "path": "claude-evidence/s1gap.manifest.json",
+          "bytes": 4201,
+          "sha256": "4a5a65e8c129a3af0097484431cea57de9f2b109e2f5a2c822c6037790191bb5"
+        },
+        {
+          "path": "claude-evidence/s2co.manifest.json",
+          "bytes": 4015,
+          "sha256": "8e74b80a55953e4551d0ac08528bea8b2c086b5ea0f04af6254e2b9c2421abde"
+        },
+        {
+          "path": "claude-evidence/saved-witnesses.json",
+          "bytes": 135696,
+          "sha256": "d488a7ad5577bb03cf5588b86b27e23171ebbfbddd0f11919f813542602348a2"
+        }
+      ]
+    }
+  ]
+}
