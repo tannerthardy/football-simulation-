@@ -12,6 +12,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
+import { forceTrack, retainedForceTrack } from './force-track.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -248,8 +249,24 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
-    const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
-    const fit = track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
+    // The outside shoulder belongs to a moving runner/surface, not a series
+    // of stationary landmarks. Use only the pictures acquired above and
+    // retain point and motion together for the existing decision beat.
+    let aim, motion = {x:0,y:0};
+    if (job.kind === 'force') {
+      const boundary = core.reduce((p,q) => job.side*(p.pos.y+job.side*p.radius)
+        >= job.side*(q.pos.y+job.side*q.radius) ? p : q);
+      const desired = forceTrack(a,seen,x,surface,boundary.vel.y,job.side);
+      desired.point.y += a.mind.placementError;
+      const held = retainedForceTrack(a,desired,sim.t);
+      aim = held.point; motion = held.velocity;
+    } else aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
+    const fit = track(a,aim,motion,{speed:.9,gain:3,facing:Math.PI});
+    // Open the hips for an acquired outward lateral run; a square shuffle
+    // cannot execute this request. Near-contact gathering below still owns
+    // the final approach, and stationary/inside fits keep their technique.
+    if (motion.y*job.side > 0 && Math.abs(fit.vel.y)>Math.abs(fit.vel.x))
+      fit.facing = Math.atan2(fit.vel.y,fit.vel.x);
     // A fit landmark is not permission to run through an approaching back.
     // Gather for a personally identified runner threatening this surface,
     // even before he crosses the old LOS pursuit gate. Keep the installed
