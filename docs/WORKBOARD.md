@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Pursuit projection control only — 2026-10-20 UTC
+
+Diagnostic exact183 source on resolved181+182 f766256. Same two frozen routing
+inputs; distinguishes183 projection from186 new route activation. No behavior
+variant, physics/default or broad validation. Integration owns combined checks.
+
 ## Catching integration blockers only — 2026-10-20 UTC
 
 Continue PR182 on codex/pursuit-objective-continuity from its accepted2c98bed
