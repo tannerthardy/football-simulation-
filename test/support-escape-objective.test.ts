@@ -143,6 +143,18 @@ describe('qualified support can leave toward its held runner objective',()=>{
   expect(f.engagement.nextMoveAt).toBe(0);
  });
 
+ it('retires direct continuation on contradictory acquisition without importing a hidden holder',()=>{
+  const a=scene(),b=scene();a.command();b.command();
+  for(const f of [a,b]){
+   f.setQB({carrying:true});f.sim.t+=f.defender.mind.decisionInterval+.01;
+  }
+  b.sim.ball={kind:'held',carrier:b.sim.qb};
+  const ca=a.command(),cb=b.command();
+  expect(cb.vel).toEqual(ca.vel);
+  expect(toward(ca,a)).toBeLessThan(.95);
+  expect(a.sim.rng.nextU32()).toBe(b.sim.rng.nextU32());
+ });
+
  it('leaves first-level close-threat work on its existing across-face policy',()=>{
   const f=scene({kind:'interior'}),command=f.command();
   expect(f.defender.tags.has('shed-attempt')).toBe(true);
