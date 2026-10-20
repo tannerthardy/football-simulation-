@@ -148,7 +148,8 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
   const player = (a: Agent) => ({ idx: a.idx, team: a.team, slot: a.slot, name: `${a.player.firstName} ${a.player.lastName}`,
     jersey: a.player.jersey, position: a.player.position, heightIn: a.player.measurables.heightIn,
     weightLb: a.player.measurables.weightLb, ratings: { ...a.player.ratings }, profile: { ...a.profile } });
-  const initial = { te: body(te), end: body(end), plan: { ...plan, target: end.idx }, installation,
+  const initial = { te: body(te), end: body(end), plan: { ...plan, target: end.idx,
+    drive: vec(plan.drive), pullPath: plan.pullPath?.map(vec) }, installation,
     readyAt: { te: te.snapReadyAt, end: end.snapReadyAt }, executionErrors,
     mirroredExecutionErrors: { te: te.mind.executionError, end: end.mind.executionError },
     teKineticEnergyKgYd2PerS2: .5 * te.profile.massKg * input.initialSpeed ** 2,

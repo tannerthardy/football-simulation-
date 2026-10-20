@@ -67,16 +67,17 @@ describe('reduced split-zone snap-time momentum witness', () => {
     }
   });
 
-  it('installs both staged sides consistently and permits the existing visible-cue log adjustment', () => {
+  it('installs both staged sides consistently and acquires actual loaded contact', () => {
     for (const side of [1, -1] as const) {
       const r = motionContact({ ...fixture, side, initialSpeed: 0 }, { recording: true });
       expect(r.initial.installation).toEqual({ name: 'formation-consistent-v2', formationFlip: side > 0,
         strongSign: side, stagedTESide: side, sliceSign: -side, plannedDriveSign: -side });
       expect(Math.sign(r.initial.te.pos.y - CENTER_Y)).toBe(side);
       expect(Math.sign(r.initial.end.pos.y - CENTER_Y)).toBe(-side);
-      const log = r.recording?.events.find(e => e.type === 'block_log');
-      expect(log?.note).toBe('kick target crossed inside shoulder');
-      expect(log!.t).toBeLessThan(r.firstAcquisition.t);
+      // Earlier achieved kick contact need not wait for a later acquired
+      // inside crossing. The production log cue is opposed explicitly in
+      // puller-kick-transition.test; this reduced witness retains real load.
+      expect(r.firstAcquisition).not.toBeNull();
       expect(r.firstHandBodyContact).not.toBeNull();
       expect(r.contactMetrics.engagedHandBodyLoadedDecisionIntervals).toBeGreaterThan(0);
     }
