@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Missing-middle tackle contact — Do-It-All / Agent 4
+
+Bounded investigation complete on `codex/contact-middle`, from accepted
+`2c98bed94adad8087c65f381d4090444ad283985`, queue4cc3337d. [Report](reviews/contact-middle.md).
+Fixed torso glance demonstrates existing recoverable slowing/yaw/balance loss;
+three focused checks and typecheck pass. Exact historical three-break witness
+reproduces on its separate b5577605 host: zero torso impacts, real grip loading,
+balance and path/speed cost. Correct proximity-label interpretation; add exact
+observation/request-tape tools and portable evidence. No runtime/settings change,
+strength boost, experimental stack import or physical-default promotion. Adopt
+measurement/contracts; hold an unsupported generic slowdown. Unbraced center-grasp
+yaw and vertical hanging-weight transmission remain explicit reduced-model limits,
+not proven causes of the population label.169 and held162/164/165 stay independent.
+Integration owns combined verification; Physics promotion authority unchanged.
+Ownership coordination:153 comment6299146306; read-only independent evidence and
+physics reviews completed. No full games, NFL scans or broad panel.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
