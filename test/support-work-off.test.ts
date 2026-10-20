@@ -21,6 +21,50 @@ function scene(kind:'force'|'insert'|'interior'='force',side=1){
 }
 
 describe('support players work off toward a personally declared carrier',()=>{
+ it('does not restart a contact move wait after support has already declared the carrying runner',()=>{
+  const f=scene();f.engagement.nextMoveAt=f.sim.t+.5;
+  const bodies=structuredClone(f.sim.agents.map(a=>a.body));
+  f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(true);
+  expect(f.engagement.nextMoveAt).toBeCloseTo(f.sim.t+2*f.defender.mind.decisionInterval,12);
+  expect(f.sim.agents.map(a=>a.body)).toEqual(bodies);
+  expect(f.defender.engagement).toBe(f.engagement);
+ });
+
+ it('continues the acquired support response when real reachable contact is acquired again',()=>{
+  const f=scene();f.command();
+  f.sim.disengage(f.engagement);
+  f.defender.tags.delete('shed-attempt');
+  const next=f.sim.engage(f.blocker,f.defender,'run',f.engagement.drive)!;
+  expect(next).not.toBeNull();
+  expect(next.nextMoveAt).toBeGreaterThan(f.sim.t);
+  f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(true);
+  expect(next.nextMoveAt).toBeCloseTo(f.sim.t+2*f.defender.mind.decisionInterval,12);
+  expect(f.defender.engagement).toBe(next);
+  expect(f.sim.events.some(e=>e.type==='shed')).toBe(false);
+ });
+
+ it('does not restart a work-off choice every tick after the first support attempt',()=>{
+  const f=scene();f.engagement.nextMoveAt=f.sim.t+.5;f.command();
+  const next=f.engagement.nextMoveAt;
+  f.sim.t+=.01;f.setCue({pos:{x:43,y:CENTER_Y-6}});f.command();
+  expect(f.engagement.nextMoveAt).toBe(next);
+ });
+
+ it.each([undefined,false])('retains the initial contact move wait without acquired carrying evidence %s',carrying=>{
+  const f=scene();f.setCue({carrying});f.engagement.nextMoveAt=f.sim.t+.5;
+  f.command();expect(f.defender.tags.has('shed-attempt')).toBe(false);
+  expect(f.engagement.nextMoveAt).toBe(f.sim.t+.5);
+ });
+
+ it('retains initial contact timing for a close first-level threat',()=>{
+  const f=scene('interior');f.setCue({pos:{x:41,y:CENTER_Y+1}});
+  f.engagement.nextMoveAt=f.sim.t+.5;f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(false);
+  expect(f.engagement.nextMoveAt).toBe(f.sim.t+.5);
+ });
+
  it.each([['force',-1],['force',1],['insert',-1],['insert',1]] as const)(
   '%s support can try beyond the old proximity trigger, side %s',(kind,side)=>{
    const f=scene(kind,side),before=structuredClone([f.blocker.body,f.defender.body]);

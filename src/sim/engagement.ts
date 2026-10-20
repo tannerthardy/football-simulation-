@@ -1013,14 +1013,20 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
 
   // Shed attempts once the ball carrier threatens his area — not the QB
   // standing at the mesh before the handoff.
-  if (read.threat && t >= e.nextMoveAt) {
-    const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
+  if (read.threat) {
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
     const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
       && read.declared && read.threat.carrying === true;
-    if (dc < 3.5 || supportRunner) {
+    // A declared support action already passed the defender's ordinary read
+    // cadence. Acquiring new hands must not restart the unrelated contact
+    // move wait, especially when the same receiver gets hands on him again.
+    // Once begun, work-off keeps its existing decision cadence. Uncertain
+    // support and first-level fits retain the original contact timing.
+    const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
+    const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
+    if (ready && (dc < 3.5 || supportRunner)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
