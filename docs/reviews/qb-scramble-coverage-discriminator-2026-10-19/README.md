@@ -72,3 +72,35 @@ coverage or mock a QB decision. I have **not implemented** an archived coverage
 controller, forced scramble, disabled141 in the test, weakened an assertion,
 or conducted a lucky-input search. Total investigation so far: four native
 snap executions, zero games, one focused failing test selection, no suite.
+
+## Root-approved bounded base-coaching proposal: six checks pass
+
+Root then approved a narrower historical input: in the positive bookkeeping
+comparison only, return the **already computed base request** from
+`DeepCoverage.choose` (zero-based argument5, verified against its signature).
+This bypasses only the optional new depth-controller choice; it does not copy a
+legacy class, add a production flag or alter the current QB. It is explicitly
+labeled a historical base-coaching response, **not** unmodified current coverage
+or an exact recreation of every pre141 policy.
+
+Implementation `b27959af8f87555d8d02d06e324f79691cdae4ad` changes only
+`test/qb-rusher-recording.test.ts`. The spy is confined to the positive test and
+restored by `finally`, including failures. Both all22 arms then naturally
+scramble using current QB decisions and current World/contact laws. Every
+existing scramble, attempted=false, event/rusher identity, full body/request/
+intent state, observation, RNG-call/RNG-state and result equality assertion
+passes. No assertion was weakened.
+
+The original Cover3 seed0 is now an **unmocked current ordinary-pass/no-rusher
+opposing control**, alongside original seed1, after the spy has been restored.
+The entire six-check file passes with no skips in **2.981169s**. This invocation
+is the only additional check after Root approved this precise proposal; no
+additional coverage/seed search, typecheck or suite was run. Runtime source
+remains `4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571`.
+
+[Exact test-only patch](historical-base-coaching-test.patch),
+[fixture scope/hashes](historical-base-coaching-receipt.json),
+[launcher receipt](base-coaching-file-receipt.json), and
+[six assertions](base-coaching-file-vitest.json) support Root's independent
+review. Root owns final fixture adoption and exact combined verification.
+Original failing candidate and rejected Two-Man proposal remain preserved.

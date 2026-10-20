@@ -1,0 +1,20 @@
+{
+  "scope": "Test-only explicit historical base-coaching response; Root-independent source review pending.",
+  "implementation": "b27959af8f87555d8d02d06e324f79691cdae4ad",
+  "engineBase": "2a1c034021768620c6a1a26ee7018972512220fd",
+  "runtimeSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "validationSha256": "76b89db4d55da815fef1f5a9ce80807f4137466aaf42b7c956aead140102bde0",
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "seconds": 2.981169101,
+  "fullSuiteRuns": 0,
+  "currentControllerCoverageInputTrialsAfterDeclaredTwoMan": 0,
+  "sourceChanges": 0,
+  "positiveControl": "spy DeepCoverage.choose returns existing original/base command at argument5; current QB chooses native scramble; all22 actual World/physical contacts execute; recording enabled vs suppressed comparison retains every existing equality assertion",
+  "opposingControl": "Unmocked current Cover3 seed0 and seed1 remain attempted ordinary passes without rusher credit.",
+  "mockLifetime": "Positive test only; try/finally restores before both opposing inputs, even on failure.",
+  "limitation": "Historical coaching-response bookkeeping integration control; not current coverage realism or full pre141-runtime equivalence.",
+  "patchSha256": "3883e75527454c67b26ed085ec91af6f1ba3f1f60ae9efb3c3b08d5a78db7fde",
+  "testFileSha256": "1e7bb082f72cd81c0799de11c636751c9f072f8aec30afe65fd0e5917b7fa7df"
+}
