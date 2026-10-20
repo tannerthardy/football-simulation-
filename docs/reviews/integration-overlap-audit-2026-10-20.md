@@ -265,6 +265,14 @@ The remaining53 open PRs are included individually in the inventory:
 
 ## Completion criterion
 
+Eight owner-addressed instructions were posted on168 (Integration),174 (Run),
+182 (Catching),186 (Do-It-All),180 (Physics),178 (rules/CEO),179 (Measurement)
+and153 (Claude). Exact comment bodies were read back successfully;
+[delivery receipt](../../data/reviews/current/integration-overlap-audit/delivery.json)
+records the links. Delivery is not acknowledgment, technical acceptance or an
+assumption that an idle owner is running. Direct chat messaging is unavailable
+in this tool session.
+
 The next checkpoint is ready when chosen scopes have exact reviewable pins,
 the two reconciliations preserve both owners' contracts, duplicate172 is absent,
 the actual assembled source has its required passing receipt, and the adopted
