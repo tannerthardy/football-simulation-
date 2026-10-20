@@ -1,0 +1,446 @@
+{
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "archives": [
+    {
+      "path": "composed-preview.tar.gz",
+      "sha256": "555b0108b94f767dcf2bb8239750efe0813a195d1116d89c02bb8566a5589f25",
+      "bytes": 15559044,
+      "members": [
+        {
+          "path": "out/composed-preview/REPLAY-MEMO.md",
+          "bytes": 4390,
+          "sha256": "478478a64b6c4d0090147b6c590e6cf07af8f7d7db23b160af776566da259ccb"
+        },
+        {
+          "path": "out/composed-preview/capture.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "out/composed-preview/compare.py",
+          "bytes": 4419,
+          "sha256": "75b836ec74ae4c0f9df5a841fde0882de9b093990adc569182b770c86ed9162e"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/OZ4-paths.png",
+          "bytes": 110716,
+          "sha256": "130e4c2aa52cc2018e11e002aa5f97c242bf7bdbd60b41a6b83f4d0d6e6db277"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/OZ4-paths.svg",
+          "bytes": 74164,
+          "sha256": "ec15003ac233cdc2d7d176bbdda6f9e0ba651ddca0906aa04e8c6a58c1f40211"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/OZ4-positions.png",
+          "bytes": 177216,
+          "sha256": "88c022696b77dba39db3e0226320a4ef0ef6e83c1d2fc18061f88723b451b5ec"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/OZ4-positions.svg",
+          "bytes": 190759,
+          "sha256": "44fb280eb774b72f050aba45061606528a13cd75ad93f1419efb094a7d63555f"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZ7-paths.png",
+          "bytes": 165031,
+          "sha256": "8e3ff2dc2f561b295df9769ef476fe073a8b9eae8416d48f224ccab2647446f2"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZ7-paths.svg",
+          "bytes": 83182,
+          "sha256": "c7be7e36ea5692de6fcd03f65c61518dd49dcc7a0514945251b300d22a16dc62"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZ7-positions.png",
+          "bytes": 177626,
+          "sha256": "aaf5d664c592d8f69143bb67f772ddfc3e8e8acc0182ce4d1bab4ade088d8066"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZ7-positions.svg",
+          "bytes": 195826,
+          "sha256": "86b4f06dcb9c3d0bf9b7d597664eacbd6cc0ad07a95e6af118b01017c6017511"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZORD-paths.png",
+          "bytes": 114841,
+          "sha256": "1889de1400ff30a34c18069c4e92a9624e2586e5705e56c410cbe7ca6bca9f79"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZORD-paths.svg",
+          "bytes": 82206,
+          "sha256": "8a5c63712e5a22089cdc1b0747ec3b24abc36359dd7ae8b7eaff04abccdedb62"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZORD-positions.png",
+          "bytes": 178533,
+          "sha256": "18466bce52b0af0a2823a5728be4502a29e8a973b461094022a1072deee12fe5"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/WZORD-positions.svg",
+          "bytes": 196963,
+          "sha256": "2503ac172e2f00582e22ad25100160e4b898869818820e36001ac92ba7b69a40"
+        },
+        {
+          "path": "out/composed-preview/film-baseline-preview/provenance.json",
+          "bytes": 15064,
+          "sha256": "5a60cedb8045e9833f2c917cd7c454d5caa55b7e85010e74d3a6692bc9f3b941"
+        },
+        {
+          "path": "out/composed-preview/film.py",
+          "bytes": 16999,
+          "sha256": "2e21124e18754b1880ea90bd784cbd5278c2300c1c7de0bf2960eed9e610fd14"
+        },
+        {
+          "path": "out/composed-preview/focused-tests.json",
+          "bytes": 2471,
+          "sha256": "71b841970d9b1901a864c53bcdbaad0f4a221c0b46a21203a4f8b75ab3760c89"
+        },
+        {
+          "path": "out/composed-preview/independent-review.md",
+          "bytes": 7246,
+          "sha256": "b767aaff9017c4c23d617796673e2bbe658308be1e16d6a54a956cb812df3af1"
+        },
+        {
+          "path": "out/composed-preview/initial-inputs.json.gz",
+          "bytes": 11284,
+          "sha256": "dd5c0d74bab44c50e6bb40558b5b0e8f33200801683c2789d3739bfd2f1340f9"
+        },
+        {
+          "path": "out/composed-preview/initial-native-run.json",
+          "bytes": 2341,
+          "sha256": "f67c995eaef891a05bcda02af34e310ba68c37656ce4bf526aedf02ba89d262a"
+        },
+        {
+          "path": "out/composed-preview/inputs.json.gz",
+          "bytes": 19864,
+          "sha256": "4b9e5d07a428f9d2642a8132a68da761f1c96774ad245eca1b5529de1294bf66"
+        },
+        {
+          "path": "out/composed-preview/latest-owner-comments.json",
+          "bytes": 9664,
+          "sha256": "c444a4b5587f4565013fcf274513c5751a1327c538cce5ab427778a728fe0afb"
+        },
+        {
+          "path": "out/composed-preview/native-comparison.json",
+          "bytes": 861657,
+          "sha256": "8248c9bc4d61f4dfa63c62080197a61c055af2fe4115ea637e65d492614cde45"
+        },
+        {
+          "path": "out/composed-preview/native/F_COUNTER.json.gz",
+          "bytes": 1855550,
+          "sha256": "9d1f61664d8b2dc3d7bca6b81b01fd00e0153af6637c34d6431e30b38c7c763b"
+        },
+        {
+          "path": "out/composed-preview/native/F_Q_OZ.json.gz",
+          "bytes": 2301686,
+          "sha256": "dbb116feb11a7af10a0d937cf3f42390a5d0084ba9cfc0fe443f7de531faaa0e"
+        },
+        {
+          "path": "out/composed-preview/native/OZ4.json.gz",
+          "bytes": 2703295,
+          "sha256": "f65965846e63a729517df7e7fe470f7d449486ae1b084207e110726dbbaf871e"
+        },
+        {
+          "path": "out/composed-preview/native/PA13.json.gz",
+          "bytes": 2090299,
+          "sha256": "025abf3c23cfce54f880c8f7dd50c96d3be7164193e5a5b7c421ad9d44b1dda0"
+        },
+        {
+          "path": "out/composed-preview/native/WZ7.json.gz",
+          "bytes": 3702380,
+          "sha256": "42ff33e5f9d7b3190b0923f0d217f4c0e92ef060ae4c058b3b4cee5d8903d760"
+        },
+        {
+          "path": "out/composed-preview/native/WZORD.json.gz",
+          "bytes": 1779610,
+          "sha256": "78e9c1e93b1065613698f7fb7b0f544695eeab25ba66b9e0921a215eb4eb14f2"
+        },
+        {
+          "path": "out/composed-preview/native/receipt.json",
+          "bytes": 1106,
+          "sha256": "4d7bbefef1a4d6c46251708ab095a6d8ce73b5b9cd14f4fe95a91b9a02e4c770"
+        },
+        {
+          "path": "out/composed-preview/navigation-handoff.md",
+          "bytes": 1918,
+          "sha256": "21223193c821e554127648d7873453da14743b7306949f6c8ca2cf4410baca28"
+        },
+        {
+          "path": "out/composed-preview/owner-note.md",
+          "bytes": 761,
+          "sha256": "afb6277974c1aabfe45c7df5e6a78a0835c76548f1939f9496a55bbfe1eaa146"
+        },
+        {
+          "path": "out/composed-preview/ranked-summary.json",
+          "bytes": 3098,
+          "sha256": "7e1dddfd3b7a679bb87d0ecbf23d333e614cde5d21be5e5651920dd64b71d7aa"
+        },
+        {
+          "path": "out/composed-preview/replay-analysis-sha256.json",
+          "bytes": 552,
+          "sha256": "7d1403084b98294ea17bad07076ba71e0feee22cc085e353e892c874d0da54de"
+        },
+        {
+          "path": "out/composed-preview/replay-run-initial-syntax-error.json",
+          "bytes": 2274,
+          "sha256": "6b73dec3ec5fb1c80a19460aac28778801a9fedf8de1147bb2858a3cfa7c6d4b"
+        },
+        {
+          "path": "out/composed-preview/replay-run.json",
+          "bytes": 2266,
+          "sha256": "99cd95d52b4d719e0f7326983d788e5ec40240582f90e7e273d6f75cc71a4212"
+        },
+        {
+          "path": "out/composed-preview/replay.json",
+          "bytes": 904117,
+          "sha256": "1bc20f371a2f857945d31dc7ee714b6e20cd0dfd31bb8ba4083768ad0bd1bd95"
+        },
+        {
+          "path": "out/composed-preview/replay.mjs",
+          "bytes": 12792,
+          "sha256": "cb208515aaf15c30d5470dbb6d854577ce6c50d15041b39d7f5a25a1cde45f79"
+        },
+        {
+          "path": "out/composed-preview/transfer-inputs.json.gz",
+          "bytes": 14338,
+          "sha256": "ecf961377a49dfd2349f17854202b4ec24122558a7a01a14c1d4db1c3f064113"
+        },
+        {
+          "path": "out/composed-preview/transfer-native-run.json",
+          "bytes": 2336,
+          "sha256": "c6f1e75095577f1522c78ac90a342805c80da6911cb0b465df3160df6eab80eb"
+        },
+        {
+          "path": "out/composed-preview/typecheck.json",
+          "bytes": 2169,
+          "sha256": "109119481616bf3007609f3c4413f2678ec1b2afa4d9a52609cfbd8997661ab4"
+        },
+        {
+          "path": "out/pursuit-composed-preview/independent-red.json",
+          "bytes": 4094,
+          "sha256": "ecfb9029026f649c42785726261bc8396f5c41641b1664aa3b888ad0bef7f9b5"
+        }
+      ]
+    },
+    {
+      "path": "pursuit-objective.tar.gz",
+      "sha256": "505868d4b32daf358043af6447c7ff4333726011707dfa78d08070555a71c5f0",
+      "bytes": 16461218,
+      "members": [
+        {
+          "path": "out/pursuit-objective/capture.mjs",
+          "bytes": 5269,
+          "sha256": "39d3823f253b5e3a0e1e0eef76e191553031a789708fdd31344ca9889a880f59"
+        },
+        {
+          "path": "out/pursuit-objective/compare.py",
+          "bytes": 4419,
+          "sha256": "75b836ec74ae4c0f9df5a841fde0882de9b093990adc569182b770c86ed9162e"
+        },
+        {
+          "path": "out/pursuit-objective/film-fresh/F_Q_OZ-paths.png",
+          "bytes": 155768,
+          "sha256": "641b9cdbadc82f1ccc1fc0f5b15ffc087a009bfb68a5f359ad737e719d709d92"
+        },
+        {
+          "path": "out/pursuit-objective/film-fresh/F_Q_OZ-paths.svg",
+          "bytes": 124353,
+          "sha256": "da5cf2d55dd395f96197d64b0f09b2c74e8d9efa1ebdbd7ab17caf8d8255c7c2"
+        },
+        {
+          "path": "out/pursuit-objective/film-fresh/F_Q_OZ-positions.png",
+          "bytes": 298456,
+          "sha256": "3bbed674972f43bcbea42ab47de495022c7f6d8b05f1add7377b380fe8ecc8d8"
+        },
+        {
+          "path": "out/pursuit-objective/film-fresh/F_Q_OZ-positions.svg",
+          "bytes": 336345,
+          "sha256": "7d3f0e37043eb0823113aaf9c35e80e0bbfccd38fad514d6ea605da25029a8c0"
+        },
+        {
+          "path": "out/pursuit-objective/film-fresh/provenance.json",
+          "bytes": 10032,
+          "sha256": "96768b7a8e0d917cf7589525c1e946fd6c4bcdd85c4d9441891c0d0b2983f862"
+        },
+        {
+          "path": "out/pursuit-objective/film.py",
+          "bytes": 17348,
+          "sha256": "7c0e8d620e952a4cb4f0777f983c4bc6091f2767ad9bbdab4de5e90ebed75052"
+        },
+        {
+          "path": "out/pursuit-objective/film/OZ4-paths.png",
+          "bytes": 178405,
+          "sha256": "2f38f071e660adf075c36c58a58e55ec029cc2ee19d951f9d9f1999a8e40dda5"
+        },
+        {
+          "path": "out/pursuit-objective/film/OZ4-paths.svg",
+          "bytes": 131744,
+          "sha256": "8bcfe366a6e902ec3539ff09a85a288b77e95fa254de4720264abf545288975e"
+        },
+        {
+          "path": "out/pursuit-objective/film/OZ4-positions.png",
+          "bytes": 293679,
+          "sha256": "965651e0269577b6282a1b330a6b97723210914a7347c29792f2ff5cc04253f8"
+        },
+        {
+          "path": "out/pursuit-objective/film/OZ4-positions.svg",
+          "bytes": 332423,
+          "sha256": "a62fdf853e1bb5ef751219fa41ab5ca94304a83b3946f11b27c8fa7bfdef8ddc"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZ7-paths.png",
+          "bytes": 229628,
+          "sha256": "431409c24de17ea96a73f1fe0591d1f30f4890348f5777e0c5e707b1587b8e64"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZ7-paths.svg",
+          "bytes": 122150,
+          "sha256": "45cc804dcca9ef97d75f2f1963654b0b1199b19fad11ef14029ef7b3ee091ae7"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZ7-positions.png",
+          "bytes": 299403,
+          "sha256": "bd7c6de9cf4e565d11bf1a3b0712a2c59046a4b743c1b4fccd3518344f1646ad"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZ7-positions.svg",
+          "bytes": 332125,
+          "sha256": "511fa7bf0839170e6f1394d81ad61ac0ef9f1f45e4b427a1844306de5037ba1a"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZORD-paths.png",
+          "bytes": 158851,
+          "sha256": "3c58f8f25485d3449ac6529c0e1779edcd3a64a15ad82fc05922ba8ce5a3a204"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZORD-paths.svg",
+          "bytes": 127944,
+          "sha256": "3f0d52330976594cfb1e8c0374ddc0811440bdfa97921555043dc8218d46d288"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZORD-positions.png",
+          "bytes": 300464,
+          "sha256": "77b1efc588fccb67e92325ffad45ba06567f34f8569f608e5ef03699a3ba097a"
+        },
+        {
+          "path": "out/pursuit-objective/film/WZORD-positions.svg",
+          "bytes": 335742,
+          "sha256": "f4d9598c2f044d4280b1619d087fa0968dd309463df1fac843c8a1ca0b716495"
+        },
+        {
+          "path": "out/pursuit-objective/film/provenance.json",
+          "bytes": 29053,
+          "sha256": "5aba891e85c289a510b8e4046e19c4271b1674d43bcb77fff7888f357511bc3f"
+        },
+        {
+          "path": "out/pursuit-objective/focused-tests.json",
+          "bytes": 2380,
+          "sha256": "b3cf6a6efeb7fba5bf3e3633ca950633e5f3b695082bea18a9f498c9499d7a59"
+        },
+        {
+          "path": "out/pursuit-objective/independent-football-review.md",
+          "bytes": 7464,
+          "sha256": "b5ff23090f3be42ec1e679bd1a266c8fad95c26691307576f5ff9b1d4477b957"
+        },
+        {
+          "path": "out/pursuit-objective/independent-source-review.md",
+          "bytes": 6511,
+          "sha256": "18ecc5b397a24c8a9bca1d8f3ab8d1d538af9d0b7d55236c26a794b674c35674"
+        },
+        {
+          "path": "out/pursuit-objective/initial-inputs.json.gz",
+          "bytes": 11284,
+          "sha256": "dd5c0d74bab44c50e6bb40558b5b0e8f33200801683c2789d3739bfd2f1340f9"
+        },
+        {
+          "path": "out/pursuit-objective/initial-native-run.json",
+          "bytes": 2342,
+          "sha256": "8d6c5feb8684b47d26904a7b6f20f9c37897c5810cb2f12415975206793f45bd"
+        },
+        {
+          "path": "out/pursuit-objective/native-comparison.json",
+          "bytes": 1595999,
+          "sha256": "bd1ffaa627c2d1b249d0c9574bec829de4b1cdb5fb0e49aef8914375e3f5ecdd"
+        },
+        {
+          "path": "out/pursuit-objective/native/F_COUNTER.json.gz",
+          "bytes": 1858193,
+          "sha256": "d7c2a8e4f87dc6e1aa02c8be347aef27566b952c8155a6ee456a3439a1ecaeb4"
+        },
+        {
+          "path": "out/pursuit-objective/native/F_Q_OZ.json.gz",
+          "bytes": 2309702,
+          "sha256": "441d8b381743ff4d6a2d112d19d05e6c26cbb2a2539c06419143bb43bfe7118b"
+        },
+        {
+          "path": "out/pursuit-objective/native/OZ4.json.gz",
+          "bytes": 2711286,
+          "sha256": "272bf561851ea0048d5d48b48a738e827428d034cdd850fca98743b156b42f42"
+        },
+        {
+          "path": "out/pursuit-objective/native/PA13.json.gz",
+          "bytes": 2122520,
+          "sha256": "69d7811cadc7a3e612a18946e4f1a248c1c3eb5a48111b5577929c12902dbd8b"
+        },
+        {
+          "path": "out/pursuit-objective/native/WZ7.json.gz",
+          "bytes": 3665301,
+          "sha256": "a8f19b381624cd2b61774c7835e854a302f9223b919fec6512810eb300b3f407"
+        },
+        {
+          "path": "out/pursuit-objective/native/WZORD.json.gz",
+          "bytes": 1784405,
+          "sha256": "1c4105657f58fa9846a6d75b2535a01d349880d8e5658afbecbd3834ac341e11"
+        },
+        {
+          "path": "out/pursuit-objective/native/receipt.json",
+          "bytes": 1106,
+          "sha256": "8290c3262f56ef85da1dfa35a48044a32bd3ea319f9d40c4695285ba016a1426"
+        },
+        {
+          "path": "out/pursuit-objective/transfer-inputs.json.gz",
+          "bytes": 14338,
+          "sha256": "ecf961377a49dfd2349f17854202b4ec24122558a7a01a14c1d4db1c3f064113"
+        },
+        {
+          "path": "out/pursuit-objective/transfer-native-run.json",
+          "bytes": 2343,
+          "sha256": "1e0b3ab695eb82fc1b94fa5e95fc38838fba06c36822ff573f8ff929fd492fff"
+        },
+        {
+          "path": "out/pursuit-objective/typecheck.json",
+          "bytes": 2173,
+          "sha256": "a764ac831babb27e0dd36e30a2b0f308002abb71d2b1ee9ece43ac7699fd2171"
+        }
+      ]
+    }
+  ],
+  "otherFiles": [
+    {
+      "path": "README.md",
+      "sha256": "56f3095deffb8374984cff3c1d116f06293a3d0b6c0609274fb500cf92a04b2b"
+    },
+    {
+      "path": "approach-replay-restore-review.md",
+      "sha256": "4f1777a8d6da98b78fe05c60ab067af7520f8fb0a5696df401f727b7a5860c37"
+    },
+    {
+      "path": "composed-preview-1.patch",
+      "sha256": "a61412320dfb724c2b388ac2042dcbbb6f5d26468e6acb14f520a9d94a4cbde2"
+    },
+    {
+      "path": "defensive-convergence-review.md",
+      "sha256": "b6838a6b88cd8c8e8db4f41170395eb6ce9c232ad879c21ccbdba02697cd79a9"
+    },
+    {
+      "path": "pursuit-objective-1.patch",
+      "sha256": "29bac3cb557335ee7570cf57a6f36b2113b769ac7358c64e062ea019db9065d3"
+    },
+    {
+      "path": "pursuit-objective-2.patch",
+      "sha256": "168c5e913ba254009297b8c026ce3777494305205246148c910c99d08390c0c0"
+    }
+  ]
+}
