@@ -10,9 +10,9 @@ Older entries retain their dated integration history; consult the canonical
 The previous register header's `90edc525` was the accepted reference at its publication,
 not the current development instruction.
 
-Latest accepted develop is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` through151. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
+Latest accepted develop is `2c98bed94adad8087c65f381d4090444ad283985` through168. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
 
-Current runtime preparation: #168 minimally extracts reviewed131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; final adoption awaits mutable-ref/tree check. Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
+Current runtime disposition: #168 adopted the minimal reviewed extractions from 131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; actual merge preserves the passing tree. All13 source PRs closed, branches/evidence retained. [Actual pin/owners](../data/reviews/current/pr168-merge.json). Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive

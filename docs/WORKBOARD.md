@@ -1,10 +1,10 @@
 # Current work ownership
 
-## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
+## Completed #168 latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
-Integration owns only minimal extraction/composition and exact verification on
+Integration completed only minimal extraction/composition and exact verification on
 `codex/latest-reviewed-checkpoint`, starting accepted developf4146275 plus queue9a6bb795.
-Six subagents completed independent reviews; exact freeze25a7a591 passes2248 TS/145 Python/typecheck/build in261.757s.13 PR scopes plus narrow153 QB-away/film precision;50 protected files/17 source files.164/165 were removed by normal reverts after preserved combined failures. All44 flags/physical defaults/dependencies unchanged. Root owns only publication/final ref check/routine merge and canonical metadata/owner disposition; no additional simulation campaign. Original owners/checkouts/branches/evidence remain. Assembly boundary releases on actual merged-pin publication. [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json), [scope/risks](reviews/latest-reviewed-checkpoint.md).
+Six subagents completed independent reviews; exact freeze25a7a591 passes2248 TS/145 Python/typecheck/build in261.757s.13 PR scopes plus narrow153 QB-away/film precision;50 protected files/17 source files.164/165 were removed by normal reverts after preserved combined failures. All44 flags/physical defaults/dependencies unchanged. Actual develop2c98bed94adad8087c65f381d4090444ad283985 merged through168 matches publication/passing protected tree. Root published canonical metadata and13 incorporated PR dispositions; no additional simulation campaign. Original owners/checkouts/branches/evidence remain. Assembly boundary released. [Actual pin/owner handoff](../data/reviews/current/pr168-merge.json). [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json), [scope/risks](reviews/latest-reviewed-checkpoint.md).
 
 ## Completed #153 review preparation — 2026-10-19 UTC
 
@@ -48,7 +48,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-That earlier runtime acceptance was0000e560; the current accepted code isf4146275 through151, with both handbooks retained. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
+That earlier runtime acceptance was0000e560; the current accepted code is2c98bed9 through168, with both handbooks retained. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix

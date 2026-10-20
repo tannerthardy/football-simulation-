@@ -1,6 +1,6 @@
 # Shared integration queue
 
-Updated **2026-10-19 UTC**. Integration in this chat owns queue
+Updated **2026-10-20 UTC /2026-10-19 America/Phoenix**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
@@ -49,10 +49,14 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
-### #168 reviewed checkpoint — verified, final publication/ref check
+### Accepted #168 reviewed checkpoint — develop2c98bed9
 
-Accepted parent is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` until the
-merge is recorded here. Exact freeze `25a7a5919b8eb6de24bf8b604b8d859263052dd9`
+**Accepted develop is `2c98bed94adad8087c65f381d4090444ad283985`**, merged through
+[#168](https://github.com/tannerthardy/football-simulation-/pull/168) under standing
+routine-correction authority. Parents are prior acceptedf4146275 and publicationcec68b20;
+actual tree equals publication, protected source/tests/settings/tooling equal the
+passing freeze. [Actual merged-pin receipt](../data/reviews/current/pr168-merge.json).
+Exact freeze `25a7a5919b8eb6de24bf8b604b8d859263052dd9`
 passes **2,248 TS/206 files,145 Python,typecheck/build** in261.757 command seconds,
 Node22.23.3, no skips/input drift. All44 settings unchanged, components1,
 GAIT_STEP0/CF_FLOW unset; World/kinematics/capacities/dependencies/verifier unchanged.
@@ -76,11 +80,21 @@ pickup, contact lifetime, wide-zone/combo movement and deep-pursuit risks.
 Finer film can change output-derived pressure metrics near thresholds; retain
 measurement provenance. Correctness repairs do not certify football/NFL realism.
 
+The integration-ready queue is empty at this publication checkpoint.
+All13 incorporated source PRs are closed with exact extraction dispositions;
+all source branches and original/rejected evidence are retained.153 remains open
+research;164/165 remain held. [Dispositions](../data/reviews/current/latest-reviewed-checkpoint/dispositions.json).
+[Affected-owner handoff](https://github.com/tannerthardy/football-simulation-/pull/168#issuecomment-6281006908).
+Fetch this accepted pin at clean checkpoints; preserve genuine research hosts/stack
+parents and source-qualify old tapes. Assembly boundary released. Next follow-up
+should use a bounded saved witness for wide-zone/combo access or deep pursuit.
+Any frozen-panel comparison is separately budgeted; no automatic per-patch game gate.
+
 ### #153 run-game v3 — partial extraction only; research remains open
 
 Current reviewed research head is
 `claude/run-game-v3@6184040fb0e2190b8799a2bd925df9e8af6494da`.
-Only QB carry-out direction and native/export/viewer precision enter168, with
+Only QB carry-out direction and native/export/viewer precision were delivered via168, with
 existing QB speed/depth/timing and legacy film compatibility. No QB_CARRYOUT or
 other experimental activation. The full mesh/UC_MESH/lead/FB/departure/shoulder/
 shed package, unsafe reset/clean instrumentation, yaw law and GAIT_STEP promotion
@@ -848,7 +862,7 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 | Disposition | Exact scope / owner | Next decision |
 | --- | --- | --- |
-| Verified for routine adoption |131/141/148→149/150/152/155/156/157/159/corrected160/161/167 plus two153 extractions; freeze25a7a591 | Final mutable-ref and protected-tree check, merge168 under standing authority; publish actual pin/owner handoff. [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json). |
+| Delivered via168 |131/141/148→149/150/152/155/156/157/159/corrected160/161/167 plus two153 extractions; develop2c98bed9 | All13 source PRs closed as incorporated; branches/evidence retained. [Actual pin/owner handoff](../data/reviews/current/pr168-merge.json). |
 | Combined-contract hold |164@5035aad0,165@d922b7c2 | Preserve original assertions and failed traces; resolve useful earned departure / native motion-spacing contracts before a new review. |
 | Law/default decision held |162 ordinary yaw/recovery; GAIT_STEP=.3 | Separate physical-law/default review; preserve zone20+28→63/1200 adverse tail. No activation. |
 | Other runtime holds |158 duty/PA cost,163 propulsion/caller,166 objective/traffic,137 joint allocation; full153 package | Each holds itself; source-qualified evidence and focused return condition required. No bulk research merge. |
