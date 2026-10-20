@@ -7,15 +7,12 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
 
 ## Where to find things
 
-- **Development reference:** use the exact accepted `develop` commit in the
-  [shared integration queue](docs/INTEGRATION.md#accepted-development). Merged
-  #12 includes the run-contact component and moving-catch repair; merged #63
-  adds gap identity, mesh cadence, blocking recognition, bookkeeping and
-  incidental catch acquisition. Merged #72 adds the isolated pass-cutoff approach
-  correction and its reviewed replay-kind test contract. Merged #74 replaces
-  private opponent-state shortcuts in RB entry risk with acquired information;
-  RB pathing and observation transport remain separate. The queue pins the exact accepted commit and
-  distinguishes implemented code, review-pending candidates and experiments.
+- **Development reference:** fetch `develop` and use the exact accepted pin in the
+  [canonical integration queue](https://github.com/tannerthardy/football-simulation-/blob/codex/integration-queue/docs/INTEGRATION.md#accepted-development).
+  The [reviewed #189 checkpoint](docs/reviews/finished-controller-integration.md)
+  combines run/support/pursuit corrections, the approved yaw motor and achieved
+  NFL rules/official accounting. Its exact freeze, game comparison, film and
+  experimental holds are recorded there; adoption is distinct from research.
 - **Historical comparisons:** [baseline/profile and known failures](docs/BASELINE.md)
   retain `4ded6b6`; it is not the new-task development starting point.
 - **Simulation:** [single play](scripts/sim-play.ts), [game](scripts/sim-game.ts),
@@ -48,8 +45,8 @@ Requires Node 22.23.3. Record the exact source and settings before comparisons.
 ```sh
 npm ci
 npm run baseline:info -- --candidate --flag RUN_CONTACT_COMPONENTS=1
-npm run sim:game -- 7 --pbp
-npm run replay -- 7 --games 6 --doc
+npm run baseline:run -- --candidate --flag RUN_CONTACT_COMPONENTS=1 -- node --import tsx scripts/sim-game.ts 701 --pbp
+npm run baseline:run -- --candidate --flag RUN_CONTACT_COMPONENTS=1 -- node --import tsx scripts/export-replay.ts 701 --games 1 --doc
 ```
 
 The game/replay examples simulate games; run them when that is your task.

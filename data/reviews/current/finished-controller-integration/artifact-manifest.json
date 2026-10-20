@@ -1,0 +1,97 @@
+{
+  "schema": "pr189-game-artifacts-v1",
+  "candidate": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+  "baseline": "2c98bed94adad8087c65f381d4090444ad283985",
+  "files": [
+    {
+      "path": "01-zone-reference-11-17.gif",
+      "bytes": 1847761,
+      "sha256": "6c858e62884f39630db7d7877e79d633467c6b9986978cf6dc9a59460d83c881"
+    },
+    {
+      "path": "02-zone-reference-8-8.gif",
+      "bytes": 6167715,
+      "sha256": "ac95651002b92b93b33967bab205186e83250dc2988c01e4a75b9fd5d48645e0"
+    },
+    {
+      "path": "03-spread-air-2-2.gif",
+      "bytes": 1946792,
+      "sha256": "b97eb060d8ae6b341f275cfaff62b2b6fdc4c2df56ae0c429bc951e350730ba8"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2576,
+      "sha256": "b1a41395d55ece5b8e22c693ad011035e9fb5c88be69b4bed37bb8970ac2ffb2"
+    },
+    {
+      "path": "baseline-spread-air.zip",
+      "bytes": 50295634,
+      "sha256": "52cba19030b80c69c68e31e3dc07251d01382efc72ca9abd1b35a73f47f75322"
+    },
+    {
+      "path": "baseline-zone-reference.zip",
+      "bytes": 49176207,
+      "sha256": "39b03bf44c41a2d409c64e691f121a57a8a3542468ff5cdb4782e6380ea3ffb4"
+    },
+    {
+      "path": "candidate-spread-air.zip",
+      "bytes": 49040999,
+      "sha256": "e0d50b548980543169b5dd0ea8ab1382d59140e83dde648e9098ba11ebd3e00a"
+    },
+    {
+      "path": "candidate-zone-reference.zip",
+      "bytes": 48751013,
+      "sha256": "5bfc98c851e8cf564d22de44209cb3b4681ae2f1aae2cd652175021b377e294c"
+    },
+    {
+      "path": "clips.json",
+      "bytes": 2117,
+      "sha256": "1c2b415f81a76f9db7412ed50b042e8ec2f91aa38858c1a0fcf1b4249925c73d"
+    },
+    {
+      "path": "comparable-selection.json",
+      "bytes": 711,
+      "sha256": "d9fa94ef03285ec9829101715ca9e922826c6bef6421f2fa84749878bd5e389c"
+    },
+    {
+      "path": "comparison.json",
+      "bytes": 317315,
+      "sha256": "0f0ff45a96e0011660b9c02f9a39c8530428f2d95e9f2b291a1c55d961cd1c40"
+    },
+    {
+      "path": "football-context.json",
+      "bytes": 12865,
+      "sha256": "e75c4501d047776d24a970a179056852d99f6b9b3733a3c760ae0a561d1d423a"
+    },
+    {
+      "path": "game-archives.json",
+      "bytes": 827,
+      "sha256": "15144cad7959477d20e51245cb102bf94163751670cf5666067d1bc8ccc6eccb"
+    },
+    {
+      "path": "inputs.json",
+      "bytes": 4295,
+      "sha256": "fd67d00a40fbcf90ca78297946e415a7dd62185034dc4ed9894ff045da3e8c80"
+    },
+    {
+      "path": "reproduction-tools.zip",
+      "bytes": 198293,
+      "sha256": "c026e4c47d546b5ba9d660b8d1988fbcb80980f7fb6048f023dc28850e2e6408"
+    },
+    {
+      "path": "rule-audit.json",
+      "bytes": 491089,
+      "sha256": "73d3bd0b6c0e9913765d16ef523593127d86f18065d333979fbbaad36c997d58"
+    },
+    {
+      "path": "score-audit.json",
+      "bytes": 19936,
+      "sha256": "099a46e1bd94bc6736c6bc526bd2e112d589b5f1c09051b82df5d8b39ae79309"
+    },
+    {
+      "path": "turnover-audit.json",
+      "bytes": 20407,
+      "sha256": "8421108b7af296065b93367306eb8de4d3250e0518fdeaad565f9a8a50e4c1ff"
+    }
+  ]
+}

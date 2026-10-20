@@ -1,5 +1,22 @@
 <!-- Existing issue register from #37 / #63 retained for the current queue; no new issue system. -->
 
+## #189 checkpoint interpretation — 2026-10-20
+
+Reviewed run/support/pursuit/movement and finished178/188rules are composed and
+verified on7d5da0c7; actual adoption pin follows the canonical queue. The real
+185remote-wall regression is repaired; historical hand/facing/log/mirror test
+qualification preserves its underlying contracts and original failed evidence.
+Four games retain explosive run/YAC and edge protection failures;32candidate
+box explosives versus31old in two pairs does not establish a tail improvement.
+Candidate official score/TOP/possession credits reconcile; the old baseline
+spread audit explicitly misses two takeaways in an INT→return-fumble→recovery.
+350unresolved rule observations/62limitations remain conservative evidence gaps,
+not350provenfouls. Future comparisons use explicit official credit and source
+history, not final-possession Boolean or raw nullified results alone.
+[Exact scope, adverse evidence, cost, held experiments and film](reviews/finished-controller-integration.md).
+No unreviewed153flag or experimentalphysics promotion follows from this checkpoint.
+
+
 # Master issue register
 
 Latest saved-data review: **2026-10-16 America/Phoenix / 2026-10-17 UTC**, accepted engine

@@ -49,29 +49,34 @@ does not establish overall coverage, protection or statistical realism.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
-### Current assembly: finished reviewed checkpoint (not yet adopted)
+### Reviewed #189 finished-work checkpoint — freeze7d5da0c7
 
-Root is composing the latest #187 owner handoffs on
-`codex/finished-controller-integration` from accepted2c98bed9. Source changes are
-independently reviewed; source/test/settings verification and games remain
-pending. #174 contains172 once; owner68e7241 reconciles169/171/177/174;
-canonical182f7662569 contains181 once;183 precedes186, with182 activation
-explicitly reviewed.175/176 now have a new attributable independent review;
-178/188 rules remain a coherent dependent scope.180's bounded ordinary
-requested-angle/recovery motor has explicit user approval in this chat.
-No GAIT_STEP, held165, experimental hands/solvers or whole153 branch import.
-173's rules inventory remains dated;179's completed12/12 query is reused,
-not recollected.187's audit is preserved as source-qualified evidence.
+The independently accepted checkpoint is [#189](https://github.com/tannerthardy/football-simulation-/pull/189),
+exact tested source `7d5da0c79adea4d7c4b43b85c498876ffe6d8742`. Final authorized
+merge follows a fresh remote/merge-tree check. **Fetch current origin/develop;
+the actual merged accepted pin is published on the canonical queue branch**
+linked above.2c98bed9 below is the previous accepted build, not a post189 reference.
 
-Required decision gates: exact combined typecheck/build/code/data suite, one
-full-game smoke, then bounded matched comparison on frozen teams/settings/seeds.
-Four games total (two pairs); smoke reuses the candidate arm. Root owns this
-verification; no unchanged standalone or publication reruns. Previous accepted
-2c98bed9 remains the current build until the final merge. See current workboard
-claim and forthcoming receipt under
-`data/reviews/current/finished-controller-integration/`.
+Includes169/171/174(172once)/175/176/177/178/180/181/182/183/184/185/186/188;
+170/173/179/187 evidence/docs are preserved. New owner-approved shared seams,
+fresh175/176 independent decisions, explicit user180motor approval and finished
+independently reviewed178/188 rules are recorded in the
+[scope/adverse/film report](reviews/finished-controller-integration.md).
+[Exact receipt](../data/reviews/current/finished-controller-integration/final-receipt.json):
+3007TS/171Python/typecheck/build pass,44settings/components1, no skips/drift.
+Four matched evaluation games pass98standard accounting checks and candidate
+score/TOP/possession audits; original failures and the old baseline's two missed
+turnover credits remain explicit. Runtime+7.2%/+9.0%collection is accepted with
+normalized costs/limits. No further unchanged verification to publish/merge.
 
-### Accepted #168 reviewed checkpoint — develop2c98bed9
+Whole153, unreviewedFORCE_FLOW/TRAP_READ/LEAD_READ, GAIT_STEP/165,
+experimentalhands/solvers and old101/106/137/158/163/164/166 holds remain out.
+A blocked item holds itself; no new broad campaign, default switch, historical
+baseline change, branch deletion or forced worker rebase. Owners fetch/adopt
+this new source at clean checkpoints; source-qualify older investigations.
+All older readiness snapshots below are historical relative to this checkpoint.
+
+### Historical accepted #168 checkpoint — previous develop2c98bed9
 
 **Accepted develop is `2c98bed94adad8087c65f381d4090444ad283985`**, merged through
 [#168](https://github.com/tannerthardy/football-simulation-/pull/168) under standing
@@ -112,7 +117,7 @@ parents and source-qualify old tapes. Assembly boundary released. Next follow-up
 should use a bounded saved witness for wide-zone/combo access or deep pursuit.
 Any frozen-panel comparison is separately budgeted; no automatic per-patch game gate.
 
-### Latest Claude153 preparation — Parts1–13 atbae3fe80
+### Historical Claude153 preparation before #189 — Parts1–13 atbae3fe80
 
 Accepted develop remains2c98bed9; research `bae3fe80d189a7d792aaafbc4eea1ae2baa79573`
 already includes it.75 research settings versus44 accepted; original44 values

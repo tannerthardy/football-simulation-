@@ -1,9 +1,10 @@
 # Current project status
 
-Current integration preparation: latest reviewed #169–#188 scopes are being
-composed on `codex/finished-controller-integration`; accepted2c98bed9 remains
-until required exact verification and the user-budgeted matched games pass.
-[Canonical assembly and holds](INTEGRATION.md#accepted-development).
+Reviewed #189 checkpoint passes exact combined verification (3007TS/171Python,
+typecheck/build) and four matched evaluation games. Includes finished acquired
+run/pursuit/movement corrections and178/188rules. Actual merged pin/adoption is
+in the [canonical queue](https://github.com/tannerthardy/football-simulation-/blob/codex/integration-queue/docs/INTEGRATION.md#accepted-development).
+[Scope, held experiments, runtime, football risks and film](reviews/finished-controller-integration.md).
 
 Updated **2026-10-20 UTC /2026-10-19 America/Phoenix**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).

@@ -1,0 +1,127 @@
+{
+  "checkedAt": "2026-10-20T22:49:00.746Z",
+  "develop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "prs": [
+    {
+      "n": 169,
+      "head": "1004b818f2f7692df595a237ec9eec05a9ef2587",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 170,
+      "head": "4a5aadcbbdfe3065ec41d73e0c0de3ee1272c070",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 171,
+      "head": "6cbdcc4dc70e6ce5b644582c6ca14f77f5c28bbf",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 172,
+      "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 173,
+      "head": "3d4db3bab9d80740c151c92582255553f922227d",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 174,
+      "head": "e0c46a0cf60c9bfc4256d000d17798fdad3af97c",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 175,
+      "head": "628ae0c09f4854513bb87fb03b6e54a9116ecadb",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 176,
+      "head": "0b2addbece94bc47f69ea729af27911398cf85fd",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 177,
+      "head": "2ebaaf11dcd6455875411423dcbb2910013d7903",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 178,
+      "head": "7d475e5efdc81257c2f19efbf468c59cb93e2834",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 179,
+      "head": "8a76ab9a1f0851ce6f4727bfedeacbad0bf49c4b",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 180,
+      "head": "a11edc2e9b2a27b612a72835ba16909eef6977ee",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 181,
+      "head": "8239e8d89a8f326c95318ab62b73d807550ec683",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 182,
+      "head": "8eaae7ff784e430d4c6027aaf75bac01d280f3ae",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 183,
+      "head": "d709ecd6d63951b6cdba9da3ff2e8c65af1c7615",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 184,
+      "head": "0d13a208e233103fae11373ce67eca3d9b9c1d65",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 185,
+      "head": "d0f767666208f6f22081e8f81ad10c7f7461b288",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 186,
+      "head": "c9076442c130e6b26ef1e149a444941c53fbfec7",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 187,
+      "head": "57e009b39a299434227f1340346248ca7a4f535e",
+      "state": "open",
+      "changed": false
+    },
+    {
+      "n": 188,
+      "head": "c0a000c8ac96b631c24e91f34047919ef707b356",
+      "state": "open",
+      "changed": false
+    }
+  ],
+  "note": "All chosen owner heads unchanged from refreshed intake;187 compared to its separate initial audit pin."
+}

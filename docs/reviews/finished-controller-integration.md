@@ -84,5 +84,69 @@ comparison starts only after that complete game and accounting checks pass.
 Timeout/error/partial traces stop the batch and remain preserved; no favorable
 stopping or automatic retry. Runtime and official-credit checks accompany raw film.
 
-The final receipt, bounded comparison and actual merged pin are published with
-this report after all gates pass. Until then accepted develop remains2c98bed9.
+Exact final freeze **7d5da0c79adea4d7c4b43b85c498876ffe6d8742**, source
+`12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9`,
+passes **3,007 TS checks/243 files,171 Python,typecheck/build** in303.243 command
+seconds, without skips or source/input drift. [Exact receipt](../../data/reviews/current/finished-controller-integration/combined.json).
+The initial failed run costs322.597s and remains preserved; the coherent repair
+justifies this second exact run. Publication/merge does not repeat verification.
+
+All **four evaluation games** complete in191.236 supervised seconds, no timeout,
+engine/artifact error or retry. [98 accounting checks and complete team/player
+outcomes](../../data/reviews/current/finished-controller-integration/comparison.json),
+[all-log rules audit](../../data/reviews/current/finished-controller-integration/rule-audit.json)
+and [score/TOP reconciliation](../../data/reviews/current/finished-controller-integration/score-audit.json)
+pass. Each game's score and3600-second possession time reconcile. An early
+report queried the still-running film packaging stage; that operator-timing
+failure is preserved separately, superseded after completion without a game rerun.
+
+| Matched game | Previous accepted | Candidate | Simulation seconds, old → new |
+| --- | --- | --- | --- |
+| Zone vs power,701 |46–57|27–41|29.465→31.589 (+7.2%)|
+| Spread vs air raid,702 |37–34|45–35|30.774→33.556 (+9.0%)|
+
+Per reported live World step, simulation costs rise about9.9% and13.6%; this is a
+bounded measured cost of the composition, not a global production benchmark.
+No180 performance offset is assumed for186. Both games remain within the frozen
+100s collection/120s hard ceilings; total budget480s. Full telemetry/film packaging
+is separately measured. This cost is accepted for the reviewed information,
+movement and official-accounting corrections; future hot-path work should use
+these saved inputs instead of another game campaign.
+
+Mean credited YAC is8.62→6.87 and8.03→4.85; interceptions3→0 and6→4. Neither is a
+causal single-fix or NFL-realism result: game histories, official penalties and
+later calling diverge. The candidate still permits49/80-yard run TDs, a71-yard
+pass with65YAC and a61-yard pass with52YAC in the zone game. Deep containment,
+pass-protection access, short-catch outcomes and retained mesh experiments are
+not declared solved.412 rule-review items are350 unresolved evidence records
+and62 explicit limitations, not412 proven fouls/errors. Conservative holding,
+contact anatomy and teammate-assist uncertainty remain visible; no unknown
+observation is silently called an illegal play. See the audit for each source.
+
+The actual merged develop pin and affected-owner handoff are recorded in the
+canonical queue after adoption. Historical comparison/default and working
+branches remain unchanged.
+
+## Film and preserved baseline accounting failure
+
+[Permanent archive index](https://github.com/tannerthardy/football-simulation-/tree/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller)
+has four complete native game/film zips, exact member checksums, frozen inputs
+and portable tools. This data-only history is never merged into the engine.
+
+- [Power before/after](https://github.com/tannerthardy/football-simulation-/blob/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller/02-zone-reference-8-8.gif):44.70-yard TD→2.55-yard tackle; same call/front/coverage, different down/field position and earlier histories. This shows a changed finish, not isolated causality.
+- [Counter before/after](https://github.com/tannerthardy/football-simulation-/blob/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller/01-zone-reference-11-17.gif):same1&10 at35, −0.24→−3.78; earlier DE access is legitimate defensive evidence, not automatically improved blocking.
+- [PA Post-Dig control](https://github.com/tannerthardy/football-simulation-/blob/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller/03-spread-air-2-2.gif):opening near-matched sack persists3.15→3.20s. Preserve this adverse pass-protection control.
+
+A deeper [possession audit](../../data/reviews/current/finished-controller-integration/turnover-audit.json)
+finds an existing baseline spread failure: P023's interception→defensive-return
+fumble→offensive recovery contributes two takeaways, but old team counters miss
+both. Seven actual game takeaways appear as five. Original raw baseline/boxes
+remain unchanged. #188's per-possession and native-fumble ledger addresses that
+contract; both candidate games reconcile. The historical baseline audit fails
+explicitly; it is not silently corrected or counted as a candidate failure.
+This also limits claims from simple before/after turnover totals.
+
+[Consolidated final receipt](../../data/reviews/current/finished-controller-integration/final-receipt.json)
+pins every protected changed file, exact verification, cost decision, held work
+and the fetchable film history. Accepted merged SHA is published in the canonical
+queue after the final remote/tree check; no unchanged suite or game rerun is needed.
