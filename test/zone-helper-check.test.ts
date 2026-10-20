@@ -184,6 +184,7 @@ describe('the original inside-zone helper may check a supported owner before cli
 describe('achieved torso governs an already loaded run connection', () => {
   it.each([-1, 1])('retains real hands beyond the old fixed drive frame when the torso already faces the man, side %s', side => {
     const f = loaded(side), e = f.engagement, hands = e.hands!;
+    expect(e.holding).toBe(false);
     const distance = Math.hypot(f.defender.pos.x - f.owner.pos.x, f.defender.pos.y - f.owner.pos.y);
     // A controlled same-distance contact picture, not a claim that this native
     // play must turn through a particular angle before its inspection ends.
@@ -196,6 +197,8 @@ describe('achieved torso governs an already loaded run connection', () => {
     const intents: Intent[] = f.sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
     updateEngagements(f.sim, intents);
     expect(Math.abs(e.phi)).toBeGreaterThanOrEqual(1.1);
+    expect(e.holding).toBe(false);
+    expect(f.sim.events.some(event => event.type === 'holding_attempt' && event.a === f.owner.idx)).toBe(false);
     expect(f.sim.agents.map(a => a.body)).toEqual(before);
     expect(f.owner.engagement).toBe(e); expect(f.defender.engagement).toBe(e);
     expect(e.hands).toBe(hands); expect(f.sim.world.joints).toContain(hands);
