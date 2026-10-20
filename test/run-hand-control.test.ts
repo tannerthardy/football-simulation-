@@ -261,7 +261,7 @@ describe('run helpers earn contact and retain it through ownership', () => {
   });
 });
 
-describe('solo hand-fight execution retains its legacy policy with the adopted yaw motor', () => {
+describe('solo hand-fight execution retains its legacy policy with the selected yaw motor', () => {
   it.each(['run', 'pass'] as const)('preserves legacy %s commands/control/RNG and the reviewed motor-specific physical trace', type => {
     const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [], policyTrace: unknown[] = [];
     for (let k = 0; k < 6; k++) {
@@ -280,7 +280,7 @@ describe('solo hand-fight execution retains its legacy policy with the adopted y
       policyTrace.push({ intents, control: f.engagement.control });
     }
     const nextRng = f.sim.rng.nextU32();
-    // The accepted #180 motor intentionally changes post-contact yaw and
+    // The approved #180 motor intentionally changes post-contact yaw and
     // recovery. The six-tick accepted / motor-only / combined diagnostic
     // preserves the historical full hashes and shows the first physical
     // change at tick six, with no command, control or RNG change. Keep those
