@@ -13,6 +13,8 @@ import { CF_FLOW } from './counterfactual.js';
 import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
+import { interceptPoint } from '../physics/reach.js';
+import { FIELD_WIDTH } from '../core/field.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -176,6 +178,19 @@ const FORCE_DEPTH = process.env.FORCE_DEPTH === '1';
  * movement follows the flow and pull reads rather than a sprint at the line.
  * The existing threat read decides when he fills. */
 const LB_DEPTH = process.env.LB_DEPTH === '1';
+/** Experimental (FORCE_LEAD=1, off): a force defender keeps leverage on the
+ * runner's acquired lateral track, not his current spot. He aims his margin
+ * outside the earliest point of that track his own body can reach first at
+ * his fit depth, moves with the track's lateral speed, and opens to run while
+ * that needs more lateral speed than a square shuffle. */
+const FORCE_LEAD = process.env.FORCE_LEAD === '1';
+/** Experimental (TRAP_READ=1, off): an interior defender meets an arriving
+ * trapper the way an edge meets a kick-out (wrong-arm or box his near half at
+ * his depth) instead of holding his gap landmark at the line. A trapper is an
+ * offensive player crossing behind the line toward him who aligned at least
+ * 1.5 yd inside his own alignment, so the blocker over him reaching or
+ * stepping away is not one. Alignments are public; motion is his picture. */
+const TRAP_READ = process.env.TRAP_READ === '1';
 
 /** Is this defender the installed deep cap on a run? Installed zone, not the
  * offense's call: a deep-zone defender with an alley fit. */
@@ -294,11 +309,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       edge: job.inside.kind === 'edge' ? 'box' : job.edge };
     gy = liveGapY(sim, a, job.gap, job.side);
   }
-  const edge = job.kind === 'edge' || job.kind === 'force';
+  let trapper: ReturnType<PlaySim['see']> | null = null;
+  if (TRAP_READ && job.kind === 'interior') {
+    const home = sim.defAlign.spots[a.slot as DefSlot]?.pos;
+    trapper = !home ? null : sim.offense.filter((o) => o !== sim.qb && o !== back && sim.offAlign.spots[o.slot]
+      && (home.y - sim.offAlign.spots[o.slot].pos.y) * job.side >= 1.5).map((o) => sim.see(a,o))
+      .filter((o) => o.pos.x < sim.los - .2 && o.pos.x < a.pos.x + .5 && Math.abs(o.pos.y-a.pos.y) < 3 && o.vel.y * job.side > 1.3)
+      .sort((p,q) => Math.hypot(p.pos.x-a.pos.x,p.pos.y-a.pos.y)-Math.hypot(q.pos.x-a.pos.x,q.pos.y-a.pos.y))[0] ?? null;
+    if (trapper) a.tags.add('fit-trap');
+  }
+  const edge = job.kind === 'edge' || job.kind === 'force' || !!trapper;
   if (edge && EDGE_SQUEEZE && !premesh && seen.carrying === true && seen.pos.x > sim.los - .5
     && job.side * (seen.pos.y - a.pos.y) < -(a.profile.radius + c.profile.radius + a.profile.reach)) return chase(sim, a, c);
   if (edge) {
-    let kick: ReturnType<PlaySim['see']> | null = null;
+    let kick: ReturnType<PlaySim['see']> | null = trapper;
     if (job.kind === 'edge') {
       kick = sim.offense.filter((o) => o !== sim.qb && o !== back).map((o) => sim.see(a,o))
         .filter((o) => o.pos.x < a.pos.x + .5 && Math.abs(o.pos.y-a.pos.y) < 2.5 && o.vel.y * job.side > 1.3)
@@ -309,14 +333,29 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       // kickout. The blocker can answer with a log; no outcome is prescribed.
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
-    } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
+    }
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const offBall=FORCE_DEPTH && job.kind==='force' && homeDepth>=5;
     const supportDepth=offBall && (premesh||seen.pos.x<sim.los) ? homeDepth
       : job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
+    // The track's lateral speed when it widens toward this side, else none.
+    const widen = FORCE_LEAD && job.kind === 'force' && seen.vel.y * job.side > 1 ? seen.vel.y : 0;
+    if (!kick && job.kind === 'force') {
+      let ry = seen.pos.y;
+      if (widen) {
+        const margin = job.side * .7;
+        const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale },
+          (t) => ({ x, y: clamp(seen.pos.y + widen * t + margin, 0, FIELD_WIDTH) }), { horizon: 2, radius: .3 });
+        ry = ip.point.y - margin;
+      }
+      gy = job.side > 0 ? Math.max(surface+.5,ry+.7) : Math.min(surface-.5,ry-.7);
+    }
     const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
-    const fit = track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
+    let fit = track(a,aim,{x:0,y:widen},{speed:.9,gain:3,facing:Math.PI});
+    // A lateral sprint is run with open hips, not shuffled square.
+    if (widen && Math.abs(fit.vel.y) > Math.max(Math.abs(fit.vel.x), 2.5))
+      fit = { ...fit, facing: Math.atan2(fit.vel.y, fit.vel.x) };
     // A fit landmark is not permission to run through an approaching back.
     // Gather for a personally identified runner threatening this surface,
     // even before he crosses the old LOS pursuit gate. Keep the installed

@@ -1,7 +1,9 @@
 """Pulling linemen on gap schemes, one operator for NFL tracking and sim
 common plays. The puller is the OL with the largest lateral displacement from
 the snap to 1.5 s, if over 2 yd. Reported: when he is first 0.6 yd off his
-alignment laterally, first 1.5 yd/s laterally, his depth behind the line at
+alignment laterally, first moving at 1.5 yd/s total speed while his lateral
+position is advancing toward the pull (not a 1.5 yd/s lateral component),
+his depth behind the line at
 those times and at 1.0 s, his lateral displacement at 0.6/1.0/1.4 s, and the
 second-level defenders' lateral speed toward his direction at 0.6/1.0/1.4 s.
 usage: pullers.py FILE [--ytg60] [--fam gap_pull]"""
@@ -43,5 +45,5 @@ for line in gzip.open(path, 'rt'):
             if p.pos(d, a)[1] is None or p.pos(d, b)[1] is None: continue
             o.setdefault(f'lb{t}', []).append((p.pos(d, b)[1] - p.pos(d, a)[1]) / ((b - a) * p.dt) * s)
 print(f"{path.split('/')[-1][:22]:22s} {fam}: plays with a puller {n}")
-print(f"  puller 0.6 yd over at p25/50/75 {q(o.get('t06', []), .25)}/{q(o.get('t06', []))}/{q(o.get('t06', []), .75)} s (depth then {q(o.get('d06', []))}) | 1.5 yd/s lateral at p50 {q(o.get('tv', []))} s | depth at 1.0 s {q(o.get('d10', []))}")
+print(f"  puller 0.6 yd over at p25/50/75 {q(o.get('t06', []), .25)}/{q(o.get('t06', []))}/{q(o.get('t06', []), .75)} s (depth then {q(o.get('d06', []))}) | 1.5 yd/s (total, moving toward the pull) at p50 {q(o.get('tv', []))} s | depth at 1.0 s {q(o.get('d10', []))}")
 print(f"  puller lateral yd at 0.6/1.0/1.4 s: {q(o.get('lat0.6', []))}/{q(o.get('lat1.0', []))}/{q(o.get('lat1.4', []))} | second level lateral toward the pull at 0.6/1.0/1.4 s: {q(o.get('lb0.6', []))}/{q(o.get('lb1.0', []))}/{q(o.get('lb1.4', []))} yd/s")

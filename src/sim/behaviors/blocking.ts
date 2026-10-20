@@ -19,7 +19,7 @@ import { previewFreeMovement } from '../../physics/movement-preview.js';
 import { requestToCover } from '../motion-plan.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint, Intent } from '../../physics/world.js';
-import type { RunConcept } from '../../playbook/types.js';
+import type { DefSlot, RunConcept } from '../../playbook/types.js';
 import { lineOffset } from '../../playbook/alignment.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -787,6 +787,13 @@ const COMBO_LEAVE = process.env.COMBO_LEAVE === '1';
 /** Experimental (TRACK_FACING=1, off): the zone track's hip opening keeps a
  * continuous side when the man is nearly behind the track (no half-turn flip). */
 const TRACK_FACING = process.env.TRACK_FACING === '1';
+/** Experimental (LEAD_READ=1, off): a lead puller blocks the second-level
+ * defender who threatens the hole, not the backer named at the snap. Once
+ * his pull has started, each decision beat he takes, from his own picture,
+ * the defender aligned off the ball nearest the hole a moment ahead whom no
+ * teammate's body is on; within 2.5 yd of his man he stays committed. The
+ * installed kick/trap targets keep their own blockers. */
+const LEAD_READ = process.env.LEAD_READ === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
@@ -807,6 +814,7 @@ export class RunBlocker implements Behavior {
   /** The puller's last ordinary read, not the defender's current position. */
   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
   private pullCleared = false;
+  private nextLeadRead = 0;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
   private wrapCorner: Vec2 | null = null;
@@ -1149,7 +1157,14 @@ export class RunBlocker implements Behavior {
     let target = plan.target;
     // A named wrapper job cannot disappear because of the target's private
     // live contact. Approach and unavailability use its acquired picture.
-    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) {
+      if (LEAD_READ && this.pullIdx > 0 && t >= this.nextLeadRead) {
+        this.nextLeadRead = t + a.mind.decisionInterval;
+        const threat = this.holeThreat(a, sim, target);
+        if (threat !== target) { plan.target = target = threat; this.pullRead = null; }
+      }
+      return target;
+    }
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1176,6 +1191,29 @@ export class RunBlocker implements Behavior {
       }
     }
     return target;
+  }
+
+  /** LEAD_READ: the uncovered defender nearest the hole a moment ahead, from
+   * this puller's picture; the current man unless another is clearly nearer. */
+  private holeThreat(a: Agent, sim: PlaySim, current: Agent): Agent {
+    const hole = this.plan.pullPath!.at(-1)!;
+    const kicked = new Set(sim.offense.map(o => o.behavior instanceof RunBlocker
+      && (o.behavior.plan.pullRole === 'kick' || o.behavior.plan.pullRole === 'trap') ? o.behavior.plan.target : null));
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o !== sim.carrier).map(o => ({ seen: sim.see(a, o), r: o.profile.radius }));
+    const held = sim.see(a, current);
+    if (Math.hypot(held.pos.x - a.pos.x, held.pos.y - a.pos.y) < 2.5) return current;
+    const threat = (d: Agent) => {
+      const s = sim.see(a, d), home = sim.defAlign.spots[d.slot as DefSlot];
+      if (s.pose === 'down' || s.pose === 'rising' || kicked.has(d) || !home || home.pos.x - sim.los < 2) return Infinity;
+      if (mates.some(m => Math.hypot(m.seen.pos.x-s.pos.x, m.seen.pos.y-s.pos.y) < m.r + d.profile.radius + .35)) return Infinity;
+      return Math.hypot(s.pos.x + s.vel.x * .3 - hole.x, s.pos.y + s.vel.y * .3 - hole.y);
+    };
+    let best = current, bestD = threat(current) - 1;
+    for (const d of sim.defense) {
+      const dist = threat(d);
+      if (dist < Math.min(5, bestD)) { best = d; bestD = dist; }
+    }
+    return best;
   }
 
   private withBase(a: Agent, command: MoveCommand): Intent {
