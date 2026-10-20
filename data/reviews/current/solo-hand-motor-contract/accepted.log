@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit 2c98bed94adad8087c65f381d4090444ad283985, source 4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571
+Running node node_modules/vitest/vitest.mjs run test/run-hand-diagnostic.test.ts -t matches frozen --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-motor-diagnostic-accepted
+
+ ✓ |core| test/run-hand-diagnostic.test.ts (14 tests | 12 skipped) 78ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 12 skipped (14)
+   Start at  22:17:52
+   Duration  1.26s (transform 740ms, setup 0ms, collect 990ms, tests 78ms, environment 0ms, prepare 57ms)
+
+Validation receipt: out/hand-diagnostic/receipt.json; exit 0
