@@ -1,0 +1,559 @@
+{
+  "scope": "Pure geometry replay of already consumed acquired pictures, preserving input/tape/source identities. No new engine/controllers/World/sensing. Conservative noFlow proof excludes high lateral RB and shallow runner pictures. Private departed-body exception rows excluded.",
+  "scriptSha256": "13ca114f16b26b50f938c06eccabed7a5c0b8bce096f3d415785ab15225d9877",
+  "simulatorCalls": 0,
+  "results": [
+    {
+      "file": "baseline/OZ4",
+      "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/OZ4.json.gz",
+      "tapeSha256": "a31ae0d5a9c847a11eb6cdc6352bd3b1c16794955ee3ff39f44b07435ef7c804",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "inputSha256": "5140d5e6e69164f5db49622f7dcf16dd619e9362e6640f0ca73493b48d91a2d4",
+      "exclusions": {},
+      "eligibleAdoptions": 0,
+      "eligibleHeldRows": 0,
+      "rows": []
+    },
+    {
+      "file": "baseline/WZ7",
+      "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/WZ7.json.gz",
+      "tapeSha256": "5598ec0a7ac274e3c8848e4aa137912b0c2959cfaa3f01750398b46892c679d1",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "inputSha256": "6a0f9a537ab5c54a8e7cdbdadb91ac336ab5d9ee1b3f782d4de1aaa8d746903f",
+      "exclusions": {
+        "privateDeparture": 10
+      },
+      "eligibleAdoptions": 0,
+      "eligibleHeldRows": 0,
+      "rows": []
+    },
+    {
+      "file": "baseline/WZORD",
+      "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/WZORD.json.gz",
+      "tapeSha256": "df12e1c1c00dc25a01bcdbd34e97c60ce9710762d10b180cc1b88ce4857e7829",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "inputSha256": "a14753ed8257d7c434271f9bc0b2ef25aa4fe2ede2a7fd11e5972a1111bde820",
+      "exclusions": {},
+      "eligibleAdoptions": 0,
+      "eligibleHeldRows": 0,
+      "rows": []
+    },
+    {
+      "file": "transfer-baseline/F_OZ",
+      "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/transfer-baseline/F_OZ.json.gz",
+      "tapeSha256": "58be75e23776836ebc4642ca250440c1f02ea2913111b0d6ea1eb806914f99a9",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "inputSha256": "ae5bcb23a362ca5af992338ccadae9030653ba8483dc4e0c8ba6fd5752daefb9",
+      "exclusions": {},
+      "eligibleAdoptions": 1,
+      "eligibleHeldRows": 3,
+      "rows": [
+        {
+          "t": 2.05,
+          "player": "FDD-LB3",
+          "slot": "LB_W",
+          "job": {
+            "gap": "B",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "inside": {
+              "side": 1,
+              "gap": "B"
+            }
+          },
+          "adoption": 2.05,
+          "point": {
+            "x": 41.5,
+            "y": 30.993664155722083
+          },
+          "deadline": 2.497077312287475,
+          "heldUntil": 2.2735386561437374,
+          "originDI": 0.22353865614373752,
+          "currentDI": 0.22353865614373752,
+          "originGap": {
+            "y": 30.189638485209564,
+            "width": 1.7728890955023597,
+            "vel": 1.322588220314378
+          },
+          "currentGap": {
+            "y": 30.189638485209564,
+            "width": 1.7728890955023597,
+            "vel": 1.322588220314378
+          },
+          "originNoFlow": true,
+          "currentNoFlow": true,
+          "originPullSide": 0,
+          "currentPullSide": 0,
+          "ownPosition": {
+            "x": 42.51599117141661,
+            "y": 30.0984675747809
+          },
+          "ownVelocity": {
+            "x": 1.5107716316280182,
+            "y": 0.316091364690948
+          },
+          "rawRequest": {
+            "vel": {
+              "x": -2.652770588082505,
+              "y": 9.007731403500866
+            },
+            "facing": 3.141592653589793
+          },
+          "oldFormula": 12.216438348725731,
+          "remainingFormula": 12.21643834872571,
+          "oldCapped": 9.007731403500866,
+          "remainingCapped": 9.007731403500866,
+          "cappedDifference": 0,
+          "RB": {
+            "pos": {
+              "x": 37.806642049736446,
+              "y": 30.648562089077693
+            },
+            "vel": {
+              "x": 4.263832952269218,
+              "y": 1.4167615658491912
+            },
+            "stance": null,
+            "facing": 0.31390689019197543,
+            "age": 0.30000000000000004,
+            "pose": "up",
+            "carrying": true
+          },
+          "actualRequestedY": 9.007731403500866,
+          "selectedStillHeld": true,
+          "body": {
+            "pos": {
+              "x": 42.51599117141661,
+              "y": 30.0984675747809
+            },
+            "vel": {
+              "x": 1.5107716316280182,
+              "y": 0.316091364690948
+            },
+            "facing": 2.310259793499288,
+            "energy": 0.9856597242100561,
+            "profile": {
+              "vmax": 9.007731403500866,
+              "tau": 1.424746873510996,
+              "brake": 6.0992630385487505,
+              "lateral": 6.300193877551022,
+              "turnRate": 8.448888888888888,
+              "backpedal": 0.6010204081632653,
+              "shuffle": 0.5871999999999999,
+              "massKg": 112.94450013000001,
+              "heightYd": 2.075,
+              "radius": 0.30272727272727273,
+              "reach": 1.0055555555555555,
+              "maxCatchHeight": 3.4041944444444447,
+              "reactReach": 3.001416666666667,
+              "reactionTime": 0.24412244897959184,
+              "power": 111.8726798736643,
+              "balance": 0.30612244897959184,
+              "bend": 0.5205578231292517,
+              "stepSpeed": 3.402784580498866,
+              "getUp": 0.9697222222222223
+            },
+            "support": {
+              "xi": {
+                "x": 1.0806206185340135,
+                "y": -0.5060021195533928
+              },
+              "state": "falling",
+              "since": 1.9791666666666665,
+              "posture": 0.8471715548503258,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 196.430234408402,
+                "y": -131.6431837812949
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0.9056323929948192,
+                "y": -0.42406363762821897
+              },
+              "peak": 1.0048100257300185,
+              "out": 0.2625000000000003,
+              "feltTip": {
+                "x": 0.3769376072556395,
+                "y": -0.25220262747524935
+              },
+              "causes": {
+                "contact": 0.5083124078404947,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 1.7162285534172754,
+                "y": -2.530239943567842
+              },
+              "tipAccel": {
+                "x": 0.28760230536302783,
+                "y": -0.19544724221009982
+              },
+              "cause": "contact"
+            },
+            "spin": 3.124966039545858,
+            "squeeze": 0,
+            "sprintLoad": 0,
+            "squeezeHeading": 1.8837620975708127
+          }
+        },
+        {
+          "t": 2.1,
+          "player": "FDD-LB3",
+          "slot": "LB_W",
+          "job": {
+            "gap": "B",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "inside": {
+              "side": 1,
+              "gap": "B"
+            }
+          },
+          "adoption": 2.05,
+          "point": {
+            "x": 41.5,
+            "y": 30.993664155722083
+          },
+          "deadline": 2.497077312287475,
+          "heldUntil": 2.2735386561437374,
+          "originDI": 0.22353865614373752,
+          "currentDI": 0.22318867714600352,
+          "originGap": {
+            "y": 30.189638485209564,
+            "width": 1.7728890955023597,
+            "vel": 1.322588220314378
+          },
+          "currentGap": {
+            "y": 30.308890917938616,
+            "width": 1.7438270363138588,
+            "vel": 1.4933372510129614
+          },
+          "originNoFlow": true,
+          "currentNoFlow": true,
+          "originPullSide": 0,
+          "currentPullSide": 0,
+          "ownPosition": {
+            "x": 42.59171087676506,
+            "y": 30.112081022807136
+          },
+          "ownVelocity": {
+            "x": 1.5177264332038072,
+            "y": 0.22962559644773559
+          },
+          "rawRequest": {
+            "vel": {
+              "x": -2.7961474736611622,
+              "y": 9.007731403500866
+            },
+            "facing": 3.141592653589793
+          },
+          "oldFormula": 12.564515103661183,
+          "remainingFormula": 15.871451796962448,
+          "oldCapped": 9.007731403500866,
+          "remainingCapped": 9.007731403500866,
+          "cappedDifference": 0,
+          "RB": {
+            "pos": {
+              "x": 38.04676099084618,
+              "y": 30.713772655157843
+            },
+            "vel": {
+              "x": 4.346686163027001,
+              "y": 1.3994461436574688
+            },
+            "stance": null,
+            "facing": 0.31428368613100527,
+            "age": 0.30000000000000004,
+            "pose": "up",
+            "carrying": true
+          },
+          "actualRequestedY": 9.007731403500866,
+          "selectedStillHeld": true,
+          "body": {
+            "pos": {
+              "x": 42.59171087676506,
+              "y": 30.112081022807136
+            },
+            "vel": {
+              "x": 1.5177264332038072,
+              "y": 0.22962559644773559
+            },
+            "facing": 2.4600771582817473,
+            "energy": 0.9856597242100561,
+            "profile": {
+              "vmax": 9.007731403500866,
+              "tau": 1.424746873510996,
+              "brake": 6.0992630385487505,
+              "lateral": 6.300193877551022,
+              "turnRate": 8.448888888888888,
+              "backpedal": 0.6010204081632653,
+              "shuffle": 0.5871999999999999,
+              "massKg": 112.94450013000001,
+              "heightYd": 2.075,
+              "radius": 0.30272727272727273,
+              "reach": 1.0055555555555555,
+              "maxCatchHeight": 3.4041944444444447,
+              "reactReach": 3.001416666666667,
+              "reactionTime": 0.24412244897959184,
+              "power": 111.8726798736643,
+              "balance": 0.30612244897959184,
+              "bend": 0.5205578231292517,
+              "stepSpeed": 3.402784580498866,
+              "getUp": 0.9697222222222223
+            },
+            "support": {
+              "xi": {
+                "x": 1.0806206185340135,
+                "y": -0.5060021195533928
+              },
+              "state": "falling",
+              "since": 1.9791666666666665,
+              "posture": 0.8471715548503258,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 56.278204406378734,
+                "y": -37.716403627288564
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0.9056323929948192,
+                "y": -0.42406363762821897
+              },
+              "peak": 1.0048100257300185,
+              "out": 0.2625000000000003,
+              "feltTip": {
+                "x": 0.1079944325957431,
+                "y": -0.07225726255240253
+              },
+              "causes": {
+                "contact": 0.4302771637721235,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 0.5884452049881851,
+                "y": -1.9485460362217202
+              },
+              "tipAccel": {
+                "x": 0.08239944007455666,
+                "y": -0.055996572426289026
+              },
+              "cause": "contact"
+            },
+            "spin": 2.8709135587487205,
+            "squeeze": 0,
+            "sprintLoad": 0,
+            "squeezeHeading": 1.8837620975708127
+          }
+        },
+        {
+          "t": 2.15,
+          "player": "FDD-LB3",
+          "slot": "LB_W",
+          "job": {
+            "gap": "B",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "inside": {
+              "side": 1,
+              "gap": "B"
+            }
+          },
+          "adoption": 2.05,
+          "point": {
+            "x": 41.5,
+            "y": 30.993664155722083
+          },
+          "deadline": 2.497077312287475,
+          "heldUntil": 2.2735386561437374,
+          "originDI": 0.22353865614373752,
+          "currentDI": 0.22289242632032613,
+          "originGap": {
+            "y": 30.189638485209564,
+            "width": 1.7728890955023597,
+            "vel": 1.322588220314378
+          },
+          "currentGap": {
+            "y": 30.44520836583242,
+            "width": 1.726246460795127,
+            "vel": 1.6808863483657264
+          },
+          "originNoFlow": true,
+          "currentNoFlow": false,
+          "originPullSide": 0,
+          "currentPullSide": 0,
+          "ownPosition": {
+            "x": 42.66773879914245,
+            "y": 30.121545795235143
+          },
+          "ownVelocity": {
+            "x": 1.5231829954840777,
+            "y": 0.15007397324260527
+          },
+          "rawRequest": {
+            "vel": {
+              "x": -2.9300383250248694,
+              "y": 9.007731403500866
+            },
+            "facing": 1.885281802223626
+          },
+          "oldFormula": 12.930964919423236,
+          "remainingFormula": 21.15412919582787,
+          "oldCapped": 9.007731403500866,
+          "remainingCapped": 9.007731403500866,
+          "cappedDifference": 0,
+          "RB": {
+            "pos": {
+              "x": 38.26015587394486,
+              "y": 30.87078181499081
+            },
+            "vel": {
+              "x": 4.334564855172643,
+              "y": 1.6672518441192872
+            },
+            "stance": null,
+            "facing": 0.3510704780533504,
+            "age": 0.30000000000000004,
+            "pose": "up",
+            "carrying": true
+          },
+          "actualRequestedY": 9.007731403500866,
+          "selectedStillHeld": true,
+          "body": {
+            "pos": {
+              "x": 42.66773879914245,
+              "y": 30.121545795235143
+            },
+            "vel": {
+              "x": 1.5231829954840777,
+              "y": 0.15007397324260527
+            },
+            "facing": 2.5976685188280766,
+            "energy": 0.9856597242100561,
+            "profile": {
+              "vmax": 9.007731403500866,
+              "tau": 1.424746873510996,
+              "brake": 6.0992630385487505,
+              "lateral": 6.300193877551022,
+              "turnRate": 8.448888888888888,
+              "backpedal": 0.6010204081632653,
+              "shuffle": 0.5871999999999999,
+              "massKg": 112.94450013000001,
+              "heightYd": 2.075,
+              "radius": 0.30272727272727273,
+              "reach": 1.0055555555555555,
+              "maxCatchHeight": 3.4041944444444447,
+              "reactReach": 3.001416666666667,
+              "reactionTime": 0.24412244897959184,
+              "power": 111.8726798736643,
+              "balance": 0.30612244897959184,
+              "bend": 0.5205578231292517,
+              "stepSpeed": 3.402784580498866,
+              "getUp": 0.9697222222222223
+            },
+            "support": {
+              "xi": {
+                "x": 1.0806206185340135,
+                "y": -0.5060021195533928
+              },
+              "state": "falling",
+              "since": 1.9791666666666665,
+              "posture": 0.8471715548503258,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 0,
+                "y": 0
+              },
+              "felt": {
+                "x": 16.1239755211058,
+                "y": -10.805930559533246
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0.9056323929948192,
+                "y": -0.42406363762821897
+              },
+              "peak": 1.0048100257300185,
+              "out": 0.2625000000000003,
+              "feltTip": {
+                "x": 0.030940922972874863,
+                "y": -0.020702052329249508
+              },
+              "causes": {
+                "contact": 0.36422175577086846,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 0.2446667276359554,
+                "y": -1.6838367735552608
+              },
+              "tipAccel": {
+                "x": 0.023607834839954267,
+                "y": -0.016043286607860856
+              },
+              "cause": "contact"
+            },
+            "spin": 2.635829233238742,
+            "squeeze": 0,
+            "sprintLoad": 0,
+            "squeezeHeading": 1.8837620975708127
+          }
+        }
+      ]
+    },
+    {
+      "file": "transfer-baseline/F_COUNTER",
+      "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/transfer-baseline/F_COUNTER.json.gz",
+      "tapeSha256": "0c03e1678764a206aaa0128442bfaebe30f68c0f3bb08cb9bb3e58a4efc47659",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "inputSha256": "0bf137337524a45abc1c43a146a1c02243760a40b4a56971565a4ec70fe4d937",
+      "exclusions": {
+        "privateDeparture": 95
+      },
+      "eligibleAdoptions": 0,
+      "eligibleHeldRows": 0,
+      "rows": []
+    }
+  ]
+}

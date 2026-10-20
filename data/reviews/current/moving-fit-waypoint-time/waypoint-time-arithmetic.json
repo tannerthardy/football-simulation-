@@ -1,0 +1,401 @@
+{
+  "createdBy": "/root/responsibility_generalization",
+  "scope": "Pure scalar first-order arithmetic; existing native tape inspection only",
+  "simulatorCalls": 0,
+  "worldSteps": 0,
+  "controllerUpdates": 0,
+  "newSensing": 0,
+  "newNFLQueries": 0,
+  "head": "3b8176c831e39194418ab78ee39065ccbe8de1d6",
+  "assumedGaitStep": 0,
+  "plannerSource": "src/sim/motion-plan.ts",
+  "plannerSourceSha256": "9a6ca1369e5c95daca7659e92fc7020e4b34508cd19a699e7ba2752ddb367ecf",
+  "runFitSourceSha256": "c0605665cbc556e3097fdee08ff35295cc738867726a61303f5ba2c6c03ba98a",
+  "arithmeticScriptSha256": "b8cde9c5ae551cd11ae149d0d1324e153b4887a977a50284e9712f07f16bc383",
+  "synthetic": {
+    "description": "STACK, SCRAPE-only, uncapped constant-velocity gap. Initial own position equals current gap; own speed equals gap speed. Waypoint has exactly one already-applied H lead. No FLOW_READ, pull or placement error.",
+    "tau": 1.2254375051198332,
+    "DI": 0.2,
+    "H": 0.4,
+    "velocity": 2.0,
+    "initialGap": 10.0,
+    "heldWaypoint": 10.8,
+    "rows": [
+      {
+        "elapsed": 0,
+        "atReadBoundary": false,
+        "ownPosition": 10.0,
+        "gapPosition": 10.0,
+        "heldWaypoint": 10.8,
+        "distance": 0.8000000000000007,
+        "oldFullHorizon": 0.4,
+        "remainingHorizon": 0.4,
+        "oldRequest": 2.0000000000000115,
+        "remainingTimeRequest": 2.0000000000000115
+      },
+      {
+        "elapsed": 0.05,
+        "atReadBoundary": false,
+        "ownPosition": 10.1,
+        "gapPosition": 10.1,
+        "heldWaypoint": 10.8,
+        "distance": 0.7000000000000011,
+        "oldFullHorizon": 0.4,
+        "remainingHorizon": 0.35000000000000003,
+        "oldRequest": 0.297104053228383,
+        "remainingTimeRequest": 2.0000000000000218
+      },
+      {
+        "elapsed": 0.1,
+        "atReadBoundary": false,
+        "ownPosition": 10.2,
+        "gapPosition": 10.2,
+        "heldWaypoint": 10.8,
+        "distance": 0.6000000000000014,
+        "oldFullHorizon": 0.4,
+        "remainingHorizon": 0.30000000000000004,
+        "oldRequest": -1.4057918935432454,
+        "remainingTimeRequest": 2.000000000000039
+      },
+      {
+        "elapsed": 0.15,
+        "atReadBoundary": false,
+        "ownPosition": 10.3,
+        "gapPosition": 10.3,
+        "heldWaypoint": 10.8,
+        "distance": 0.5,
+        "oldFullHorizon": 0.4,
+        "remainingHorizon": 0.25,
+        "oldRequest": -3.108687840314904,
+        "remainingTimeRequest": 2.0
+      },
+      {
+        "elapsed": 0.2,
+        "atReadBoundary": true,
+        "ownPosition": 10.4,
+        "gapPosition": 10.4,
+        "heldWaypoint": 10.8,
+        "distance": 0.40000000000000036,
+        "oldFullHorizon": 0.4,
+        "remainingHorizon": 0.2,
+        "oldRequest": -4.811583787086533,
+        "remainingTimeRequest": 2.0000000000000213
+      }
+    ],
+    "assumedLagTrajectories": {
+      "restart-full-H": [
+        {
+          "at": 0.05,
+          "request": 2.0000000000000115,
+          "ownPosition": 10.1,
+          "ownVelocity": 2.0000000000000004,
+          "linearGapPosition": 10.1
+        },
+        {
+          "at": 0.1,
+          "request": 0.2971040532283811,
+          "ownPosition": 10.198286357025244,
+          "ownVelocity": 1.9319172507653362,
+          "linearGapPosition": 10.2
+        },
+        {
+          "at": 0.15000000000000002,
+          "request": -0.9809417351515581,
+          "ownPosition": 10.291950977436162,
+          "ownVelocity": 1.8154594905186878,
+          "linearGapPosition": 10.3
+        },
+        {
+          "at": 0.2,
+          "request": -1.89914872835828,
+          "ownPosition": 10.378985900738055,
+          "ownVelocity": 1.6669473395852872,
+          "linearGapPosition": 10.4
+        }
+      ],
+      "remaining-deadline": [
+        {
+          "at": 0.05,
+          "request": 2.0000000000000115,
+          "ownPosition": 10.1,
+          "ownVelocity": 2.0000000000000004,
+          "linearGapPosition": 10.1
+        },
+        {
+          "at": 0.1,
+          "request": 2.0000000000000195,
+          "ownPosition": 10.2,
+          "ownVelocity": 2.0000000000000013,
+          "linearGapPosition": 10.2
+        },
+        {
+          "at": 0.15000000000000002,
+          "request": 2.0000000000000293,
+          "ownPosition": 10.299999999999999,
+          "ownVelocity": 2.0000000000000027,
+          "linearGapPosition": 10.3
+        },
+        {
+          "at": 0.2,
+          "request": 2.000000000000049,
+          "ownPosition": 10.399999999999999,
+          "ownVelocity": 2.0000000000000044,
+          "linearGapPosition": 10.4
+        }
+      ]
+    }
+  },
+  "producerOpposingControls": {
+    "plug": {
+      "DI": 0.2,
+      "actualGapLead": 0.2,
+      "plannerHorizon": 0.4,
+      "distanceAtSteadyStart": 0.4,
+      "oldInitialRequest": -4.811583787086538,
+      "usingActualProducerDateRequest": 2.0
+    },
+    "flowPlusScrape": {
+      "runnerLead": 0.8,
+      "gapLead": 0.8,
+      "selectedDistance": 1.6,
+      "oldInitialRequest": 15.623167574173076,
+      "remainingAtAdoptionSameAsOld": true,
+      "meaning": "Timing repair cannot remove the two already composed spatial leads."
+    },
+    "pull": {
+      "pullLook": 0.4,
+      "twoDIAtOZ4Mike170": 0.3513647732080045,
+      "meaning": "PULL_LOOK=.4 is not generally twoDI; any extra SCRAPE offset has separate provenance."
+    },
+    "fixedGoal": {
+      "meaning": "A dated arrival waypoint does not impose terminal speed=0. Keeping a static fit needs its own arrival/stationkeeping interpretation, not automatic future-waypoint semantics."
+    }
+  },
+  "savedOZ4": {
+    "path": "/workspace/football-db-stalk-workoff/out/db-stalk-workoff/baseline/OZ4.json.gz",
+    "tapeSha256": "a31ae0d5a9c847a11eb6cdc6352bd3b1c16794955ee3ff39f44b07435ef7c804",
+    "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "inputSha256": "5140d5e6e69164f5db49622f7dcf16dd619e9362e6640f0ca73493b48d91a2d4",
+    "slot": "LB_M",
+    "player": "pair31D-LB3",
+    "tau": 1.2254375051198332,
+    "rows": [
+      {
+        "tickEntry": 1.7,
+        "adoption": 1.7,
+        "selectedPoint": {
+          "x": 41.5,
+          "y": 23.34943288535932
+        },
+        "newDesiredPoint": {
+          "x": 41.5,
+          "y": 23.34943288535932
+        },
+        "heldUntil": 1.8756823866040022,
+        "adoptionDI": 0.17568238660400226,
+        "currentDI": 0.17568238660400218,
+        "datedWaypointDeadline": 2.0513647732080047,
+        "remainingTime": 0.35136477320800474,
+        "ownPosition": {
+          "x": 42.11046248653514,
+          "y": 24.61998980837945
+        },
+        "ownVelocity": {
+          "x": -1.3229315874219862,
+          "y": -1.6149439443792108
+        },
+        "rawRequest": {
+          "vel": {
+            "x": -1.621312464519261,
+            "y": -9.205838561829612
+          },
+          "facing": -1.7451264168903147
+        },
+        "finalIntent": {
+          "vel": {
+            "x": 2.055410364226277,
+            "y": -3.8598521543538613
+          },
+          "facing": -1.7451264168903147
+        },
+        "fullHRequestArithmetic": -16.93867912356395,
+        "remainingRequestArithmetic": -16.938679123563897,
+        "vmax": 9.205838561829612,
+        "qualifier": "Arithmetic counterfactual, not an executed request. Current raw command may choose a different mode; changing that mode remains a separate question."
+      },
+      {
+        "tickEntry": 1.75,
+        "adoption": 1.7,
+        "selectedPoint": {
+          "x": 41.5,
+          "y": 23.34943288535932
+        },
+        "newDesiredPoint": {
+          "x": 41.5,
+          "y": 23.395888659458414
+        },
+        "heldUntil": 1.8756823866040022,
+        "adoptionDI": 0.17568238660400226,
+        "currentDI": 0.17659313041659583,
+        "datedWaypointDeadline": 2.0513647732080047,
+        "remainingTime": 0.3013647732080047,
+        "ownPosition": {
+          "x": 42.05084172203689,
+          "y": 24.534906207210117
+        },
+        "ownVelocity": {
+          "x": -1.0618989925079654,
+          "y": -1.7884001023941125
+        },
+        "rawRequest": {
+          "vel": {
+            "x": -1.5229298323895748,
+            "y": -9.205838561829612
+          },
+          "facing": -1.7347423617407687
+        },
+        "finalIntent": {
+          "vel": {
+            "x": 2.1044988436204006,
+            "y": -3.224455042336924
+          },
+          "facing": -1.7347423617407687
+        },
+        "fullHRequestArithmetic": -13.740051602418905,
+        "remainingRequestArithmetic": -20.69410214592332,
+        "vmax": 9.205838561829612,
+        "qualifier": "Arithmetic counterfactual, not an executed request. Current raw command may choose a different mode; changing that mode remains a separate question."
+      },
+      {
+        "tickEntry": 1.8,
+        "adoption": 1.7,
+        "selectedPoint": {
+          "x": 41.5,
+          "y": 23.34943288535932
+        },
+        "newDesiredPoint": {
+          "x": 41.5,
+          "y": 24.85563905639762
+        },
+        "heldUntil": 1.8756823866040022,
+        "adoptionDI": 0.17568238660400226,
+        "currentDI": 0.1773648872959893,
+        "datedWaypointDeadline": 2.0513647732080047,
+        "remainingTime": 0.25136477320800465,
+        "ownPosition": {
+          "x": 42.00488477591244,
+          "y": 24.44224890667797
+        },
+        "ownVelocity": {
+          "x": -0.77637885247016,
+          "y": -1.9178919188917498
+        },
+        "rawRequest": {
+          "vel": {
+            "x": -1.4579636683116066,
+            "y": -3.155741926169232
+          },
+          "facing": 3.141592653589793
+        },
+        "finalIntent": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 3.141592653589793
+        },
+        "fullHRequestArithmetic": -10.745423533413557,
+        "remainingRequestArithmetic": -27.254591739110182,
+        "vmax": 9.205838561829612,
+        "qualifier": "Arithmetic counterfactual, not an executed request. Current raw command may choose a different mode; changing that mode remains a separate question."
+      },
+      {
+        "tickEntry": 1.85,
+        "adoption": 1.7,
+        "selectedPoint": {
+          "x": 41.5,
+          "y": 23.34943288535932
+        },
+        "newDesiredPoint": {
+          "x": 41.5,
+          "y": 23.355916498119406
+        },
+        "heldUntil": 1.8756823866040022,
+        "adoptionDI": 0.17568238660400226,
+        "currentDI": 0.17801860332173505,
+        "datedWaypointDeadline": 2.0513647732080047,
+        "remainingTime": 0.2013647732080046,
+        "ownPosition": {
+          "x": 41.969247857464964,
+          "y": 24.354214878333245
+        },
+        "ownVelocity": {
+          "x": -0.6490978854285387,
+          "y": -1.6034692148972014
+        },
+        "rawRequest": {
+          "vel": {
+            "x": -1.4077435723948923,
+            "y": -9.205838561829612
+          },
+          "facing": -1.72253938207546
+        },
+        "finalIntent": {
+          "vel": {
+            "x": 3.025809688989492,
+            "y": -3.431892287138914
+          },
+          "facing": -1.72253938207546
+        },
+        "fullHRequestArithmetic": -10.824132706731133,
+        "remainingRequestArithmetic": -45.108476419547195,
+        "vmax": 9.205838561829612,
+        "qualifier": "Arithmetic counterfactual, not an executed request. Current raw command may choose a different mode; changing that mode remains a separate question."
+      },
+      {
+        "tickEntry": 1.9,
+        "adoption": 1.9,
+        "selectedPoint": {
+          "x": 41.5,
+          "y": 23.236550695125505
+        },
+        "newDesiredPoint": {
+          "x": 41.5,
+          "y": 23.236550695125505
+        },
+        "heldUntil": 2.0785741338267476,
+        "adoptionDI": 0.1785741338267477,
+        "currentDI": 0.17857413382674775,
+        "datedWaypointDeadline": 2.2571482676534953,
+        "remainingTime": 0.3571482676534954,
+        "ownPosition": {
+          "x": 41.94385825612765,
+          "y": 24.2705261333666
+        },
+        "ownVelocity": {
+          "x": -0.3664861680640735,
+          "y": -1.7440805837686688
+        },
+        "rawRequest": {
+          "vel": {
+            "x": -1.3278249324760976,
+            "y": -9.205838561829612
+          },
+          "facing": -1.7140456343436592
+        },
+        "finalIntent": {
+          "vel": {
+            "x": 3.2304495301557683,
+            "y": -3.4107952244287327
+          },
+          "facing": -1.7140456343436592
+        },
+        "fullHRequestArithmetic": -10.428291466282205,
+        "remainingRequestArithmetic": -10.42829146628223,
+        "vmax": 9.205838561829612,
+        "qualifier": "Arithmetic counterfactual, not an executed request. Current raw command may choose a different mode; changing that mode remains a separate question."
+      }
+    ]
+  },
+  "elapsedSeconds": 0.45186221299809404
+}

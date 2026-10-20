@@ -1,0 +1,26 @@
+{
+  "scope": "Pure arithmetic and consumed-picture replay; zero source changes, tests or simulations. No useful native correction demonstrated.",
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "files": [
+    {
+      "path": "waypoint-exposure.json",
+      "sha256": "81b5ad8528302caad95041334a49f0f6c7e71412874b0bc43ea4ae90d11b460c",
+      "bytes": 18305
+    },
+    {
+      "path": "waypoint-exposure.mjs",
+      "sha256": "13ca114f16b26b50f938c06eccabed7a5c0b8bce096f3d415785ab15225d9877",
+      "bytes": 5710
+    },
+    {
+      "path": "waypoint-time-arithmetic.json",
+      "sha256": "9ce59113a8995f3d8ab7e74eb8e28bc54ca46ca503074c4fa762653e34dfbaa2",
+      "bytes": 12915
+    },
+    {
+      "path": "waypoint-time-arithmetic.py",
+      "sha256": "b8cde9c5ae551cd11ae149d0d1324e153b4887a977a50284e9712f07f16bc383",
+      "bytes": 5839
+    }
+  ]
+}
