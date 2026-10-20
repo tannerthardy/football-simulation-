@@ -159,6 +159,7 @@ export class PlaySim {
   private ballPreviouslyBeyondLine = false;
   private statsBeforeIllegalPass?: PlayStats;
   private segmentsBeforeIllegalPass?: CarrierSegment[];
+  private possessionSnapshotRecords?: NonNullable<PlayResult['possessionSnapshots']>;
   private frozenEligibility?: Map<string, SnapEligibility>;
   get snapEligibility(): Map<string, SnapEligibility> { return this.frozenEligibility ??= new Map(); }
   readonly snapAssessment: PresnapAssessment;
@@ -684,6 +685,14 @@ export class PlaySim {
         }
       }
     }
+    if (a.team !== prevTeam) this.capturePossessionSnapshot();
+  }
+
+  private capturePossessionSnapshot(): void {
+    const stats = structuredClone(this.stats);
+    stats.missedTacklesBy = Object.fromEntries(this.agents.map(a => [a.player.id, a.missedTackles]));
+    (this.possessionSnapshotRecords ??= []).push({ changes: this.possessionChanges,
+      possession: this.possession, stats, segments: this.segments.map(s => ({ ...s })) });
   }
 
   fumble(carrier: Agent, hitter: Agent | null): void {
@@ -1006,6 +1015,7 @@ export class PlaySim {
           this.stats.fumbleRecoveredBy = to.player.id;
           this.event('recovery', to, ball.thrower, 'opponent pitch recovered');
           onRecovery(this, to);
+          this.capturePossessionSnapshot();
         }
       } else if (cur.z <= 0.05) {
         this.ball = { kind: 'loose', flight: ball.flight, since: ball.releaseT,
@@ -1285,6 +1295,7 @@ export class PlaySim {
       ruleLimitations: this.ruleLimitations.size ? [...this.ruleLimitations] : undefined,
       statsBeforeIllegalPass: this.statsBeforeIllegalPass,
       segmentsBeforeIllegalPass: this.segmentsBeforeIllegalPass,
+      possessionSnapshots: this.possessionSnapshotRecords,
     };
   }
 }

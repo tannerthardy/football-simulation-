@@ -198,6 +198,10 @@ export interface PlayResult {
   /** Preserve pre-foul takeaway attribution when a returner makes an illegal pass. */
   statsBeforeIllegalPass?: PlayStats;
   segmentsBeforeIllegalPass?: CarrierSegment[];
+  /** Exact achieved prefix at each possession change, before later returns
+   * or giveaways. Rule14/statistics must not reconstruct this from the ending. */
+  possessionSnapshots?: Array<{ changes: number; possession: TeamSide;
+    stats: PlayStats; segments: CarrierSegment[] }>;
 }
 
 export interface PenaltyCall {

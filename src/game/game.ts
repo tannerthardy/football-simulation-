@@ -22,6 +22,7 @@ import { assessScrimmageKick, type FreeKickFacts, type ScrimmageKickFacts, type 
 import { resolveLivePenalties, resolveTryPenalties, type LivePenaltyOption } from './penalty-enforcement.js';
 import { resolveFoulClock } from './clock-rules.js';
 import { deriveOfficialPossessionStats } from './possession-stats.js';
+import { deriveOfficialPlayStats, type OfficialPlayCredit, type OfficialStatsTreatment } from './official-play-stats.js';
 import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
 
 export type Side = 'home' | 'away';
@@ -43,13 +44,16 @@ export interface PlayLog {
   kind: 'run' | 'pass' | 'punt' | 'fg' | 'xp' | 'kickoff' | 'kneel' | 'penalty' | 'two';
   /** Raw play stats for scrimmage plays (analysis/calibration). */
   stats?: PlayResult['stats'];
+  /** Explicit official credit; raw stats/nullified continue to describe film.
+   * Absent in historical logs, whose consumers use their legacy fallback. */
+  officialCredit?: OfficialPlayCredit;
   /** Actual possession history; optional for older recordings. */
   segments?: PlayResult['segments'];
   /**
    * An accepted foul wiped the play out. `stats` then describe what physically
    * happened; official calibration excludes the raw result. Ordinarily none
-   * of its stats enter the box score; a post-possession foul can retain only
-   * the preceding official takeaway, identified in `official`.
+   * of its stats enter the box score. `officialCredit` identifies retained
+   * loss-of-down/spot prefixes and pre-change-of-possession statistics.
    */
   nullified?: boolean;
   /** Foul during the play and its resolution. */
@@ -58,7 +62,7 @@ export interface PlayLog {
   foulRecords?: PlayResult['foulRecords'];
   ruleLimitations?: string[];
   official?: { treatment: 'enforce' | 'offset'; possession: Side; spotX: number;
-    down: number; distance: number; stats: 'none' | 'before_change_of_possession' | 'physical' };
+    down: number; distance: number; stats: OfficialStatsTreatment };
   /** The calls on a scrimmage snap, for tendency analysis (same fields as the NFL extractor). */
   plan?: PlayPlan;
   outcome?: PlayResult['outcome'];
@@ -710,6 +714,11 @@ export class Game {
       if (selected.kind === 'decline') {
         logEntry.text += ` (${calls.map(p => `${p.kind} declined`).join(', ')})`;
       } else {
+        const statistical = deriveOfficialPlayStats({ result: r, calls, selected,
+          los, startDistance: startDist });
+        logEntry.officialCredit = statistical.credit;
+        if (statistical.credit.limitations?.length)
+          logEntry.ruleLimitations = [...(logEntry.ruleLimitations ?? []), ...statistical.credit.limitations];
         logEntry.nullified = selected.nullifiesPlay;
         logEntry.firstDown = selected.possession === 'O' && selected.nextDown === 1
           && (selected.autoFirst || selected.spotX >= firstDownX - 1e-6);
@@ -717,22 +726,15 @@ export class Game {
         logEntry.official = { treatment: selected.kind,
           possession: selected.possession === 'O' ? offSide : defSide, spotX: selected.spotX,
           down: selected.nextDown, distance: selected.nextDistance,
-          stats: selected.preservesPlay ? 'physical' : selected.preserveBeforeChangeOfPossession ? 'before_change_of_possession' : 'none' };
+          stats: statistical.credit.treatment };
         logEntry.text += selected.kind === 'offset' ? ' — PENALTIES OFFSET'
           : ` — PENALTY: ${first.kind} (accepted)`;
         this.recordPenaltyNumbers(calls, selected, offTeam, defTeam);
         for (const id of selected.disqualifiedPlayerIds ?? []) this.disqualified.add(id);
         this.queueCarryovers(selected, offSide, logEntry);
-        if (selected.preservesPlay) {
-          this.recordStats(sim, r, offTeam, defTeam);
-          this.countDown(offTeam, startDown, converted);
-        } else if (selected.preserveBeforeChangeOfPossession) {
-          this.recordStats(sim, { ...r, score: null,
-            possession: selected.possession, turnover: selected.possession === 'D',
-            segments: r.segmentsBeforeIllegalPass ?? r.segments,
-            stats: r.statsBeforeIllegalPass ?? r.stats }, offTeam, defTeam);
-          this.countDown(offTeam, startDown, false);
-        }
+        if (statistical.result) this.recordStats(sim, statistical.result, offTeam, defTeam);
+        if (statistical.credit.downAttempt)
+          this.countDown(offTeam, startDown, statistical.credit.converted);
         this.log.push(logEntry);
         const warned = this.runClock(r.duration, true);
         const clock = resolveFoulClock({ quarter: s.quarter, clock: s.clock,
@@ -772,7 +774,6 @@ export class Game {
           if (logEntry.firstDown) this.box.team(offTeam.abbr).firstDowns++;
         }
         s.down = selected.nextDown; s.distance = selected.nextDistance;
-        if (selected.lossDown && !selected.preservesPlay) this.countDown(offTeam, startDown, false);
         s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);
         const running = !this.untimedDown && !warned && clock.restart === 'ready' && s.clock > 0;
         const warnedAfter = this.runClock(running ? clamp(this.tempo.normal(19, 3), 0, clock.playClock - .1) : 0);
@@ -781,9 +782,11 @@ export class Game {
       }
     }
 
+    const statistical = deriveOfficialPlayStats({ result: r, calls, los, startDistance: startDist });
+    logEntry.officialCredit = statistical.credit;
     this.log.push(logEntry);
-    this.recordStats(sim, r, offTeam, defTeam);
-    this.countDown(offTeam, startDown, converted);
+    this.recordStats(sim, statistical.result!, offTeam, defTeam);
+    this.countDown(offTeam, startDown, statistical.credit.converted);
     if (converted) this.box.team(offTeam.abbr).firstDowns++;
     const warned = this.runClock(r.duration, true);
 
@@ -1327,7 +1330,8 @@ export class Game {
 
   // ---------------------------------------------------------------- stats
 
-  /** Box-score credit for an official (not nullified) scrimmage play. */
+  /** Box-score credit for the derived official action, including a credited
+   * prefix of a nullified raw ending. */
   private recordStats(sim: PlaySim, r: PlayResult, offTeam: Team, defTeam: Team): void {
     const st = r.stats;
     const box = this.box;
@@ -1337,8 +1341,8 @@ export class Game {
     const t = box.team(offTeam.abbr);
     t.plays++;
     // Official takeaway credit also applies when a defensive score ends the
-    // play before the ordinary change-of-possession branch. Nullified plays
-    // never reach recordStats.
+    // play before the ordinary change-of-possession branch. The caller has
+    // already removed any uncredited raw post-foul action.
     const possessionStats = deriveOfficialPossessionStats(r);
     t.turnovers += possessionStats.teamTurnovers.O;
     box.team(defTeam.abbr).turnovers += possessionStats.teamTurnovers.D;
