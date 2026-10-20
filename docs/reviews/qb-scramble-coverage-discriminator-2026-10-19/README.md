@@ -36,3 +36,39 @@ restorable midplay state or all individual consumed pictures.
 No production or test changes in this review publication. Root owns any fixture
 adjudication and final exact candidate verification. Experimental gait/contact
 mechanics remain held separately.
+
+## One current coaching-control attempt: rejected
+
+After publication of the A/B receipt, Root authorized at most one current
+installed-coverage control. I selected **Cover2-Man**, before running it: tight
+man beneath two vertical caps should deny the read without forcing the QB.
+Bodies, seed0, Four Verticals and Over front stayed unchanged. No seed search
+or rating/phase manipulation occurred.
+
+The actual recording-versus-suppressed-recording pair ran, but the assertion
+`stats.scramble === true` failed. **0 pass /1 fail /5 intentionally unrun**,
+2.005516s launcher wall, two additional native snaps. The test stops before
+its movement/observation/RNG equality assertions; do not claim they passed.
+The [rejected fixture proposal](two-man-rejected-test.patch),
+[failed receipt](two-man-bookkeeping-receipt.json),
+[exact failure](two-man-bookkeeping-vitest.json) and
+[disposition](control-disposition.json) remain published. The proposal is not
+an adoption patch and was removed from the review worktree. No second current
+coverage or seed was tried.
+
+The smallest honest next decision is whether to install an **explicitly pinned
+historical coaching fixture** for this bookkeeping integration control: retain
+the original deep-coverage policy as test-only input, while running current QB
+decisions, all22 bodies, shared physics and result bookkeeping. Label that
+fixture as a preserved pre141 coverage-held situation; do not claim it tests
+current coverage quality. Keep the native scramble/event/rusher and full
+movement/observation/RNG equality requirements. Preserve current Cover3 seed0
+as an opposing no-rusher native pass input. A future coverage improvement may
+change current Cover3's outcome legitimately.
+
+That requires an explicit Root fixture-scope decision: freezing an old policy
+as test input has maintenance costs and must not silently replace production
+coverage or mock a QB decision. I have **not implemented** an archived coverage
+controller, forced scramble, disabled141 in the test, weakened an assertion,
+or conducted a lucky-input search. Total investigation so far: four native
+snap executions, zero games, one focused failing test selection, no suite.

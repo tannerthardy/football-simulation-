@@ -1,0 +1,17 @@
+{
+  "base": "2a1c034021768620c6a1a26ee7018972512220fd",
+  "input": "Same bodies/seed0/FourVerts/Over; change only declared installed coverage Cover3 to Cover2-Man",
+  "reasonBeforeResult": "Tight man beneath two deep caps is a legitimate coverage-held control and has prior native-scramble historical support; no seed search.",
+  "decision": "REJECT proposed current coverage input: it does not supply the required native scramble.",
+  "passed": 0,
+  "failed": 1,
+  "intentionallyUnrun": 5,
+  "additionalNativeRuns": 2,
+  "seconds": 2.005515969,
+  "nextDecision": "Root decides whether to freeze the explicitly historical coverage policy as test-only installed input, preserving current QB/physics/recording plus native scramble assertion, or budget a separately justified deterministic controller-invariance fixture. No next search or test change authorized by this review.",
+  "proposalPatchSha256": "533f456d9eb625344a00edc9a8ecddc5e6ec981a2fbee8fee47318e4e0999b8b",
+  "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "validationSha256": "af107aa349c754208226278b9b3552eee06d95a1cce6b71517ac7868882b9615",
+  "productionChanges": 0,
+  "adoptionRecommended": false
+}
