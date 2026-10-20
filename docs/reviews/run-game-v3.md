@@ -1875,3 +1875,72 @@ and the same flags without `GAIT_STEP` (better than develop on all three
 sets, weaker tail). Then repair the engaged reach on stretch plays: linemen
 driven back and flowing as in NFL. That is what the gait exposes, and what
 keeps shotgun from improving.
+
+## Part 13 — film notes: force width, pullers, trap, teammate spacing (2026-10-20, WIP checkpoint)
+
+All new flags are default-off; defaults reproduce develop (30/30 zone and
+40/40 gap lab plays). Commit `3cfad552`. Arms are paired on identical cases;
+manifests in [part13/](run-game-v3/part13/). "Candidate" is the Part 12
+candidate.
+
+**Force safety width (user film AFTER-04/14).** On stretch runs the force
+defender aimed 0.7 yd outside the runner's *current* spot with no lead.
+`edgewho.py` (same operator for NFL and sim): 0.8 s before the crossing the
+nearest outside DB is 5.0 yd outside the runner at 4.1 deep in NFL, 2.2 yd at
+5.3 deep in the candidate; the edge was lost (nobody outside) on 10% of
+stretch runs (NFL 4%). **`FORCE_LEAD`** (`run-fits.ts` force fit): leverage
+on the runner's acquired lateral track (`interceptPoint` at fit depth,
+lateral feed-forward, hips open to run). Edge lost 10 → 1%, outside DB 2.2 →
+3.4 yd. Ace zone TVD 7.2 → 4.4 (40+ 1.8 → 0.8%, NFL 0.8; paired 40+ 22 → 10,
+p 0.017); shotgun 16.9 → 15.4; gap 4.0 → 4.4 (10+ falls, 0-3 rises).
+Remaining: 10-19 yd zone runs now under NFL (5.9 vs 8.6%); the front still
+does not flow outside the runner (DL/LB outside him at the crossing 0.07/0.30
+per run, NFL 1.00/1.24).
+
+**Pullers (AFTER-15/05/19).** `pullprobe.ts` (320 candidate pullers): lateral
+0.2/1.1/2.4 yd at 0.6/1.0/1.4 s (NFL 0.8/2.0/3.4); 69-91% of kick/trap
+pullers turn more than 270° in 1.2 s; lead pullers engage anyone 4% of plays.
+Causes: (1) the first waypoint goes straight back with no facing, so the turn
+picks the wrong side; (2) teammate spacing cuts the request (5 → 1.4 yd/s)
+and points it backward behind the down blockers; (3) lead pullers keep the
+backer named at the snap.
+- Existing `PULL_STEP`: spins >270° 69-91% → 0%; kick lateral 0.5/1.5/3.0.
+- **`LEAD_READ`** (`blocking.ts` `holeThreat`): lead puller takes the
+  uncovered second-level defender nearest the hole from his own picture,
+  committed within 2.5 yd. Lead engagement 8 → 13%; still late.
+- Gap outcomes with both: no significant change (paired p ≥ 0.09).
+- AFTER-19 with all pieces: the kick-out lands inside-out at 1.85 s; +2.7
+  instead of −0.4 (end tackle).
+
+**Trap tackle stands (AFTER-15).** **`TRAP_READ`** (`run-fits.ts`): an
+interior defender meets an arriving trapper (a lineman crossing behind the
+line who aligned 1.5+ yd inside him) like an edge meets a kick-out. The
+tackle now meets him 0.05-0.2 yd in the backfield instead of waiting at +0.27.
+Outcome arm `tr1gap` was queued but not scored.
+
+**Teammate spacing (user request: a general fix).** `spaceprobe.ts`
+(200 plays, 3 s): the carrier loses ≥30% of requested progress on 22.6% of
+moving ticks, FB leads 35%, lead/trap pullers 30%, combos 23%, man-coverage
+backers 29%. The law's only answers to a teammate in the way are to slow,
+halve or stop; 34-71% of throttles are head-on. **`SPACE_STEER`**
+(`spacing.ts`): when spacing costs >30% of forecast progress, try the request
+rotated 15-75° each side with the same free-movement forecast and peer
+pictures; take the clear one with most progress; hold the side 0.3 s
+(`=2`: diagnostic, carrier excluded). Throttles: carrier 22.6 → 8.4%, kick
+puller 19 → 5%, trap puller 30 → 8%, man backers 30 → 19%. Outcomes:
+- Shotgun zone: negatives 101 → 77 of 600 (p 0.016), TVD 15.4 → 12.9.
+- Ace zone: 4+ 520 → 480 (p 0.041), all from inside zone (4+ 52 → 42%);
+  TVD 4.4 → 7.7. Handoff 0.05 s earlier, QB 0.5 yd deeper.
+- Gap (vs `fl4gap`, same flags without it): 4+ 842 → 764 (p 0.002),
+  TVD 4.9 → 9.7.
+- Hypothesis, untested: the carrier should not be steered by the spacing
+  layer (it sees only teammates and can bend him into defenders; his runner
+  controller owns lane choice). `st2co`/`st2gap` (carrier excluded) were
+  queued but not scored.
+
+**Next decision.** Score `SPACE_STEER=2` and `TRAP_READ` (`out/st2.sh`
+reruns them: `st2co`, `st2gap`, `tr1gap` against `fl4gap`/`fl1co`). Keep
+`FORCE_LEAD`; keep `PULL_STEP`/`LEAD_READ` as mechanism repairs with neutral
+outcomes. Lead pullers are still late through the corner (waypoint path makes
+a near-stop square turn, ~1.6 yd/s): a rounded arrival path is the next
+puller repair.
