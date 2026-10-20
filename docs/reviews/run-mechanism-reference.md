@@ -146,7 +146,7 @@ or proof of the next integrated batch.
 | --- | --- | --- |
 | Strong OZ, Over | At 3 s, RG moves 0.57 yd farther laterally and DT_S 0.48 yd farther laterally / 0.96 yd farther upfield, with actual transmitted load | First carrier contact changes from a CB grasp at 3.55 s to DT_S body collision at 2.50 s. Both arms remain live at 8 s. More work is demonstrated; better protection through arrival is not. |
 | Weak WZ, Over | C moves 0.96 yd farther laterally at 3 s; DT_W is 0.29 yd deeper in the backfield | LB_W still reaches the runner at 2.75 s. Known tackles finish at 3.55/3.65 s; gains 2.89/2.91 yd. Preserve the legitimate defensive win alongside the changed technique. |
-| Strong OZ, fresh Tite | Baseline C–LB_W has five force-bearing intervals starting at 2.75 s; candidate has none by the 3 s cutoff | Baseline has a known tackle at 3.00 s, candidate remains live. Lost late collection is visible; final-gain benefit/cost is unresolved. |
+| Strong OZ, fresh Tite | Baseline C–LB_W has five force-bearing intervals starting at 2.75 s; candidate has none by the 3 s cutoff | Baseline's Mike grasp already starts at 2.40 s; the late C–LB_W load is not established as useful protection. Baseline ends at 3.00 s, candidate remains live. Final-gain benefit/cost is unresolved. |
 
 The first changed final intent occurs at 0.70/0.80/0.90 s in the three pairs,
 with body changes in the ensuing intervals. Raw requests change later. That

@@ -122,7 +122,8 @@
       "fourExtractedFileBytes": 1030934666,
       "archivePlusFourFilesBytes": 2250775087,
       "allNineTrackingExtractedBytes": 8111559585
-    }
+    },
+    "executionHandoff": "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300891519"
   },
   "operators": [
     {
@@ -1578,7 +1579,8 @@
       "Raw/final requests exist; separate complete contact,bond,spacing,readiness stages are absent.",
       "No complete RNG stream or perception stream in compact #172 files; retained zoneRead pictures/timestamps may still be present in plans.",
       "Per-phase geometric candidates are not installed assignments or engagement labels.",
-      "Six recorded arms: three known terminal recordings,three censored; no gain assigned to censors."
+      "Six recorded arms: three known terminal recordings,three censored; no gain assigned to censors.",
+      "Fresh Tite baseline C\u2013LB_W force starts2.75s after Mike grasp2.40s; presence versus absence of this late load does not establish useful protection or a causal loss."
     ],
     "sourceWorldDefaults": "Inherited from explicit producing source and upstream manifest; compact trace does not separately serialize every World API constructor choice."
   },
