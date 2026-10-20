@@ -420,7 +420,7 @@
   "otherFiles": [
     {
       "path": "README.md",
-      "sha256": "56f3095deffb8374984cff3c1d116f06293a3d0b6c0609274fb500cf92a04b2b"
+      "sha256": "e920a785435622707ac2176d163f943b58e8d8191b64c2eb4e06904a6889288e"
     },
     {
       "path": "approach-replay-restore-review.md",
@@ -429,6 +429,10 @@
     {
       "path": "composed-preview-1.patch",
       "sha256": "a61412320dfb724c2b388ac2042dcbbb6f5d26468e6acb14f520a9d94a4cbde2"
+    },
+    {
+      "path": "composed-preview-independent-review.md",
+      "sha256": "5738058a323b006ff0888b95008f504cff8cc35c0f085ca435f26078b9456aed"
     },
     {
       "path": "defensive-convergence-review.md",
@@ -441,6 +445,15 @@
     {
       "path": "pursuit-objective-2.patch",
       "sha256": "168c5e913ba254009297b8c026ce3777494305205246148c910c99d08390c0c0"
+    },
+    {
+      "path": "pursuit-objective-independent-football-review.md",
+      "sha256": "b5ff23090f3be42ec1e679bd1a266c8fad95c26691307576f5ff9b1d4477b957"
+    },
+    {
+      "path": "pursuit-objective-independent-source-review.md",
+      "sha256": "953ae531499c5bf184d6d7ab4ba3384b8ade7e379a41a8a8afd6de13aef26602"
     }
-  ]
+  ],
+  "reviewMetadataCorrection": "Original archive source-review headers copied4cc3337; corrected adjacent review files record actual producing queue6575988. Source/evidence/approvals unchanged."
 }

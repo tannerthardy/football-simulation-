@@ -1,0 +1,37 @@
+# Independent football review: pursuit objective continuity
+
+**Approve the narrow producer correction for Integration review, with limited football benefit.** It preserves a legitimate purpose across the pursuit→teammate-navigation boundary and produces one modest, achieved approach improvement. It does not create a new tackle, establish better overall defense, or fix the remaining same-lane traffic. The fresh tackle control has a real body-contact delay that must accompany the handoff.
+
+Reviewed candidate `22b73d8`, engine source `dcffa72534943ed22d32a8a602ef7191c1e5e03eb75a0b0e0e17b8ec02dae1b2`, against accepted `2c98bed94adad8087c65f381d4090444ad283985`, source `4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571`. This is the separate `common.chase` producer candidate, not the composed-preview trial, #171, #175 or #176. Existing tapes, comparison and actual acquired-picture/request/body records were inspected; no native simulations, forecasts, tests or NFL queries were run by this reviewer. Exact inputs, source and tape hashes are in `native-comparison.json` and the film provenance.
+
+## What visibly improves
+
+In **WZ7**, SS **`pair11D-CB4`** (installed alley) first receives a different applied request at **2.85 s**, from the same body and same numerical raw pursuit command. Baseline navigation returns `(0,0)` while the candidate returns `(2.720,−1.245)` yd/s. The player still has real downhill/lateral momentum; this is an avoided zero *request*, not an instantaneous physical stop disappearing.
+
+The candidate initially retains more depth while carrying more lateral motion. At achieved3.00, lateral velocity is **−1.632→−2.135 yd/s**, with secondary FS depth exactly unchanged. Over the subsequent approach the candidate is slightly wider toward the runner's path rather than simply collapsing downhill. At achieved3.50, runner separation is **3.446→3.322 yd**. At achieved5.00 the separation advantage reaches about **0.417 yd**, before the first recorded parent-RNG difference at6.40. Those are actual achieved positions, not a promise from a free preview.
+
+The best SS pass remains outside useful contact: closest separation **3.442→3.318 yd**. This defender does not acquire the runner. FS's carrier-contact/grasp event remains5.55 and the tackle remains6.40; credited gain remains25.85. The visible improvement is a less interrupted rally approach while preserving the last level, not a successful extra tackle or a solved explosive.
+
+## Responsibility and opposing evidence
+
+- **OZ4:** the relevant Will is **`pair31D-LB1`, slot LB_W, index17**. His force duty includes a conditional inside C-gap option. The first applied change is2.15; his maximum runner-separation benefit is only about0.016yd and later turns adverse. He still runs into a congested relationship with Mike and remains well outside contact. The source's current shaded target is carried through navigation; the film does not establish that this is a successful new force technique. Both deepest-at-snap defenders' paths are initially unchanged. SS acquires3.05 and loses3.35; FS acquires4.05 and finishes4.65 in both arms. The first positive runner/FS torso interval remains4.20–4.25; impulse differs only slightly (169.6208→169.6208 kg·yd/s). Credited gain remains15.59.
+- **WZORD defensive finish:** first applied change belongs to LB_S **`pair31D-LB5`** at2.35; the actual first wrap remains LB_W **`pair31D-LB1`** at2.75, with CB_W joining3.05 and the tackle at3.50. Credited gain remains2.89, and the first positive runner/LB_W torso interval and impulse are unchanged. **Adverse:** Mike `pair31D-LB3` is farther from the runner at achieved3.30, **2.819→2.944yd**, before the first recorded parent-RNG difference. Do not summarize all approaches as improved.
+- **Fresh F_Q_OZ:** FS **`FDD-S1`** retains the3.40 wrap and4.05 finish. The pre-grip separation change is tiny/mixed: at achieved3.40, **1.057→1.042yd**, but at achieved3.55, **0.826→0.880yd**. Candidate navigation also makes a new zero request at3.25: legitimately changing purpose metadata does not mean every stop should be eliminated. **Adverse physical detail:** first positive runner/FS torso impulse moves from **3.75–3.80 to3.85–3.90**,0.10s later, with first impulse95.624→80.429 kg·yd/s. Grasp acquisition is not body impact. Credited gain4.67→4.68; this is preservation of a finish with a changed approach, not tackling improvement.
+- **Fresh F_COUNTER:** credited gain remains0.22; FS later closest separation3.603→3.536yd does not create a tackle. **PA13:** all recorded bodies, requests, intents and parent RNG ticks are identical. Its14.51 gain is preserved. These specific controls support the narrow boundary; they do not certify every play-action or vertical threat.
+
+The deep/force/alley labels above come from recorded installed duties. "Deepest at snap" is geometric context, not proof of the current roof assignment. The candidate supplies the already acquired current runner picture, current shade and observed velocity; it does not advertise the future intercept as another current target or add knowledge of a future cut. The numerical approach policy and physical capability remain owned by their existing layers. Independent contract review and focused checks remain separate evidence.
+
+## Football interpretation and limits
+
+The missing intelligence repaired here is **making an already justified action's purpose available to the next controller**. A navigation layer that sees only an instantaneous velocity can satisfy collision avoidance while unnecessarily discarding useful progress. Carrying the actor's current approach objective lets existing navigation evaluate progress relative to that responsibility. It does not grant knowledge of teammates' private assignments or make the player's run belief permanent.
+
+The initial and fresh films preserve earned offensive space, a deep second wave and ordinary finishes. They also show why this cannot be sold as the defensive breakthrough: WZ7's SS remains beaten outside contact, OZ4's Will remains constrained by traffic, WZORD's Mike approach worsens slightly, and the fresh FS's body impact is later. Approve only the minimal producer contract and retain these observations. There is no basis here for another speed, grip, anticipation, persistence or helper-policy variant.
+
+## Passive film artifacts
+
+`film.py` is copied/adapted from the earlier passive operator. The phase reference is now the **first changed applied defensive navigation request**, because this candidate's first raw numerical command is unchanged. It follows stable IDs across arms and plots all22 bodies at snap, each arm's recorded crossing, that first applied divergence, and+.50s. Path plots retain the full recorded trajectory. No unavailable phase is replaced by an ending frame.
+
+- Initial controls: `film/{WZ7,OZ4,WZORD}-{positions,paths}.{svg,png}`; `film/provenance.json`.
+- Fresh tackle: `film-fresh/F_Q_OZ-{positions,paths}.{svg,png}`; `film-fresh/provenance.json`.
+
+Purple lines show actual main block-hand load from the preceding solved interval; red lines show positive body impulse. Dotted nearness remains a proximity marker. Helper-hand forces and tackle-grasp forces are absent from these packets and are not inferred from `armImpulse`, grasp events or the image. Parent-RNG equality is a useful boundary, not a proof that every derived child-stream draw remains equal.

@@ -37,3 +37,10 @@ independent patches (39/43 per candidate) and both typechecks pass. Native wrapp
 command time17.479s; all recorded wrapper commands48.761s plus original red1.84s.
 Passive Python/figure review is separate. No claim of a measured long-run/YAC
 population improvement. Integration owns exact combined verification.
+
+Metadata correction after first publication8824701: two archived source-review
+headers copied the prior task's queue4cc3337. The reviewer corrected only those
+headers to the actual producing queue6575988; corrected source reviews are
+published beside the archives and are authoritative for that metadata. Source,
+approvals, measurements and original archive bytes/hashes remain unchanged.
+The separate football review is also available directly beside the archives.
