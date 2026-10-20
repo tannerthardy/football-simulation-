@@ -15,6 +15,14 @@ capacity, perception/memory, assignment or experimental SPACE_STEER activation.
 Use Measurement's actual-owner/full-request/achieved-motion process, bounded
 opposing controls, and distinguish mechanism repair from native usefulness.
 
+Review checkpoint: #183 is separately published; portable local routing is
+frozen at5248e884fd450b44045e753caaf782a306710e0c on
+`codex/local-traffic-route`, accepted2c98 plus#183 only. Independent scoped
+review ACCEPT,29 focused checks/typecheck pass; original failed trials and
+adverse/native limits are published in [the handoff](reviews/local-traffic-route.md).
+Integration owns exact composition/adoption. No role expansion or additional
+avoidance tuning while this candidate is reviewed.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
