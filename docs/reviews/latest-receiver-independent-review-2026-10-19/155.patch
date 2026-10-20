@@ -1,0 +1,344 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 3799add9..f790f9b9 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -688,12 +688,22 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
+     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
+   const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
++  // Alignment class is not ownership: shallow press/apex bodies can be in dl
++  // without an inline job. Keep actual current/future assignments reserved,
++  // including the explicitly installed GH H/backer, before restoring free dl.
++  const reserved = new Set<Agent>();
++  for (const p of plans.values()) {
++    if (p.target) reserved.add(p.target);
++    if (p.climbTo) reserved.add(p.climbTo);
++    if (p.combination?.backer) reserved.add(p.combination.backer);
++  }
++  const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
+   const stalkTargets = new Map<Agent, Agent | null>();
+   if (STALK_CLAIM) {
+     // Receivers share one ledger: closest unclaimed pairs first, skipping
+     // backers a lineman or lead already owns. Only a receiver left with
+     // nobody unclaimed helps on the nearest man.
+-    const open = [...db, ...lb.filter((l) => !claimedLB.has(l))];
++    const open = stalkPool.filter(d => !reserved.has(d));
+     const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
+     const taken = new Set<Agent>();
+     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
+@@ -703,7 +713,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+     let best: Agent | null = stalkTargets.get(a) ?? null;
+     if (!best) {
+       let bd = Infinity;
+-      for (const d of [...db, ...lb]) {
++      for (const d of stalkPool) {
+         const dd = near(a, d);
+         if (dd < bd) {
+           bd = dd;
+diff --git a/test/fixtures/receiver-run-assignment-g1-p018.json b/test/fixtures/receiver-run-assignment-g1-p018.json
+new file mode 100644
+index 00000000..0cd018cb
+--- /dev/null
++++ b/test/fixtures/receiver-run-assignment-g1-p018.json
+@@ -0,0 +1,208 @@
++{
++  "provenance": {
++    "commit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
++    "archive": "accepted-games-deep-audit-v1.tar.gz",
++    "member": "out/accepted-game-deep-audit-2026-10-16/run/G1-P018.json",
++    "runtime": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
++    "note": "Rounded first nonnegative telemetry in canonical offensive coordinates; installationFlip follows the recorded bunch side (minus-y), whereas original call metadata recordedFlip=true is retained separately. Separate generated profiles; assignment-only reconstruction, not exact native resimulation or achieved benefit."
++  },
++  "formation": "gun_bunch_11",
++  "run": "oz_strong",
++  "front": "over",
++  "coverage": "cover0",
++  "pressure": "zero_6",
++  "personnel": "nickel",
++  "los": 45,
++  "ballY": 26.67,
++  "positions": {
++    "QB": [
++      40,
++      26.7
++    ],
++    "LT": [
++      44.5,
++      29.3
++    ],
++    "RT": [
++      44.5,
++      24.1
++    ],
++    "C": [
++      44.5,
++      26.7
++    ],
++    "LG": [
++      44.5,
++      28
++    ],
++    "RG": [
++      44.5,
++      25.4
++    ],
++    "RB": [
++      39.8,
++      28.3
++    ],
++    "Y": [
++      44.4,
++      19.2
++    ],
++    "X": [
++      44.4,
++      44.7
++    ],
++    "Z": [
++      43.3,
++      17.7
++    ],
++    "H": [
++      43.1,
++      20.5
++    ],
++    "DE_W": [
++      45.9,
++      29.8
++    ],
++    "DE_S": [
++      45.9,
++      23
++    ],
++    "DT_S": [
++      45.9,
++      24.6
++    ],
++    "DT_W": [
++      45.9,
++      27.2
++    ],
++    "LB_M": [
++      50,
++      26
++    ],
++    "LB_W": [
++      49.6,
++      28.8
++    ],
++    "CB_S": [
++      46.2,
++      18.5
++    ],
++    "CB_W": [
++      46.2,
++      43.8
++    ],
++    "NB": [
++      46.2,
++      19.9
++    ],
++    "FS": [
++      50,
++      27.8
++    ],
++    "SS": [
++      49,
++      21.2
++    ]
++  },
++  "savedAssignments": [
++    {
++      "a": 1,
++      "slot": "LT",
++      "kind": "cutoff",
++      "b": 11,
++      "target": "DE_W",
++      "climbTo": null,
++      "firstEngaged": null,
++      "firstPrimaryPositiveNormal": null
++    },
++    {
++      "a": 2,
++      "slot": "RT",
++      "kind": "reach",
++      "b": 12,
++      "target": "DE_S",
++      "climbTo": null,
++      "firstEngaged": 0.7,
++      "firstPrimaryPositiveNormal": 0.8
++    },
++    {
++      "a": 3,
++      "slot": "C",
++      "kind": "reach",
++      "b": 14,
++      "target": "DT_W",
++      "climbTo": null,
++      "firstEngaged": 0.5,
++      "firstPrimaryPositiveNormal": null
++    },
++    {
++      "a": 4,
++      "slot": "LG",
++      "kind": "combo",
++      "b": 14,
++      "target": "DT_W",
++      "climbTo": "LB_M",
++      "firstEngaged": 0.5,
++      "firstPrimaryPositiveNormal": 0.5
++    },
++    {
++      "a": 5,
++      "slot": "RG",
++      "kind": "reach",
++      "b": 13,
++      "target": "DT_S",
++      "climbTo": null,
++      "firstEngaged": 0.6,
++      "firstPrimaryPositiveNormal": 0.6
++    },
++    {
++      "a": 7,
++      "slot": "Y",
++      "kind": "stalk",
++      "b": 21,
++      "target": "SS",
++      "climbTo": null,
++      "firstEngaged": 2.3,
++      "firstPrimaryPositiveNormal": 2.4
++    },
++    {
++      "a": 8,
++      "slot": "X",
++      "kind": "stalk",
++      "b": 18,
++      "target": "CB_W",
++      "climbTo": null,
++      "firstEngaged": null,
++      "firstPrimaryPositiveNormal": null
++    },
++    {
++      "a": 9,
++      "slot": "Z",
++      "kind": "stalk",
++      "b": 16,
++      "target": "LB_W",
++      "climbTo": null,
++      "firstEngaged": 2.7,
++      "firstPrimaryPositiveNormal": 2.7
++    },
++    {
++      "a": 10,
++      "slot": "H",
++      "kind": "stalk",
++      "b": 20,
++      "target": "FS",
++      "climbTo": null,
++      "firstEngaged": null,
++      "firstPrimaryPositiveNormal": null
++    }
++  ],
++  "savedFirstContact": {
++    "t": 2.55,
++    "defender": "DE_S",
++    "initialBlocker": "RT",
++    "initialContact": 0.7,
++    "initialPositiveLoad": 0.8
++  },
++  "recordedFlip": true,
++  "installationFlip": false
++}
+diff --git a/test/receiver-eligibility-gh.test.ts b/test/receiver-eligibility-gh.test.ts
+new file mode 100644
+index 00000000..03c8648b
+--- /dev/null
++++ b/test/receiver-eligibility-gh.test.ts
+@@ -0,0 +1,29 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it } from 'vitest';
++import { COUNTER_VARIANTS } from '../src/playbook/concepts.js';
++import { RunBlocker } from '../src/sim/behaviors/blocking.js';
++import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
++
++const inputs = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/counter-second-level-inputs.json.gz', import.meta.url))).toString()) as {
++  rows: { id: string; setup: PlaySetup }[];
++};
++
++describe('receiver eligibility respects accepted manual GH ownership', () => {
++  it.each([false, true])('retains the H backer, guard kick and existing core jobs, flip=%s', flip => {
++    const setup = structuredClone(inputs.rows.find(r => r.id === 'GH01')!.setup);
++    setup.offCall.run = { ...COUNTER_VARIANTS.gh }; setup.offCall.flip = flip;
++    const sim = new PlaySim(setup), h = sim.slot('H')!;
++    const hp = (h.behavior as RunBlocker).plan;
++    expect(hp.kind).toBe('pull'); expect(hp.pullRole).toBe('lead'); expect(hp.target).not.toBeNull();
++    expect(hp.pullSurface?.blocker.slot).toBe(flip ? 'LG' : 'RG');
++    const plans = sim.offense.flatMap(a => a.behavior instanceof RunBlocker ? [a.behavior.plan] : []);
++    const reservations = new Set(plans.filter(p => p.kind !== 'stalk')
++      .flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
++    const stalks = plans.filter(p => p.kind === 'stalk');
++    expect(stalks.length).toBeGreaterThan(0);
++    for (const p of stalks) expect(reservations.has(p.target)).toBe(false);
++    expect(plans.every(p => p.combination?.backer !== hp.target)).toBe(true);
++    expect(hp.pullPath!.slice(0, 2).every(w => w.x <= h.pos.x)).toBe(true);
++  });
++});
+diff --git a/test/receiver-run-eligibility.test.ts b/test/receiver-run-eligibility.test.ts
+new file mode 100644
+index 00000000..f8df1b61
+--- /dev/null
++++ b/test/receiver-run-eligibility.test.ts
+@@ -0,0 +1,52 @@
++import { readFileSync } from 'node:fs';
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { planRunBlocking } from '../src/sim/behaviors/blocking.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
++const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
++const saved = JSON.parse(readFileSync(new URL('./fixtures/receiver-run-assignment-g1-p018.json', import.meta.url), 'utf8'));
++function fixture(mirror = false) {
++  const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_bunch_11, flip: mirror ? !saved.installationFlip : saved.installationFlip,
++      kind: 'run', run: RUN_BY_ID.oz_strong, label: 'outside zone' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover0,
++      pressure: PRESSURE_BY_ID.zero_6, label: 'press' }, los: saved.los, ballY: saved.ballY, firstDownX: 55, seed: 3, audibles: false });
++  for (const a of sim.agents) {
++    const [x, y] = saved.positions[a.slot]; a.body.pos = { x, y: mirror ? 2 * saved.ballY - y : y };
++  }
++  return sim;
++}
++
++describe('receiver run candidates follow actual installed ownership', () => {
++  it.each([false, true])('keeps the nearby unowned press threats eligible in saved G1-P018 geometry (mirror=%s)', mirror => {
++    const sim = fixture(mirror), plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
++    const stalks = [...plans.values()].filter(p => p.kind === 'stalk');
++    expect(stalks.map(p => p.target)).toContain(sim.slot('CB_S'));
++    expect(stalks.map(p => p.target)).toContain(sim.slot('NB'));
++    expect(new Set(stalks.map(p => p.target)).size).toBe(stalks.length);
++    // Preserve the actual end threat responsible for the saved runner contact.
++    expect(plans.get(sim.slot('RT')!)?.target).toBe(sim.slot('DE_S'));
++    expect(plans.get(sim.slot('LG')!)?.climbTo).toBe(sim.slot('LB_M'));
++  });
++
++  it('does not let receivers steal a real inline down threat or an installed combo backer', () => {
++    const sim = fixture(), plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
++    const targets = [...plans.values()].filter(p => p.kind === 'stalk').map(p => p.target);
++    for (const slot of ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M']) expect(targets).not.toContain(sim.slot(slot));
++  });
++
++  it.each(['counter', 'trap', 'power'])('keeps the %s reserved pull/kick targets out of receiver work', run => {
++    const sim = fixture(), plans = planRunBlocking(sim, RUN_BY_ID[run]);
++    const core = [...plans.values()].filter(p => p.kind !== 'stalk');
++    const reserved = new Set(core.flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
++    const stalks = [...plans.values()].filter(p => p.kind === 'stalk');
++    expect(core.some(p => p.kind === 'pull')).toBe(true);
++    for (const p of stalks) expect(reserved.has(p.target)).toBe(false);
++  });
++});

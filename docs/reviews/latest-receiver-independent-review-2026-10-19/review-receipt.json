@@ -1,0 +1,90 @@
+{
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "compositionTree": "042e2e42748fa2778887b852918773742b182678",
+  "eligibilityTree": "dfd27fc17c68988601edb4848a2b0fbbea43ae3b",
+  "eligibilityAndStalkTree": "507eec88ce3c585ecaa71075a40e50d3d7e54765",
+  "scopes": {
+    "155": {
+      "head": "2866f88232dd9e794469a46b084d51f735cbb7b9",
+      "code": "04958d4db99158ac5b1b047b6a2141772e057139",
+      "decision": "ACCEPT eligibility only"
+    },
+    "167": {
+      "head": "fb8cf7ecbd151c6d3817c6835531a7197c753ba7",
+      "code": "279d26ececa443504aec7ad760aad9b9ece9ee85",
+      "decision": "ACCEPT installed route continuation information contract, material adverse retained"
+    },
+    "148": {
+      "head": "6fd13e4782a08497383912272b693e6a59747d80",
+      "code": "265c40e8434d3c243fb0e0a78dec2bc429eebb73",
+      "decision": "ACCEPT acquired-position plus installed perimeter moving approach"
+    },
+    "149": {
+      "head": "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+      "code": "cd968d045b1be4654b6740e11350fb19d16cd78c",
+      "decision": "ACCEPT retained stalk duty and installed inside near-body objective",
+      "dependency": "148"
+    }
+  },
+  "reconciliation": "Only raw148/149 property-context conflicts with accepted GH pullSurface; exact source hunks placed after accepted property. Accepted GH/work-picture/combo/puller behavior retained.",
+  "verification": {
+    "question": "Does current-base eligibility/stalk composition preserve GH reservations and exact installed inside/perimeter duty separation?",
+    "passed": 10,
+    "intentionallyUnrun": 11,
+    "engineTicks": 0,
+    "games": 0,
+    "seconds": 2.142001422,
+    "fullSuiteReruns": 0
+  },
+  "runtimeFiles": {
+    "src/sim/behaviors/blocking.ts": "406000131e06be1b3865a8fa97614e36c8e026370e25fe1696431e73936949af",
+    "src/sim/behaviors/receiver.ts": "ab0e5adb942b9815e1a8c8c49477febfaf20702f47b4083953ee6bbab057c58a"
+  },
+  "patches": {
+    "148-149-after-155.patch": "8f3df1ed927b0b1375faceb37dc85677ffb2572ac67dff1d08342b3e44800793",
+    "167.patch": "90effe0f83f6de0bfc767fc6255cb59f7ec1c4fe0138fbcd9f592f285d3e2c9d",
+    "combined-reviewed-extraction.patch": "962f956b84c4b8c190c05c54cacf6461c8024f3846b7dd1c0b745ab42a9178d8",
+    "155.patch": "f4976640bd39a6bd57864e0b6d18f670e17b9037573873019a83af93a62813e0"
+  },
+  "archiveChecks": [
+    {
+      "commit": "c6336f8a78c38ee85b99c53d66e2a4c6c34ee7f5",
+      "path": "data/reviews/decision-commitment-2026-10-19/audits.tar.gz",
+      "bytes": 1581376,
+      "sha256": "05de60c32d771a786eec0a4f12739af34b5b0ce813cd40ae2a69ca3d2e437397",
+      "matchesPublishedSHA256SUMS": true
+    },
+    {
+      "commit": "c6336f8a78c38ee85b99c53d66e2a4c6c34ee7f5",
+      "path": "data/reviews/decision-commitment-2026-10-19/receiver.tar.gz",
+      "bytes": 3078291,
+      "sha256": "0135399ebadd27f5f10ff272e7625a6b6823b8e4940e90ba8e7d1a53fdeb564a",
+      "matchesPublishedSHA256SUMS": true
+    },
+    {
+      "commit": "c6336f8a78c38ee85b99c53d66e2a4c6c34ee7f5",
+      "path": "data/reviews/decision-commitment-2026-10-19/common.tar.gz",
+      "bytes": 75752,
+      "sha256": "a0e139b6bd20499f1a569e6e2200db36fd3249c6b6102706fa2771b1be9b3cf3",
+      "matchesPublishedSHA256SUMS": true
+    }
+  ],
+  "reusedIndependentReviews": [
+    {
+      "member": "review/receiver-route-effort-independent.json",
+      "sha256": "f33bf1c92d2daeb5bf7771f721702b3a9210c467066d4895f643860312aef4b2",
+      "code": "279d26ececa443504aec7ad760aad9b9ece9ee85",
+      "runtime": "62e740cda23aef7f178754ccd045017deee9b8e77b90aaeb5b0d45aff820237c",
+      "decision": "approve_scoped_receiver_controller_candidate",
+      "blocker": false
+    },
+    {
+      "member": "review/receiver-pa13-adverse-independent.json",
+      "sha256": "bf11e6a8ab08130ea04a866bac0501477d707fab474524df323177d7f1f089ab",
+      "code": "279d26ececa443504aec7ad760aad9b9ece9ee85",
+      "runtime": "62e740cda23aef7f178754ccd045017deee9b8e77b90aaeb5b0d45aff820237c",
+      "decision": "information_contract_approved_with_material_adverse_evidence",
+      "blocker": false
+    }
+  ]
+}
