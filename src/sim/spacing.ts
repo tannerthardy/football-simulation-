@@ -58,11 +58,17 @@ function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:numbe
   limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
   const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
     &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
-  if(feasible(ordinary))return ordinary;
-  let best:{x:number;y:number}|undefined,bestError=Infinity;
+  // Sequential corrections can be feasible yet farther from the selected
+  // request than a joint solution. Keep that response as a fallback, then
+  // evaluate the same boundary candidates before accepting its diversion.
+  let best:{x:number;y:number}|undefined=feasible(ordinary)?ordinary:undefined;
+  let bestError=best?(best.x-raw.x)**2+(best.y-raw.y)**2:Infinity;
   function consider(x:number,y:number):void {
     const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
-    if(error<bestError&&feasible(v)){best=v;bestError=error;}
+    // Algebraically equivalent projections can differ by a few rounding
+    // units. Retain the existing request on that numerical tie.
+    const tie=16*Number.EPSILON*Math.max(1,error,bestError);
+    if((!best||error<bestError-tie)&&feasible(v)){best=v;bestError=error;}
   }
   const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
   consider(raw.x*scale,raw.y*scale);
