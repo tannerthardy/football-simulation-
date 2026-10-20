@@ -68,6 +68,11 @@
     {
       "pr": 170,
       "status": "Separate diagnostics/regression adoption review; no runtime/default promotion"
+    },
+    {
+      "pr": 172,
+      "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+      "status": "Existing independent solo-runoff acceptance; optional composition prepared, semantic overlap/combined verification pending"
     }
   ]
 }

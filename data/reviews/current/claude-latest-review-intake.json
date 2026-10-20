@@ -103,5 +103,30 @@
     "newProcess": "f3063e550b434d355fc050bfc604a894303ea0a0"
   },
   "historyPolicy": "Keep original intakes, receipts, branches, rejected arms and data-only roots; no wholesale research merge or untracked-file upload.",
-  "costPolicy": "Source/ref/doc/patch checks only during intake; no new simulations, games, NFL query or full suite. Combined verification follows an accepted exact candidate."
+  "costPolicy": "Source/ref/doc/patch checks only during intake; no new simulations, games, NFL query or full suite. Combined verification follows an accepted exact candidate.",
+  "additionalReviewedController": {
+    "pr": 172,
+    "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+    "runtime": "859d0255fdaca7ceba26a56258c97890fe263009",
+    "independentReview": "https://github.com/tannerthardy/football-simulation-/pull/172#issuecomment-6300122933",
+    "status": "Optional169+171+172 temporary-index composition prepared; not frozen, combined-tested or adopted",
+    "qualification": "Earlier exposed DT/RB contact, live-censored strong/Tite endings and missing late Will collection retained; no universal protection claim.",
+    "appliesToPrepared169171": true,
+    "preparedTree": "27603aab0c95dd55775149f1e2458f5d08fcc43f",
+    "sourceSha256": "094ce7348ae10bc1c0bc2b54cf7a495995fc906247a662e3697980bcfd786d27",
+    "patch": "claude-controller-169-171-172.patch",
+    "patchSha256": "5ee7f97b405092527fb137d8be25c499fa4148636d5e3bca1c22213d2ce7124b",
+    "files": [
+      "src/sim/agent.ts",
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/behaviors/defense.ts",
+      "src/sim/coverage-cues.ts",
+      "src/sim/coverage/reads.ts",
+      "src/sim/engagement.ts",
+      "src/sim/run-fits.ts",
+      "test/man-run-continuity.test.ts",
+      "test/support-work-off.test.ts",
+      "test/zone-runoff-work.test.ts"
+    ]
+  }
 }
