@@ -9,6 +9,7 @@ import type {Agent} from './agent.js';
 import {containCoverage} from './coverage-space.js';
 import {movementObjective} from './movement-objective.js';
 import {trafficPath,type TrafficDisc} from './traffic-path.js';
+import {trafficDistance} from './traffic-distance.js';
 
 export interface TrafficPeer {
   key:number; age?:number; pos:{x:number;y:number}; vel:{x:number;y:number}; touch:number;
@@ -66,7 +67,7 @@ export function localTrafficRoute(a:Agent,raw:Intent,ordinary:Intent,peers:reado
   if(!route||route.distance<=Math.hypot(a.pos.x-futureGoal.x,a.pos.y-futureGoal.y)+EPS)return clear();
   const futureDiscs=peers.map(peer=>({center:{x:peer.pos.x+peer.vel.x*HORIZON,
     y:peer.pos.y+peer.vel.y*HORIZON},radius:peer.touch}));
-  const cost=(point:{x:number;y:number})=>trafficPath(point,futureGoal,futureDiscs,bounds)?.distance??Infinity;
+  const cost=(point:{x:number;y:number})=>trafficDistance(point,futureGoal,futureDiscs,bounds)??Infinity;
   const oldPath=forecast(ordinary),oldEncounters=peers.map(peer=>encounter(a,oldPath,peer));
   const oldCost=cost(oldPath[oldPath.length-1].pos);
   let best=ordinary,bestCost=oldCost;
