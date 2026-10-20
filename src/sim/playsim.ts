@@ -820,13 +820,13 @@ export class PlaySim {
 
   private recordFrame(recordedIntents?: ReadonlyArray<Intent>): void {
     const agents: number[] = [];
-    for (const a of this.agents) agents.push(round1(a.pos.x), round1(a.pos.y), round1(a.body.facing));
+    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(a.body.facing));
     const b = this.ballPos();
     const c = this.carrier;
     // The first live tick also records t=0. Replace the staged snap frame
     // instead of exporting duplicate timestamps to the interpolating viewer.
     if (this.frames.at(-1)?.t === round2(this.t)) this.frames.pop();
-    this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: c?.idx ?? -1,
+    this.frames.push({ t: round2(this.t), agents, ball: [round2(b.x), round2(b.y), round2(b.z)], carrier: c?.idx ?? -1,
       carrierPosture: [round2(c?.body.squeeze ?? 0), round2(c?.body.squeezeHeading ?? c?.body.facing ?? 0)] });
     this.trace.state(this, recordedIntents);
   }
@@ -895,7 +895,6 @@ export class PlaySim {
 }
 
 const round2 = (v: number) => Math.round(v * 100) / 100;
-const round1 = (v: number) => Math.round(v * 10) / 10;
 
 export function distance(a: Agent, b: Agent): number {
   return dist(a.pos, b.pos);
