@@ -1217,6 +1217,19 @@ export class RunBlocker implements Behavior {
       const side = playSideSign(sim,sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       const surfaces = wall.map(b => ({b,seen:sim.see(a,b)})).filter(({b,seen}) => {
         if (this.plan.pullSurface) return true; // GH retains its surface/traffic contract.
+        // A lateral station alone does not put a body in this crossing path.
+        // Bound the current/installed flat path and both observed sweeps for
+        // this read, allowing their full ordinary ground acceleration. A body
+        // wholly beyond that combined width cannot require a retreat to its
+        // rear x coordinate. This adds no unseen future decision or clearance.
+        const dt = a.mind.decisionInterval, flatX = this.plan.pullPath?.[1]?.x ?? a.pos.x;
+        const ownLow = Math.min(a.pos.x, flatX, a.pos.x + a.vel.x * dt);
+        const ownHigh = Math.max(a.pos.x, flatX, a.pos.x + a.vel.x * dt);
+        const peerLow = Math.min(seen.pos.x, seen.pos.x + seen.vel.x * dt);
+        const peerHigh = Math.max(seen.pos.x, seen.pos.x + seen.vel.x * dt);
+        const width = a.profile.radius + b.profile.radius + .5 * dt * dt
+          * (supportParams(a.profile).traction / a.profile.massKg + supportParams(b.profile).traction / b.profile.massKg);
+        if (peerHigh < ownLow - width || peerLow > ownHigh + width) return false;
         // A down-blocker already behind the crossing body is no longer an
         // obstacle to this corner. Retain a closing body that can re-enter
         // their combined width before the next ordinary acquired read.

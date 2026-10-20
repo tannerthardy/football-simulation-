@@ -7,7 +7,7 @@ import {cornerSpeed} from '../src/physics/kinematics.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/puller-access-inputs.json.gz',import.meta.url))).toString());
 
-function stage(mirror:boolean,obstructed=false,hiddenClose=false,passedWall?:'sinking'|'closing'|'empty'){
+function stage(mirror:boolean,obstructed=false,hiddenClose=false,passedWall?:'sinking'|'closing'|'empty'|'remoteRear'|'closingRear'){
  const sim=new PlaySim(structuredClone(inputs.rows.find((r:{id:string})=>r.id==='K01').setup) as PlaySetup);
  const a=sim.slot('RT')!,controller=a.behavior as RunBlocker;
  if(mirror){
@@ -29,6 +29,8 @@ function stage(mirror:boolean,obstructed=false,hiddenClose=false,passedWall?:'si
   const seen=mirror?{...original,pos:{x:original.pos.x,y:2*sim.ballY-original.pos.y},vel:{x:original.vel.x,y:-original.vel.y}}:original;
   if(observer!==a)return seen;
   if(other===target)return {...seen,pos:{x:43,y:flat.y+side*3},vel:{x:0,y:0}};
+  if(passedWall==='remoteRear')return {...seen,pos:{x:8,y:seen.pos.y},vel:{x:0,y:0}};
+  if(passedWall==='closingRear')return {...seen,pos:{x:a.pos.x-2,y:a.pos.y},vel:{x:12,y:0}};
   if(passedWall==='empty')return {...seen,pos:{x:38,y:a.pos.y-side*3},vel:{x:0,y:0}};
   if(passedWall && other.slot==='LG')return {...seen,
    pos:{x:38,y:a.pos.y-side*(passedWall==='closing'?1:2)},
@@ -44,6 +46,18 @@ function stage(mirror:boolean,obstructed=false,hiddenClose=false,passedWall?:'si
 }
 
 describe('one acquired rear surface governs the ordinary pull corner',()=>{
+ it.each([false,true])('a remote rear lateral station cannot redirect the flat path, mirror=%s',mirror=>{
+  const f=stage(mirror,false,false,'remoteRear');
+  expect(Reflect.get(f.controller,'pullRead').clearanceX).toBeNull();
+  expect(Reflect.get(f.controller,'pullIdx')).toBe(2);
+  expect(f.command.vel.x).toBeGreaterThan(0);
+ });
+ it.each([false,true])('retains a rear body closing into the crossing path before the next read, mirror=%s',mirror=>{
+  const f=stage(mirror,false,false,'closingRear');
+  expect(Reflect.get(f.controller,'pullRead').clearanceX).not.toBeNull();
+  expect(Reflect.get(f.controller,'pullIdx')).toBe(1);
+  expect(f.command.vel.x).toBeLessThan(0);
+ });
  it.each([false,true])('turns up after passing the lateral station at real clearance, mirror=%s',mirror=>{
   const f=stage(mirror);
   expect(Reflect.get(f.controller,'pullIdx')).toBe(2);
