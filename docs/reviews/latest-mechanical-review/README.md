@@ -190,3 +190,45 @@ the two new completions each retain their own test. Their only textual
 neighborhood overlap with other candidate work is the recorder's containing
 `playsim.ts`; the separate airborne endpoint capture does not consume frames.
 No physical-law, capacity, default or research-package activation is needed.
+
+## Failed combined freeze: native QB prerequisite triage
+
+Integration's later exact freeze
+`bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f`, source
+`6a103581687193f53efcaf56de00ec2dc000c0f2f270d41d979b6600ed94f778`, fails
+the existing native-scramble prerequisite at
+`test/qb-rusher-recording.test.ts:85`: `stats.scramble` is false, expected true.
+That assertion runs before the test's bookkeeping/body/observation/RNG identity
+checks. The combined failure remains a failure; no assertion was changed.
+
+The one requested diagnostic reused that existing failure and ran only the
+same filtered test on the exact freeze with #165's **two production hunks**
+reversed. Source becomes
+`5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c`.
+It **still fails the same native-scramble prerequisite**: one failed, four
+filtered out, Node 22.23.3, unchanged 44 settings/components=1, 2.593 s command
+wall. The test executes its two native play runs; no game, new collector,
+custom forced scramble or full suite was run. Thus removing #165 alone does
+not explain or repair this fixture failure. This does not prove #165 harmless
+to every other native contract; blocking's separate planned-climb failure
+needs its own preserved disposition.
+
+Source triage narrows what might matter before the first pass decision:
+shotgun #156 changes the back's pass-pro starting position; #141 changes
+coverage; #164 changes contact movement; #165 changes achieved pose. The narrow
+carry-out hunk only affects `QBHandoff`, not this `QBPass` fixture. #167's
+removed flight branch acts after the throw, and #131's catch opportunity acts
+after release; neither directly changes the initial scramble choice. These
+are causal boundaries, not proof identifying the remaining culprit. Do not
+waive the native requirement merely because the bookkeeping code is unchanged.
+
+Preserved [failing receipt](qb-reverse165-receipt.json),
+[original diagnostic output](qb-reverse165.log) and
+[exact two-file reverse patch](qb-reverse165-production.patch) are fetchable.
+An initial setup attempt applied the full portable patch in reverse and thus
+deleted its new test file. The launcher failed before engine execution with
+ENOENT; the exact test was restored before the actual diagnostic. Its
+[setup failure](qb-reverse165-setup-failure.log) is retained. No source or
+assertion was edited in Integration's frozen checkout. Integration decides
+which material candidate to hold and verifies its next coherent tree; the
+earlier isolated technical acceptance is not a passing combined receipt.
