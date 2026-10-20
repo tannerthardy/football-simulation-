@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Active latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
+
+Integration owns only minimal extraction/composition and exact verification on
+`codex/latest-reviewed-checkpoint`, starting accepted developf4146275 plus queue9a6bb795.
+Six subagents independently review recent open scopes; they do not edit this
+checkout or repeat the shared suite. Current source boundaries are catching/
+same-time query and deep coverage, independently accepted run/receiver/blocking
+controllers, small installed formation/counting fixes and viewer/documentation
+tooling. Only scopes with exact nonauthor dispositions may enter the freeze.
+No bulk153 ancestry, data-only evidence history, GAIT_STEP/yaw promotion or new
+flag/default activation. Original owners/checkouts/branches/evidence remain;
+Integration resolves shared hunks preserving installed and acquired contracts.
+Blocked items hold only themselves. Source-qualify prior native receipts and
+run required verification once on the exact compatible engine candidate.
+
 ## Completed #153 review preparation — 2026-10-19 UTC
 
 Integration owns only the #153 review packet, new hash inventory and current
