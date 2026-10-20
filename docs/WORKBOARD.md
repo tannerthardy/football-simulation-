@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run/Catching contact reconciliation — 2026-10-20
+
+Run owns only the #174 offensive `stepRunRep` tangent/connection projection
+against Catching's existing #169+#171+#177 reference2302b48. Accepted develop
+2c98bed94adad8087c65f381d4090444ad283985 and queue6575988f are refreshed.
+#174 contains #172 once; #185 remains on its own unchanged branch/PR.
+Reuse the existing source reconciliation and receipts. Review eligibility,
+frame, request ordering and shared physical execution with Catching; run only
+directly affected interaction controls, no native campaign or full suite.
+No shared physics/capacity/default, work-off policy or release changes are
+claimed. Publish exact supported merged hunks/reference or a semantic blocker;
+Integration retains final combined verification and adoption.
+
 ## Run contact coherent combination — 2026-10-20
 
 Run owns the already claimed offensive `stepRunRep` request and its acquired
