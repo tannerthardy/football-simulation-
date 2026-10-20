@@ -35,6 +35,14 @@ sample. They are **not required per investigation or patch**. Reuse existing
 converted rows and query where the verified data already lives; return the
 small result and its provenance rather than downloading another archive.
 
+For a small complete run-sequence comparison, use the
+[fixed-identity run mechanism guide](reviews/run-mechanism-reference.md).
+It follows useful blocker geometry through runner arrival, lateral movement,
+second-level access, pursuit and contact while preserving stored velocity,
+missing samples, early defensive wins and known endings. Its bounded NFL query
+uses the existing 12-run selection; source-specific contact/load evidence stays
+separate. Check the access receipt before assuming a host-local raw path exists.
+
 ```sh
 npm run nfl:fetch                 # download + checksum + extract the archives (one-time, ~12 GB)
 npm run mech:nfl                  # re-measure all four NFL seasons (only when metrics.py changes; ~10 min)
