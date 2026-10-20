@@ -52,8 +52,8 @@ does not establish overall coverage, protection or statistical realism.
 ### Reviewed #189 finished-work checkpoint — freeze7d5da0c7
 
 The independently accepted checkpoint is [#189](https://github.com/tannerthardy/football-simulation-/pull/189),
-exact tested source `7d5da0c79adea4d7c4b43b85c498876ffe6d8742`. Final authorized
-merge follows a fresh remote/merge-tree check. **Fetch current origin/develop;
+exact tested source `7d5da0c79adea4d7c4b43b85c498876ffe6d8742`. Its publication
+preserves the tested source/tests/settings/tooling exactly. **Fetch current origin/develop;
 the actual merged accepted pin is published on the canonical queue branch**
 linked above.2c98bed9 below is the previous accepted build, not a post189 reference.
 
