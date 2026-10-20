@@ -1,0 +1,237 @@
+{
+  "protocol": "stalk-information-witness-v1",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "rawSha256": "341834f4baa35bfb76534ccc04cb2ff28dd0af382b052a3cb7d68cedcfdce916",
+  "input": {
+    "id": "uc12-wz-s3",
+    "concept": "wz_strong",
+    "kind": "run",
+    "seed": 3,
+    "flip": false,
+    "o": 31,
+    "d": 32,
+    "front": "over",
+    "formation": "ace_12"
+  },
+  "controllerT": 2.35,
+  "bodyStateT": 2.35,
+  "actor": {
+    "id": 9,
+    "slot": "Z",
+    "body": {
+      "pos": {
+        "x": 46.7219091361951,
+        "y": 11.698922877416638
+      },
+      "vel": {
+        "x": 0.7753564696971127,
+        "y": 4.435590387881413
+      },
+      "facing": 1.5523491368470559,
+      "energy": 0.9779264242415975,
+      "profile": {
+        "vmax": 10.027403606981139,
+        "tau": 1.2097114373094768,
+        "brake": 7.123684807256237,
+        "lateral": 7.217010204081635,
+        "turnRate": 9.835555555555558,
+        "backpedal": 0.536734693877551,
+        "shuffle": 0.5416000000000001,
+        "massKg": 89.81128926000001,
+        "heightYd": 2.0472222222222225,
+        "radius": 0.25636363636363635,
+        "reach": 1.0291666666666666,
+        "maxCatchHeight": 3.5361388888888894,
+        "reactReach": 3.027805555555556,
+        "reactionTime": 0.2776734693877551,
+        "power": 78.70401552702859,
+        "balance": 0.46938775510204084,
+        "bend": 0.7932108843537417,
+        "stepSpeed": 4.106077097505669,
+        "getUp": 0.7928888888888888
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.19566582641160107,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -6.293750489508066,
+          "y": 1.87961078615811
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 0.2205801816540287,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 1.5707963267948966
+    },
+    "snapReadyAt": 0.03861634400797689
+  },
+  "target": {
+    "id": 18,
+    "slot": "CB_S",
+    "body": {
+      "pos": {
+        "x": 47.01479639402564,
+        "y": 13.761317765192093
+      },
+      "vel": {
+        "x": -2.7246442780499462,
+        "y": 4.869673501988388
+      },
+      "facing": 1.747659879975616,
+      "energy": 0.9792353234642968,
+      "profile": {
+        "vmax": 9.88033774831516,
+        "tau": 1.3261516283671297,
+        "brake": 6.985873015873015,
+        "lateral": 6.771772108843537,
+        "turnRate": 9.657777777777778,
+        "backpedal": 0.759795918367347,
+        "shuffle": 0.6376000000000001,
+        "massKg": 79.83225712000001,
+        "heightYd": 1.9749999999999999,
+        "radius": 0.23636363636363636,
+        "reach": 0.99375,
+        "maxCatchHeight": 3.504527777777778,
+        "reactReach": 2.9559166666666665,
+        "reactionTime": 0.19146938775510206,
+        "power": 63.507375153828576,
+        "balance": 0.21428571428571427,
+        "bend": 0.7641904761904763,
+        "stepSpeed": 4.002126984126984,
+        "getUp": 0.769611111111111
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.1959887204028129,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -4.782026247523594,
+          "y": 0.37964271688452006
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 2.185539648837816,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 2.331731958251639
+    }
+  },
+  "installedDrive": {
+    "x": 0.995585190233092,
+    "y": -0.09386228736046177
+  },
+  "presentedPicture": {
+    "pos": {
+      "x": 47.61761997926709,
+      "y": 12.331918692968824
+    },
+    "vel": {
+      "x": -1.2935574081462033,
+      "y": 4.5843114033454295
+    },
+    "facing": 3.1422679482415314,
+    "pose": "up",
+    "carrying": false,
+    "stance": null,
+    "age": 0.3
+  },
+  "hiddenPositionDelta": {
+    "x": 0,
+    "y": 0.25
+  },
+  "recordedIntent": {
+    "vel": {
+      "x": 0,
+      "y": 4.774649458550104
+    }
+  },
+  "recordedMovementCommand": {
+    "vel": {
+      "x": 0,
+      "y": 4.774649458550104
+    }
+  },
+  "actualTargetPictureReads": 0,
+  "scope": "Frozen own/native corner state at closest pre-contact approach. Held .30s-old picture is a synthetic available visual-input control, not an actual consumed WR picture: the existing stalk branch asks for none. Hidden-position substitution tests information dependence, not a physically evolved native counterfactual."
+}
