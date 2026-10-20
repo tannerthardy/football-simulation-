@@ -35,7 +35,7 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
-import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
+import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
@@ -961,7 +961,12 @@ export class World {
     if (this.handContact === 'center') b.facing = facing;
     const acc = locomotionAccel(b, cmd, dt, a);
     b.facing = saved;
-    return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
+    // The yaw motor needs the requested angle to plan its own braking. The
+    // rate-clipped pose above is only the existing gait estimate; making it
+    // a new stopping target each tick turns a smooth rotation into a chase.
+    return { ...none, ax: acc.x, ay: acc.y,
+      facing: this.handContact === 'center' ? commandFacing(b, intent) : facing,
+      cut: intent.cutSkill ?? 1 };
   }
 
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
@@ -1539,9 +1544,8 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
-        const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
-          ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
-          : turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
+        const yaw: { impulse: number; work: number; peakTorque?: number } =
+          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy));
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance
