@@ -1938,7 +1938,7 @@ puller 19 → 5%, trap puller 30 → 8%, man backers 30 → 19%. Outcomes:
   controller owns lane choice). `st2co`/`st2gap` (carrier excluded) were
   queued but not scored.
 
-**Next decision.** Score `SPACE_STEER=2` and `TRAP_READ` (`out/st2.sh`
+**Next decision.** Score `SPACE_STEER=2` and `TRAP_READ` (`scripts/diag/stretch/part13-arms.sh`
 reruns them: `st2co`, `st2gap`, `tr1gap` against `fl4gap`/`fl1co`). Keep
 `FORCE_LEAD`; keep `PULL_STEP`/`LEAD_READ` as mechanism repairs with neutral
 outcomes. Lead pullers are still late through the corner (waypoint path makes
