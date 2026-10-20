@@ -1358,10 +1358,20 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   e.holding = true;
   b.tags.add('held');
   setHands(sim, e);
+  const id = `legacy-hold:${b.idx}:${e.defender.idx}:${sim.t}`;
+  const evidence = { source: 'legacy' as const, rule: '12-1-3(c)',
+    action: 'selected_holding_mode', victimId: e.defender.player.id,
+    facts: { selectedTechnique: true, achievedRestrictionQualified: false, control: e.control } };
+  sim.foulRecords.push({ id, t: sim.t, kind: 'holding', playerId: b.player.id,
+    called: false, assessment: 'unresolved', evidence });
+  sim.event('holding_attempt', b, e.defender, 'legacy technique choice; achieved legal elements unqualified');
   // Officials see the obvious ones.
   const visible = 0.35 + 0.35 * Math.min(1, Math.abs(e.phi) + (1 - e.baseB));
-  if (!sim.penalty && sim.rng.chance(visible)) {
-    sim.penalty = { kind: 'holding', against: 'O', playerId: b.player.id, yards: 10, autoFirst: false, spotX: b.pos.x };
+  // Preserve the existing first-holding visibility draw convention. A new
+  // deterministic OPI call must not suppress that original draw or its record.
+  if (sim.penalty?.kind !== 'holding' && !sim.penalties.some(p => p.kind === 'holding') && sim.rng.chance(visible)) {
+    sim.recordFoul({ id, kind: 'holding', against: 'O', playerId: b.player.id,
+      yards: 10, autoFirst: false, spotX: b.pos.x, t: sim.t, rule: '12-1-3(c)' }, evidence);
     sim.event('holding', b, e.defender);
   }
   return true;

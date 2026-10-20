@@ -72,7 +72,9 @@ export type BallState =
       deflected: boolean;
       throwaway: boolean;
     }
-  | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent }
+  | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent;
+      /** Actual release spot and act; a missed backward pitch is not a fumble for advancement restrictions. */
+      fumbleX?: number; origin?: 'fumble' | 'backward_pass'; possessionChangedBeforeFumble?: boolean }
   | { kind: 'dead' };
 
 export type PlayEventType =
@@ -113,6 +115,9 @@ export type PlayEventType =
   | 'scramble'
   | 'jam'
   | 'holding'
+  | 'holding_attempt'
+  | 'opi'
+  | 'illegal_forward_pass'
   | 'dpi'
   | 'touchback'
   | 'slide'
@@ -175,10 +180,18 @@ export interface PlayResult {
   frames?: Frame[];
   telemetry?: ReplayTelemetry;
   penalty?: PenaltyCall;
+  /** All called fouls, retained before enforcement. `penalty` remains a legacy first-call view. */
+  penalties?: PenaltyCall[];
+  /** Native legal evidence is distinct from whether a referee called the act. */
+  foulRecords?: FoulRecord[];
+  /** Reached rule branches whose decisive facts or enforcement remain unsupported. */
+  ruleLimitations?: string[];
+  /** Preserve pre-foul takeaway attribution when a returner makes an illegal pass. */
+  statsBeforeIllegalPass?: PlayStats;
 }
 
 export interface PenaltyCall {
-  kind: 'holding' | 'dpi' | 'false_start' | 'offside';
+  kind: 'holding' | 'dpi' | 'opi' | 'illegal_forward_pass' | 'false_start' | 'offside';
   against: TeamSide;
   playerId: string;
   yards: number;
@@ -186,6 +199,33 @@ export interface PenaltyCall {
   autoFirst: boolean;
   /** Where the foul happened (play frame x): holding enforcement, DPI spot. */
   spotX?: number;
+  id?: string;
+  t?: number;
+  rule?: string;
+  reason?: string;
+  lossDown?: boolean;
+  enforcement?: 'previous' | 'spot';
+  /** Actual possession changes before the foul, not inferred from the final winner. */
+  possessionChanges?: number;
+}
+
+export interface FoulEvidence {
+  source: 'native' | 'legacy';
+  rule: string;
+  action: string;
+  victimId?: string;
+  facts: Record<string, string | number | boolean | null>;
+}
+
+export interface FoulRecord {
+  id: string;
+  t: number;
+  kind: PenaltyCall['kind'];
+  playerId: string;
+  called: boolean;
+  /** A legacy selected technique/call is not a newly certified NFL predicate. */
+  assessment: 'violation' | 'legacy_call' | 'unresolved';
+  evidence: FoulEvidence;
 }
 
 /** One continuous possession of the ball by one player within a play. */
