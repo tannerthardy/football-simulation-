@@ -1,0 +1,6 @@
+s1gap vs s3gap: paired 1600 (only in s1gap: 0, only in s3gap: 0)
+  >= 4  : s1gap  739 -> s3gap  796 | both 559, only s1gap 180, only s3gap 237 | McNemar exact p 0.006
+  >= 10 : s1gap  159 -> s3gap  179 | both 83, only s1gap 76, only s3gap 96 | McNemar exact p 0.147
+  >= 20 : s1gap  112 -> s3gap  124 | both 48, only s1gap 64, only s3gap 76 | McNemar exact p 0.353
+  >= 40 : s1gap  100 -> s3gap  113 | both 44, only s1gap 56, only s3gap 69 | McNemar exact p 0.283
+  < 0   : s1gap  172 -> s3gap  128 | both 64, only s1gap 108, only s3gap 64 | McNemar exact p 0.001

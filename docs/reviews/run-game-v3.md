@@ -1485,3 +1485,93 @@ reaches the flowing backer at about 1.8 s (doubles start at 0.7 s and last
 
 The lateral-flow film (`flow-review.html`) is the same 10 random ordinary
 cases, develop + package against the full stack, beside 12 NFL clips.
+
+## Part 10 — PR #169, and why players spin (2026-10-20)
+
+Receipts are in [`part10/`](run-game-v3/part10/).
+
+### PR #169 (support work-off without a new contact wait): correct, but not the tail
+
+#169 was merged locally on a scratch copy of this branch with no flags
+(develop behavior), using the same arms as Part 9:
+
+| Arm | Zone 40+ / mean | Gap 40+ / mean |
+|---|---|---|
+| Post-merge develop | 9.42% / 9.65 | 9.00% / 10.18 |
+| + #169 | 9.67% / 9.93 | 8.94% / 10.04 |
+
+`stalkreps.ts` with #169:
+- **Reps ending with the runner passing the DB fall 41 → 8**: the DB gets
+  off earlier, as claimed.
+- **Stalked DBs reaching the carrier stay at 40/433** (42/432 before).
+- **Runs of 20+ yards stay at 15 of 240** (16 before).
+
+The escape works; the approach after it does not, as the PR itself notes.
+
+### Spins
+
+Film review: "is the center spinning?" Yes.
+
+`spins.ts` counts players whose body turns at least 270° within 1 s, per
+100 lab plays. On develop + package:
+
+| Group | Spins per 100 plays |
+|---|---|
+| DB | 96 |
+| OL | 22 |
+| DL | 17 |
+| LB | 17 |
+
+`yawtrace.ts` finds four causes:
+
+1. **The zone track's hip opening** (`zoneFlow`) faces halfway between the
+   travel direction and the bearing to the man. With the man nearly behind
+   the track, "halfway" has two answers half a turn apart, and the choice
+   flips as he crosses that line. The center in AFTER-04 (`oz/weak/ace_12/
+   under3/pair31/1`) turned more than 700° between 0.9 and 3.5 s.
+   **`TRACK_FACING`** keeps the side he already looks over; the center then
+   holds 7–23° for the whole play.
+2. **Pullers' first leg goes straight back with no facing.** Facing backward
+   has no preferred side, so the turn chooses one and often ends up 270° off.
+   The existing **`PULL_STEP`** (hips open to the play side) takes OL spins
+   from 21 to 2 per 100 plays. On gap runs (paired, 1,600 plays), negatives
+   fall 10.8 → 8.0% (p 0.001) and 4+ gains rise 46.2 → 49.8% (p 0.006).
+3. **Blocks in the back.** Run engagement was admitted by distance only. A
+   stalking receiver who caught a DB from behind started a rep, and the DB
+   turned to face him. **`BLOCK_FRONT`** admits a run block only within 110°
+   of the defender's chest; bodies still collide.
+4. **The man-coverage block cue lapses.** `showsBlock` is false once the
+   receiver is 2 yd downfield, so a stalked corner switched between man
+   coverage (sprinting with his receiver, facing travel) and run support
+   (facing the line) on successive reads. Each switch is a half-turn, and
+   the shortest-turn rule can chain them into a full spin.
+   **`MAN_RUN_COMMIT`** keeps an accepted run read with the man blocking as
+   a continuing duty. New evidence (the receiver past his depth running
+   downfield, or a throw) returns him to coverage. This is a bounded claim
+   on `coverMan`; the coverage owner decides.
+
+With all four fixes, spins per 100 plays:
+
+| Group | Develop + package | With fixes | Flow candidate | Flow candidate with fixes |
+|---|---|---|---|---|
+| OL | 22 | 2 | 23 | 6.5 |
+| DB | 96 | 39 | 74 | 14 |
+| LB | 17 | 12 | 25 | 17 |
+| DL | 17 | 17 | 32 | 30 |
+
+What remains:
+- **DL (and engaged LB) spins** are requested: an engaged defender always
+  faces his blocker, who slides around him in a flowing double.
+- **Yaw-motor wobble.** The body oscillates ±30° at 300–500°/s around a
+  steady requested facing. That is physics; #162 is held.
+
+`MAN_RUN_COMMIT` also trims the stalk tail on develop defaults:
+- Zone 40+: 9.42 → 8.42% (alone), 8.50% with `TRACK_FACING` and
+  `BLOCK_FRONT`.
+- Gap 40+: 9.00 → 6.25% (with both).
+
+The pre-merge level (about 4%) still needs the DB's approach to the carrier
+after he escapes.
+
+The spin film is `spin-review.html`: the flow candidate against the flow
+candidate with the four fixes.

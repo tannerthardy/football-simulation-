@@ -8,6 +8,7 @@
   "flags": {
     "ANCHOR_SPLIT": "1",
     "BACK_CHASE": "0",
+    "BLOCK_FRONT": "0",
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
@@ -37,6 +38,7 @@
     "LEVER_FACING": "1",
     "LIVE_AIM": "1",
     "LIVE_GAPS": "1",
+    "MAN_RUN_COMMIT": "0",
     "MESH_TEMPO": "0",
     "OL_ALIGN": "0",
     "PACE_LEAD": "0",
@@ -66,6 +68,7 @@
     "TACKLE_ROLL": "0",
     "TACKLE_TOUCH": "0",
     "THREAT_READ": "1",
+    "TRACK_FACING": "0",
     "UC_MESH": "0",
     "WRAP_BIND": "0",
     "ZONE_FLOW": "1",

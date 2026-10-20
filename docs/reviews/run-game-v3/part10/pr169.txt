@@ -1,0 +1,7 @@
+== PR #169 on the merged tree, no flags
+q0co done:   sim   n  1200 mean  9.93 p10  -0.7 p50   3.2 p90  26.1 | neg 14.1% 4+ 42.2% 10+ 13.8% 20+ 10.7% 40+ 9.67%
+q0gap done:   sim   n  1600 mean 10.04 p10  -0.2 p50   4.1 p90  18.0 | neg 10.7% 4+ 51.2% 10+ 13.9% 20+  9.6% 40+ 8.94%
+== stalk reps with #169
+plays 240; WR-on-DB run reps 452 (1.88/play); plays with a stalked DB 236
+rep duration p25/p50/p75 0.50/0.70/1.05 s; ends: separation 320, (still engaged at end) 122, runner passed defender 8, body down 2
+stalked DBs reaching the carrier 40/433; 20+ runs 15, with a stalked DB 15

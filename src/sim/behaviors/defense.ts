@@ -55,6 +55,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 // ------------------------------------------------------------- pass rush
 
+/** Experimental (MAN_RUN_COMMIT=1, off): a man defender who has accepted run
+ * with his receiver showing block keeps his run duty until new evidence (the
+ * receiver past his depth running downfield, or a throw), instead of the cue
+ * lapsing when a stalking receiver is two yards downfield. */
+const MAN_RUN_COMMIT = process.env.MAN_RUN_COMMIT === '1';
+
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
@@ -224,6 +230,9 @@ export class ManCoverage implements Behavior {
     return this.coverMan(a, sim);
   }
 
+  /** MAN_RUN_COMMIT: this marker has accepted run with his man blocking. */
+  private runAccepted = false;
+
   /** An unrecognized throw does not erase the installed man technique. */
   private coverMan(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
@@ -258,7 +267,20 @@ export class ManCoverage implements Behavior {
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
     const blockingLook = showsBlock(a, sim, R, receiverCue);
-    if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
+    if (believesRun(sim, a) && blockingLook) {
+      if (MAN_RUN_COMMIT) this.runAccepted = true;
+      return runFit(a, sim, this.gap, this.gapSign);
+    }
+    // MAN_RUN_COMMIT: an accepted run read with his man showing block is a
+    // continuing duty, not a cue re-judged every tick (the block cue lapses
+    // once a stalking receiver is two yards downfield). New evidence returns
+    // him to his man: the receiver running past his depth, or a throw.
+    if (MAN_RUN_COMMIT && this.runAccepted && believesRun(sim, a)) {
+      const dir = sim.attackDir(R.team);
+      const past = (receiverCue.pos.x - a.pos.x) * dir > 1 && receiverCue.vel.x * dir > 2;
+      if (!past && sim.throwAt < 0) return runFit(a, sim, this.gap, this.gapSign);
+      this.runAccepted = false;
+    }
 
     return this.trackReceiver(a, sim);
   }

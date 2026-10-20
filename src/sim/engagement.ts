@@ -159,6 +159,13 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   if ((blocker.shedBy.get(defender) ?? -1) > t) return null;
   if (defender.isDown(t) || blocker.isDown(t)) return null;
   if (!inBlockReach(blocker, defender, type)) return null;
+  // BLOCK_FRONT: a run block is taken on the defender's front or side. Hands
+  // that arrive on his back (a block in the back) start no rep; the bodies
+  // still collide in the World.
+  if (BLOCK_FRONT && type === 'run') {
+    const toB = Math.atan2(blocker.pos.y - defender.pos.y, blocker.pos.x - defender.pos.x);
+    if (Math.abs(Math.atan2(Math.sin(toB - defender.facing), Math.cos(toB - defender.facing))) > BLOCK_FRONT_ANGLE) return null;
+  }
   const existing = defender.engagement;
   if (existing) {
     // Second blocker: double team.
@@ -637,6 +644,11 @@ const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
  * same haptic channel as his position), not the visual sample held for a
  * decision beat. */
 const DL_FEEL = process.env.DL_FEEL === '1';
+/** Experimental (BLOCK_FRONT=1, off): a run block starts only with the
+ * blocker in front of or beside the defender's chest (within
+ * BLOCK_FRONT_ANGLE of the way the defender's body faces). Downfield, a block
+ * in the back is illegal and does not hold a man who keeps running. */
+const BLOCK_FRONT = process.env.BLOCK_FRONT === '1', BLOCK_FRONT_ANGLE = 110 * Math.PI / 180;
 /** Experimental (STRETCH_FLAT=1, off): a reach blocker plays flat. Matching
  * an attacking defender's normal motion asks his feet to retreat, so the
  * defender walks into the backfield without load. He gives no ground on

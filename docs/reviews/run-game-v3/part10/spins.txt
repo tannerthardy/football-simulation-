@@ -1,0 +1,60 @@
+== develop + package
+plays 960; per 100 plays: players with a spin (>=270 deg in 1 s) | requested-facing flips (>=150 deg in a tick) free / engaged
+  OL  spins  21.8 | flips free   21.1 engaged    0.0
+  TE  spins   0.4 | flips free    0.2 engaged    0.0
+  FB  spins   0.1 | flips free    0.2 engaged    0.0
+  RB  spins   0.4 | flips free    0.0 engaged    0.0
+  QB  spins   0.1 | flips free   66.7 engaged    0.0
+  WR  spins   0.0 | flips free    0.1 engaged    0.0
+  DL  spins  16.6 | flips free    4.0 engaged    0.0
+  LB  spins  17.4 | flips free   27.8 engaged    0.0
+  DB  spins  95.9 | flips free    0.0 engaged    0.0
+examples:
+  iz/strong/ace_12/over3/pair11/1 CB_S t=2.50
+  iz/strong/ace_12/over3/pair31/77 CB_S t=3.05
+  iz/strong/ace_12/over3/pair31/1 CB_S t=3.25
+  iz/strong/ace_12/under3/pair11/77 CB_S t=2.90
+  iz/strong/ace_12/under3/pair31/77 CB_S t=3.15
+  iz/strong/ace_12/under3/pair31/1 CB_S t=3.05
+  iz/strong/ace_12/wide9/pair11/1 CB_S t=2.90
+  iz/strong/ace_12/wide9/pair31/1 CB_S t=3.05
+== flow candidate
+plays 960; per 100 plays: players with a spin (>=270 deg in 1 s) | requested-facing flips (>=150 deg in a tick) free / engaged
+  OL  spins  22.9 | flips free   77.8 engaged    0.0
+  TE  spins   2.3 | flips free    0.9 engaged    0.0
+  FB  spins   0.0 | flips free    0.3 engaged    0.0
+  RB  spins   1.1 | flips free    0.0 engaged    0.0
+  QB  spins   0.1 | flips free   66.7 engaged    0.0
+  WR  spins   0.5 | flips free    0.0 engaged    0.0
+  DL  spins  32.3 | flips free    4.2 engaged    0.0
+  LB  spins  24.8 | flips free   11.9 engaged    0.0
+  DB  spins  74.3 | flips free    0.4 engaged    0.0
+examples:
+  iz/strong/ace_12/over3/pair11/77 C t=2.30
+  iz/strong/ace_12/over3/pair11/77 DE_W t=2.15
+  iz/strong/ace_12/over3/pair11/1 RT t=3.90
+  iz/strong/ace_12/over3/pair11/1 DE_S t=3.20
+  iz/strong/ace_12/over3/pair31/77 H t=1.45
+  iz/strong/ace_12/over3/pair31/77 LB_W t=2.50
+  iz/strong/ace_12/under3/pair11/77 DE_S t=2.40
+  iz/strong/ace_12/under3/pair11/1 RG t=3.10
+== flow candidate + TRACK_FACING
+  OL  spins  20.9 | flips free    5.5 engaged    0.0
+  TE  spins   2.5 | flips free    0.9 engaged    0.0
+  FB  spins   0.0 | flips free    0.3 engaged    0.0
+  RB  spins   0.9 | flips free    0.0 engaged    0.0
+  QB  spins   0.1 | flips free   66.7 engaged    0.0
+  WR  spins   0.5 | flips free    0.0 engaged    0.0
+  DL  spins  32.0 | flips free    4.3 engaged    0.0
+  LB  spins  24.9 | flips free   12.0 engaged    0.0
+  DB  spins  74.3 | flips free    0.4 engaged    0.0
+== flow candidate + TRACK_FACING BLOCK_FRONT
+  OL  spins  22.3 | flips free    6.9 engaged    0.0
+  TE  spins   2.5 | flips free    0.7 engaged    0.0
+  FB  spins   0.0 | flips free    0.5 engaged    0.0
+  RB  spins   1.1 | flips free    0.0 engaged    0.0
+  QB  spins   0.1 | flips free   66.7 engaged    0.0
+  WR  spins   0.5 | flips free    0.1 engaged    0.0
+  DL  spins  28.1 | flips free    3.6 engaged    0.0
+  LB  spins  19.4 | flips free   12.8 engaged    0.0
+  DB  spins  69.6 | flips free    0.3 engaged    0.0

@@ -784,6 +784,9 @@ const FB_TRACK = process.env.FB_TRACK === '1';
  * the hand fight's hidden control value; the observable keeper checks
  * (torso on the man, loaded hands within reach, base) still apply. */
 const COMBO_LEAVE = process.env.COMBO_LEAVE === '1';
+/** Experimental (TRACK_FACING=1, off): the zone track's hip opening keeps a
+ * continuous side when the man is nearly behind the track (no half-turn flip). */
+const TRACK_FACING = process.env.TRACK_FACING === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
@@ -1128,7 +1131,16 @@ export class RunBlocker implements Behavior {
     // Open the hips toward the track (a bucket step) while the eyes stay on
     // the target: halfway between travel and the target's bearing.
     const travel = Math.atan2(lateral, forward), bearing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
-    const facing = bearing + Math.atan2(Math.sin(travel - bearing), Math.cos(travel - bearing)) / 2;
+    let open = Math.atan2(Math.sin(bearing - travel), Math.cos(bearing - travel));
+    // TRACK_FACING: with his man nearly behind the track, "halfway" has two
+    // answers a half-turn apart and the choice flips as the man crosses the
+    // line behind him, spinning the body. He keeps the eyes over the
+    // shoulder he already looks over.
+    if (TRACK_FACING && Math.abs(open) > 150 * Math.PI / 180) {
+      const side = Math.sign(Math.atan2(Math.sin(a.body.facing - travel), Math.cos(a.body.facing - travel))) || Math.sign(open);
+      open = side * Math.abs(open);
+    }
+    const facing = travel + open / 2;
     return { vel: { x: forward, y: lateral }, facing, cutSkill: .8 + .3 * a.r('runBlock') };
   }
 
