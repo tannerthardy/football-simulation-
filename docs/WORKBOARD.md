@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Bounded pursuit routing composition — 2026-10-20 UTC
+
+Catching's diagnostic only: codex/pursuit-routing-interaction starts resolved
+181+182 atf7662569ba6c89e3b8796fe7da2702ca6ea93661, accepted base2c98bed.
+Extract EXACT reviewed183+186 source/test files from7b70c343; no consumer edit.
+Do-It-All retains those files. Compare exact OZ4 Will behind Mike plus WZORD
+success against the resolved pair with existing frozen setups. No new goal,
+route variant, force/physics/default,184/180 or support-composition adoption.
+Integration owns final combined verification. Source acknowledgment and scoped
+coordination:186 comment6302081842 /182 comment6301203888.
+
 ## Catching integration blockers only — 2026-10-20 UTC
 
 Continue PR182 on codex/pursuit-objective-continuity from its accepted2c98bed
