@@ -56,8 +56,7 @@ describe('Run offensive work and Catching support exit share one contact rep',()
   expect(active.sim.rng.nextU32()).toBe(opposing.sim.rng.nextU32());
   expect(active.sim.agents.map(a=>a.body)).toEqual(before);
   expect(active.defender.engagement).toBe(active.engagement);
-  const until=active.engagement.nextMoveAt;active.sim.t+=.01;contactCommands(active);
-  expect(active.engagement.nextMoveAt).toBe(until);
+  const until=active.engagement.nextMoveAt;
   const report=active.sim.world.step(commands,active.sim.dt);
   expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
   for(const a of [active.blocker,active.defender]){
@@ -65,5 +64,7 @@ describe('Run offensive work and Catching support exit share one contact rep',()
    expect(report.armWork[a.idx]-report.armWorkLimit[a.idx]).toBeLessThan(1e-8);
    expect(report.supportMotorWork[a.idx]-report.supportMotorWorkLimit[a.idx]).toBeLessThan(1e-8);
   }
+  active.sim.t+=active.sim.dt;contactCommands(active);
+  expect(active.engagement.nextMoveAt).toBe(until);
  });
 });
