@@ -11,24 +11,28 @@ describe('official record of a full game', () => {
   // Each native game gets the existing 60-second budget. Bundling two games
   // into one test made a valid pair exceed that deadline in cloud runs.
   it.each([21, 22])('box-score plays and third downs agree with the official log, seed %s', async seed => {
+    try {
     const res = simulateGame(home, away, { seed });
-    for(const p of res.log.filter((p)=>(p.kind==='run'||p.kind==='pass')&&!p.nullified)) {
+    for(const p of res.log.filter((p)=>(p.kind==='run'||p.kind==='pass')&&(p.officialCredit?.playCharged ?? !p.nullified))) {
       expect(p.plan?.front).toBeTruthy();
       expect(p.plan?.concept).toBeTruthy();
     }
     for (const t of [home, away]) {
-      const official = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass') && !p.nullified && p.offense === t.abbr);
+      const official = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass') && (p.officialCredit?.playCharged ?? !p.nullified) && p.offense === t.abbr);
       const tl = res.box.team(t.abbr);
       expect(tl.plays).toBe(official.length);
-      const thirds = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass' || p.kind === 'kneel') && !p.nullified && p.offense === t.abbr && p.down === 3);
+      const thirds = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass' || p.kind === 'kneel') && (p.officialCredit?.downAttempt ?? !p.nullified) && p.offense === t.abbr && p.down === 3);
       expect(tl.thirdAtt).toBe(thirds.length);
     }
     // The final score is the sum of what was scored, and the game ends decided or as a tie after overtime.
     const last = res.log[res.log.length - 1];
     expect(last.quarter).toBeGreaterThanOrEqual(4);
-    // Let the test worker deliver reports after each CPU-bound game. This
-    // leaves every simulation input and assertion unchanged.
-    await new Promise<void>(resolve => setImmediate(resolve));
+    } finally {
+      // Yield even if an assertion fails; two event-loop turns let the worker
+      // flush reports before the next CPU-bound native game starts.
+      await new Promise<void>(resolve => setImmediate(resolve));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    }
   }, 60_000);
 
   describe('replay recording preserves the same full game', () => {
@@ -36,13 +40,18 @@ describe('official record of a full game', () => {
     beforeAll(async () => {
       plain = simulateGame(home, away, { seed: 33 });
       await new Promise<void>(resolve => setImmediate(resolve));
+      await new Promise<void>(resolve => setImmediate(resolve));
     }, 60_000);
 
     it('is reproducible, with or without replay recording', async () => {
+      try {
       const recorded = simulateGame(home, away, { seed: 33, record: true });
       expect(recorded.score).toEqual(plain.score);
       expect(recorded.log.map((p) => p.text)).toEqual(plain.log.map((p) => p.text));
-      await new Promise<void>(resolve => setImmediate(resolve));
+      } finally {
+        await new Promise<void>(resolve => setImmediate(resolve));
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
     }, 60_000);
   });
 });

@@ -1388,7 +1388,13 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
   }
 }
 
-/** A beaten blocker may grab. Returns true if he held (and keeps the block). */
+// Retired visibility decisions are consumed for execution-stream compatibility
+// but never become official calls. Actual World restraint is adjudicated by
+// contact-holding.ts after the interval and simultaneous no-call facts exist.
+const legacyHoldVisible = new WeakSet<PlaySim>();
+
+/** A beaten blocker may attempt a cloth grab. This changes the bounded hand
+ * technique, not the official ruling. Only achieved illegal restraint is a foul. */
 function tryHold(sim: PlaySim, e: Engagement): boolean {
   if (e.holding) return false;
   const b = e.blocker;
@@ -1406,15 +1412,12 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   sim.foulRecords.push({ id, t: sim.t, kind: 'holding', playerId: b.player.id,
     called: false, assessment: 'unresolved', evidence });
   sim.event('holding_attempt', b, e.defender, 'legacy technique choice; achieved legal elements unqualified');
-  // Officials see the obvious ones.
+  // Preserve the historical draw until the first formerly visible attempt;
+  // do not pretend that this sampled bit proves achieved NFL illegality.
   const visible = 0.35 + 0.35 * Math.min(1, Math.abs(e.phi) + (1 - e.baseB));
-  // Preserve the existing first-holding visibility draw convention. A new
-  // deterministic OPI call must not suppress that original draw or its record.
-  if (sim.penalty?.kind !== 'holding' && !sim.penalties.some(p => p.kind === 'holding') && sim.rng.chance(visible)) {
-    sim.recordFoul({ id, kind: 'holding', against: 'O', playerId: b.player.id,
-      yards: 10, autoFirst: false, spotX: b.pos.x, t: sim.t, rule: '12-1-3(c)' }, evidence);
-    sim.event('holding', b, e.defender);
-  }
+  const legacyCall = [sim.penalty, ...sim.penalties].some(p => p?.kind === 'holding'
+    && !p.id?.startsWith('native-holding:'));
+  if (!legacyCall && !legacyHoldVisible.has(sim) && sim.rng.chance(visible)) legacyHoldVisible.add(sim);
   return true;
 }
 

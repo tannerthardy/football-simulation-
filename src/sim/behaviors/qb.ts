@@ -223,6 +223,7 @@ export class QBPass implements Behavior {
       // Play-action: sell the fake first.
       if (t < this.fakeUntil) {
         const rb = sim.slot('RB');
+        if (rb) sim.presentHandoffFake(a, rb);
         const fakePt = rb ? { x: sim.los - 4.2, y: (a.pos.y + rb.pos.y) / 2 } : target;
         return goTo(a, fakePt, { speed: 0.6, facing: Math.PI / 2 * Math.sign(fakePt.y - a.pos.y || 1) });
       }
@@ -622,6 +623,7 @@ export class QBHandoff implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
+      if (this.handed) sim.pretendCarry(a);
       // Carry out the fake away from the installed play, even after the
       // exchange has taken the QB slightly across his own mesh spot.
       const run = sim.offCall.run;

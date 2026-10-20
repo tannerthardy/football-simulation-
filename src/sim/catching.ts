@@ -47,7 +47,9 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
   const opps: Opp[] = [];
   for (const a of sim.agents) {
     if (a === ball.thrower || a.isDown(sim.t) || sim.t < a.noCatchUntil) continue;
-    if (a.team === 'O' && INELIGIBLE.has(a.slot)) continue;
+    // Ineligibility is a rule consequence, not an inability to touch the ball.
+    // Historical tapes without snap facts retain their old reduced filter.
+    if (a.team === 'O' && INELIGIBLE.has(a.slot) && !sim.snapEligibility.has(a.player.id)) continue;
     const batWindow = a.team === 'D' && tAir < 0.4 && !!a.engagement;
     if (a.engagement && !batWindow) continue;
     // Existing targeted tracking is a separate controller contract. Everyone
@@ -150,7 +152,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
       sim.event('pbu', D, R);
       D.noCatchUntil = sim.t + 0.25;
       R.noCatchUntil = sim.t + 0.6;
-      deflect(sim, 0.3);
+      deflect(sim, 0.3, 'tip', D);
       return;
     }
     pCatch *= 0.82 + 0.18 * R.r('contestedCatch');
@@ -175,7 +177,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     sim.event('drop', R);
   }
   R.noCatchUntil = sim.t + 0.6;
-  deflect(sim, 0.2, 'drop');
+  deflect(sim, 0.2, 'drop', R);
 }
 
 /** Returns true if the defender ended the flight (INT) or altered it. */
@@ -204,7 +206,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
       sim.event('deflection', D, null, 'batted at the line');
       sim.stats.passDefendedBy = D.player.id;
       D.noCatchUntil = sim.t + 0.3;
-      deflect(sim, 0.25);
+      deflect(sim, 0.25, 'tip', D);
       return true;
     }
     return false;
@@ -223,13 +225,14 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     sim.stats.passDefendedBy = D.player.id;
     sim.event('pbu', D, ball.target);
     D.noCatchUntil = sim.t + 0.25;
-    deflect(sim, 0.3);
+    deflect(sim, 0.3, 'tip', D);
     return true;
   }
   return false;
 }
 
-function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip'): void {
+function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', toucher?: Agent): void {
+  if (toucher && !sim.touchPass(toucher)) return;
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const f = ball.flight;

@@ -11,8 +11,15 @@ import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } from '../physics/ball.js';
 import { handoffReach } from './ball-transfer.js';
-import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds } from './ball-rules.js';
-import { observePrethrowBlocks, assessPrethrowBlocksOnPass } from './pass-interference.js';
+import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundaryStep, momentumDeadBallSpot } from './ball-rules.js';
+import { observePrethrowBlocks, assessPrethrowBlocksOnPass,
+  capturePassContactStarts, observePassContacts, notePassRelease, notePassTouch, flushPassContacts } from './pass-interference.js';
+import { captureHoldingStart, observeHolding, type HoldingIntervalStart } from './contact-holding.js';
+import { inspectInstalledSnap, type PresnapAssessment, type SnapEligibility } from '../game/presnap-rules.js';
+import { observePassLegality, capturePassLegality, finishPassLegality, assessNativePassTouch,
+  assessForwardHanding } from './pass-legality.js';
+import { observeContactLegality } from './contact-legality.js';
+import { captureTeamContactStart, observeTeamContactRules } from './team-contact-rules.js';
 import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
@@ -71,6 +78,7 @@ export interface PlaySetup {
   isTry?: boolean;
   /** Let the QB check out of the call at the line. */
   audibles?: boolean;
+  reportedEligibility?: Record<string, 'eligible' | 'ineligible'>;
   /** Fixed physics substeps per tick (convergence studies); adaptive by default. */
   substeps?: number;
   /** Research-only support-coordinate prototype; production uses legacy. */
@@ -125,6 +133,8 @@ export class PlaySim {
   private readonly record: boolean;
   private readonly recordEvery: number;
   private tickCount = 0;
+  /** Completed live action intervals since the modeled snap acquisition. */
+  private snapActionIntervals = 0;
   private cmds: MoveCommand[] = [];
 
   phase: 'live' | 'dead' = 'live';
@@ -147,7 +157,19 @@ export class PlaySim {
   private readonly isTry: boolean;
   private possessionChanges = 0;
   private forwardPasses = 0;
+  private ballPreviouslyBeyondLine = false;
   private statsBeforeIllegalPass?: PlayStats;
+  private segmentsBeforeIllegalPass?: CarrierSegment[];
+  private possessionSnapshotRecords?: NonNullable<PlayResult['possessionSnapshots']>;
+  private frozenEligibility?: Map<string, SnapEligibility>;
+  get snapEligibility(): Map<string, SnapEligibility> { return this.frozenEligibility ??= new Map(); }
+  readonly snapAssessment: PresnapAssessment;
+  /** Performed current-interval ball presentations, not a hidden run call. */
+  readonly presentedFakeRunners = new Set<Agent>();
+  private readonly fakePresentationEvents = new Set<Agent>();
+  private acquisition?: { team: TeamSide; spotX: number; impetusTeam: TeamSide;
+    momentumRetained: boolean; acquiredInOwnEndZone: boolean; leftOwnEndZone: boolean;
+    attemptedAdvance?: boolean };
 
   // play-level facts used by behaviors and stats
   handoffAt = -1;
@@ -272,6 +294,20 @@ export class PlaySim {
     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
+    this.snapAssessment = inspectInstalledSnap(this, setup.reportedEligibility,
+      { afterTwoMinuteWarning: this.afterTwoMinuteWarning });
+    for (const entry of this.snapAssessment.eligibility) this.snapEligibility.set(entry.playerId, entry);
+    for (const foul of this.snapAssessment.fouls) {
+      const actor = this.agents.find(a => a.player.id === foul.playerId)
+        ?? (foul.against === 'O' ? this.qb : this.defense[0]);
+      if (!actor) continue;
+      this.recordFoul({ kind: foul.kind, against: foul.against, playerId: actor.player.id,
+        rule: foul.rule, reason: foul.reason, yards: foul.yards, autoFirst: false,
+        phase: foul.deadBall ? 'pre_snap' : 'live', t: 0, spotX: this.los,
+        enforcement: 'previous', possessionChanges: 0, possessionTeam: 'O' }, {
+        source: 'native', rule: foul.rule, action: 'installed_snap_law',
+        facts: { reason: foul.reason, deadBall: foul.deadBall } });
+    }
   }
 
   /** Called movement with finite travel and an observable history. Late
@@ -382,6 +418,7 @@ export class PlaySim {
   }
 
   event(type: PlayEventType, a?: Agent | null, b?: Agent | null, note?: string): void {
+    if (a && ['pbu', 'drop', 'deflection'].includes(type) && this.ball.kind === 'air') this.touchPass(a);
     this.events.push({ t: round2(this.t), type, a: a?.idx, b: b?.idx, pos: a ? { x: round2(a.pos.x), y: round2(a.pos.y) } : undefined, note });
   }
 
@@ -390,8 +427,12 @@ export class PlaySim {
   recordFoul(call: PenaltyCall, evidence: FoulEvidence): void {
     const id = call.id ?? `${call.kind}:${call.playerId}:${call.t ?? this.t}`;
     if (this.penalties.some(p => p.id === id)) return;
-    const recorded = { ...call, id, t: call.t ?? this.t,
-      possessionChanges: call.possessionChanges ?? this.possessionChanges };
+    const recorded: PenaltyCall & { id: string; t: number } = { ...call, id, t: call.t ?? this.t,
+      possessionChanges: call.possessionChanges ?? this.possessionChanges,
+      possessionTeam: call.possessionTeam ?? this.possession,
+      playPhase: call.playPhase ?? (this.ball.kind === 'air' || (this.isPass && this.throwAt < 0 && this.handoffAt < 0)
+        ? 'pass' : this.ball.kind === 'loose' || this.ball.kind === 'pitch' ? 'loose_ball' : 'run'),
+      phase: call.phase ?? (this.phase === 'dead' ? 'dead_ball' : 'live') };
     this.penalties.push(recorded);
     this.penalty ??= recorded;
     const record: FoulRecord = { id, t: recorded.t, kind: recorded.kind,
@@ -404,15 +445,65 @@ export class PlaySim {
       const actor = this.agents.find(a => a.player.id === call.playerId);
       this.events.push({ t: recorded.t, type: call.kind, a: actor?.idx,
         pos: { x: call.spotX ?? actor?.pos.x ?? this.los, y: actor?.pos.y ?? this.ballY }, note: call.rule });
+    } else {
+      const actor = this.agents.find(a => a.player.id === call.playerId);
+      this.events.push({ t: recorded.t, type: 'penalty', a: actor?.idx,
+        pos: { x: call.spotX ?? actor?.pos.x ?? this.los, y: actor?.pos.y ?? this.ballY },
+        note: `${call.kind} (${call.rule ?? 'NFL-2026'})` });
     }
   }
 
   // ------------------------------------------------------------ actions
 
+  presentHandoffFake(from: Agent, to: Agent): boolean {
+    if (this.ball.kind !== 'held' || this.ball.carrier !== from || from.team !== to.team
+      || from.isDown(this.t) || to.isDown(this.t) || dist(from.pos, to.pos) > handoffReach(from, to)) return false;
+    this.presentedFakeRunners.add(to);
+    if (!this.fakePresentationEvents.has(to)) {
+      this.fakePresentationEvents.add(to); this.event('handoff_fake', from, to);
+    }
+    return true;
+  }
+
+  pretendCarry(a: Agent): void {
+    if (a !== this.qb || this.handoffAt < 0 || this.carrier === a || a.isDown(this.t)) return;
+    this.presentedFakeRunners.add(a);
+  }
+
+  /** Resolve actual first touch before changing the ball or its trajectory. */
+  touchPass(a: Agent, caught = false): boolean {
+    if (this.ball.kind !== 'air') return true;
+    const ball = this.ball;
+    const ruling = assessNativePassTouch(this, a, caught, true);
+    notePassTouch(this, this.t);
+    finishPassLegality(this, ball, ball.flight.pos, a);
+    if (ruling?.kind === 'incomplete') {
+      this.event('incomplete', a, null, ruling.reason);
+      this.whistle('incomplete', { x: this.los, y: this.ballY });
+      return false;
+    }
+    return true;
+  }
+
   handoff(from: Agent, to: Agent): boolean {
     if (this.ball.kind !== 'held' || this.ball.carrier !== from || to.team !== from.team
       || from.isDown(this.t) || to.isDown(this.t)
       || dist(from.pos, to.pos) > handoffReach(from, to)) return false;
+    const handing = assessForwardHanding({ forward: (to.pos.x - from.pos.x) * this.attackDir(from.team) > 0,
+      afterPossessionChange: this.possessionChanges > 0,
+      receiverBehindLine: to.pos.x + bodyRadius(to.body, 1, 0) <= this.los,
+      receiverEligible: this.snapEligibility.get(to.player.id)?.eligible ?? null });
+    if (handing?.kind === 'illegal_handoff') this.recordFoul({
+      kind: handing.kind, against: from.team, playerId: from.player.id,
+      yards: handing.yards, autoFirst: false, rule: handing.rule, reason: handing.reason,
+      enforcement: handing.enforcement, lossDown: handing.lossDown, spotX: from.pos.x,
+      phase: 'live', t: this.t }, { source: 'native', rule: handing.rule,
+      action: 'achieved_forward_handing', victimId: to.player.id,
+      facts: { fromX: from.pos.x, toX: to.pos.x, reason: handing.reason } });
+    else if (handing?.kind === 'unresolved') this.ruleLimitations.add(`${handing.rule}: ${handing.missing}`);
+    if (this.acquisition) {
+      this.acquisition.momentumRetained = false; this.acquisition.impetusTeam = from.team;
+    }
     this.ball = { kind: 'held', carrier: to };
     this.endSegment(from.pos.x, 'handoff');
     this.beginSegment(to, 'handoff');
@@ -430,31 +521,70 @@ export class PlaySim {
       || to.isDown(this.t) || from.team !== to.team) return false;
     const pos = this.ballPos();
     const T = Math.max(0.2, dist(from.pos, to.pos) / 12);
-    const intended = { x: Math.min(from.pos.x, to.pos.x + to.vel.x * T), y: to.pos.y + to.vel.y * T, z: 1.1 };
-    this.ball = { kind: 'pitch', thrower: from, target: to, releaseT: this.t, intended,
+    const dir = this.attackDir(from.team);
+    const intended = { x: dir * Math.min(dir * from.pos.x, dir * (to.pos.x + to.vel.x * T)), y: to.pos.y + to.vel.y * T, z: 1.1 };
+    this.ball = { kind: 'pitch', thrower: from, target: to, releaseT: this.t, releaseX: pos.x, intended,
+      impetusTeam: this.acquisition?.team === from.team ? this.acquisition.impetusTeam : from.team,
       flight: { pos, vel: solveLaunch(pos, intended, T, DRAG_TUMBLE, this.wind), drag: DRAG_TUMBLE } };
     this.endSegment(from.pos.x, 'handoff');
     this.event('pitch', from, to);
     return true;
   }
 
-  throwBall(qb: Agent, target: Agent | null, v0: Vec3, intended: Vec3, arrivalT: number, throwaway = false): void {
+  /** Execute a clock spike through the ordinary pass flight and ruling hooks.
+   * The immediate exception is established internally from snap history. */
+  spikeBall(passer: Agent = this.qb): boolean {
+    if (this.phase !== 'live' || this.ball.kind !== 'held' || this.ball.carrier !== passer) return false;
+    this.throwBall(passer, null, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, this.t, true, { spike: true });
+    return true;
+  }
+
+  throwBall(qb: Agent, target: Agent | null, v0: Vec3, intended: Vec3, arrivalT: number, throwaway = false,
+    rules: { spike?: boolean } = {}): void {
     if (this.ball.kind !== 'held' || this.ball.carrier !== qb) return;
     const release: Vec3 = { x: qb.pos.x + Math.cos(qb.body.facing) * 0.3, y: qb.pos.y + Math.sin(qb.body.facing) * 0.3, z: 2.2 };
+    let spike: 'immediate' | 'delayed' | undefined;
+    if (rules.spike) {
+      // Requesting a spike executes this native ground-directed action; the
+      // caller cannot attach an exemption to an unrelated upward/deep throw.
+      const snap = this.segments[0];
+      const continuousSnapAction = this.t === 0 && this.snapActionIntervals === 0
+        && this.segments.length === 1 && snap?.how === 'snap' && snap.end === 'live'
+        && snap.carrier === qb.player.id && qb === this.qb;
+      spike = continuousSnapAction ? 'immediate' : 'delayed';
+      target = null; throwaway = true;
+      const duration = .2;
+      intended = { x: release.x + this.attackDir(qb.team) * .1, y: release.y, z: 0 };
+      v0 = solveLaunch(release, intended, duration, DRAG_SPIRAL, this.wind);
+      arrivalT = this.t + duration;
+      if (spike === 'immediate' && this.offCall.formation.qb !== 'under')
+        this.ruleLimitations.add('8-2-1 Item3: immediate non-T spike has no special exemption; ordinary grounding facts apply');
+    }
     const forward = v0.x * (qb.team === 'O' ? 1 : -1) > 0;
     const illegal = forward ? assessForwardPass({ previousForwardPasses: this.forwardPasses,
       possessionChangedBeforePass: this.possessionChanges > 0,
-      fromBehindLine: qb.pos.x + bodyRadius(qb.body, 1, 0) <= this.los && release.x <= this.los }) : null;
+      entireBodyBeyondLine: qb.pos.x - bodyRadius(qb.body, 1, 0) > this.los,
+      ballBeyondLine: release.x > this.los, ballPreviouslyBeyondLine: this.ballPreviouslyBeyondLine,
+      fromBehindLine: !(qb.pos.x - bodyRadius(qb.body, 1, 0) > this.los && release.x > this.los) }) : null;
     if (illegal && !this.statsBeforeIllegalPass) {
-      this.statsBeforeIllegalPass = { ...this.stats, tacklers: [...this.stats.tacklers] };
+      this.statsBeforeIllegalPass = { ...this.stats, tacklers: [...this.stats.tacklers],
+        missedTacklesBy: Object.fromEntries(this.agents.map(a => [a.player.id, a.missedTackles])),
+        fumbles: this.stats.fumbles?.map(f => ({ ...f })) };
+      this.segmentsBeforeIllegalPass = this.segments.map((s, i) => ({ ...s,
+        ...(i === this.segments.length - 1 && s.end === 'live' ? { endX: qb.pos.x, end: 'pass' as const } : {}) }));
     }
     if (illegal) this.recordFoul({ kind: 'illegal_forward_pass', against: qb.team,
       playerId: qb.player.id, yards: 5, autoFirst: false, spotX: release.x, t: this.t,
       rule: illegal.rule, reason: illegal.reason, enforcement: illegal.enforcement,
-      lossDown: illegal.lossDown }, { source: 'native', rule: illegal.rule,
+      lossDown: illegal.lossDown,
+      // 8-6 Note1: illegal-pass safety uses the spot of the pass. Grounding's
+      // separate whole-body-and-ball exception must not migrate here.
+      penaltySafety: qb.team === 'O' ? release.x <= OWN_GOAL_X : release.x >= OPP_GOAL_X }, { source: 'native', rule: illegal.rule,
       action: 'forward_pass', facts: { reason: illegal.reason, previousForwardPasses: this.forwardPasses,
         possessionChanges: this.possessionChanges, releaseX: release.x } });
     assessPrethrowBlocksOnPass(this, qb, release.x, this.t, v0.x);
+    notePassRelease(this, qb, release.x, this.t, v0.x);
+    capturePassLegality(this, qb, release, v0, { spike });
     if (forward) this.forwardPasses++;
     this.ball = {
       kind: 'air',
@@ -482,16 +612,26 @@ export class PlaySim {
         this.stats.airYards = intended.x - this.los;
       }
     }
-    this.event(throwaway ? 'throwaway' : 'throw', qb, target, throwaway ? 'thrown away' : undefined);
+    this.event(throwaway ? 'throwaway' : 'throw', qb, target, spike ? `${spike} clock spike` : throwaway ? 'thrown away' : undefined);
     onThrow(this);
   }
 
   /** Pass caught (or intercepted) by `a` at the current ball position. */
   possess(a: Agent, how: 'catch' | 'interception' | 'recovery'): void {
+    if (this.ball.kind === 'air' && !this.touchPass(a, true)) return;
     const loose = this.ball.kind === 'loose' ? this.ball : null;
     const prevTeam = loose ? loose.lastTeam : this.ball.kind === 'air' ? this.ball.thrower.team
       : this.ball.kind === 'held' ? this.ball.carrier.team : this.possession;
-    if (a.team !== prevTeam) this.possessionChanges++;
+    if (a.team !== prevTeam) {
+      this.possessionChanges++;
+      const dir = this.attackDir(a.team);
+      const ownZone = dir * (a.pos.x - (a.team === 'O' ? OWN_GOAL_X : OPP_GOAL_X)) <= 0;
+      const originalMomentum = !ownZone && a.vel.x * dir < 0;
+      this.acquisition = { team: a.team, spotX: a.pos.x,
+        impetusTeam: ownZone || originalMomentum ? (loose?.impetusTeam ?? prevTeam) : a.team,
+        momentumRetained: originalMomentum,
+        acquiredInOwnEndZone: ownZone, leftOwnEndZone: false, attemptedAdvance: false };
+    }
     this.ball = { kind: 'held', carrier: a };
     this.beginSegment(a, how);
     if (how === 'catch') {
@@ -503,12 +643,16 @@ export class PlaySim {
       onBallCaught(this, a);
     } else if (how === 'interception') {
       this.possession = a.team;
-      this.stats.interceptedBy = a.player.id;
+      this.stats.interceptedBy ??= a.player.id;
       this.catchX = a.pos.x;
       this.event('interception', a);
       onInterception(this, a);
     } else {
       this.possession = a.team;
+      if (loose && this.stats.fumbles) {
+        const fumble = [...this.stats.fumbles].reverse().find(f => f.playerId === loose.fumbledBy.player.id && !f.recoveredBy);
+        if (fumble) { fumble.recoveredBy = a.player.id; fumble.lost = loose.lastTeam !== a.team; }
+      }
       if (prevTeam !== a.team) this.stats.fumbleLost = true;
       this.stats.fumbleRecoveredBy = a.player.id;
       this.event('recovery', a);
@@ -542,10 +686,19 @@ export class PlaySim {
         }
       }
     }
+    if (a.team !== prevTeam) this.capturePossessionSnapshot();
+  }
+
+  private capturePossessionSnapshot(): void {
+    const stats = structuredClone(this.stats);
+    stats.missedTacklesBy = Object.fromEntries(this.agents.map(a => [a.player.id, a.missedTackles]));
+    (this.possessionSnapshotRecords ??= []).push({ changes: this.possessionChanges,
+      possession: this.possession, stats, segments: this.segments.map(s => ({ ...s })) });
   }
 
   fumble(carrier: Agent, hitter: Agent | null): void {
     if (this.ball.kind !== 'held') return;
+    (this.stats.fumbles ??= []).push({ playerId: carrier.player.id, team: carrier.team, lost: false, t: this.t });
     const v = carrier.body.vel;
     const ang = this.rng.range(0, Math.PI * 2);
     const sp = this.rng.range(2, 6);
@@ -555,7 +708,11 @@ export class PlaySim {
       drag: DRAG_TUMBLE,
     };
     this.ball = { kind: 'loose', flight, since: this.t, lastTeam: carrier.team, fumbledBy: carrier,
-      fumbleX: carrier.pos.x, origin: 'fumble', possessionChangedBeforeFumble: this.possessionChanges > 0 };
+      fumbleX: carrier.pos.x, origin: 'fumble', possessionChangedBeforeFumble: this.possessionChanges > 0,
+      impetusTeam: this.acquisition?.team === carrier.team ? this.acquisition.impetusTeam : carrier.team,
+      momentumExceptionExcluded: !this.acquisition?.momentumRetained,
+      momentumSpotX: this.acquisition?.team === carrier.team && this.acquisition.momentumRetained
+        ? this.acquisition.spotX : undefined };
     // Statistical spot of the fumble: forward progress if he was wrapped up.
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
@@ -630,6 +787,10 @@ export class PlaySim {
   }
 
   run(): PlayResult {
+    if (this.snapAssessment && !this.snapAssessment.snapPermitted) {
+      this.whistle('timeout', { x: this.los, y: this.ballY });
+      return this.buildResult();
+    }
     this.event('snap', this.slot('C') ?? this.qb);
     while (this.phase === 'live' && this.t < MAX_PLAY_TIME) this.tick();
     if (this.phase === 'live') {
@@ -656,6 +817,7 @@ export class PlaySim {
     this.prepareJoinedRunBlocks();
 
     // Decide.
+    this.presentedFakeRunners.clear();
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
       // Reaction delays control, not collisions: he can still be pushed.
@@ -698,21 +860,47 @@ export class PlaySim {
 
     // Physics: feet, contacts, holds and balance, in substeps.
     let catchStarts: Vec2[] | undefined;
+    let holdingStart: HoldingIntervalStart | undefined;
     if (this.phase === 'live') {
       // Save actual endpoints of the same interval the ball advances below,
       // including throws initiated by this tick's controller decisions.
       if (this.ball.kind === 'air') catchStarts = this.agents.map(a => ({ ...a.pos }));
       this.world.time = t;
+      holdingStart = captureHoldingStart(this);
+      const teamContactStart = captureTeamContactStart(this);
+      const passContactStarts = capturePassContactStarts(this);
       const blockStarts = this.possession === 'O' && this.throwAt < 0
         ? this.agents.map(a => ({ ...a.pos })) : undefined;
       const report = this.world.step(this.intents, this.dt);
+      this.snapActionIntervals = (this.snapActionIntervals ?? 0) + 1;
       this.lastStep = report;
+      observeTeamContactRules(this, report, teamContactStart);
       if (blockStarts) observePrethrowBlocks(this, report, t, blockStarts);
+      observePassContacts(this, report, t, passContactStarts);
+      observePassLegality(this, report, t, passContactStarts.map(s => s.pos));
+      observeContactLegality(this, report, t);
+      const carrier = this.carrier, acquisition = this.acquisition;
+      if (carrier && acquisition?.team === carrier.team) {
+        const dir = this.attackDir(carrier.team);
+        const inOwnZone = dir * (carrier.pos.x - (carrier.team === 'O' ? OWN_GOAL_X : OPP_GOAL_X)) <= 0;
+        if (acquisition.acquiredInOwnEndZone && !inOwnZone) {
+          acquisition.leftOwnEndZone = true; acquisition.impetusTeam = carrier.team;
+        }
+        const command = this.intents[carrier.idx]?.vel;
+        if (command && command.x * dir > 0 && report.groundImpulse[carrier.idx].x * dir > 0)
+          acquisition.attemptedAdvance = true;
+        if (command && command.x * dir < 0 && report.groundImpulse[carrier.idx].x * dir < 0) {
+          acquisition.momentumRetained = false; acquisition.impetusTeam = carrier.team;
+        }
+      }
+      if (this.ballPos().x > this.los) this.ballPreviouslyBeyondLine = true;
       this.afterPhysics(report);
     }
     this.updateBall(catchStarts);
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
+    flushPassContacts(this);
+    if (holdingStart && this.lastStep) observeHolding(this, this.lastStep, holdingStart);
     if (this.record && (this.tickCount++ % this.recordEvery === 0 || this.phase === 'dead')) this.recordFrame();
     this.t = round2(this.t + this.dt);
   }
@@ -768,6 +956,8 @@ export class PlaySim {
     const cur = ball.flight.pos;
 
     if (ball.kind === 'pitch') {
+      const pitchBoundary = looseBallBoundaryStep(ball.boundaryExit, prev, cur, cur.z <= 0);
+      ball.boundaryExit = pitchBoundary.exit;
       // Swept reach, so a pitch cannot pass through a receiver between ticks.
       const dx = cur.x - prev.x, dy = cur.y - prev.y, d2 = dx * dx + dy * dy;
       const candidates = this.agents.filter(a => a !== ball.thrower && !a.isDown(this.t))
@@ -778,29 +968,66 @@ export class PlaySim {
             && Math.hypot(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
         }).filter(c => c.valid).sort((a, b) => a.s - b.s);
       if (this.t - ball.releaseT >= 0.1 && candidates.length) {
-        const to = candidates[0].a;
+        const { a: to, s: touchFraction } = candidates[0];
+        if (to.pos.y <= 0 || to.pos.y >= FIELD_WIDTH || to.pos.x <= 0 || to.pos.x >= 120) {
+          // The swept reach row establishes contact with an out-of-bounds
+          // person. This precedes any legal possession or change of team.
+          // Use the actual ball contact point, including a reach into the
+          // field before any sideline-plane crossing (3-20-3/4).
+          const touch = { x: prev.x + dx * touchFraction, y: prev.y + dy * touchFraction };
+          const loose: Extract<BallState, { kind: 'loose' }> = {
+            kind: 'loose', flight: ball.flight, since: ball.releaseT,
+            lastTeam: ball.thrower.team, fumbledBy: ball.thrower,
+            fumbleX: ball.releaseX ?? ball.thrower.pos.x, origin: 'backward_pass',
+            possessionChangedBeforeFumble: this.possessionChanges > 0,
+            impetusTeam: ball.impetusTeam ?? ball.thrower.team, momentumExceptionExcluded: true,
+            boundaryExit: pitchBoundary.exit };
+          this.ball = loose;
+          (this.stats.fumbles ??= []).push({ playerId: ball.thrower.player.id,
+            team: ball.thrower.team, lost: false, t: ball.releaseT });
+          this.stats.fumbledBy = ball.thrower.player.id;
+          this.event('fumble', ball.thrower, null, 'backward pass touched out-of-bounds player');
+          onLooseBall(this);
+          this.finishLooseOutOfBounds(loose, touch);
+          return;
+        }
         this.ball = { kind: 'held', carrier: to };
         this.beginSegment(to, to.team === ball.thrower.team ? 'handoff' : 'recovery');
         this.possession = to.team;
-        if (to.team !== ball.thrower.team) this.possessionChanges++;
+        if (to.team !== ball.thrower.team) {
+          this.possessionChanges++;
+          const dir = this.attackDir(to.team), ownZone = dir * (to.pos.x - (to.team === 'O' ? OWN_GOAL_X : OPP_GOAL_X)) <= 0;
+          const momentum = !ownZone && to.vel.x * dir < 0;
+          this.acquisition = { team: to.team, spotX: to.pos.x,
+            impetusTeam: ownZone || momentum ? ball.impetusTeam ?? ball.thrower.team : to.team,
+            momentumRetained: momentum, acquiredInOwnEndZone: ownZone, leftOwnEndZone: false, attemptedAdvance: false };
+        }
         this.event('pitch_catch', to, ball.thrower, 'pitch received');
         if (to.team === ball.thrower.team) {
           this.handoffAt = this.t; this.stats.rusher = to.player.id;
           onHandoff(this, ball.thrower, to);
         } else {
+          (this.stats.fumbles ??= []).push({ playerId: ball.thrower.player.id,
+            team: ball.thrower.team, lost: true, recoveredBy: to.player.id, t: ball.releaseT });
           if (ball.thrower.team === 'O') this.stats.fumbledBy = ball.thrower.player.id;
           this.stats.fumbleLost = true;
           this.stats.fumbleRecoveredBy = to.player.id;
           this.event('recovery', to, ball.thrower, 'opponent pitch recovered');
           onRecovery(this, to);
+          this.capturePossessionSnapshot();
         }
-      } else if (cur.z <= 0.05 || cur.y <= 0 || cur.y >= FIELD_WIDTH) {
+      } else if (cur.z <= 0.05) {
         this.ball = { kind: 'loose', flight: ball.flight, since: ball.releaseT,
           lastTeam: ball.thrower.team, fumbledBy: ball.thrower,
-          fumbleX: ball.thrower.pos.x, origin: 'backward_pass', possessionChangedBeforeFumble: this.possessionChanges > 0 };
+          fumbleX: ball.releaseX ?? ball.thrower.pos.x, origin: 'backward_pass', possessionChangedBeforeFumble: this.possessionChanges > 0,
+          impetusTeam: ball.impetusTeam ?? ball.thrower.team, momentumExceptionExcluded: true,
+          boundaryExit: pitchBoundary.exit };
+        (this.stats.fumbles ??= []).push({ playerId: ball.thrower.player.id,
+          team: ball.thrower.team, lost: false, t: ball.releaseT });
         this.stats.fumbledBy = ball.thrower.player.id;
         this.event('fumble', ball.thrower, null, 'pitch missed');
         onLooseBall(this);
+        if (pitchBoundary.dead && pitchBoundary.exit) this.finishLooseOutOfBounds(this.ball as Extract<BallState, { kind: 'loose' }>, pitchBoundary.exit);
       }
       return;
     }
@@ -809,6 +1036,7 @@ export class PlaySim {
       resolveCatchOpportunities(this, prev, cur, catchStarts);
       if (this.ball.kind !== 'air') return;
       if (cur.z <= 0.05 || cur.y < -1 || cur.y > FIELD_WIDTH + 1 || cur.x > 121) {
+        finishPassLegality(this, ball, cur);
         this.stats.completed = false;
         this.event('incomplete', null, null);
         this.whistle('incomplete', { x: this.los, y: this.ballY });
@@ -817,6 +1045,13 @@ export class PlaySim {
     }
 
     // Loose ball: bounce, roll, recover.
+    const boundary = looseBallBoundaryStep(ball.boundaryExit, prev, cur, cur.z <= 0);
+    ball.boundaryExit = boundary.exit;
+    if (boundary.dead) {
+      if (!boundary.exit) throw new Error('Loose-ball boundary contact lacks its actual outward crossing');
+      this.finishLooseOutOfBounds(ball, boundary.exit);
+      return;
+    }
     if (cur.z <= 0) {
       const f = ball.flight;
       f.pos = { ...f.pos, z: 0 };
@@ -828,37 +1063,6 @@ export class PlaySim {
       const s = Math.sin(ang);
       f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: Math.abs(f.vel.z) * this.rng.range(0.15, 0.45) };
       if (Math.hypot(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
-    }
-    if (cur.y <= 0 || cur.y >= FIELD_WIDTH || cur.x <= 0 || cur.x >= 120) {
-      // Rule 8-7-3: a true forward fumble out in the field cannot gain yards.
-      // Backward passes and end-zone impetus/momentum have separate branches.
-      this.possession = ball.lastTeam;
-      if (ball.lastTeam === 'D') this.stats.fumbleLost = true;
-      this.event('out_of_bounds', null, null, 'loose ball out of bounds');
-      const exit = firstBoundaryExit(prev, cur);
-      let spotX = clamp(exit.x, 1, 119);
-      if (ball.origin !== 'backward_pass' && ball.fumbleX !== undefined) {
-        const fromField = ball.fumbleX > OWN_GOAL_X && ball.fumbleX < OPP_GOAL_X;
-        const ruling = fumbleOutOfBounds({ fumbleX: ball.fumbleX, outX: exit.x,
-          lastPossessionTeam: ball.lastTeam,
-          // Native loose flight has no intervening bats/kicks. A release in
-          // the field excludes the caught-player-in-end-zone momentum case.
-          impetusTeam: fromField ? ball.lastTeam : undefined,
-          momentumExceptionExcluded: fromField });
-        if (ruling.kind === 'spot') spotX = ruling.spotX;
-        else if (ruling.kind === 'safety') {
-          this.scoreKind = 'safety'; this.scoreTeam = ruling.scoringTeam;
-          this.event('safety', ball.fumbledBy, null, ruling.rule);
-          this.whistle('safety', exit); return;
-        } else if (ruling.kind === 'touchback') {
-          this.possession = ruling.possession;
-          this.stats.fumbleLost = ball.lastTeam !== ruling.possession;
-          this.event('touchback', ball.fumbledBy, null, ruling.rule);
-          this.whistle('touchback', exit); return;
-        } else throw new Error('Unsupported NFL 8-7-3: end-zone fumble impetus/momentum');
-      }
-      this.whistle('oob', { x: spotX, y: exit.y });
-      return;
     }
     if (this.t - ball.since < 0.15) return;
     // Nearest players scramble for it; possession chance rises when on the ground.
@@ -873,6 +1077,10 @@ export class PlaySim {
       }
     }
     if (best && this.rng.chance(cur.z < 0.3 ? 0.35 : 0.12)) {
+      if (best.pos.y <= 0 || best.pos.y >= FIELD_WIDTH || best.pos.x <= 0 || best.pos.x >= 120) {
+        this.finishLooseOutOfBounds(ball, ball.boundaryExit ?? { x: cur.x, y: clamp(cur.y, 0, FIELD_WIDTH) });
+        return;
+      }
       const hadIt = ball.lastTeam;
       this.possess(best, 'recovery');
       if (best.team !== hadIt) this.stats.fumbleLost = true;
@@ -880,6 +1088,49 @@ export class PlaySim {
       // body on the turf: World contact/support and the ordinary carrier
       // rules determine whether this recovery can advance or is tackled.
     }
+  }
+
+  private finishLooseOutOfBounds(ball: Extract<BallState, { kind: 'loose' }>, exit: Vec2): void {
+    this.possession = ball.lastTeam;
+    // 8-7-2 is objective: even a missed pitch out of bounds is an illegal
+    // conserving act on a down begun after the warning and before any COP.
+    // Do not require an invented intention to stop the clock.
+    if (ball.origin === 'backward_pass' && this.afterTwoMinuteWarning && this.possessionChanges === 0) {
+      this.recordFoul({ id: `backward-pass-oob:${ball.fumbledBy.idx}:${ball.since}`,
+        kind: 'illegal_backward_pass', against: ball.lastTeam, playerId: ball.fumbledBy.player.id,
+        yards: 5, autoFirst: false, lossDown: true, spotX: exit.x,
+        basicSpotX: ball.fumbleX, playPhase: 'loose_ball', phase: 'live', rule: '8-7-2',
+        reason: 'backward pass out of bounds after the warning before possession changes',
+        causedBallOutOfBounds: true }, { source: 'native', rule: '8-7-2',
+        action: 'achieved_backward_pass_out_of_bounds', facts: { releaseX: ball.fumbleX ?? ball.fumbledBy.pos.x,
+          outX: exit.x, afterTwoMinuteWarning: true, possessionChanges: 0 } });
+    }
+    this.event('out_of_bounds', null, null, 'loose ball touched outside ground/person');
+    let spotX = exit.x;
+    const fumbleX = ball.fumbleX;
+    const fieldEndpoints = fumbleX !== undefined && fumbleX > OWN_GOAL_X && fumbleX < OPP_GOAL_X
+      && exit.x > OWN_GOAL_X && exit.x < OPP_GOAL_X;
+    if (fumbleX !== undefined && (ball.origin !== 'backward_pass' || !fieldEndpoints)) {
+      const fromField = fumbleX > OWN_GOAL_X && fumbleX < OPP_GOAL_X;
+      const ruling = fumbleOutOfBounds({ fumbleX, outX: exit.x, lastPossessionTeam: ball.lastTeam,
+        impetusTeam: fromField ? ball.lastTeam : ball.impetusTeam,
+        momentumExceptionExcluded: fromField || ball.momentumExceptionExcluded === true,
+        momentumSpotX: ball.momentumSpotX });
+      if (ruling.kind === 'spot') spotX = ruling.spotX;
+      else if (ruling.kind === 'safety') {
+        this.scoreKind = 'safety'; this.scoreTeam = ruling.scoringTeam;
+        this.event('safety', ball.fumbledBy, null, ruling.rule);
+        this.whistle('safety', exit); return;
+      } else if (ruling.kind === 'touchback') {
+        this.possession = ruling.possession;
+        this.stats.fumbleLost = ball.lastTeam !== ruling.possession;
+        const fumble = this.stats.fumbles && [...this.stats.fumbles].reverse().find(f => f.playerId === ball.fumbledBy.player.id && !f.recoveredBy);
+        if (fumble) fumble.lost = ball.lastTeam !== ruling.possession;
+        this.event('touchback', ball.fumbledBy, null, ruling.rule);
+        this.whistle('touchback', exit); return;
+      } else throw new Error('Missing native end-zone impetus/momentum fact');
+    }
+    this.whistle('oob', { x: spotX, y: exit.y });
   }
 
   private checkWhistle(): void {
@@ -915,10 +1166,20 @@ export class PlaySim {
   finishCarry(kind: 'tackle' | 'oob' | 'slide', spot: Vec2): void {
     const c = this.carrier;
     if (!c) return;
-    if (c.team === 'D' && this.possession === 'D' && spot.x >= OPP_GOAL_X) {
-      this.event('touchback', c);
-      this.whistle('touchback', spot);
-      return;
+    const ownEndZone = c.team === 'O' ? spot.x <= OWN_GOAL_X : spot.x >= OPP_GOAL_X;
+    if (ownEndZone && this.acquisition?.team === c.team) {
+      const origin = this.acquisition;
+      if (origin.momentumRetained) {
+        this.event('momentum', c, null, '11-5-1: original momentum; ball at acquisition');
+        this.whistle(kind, { x: momentumDeadBallSpot(origin.spotX, c.team), y: spot.y }); return;
+      }
+      if (origin.impetusTeam !== c.team) {
+        this.event('touchback', c); this.whistle('touchback', spot); return;
+      }
+    } else if (ownEndZone && c.team === 'D' && !this.acquisition) {
+      // Historical restored tapes lack the new acquisition history.
+      this.ruleLimitations.add('11-5/6: restored end-zone possession lacks impetus/momentum history');
+      this.event('touchback', c); this.whistle('touchback', spot); return;
     }
     // Sack: QB tackled behind the LOS on a pass play before throwing.
     if (kind === 'tackle' && c === this.qb && this.isPass && this.throwAt < 0 && spot.x < this.los && !this.scrambled) {
@@ -932,8 +1193,9 @@ export class PlaySim {
     if (this.bond) this.stats.tacklers = this.bond.tacklers.map((t) => t.player.id);
     // A safety keeps the underlying sack/tackle attribution. The physical
     // stop remains at spot; statistical yardage is bounded at the goal plane.
-    if (c.team === 'O' && this.possession === 'O' && spot.x <= OWN_GOAL_X) {
+    if (ownEndZone) {
       this.scoreKind = 'safety';
+      this.scoreTeam = c.team === 'O' ? 'D' : 'O';
       this.event('safety', c);
       this.whistle('safety', spot);
       return;
@@ -965,6 +1227,7 @@ export class PlaySim {
     if (this.scoreKind === 'TD' && !turnover) yards = OPP_GOAL_X - this.los;
     if (this.scoreKind === 'safety' && !turnover) yards = OWN_GOAL_X - this.los;
     const s = this.stats;
+    s.missedTacklesBy = Object.fromEntries(this.agents.map(a => [a.player.id, a.missedTackles]));
     const segs = this.segments;
     const offTD = this.scoreKind === 'TD' && !turnover;
     // The offense's last possession: on a lost fumble, its rush or reception
@@ -994,8 +1257,21 @@ export class PlaySim {
       }
       if (this.firstContactX !== null) s.yardsBeforeContact = this.firstContactX - this.los;
     }
-    const clockStops = this.outcome === 'incomplete' || this.outcome === 'oob' || this.outcome === 'touchdown' || this.outcome === 'safety' || this.outcome === 'touchback' || turnover;
+    const clockStops = this.outcome === 'incomplete' || this.outcome === 'oob' || this.outcome === 'touchdown' || this.outcome === 'safety' || this.outcome === 'touchback' || turnover || segs.some(s => s.team === 'D');
+    // End-zone enforcement needs the impetus/momentum of the run containing
+    // the foul. Complete only the final acquisition phase from native history;
+    // never give an earlier return the later possessor's facts or invent facts
+    // for historical saved states without acquisition evidence.
+    const acquisition = this.acquisition;
+    const penalties = this.penalties.map(p => acquisition?.team === this.possession
+      && p.possessionChanges === this.possessionChanges && this.possessionChanges > 0
+      ? { ...p, impetusTeam: p.impetusTeam ?? acquisition.impetusTeam,
+        attemptedAdvance: p.attemptedAdvance ?? acquisition.attemptedAdvance,
+        momentumSpotX: p.momentumSpotX ?? (acquisition.momentumRetained
+          ? momentumDeadBallSpot(acquisition.spotX, acquisition.team) : undefined) }
+      : p);
     return {
+      rulesEdition: 'NFL-2026',
       outcome: this.outcome ?? 'timeout',
       possession: this.possession,
       turnover,
@@ -1012,11 +1288,13 @@ export class PlaySim {
       events: this.events,
       frames: this.record ? this.frames : undefined,
       telemetry: this.trace.data,
-      penalty: this.penalty,
-      penalties: this.penalties.length ? [...this.penalties] : undefined,
+      penalty: penalties.find(p => p.id === this.penalty?.id) ?? this.penalty,
+      penalties: penalties.length ? penalties : undefined,
       foulRecords: this.foulRecords.length ? [...this.foulRecords] : undefined,
       ruleLimitations: this.ruleLimitations.size ? [...this.ruleLimitations] : undefined,
       statsBeforeIllegalPass: this.statsBeforeIllegalPass,
+      segmentsBeforeIllegalPass: this.segmentsBeforeIllegalPass,
+      possessionSnapshots: this.possessionSnapshotRecords,
     };
   }
 }
