@@ -44,6 +44,16 @@ Use the same standard for changes that help either offense or defense. Reduced
 YAC, more tackles, fewer explosives, a closer NFL mean and an unchanged baseline
 are observations, not definitions of improvement.
 
+**NFL legality is distinct from physical coherence.** For an affected blocking,
+contact or pass mechanism, use the relevant editioned rule and native achieved
+facts in [NFL rules and officiating](NFL_RULES.md). A known illegal technique
+cannot support a legal-football improvement claim. An absent flag, proximity,
+block duration or NFL-looking motion does not establish legality. If a decisive
+fact or detector is missing, state that specific limit in Evidence/Risk rather
+than silently calling the act legal or inventing a foul. This adds no all-rule
+worksheet, automatic NFL query or full-game gate; independent bounded fixes
+can continue without a claim that unsupported rules have been certified.
+
 ## Declare the contract before inspecting candidate results
 
 Start with the one question and what observable answer would support or disprove
