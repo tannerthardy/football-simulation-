@@ -996,3 +996,8 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+
+### Big integration movement extraction — active 2026-10-20
+
+Integration subagent `movement_composition` owns only portable #181/#182, #183/#186 and #184 source/test seams in this isolated checkout, and independent narrow #175/#176 contract review. Main accepted development remains `2c98bed94adad8087c65f381d4090444ad283985`. No shared suite, games, default activation or remote merge here; root Integration owns final combined verification.
