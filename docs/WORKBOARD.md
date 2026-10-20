@@ -1,5 +1,17 @@
 # Current work ownership
 
+## NFL rule coverage and implementation plan — 2026-10-20 America/Phoenix
+
+CEO owns documentation/coverage-index publication only on
+`codex/nfl-rules-coverage-2026-10-20`, based on accepted `2c98bed9`.
+Scope: `docs/NFL_RULES.md`, its dated readiness report, the source-backed rule
+index, and small links in existing BEHAVIOR_REVIEW/NFL_DATA/ISSUES/WORKBOARD.
+Three read-only lanes checked adopted Measurement process, accepted runtime
+coverage and the official 2026 rulebook; no engine/suite/game execution.
+Rules/Flex, Run/Physics and Pass implementation prompts are proposed, not active
+source claims. Owners must claim actual functions before implementing; no new
+merge/default/flag activation or other worker branch authority is granted.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on

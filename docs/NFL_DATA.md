@@ -21,6 +21,13 @@ Four NFL seasons are measured: 2022 is the reference (every play, all 22
 players, with PFF labels), and 2017, 2021 and 2023 are shown beside it so you
 can see whether a number is stable across seasons before trusting it.
 
+For legality, use [the NFL rules contract and coverage register](NFL_RULES.md).
+Tracking proximity, interposition, duration or synthesized film facing cannot
+certify holding, blindside/head contact or a legal catch. Match the rule edition
+to the question: 2022 motion evidence is not automatic 2026 legal precedent.
+Keep decisive native facts and unsupported branches explicit in the existing
+review, without an extra query or full-game requirement.
+
 ## Commands
 
 For routine football investigations, start with the

@@ -51,6 +51,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
+| [RULES-001](#RULES-001) | NFL legality/detection/enforcement coverage is incomplete; absent flags cannot certify tested techniques | Confirmed implementation gaps, not a measured illegal-play rate | Plan and official 2026 index prepared; runtime work not delivered | Rules/Flex with Run/Physics and Pass; first existing-holding migration plus a native newly enforced predicate and legal control; [contracts and register](NFL_RULES.md) |
 | [RUN-009](#RUN-009) | Mesh tempo/geometry and repeated runner-passed re-grabs | Recorded mechanism changes; causal/football interpretation pending | Draft #153; not an accepted six-flag package | Independent Run/contact dispositions, Measurement semantics and author-published saved witnesses; [review packet](reviews/run-game-v3-review-intake.md) |
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Cadence and observed passed-exchange secure/carry | Cadence63 / continuation136 accepted | Bounded scope resolved via151; initial spacing and broader recovery separate | Run; preserve real transfer-first reach/ordinary PA and source-qualified composed witness |
@@ -100,6 +101,30 @@ trials remain. [Exact scopes, evidence pins and bounded prompts](reviews/run-gam
 No engine/flags/baseline changes or new simulation/suite. Return condition:
 nonauthor disposition of an isolated scope, then exact Integration verification
 if appropriate; parked Physics and other blocked items remain independent.
+
+<a id="RULES-001"></a>
+## RULES-001 — NFL legality and officiating coverage
+
+At accepted `2c98bed94adad8087c65f381d4090444ad283985`, only offensive holding
+has a native live-play foul producer; DPI is type-only, presnap false start/offside
+are sampled abstractions, and the single-penalty result lacks general multiple/
+offset/possession-phase enforcement. Contact/catch/pass/fumble rules remain
+partly reduced. This is not evidence that every unflagged action is illegal.
+
+The [rules contract](NFL_RULES.md), [current source review/owner prompts](reviews/nfl-rule-readiness-2026-10-20.md)
+and [official 2026 coverage index](../data/reviews/current/nfl-rules-coverage-2026.json)
+record all chapters/sections/explicit articles, important exceptions, current
+implementation facts and unsupported branches. Indexing is not implementation.
+Known illegal techniques cannot establish legal football improvement; missing
+decisive facts remain unresolved, without a new all-rule test gate.
+
+First proposed deliveries: Rules/Flex migrates holding through incident/call
+lists and legal enforcement options; Run/Physics qualifies supported achieved
+block/hold predicates; Pass supplies an independently reviewable native prethrow-
+blocking OPI branch and legal control, followed by distinct DPI/illegal-contact
+slices. Nonauthor legal/native-path review precedes authoritative activation;
+Integration retains one exact combined verification. Existing owners continue
+independently; no code claims, runtime changes, new games or merge in this plan.
 
 ## Accepted70b4 saved-cohort additions — source-qualified audit
 
