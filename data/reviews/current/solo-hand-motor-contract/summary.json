@@ -1,0 +1,685 @@
+{
+  "question": "Do two legacy six-tick solo-hand trace hash failures reflect new rule metadata, unintended composition, or the explicitly approved yaw motor?",
+  "sources": {
+    "accepted": {
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "validationSha256": "62d6c0742e17a6a56ccb0a2b8d09632832bbee194a226656887e04ccbbdd188d",
+      "elapsedSeconds": 1.6660259839999998,
+      "exitCode": 0
+    },
+    "motor": {
+      "commit": "7869fb686148d5b3210b2e593c61ecea97c7f342",
+      "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "validationSha256": "831ee594d40c6352cb16eb05fbe8d9a6dfc46f03089d605dd97daee32feab9de",
+      "elapsedSeconds": 1.597269011,
+      "exitCode": 1
+    },
+    "combined": {
+      "commit": "075e2148a8c94c80ba90743a324e4670091998c0",
+      "sourceSha256": "889bbd59981b680afb915d96108acbbe8f3ebe5fc395446f82d83b8dfe655f6a",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "validationSha256": "f181bed85cc08f3b791b5a417cd8857b6da9df5d1a92f28703bd2c062ae5c1a2",
+      "elapsedSeconds": 1.965320016,
+      "exitCode": 1
+    }
+  },
+  "cases": {
+    "run": {
+      "fullTraceHashes": {
+        "accepted": "1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2ecd",
+        "motor": "ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1",
+        "combined": "ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1"
+      },
+      "firstDifferentTick": 6,
+      "policyExactlyIdentical": true,
+      "motorAndCombinedExactlyIdentical": true,
+      "nextRng": 922191607,
+      "acceptedVersusMotorDifferences": [
+        {
+          "path": ".trace[5].bodies[3].pos.x",
+          "left": 40.04850580309781,
+          "right": 40.04850580310177
+        },
+        {
+          "path": ".trace[5].bodies[3].pos.y",
+          "left": 26.679612206268597,
+          "right": 26.679612209555625
+        },
+        {
+          "path": ".trace[5].bodies[3].vel.x",
+          "left": 0.5800141697658815,
+          "right": 0.5800141702397192
+        },
+        {
+          "path": ".trace[5].bodies[3].vel.y",
+          "left": 0.03379322898820644,
+          "right": 0.033793624856371836
+        },
+        {
+          "path": ".trace[5].bodies[3].energy",
+          "left": 0.9947672803989102,
+          "right": 0.9947672804168107
+        },
+        {
+          "path": ".trace[5].bodies[3].support.xi.x",
+          "left": -0.005464542387647846,
+          "right": -0.005464542382882934
+        },
+        {
+          "path": ".trace[5].bodies[3].support.xi.y",
+          "left": 0.0006823238218488816,
+          "right": 0.0006823277871043235
+        },
+        {
+          "path": ".trace[5].bodies[3].support.lean.x",
+          "left": 845.027349906573,
+          "right": 845.0273498277706
+        },
+        {
+          "path": ".trace[5].bodies[3].support.lean.y",
+          "left": -145.38554207181352,
+          "right": -145.38560749987337
+        },
+        {
+          "path": ".trace[5].bodies[3].support.load.x",
+          "left": -660.053744287839,
+          "right": -660.0537417502276
+        },
+        {
+          "path": ".trace[5].bodies[3].support.load.y",
+          "left": 256.11231399877136,
+          "right": 256.11442867017365
+        },
+        {
+          "path": ".trace[5].bodies[3].support.felt.x",
+          "left": -665.7519408380323,
+          "right": -665.7519394395612
+        },
+        {
+          "path": ".trace[5].bodies[3].support.felt.y",
+          "left": 43.50211454141478,
+          "right": 43.50328402096975
+        },
+        {
+          "path": ".trace[5].bodies[3].support.feltTip.x",
+          "left": -0.8726689920648599,
+          "right": -0.872668990231792
+        },
+        {
+          "path": ".trace[5].bodies[3].support.feltTip.y",
+          "left": 0.05699484881670094,
+          "right": 0.056996381730345214
+        },
+        {
+          "path": ".trace[5].bodies[3].support.causes.contact",
+          "left": 0.0070415596932568835,
+          "right": 0.007041555731024373
+        },
+        {
+          "path": ".trace[5].bodies[3].support.accel.x",
+          "left": 2.8560223141909886,
+          "right": 2.856022323840107
+        },
+        {
+          "path": ".trace[5].bodies[3].support.accel.y",
+          "left": -0.688680457342415,
+          "right": -0.6886723874820402
+        },
+        {
+          "path": ".trace[5].bodies[3].support.tipAccel.x",
+          "left": 0.010836171070041338,
+          "right": 0.010836172614572004
+        },
+        {
+          "path": ".trace[5].bodies[3].support.tipAccel.y",
+          "left": -0.05580879910043668,
+          "right": -0.05580750587470813
+        },
+        {
+          "path": ".trace[5].bodies[4].pos.x",
+          "left": 40.447143023237835,
+          "right": 40.447143013855055
+        },
+        {
+          "path": ".trace[5].bodies[4].pos.y",
+          "left": 27.27069430681299,
+          "right": 27.270694316473314
+        },
+        {
+          "path": ".trace[5].bodies[4].vel.x",
+          "left": -0.1617389869562312,
+          "right": -0.16174003159879952
+        },
+        {
+          "path": ".trace[5].bodies[4].vel.y",
+          "left": 0.17266176343828735,
+          "right": 0.17266284249369818
+        },
+        {
+          "path": ".trace[5].bodies[4].facing",
+          "left": -0.00019807549165561295,
+          "right": -0.009682541099316239
+        },
+        {
+          "path": ".trace[5].bodies[4].energy",
+          "left": 0.9986494190981882,
+          "right": 0.9986494190908137
+        },
+        {
+          "path": ".trace[5].bodies[4].support.xi.x",
+          "left": 0.0007869831736248904,
+          "right": 0.0007869860739190259
+        },
+        {
+          "path": ".trace[5].bodies[4].support.xi.y",
+          "left": -0.0008424087208455148,
+          "right": -0.0008424117090169175
+        },
+        {
+          "path": ".trace[5].bodies[4].support.load.x",
+          "left": -147.69785772714428,
+          "right": -147.70545631667636
+        },
+        {
+          "path": ".trace[5].bodies[4].support.load.y",
+          "left": 153.6854493023762,
+          "right": 153.69336137272583
+        },
+        {
+          "path": ".trace[5].bodies[4].support.felt.x",
+          "left": -327.18507197306207,
+          "right": -327.18807281710497
+        },
+        {
+          "path": ".trace[5].bodies[4].support.felt.y",
+          "left": 348.21788642776863,
+          "right": 348.22098841354403
+        },
+        {
+          "path": ".trace[5].bodies[4].support.peak",
+          "left": 0.0011317930583701092,
+          "right": 0.0011317971459080226
+        },
+        {
+          "path": ".trace[5].bodies[4].support.feltTip.x",
+          "left": 0.10617513088571165,
+          "right": 0.10617610469239266
+        },
+        {
+          "path": ".trace[5].bodies[4].support.feltTip.y",
+          "left": -0.11300050899406011,
+          "right": -0.11300151562233846
+        },
+        {
+          "path": ".trace[5].bodies[4].support.causes.contact",
+          "left": 0.0011557973253365536,
+          "right": 0.001155801510019465
+        },
+        {
+          "path": ".trace[5].bodies[4].support.accel.x",
+          "left": -2.2611900037712616,
+          "right": -2.2612107427325836
+        },
+        {
+          "path": ".trace[5].bodies[4].support.accel.y",
+          "left": 2.4065486826050972,
+          "right": 2.4065701205612493
+        },
+        {
+          "path": ".trace[5].bodies[4].support.tipAccel.x",
+          "left": 0.04871561809358269,
+          "right": 0.04871641719513214
+        },
+        {
+          "path": ".trace[5].bodies[4].support.tipAccel.y",
+          "left": -0.05144835938476894,
+          "right": -0.051449186198559024
+        },
+        {
+          "path": ".trace[5].bodies[4].spin",
+          "left": 0.3769700490360428,
+          "right": -0.276136348527606
+        },
+        {
+          "path": ".trace[5].bodies[14].pos.x",
+          "left": 40.71627702871151,
+          "right": 40.71627700117663
+        },
+        {
+          "path": ".trace[5].bodies[14].pos.y",
+          "left": 26.678747490478514,
+          "right": 26.67874749373099
+        },
+        {
+          "path": ".trace[5].bodies[14].vel.x",
+          "left": -0.4675899166365245,
+          "right": -0.46759279066314563
+        },
+        {
+          "path": ".trace[5].bodies[14].vel.y",
+          "left": 0.03281428082445573,
+          "right": 0.03281452994813944
+        },
+        {
+          "path": ".trace[5].bodies[14].facing",
+          "left": 3.1414635111978173,
+          "right": 3.1312828997789595
+        },
+        {
+          "path": ".trace[5].bodies[14].energy",
+          "left": 0.9944643046717643,
+          "right": 0.9944642913248605
+        },
+        {
+          "path": ".trace[5].bodies[14].support.xi.x",
+          "left": 0.013089229924726692,
+          "right": 0.013089247159779492
+        },
+        {
+          "path": ".trace[5].bodies[14].support.xi.y",
+          "left": -0.006040093173030428,
+          "right": -0.006040117023680068
+        },
+        {
+          "path": ".trace[5].bodies[14].support.lean.x",
+          "left": -1053.5469372534878,
+          "right": -1053.57384391823
+        },
+        {
+          "path": ".trace[5].bodies[14].support.lean.y",
+          "left": 340.03936977349,
+          "right": 340.05180171099954
+        },
+        {
+          "path": ".trace[5].bodies[14].support.load.x",
+          "left": 807.7516020149833,
+          "right": 807.7591980669039
+        },
+        {
+          "path": ".trace[5].bodies[14].support.load.y",
+          "left": -409.79776330114754,
+          "right": -409.8077900428995
+        },
+        {
+          "path": ".trace[5].bodies[14].support.felt.x",
+          "left": 992.9370128110943,
+          "right": 992.940012256666
+        },
+        {
+          "path": ".trace[5].bodies[14].support.felt.y",
+          "left": -391.72000096918333,
+          "right": -391.72427243451375
+        },
+        {
+          "path": ".trace[5].bodies[14].support.peak",
+          "left": 0.012787547142000219,
+          "right": 0.012787569888501825
+        },
+        {
+          "path": ".trace[5].bodies[14].support.feltTip.x",
+          "left": 2.0376490752502634,
+          "right": 2.037655230455462
+        },
+        {
+          "path": ".trace[5].bodies[14].support.feltTip.y",
+          "left": -0.8038322081895591,
+          "right": -0.8038409737247155
+        },
+        {
+          "path": ".trace[5].bodies[14].support.causes.contact",
+          "left": 0.01564416944880351,
+          "right": 0.015644197397750262
+        },
+        {
+          "path": ".trace[5].bodies[14].support.accel.x",
+          "left": -0.5666384313407852,
+          "right": -0.5666957720175925
+        },
+        {
+          "path": ".trace[5].bodies[14].support.accel.y",
+          "left": -0.3496529527337586,
+          "right": -0.3496480757810271
+        },
+        {
+          "path": ".trace[5].bodies[14].support.tipAccel.x",
+          "left": 0.2919266226686333,
+          "right": 0.29193167354026106
+        },
+        {
+          "path": ".trace[5].bodies[14].support.tipAccel.y",
+          "left": -0.23799869509473062,
+          "right": -0.23800594828280577
+        },
+        {
+          "path": ".trace[5].bodies[14].spin",
+          "left": 0.3031883853172862,
+          "right": -0.29402382518605313
+        },
+        {
+          "path": ".trace[5].report.groundImpulse[3].x",
+          "left": 51.752562149893286,
+          "right": 51.752562149413315
+        },
+        {
+          "path": ".trace[5].report.groundImpulse[3].y",
+          "left": -8.527007809149525,
+          "right": -8.52700820571641
+        },
+        {
+          "path": ".trace[5].report.groundImpulse[14].x",
+          "left": -49.494766167845924,
+          "right": -49.49531877485533
+        },
+        {
+          "path": ".trace[5].report.groundImpulse[14].y",
+          "left": 18.9632167528528,
+          "right": 18.963465009971262
+        },
+        {
+          "path": ".trace[5].report.groundWork[3]",
+          "left": 26.57769148117698,
+          "right": 26.577691066431207
+        },
+        {
+          "path": ".trace[5].report.groundWork[14]",
+          "left": 25.833786942604895,
+          "right": 25.834083827382496
+        },
+        {
+          "path": ".trace[5].report.groundYawImpulse[4]",
+          "left": 5.310427645608936,
+          "right": 2.139386696696488
+        },
+        {
+          "path": ".trace[5].report.groundYawImpulse[14]",
+          "left": 4.729907200250682,
+          "right": 2.0809915263151986
+        },
+        {
+          "path": ".trace[5].report.groundYawWork[4]",
+          "left": -0.3224297105064294,
+          "right": -0.8423879280894664
+        },
+        {
+          "path": ".trace[5].report.groundYawWork[14]",
+          "left": -0.47855017196076244,
+          "right": -0.8724732112355195
+        },
+        {
+          "path": ".trace[5].report.armImpulse[3]",
+          "left": 35.64006773039819,
+          "right": 35.640074502116335
+        },
+        {
+          "path": ".trace[5].report.work.after",
+          "left": 44.21478829202997,
+          "right": 44.04301728185073
+        },
+        {
+          "path": ".trace[5].report.work.hands",
+          "left": -34.466130236046176,
+          "right": -34.46615325250283
+        },
+        {
+          "path": ".trace[5].report.work.contacts",
+          "left": -7.169498213299722,
+          "right": -6.427661420196403
+        },
+        {
+          "path": ".trace[5].report.work.residual",
+          "left": -5.3290705182007514e-14,
+          "right": 8.881784197001252e-15
+        },
+        {
+          "path": ".trace[5].report.contacts[0].impulse",
+          "left": 32.5639327630089,
+          "right": 32.56413787908832
+        },
+        {
+          "path": ".trace[5].report.maxPenetration",
+          "left": 0.00020268785324750738,
+          "right": 0.00020268886146301845
+        },
+        {
+          "path": ".actual",
+          "left": "1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2ecd",
+          "right": "ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1"
+        }
+      ]
+    },
+    "pass": {
+      "fullTraceHashes": {
+        "accepted": "d3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55edc",
+        "motor": "ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e",
+        "combined": "ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e"
+      },
+      "firstDifferentTick": 6,
+      "policyExactlyIdentical": true,
+      "motorAndCombinedExactlyIdentical": true,
+      "nextRng": 3681720301,
+      "acceptedVersusMotorDifferences": [
+        {
+          "path": ".trace[5].bodies[4].facing",
+          "left": -0.0017352466476939108,
+          "right": -0.011177135758259717
+        },
+        {
+          "path": ".trace[5].bodies[4].spin",
+          "left": 0.4129145101561303,
+          "right": -0.3535437695593277
+        },
+        {
+          "path": ".trace[5].bodies[14].facing",
+          "left": 3.1413482898374787,
+          "right": 3.12969148872037
+        },
+        {
+          "path": ".trace[5].bodies[14].spin",
+          "left": 0.3973370976134757,
+          "right": -0.3764455206668954
+        },
+        {
+          "path": ".trace[5].report.groundYawImpulse[4]",
+          "left": 6.181809781649252,
+          "right": 2.460381324107445
+        },
+        {
+          "path": ".trace[5].report.groundYawImpulse[14]",
+          "left": 5.825342421346641,
+          "right": 2.393224513772012
+        },
+        {
+          "path": ".trace[5].report.groundYawWork[4]",
+          "left": -0.42907858801153176,
+          "right": -1.1094175709480085
+        },
+        {
+          "path": ".trace[5].report.groundYawWork[14]",
+          "left": -0.4319828966615428,
+          "right": -1.1490396270532952
+        },
+        {
+          "path": ".trace[5].report.work.after",
+          "left": 188.44059873769083,
+          "right": 188.29427557821177
+        },
+        {
+          "path": ".trace[5].report.work.contacts",
+          "left": -14.161152954040823,
+          "right": -12.910080400191646
+        },
+        {
+          "path": ".trace[5].report.work.residual",
+          "left": 2.842170943040401e-14,
+          "right": 1.4210854715202004e-14
+        },
+        {
+          "path": ".actual",
+          "left": "d3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55edc",
+          "right": "ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e"
+        }
+      ]
+    }
+  },
+  "newExecutions": {
+    "fixtures": 6,
+    "physicsTicksPerFixture": 6,
+    "fullGames": 0,
+    "sharedSuite": false
+  },
+  "elapsedCommandSeconds": 5.228615011,
+  "interpretation": "Accepted current source exactly reproduces both historic full hashes. The isolated approved motor and complete combined source produce exactly identical full normalized traces. Requests, control and next RNG remain exact across all sources. Physical divergence first occurs in tick six under changed yaw response. Historical full physical equality is source-qualified; no production regression or rule metadata contamination is demonstrated by these two failures. This does not adjudicate separate mirror, helper or gameplay failures.",
+  "artifacts": {
+    "motor-pass.json.gz": "a5e30569b5abb657bc9b1a2184365c0216f6ecff6c89058faab5b70f9699823a",
+    "accepted-receipt.json": "60bf7c5690448e20cb40bffb61629a4bddd178d871b38d6cc8db88feb55f5675",
+    "accepted.log": "bf6274c405f3a4115cb4a9b5b407ee316008e3ad32c59b9f0c5aa2d66a57d9c9",
+    "combined-pass.json.gz": "a5e30569b5abb657bc9b1a2184365c0216f6ecff6c89058faab5b70f9699823a",
+    "combined.log": "2fd034ab99d3de43ff29f3749f207eb814556095c3f19327fc5b2b34bf5cf0d8",
+    "accepted-run.json.gz": "09ef6aa791c180c5911aa8ee591371f10c82b10a88b19ab1d73ac0b77cf2d962",
+    "combined-receipt.json": "ac692b8a32858493d895f3fc92ef2fda0ad7c2982da1a0d5eab396a3e6c1e047",
+    "motor-run.json.gz": "308709bbdda54f19c2220b14bdcdd85936413a0dcae33a179e9af338ac1c5004",
+    "combined-run.json.gz": "308709bbdda54f19c2220b14bdcdd85936413a0dcae33a179e9af338ac1c5004",
+    "motor.log": "433541a733fdc8a673af9834ab8e1c385f91a0960cf27a83ce44862d44026132",
+    "motor-receipt.json": "7c5b457c1a98fa6aa0f701c12e47e379eab3f23153bd5f3c940386e1118b8b6e",
+    "capture.test.ts.txt": "eeaf3663a05c8038c3667e46367ca2693cba1dba510c6162440455575050b49f",
+    "accepted-pass.json.gz": "b5f2257f157826b6473be486a160a4ef92ae0eab668ec52e7f006027afc66894"
+  }
+}

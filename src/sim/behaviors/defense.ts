@@ -19,8 +19,8 @@ import { TRACKING_REACH_BONUS } from '../catching.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
-import { showsBlock } from '../coverage-cues.js';
-import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
+import { observedBlocking, showsBlock } from '../coverage-cues.js';
+import { executeRunFit, type RunFitRead } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -151,8 +151,8 @@ export class Blitzer implements Behavior {
  * Gap-sound run defense: defend the assigned gap until the carrier commits,
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
-export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, keyed?: KeyedRunFit): MoveCommand {
-  return executeRunFit(a, sim, gap, gapSign, keyed);
+export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead): MoveCommand {
+  return executeRunFit(a, sim, gap, gapSign, read);
 }
 
 export class RunDefender implements Behavior {
@@ -197,6 +197,8 @@ export class ManCoverage implements Behavior {
   private readonly observation = new RouteObservation();
   private readonly depth = new DeepCoverage();
   private keyedFitRecorded = false;
+  /** Shallow blocking evidence admitted this marker's current support duty. */
+  private blockingRun = false;
 
   /** The technique actually in use, without updating receiver observation. */
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
@@ -220,7 +222,18 @@ export class ManCoverage implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
-    if (sim.ball.kind === 'air') return playBall(a, sim, R, () => this.coverMan(a, sim));
+    if (sim.ball.kind === 'air') {
+      let continuing = false;
+      const command = playBall(a, sim, R, () => {
+        continuing = true;
+        return this.coverMan(a, sim);
+      });
+      // The existing ball controller recognized flight, rather than invoking
+      // the continuation. Retire support without another sighting or private
+      // release-time gate.
+      if (!continuing) this.blockingRun = false;
+      return command;
+    }
     return this.coverMan(a, sim);
   }
 
@@ -252,15 +265,40 @@ export class ManCoverage implements Behavior {
     // not discard pursuit. No private scramble/handoff state is required.
     const qbCue = sim.see(a, sim.qb);
     if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
+    const back = sim.slot('RB');
+    const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
+    // Do not extend this duty where its explicit information input is absent.
+    // Empty/split-back formations keep their pre-existing shallow policy.
+    if (!installedBackfield) this.blockingRun = false;
+    const run = believesRun(sim, a);
+    const blockingLook = this.blockingRun
+      ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
+    // Once admitted, this informed duty owns its backfield interpretation.
+    // A hidden holder change must not switch it through the legacy live-
+    // carrier pursuit gate. Recognized flight already retired it in update.
+    if (this.blockingRun && run && blockingLook) return this.blockingSupport(a, sim, qbCue);
+    this.blockingRun = false;
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    const blockingLook = showsBlock(a, sim, R, receiverCue);
-    if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
+    if (run && blockingLook) {
+      this.blockingRun = installedBackfield;
+      return this.blockingSupport(a, sim, qbCue);
+    }
 
     return this.trackReceiver(a, sim);
+  }
+
+  private blockingSupport(a: Agent, sim: PlaySim, qbCue: Perceived): MoveCommand {
+    const back = sim.slot('RB');
+    // A block read admits installed support, not private holder knowledge.
+    // Use the same acquired/expected backfield in held and unrecognized
+    // flight. The fit retains its existing failed-exchange retirement.
+    const read = back && sim.offAlign.spots[back.slot]?.backfield
+      ? { backfield: { back, backCue: sim.see(a, back), qbCue } } : undefined;
+    return runFit(a, sim, this.gap, this.gapSign, read);
   }
 
   /** Release movement only; provisional zone readers retain their own

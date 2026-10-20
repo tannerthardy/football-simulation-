@@ -21,6 +21,13 @@ Four NFL seasons are measured: 2022 is the reference (every play, all 22
 players, with PFF labels), and 2017, 2021 and 2023 are shown beside it so you
 can see whether a number is stable across seasons before trusting it.
 
+For legality, use [the NFL rules contract and coverage register](NFL_RULES.md).
+Tracking proximity, interposition, duration or synthesized film facing cannot
+certify holding, blindside/head contact or a legal catch. Match the rule edition
+to the question: 2022 motion evidence is not automatic 2026 legal precedent.
+Keep decisive native facts and unsupported branches explicit in the existing
+review, without an extra query or full-game requirement.
+
 ## Commands
 
 For routine football investigations, start with the
@@ -34,6 +41,14 @@ The commands below build archives/reference tables or collect a broad sim
 sample. They are **not required per investigation or patch**. Reuse existing
 converted rows and query where the verified data already lives; return the
 small result and its provenance rather than downloading another archive.
+
+For a small complete run-sequence comparison, use the
+[fixed-identity run mechanism guide](reviews/run-mechanism-reference.md).
+It follows useful blocker geometry through runner arrival, lateral movement,
+second-level access, pursuit and contact while preserving stored velocity,
+missing samples, early defensive wins and known endings. Its bounded NFL query
+uses the existing 12-run selection; source-specific contact/load evidence stays
+separate. Check the access receipt before assuming a host-local raw path exists.
 
 ```sh
 npm run nfl:fetch                 # download + checksum + extract the archives (one-time, ~12 GB)

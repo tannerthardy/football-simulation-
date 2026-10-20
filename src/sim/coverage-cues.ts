@@ -6,6 +6,16 @@ import type { PlaySim } from './playsim.js';
 export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r),
   contactTargets: readonly Agent[] = sim.defense): boolean {
   if (cue.pos.x - sim.los > 2) return false;
+  return observedBlocking(a, sim, r, cue, contactTargets);
+}
+
+/** Current acquired pads/contact evidence, independent of shallow admission.
+ * A marker already executing support can keep recognizing his blocker after
+ * he crosses that admission boundary. This alone does not admit a deep route
+ * to blocking in recognition or match-release classification.
+ */
+export function observedBlocking(a: Agent, sim: PlaySim, r: Agent, cue: Perceived,
+  contactTargets: readonly Agent[] = sim.defense): boolean {
   // Pads and hand-contact geometry are observable. Never inspect the route,
   // offensive call or engagement bookkeeping to infer intent.
   // A lead/climbing blocker can approach faster than an engaged lineman.

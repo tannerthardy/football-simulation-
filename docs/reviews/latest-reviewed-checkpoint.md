@@ -1,6 +1,8 @@
 # Latest independently reviewed checkpoint
 
-Verified on 2026-10-19 America/Phoenix; publication prepared for routine merge.
+Verified and adopted through #168 on 2026-10-19 America/Phoenix.
+Actual develop `2c98bed94adad8087c65f381d4090444ad283985` preserves the passing protected tree;
+[merged-pin receipt](../../data/reviews/current/pr168-merge.json).
 Accepted parent `f4146275ce7539816bf57b4ed55a0d2be10e48c7`, canonical queue
 `9a6bb795179a4b2e61ed59d25bcf23ca5e40f423`. Integration owns minimal compatible
 extraction and one exact combined verification. Original evidence and branches
@@ -224,5 +226,5 @@ typecheck/build/all-TypeScript/Python phases once on the exact freeze. Existing
 suite game assertions run normally; no additional game campaign, NFL collection
 or roster/panel multiplication. Contributor focused/native receipts remain
 source-qualified and are reused within their stated limits. Actual verification,
-publication and merged pins follow in the final receipt; develop remainsf414
-until acceptance. A blocked candidate holds only itself.
+publication and merged pins are in the final receipt and actual merged-pin record
+above; develop is now2c98bed9. A blocked candidate holds only itself.

@@ -1,0 +1,80 @@
+Profile candidate: run-game-2026-10-13, commit 436e9e61bea24170addcf4ff748164de09fb9c19, source 4b4b3443b82f18e562bc69a5a01f6a5856da4d9b1277cea4c86b884a88dc52c2
+Running /workspace/.football-tools/node-v22.23.3-linux-x64/bin/node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/motion-contact.test.ts test/puller-acquired-corner.test.ts test/puller-clearance-command.test.ts test/puller-kick-transition.test.ts test/counter-gh.test.ts
+
+ RUN  v3.2.4 /workspace/football-big-motion-diagnostic
+
+ ❯ |core| test/motion-contact.test.ts (9 tests | 2 failed) 433ms
+   ✓ reduced split-zone snap-time momentum witness > rejects invalid physical inputs 2ms
+   × reduced split-zone snap-time momentum witness > changes only initial TE movement and counts its real added kinetic energy 145ms
+     → expected { kind: 'pull', target: 11, …(3) } to deeply equal { kind: 'pull', target: 11, …(3) }
+   ✓ reduced split-zone snap-time momentum witness > full recording and actual-read instrumentation leave physical history and RNG identical 87ms
+   ✓ reduced split-zone snap-time momentum witness > existing controllers acquire a reachable block with bounded ordinary force/work budgets 49ms
+   × reduced split-zone snap-time momentum witness > installs both staged sides consistently and permits the existing visible-cue log adjustment 47ms
+     → expected undefined to be 'kick target crossed inside shoulder' // Object.is equality
+   ✓ reduced split-zone snap-time momentum witness > counts a physically delivered strike as actual contact without inventing a held hand/body block 2ms
+   ✓ reduced split-zone snap-time momentum witness > does not turn an unreachable requested strike into a recorded contact 1ms
+   ✓ reduced split-zone snap-time momentum witness > preserves unreachable high-speed negative instead of prescribing contact 32ms
+   ✓ reduced split-zone snap-time momentum witness > mirrors geometric mistakes and actual contact, without changing their magnitude or strengths 68ms
+ ✓ |core| test/counter-gh.test.ts (14 tests) 78ms
+ ✓ |core| test/puller-acquired-corner.test.ts (16 tests) 64ms
+ ✓ |core| test/puller-clearance-command.test.ts (6 tests) 32ms
+ ✓ |core| test/puller-kick-transition.test.ts (2 tests) 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/motion-contact.test.ts > reduced split-zone snap-time momentum witness > changes only initial TE movement and counts its real added kinetic energy
+AssertionError: expected { kind: 'pull', target: 11, …(3) } to deeply equal { kind: 'pull', target: 11, …(3) }
+
+- Expected
++ Received
+
+@@ -9,11 +9,11 @@
+        "x": 38.6,
+        "y": 28.46666666666667,
+      },
+      {
+        "x": 38.7,
+-       "y": 23.34141093215178,
++       "y": 22.790863568403257,
+      },
+    ],
+    "pullRole": "kick",
+    "target": 11,
+  }
+
+ ❯ test/motion-contact.test.ts:31:33
+     29|     const moving = motionContact(fixture);
+     30|     expect(moving.participants).toEqual(stationary.participants);
+     31|     expect(moving.initial.plan).toEqual(stationary.initial.plan);
+       |                                 ^
+     32|     expect(moving.initial.readyAt).toEqual(stationary.initial.readyAt);
+     33|     expect(moving.initial.end).toEqual(stationary.initial.end);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |core| test/motion-contact.test.ts > reduced split-zone snap-time momentum witness > installs both staged sides consistently and permits the existing visible-cue log adjustment
+AssertionError: expected undefined to be 'kick target crossed inside shoulder' // Object.is equality
+
+- Expected: 
+"kick target crossed inside shoulder"
+
++ Received: 
+undefined
+
+ ❯ test/motion-contact.test.ts:78:25
+     76|       expect(Math.sign(r.initial.end.pos.y - CENTER_Y)).toBe(-side);
+     77|       const log = r.recording?.events.find(e => e.type === 'block_log'…
+     78|       expect(log?.note).toBe('kick target crossed inside shoulder');
+       |                         ^
+     79|       expect(log!.t).toBeLessThan(r.firstAcquisition.t);
+     80|       expect(r.firstHandBodyContact).not.toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 45 passed (47)
+   Start at  22:22:59
+   Duration  3.05s (transform 863ms, setup 0ms, collect 1.60s, tests 627ms, environment 1ms, prepare 269ms)
+
+Validation receipt: out/big-motion/repair-focused-receipt.json; exit 1

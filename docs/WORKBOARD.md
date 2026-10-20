@@ -1,10 +1,47 @@
 # Current work ownership
 
-## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
+## #189 finished-work checkpoint — composition and verification complete
 
-Integration owns only minimal extraction/composition and exact verification on
+Integration composed independently reviewed scopes in its isolated branch;
+exact freeze7d5da0c7 passes3007TS/171Python/typecheck/build and four budgeted
+matched games. One real185integration bug and source-qualified test contracts
+are independently repaired; all initial/intermediate failures remain fetchable.
+No contributor duplicated the shared suite. Root owns publication, final remote/tree comparison and the authorized189
+merge/current-reference handoff. Read the canonical queue for actual adoption.
+Original worker branches/checkouts/evidence and all experimental holds remain.
+[Final scope, receipt and film](reviews/finished-controller-integration.md).
+Actual merged accepted pin is recorded in the canonical queue after adoption;
+owners reconcile at clean checkpoints rather than forced rebases.
+
+## Completed Claude153 intake / pending candidate verification — 2026-10-20 America/Phoenix
+
+Integration owns only the existing review-intake/current queue/status/issues/workboard
+metadata plus new portable-patch/source manifest and delivery records on
+`codex/integration-queue`, from4cc3337d. Accepted2c98bed9 remains unchanged.
+Researchbae3fe80 includes accepted source; no full research ancestry import.
+Temporary-index169+171 preparation touches no worker's index/checkout/engine:
+seven-file/five-runtime patchsourcef3ed945f, not frozen or combined verified.
+172's independently accepted solo-runoff hook also applies in an optional10-file/7-source
+patch; shared offensive/defensive stepRunRep semantic review remains Root's.
+170 diagnostic/tool/test review is separate. Root owns exact combined verification
+when the scoped candidate is accepted; contributors retain their focused receipts.
+
+Existing Physics gait-intent, Catching man-run-continuation and Flex help-aware-pursuit/
+contact ownership remain. Claude supplies the first FORCE_LEAD portable candidate;
+Run independently reviews it and triages unchanged/changed mesh/puller/climb scope;
+Catching triages coverage; Physics owns law/contact validity; Flex reviews spacing;
+Measurement owns changed evidence compatibility; CEO reconciles154 planning.
+These are bounded next checkpoints, not permission to start seven broad studies.
+All seven owner requests are posted on existing PRs, acknowledgment pending. Metadata
+preparation boundary released; Integration retains the next candidate verification.
+No simulations/suite/default activation, branch moves or historical receipt edits.
+[Exact prompts/scope](reviews/run-game-v3-review-intake.md#latest-claude-preparation).
+
+## Completed #168 latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
+
+Integration completed only minimal extraction/composition and exact verification on
 `codex/latest-reviewed-checkpoint`, starting accepted developf4146275 plus queue9a6bb795.
-Six subagents completed independent reviews; exact freeze25a7a591 passes2248 TS/145 Python/typecheck/build in261.757s.13 PR scopes plus narrow153 QB-away/film precision;50 protected files/17 source files.164/165 were removed by normal reverts after preserved combined failures. All44 flags/physical defaults/dependencies unchanged. Root owns only publication/final ref check/routine merge and canonical metadata/owner disposition; no additional simulation campaign. Original owners/checkouts/branches/evidence remain. Assembly boundary releases on actual merged-pin publication. [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json), [scope/risks](reviews/latest-reviewed-checkpoint.md).
+Six subagents completed independent reviews; exact freeze25a7a591 passes2248 TS/145 Python/typecheck/build in261.757s.13 PR scopes plus narrow153 QB-away/film precision;50 protected files/17 source files.164/165 were removed by normal reverts after preserved combined failures. All44 flags/physical defaults/dependencies unchanged. Actual develop2c98bed94adad8087c65f381d4090444ad283985 merged through168 matches publication/passing protected tree. Root published canonical metadata and13 incorporated PR dispositions; no additional simulation campaign. Original owners/checkouts/branches/evidence remain. Assembly boundary released. [Actual pin/owner handoff](../data/reviews/current/pr168-merge.json). [Receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json), [scope/risks](reviews/latest-reviewed-checkpoint.md).
 
 ## Completed #153 review preparation — 2026-10-19 UTC
 
@@ -48,7 +85,7 @@ including evaluation/release/cache boundaries. No global transport/phase-manager
 World rewrite, earliest-reach semantics or capacity activation is authorized here.
 Measurement owns saved-result credit contracts, including unresolved safety yardage.
 [Consolidated owner coordination](https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789).
-That earlier runtime acceptance was0000e560; the current accepted code isf4146275 through151, with both handbooks retained. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
+That earlier runtime acceptance was0000e560; the current accepted code is2c98bed9 through168, with both handbooks retained. Original checkouts/branches/evidence remain. Reconcile accepted changes at clean
 checkpoints, never relabel old audit70b4 film as a later accepted source.
 
 ## Completed #125 reviewed-maintenance integration boundary — 2026-10-16 America/Phoenix

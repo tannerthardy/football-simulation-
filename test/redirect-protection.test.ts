@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
+import { DT } from '../src/core/units.js';
 import { redirect } from '../src/lab/scenarios.js';
+
+// This is a six-second reacting trajectory, not a bitwise reflection operator.
+// Preserve exact targets/times while bounding achieved mirror geometry to a
+// nanoyard. A request's velocity budget is that displacement over one ordinary
+// tick; it cannot conceal a changed assignment or appreciable body divergence.
+// The original subnanoyard/s failure and paired traces are preserved in
+// data/reviews/current/redirect-numeric-2026-10-20.
+const MIRROR_POSITION = 1e-9;
+const MIRROR_VELOCITY = MIRROR_POSITION / DT;
 
 describe('redirect mirrors the installed protection after the original contact ends', () => {
   it.each(['center', 'patch'] as const)('preserves post-shed targets and requests with %s hands', handContact => {
@@ -19,8 +29,13 @@ describe('redirect mirrors the installed protection after the original contact e
       expect(actual.target).toBe('DE_S');
       expect(mirror.target).toBe(actual.target);
       expect(mirror.t).toBe(actual.t);
-      expect(mirror.request.vel.x).toBeCloseTo(actual.request.vel.x, 9);
-      expect(mirror.request.vel.y).toBeCloseTo(-actual.request.vel.y, 9);
+      expect(Math.abs(mirror.request.vel.x-actual.request.vel.x)).toBeLessThan(MIRROR_VELOCITY);
+      expect(Math.abs(mirror.request.vel.y+actual.request.vel.y)).toBeLessThan(MIRROR_VELOCITY);
+      expect(actual.positions).toHaveLength(3); expect(mirror.positions).toHaveLength(3);
+      for (const [j,position] of actual.positions.entries()) {
+        expect(Math.abs(mirror.positions[j].x-position.x)).toBeLessThan(MIRROR_POSITION);
+        expect(Math.abs(mirror.positions[j].y+position.y-2*CENTER_Y)).toBeLessThan(MIRROR_POSITION);
+      }
       if (actual.request.facing === undefined) expect(mirror.request.facing).toBeUndefined();
       else expect(mirror.request.facing).toBeCloseTo(-actual.request.facing, 9);
     }

@@ -181,6 +181,41 @@ describe('the original inside-zone helper may check a supported owner before cli
   });
 });
 
+describe('achieved torso governs an already loaded run connection', () => {
+  it.each([-1, 1])('retains real hands beyond the old fixed drive frame when the torso already faces the man, side %s', side => {
+    const f = loaded(side), e = f.engagement, hands = e.hands!;
+    expect(e.holding).toBe(false);
+    const distance = Math.hypot(f.defender.pos.x - f.owner.pos.x, f.defender.pos.y - f.owner.pos.y);
+    // A controlled same-distance contact picture, not a claim that this native
+    // play must turn through a particular angle before its inspection ends.
+    // The old drive frame has been passed; the achieved torso is already fit.
+    const bearing = Math.atan2(e.drive!.y, e.drive!.x) + side * 1.2 * Math.PI / 2;
+    f.defender.body.pos = { x: f.owner.pos.x + Math.cos(bearing) * distance,
+      y: f.owner.pos.y + Math.sin(bearing) * distance };
+    f.owner.body.facing = bearing;
+    const before = f.sim.agents.map(a => structuredClone(a.body));
+    const intents: Intent[] = f.sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+    updateEngagements(f.sim, intents);
+    expect(Math.abs(e.phi)).toBeGreaterThanOrEqual(1.1);
+    expect(e.holding).toBe(false);
+    expect(f.sim.events.some(event => event.type === 'holding_attempt' && event.a === f.owner.idx)).toBe(false);
+    expect(f.sim.agents.map(a => a.body)).toEqual(before);
+    expect(f.owner.engagement).toBe(e); expect(f.defender.engagement).toBe(e);
+    expect(e.hands).toBe(hands); expect(f.sim.world.joints).toContain(hands);
+    expect(f.sim.events.some(event => event.type === 'shed' && event.b === f.owner.idx)).toBe(false);
+    const report = f.sim.world.step(intents, .05);
+    budget(f, report);
+    expect(Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0)).toBeGreaterThan(0);
+    expect(f.owner.body.support!.state).toBe('up');
+    const achievedBearing = Math.atan2(f.defender.pos.y - f.owner.pos.y, f.defender.pos.x - f.owner.pos.x);
+    const achievedOff = Math.abs(Math.atan2(Math.sin(achievedBearing - f.owner.facing),
+      Math.cos(achievedBearing - f.owner.facing)));
+    expect(achievedOff / (Math.PI / 2)).toBeLessThan(1.1);
+    expect(e.helpers).toEqual([]); expect(f.helper.engagement).toBeNull();
+    expect(f.combination.released).toBe(false);
+  });
+});
+
 describe('a check does not bypass a physical or near-level responsibility', () => {
   it.each([-1, 1])('collects a genuinely lost loaded contact instead of climbing, side %s', side => {
     const f = loaded(side), hands = f.engagement.hands!;
@@ -425,7 +460,7 @@ describe('the native Split Zone Tite helper reads useful first-level work', () =
     const original = behavior.update, originalSee = sim.see;
     let reading = false, backerPicture: ReturnType<typeof sim.see> | null = null;
     let runnerPicture: ReturnType<typeof sim.see> | null = null;
-    let noArrivingWork = 0, earnedClimbs = 0, retainedReach = 0;
+    let noArrivingWork = 0, earnedClimbs = 0, retainedWork = 0;
     sim.see = function (a, b, delayScale = 1) {
       const picture = originalSee.call(this, a, b, delayScale);
       if (reading && a === helper) {
@@ -474,17 +509,20 @@ describe('the native Split Zone Tite helper reads useful first-level work', () =
     while (sim.t < 2 && sim.phase !== 'dead') {
       sim.tick();
       const e = combo.defender.engagement;
-      if (e?.blocker === owner && Math.abs(e.phi) >= 1.1) {
+      // This native sequence must retain real work through the earned climb.
+      // Crossing the historical fixed-frame boundary is tested explicitly
+      // above, independent of the current motor's particular turn history.
+      if (combo.released && e?.blocker === owner) {
         const toD = Math.atan2(e.defender.pos.y - owner.pos.y, e.defender.pos.x - owner.pos.x);
         const off = Math.abs(Math.atan2(Math.sin(toD - owner.facing), Math.cos(toD - owner.facing)));
         // No future turn credit: the currently achieved torso is sufficient.
         expect(off / (Math.PI / 2)).toBeLessThan(1.1);
         expect(owner.body.support!.state).toBe('up');
         expect(sim.world.joints).toContain(e.hands); expect(e.hands!.normalForce).toBeGreaterThan(0);
-        expect(e.helpers).toEqual([]); retainedReach++;
+        expect(e.helpers).toEqual([]); retainedWork++;
       }
     }
-    expect(noArrivingWork).toBeGreaterThan(0); expect(retainedReach).toBeGreaterThan(0);
+    expect(noArrivingWork).toBeGreaterThan(0); expect(retainedWork).toBeGreaterThan(0);
     expect(earnedClimbs).toBe(1); expect(combo.released).toBe(true);
     expect(helper.tags.has('combo-check-climb')).toBe(true);
     expect(sim.events.filter(e => e.type === 'block_climb' && e.a === helper.idx)).toHaveLength(1);

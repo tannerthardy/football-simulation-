@@ -16,6 +16,7 @@ import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
+import { localTrafficRoute } from './traffic-route.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -58,11 +59,17 @@ function jointClosingRequest(raw:{x:number;y:number}, ordinary:{x:number;y:numbe
   limits:readonly ClosingLimit[], cap:number):{x:number;y:number} {
   const feasible=(v:{x:number;y:number})=>Math.hypot(v.x,v.y)<=cap+1e-9
     &&limits.every(c=>v.x*c.nx+v.y*c.ny<=c.speed+1e-9);
-  if(feasible(ordinary))return ordinary;
-  let best:{x:number;y:number}|undefined,bestError=Infinity;
+  // Sequential corrections can be feasible yet farther from the selected
+  // request than a joint solution. Keep that response as a fallback, then
+  // evaluate the same boundary candidates before accepting its diversion.
+  let best:{x:number;y:number}|undefined=feasible(ordinary)?ordinary:undefined;
+  let bestError=best?(best.x-raw.x)**2+(best.y-raw.y)**2:Infinity;
   function consider(x:number,y:number):void {
     const v={x,y},error=(x-raw.x)**2+(y-raw.y)**2;
-    if(error<bestError&&feasible(v)){best=v;bestError=error;}
+    // Algebraically equivalent projections can differ by a few rounding
+    // units. Retain the existing request on that numerical tie.
+    const tie=16*Number.EPSILON*Math.max(1,error,bestError);
+    if((!best||error<bestError-tie)&&feasible(v)){best=v;bestError=error;}
   }
   const speed=Math.hypot(raw.x,raw.y),scale=Math.min(1,cap/Math.max(1e-9,speed));
   consider(raw.x*scale,raw.y*scale);
@@ -343,6 +350,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       return samples;
     };
     const gathered=gatherForMotion(a,spaced,peers,forecast,context);
-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+    const ordinary=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+    const s=a.body.support;
+    const free=!!context&&Number.isFinite(context.now)&&!a.isDown(context.now)&&!a.engagement
+      &&!context.constrained?.has(a.body)&&!ia.free&&!ia.dive&&!ia.lunge
+      &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
+      &&!!s&&s.state==='up'&&!s.foot&&!s.strike
+      &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
+    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
   }
 }

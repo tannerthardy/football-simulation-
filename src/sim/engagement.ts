@@ -654,7 +654,7 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
-const runSheds = new WeakMap<Engagement, { until: number; side: number }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -999,6 +999,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const axis = axisOf(sim, e); // defender toward the intended contact surface
   const lat = latOf(axis);
   const read = runContactRead(sim, e);
+  const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
+    && read.declared && read.threat?.carrying === true;
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
@@ -1013,14 +1015,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
 
   // Shed attempts once the ball carrier threatens his area — not the QB
   // standing at the mesh before the handoff.
-  if (read.threat && t >= e.nextMoveAt) {
+  if (read.threat) {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
-    const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
-      && read.declared && read.threat.carrying === true;
-    if (dc < 3.5 || supportRunner) {
+    // #169: acquiring hands does not restart already justified support.
+    const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
+    if (ready && (dc < 3.5 || supportRunner)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
@@ -1029,7 +1031,18 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // does is physical: the hand fight (who controls the hands), his feet
         // and the blocker's body decide it through the release geometry
         // below, not a roll.
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side });
+        // Once his blocker is behind the already selected runner approach,
+        // continuing across the old surface is no longer the exit objective.
+        // Loaded hands supply the local body position; an extended, unloaded
+        // reach supplies only this observer's acquired blocker picture.
+        let runner = false;
+        if (supportRunner) {
+          const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
+          const blocker = loaded ? b.pos : sim.see(d, b).pos;
+          if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
+            runner = true;
+        }
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1103,12 +1116,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  if (!stretch) {
+    // Full drive assumes the man is ahead on the installed drive line.
+    // Once level or past, carry the existing connection instead of running
+    // away from it. Seal work, anchoring and World still govern the rep.
+    const ahead = (d.pos.x - b.pos.x) * drive.x + (d.pos.y - b.pos.y) * drive.y;
+    const w = clamp(ahead / (0.5 * sep), 0, 1);
+    forward = w * 2.4 + (1 - w) * clamp(along(d.vel) + gap * 3, -1, 2.4);
+  }
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
   const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
+  const runoffWork = RUN_CONTACT_COMPONENTS && stretch ? b.behavior.contactMotion?.(b, 'runoff') : null;
   if (stretch && run) {
     const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
     if (Math.abs(toPlay) > .5) {
@@ -1116,6 +1138,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       if (contactTrack) {
         const track = contactTrack.x * lat.x + contactTrack.y * lat.y;
         lateral = Math.max(lateral * toPlay, Math.min(mirror, track * toPlay)) * toPlay;
+      }
+      if (runoffWork) {
+        // The component frame removes the drive's tangent to avoid double
+        // counting. Keep the chosen solo-runoff work explicitly, rather than
+        // reducing it to defender co-flow after the shoulder offset settles.
+        // Project once, retain the existing bound, and let spacing/body/contact
+        // execution decide which movement and protection can be achieved.
+        const side = Math.sign(toPlay), work = runoffWork.x * lat.x + runoffWork.y * lat.y;
+        lateral = Math.max(lateral * side, Math.min(mirror, work * side)) * side;
       }
     }
   }
@@ -1174,7 +1205,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // normal work is the emitted command, not that legacy drive projection.
     legacyDriveRequest: forward, normalRequest: -(blockVel.x * axis.x + blockVel.y * axis.y),
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
-    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
+    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, runoffWork, lateral, preAnchor,
     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
@@ -1229,7 +1260,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
-  const workOff = shedding ? { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+  // The contact technique does not own a second, older runner waypoint.
+  // Follow the existing read's held objective as it legitimately refreshes;
+  // lost/contradictory acquisition retains the ordinary across-face response.
+  const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
+  const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
+  const workOff = shedding ? exit
+    ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
+    : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
   let cf: Vec2 | null = null;
   if (CF_FLOW && !read.declared) {
@@ -1246,6 +1284,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
   };
+  runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
+    declared: read.declared, supportRunner, defensiveAim: read.aim,
+    exitAim, workOff, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
@@ -1347,7 +1388,13 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
   }
 }
 
-/** A beaten blocker may grab. Returns true if he held (and keeps the block). */
+// Retired visibility decisions are consumed for execution-stream compatibility
+// but never become official calls. Actual World restraint is adjudicated by
+// contact-holding.ts after the interval and simultaneous no-call facts exist.
+const legacyHoldVisible = new WeakSet<PlaySim>();
+
+/** A beaten blocker may attempt a cloth grab. This changes the bounded hand
+ * technique, not the official ruling. Only achieved illegal restraint is a foul. */
 function tryHold(sim: PlaySim, e: Engagement): boolean {
   if (e.holding) return false;
   const b = e.blocker;
@@ -1358,12 +1405,19 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   e.holding = true;
   b.tags.add('held');
   setHands(sim, e);
-  // Officials see the obvious ones.
+  const id = `legacy-hold:${b.idx}:${e.defender.idx}:${sim.t}`;
+  const evidence = { source: 'legacy' as const, rule: '12-1-3(c)',
+    action: 'selected_holding_mode', victimId: e.defender.player.id,
+    facts: { selectedTechnique: true, achievedRestrictionQualified: false, control: e.control } };
+  sim.foulRecords.push({ id, t: sim.t, kind: 'holding', playerId: b.player.id,
+    called: false, assessment: 'unresolved', evidence });
+  sim.event('holding_attempt', b, e.defender, 'legacy technique choice; achieved legal elements unqualified');
+  // Preserve the historical draw until the first formerly visible attempt;
+  // do not pretend that this sampled bit proves achieved NFL illegality.
   const visible = 0.35 + 0.35 * Math.min(1, Math.abs(e.phi) + (1 - e.baseB));
-  if (!sim.penalty && sim.rng.chance(visible)) {
-    sim.penalty = { kind: 'holding', against: 'O', playerId: b.player.id, yards: 10, autoFirst: false, spotX: b.pos.x };
-    sim.event('holding', b, e.defender);
-  }
+  const legacyCall = [sim.penalty, ...sim.penalties].some(p => p?.kind === 'holding'
+    && !p.id?.startsWith('native-holding:'));
+  if (!legacyCall && !legacyHoldVisible.has(sim) && sim.rng.chance(visible)) legacyHoldVisible.add(sim);
   return true;
 }
 

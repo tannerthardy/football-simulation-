@@ -1,0 +1,64 @@
+Profile candidate: run-game-2026-10-13, commit 7869fb686148d5b3210b2e593c61ecea97c7f342, source 03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1
+Running node node_modules/vitest/vitest.mjs run test/run-hand-diagnostic.test.ts -t matches frozen --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-big-motor-review
+
+ ❯ |core| test/run-hand-diagnostic.test.ts (14 tests | 2 failed | 12 skipped) 109ms
+   ↓ run helpers earn contact and retain it through ownership > a good helper can have inside hands while the poor primary does not, side -1
+   ↓ run helpers earn contact and retain it through ownership > a good helper can have inside hands while the poor primary does not, side 1
+   ↓ run helpers earn contact and retain it through ownership > the good primary does not lend his inside hands to a poor helper, side -1
+   ↓ run helpers earn contact and retain it through ownership > the good primary does not lend his inside hands to a poor helper, side 1
+   ↓ run helpers earn contact and retain it through ownership > reflects the same hand decisions, contact loads and achieved movement
+   ↓ run helpers earn contact and retain it through ownership > does not acquire control, arm capacity or RNG draws by reaching at air
+   ↓ run helpers earn contact and retain it through ownership > forgets separated hands and earns a fresh contact rather than recycling security
+   ↓ run helpers earn contact and retain it through ownership > uses first-contact uncertainty independently of the primary
+   ↓ run helpers earn contact and retain it through ownership > permits extended working hands to exchange without awarding an inside-hand win
+   ↓ run helpers earn contact and retain it through ownership > shares one defender arm budget when he controls both contacts
+   ↓ run helpers earn contact and retain it through ownership > leaves a pass helper on its legacy bounded law without run control state
+   ↓ run helpers earn contact and retain it through ownership > does not transfer a departed pass blocker's landed finesse window after conversion to run
+   × solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG 73ms
+     → expected 'ff0afb4f0e3991b6b29c28a0206ee3d6ab897…' to be '1d242a5a613c06473f32afd65b32a5cd87b9f…' // Object.is equality
+   × solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG 35ms
+     → expected 'ec267981978140e716b46855663fcddefc6e7…' to be 'd3f9cf19cf7b9fceecc192c3b093699a0038d…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/run-hand-diagnostic.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG
+AssertionError: expected 'ff0afb4f0e3991b6b29c28a0206ee3d6ab897…' to be '1d242a5a613c06473f32afd65b32a5cd87b9f…' // Object.is equality
+
+Expected: "1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2ecd"
+Received: "ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1"
+
+ ❯ test/run-hand-diagnostic.test.ts:289:20
+    287|       ? '1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2…
+    288|       : 'd3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55…
+    289|     expect(actual).toBe(baseline);
+       |                    ^
+    290|   });
+    291| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |core| test/run-hand-diagnostic.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG
+AssertionError: expected 'ec267981978140e716b46855663fcddefc6e7…' to be 'd3f9cf19cf7b9fceecc192c3b093699a0038d…' // Object.is equality
+
+Expected: "d3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55edc"
+Received: "ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e"
+
+ ❯ test/run-hand-diagnostic.test.ts:289:20
+    287|       ? '1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2…
+    288|       : 'd3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55…
+    289|     expect(actual).toBe(baseline);
+       |                    ^
+    290|   });
+    291| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 skipped (14)
+   Start at  22:17:53
+   Duration  1.21s (transform 683ms, setup 0ms, collect 909ms, tests 109ms, environment 0ms, prepare 52ms)
+
+Validation receipt: out/hand-diagnostic/receipt.json; exit 1

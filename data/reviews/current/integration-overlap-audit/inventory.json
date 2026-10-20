@@ -1,0 +1,1812 @@
+{
+  "schema": "integration-overlap-inventory-v1",
+  "checkedUtc": "2026-10-20T21:21:07.950036+00:00",
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "openPrCount": 71,
+  "recentDetailedCount": 18,
+  "otherClassificationCounts": {
+    "explicitHeld": 7,
+    "toolingHeld": 2,
+    "diagnosticOrPlanning": 8,
+    "researchOrPrototype": 28,
+    "earlierStackOrExtraction": 8
+  },
+  "scope": "Inventory and source/provenance/portability review, not independent football acceptance or combined verification.",
+  "prs": [
+    {
+      "number": 186,
+      "title": "Preserve football goals through attainable local teammate routes",
+      "head": "7b70c343cf30f0066fc46f223ad134d1249f6188",
+      "branch": "codex/local-traffic-route",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "updated": "2026-10-20T21:19:28Z",
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/spacing.ts",
+        "src/sim/traffic-distance.ts",
+        "src/sim/traffic-path.ts",
+        "src/sim/traffic-route.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/navigation-A042-setup.json",
+        "test/fixtures/traffic-route-impact.json",
+        "test/joint-spacing-projection.test.ts",
+        "test/local-traffic-route.test.ts",
+        "test/traffic-distance.test.ts",
+        "test/traffic-path.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/spacing.ts": "7b2814c8e1345ff76359874b2b50353754d3014c",
+        "src/sim/traffic-distance.ts": "729dc43417a4e6fb4dae2d5f378f89a4483d4fc7",
+        "src/sim/traffic-path.ts": "4454e2e7ec92433a2e97729850e7ff8133a9f985",
+        "src/sim/traffic-route.ts": "6eb21fc952050f6ba465d98407deba777faed2a0",
+        "test/fixtures/navigation-A042-setup.json": "b47da1ff428a312fca4bb29c7367bba11c234ce2",
+        "test/fixtures/traffic-route-impact.json": "d82619ce177642ea47de00dc59f1dfbed198cee4",
+        "test/joint-spacing-projection.test.ts": "e70cd2c730994700320a492113cd5a339067ddcb",
+        "test/local-traffic-route.test.ts": "1f22c24838cdd0542f4811c2e92a6b19d051a810",
+        "test/traffic-distance.test.ts": "0a1253dd0bedda644561b2a625cb4a90497f678e",
+        "test/traffic-path.test.ts": "241da69084e51460bced459ca330e87c2ae4e618"
+      },
+      "requiredScope": {
+        "pr": 183,
+        "runtime": "7749e37a9d3c9c3780514acc5d7e88edcd5a5c79",
+        "testsAndTools": "0491f07b5728a149c3f4ac35008ceba14e392694",
+        "publication": "dceec577baee5ea9b4f7fcf24d63bbef94385177"
+      }
+    },
+    {
+      "number": 185,
+      "title": "Complete pull clearance commands and follow the acquired corner",
+      "head": "d0f767666208f6f22081e8f81ad10c7f7461b288",
+      "branch": "codex/puller-technique-continuation",
+      "base": "develop",
+      "draft": true,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "testFiles": [
+        "test/counter-gh.test.ts",
+        "test/puller-acquired-corner.test.ts",
+        "test/puller-clearance-command.test.ts",
+        "test/puller-kick-transition.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/behaviors/blocking.ts": "0dd4fb6768da8699b4dc0fea33508b88318b4855",
+        "test/counter-gh.test.ts": "a0696d1f73273b62f43850d7dee60ee6038e1226",
+        "test/puller-acquired-corner.test.ts": "66f4d9bc6c3b12b89758da47b5b2471f21dd4bba",
+        "test/puller-clearance-command.test.ts": "f4ed6d7457e5af8adfae4b22dbf8b66b2f9367e9",
+        "test/puller-kick-transition.test.ts": "eba967eeffe22429c7a111327834f3034819e6e1"
+      }
+    },
+    {
+      "number": 184,
+      "title": "Keep announced teammate tracks distinct from achieved motion",
+      "head": "0d13a208e233103fae11373ce67eca3d9b9c1d65",
+      "branch": "codex/announced-motion",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/called-motion.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/called-motion.test.ts",
+        "test/fixtures/announced-motion.json"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/called-motion.ts": "36deacf96192abd45fb0f88a1bd02719bb5a91ee",
+        "src/sim/playsim.ts": "9155ba38a04cdc27ed2a871212d948a5f59bf3bc",
+        "test/called-motion.test.ts": "71e8ee494a6f542cf641ecb287289fe725886f06",
+        "test/fixtures/announced-motion.json": "856b04b0c15353c0d02cd30fc0536b05aa8a69cc"
+      }
+    },
+    {
+      "number": 183,
+      "title": "Keep the closest movement request under joint teammate limits",
+      "head": "dceec577baee5ea9b4f7fcf24d63bbef94385177",
+      "branch": "codex/joint-spacing-projection",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/spacing.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/navigation-A042-setup.json",
+        "test/joint-spacing-projection.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/spacing.ts": "e10664642b1c819aec9ee582894c4f4080876001",
+        "test/fixtures/navigation-A042-setup.json": "b47da1ff428a312fca4bb29c7367bba11c234ce2",
+        "test/joint-spacing-projection.test.ts": "e70cd2c730994700320a492113cd5a339067ddcb"
+      }
+    },
+    {
+      "number": 182,
+      "title": "Preserve acquired pursuit objectives through teammate navigation",
+      "head": "4f29315039a0a9b397e53424354355eba108c839",
+      "branch": "codex/pursuit-objective-continuity",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "testFiles": [
+        "test/pursuit-objective.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/behaviors/common.ts": "808cd0de9dd31eef542f2c2ff7b0bdc959f30869",
+        "test/pursuit-objective.test.ts": "67939df5e0475610bcf90c0a3fb152662887bc36"
+      }
+    },
+    {
+      "number": 181,
+      "title": "Score complete gathered approach requests",
+      "head": "8239e8d89a8f326c95318ab62b73d807550ec683",
+      "branch": "codex/pursuit-composed-preview",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/approach-control.ts",
+        "src/sim/behaviors/common.ts",
+        "src/sim/run-fits.ts"
+      ],
+      "testFiles": [
+        "test/approach-composition.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/approach-control.ts": "803026736ba8c8b354d6af98635df30052a80886",
+        "src/sim/behaviors/common.ts": "d731e81177b11b7cbe746ba51744a807662154cc",
+        "src/sim/run-fits.ts": "51e80b67d273eb0f47fa10494ad1ebfed8edd2dc",
+        "test/approach-composition.test.ts": "02a65565a8ca644931fd79d603506752a9e6c6c1"
+      }
+    },
+    {
+      "number": 180,
+      "title": "Stop steady-facing oscillation within the native runtime budget",
+      "head": "2c6d53ecce9f5eb54e7a086c7723dd21aa68320a",
+      "branch": "codex/loaded-movement",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "src/physics/yaw-response.ts"
+      ],
+      "testFiles": [
+        "test/movement-yaw-continuity.test.ts",
+        "test/yaw-response.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/physics/kinematics.ts": "b971e93853195063fe118dd20f2d4f455ab78654",
+        "src/physics/world.ts": "6faf4925a1b777be30d1fbd7a06fda0c6bc73ffa",
+        "src/physics/yaw-response.ts": "b80db24d9aeec1a7c1db4f0530ac9b1e77699817",
+        "test/movement-yaw-continuity.test.ts": "d573490b745fc083c3a0f164e0c282203cb0ef93",
+        "test/yaw-response.test.ts": "808afe26807393b2c04731087439a1b06689602c"
+      }
+    },
+    {
+      "number": 179,
+      "title": "Compare complete run mechanisms with fixed-player evidence",
+      "head": "8a76ab9a1f0851ce6f4727bfedeacbad0bf49c4b",
+      "branch": "codex/run-mechanism-reference",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [],
+      "testFiles": [
+        "test/test_run_sequence.py"
+      ],
+      "settingsFiles": [
+        "config/run-sequence-reference.json"
+      ],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "test/test_run_sequence.py": "e9037d43520901651865ebb0683159e4a28f1e12"
+      }
+    },
+    {
+      "number": 178,
+      "title": "Implement native NFL foul enforcement and fumble rules",
+      "head": "7d475e5efdc81257c2f19efbf468c59cb93e2834",
+      "branch": "codex/nfl-rules-engine",
+      "base": "develop",
+      "draft": true,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/game/game.ts",
+        "src/game/penalty-enforcement.ts",
+        "src/sim/ball-rules.ts",
+        "src/sim/engagement.ts",
+        "src/sim/pass-interference.ts",
+        "src/sim/playsim.ts",
+        "src/sim/types.ts"
+      ],
+      "testFiles": [
+        "test/ball-rules.test.ts",
+        "test/native-penalty-game.test.ts",
+        "test/penalty-enforcement.test.ts",
+        "test/prethrow-opi.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/game/game.ts": "f665a59e2ceed6c6d3c20cfc37de59a85be810c7",
+        "src/game/penalty-enforcement.ts": "8f22d21cba43c441ba93f8281419ef8b8118c874",
+        "src/sim/ball-rules.ts": "a9e9ca812159b51c34612a3851f76702efaeb64b",
+        "src/sim/engagement.ts": "4df12b2214b2126b74ffca9193ce16baca07f971",
+        "src/sim/pass-interference.ts": "e51169a2a5d296168a54933281eca46ef3674239",
+        "src/sim/playsim.ts": "199ca8ac7cc009ff0f5856f7784c242f307f84e7",
+        "src/sim/types.ts": "96b48dc83319d09c47ae10cc1b7583770aa7d877",
+        "test/ball-rules.test.ts": "6ad3a29f3ab828675288ae44964d9302737dd907",
+        "test/native-penalty-game.test.ts": "48fa975fc08e2fe6aede805d9faedf8f9098258c",
+        "test/penalty-enforcement.test.ts": "d8ac18253197cdbfdc8b7182ec854f412e2e0c5c",
+        "test/prethrow-opi.test.ts": "b21120c46380eb84994c5be802b0cb7d692da53c"
+      }
+    },
+    {
+      "number": 177,
+      "title": "Keep the acquired runner objective through a clear support exit",
+      "head": "2ebaaf11dcd6455875411423dcbb2910013d7903",
+      "branch": "codex/support-escape-objective",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/support-escape-objective.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/engagement.ts": "1c12488acad20054503cc5a707e61201ac1f8291",
+        "test/support-escape-objective.test.ts": "6b3316d94a0dd60d60169caefc3d99a6f3f6be8b"
+      }
+    },
+    {
+      "number": 176,
+      "title": "Track the acquired force shoulder as one moving action",
+      "head": "0b2addbece94bc47f69ea729af27911398cf85fd",
+      "branch": "codex/force-moving-shoulder",
+      "base": "develop",
+      "draft": false,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/force-track.ts",
+        "src/sim/run-fits.ts"
+      ],
+      "testFiles": [
+        "test/force-track.test.ts",
+        "test/run-fit-crossover.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/force-track.ts": "891ee6d64234e757f49116bc81642b0783b26e1c",
+        "src/sim/run-fits.ts": "d031ed5cd676745acb6197e1e7d780ebe3015439",
+        "test/force-track.test.ts": "17cc29ae133bac5f041b22330de23927285668de",
+        "test/run-fit-crossover.test.ts": "c388d20f2a06e8528a92639418fde8d56b3ea6f6"
+      }
+    },
+    {
+      "number": 175,
+      "title": "Preserve installed force leverage at midfield",
+      "head": "628ae0c09f4854513bb87fb03b6e54a9116ecadb",
+      "branch": "codex/help-aware-pursuit",
+      "base": "develop",
+      "draft": false,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "testFiles": [
+        "test/pursuit-force-shoulder.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/behaviors/common.ts": "b161d8ec112787eb461a8d33e2867d0fa0b581ea",
+        "test/pursuit-force-shoulder.test.ts": "9815ce530005338b2cbf359b2a1e647c4dc5c86f"
+      }
+    },
+    {
+      "number": 174,
+      "title": "Realize acquired runoff and connected drive in run contact",
+      "head": "1e2415a70953f69f4e7e71a86136196370f25204",
+      "branch": "codex/drive-connection-controller",
+      "base": "develop",
+      "draft": true,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/drive-connection.test.ts",
+        "test/zone-runoff-work.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/agent.ts": "54dd83cd7ecfa351937ac03e71d6f98521b38011",
+        "src/sim/behaviors/blocking.ts": "13a97d8f272959e90148e52ca121e9ba2262c0eb",
+        "src/sim/engagement.ts": "1920d3ff405a5293c7c13575b481a0dcfc399042",
+        "test/drive-connection.test.ts": "91d6b71f7b738300ba2d9502a79a1bd3d451396e",
+        "test/zone-runoff-work.test.ts": "f56846af04d2e395b6ac870a524caecf3370a876"
+      }
+    },
+    {
+      "number": 173,
+      "title": "Map NFL rules coverage and plan native foul enforcement",
+      "head": "3d4db3bab9d80740c151c92582255553f922227d",
+      "branch": "codex/nfl-rules-coverage-2026-10-20",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {}
+    },
+    {
+      "number": 172,
+      "title": "Carry acquired runoff work through loaded zone contact",
+      "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+      "branch": "codex/zone-contact-execution",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/zone-runoff-work.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/agent.ts": "54dd83cd7ecfa351937ac03e71d6f98521b38011",
+        "src/sim/behaviors/blocking.ts": "13a97d8f272959e90148e52ca121e9ba2262c0eb",
+        "src/sim/engagement.ts": "0f592bd4edb41c8887a6d1db42b3ab6220d8089b",
+        "test/zone-runoff-work.test.ts": "f56846af04d2e395b6ac870a524caecf3370a876"
+      }
+    },
+    {
+      "number": 171,
+      "title": "Preserve acquired blocking support through coverage decisions",
+      "head": "6cbdcc4dc70e6ce5b644582c6ca14f77f5c28bbf",
+      "branch": "codex/man-run-continuity",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/behaviors/defense.ts",
+        "src/sim/coverage-cues.ts",
+        "src/sim/coverage/reads.ts",
+        "src/sim/run-fits.ts"
+      ],
+      "testFiles": [
+        "test/man-run-continuity.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/behaviors/defense.ts": "ee9955a200d81ea34f88fd8660bee41d8b4b8ddf",
+        "src/sim/coverage-cues.ts": "83fd7ec7d69da8d15fa69f1bc190510fddc85f54",
+        "src/sim/coverage/reads.ts": "056cbf19efcd04fad299d5d4dd5c8e62e70aeebb",
+        "src/sim/run-fits.ts": "1abb8031733d6e8690d482764cfa54d8ae047b58",
+        "test/man-run-continuity.test.ts": "b114cf78aab37e1eb93c6b6d6f3754471e2ca242"
+      }
+    },
+    {
+      "number": 170,
+      "title": "test(physics): pin recoverable contact and broken-hold costs",
+      "head": "4a5aadcbbdfe3065ec41d73e0c0de3ee1272c070",
+      "branch": "codex/contact-middle",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [],
+      "testFiles": [
+        "test/recoverable-contact.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "test/recoverable-contact.test.ts": "5505adfc78f353a313618011b7b9619c5ef4e7ae"
+      }
+    },
+    {
+      "number": 169,
+      "title": "Resume acquired run-support work-off without a new contact delay",
+      "head": "1004b818f2f7692df595a237ec9eec05a9ef2587",
+      "branch": "codex/db-stalk-workoff",
+      "base": "develop",
+      "draft": false,
+      "labels": [
+        "integration-ready"
+      ],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/support-work-off.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "recentDetailedSourceReview",
+      "protectedBlobs": {
+        "src/sim/engagement.ts": "0fdbc78e2a34b41a9a32f5f5956b08aad3c085f8",
+        "test/support-work-off.test.ts": "c236109b52c4443187df7b458ea458e5a2ecdb4e"
+      }
+    },
+    {
+      "number": 166,
+      "title": "Audit football commitment and preserve selected sprint goals (held)",
+      "head": "0c6401e777871fedf676d4ac936a1effacad337e",
+      "branch": "codex/decision-commitment",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/sim/behaviors/common.ts"
+      ],
+      "testFiles": [
+        "test/run-through-objective.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 165,
+      "title": "Compute gait from attained facing before executing a requested turn",
+      "head": "d922b7c27ec00536637aade935e6d9b2d07a9244",
+      "branch": "codex/gait-achieved-pose",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts"
+      ],
+      "testFiles": [
+        "test/gait-achieved-pose.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 164,
+      "title": "Keep run-contact footwork on the acquired moving shoulder",
+      "head": "5035aad0f37affc43b6803c9e9f924896c5b43e7",
+      "branch": "codex/run-rep-arrival",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/run-contact-flow.test.ts",
+        "test/run-rep-lateral-arrival.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 163,
+      "title": "Puller start-up: bounded propulsion request; native adoption held",
+      "head": "4ba19c6be9a987d353a8a60d7d789734f141a40a",
+      "branch": "codex/puller-startup",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/physics/kinematics.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/common.ts"
+      ],
+      "testFiles": [
+        "test/puller-propulsion.test.ts",
+        "test/puller-startup-request.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 162,
+      "title": "Stop ordinary body turns from ringing after a steady request",
+      "head": "abd2dd266b46e87d323cc8bfbb8de341633cbbfa",
+      "branch": "codex/movement-continuity",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts"
+      ],
+      "testFiles": [
+        "test/movement-yaw-continuity.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 158,
+      "title": "Preserve installed power-edge gap entry; isolate snap-response diagnosis",
+      "head": "9fdadb7cc404adbbd6103f33e2b4bf7048298f67",
+      "branch": "codex/defensive-snap-response",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [
+        "src/sim/behaviors/defense.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/power-edge-snap.json.gz",
+        "test/power-edge-entry.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 154,
+      "title": "Plan next snap-focused work from run-game reviews",
+      "head": "bffdef79d921117411b1fe1bcbb29bd8bcf45711",
+      "branch": "codex/next-football-work-plan-2026-10-19",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 153,
+      "title": "Review intake: run-game v3 mesh and block-pursuit experiments",
+      "head": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+      "branch": "claude/run-game-v3",
+      "base": "develop",
+      "draft": false,
+      "labels": [],
+      "mergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+      "runtimeFiles": [
+        "src/playbook/alignment.ts",
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/engagement.ts",
+        "src/sim/run-fits.ts",
+        "src/sim/spacing.ts"
+      ],
+      "testFiles": [
+        "test/back-chase.test.ts",
+        "test/deep-cap.test.ts",
+        "test/depart-tempo.test.ts",
+        "test/dl-feel.test.ts",
+        "test/drive-connect.test.ts",
+        "test/fb-track.test.ts",
+        "test/force-lead.test.ts",
+        "test/lead-read.test.ts",
+        "test/long-run-tail.test.ts",
+        "test/ol-align.test.ts",
+        "test/pace-lead.test.ts",
+        "test/pr153-review-contracts.test.ts",
+        "test/qb-carryout.test.ts",
+        "test/run-game-flags.test.ts",
+        "test/shed-pursue.test.ts",
+        "test/space-steer.test.ts",
+        "test/stretch-flat.test.ts",
+        "test/trap-read.test.ts"
+      ],
+      "settingsFiles": [
+        "config/baseline.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 142,
+      "title": "Support Run with an all22 blocking-movement review",
+      "head": "28341c6795c784db49f9d5d3bb41ace6d7da3521",
+      "branch": "codex/run-movement-audit",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 139,
+      "title": "Diagnose receiver access, roof turn budget and P020 collection",
+      "head": "d50d11cb4a01eed99d78dcc189d6ae79d4476cf7",
+      "branch": "codex/flex-diagnostic-probes",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "0000e560e0dbe31905151465152d412ba838803d",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 137,
+      "title": "HOLD: joint receiver run assignments after eligibility (historical policy diff)",
+      "head": "cdaeff43b4ce783abe5e8590caf551f2d5f97b41",
+      "branch": "codex/receiver-run-assignments",
+      "base": "codex/receiver-eligibility-reference",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "0000e560e0dbe31905151465152d412ba838803d",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/receiver-run-assignment-g1-p018.json",
+        "test/receiver-run-eligibility.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "explicitHeld"
+    },
+    {
+      "number": 129,
+      "title": "Publish accepted-game audit and zone-reference clip diagnosis",
+      "head": "a2a61fde768622c536452a88d6e136373c18c05e",
+      "branch": "codex/accepted-game-audit-2026-10-16",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 127,
+      "title": "Research HOLD: Quarters cushion and shallow-arrival conflict",
+      "head": "f6a3c866622404965ee43551e2b9307de84b4db8",
+      "branch": "codex/quarter-flat-current",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+      "runtimeFiles": [
+        "src/sim/behaviors/defense.ts",
+        "src/sim/coverage/defender.ts",
+        "src/sim/coverage/rules.ts",
+        "src/sim/types.ts"
+      ],
+      "testFiles": [
+        "test/quarter-flat-depth-support.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 119,
+      "title": "Diagnose strong/weak zone surfaces and stage motion-aware runner reads",
+      "head": "9dda147f3763fafb316e0697bfa5b3ce631f75e4",
+      "branch": "codex/strong-weak-zone-study",
+      "base": "codex/zone-anchor-protection",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "runtimeFiles": [
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/carrier-moving-blocker.test.ts",
+        "test/stretch-anchor-footwork.test.ts",
+        "test/stretch-normal-follow.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 116,
+      "title": "Stage acquired zone runoff footwork with depth and traffic controls",
+      "head": "d4d61f72162850b3f264200081aeb9d6ceaf028c",
+      "branch": "codex/zone-reach-footwork-portable",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/engagement.ts"
+      ],
+      "testFiles": [
+        "test/zone-runoff-footwork.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 115,
+      "title": "Separate force calibration from mass and observe blocks at runner arrival",
+      "head": "44da6d2ebe21230bede7527a99489b45882285ab",
+      "branch": "codex/block-mass-response",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "runtimeFiles": [
+        "src/physics/support.ts",
+        "src/players/physical.ts"
+      ],
+      "testFiles": [
+        "test/force-capacity.test.ts"
+      ],
+      "settingsFiles": [
+        "config/block-mass-response.json",
+        "config/block-protection.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 114,
+      "title": "Claude: zone run game and open-field tackling investigations (all flags default-off)",
+      "head": "943f1d33c181325d9ba839da4a7b195d60c658b7",
+      "branch": "claude/open-field-tackling",
+      "base": "develop",
+      "draft": false,
+      "labels": [],
+      "mergeBase": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/engagement.ts",
+        "src/sim/run-fits.ts"
+      ],
+      "testFiles": [
+        "test/deep-cap.test.ts",
+        "test/dl-escape.test.ts",
+        "test/run-lane.test.ts"
+      ],
+      "settingsFiles": [
+        "config/baseline.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 113,
+      "title": "Review box-defense research and isolate current-code mechanisms",
+      "head": "f2cedaef5443ca02bb727e8c1bf9bc9167d19e92",
+      "branch": "codex/box-defense-independent-review",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 109,
+      "title": "Review Claude zone candidates and retain production blockers",
+      "head": "aa6090378a9368aa340583b4ffa6a945f9316d60",
+      "branch": "codex/claude-zone-review-report",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 106,
+      "title": "Add opt-in 3,198-play pass-game development suite",
+      "head": "706a10cc22e87a5fced54641f00a5db2df249b4b",
+      "branch": "codex/pass-game-suite",
+      "base": "develop",
+      "draft": false,
+      "labels": [],
+      "mergeBase": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "runtimeFiles": [],
+      "testFiles": [
+        "test/pass-game-suite.test.ts"
+      ],
+      "settingsFiles": [
+        "config/pass-game-suite-v1.json.gz",
+        "package.json"
+      ],
+      "classification": "toolingHeld"
+    },
+    {
+      "number": 101,
+      "title": "Add focused run-suite workflow and completed checkpoint evidence",
+      "head": "ed2fed9e204c0e916ea8f788afadb4805016ff05",
+      "branch": "codex/run-playaction-stress",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "runtimeFiles": [],
+      "testFiles": [
+        "test/run-action-suite.test.ts",
+        "test/run-suite-workflow.test.ts"
+      ],
+      "settingsFiles": [
+        "config/run-suite-focus.json",
+        "config/run-suite-reserve.json",
+        "package.json"
+      ],
+      "classification": "toolingHeld"
+    },
+    {
+      "number": 99,
+      "title": "Add explicit Buck sweep, pin-pull and crack-toss development calls",
+      "head": "d212b414d3a9b6e0d85e185bd7bbaf1a2813b676",
+      "branch": "codex/perimeter-run-concepts",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "runtimeFiles": [
+        "src/playbook/concepts.ts",
+        "src/playbook/formations.ts",
+        "src/playbook/types.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "testFiles": [
+        "test/perimeter-runs.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 93,
+      "title": "Diagnose coverage approach limits and the rat-role contract gap",
+      "head": "796fa888481c5a805e2b1a0c0ed12a3988bbc820",
+      "branch": "codex/coverage-approach-duty",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 86,
+      "title": "Audit Duo transfer and distinguish collection from protection",
+      "head": "ed30b821c3aa621b129ce861e5c5a66b5d5cf23c",
+      "branch": "codex/duo-transfer-audit",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "86250bb4f0c6f421878c204161864d523c3e30b6",
+      "runtimeFiles": [],
+      "testFiles": [],
+      "settingsFiles": [],
+      "classification": "diagnosticOrPlanning"
+    },
+    {
+      "number": 83,
+      "title": "Audit native leg-grasp braking, reaction and weak-grip release",
+      "head": "6944e9dcc504228fde2124e16ebea85d3053938a",
+      "branch": "codex/native-leg-grasp",
+      "base": "codex/solver-value-study",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-motor.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/motor-event-schedule.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-motor.test.ts",
+        "test/local-slip-work.test.ts",
+        "test/motor-event-schedule.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-motor-reference.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json",
+        "config/native-leg-grasp.json",
+        "config/solver-value-study.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 79,
+      "title": "Measure football value and park passive-hands solver expansion",
+      "head": "4254655b8d133d8e28ef14311ec0a9ce091a644d",
+      "branch": "codex/solver-value-study",
+      "base": "codex/world-contact-events",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-motor.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/motor-event-schedule.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-motor.test.ts",
+        "test/local-slip-work.test.ts",
+        "test/motor-event-schedule.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-motor-reference.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json",
+        "config/solver-value-study.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 77,
+      "title": "Hold World contact replacement on moving force-point mismatch",
+      "head": "25787e0a75a05fd8aa8a1df2403564a60331281d",
+      "branch": "codex/world-contact-events",
+      "base": "codex/contact-event-schedule",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-motor.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/motor-event-schedule.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-motor.test.ts",
+        "test/local-slip-work.test.ts",
+        "test/motor-event-schedule.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-motor-reference.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 76,
+      "title": "Retain achievable run-carrier motion before radial spacing cuts",
+      "head": "4cf253efead2cac450abe0bc74aa5e0db0306126",
+      "branch": "codex/rb-local-traffic",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+      "runtimeFiles": [
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/rb-local-traffic.json.gz",
+        "test/rb-local-traffic.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 73,
+      "title": "Separate contact event selection from endpoint motion; retain cost hold",
+      "head": "d786f3efaa7add8f9808d306d112c042b741f4da",
+      "branch": "codex/contact-event-schedule",
+      "base": "codex/slip-motor-event",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-motor.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/motor-event-schedule.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-motor.test.ts",
+        "test/local-slip-work.test.ts",
+        "test/motor-event-schedule.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-motor-reference.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 71,
+      "title": "Resolve the saved local motor/slip event; retain reference under cost hold",
+      "head": "a33ddc4f0f8700805ae3c30363bd472735d8754e",
+      "branch": "codex/slip-motor-event",
+      "base": "codex/slip-work-interval",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-motor.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-motor.test.ts",
+        "test/local-slip-work.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-motor-reference.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 70,
+      "title": "Prove the first local slip/work event under saturated motors",
+      "head": "1ee42fefda89e969998da64283573206c8c852b6",
+      "branch": "codex/slip-work-interval",
+      "base": "codex/coupled-ground-yaw",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/local-slip-work.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts",
+        "test/local-slip-work.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json",
+        "config/local-slip-work-reference.json",
+        "config/local-slip-work.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 68,
+      "title": "Experimental coupled yaw/hand selection with explicit work blocker",
+      "head": "41f06673ec0c4575ecde125114abaa85ba1b000f",
+      "branch": "codex/coupled-ground-yaw",
+      "base": "codex/contact-law-current",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/actuation.ts",
+        "src/physics/coupled-hand-yaw.ts",
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/coupled-hand-yaw.test.ts",
+        "test/keeper-contact-law.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 67,
+      "title": "Approach edge cutoff points with the forecast kick-slide budget",
+      "head": "01ed8d2e68e85e673e07ac0aa042cd851ac2fa92",
+      "branch": "codex/pass-loaded-objective",
+      "base": "codex/pass-set-opening-diagnosis",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/behaviors/receiver.ts",
+        "src/sim/engagement.ts",
+        "src/sim/local-block-response.ts",
+        "src/sim/option-route.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-footwork.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/carrier-live-assessment.test.ts",
+        "test/carrier-recovery-cue.test.ts",
+        "test/fixtures/pass-cutoff-inputs.json.gz",
+        "test/fixtures/shotgun-exchange.json.gz",
+        "test/fixtures/stretch-contact-depth-state.json",
+        "test/fixtures/wide-zone-mesh.json",
+        "test/inline-zone-role.test.ts",
+        "test/local-block-response.test.ts",
+        "test/option-agreement.test.ts",
+        "test/pass-cutoff-approach.test.ts",
+        "test/run-base.test.ts",
+        "test/shotgun-exchange.test.ts",
+        "test/stalk-visual-request.test.ts",
+        "test/stretch-contact-depth.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/support/stalk-visual-request.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/wide-zone-loaded-flow.test.ts",
+        "test/wide-zone-mesh.test.ts",
+        "test/zone-opening-spacing.test.ts",
+        "test/zone-reach.test.ts"
+      ],
+      "settingsFiles": [
+        "config/designed-run-exchange-followup.json",
+        "config/designed-run-game-diagnosis.json",
+        "config/stalk-visual-request-witness.json"
+      ],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 66,
+      "title": "Isolate common-point contact law and correct material ownership on develop",
+      "head": "29b00905edee16f00651317364b729c1b377eb5b",
+      "branch": "codex/contact-law-current",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/physics/world.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/contact-ground-isolation.test.ts",
+        "test/contact-material-ownership.test.ts",
+        "test/keeper-contact-law.test.ts"
+      ],
+      "settingsFiles": [
+        "config/current-contact-first-interval.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 64,
+      "title": "Diagnose pass cutoff prediction against P040 and P019 controls",
+      "head": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+      "branch": "codex/pass-set-opening-diagnosis",
+      "base": "codex/designed-run-game-diagnosis",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/behaviors/receiver.ts",
+        "src/sim/engagement.ts",
+        "src/sim/local-block-response.ts",
+        "src/sim/option-route.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-footwork.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/carrier-live-assessment.test.ts",
+        "test/carrier-recovery-cue.test.ts",
+        "test/fixtures/shotgun-exchange.json.gz",
+        "test/fixtures/stretch-contact-depth-state.json",
+        "test/fixtures/wide-zone-mesh.json",
+        "test/inline-zone-role.test.ts",
+        "test/local-block-response.test.ts",
+        "test/option-agreement.test.ts",
+        "test/run-base.test.ts",
+        "test/shotgun-exchange.test.ts",
+        "test/stalk-visual-request.test.ts",
+        "test/stretch-contact-depth.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/support/stalk-visual-request.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/wide-zone-loaded-flow.test.ts",
+        "test/wide-zone-mesh.test.ts",
+        "test/zone-opening-spacing.test.ts",
+        "test/zone-reach.test.ts"
+      ],
+      "settingsFiles": [
+        "config/designed-run-exchange-followup.json",
+        "config/designed-run-game-diagnosis.json",
+        "config/stalk-visual-request-witness.json"
+      ],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 61,
+      "title": "Require acquired flight before incidental offensive catch attempts",
+      "head": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "branch": "codex/eligible-catch-acquisition",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/catch-readiness.ts",
+        "src/sim/catching.ts",
+        "src/sim/playsim.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/incidental-catch-windows.json",
+        "test/incidental-catch-readiness.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 60,
+      "title": "Correct holding enforcement and retain actual possession credit",
+      "head": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "branch": "codex/game-bookkeeping-review",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/game/game.ts",
+        "src/sim/playsim.ts",
+        "src/sim/types.ts"
+      ],
+      "testFiles": [
+        "test/game-rules.test.ts",
+        "test/qb-rusher-recording.test.ts",
+        "test/replay-export.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 58,
+      "title": "Read receiver blocking from observed posture and contact",
+      "head": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43",
+      "branch": "codex/receiver-blocking-evidence",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/coverage-cues.ts",
+        "src/sim/recognition.ts"
+      ],
+      "testFiles": [
+        "test/recognition.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 57,
+      "title": "Repair moving shotgun exchange cadence; preserve failed recovery evidence",
+      "head": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "branch": "codex/designed-run-game-diagnosis",
+      "base": "codex/experimental-game-checkpoint",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/behaviors/receiver.ts",
+        "src/sim/engagement.ts",
+        "src/sim/local-block-response.ts",
+        "src/sim/option-route.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-footwork.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/carrier-live-assessment.test.ts",
+        "test/carrier-recovery-cue.test.ts",
+        "test/fixtures/shotgun-exchange.json.gz",
+        "test/fixtures/stretch-contact-depth-state.json",
+        "test/fixtures/wide-zone-mesh.json",
+        "test/inline-zone-role.test.ts",
+        "test/local-block-response.test.ts",
+        "test/option-agreement.test.ts",
+        "test/run-base.test.ts",
+        "test/shotgun-exchange.test.ts",
+        "test/stalk-visual-request.test.ts",
+        "test/stretch-contact-depth.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/support/stalk-visual-request.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/wide-zone-loaded-flow.test.ts",
+        "test/wide-zone-mesh.test.ts",
+        "test/zone-opening-spacing.test.ts",
+        "test/zone-reach.test.ts"
+      ],
+      "settingsFiles": [
+        "config/designed-run-exchange-followup.json",
+        "config/designed-run-game-diagnosis.json",
+        "config/stalk-visual-request-witness.json"
+      ],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 56,
+      "title": "Preserve native reel stop with atomic experimental fallback",
+      "head": "e494076fdab93c93de5135412855655fcfab5c97",
+      "branch": "codex/grip-reel-stop",
+      "base": "codex/grip-native-slip",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 55,
+      "title": "Prototype corrective-foot grip integration with bounded work accounting",
+      "head": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+      "branch": "codex/grip-recovery-work",
+      "base": "codex/grip-native-slip",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 52,
+      "title": "Keep inside-zone TEs in their physical base and document release transfer limits",
+      "head": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "branch": "codex/joined-release-transfer",
+      "base": "codex/wide-zone-flow",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/engagement.ts",
+        "src/sim/local-block-response.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-footwork.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/joined-release-state.json",
+        "test/fixtures/stretch-contact-depth-state.json",
+        "test/fixtures/wide-zone-mesh.json",
+        "test/inline-zone-role.test.ts",
+        "test/joined-departure.test.ts",
+        "test/local-block-response.test.ts",
+        "test/run-base.test.ts",
+        "test/stretch-contact-depth.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/wide-zone-loaded-flow.test.ts",
+        "test/wide-zone-mesh.test.ts",
+        "test/zone-opening-spacing.test.ts",
+        "test/zone-reach.test.ts"
+      ],
+      "settingsFiles": [
+        "config/ace-production-replay.json",
+        "config/run-scheme-transfer.json",
+        "config/wide-zone-flow.json",
+        "config/wide-zone-opening.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 51,
+      "title": "Integrate native tangent cap/slip with matched contact evidence",
+      "head": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+      "branch": "codex/grip-native-slip",
+      "base": "codex/grip-native-forces",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 50,
+      "title": "Sustain wide-zone combination footwork and correct the moving mesh",
+      "head": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "branch": "codex/wide-zone-flow",
+      "base": "codex/wide-zone-help-read",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/agent.ts",
+        "src/sim/assign.ts",
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/defense.ts",
+        "src/sim/behaviors/qb.ts",
+        "src/sim/engagement.ts",
+        "src/sim/local-block-response.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-footwork.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/fixtures/stretch-contact-depth-state.json",
+        "test/fixtures/wide-zone-mesh.json",
+        "test/inline-zone-role.test.ts",
+        "test/local-block-response.test.ts",
+        "test/stretch-contact-depth.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/wide-zone-loaded-flow.test.ts",
+        "test/wide-zone-mesh.test.ts",
+        "test/zone-opening-spacing.test.ts",
+        "test/zone-reach.test.ts"
+      ],
+      "settingsFiles": [
+        "config/ace-production-replay.json",
+        "config/wide-zone-flow.json",
+        "config/wide-zone-opening.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 47,
+      "title": "Correct wide-zone help reads, attached technique and opening forecasts",
+      "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "branch": "codex/wide-zone-help-read",
+      "base": "codex/wide-zone-opening",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/stretch-help.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/inline-zone-role.test.ts",
+        "test/stretch-help-read.test.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts",
+        "test/zone-opening-spacing.test.ts"
+      ],
+      "settingsFiles": [
+        "config/ace-production-replay.json",
+        "config/wide-zone-opening.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 41,
+      "title": "Model player awareness and diagnose costly run-lane glances",
+      "head": "66001360bd03a842679433805d88bc20fc8b689e",
+      "branch": "codex/run-awareness-model",
+      "base": "codex/teammate-information",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/playsim.ts",
+        "src/sim/run-awareness.ts",
+        "src/sim/spacing.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/run-awareness.test.ts",
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 36,
+      "title": "Use observer-owned teammate information for spacing",
+      "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "branch": "codex/teammate-information",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/playsim.ts",
+        "src/sim/spacing.ts",
+        "src/sim/teammate-calls.ts",
+        "src/sim/teammate-information.ts"
+      ],
+      "testFiles": [
+        "test/teammate-information-loop.test.ts",
+        "test/teammate-information.test.ts",
+        "test/traffic-control.test.ts"
+      ],
+      "settingsFiles": [],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 34,
+      "title": "Review stalk and coverage extraction; preserve two integration blockers",
+      "head": "306579fda9d496d45606445fd542239cf2f5acf4",
+      "branch": "codex/pass-controller-integration",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts",
+        "src/sim/behaviors/defense.ts"
+      ],
+      "testFiles": [
+        "test/coverage-cue-information.test.ts",
+        "test/coverage-flat-responsibility.test.ts",
+        "test/stalk-visual-request.test.ts",
+        "test/support/stalk-visual-request.ts"
+      ],
+      "settingsFiles": [
+        "config/stalk-visual-request-witness.json"
+      ],
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 29,
+      "title": "Use acquired defender position for the stalk movement request",
+      "head": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+      "branch": "codex/stalk-visual-request",
+      "base": "develop",
+      "draft": true,
+      "labels": [],
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "runtimeFiles": [
+        "src/sim/behaviors/blocking.ts"
+      ],
+      "testFiles": [
+        "test/stalk-visual-request.test.ts",
+        "test/support/stalk-visual-request.ts"
+      ],
+      "settingsFiles": [
+        "config/stalk-visual-request-witness.json"
+      ],
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 13,
+      "title": "Correct designed RB assessment reference; preserve three Ace controls",
+      "head": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+      "branch": "codex/rb-live-aim-assessment",
+      "base": "codex/under-center-zone",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "earlierStackOrExtraction"
+    },
+    {
+      "number": 4,
+      "title": "Trial run-contact motion and handover; diagnose hand protection",
+      "head": "b64910ee7975e679beca2590369714ff33994aa0",
+      "branch": "codex/coupled-run-contact",
+      "base": "codex/run-game-integration",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 2,
+      "title": "Establish a reproducible shared run-game integration baseline",
+      "head": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "branch": "codex/run-game-integration",
+      "base": "claude/engine-priorities",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    },
+    {
+      "number": 1,
+      "title": "Improve run blocking, defensive decisions, pursuit and tackle physics",
+      "head": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "branch": "codex/run-blocking-decision-dynamics",
+      "base": "claude/football-sim-engine",
+      "draft": true,
+      "labels": [],
+      "mergeBase": null,
+      "runtimeFiles": null,
+      "testFiles": null,
+      "settingsFiles": null,
+      "classification": "researchOrPrototype"
+    }
+  ],
+  "countDefinition": "71 candidate PRs including186, excluding this audit187; initial snapshot had70."
+}

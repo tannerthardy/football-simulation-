@@ -1,5 +1,22 @@
 <!-- Existing issue register from #37 / #63 retained for the current queue; no new issue system. -->
 
+## #189 checkpoint interpretation — 2026-10-20
+
+Reviewed run/support/pursuit/movement and finished178/188rules are composed and
+verified on7d5da0c7; actual adoption pin follows the canonical queue. The real
+185remote-wall regression is repaired; historical hand/facing/log/mirror test
+qualification preserves its underlying contracts and original failed evidence.
+Four games retain explosive run/YAC and edge protection failures;32candidate
+box explosives versus31old in two pairs does not establish a tail improvement.
+Candidate official score/TOP/possession credits reconcile; the old baseline
+spread audit explicitly misses two takeaways in an INT→return-fumble→recovery.
+350unresolved rule observations/62limitations remain conservative evidence gaps,
+not350provenfouls. Future comparisons use explicit official credit and source
+history, not final-possession Boolean or raw nullified results alone.
+[Exact scope, adverse evidence, cost, held experiments and film](reviews/finished-controller-integration.md).
+No unreviewed153flag or experimentalphysics promotion follows from this checkpoint.
+
+
 # Master issue register
 
 Latest saved-data review: **2026-10-16 America/Phoenix / 2026-10-17 UTC**, accepted engine
@@ -10,9 +27,9 @@ Older entries retain their dated integration history; consult the canonical
 The previous register header's `90edc525` was the accepted reference at its publication,
 not the current development instruction.
 
-Latest accepted develop is `f4146275ce7539816bf57b4ed55a0d2be10e48c7` through151. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
+Latest accepted develop is `2c98bed94adad8087c65f381d4090444ad283985` through168. Included narrow corrections, held review/caller gates and exact receipts are in [the canonical queue](INTEGRATION.md#accepted-development). Both handbook resources remain. Original audit/native records are source-qualified historical evidence, not rewritten current outcomes.
 
-Current runtime preparation: #168 minimally extracts reviewed131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; final adoption awaits mutable-ref/tree check. Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
+Current runtime disposition: #168 adopted the minimal reviewed extractions from 131/141/148→149/150/152/155/156/157/159/corrected160/161/167 and two153 scopes. Exact25a7a591 passes2248 TS/145 Python/typecheck/build; actual merge preserves the passing tree. All13 source PRs closed, branches/evidence retained. [Actual pin/owners](../data/reviews/current/pr168-merge.json). Prior151 work remains accepted. [Final receipt](../data/reviews/current/latest-reviewed-checkpoint/final-receipt.json).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -21,6 +38,8 @@ Use [STATUS](STATUS.md) for the short priority list, [INTEGRATION](INTEGRATION.m
 for candidate/receipt decisions, and [WORKBOARD](WORKBOARD.md) before shared edits.
 
 The old131 caller,141 contract and148/149/150 independent-review gates are resolved within the named168 extraction. Original160 hidden-holder activation is excluded; only own-recognition repair is accepted.164/165 were removed after combined failures, with all failures and traces preserved. Their useful-access/motion contracts remain held;162 yaw/GAIT_STEP promotion is separate. Preserve receiver traffic, comeback space, delayed shotgun exchange/unproved loaded protection, contact lifetime, wide-zone/combo and deep-pursuit risks. Finer film changes output-derived measurement near thresholds, not physical trajectories. [Current dispositions and exact pins](reviews/latest-reviewed-checkpoint.md). Older dated rows retain their original evidence; the canonical queue governs live status.
+
+Latest153 research isbae3fe80 (Parts1–13), merged from accepted2c98bed9. Related169/171 support-continuation corrections have independent scoped acceptance and a prepared portable candidate; combined verification remains Integration's. Newly refreshed172 has independent solo-runoff acceptance and a portable optional composition; earlier defender access/live censors remain qualified.170 supports a recoverable-contact diagnostic contract, without proving universal slowdown or an NFL population rate. FORCE_LEAD and other newly proposed flags need exact independent dispositions; existing holds persist. [Reviewed/unreviewed scope and owner requests](reviews/run-game-v3-review-intake.md#latest-claude-preparation). No new broad study is required to classify or distribute the work.
 
 ## Status and evidence rules
 
