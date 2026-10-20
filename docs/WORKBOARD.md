@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Acquired pursuit objective continuity — 2026-10-20 UTC
+
+Catching owns only common.ts/chase's own-objective producer and direct tests
+on codex/pursuit-objective-continuity, accepted2c98bed94adad8087c65f381d4090444ad283985,
+queue6575988fe9e72bd0aaf9e3573787f0dcb81ebf52. Saved Mike/Will/SS pursuits lose
+metadata at the fit-to-chase transition; spacing can brake but cannot evaluate
+its existing goal-preserving transverse maneuver. Advertise the consumed
+CURRENT runner picture/current shade and observed velocity, not the future
+intercept waypoint. No request, perception, reach, physics, contact, spacing
+algorithm, capacity or flag change. Do-It-All retains spacing/navigation;
+producer contract coordinated on153 comment6300860357. #166's held virtual
+sprint-waypoint proposal remains excluded; #175/#176 policies stay frozen.
+Composed-preview candidate8d9da7f stays separate, not a parent/dependency.
+Integration owns combined verification. Judge actual safe progress and finish,
+not removal of all necessary teammate braking or reduced yardage alone.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
