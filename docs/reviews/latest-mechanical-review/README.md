@@ -232,3 +232,22 @@ ENOENT; the exact test was restored before the actual diagnostic. Its
 assertion was edited in Integration's frozen checkout. Integration decides
 which material candidate to hold and verifies its next coherent tree; the
 earlier isolated technical acceptance is not a passing combined receipt.
+
+Integration subsequently **holds #165 adoption** while its native planned-
+climb/spacing contracts and deliberately preserved center-mode negative
+control are reconciled; #164 is separately held after blocking isolation.
+The isolated current-facing technical rationale remains recorded, not used to
+waive those broader supported contracts. No further execution was performed.
+
+Source-only P019 review: row 18 of `pass-cutoff-inputs.json.gz` embeds its own
+Gun Empty/Y-Cross formation and Cover 3 Seam defense. It does not resolve the
+new offset-gun RB map, so #156 is not an installed-input change for this
+saved case. The first failing assertion is missing LT/RT engagement after an
+actual throw; the preceding `throwAt >= 0` assertion passes. `PassProtector`,
+`ProtectionCoordinator` and `stepPassRep` are unchanged; #164 modifies the
+separate run-contact reader/executor. #141 changes deep coverage in this call
+and can alter the QB's throw timing, while #165 alters physical execution.
+Lost contact could therefore involve changed exposure or movement. Without
+the first relevant divergence it is not justified to call this a stale fixture
+or discard the opposing protection contract. This is source triage, not an
+additional native diagnosis or proof selecting the remaining culprit.

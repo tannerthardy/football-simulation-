@@ -33,7 +33,8 @@
       "patchSha256": "d774d3c41a43b075bf399b433aa08031ffb0029f0337c77b36b56a3691e887b4",
       "appliesToAcceptedBase": true,
       "testBlob": "9fed87aac83b429ccf05f7b3b2450a775d1cd3b9",
-      "disposition": "ACCEPT technical isolated existing-law execution-order correction; explicitly adjudicates attained-start-pose convention, final authority classification and combined verification remain Integration"
+      "disposition": "ACCEPT technical isolated existing-law execution-order correction; explicitly adjudicates attained-start-pose convention, final authority classification and combined verification remain Integration",
+      "integrationDispositionAfterCombinedFailure": "HOLD adoption by Integration pending native planned-climb/spacing and preserved center-mode negative-control reconciliation; technical current-facing rationale not waived"
     }
   },
   "evidenceChecks": [
@@ -106,6 +107,7 @@
     "reverseProductionPatch": "qb-reverse165-production.patch",
     "patchSha256": "b5d150e95fa23c60cc900061577e5095cfd111448eb8881fb24e3a0072eb9b3f",
     "testsEdited": false,
-    "setupFailure": "initial full reverse patch deleted new gait test, caught by launcher before engine; restored exact test blob before actual focused run; original ENOENT preserved"
+    "setupFailure": "initial full reverse patch deleted new gait test, caught by launcher before engine; restored exact test blob before actual focused run; original ENOENT preserved",
+    "p019SourceOnly": "Embedded GunEmpty/Y-Cross unaffected by156map; unchangedpasscontrollers/run-only164;141canalterthrowexposure and165physicalexecution; no automatic stalefixtureverdict"
   }
 }
