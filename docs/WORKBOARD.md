@@ -1,17 +1,20 @@
 # Current work ownership
 
-## Active DB stalk response — 2026-10-20 UTC
+## Review-ready DB stalk response — 2026-10-20 UTC
 
-Catching owns the bounded acquired run-support / perimeter work-off diagnosis
+Catching completed the bounded acquired run-support / perimeter work-off diagnosis
 on `codex/db-stalk-workoff`, from accepted
-`2c98bed94adad8087c65f381d4090444ad283985` (queue `4cc3337`). Inspect saved
-stalk encounters, successful escapes and legitimate sustained blocks first.
-Potential edits are confined to the defender's support/work-off objective in
-`engagement.ts` and directly affected contracts; coordinate shared functions
-with Run/Claude #153 before changing them. Preserve offensive stalk access,
-installed force/alley duties, personally acquired cues, physical laws, hands,
-capacities, experimental defaults and combo/climb behavior. No blanket block
-lifetime or guaranteed shed. Integration owns exact combined verification.
+`2c98bed94adad8087c65f381d4090444ad283985` (queue `4cc3337`). Code `e83b735`,
+source `e98dedd`, removes only the new-contact initial move wait after the
+existing personally acquired/declared support contract qualifies. Subsequent
+cadence, offensive stalk access, force/uncertain/first-level gates, physical
+laws/hands/capacities/defaults and combo/climb policy remain. Independent
+controller/mechanical reviews approve scope;34 focused checks/typecheck pass.
+Twelve completed native cases preserve successful escapes/sustained blocks;
+OZ4 returns usefully, WZ7's outside-leverage cost/explosive remain. Fixed-side
+work-off and deeper containment are not repaired. Shared scope coordinated on
+Run #153; no blanket lifetime/guaranteed shed. Integration owns combined checks.
+[Report, immutable inputs/receipts and next question](reviews/db-stalk-workoff-2026-10-20.md).
 
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
