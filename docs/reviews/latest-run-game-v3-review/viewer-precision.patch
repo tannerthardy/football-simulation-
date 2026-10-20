@@ -1,0 +1,75 @@
+diff --git a/scripts/replay-data.ts b/scripts/replay-data.ts
+index 55c2b3af..c5a9aea7 100644
+--- a/scripts/replay-data.ts
++++ b/scripts/replay-data.ts
+@@ -38,7 +38,11 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
+   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
+ };
+ const SHOWN_EVENTS = new Set(['pressure', 'pitch', 'pitch_catch', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_abandon', 'block_log', 'block_climb', 'squeeze']);
+-const tenth = (v: number) => Math.round(v * 10);
++/** Frame coordinates in hundredths: tenths at 10 Hz alias anyone slower than
++ * about 1 yd/s into stop-and-go steps on playback (tracking and the sim both
++ * carry 0.01 yd). The viewer reads the scale from the frames. */
++const FRAME_SCALE = 100;
++const scaled = (v: number) => Math.round(v * FRAME_SCALE);
+ const r2 = (v: number) => Math.round(v * 100) / 100;
+ 
+ export function replayConcept(p: PlayLog) {
+@@ -108,10 +112,11 @@ export function packReplayPlay(p: PlayLog, game: number) {
+     ev: rp.events.filter((e) => SHOWN_EVENTS.has(e.type)).map((e) => [r2(e.t), e.type]),
+     frames: {
+       t: rp.frames.map((f) => f.t),
+-      p: rp.frames.flatMap((f) => f.agents.map(tenth)),
+-      b: rp.frames.flatMap((f) => f.ball.map(tenth)),
++      scale: FRAME_SCALE,
++      p: rp.frames.flatMap((f) => f.agents.map(scaled)),
++      b: rp.frames.flatMap((f) => f.ball.map(scaled)),
+       c: rp.frames.map((f) => f.carrier),
+-      s: rp.frames.flatMap((f) => (f.carrierPosture ?? [0, 0]).map(tenth)),
++      s: rp.frames.flatMap((f) => (f.carrierPosture ?? [0, 0]).map(scaled)),
+     },
+   };
+ }
+diff --git a/test/replay-export.test.ts b/test/replay-export.test.ts
+index 0fa4cd2d..ea67a8f3 100644
+--- a/test/replay-export.test.ts
++++ b/test/replay-export.test.ts
+@@ -54,8 +54,10 @@ describe('replay export', () => {
+     expect(packReplayPlay(play(), 2).id).toBe('G3-P005');
+     expect(p.roster[0]).toEqual(['O', 'RB', 'Example Runner', 28]);
+     expect(p.frames.t).toEqual([-0.5, 0]);
+-    expect(p.frames.p).toEqual([312, 267, 7, 313, 267, 9]);
+-    expect(p.frames.s).toEqual([0, 0, 8, 9]);
++    // Hundredths: tenths at 10 Hz alias a slow mover into stop-and-go steps.
++    expect(p.frames.scale).toBe(100);
++    expect(p.frames.p).toEqual([3124, 2667, 70, 3131, 2674, 90]);
++    expect(p.frames.s).toEqual([0, 0, 80, 90]);
+     expect(p.ev).toEqual([[0, 'carrier_contact'], [0, 'block_exchange']]);
+   });
+ 
+diff --git a/viewer/replay.template.html b/viewer/replay.template.html
+index e5a7c8f9..002a4f57 100644
+--- a/viewer/replay.template.html
++++ b/viewer/replay.template.html
+@@ -271,15 +271,17 @@ window.TELEMETRY_READY = Promise.resolve(true);
+   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+   const familyNames = { zone: 'Zone runs', gap: 'Gap runs', 'other-run': 'Other runs', quick: 'Quick game', dropback: 'Dropback passes', playaction: 'Play action', screen: 'Screens', other: 'Other plays' };
+   const familyOrder = Object.keys(familyNames);
+-  // Positions, facings and ball coordinates arrive in tenths.
++  // Positions, facings and ball coordinates arrive in tenths, or in the
++  // frames' own scale (hundredths in newer replays).
+   for (const p of plays) {
+     p.game ??= 0;
+     p.id ??= `G${p.game + 1}-P${String(p.index + 1).padStart(3, '0')}`;
+     p.concept ??= { id: p.kindLabel, name: p.kindLabel, family: 'other' };
+     if (!p.frames) continue;
+-    p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
+-    p.frames.b = Float32Array.from(p.frames.b, (v) => v / 10);
+-    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / 10);
++    const scale = p.frames.scale || 10;
++    p.frames.p = Float32Array.from(p.frames.p, (v) => v / scale);
++    p.frames.b = Float32Array.from(p.frames.b, (v) => v / scale);
++    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / scale);
+   }
+   const filmed = plays.map((p, i) => p.frames ? i : -1).filter((i) => i >= 0);
+   const teams = { [meta.home.abbr]: meta.home, [meta.away.abbr]: meta.away };

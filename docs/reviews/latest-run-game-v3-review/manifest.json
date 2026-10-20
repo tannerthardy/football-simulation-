@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "acceptedBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "reviewedHead": "6184040fb0e2190b8799a2bd925df9e8af6494da",
+  "reviewedRuntimeSha256": "0217d437fa8ca0dd526ffa479150a9974e0ca254125f9c0a19785d9b2397f53a",
+  "baseRuntimeSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "reviewedFiles": {
+    "src/playbook/alignment.ts": {
+      "blob": "5bd905afe2e233fddb8d4e3bb6ad8efefe3395da",
+      "sha256": "b301fbbe4e5cbbe4d88de6c66f08656c48bd3a0dbcccc9c1544e215d10cc1ec9"
+    },
+    "src/sim/agent.ts": {
+      "blob": "6bb6fade667a2b1889aaba569d9eb3b44b9981dc",
+      "sha256": "10474a833912abebed8b0b8ea6610e75274f8bc06ad190e5abbcf75e31ed0a84"
+    },
+    "src/sim/assign.ts": {
+      "blob": "5ffabf274651479149f8c15b35429df4c6423657",
+      "sha256": "a811d29baa1fc3e3e669da803535a1aad5f91a67662df75a5a6d08bc4b43d3b5"
+    },
+    "src/sim/behaviors/blocking.ts": {
+      "blob": "bda709c143fbe4047fc48b8f7c0df0de28f337d1",
+      "sha256": "b62ef1922c3bfe317922d834c092f2d80caf5b9de4a0170a752ed706b3febf96"
+    },
+    "src/sim/behaviors/carrier.ts": {
+      "blob": "1beef55ea3aac358729d79322566c6d83e5670e5",
+      "sha256": "1505a8c82c40b52edc40c7ba5df58297f85b8ea88d7660aaaba3a61fd8b0de02"
+    },
+    "src/sim/behaviors/qb.ts": {
+      "blob": "fd72a9a7a5e63febde761f238b01f5a544f62a8c",
+      "sha256": "b4f95ca1b4752863eae683796dda2c3a370833dd9077ea6a22c1e37f17df0724"
+    },
+    "src/sim/engagement.ts": {
+      "blob": "87b9e18b5687c219401aea7ad400a14777dc8f7b",
+      "sha256": "2cf57e70b4c7406297a78b000000d513609975d3fe97cec902706580f9df8139"
+    },
+    "src/sim/run-fits.ts": {
+      "blob": "e3428b4ef7e24fe203eb657422136de07169c2d5",
+      "sha256": "9912fc2e705e3b12b477cfb52974bed57d0c85cf43261f335ced4689ed94cf97"
+    },
+    "scripts/replay-data.ts": {
+      "blob": "c5a9aea76a3f5c55f6368a171889848eab0de9a0",
+      "sha256": "980b1cd6b77d58f197a29a7903777563a94b85d900fba7add1cf9db8283aa539"
+    },
+    "viewer/replay.template.html": {
+      "blob": "002a4f579ceee79a77b1ed8d8f15bb0bcc3c3423",
+      "sha256": "98a924e0feaef0f1003aebac363b5414f66ca45325065ac8a6ddf1ed8e665f90"
+    }
+  },
+  "extracts": {
+    "viewer": {
+      "patches": [
+        "viewer-precision.patch"
+      ],
+      "expectedTreeOnBase": "4014f0a66b8ef72ff99a0d29bc0a30b171645875",
+      "files": {
+        "scripts/replay-data.ts": "c5a9aea76a3f5c55f6368a171889848eab0de9a0",
+        "test/replay-export.test.ts": "ea67a8f39b1a9bdb2f67a06e351c466c46353608",
+        "viewer/replay.template.html": "002a4f579ceee79a77b1ed8d8f15bb0bcc3c3423"
+      },
+      "runtimeSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197"
+    },
+    "completePrecision": {
+      "patches": [
+        "viewer-precision.patch",
+        "native-recording-precision.patch"
+      ],
+      "expectedTreeOnBase": "d69c84348bc9c193efe0f48ab2c620c05d9a77e3",
+      "files": {
+        "scripts/replay-data.ts": "c5a9aea76a3f5c55f6368a171889848eab0de9a0",
+        "src/sim/playsim.ts": "7039a4d9013d11147e25a72274adbdda3b542c00",
+        "test/replay-export.test.ts": "ea67a8f39b1a9bdb2f67a06e351c466c46353608",
+        "test/replay-recording-precision.test.ts": "f1373f4dad5ad1df8712f1599c882e7e4267249f",
+        "viewer/replay.template.html": "002a4f579ceee79a77b1ed8d8f15bb0bcc3c3423"
+      },
+      "runtimeSha256": "ec5c4d50dce335b8366545e52b8e42b30a6aee62d565387cf3ca070dc828bb45"
+    },
+    "carryoutDirection": {
+      "patches": [
+        "qb-carryout-direction.patch"
+      ],
+      "expectedTreeOnBase": "40b7e8bcb4cd381fe9ae4c40bf765745d464aabf",
+      "files": {
+        "src/sim/behaviors/qb.ts": "c6f96a89ce01056fb41f877ee7c5a0fe81bdb635",
+        "test/qb-carryout-direction.test.ts": "d3d9dbd20b8925783738d63ecb2152537796feb7"
+      },
+      "runtimeSha256": "29cbf142dd4af0923b25bae55c3736e7f933dc1c62b4e0acfd49f2fa444a5818"
+    }
+  },
+  "evidenceOnlyHistory": true,
+  "newEngineTicks": 0,
+  "newGames": 0,
+  "fullSuiteRuns": 0,
+  "artifacts": {
+    "native-recording-precision.patch": {
+      "bytes": 4593,
+      "sha256": "0b67ae18d491d3d32cc8856ec53e02cdf957b9681b3e9ddb4431720549866f41"
+    },
+    "precision-pipeline-focused.json": {
+      "bytes": 2437,
+      "sha256": "afc708d74a795966449b0cee987ae26e50f1c4bd1e77da1d3e47b37a71611b50"
+    },
+    "precision-upstream-failure.json": {
+      "bytes": 2373,
+      "sha256": "9bd84f3ed4d60b45bba8a66b20795c27660e964c300c0a7b52a5d6aec3a93edd"
+    },
+    "precision-upstream-failure.log": {
+      "bytes": 2229,
+      "sha256": "182ab84bbabe9d98f301b8a4f62a769fb09e6e9d7fd5028a3ee8840b8bf62192"
+    },
+    "qb-carryout-accepted-failure.json": {
+      "bytes": 2267,
+      "sha256": "99a33c5c8227ebc0503e1f054a5371bced7e55075294b64c9814a20b38f683e0"
+    },
+    "qb-carryout-accepted-failure.log": {
+      "bytes": 2775,
+      "sha256": "6414eabe2fb9d0326f93913ba3f73044d6669eaa98e23f439cecc2763b966786"
+    },
+    "qb-carryout-direction.patch": {
+      "bytes": 4067,
+      "sha256": "6ebb6e77985aaff4626daee295f06fbe7fe139c19e42adde4077da76bd7fd988"
+    },
+    "qb-carryout-focused-final.json": {
+      "bytes": 2300,
+      "sha256": "3c80e24cc4bf9986b684f9cda8eb11d5f48edfba5a8f6a9783db8502991102c9"
+    },
+    "qb-carryout-test-setup-failure.json": {
+      "bytes": 2300,
+      "sha256": "bebc240c64523e4b8d5950fd9edb4b33b318263528cd98b652b414997627998f"
+    },
+    "viewer-focused.json": {
+      "bytes": 2360,
+      "sha256": "578fa634c408793c3868472f52ba828fd71be011bc167e6170be165d911544b3"
+    },
+    "viewer-precision.patch": {
+      "bytes": 4379,
+      "sha256": "6dd3c7149ca7d23ab6752a297c291b6d0e4f21a4d9e8c22c30ce480c58307867"
+    },
+    "README.md": {
+      "bytes": 12498,
+      "sha256": "4b650d70cadb0ec1ea00f30066db6d69798b01ff4c06d0a127bf001e97bf3a0c"
+    }
+  }
+}
