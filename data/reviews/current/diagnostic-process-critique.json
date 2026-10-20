@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-20 America/Phoenix",
+  "acceptedPin": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queuePin": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "researchPin": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+  "userNotes": {
+    "name": "Pasted text.txt",
+    "bytes": 18915,
+    "sha256": "86fc6817d8177c01bc485ea58409f9b110f2a44d5cfeb5b41dc77d1a839efe26",
+    "contentNotRepublished": true
+  },
+  "scope": "Read-only critique/build-on architectural notes and process retrospective; no controller or law approval",
+  "sources": [
+    {
+      "label": "tick",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "src/sim/playsim.ts",
+      "line": 545,
+      "sha256": "eef67c335eb25448ba26dad5b0e6a8ba07fc24654488cf4a0f5a13317f92d384",
+      "bytes": 40829,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/playsim.ts#L545",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "profiles",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "src/players/physical.ts",
+      "line": 91,
+      "sha256": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+      "bytes": 7952,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/players/physical.ts#L91",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "blocking",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "src/sim/behaviors/blocking.ts",
+      "line": 656,
+      "sha256": "6bae21900894080cb401dc582baf18f0e3edcafe40bb42d441db9d3a3ddcb9f9",
+      "bytes": 106322,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/behaviors/blocking.ts#L656",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "flow",
+      "commit": "57b05b0995d05d9c4f44a8611496c6b966e3e72f",
+      "path": "docs/reviews/run-flow-2026-10-19.md",
+      "line": 61,
+      "sha256": "2dac7d02ee7dd1abcdfefa13709b2d9737f879c4f9766091877135ee5c6b2003",
+      "bytes": 12629,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/57b05b0995d05d9c4f44a8611496c6b966e3e72f/docs/reviews/run-flow-2026-10-19.md#L61",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "hidden",
+      "commit": "7035a2080a1ead3923c8ea25526cb2a47d79fee4",
+      "path": "docs/reviews/run-support-158-160-review/README.md",
+      "line": 106,
+      "sha256": "a826f691dbff3e46c337ebe7a5421e8ed1fff7bb3b23c92479517dbcc881b516",
+      "bytes": 13870,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/7035a2080a1ead3923c8ea25526cb2a47d79fee4/docs/reviews/run-support-158-160-review/README.md#L106",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "formation",
+      "commit": "aacfce18865f345b59b96a192d2ed9064403853e",
+      "path": "docs/reviews/shotgun-rb-alignment.md",
+      "line": null,
+      "sha256": "66fc2be21f5a03cc8936fdf7e744139b5a8e60abffd7d0a577cce4ef0d64c389",
+      "bytes": 7131,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/aacfce18865f345b59b96a192d2ed9064403853e/docs/reviews/shotgun-rb-alignment.md",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "count",
+      "commit": "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+      "path": "docs/reviews/toss-box-accounting/README.md",
+      "line": 29,
+      "sha256": "471513689ef863586428b24594f8790d52f83a2141f4e4521279e78134679c9c",
+      "bytes": 9237,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/495a2f279984b10f7cd8c20dae9b1c18b03d502b/docs/reviews/toss-box-accounting/README.md#L29",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "checkpoint",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "docs/reviews/latest-reviewed-checkpoint.md",
+      "line": 33,
+      "sha256": "6fe72064c71d38d1cf24f5f5788b9cea4fb9992accc912a6b73e6f2284f75f55",
+      "bytes": 17520,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/docs/reviews/latest-reviewed-checkpoint.md#L33",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "composition",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "docs/reviews/latest-reviewed-checkpoint.md",
+      "line": 153,
+      "sha256": "6fe72064c71d38d1cf24f5f5788b9cea4fb9992accc912a6b73e6f2284f75f55",
+      "bytes": 17520,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/docs/reviews/latest-reviewed-checkpoint.md#L153",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "old-flow",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "docs/reviews/defensive-flow.md",
+      "line": 34,
+      "sha256": "37feaa19503e80662548adfd24b7e17b0d9115e43e16765543184ee93222e0b8",
+      "bytes": 12001,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/docs/reviews/defensive-flow.md#L34",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "blocking-review",
+      "commit": "b271549928bb1a1b76e76162dd7f14488cabb87e",
+      "path": "docs/reviews/latest-blocking-review-2026-10-19/README.md",
+      "line": 163,
+      "sha256": "191beb2c678c674a89ce6da84d1202835186e28a49aa17548a681cd0046c7149",
+      "bytes": 17706,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/b271549928bb1a1b76e76162dd7f14488cabb87e/docs/reviews/latest-blocking-review-2026-10-19/README.md#L163",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "precision",
+      "commit": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+      "path": "docs/reviews/latest-run-game-v3-review/README.md",
+      "line": 13,
+      "sha256": "4b650d70cadb0ec1ea00f30066db6d69798b01ff4c06d0a127bf001e97bf3a0c",
+      "bytes": 12498,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/77c28ffbbd55b29b2f0459be289bd497927d045c/docs/reviews/latest-run-game-v3-review/README.md#L13",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "access",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "path": "docs/reviews/nfl-agent-evidence-plan.md",
+      "line": 142,
+      "sha256": "a25bd98a9d80a8f5903efa2b0ca9cdcd662bddd3d8f4d76f152b4becc4dbf0cc",
+      "bytes": 19008,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/docs/reviews/nfl-agent-evidence-plan.md#L142",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    },
+    {
+      "label": "gait",
+      "commit": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+      "path": "docs/reviews/run-game-v3.md",
+      "line": 1757,
+      "sha256": "faaf92f5891e3458284abbeecf7f996cf77f0070d80dd53cafdc1e0321cb7287",
+      "bytes": 93983,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/bae3fe80d189a7d792aaafbc4eea1ae2baa79573/docs/reviews/run-game-v3.md#L1757",
+      "status": "source/report inspected; historical producing evidence not rerun"
+    }
+  ],
+  "notesAssessment": {
+    "keep": [
+      "separate job, technique, motor request, capability and physical law",
+      "diagnose first demonstrated wrong action",
+      "preserve different tactical duties under shared physical limits",
+      "generalize only demonstrated mechanisms"
+    ],
+    "qualify": [
+      "requested velocity is not the complete command",
+      "context recurrence does not locate the faulty layer",
+      "fixed-command success does not establish informed useful football",
+      "role swaps must distinguish frozen profiles from changed training/installation",
+      "technique reuse already exists; no immediate library rewrite or arbitrary two-caller gate",
+      "a justified lower-level contract correction can require explicit controller co-adaptation"
+    ],
+    "add": [
+      "information and sample time",
+      "held decision/target/mode coherence",
+      "command refinement/arbitration",
+      "contact lifecycle and ownership",
+      "initial conditions and temporal geometry",
+      "measurement and credited-result semantics",
+      "opponent response and last recoverable opportunity"
+    ]
+  },
+  "cases": [
+    {
+      "id": "159",
+      "finding": "Facing restricted an already selected lateral fit to shuffle; facing-only correction accepted",
+      "observations": {
+        "sameMikeLateralSpeed": [
+          5.01,
+          6.05
+        ],
+        "freshContactSeconds": [
+          4.05,
+          3.6
+        ],
+        "adverseTossGain": [
+          3.84,
+          4.33
+        ]
+      },
+      "claimLimit": "Improved rally is not necessarily improved tackle; saved inputs not a representative defect-rate panel"
+    },
+    {
+      "id": "160",
+      "finding": "Original new-mode activation depended on hidden actual holder despite unchanged acquired pictures; narrow own-run-recognition repair accepted",
+      "observations": {
+        "targetY": [
+          27.137802721312227,
+          31.356681818181823
+        ],
+        "requestVy": [
+          1.4466504128438247,
+          2.8411076533541832
+        ],
+        "probeLauncherSeconds": 1.73,
+        "compatibleRecordedActiveSamples": 262
+      },
+      "claimLimit": "Repair applies to new consumer; legacy declaration information debt remains"
+    },
+    {
+      "id": "156",
+      "finding": "Nominal shotgun start spacing corrected; physical reach and unchanged controls preserved",
+      "observations": {
+        "lateralSplit": [
+          1.6,
+          2.3
+        ],
+        "behindQB": [
+          0.2,
+          0.5
+        ],
+        "ownSideExchangeDelaySeconds": 0.15
+      },
+      "claimLimit": "Selected censored prefixes, not universal speed ceiling or loaded blitz-pickup proof"
+    },
+    {
+      "id": "157",
+      "finding": "Legitimate numerical overload distinct from actual F/FB count bug; count bug inactive in motivating lab",
+      "observations": {
+        "constructorCases": 34,
+        "BearCasesWithInitiallyUnownedLBs": 8,
+        "coreThreats": 9,
+        "coreBlockers": 7
+      },
+      "claimLimit": "Audibles=false means repaired QB-count closure cannot explain the lab crossing rate"
+    },
+    {
+      "id": "131",
+      "finding": "Simultaneous achieved body/ball interval corrected temporal query; helper plus caller accepted",
+      "claimLimit": "Historical wrong ending changed; selected later current cases already differed and stayed unchanged"
+    },
+    {
+      "id": "164/165",
+      "finding": "Local/source acceptance and overlap checks insufficient for composed useful departure; both scopes held",
+      "observations": {
+        "bodyIdentityThroughSeconds": 0.45,
+        "firstCompletedDivergenceSeconds": 0.5,
+        "earnedRGReleaseWithout164": 1.05,
+        "pairStillJoinedWith164Through": 2.65,
+        "overlapChecksPassed": 54,
+        "initialCombinedTSFailures": 13
+      },
+      "claimLimit": "Unresolved useful-access and motion contract costs, not proof of a World defect"
+    }
+  ],
+  "verificationCostInterpretation": {
+    "initialFailedCandidateCommandSeconds": 252.106,
+    "reducedPassingCandidateCommandSeconds": 261.757,
+    "totalCommandSeconds": 513.863,
+    "interpretation": "Justified changed-tree verification; do not describe as an unchanged duplicate rerun",
+    "finalTypeScriptPassed": 2248,
+    "finalPythonPassed": 145
+  },
+  "researchCounterexample": {
+    "parameter": "GAIT_STEP=.5 in large selected research package",
+    "accelerationEnvelopeFitError": [
+      0.42,
+      0.53
+    ],
+    "shotgunNegatives": [
+      49,
+      103
+    ],
+    "shotgunExposure": 600,
+    "acceptedGAIT_STEP": "0",
+    "interpretation": "Outcome sensitivity and disclosed adverse results; no independently validated physical calibration. NFL observed acceleration envelope itself is conditioned behavior, not physical-law truth."
+  },
+  "currentNFLAccess": "Accepted plan142-156 records resolved existing-host access and ed6ebd21911a28f07a085094c393ea2613abeb69 movement-continuity packet. Reuse; do not recommend another archive acquisition.20 selected plays are not league reference.",
+  "recommendations": [
+    "Use one compact broken-contract/alternative/falsifier/scope statement in existing review format",
+    "Preserve a useful opposing transition, not an incidental exact trajectory",
+    "Separate demonstrated defect, successful intervention and transfer/importance claims",
+    "Finish one independently adoptable correction between discovery cycles, with specific Integration disposition",
+    "Use a separately budgeted small accepted-build sample after meaningful batches for prioritization; no new collection here",
+    "Extract reusable techniques only from demonstrated shared information/lifecycle/action contracts"
+  ],
+  "uncertainty": [
+    "Selected reports cannot establish simulator-wide defect rates or dominant causes",
+    "No comparable measured agent-effort ledger supports productivity rankings or paperwork-waste percentages",
+    "Existing receipts and quoted arithmetic are read-only evidence, not new native remeasurement"
+  ],
+  "staticValidation": [
+    "JSON parses; 14 source entries match pinned blob bytes and SHA256 values (13 distinct commit/path pairs)",
+    "All report reference labels resolve and pinned source line numbers exist",
+    "Uploaded note bytes and SHA256 match the recorded original",
+    "git diff --check passes; only report, evidence inventory and bounded workboard entry changed"
+  ],
+  "newTests": 0,
+  "newEngineTicks": 0,
+  "newNFLQueries": 0,
+  "newGames": 0,
+  "runtimeOrPolicyImplementation": false
+}

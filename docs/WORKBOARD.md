@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Diagnostic architecture and process critique — 2026-10-20 America/Phoenix
+
+Completed; bounded files released. Measurement's read-only retrospective of the
+user's five-layer/technique notes is on `codex/diagnostic-process-review`, based on accepted
+`2c98bed94adad8087c65f381d4090444ad283985` / queue `4cc3337d`.
+Bounded files: `docs/reviews/diagnostic-process-critique.md` and
+`data/reviews/current/diagnostic-process-critique.json`, plus this claim.
+Compare notes against actual command stages, source-pinned successes, held
+counterexamples and combined verification. No engine/interface reorganization,
+law/default/technique-library implementation, policy gate, new query, collector,
+native run or game campaign. Parallel reviewers provide read-only case/architecture/
+process findings informed the synthesis. The report and evidence inventory
+retain accepted/research pins and distinguish reviewed observations from wider
+priority claims. No runtime or policy implementation.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
