@@ -1,8 +1,9 @@
 /** NFL-2026 Rule 8 ball rulings on facts the caller has actually established.
  * These functions do not decide who acquired the ball, execute a technique,
  * infer full-body release position, or consume an execution/referee draw. */
-import { OWN_GOAL_X, OPP_GOAL_X } from '../core/field.js';
+import { FIELD_WIDTH, OWN_GOAL_X, OPP_GOAL_X } from '../core/field.js';
 import type { TeamSide } from './agent.js';
+import type { Vec2, Vec3 } from '../core/vec.js';
 
 const other = (team: TeamSide): TeamSide => team === 'O' ? 'D' : 'O';
 const direction = (team: TeamSide): number => team === 'O' ? 1 : -1;
@@ -51,21 +52,27 @@ export interface ForwardPassFacts {
   fromBehindLine?: boolean;
   /** True if the ball had crossed the LOS before this attempted forward pass. */
   ballPreviouslyBeyondLine?: boolean;
+  /** Both facts must be achieved release geometry, not passer-center alone. */
+  entireBodyBeyondLine?: boolean;
+  ballBeyondLine?: boolean;
 }
 
 export interface IllegalForwardPassRuling {
   rule: '8-1-2';
-  reason: 'second_forward_pass' | 'after_change_of_possession' | 'returned_behind_line';
+  reason: 'second_forward_pass' | 'after_change_of_possession' | 'returned_behind_line' | 'beyond_line';
   enforcement: 'previous' | 'spot';
   lossDown: boolean;
 }
 
 /** Evaluate an actual forward pass, not a backward pitch or merely its aim.
- * Beyond-line release/grounding branches require other facts and are omitted. */
+ * Full-body and ball release extents are supplied explicitly by the model. */
 export function assessForwardPass(f: ForwardPassFacts): IllegalForwardPassRuling | null {
   // Rule 8-1-2 penalty(c) differs from the second-pass penalty: no loss of down.
   if (f.possessionChangedBeforePass) {
     return { rule: '8-1-2', reason: 'after_change_of_possession', enforcement: 'spot', lossDown: false };
+  }
+  if (f.entireBodyBeyondLine === true && f.ballBeyondLine === true) {
+    return { rule: '8-1-2', reason: 'beyond_line', enforcement: 'spot', lossDown: true };
   }
   if (f.fromBehindLine !== true) return null;
   if (f.previousForwardPasses > 0) {
@@ -85,6 +92,8 @@ export interface FumbleBoundaryFacts {
   impetusTeam?: TeamSide;
   /** End-zone cases must exclude the Rule 11 momentum exception explicitly. */
   momentumExceptionExcluded?: boolean;
+  /** Actual field acquisition point while original momentum remained unbroken. */
+  momentumSpotX?: number;
 }
 
 export type FumbleBoundaryRuling =
@@ -103,6 +112,12 @@ export function fumbleOutOfBounds(f: FumbleBoundaryFacts): FumbleBoundaryRuling 
     return { kind: 'spot', possession: f.lastPossessionTeam,
       spotX: dir * f.outX > dir * f.fumbleX ? f.fumbleX : f.outX, rule: '8-7-3' };
   }
+  const ownEndOrigin = f.lastPossessionTeam === 'O' ? f.fumbleX <= OWN_GOAL_X : f.fumbleX >= OPP_GOAL_X;
+  const deadInOwnEnd = f.lastPossessionTeam === 'O' ? f.outX <= OWN_GOAL_X : f.outX >= OPP_GOAL_X;
+  if (ownEndOrigin && deadInOwnEnd && f.momentumSpotX !== undefined
+    && f.momentumSpotX > OWN_GOAL_X && f.momentumSpotX < OPP_GOAL_X) {
+    return { kind: 'spot', possession: f.lastPossessionTeam, spotX: momentumDeadBallSpot(f.momentumSpotX, f.lastPossessionTeam), rule: '8-7-3' };
+  }
   if (f.impetusTeam === undefined || f.momentumExceptionExcluded !== true) {
     return { kind: 'unresolved', rule: '8-7-3', missing: 'impetus_or_momentum' };
   }
@@ -117,4 +132,39 @@ export function fumbleOutOfBounds(f: FumbleBoundaryFacts): FumbleBoundaryRuling 
   }
   return { kind: 'touchback', possession: zoneTeam,
     spotX: zoneTeam === 'O' ? OWN_GOAL_X + 20 : OPP_GOAL_X - 20, rule: '8-7-3' };
+}
+
+
+export interface LooseBallBoundaryStep {
+  /** Last outward crossing, retained while the loose ball remains airborne. */
+  exit?: Vec2;
+  outside: boolean;
+  dead: boolean;
+}
+
+/** Rule 3-20-3/4: an airborne loose ball may leave and re-enter the boundary.
+ * The plane crossing establishes a potential spot, not a whistle. Actual
+ * outside ground/person contact makes it dead. The caller supplies achieved
+ * contact, not a proximity guess. No ball-radius/foot anatomy is invented. */
+export function looseBallBoundaryStep(previousExit: Readonly<Vec2> | undefined,
+  from: Readonly<Vec3>, to: Readonly<Vec3>, actualOutsideContact: boolean): LooseBallBoundaryStep {
+  const inside = (p: Readonly<Vec3>): boolean => p.x > 0 && p.x < 120 && p.y > 0 && p.y < FIELD_WIDTH;
+  if (inside(to)) return { outside: false, dead: false };
+  let exit = previousExit ? { ...previousExit } : undefined;
+  if (inside(from)) {
+    let fraction = 1;
+    for (const [a, b, lo, hi] of [[from.x, to.x, 0, 120], [from.y, to.y, 0, FIELD_WIDTH]]) {
+      if (b <= lo && b < a) fraction = Math.min(fraction, (lo - a) / (b - a));
+      if (b >= hi && b > a) fraction = Math.min(fraction, (hi - a) / (b - a));
+    }
+    exit = { x: from.x + (to.x - from.x) * fraction, y: from.y + (to.y - from.y) * fraction };
+  }
+  return { outside: true, dead: actualOutsideContact, ...(exit ? { exit } : {}) };
+}
+
+
+/** Rule11-5-1 exception2(d): a momentum acquisition inside the one-yard
+ * line is put at the one; the 2026 rule has no five-yard acquisition limit. */
+export function momentumDeadBallSpot(acquisitionX: number, team: TeamSide): number {
+  return team === 'O' ? Math.max(acquisitionX, OWN_GOAL_X + 1) : Math.min(acquisitionX, OPP_GOAL_X - 1);
 }

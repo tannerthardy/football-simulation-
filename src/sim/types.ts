@@ -58,7 +58,8 @@ export interface ReplayTelemetry {
 
 export type BallState =
   | { kind: 'held'; carrier: Agent }
-  | { kind: 'pitch'; flight: BallFlight; thrower: Agent; target: Agent; releaseT: number; intended: Vec3 }
+  | { kind: 'pitch'; flight: BallFlight; thrower: Agent; target: Agent; releaseT: number; intended: Vec3;
+      releaseX?: number; impetusTeam?: TeamSide; boundaryExit?: Vec2 }
   | {
       kind: 'air';
       flight: BallFlight;
@@ -74,7 +75,9 @@ export type BallState =
     }
   | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent;
       /** Actual release spot and act; a missed backward pitch is not a fumble for advancement restrictions. */
-      fumbleX?: number; origin?: 'fumble' | 'backward_pass'; possessionChangedBeforeFumble?: boolean }
+      fumbleX?: number; origin?: 'fumble' | 'backward_pass'; possessionChangedBeforeFumble?: boolean;
+      impetusTeam?: TeamSide; momentumExceptionExcluded?: boolean; momentumSpotX?: number;
+      boundaryExit?: Vec2 }
   | { kind: 'dead' };
 
 export type PlayEventType =
@@ -90,6 +93,8 @@ export type PlayEventType =
   | 'tackle_wrap'
   | 'snap'
   | 'handoff'
+  | 'handoff_fake'
+  | 'momentum'
   | 'pitch'
   | 'pitch_catch'
   | 'throw'
@@ -116,6 +121,8 @@ export type PlayEventType =
   | 'jam'
   | 'holding'
   | 'holding_attempt'
+  | 'penalty'
+  | PenaltyCall['kind']
   | 'opi'
   | 'illegal_forward_pass'
   | 'dpi'
@@ -152,6 +159,8 @@ export interface Frame {
 }
 
 export interface PlayResult {
+  /** Rules authority for new native officiating; absent in historical tapes. */
+  rulesEdition?: 'NFL-2026';
   outcome: PlayOutcome;
   /** Team in possession at the end of the play. */
   possession: TeamSide;
@@ -188,10 +197,25 @@ export interface PlayResult {
   ruleLimitations?: string[];
   /** Preserve pre-foul takeaway attribution when a returner makes an illegal pass. */
   statsBeforeIllegalPass?: PlayStats;
+  segmentsBeforeIllegalPass?: CarrierSegment[];
+  /** Exact achieved prefix at each possession change, before later returns
+   * or giveaways. Rule14/statistics must not reconstruct this from the ending. */
+  possessionSnapshots?: Array<{ changes: number; possession: TeamSide;
+    stats: PlayStats; segments: CarrierSegment[] }>;
 }
 
 export interface PenaltyCall {
-  kind: 'holding' | 'dpi' | 'opi' | 'illegal_forward_pass' | 'false_start' | 'offside';
+  kind: 'holding' | 'defensive_holding' | 'illegal_contact' | 'dpi' | 'opi'
+    | 'illegal_forward_pass' | 'intentional_grounding' | 'ineligible_downfield' | 'illegal_touching' | 'illegal_handoff'
+    | 'block_in_back' | 'blindside_block' | 'clipping' | 'peel_back' | 'low_block' | 'chop_block' | 'crackback'
+    | 'roughing_passer' | 'unnecessary_roughness' | 'illegal_helmet' | 'facemask' | 'horse_collar' | 'hip_drop'
+    | 'tripping' | 'illegal_hands' | 'false_start' | 'offside' | 'encroachment' | 'neutral_zone_infraction'
+    | 'illegal_formation' | 'illegal_motion' | 'illegal_shift' | 'illegal_substitution' | 'too_many_players'
+    | 'delay_of_game' | 'disconcerting_signals' | 'unsportsmanlike_conduct' | 'taunting' | 'disqualification'
+    | 'roughing_kicker' | 'running_into_kicker' | 'personal_foul' | 'illegal_bat' | 'illegal_kick'
+    | 'assisting_runner' | 'interlocking_interference' | 'illegal_teammate_assistance' | 'illegal_snap' | 'roughing_holder' | 'illegal_backward_pass'
+    | 'illegal_free_kick' | 'free_kick_out_of_bounds' | 'free_kick_short' | 'kick_catch_interference'
+    | 'fair_catch_interference' | 'invalid_fair_catch_signal' | 'illegal_block_after_signal' | 'illegal_block';
   against: TeamSide;
   playerId: string;
   yards: number;
@@ -204,9 +228,25 @@ export interface PenaltyCall {
   rule?: string;
   reason?: string;
   lossDown?: boolean;
-  enforcement?: 'previous' | 'spot';
+  enforcement?: 'previous' | 'spot' | 'basic' | 'succeeding';
   /** Actual possession changes before the foul, not inferred from the final winner. */
   possessionChanges?: number;
+  phase?: 'live' | 'dead_ball' | 'between_downs' | 'pre_snap';
+  playPhase?: 'pass' | 'run' | 'loose_ball' | 'kick';
+  /** Possession and basic-spot facts established when the act occurred. */
+  possessionTeam?: TeamSide;
+  basicSpotX?: number;
+  possessionSpotX?: number;
+  impetusTeam?: TeamSide;
+  attemptedAdvance?: boolean;
+  momentumSpotX?: number;
+  personalFoul?: boolean;
+  disqualify?: boolean;
+  pairedWith?: string;
+  foulAgainstOfficial?: boolean;
+  /** Qualified penalty safety fact; grounding uses its whole-body/ball test. */
+  penaltySafety?: boolean;
+  causedBallOutOfBounds?: boolean;
 }
 
 export interface FoulEvidence {
@@ -242,6 +282,8 @@ export interface CarrierSegment {
 }
 
 export interface PlayStats {
+  /** Native event ledger; absence retains the historical singular reduction. */
+  fumbles?: Array<{ playerId: string; team: TeamSide; lost: boolean; recoveredBy?: string; t?: number }>;
   passer?: string;
   target?: string;
   receiver?: string;
@@ -270,6 +312,8 @@ export interface PlayStats {
   separation?: number;
   brokenTackles: number;
   missedTackles: number;
+  /** Native per-player credit, including a frozen pre-illegal-pass snapshot. */
+  missedTacklesBy?: Record<string, number>;
   yardsBeforeContact?: number;
   passDefendedBy?: string;
   dropped: boolean;

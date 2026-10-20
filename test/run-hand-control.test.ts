@@ -266,8 +266,17 @@ describe('solo hand-fight execution with the preserved legacy policy is unchange
     const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [];
     for (let k = 0; k < 6; k++) {
       const { intents, report } = step(f);
+      // The frozen witness predates Rule12 observation receipts. Preserve
+      // every historical physics field and its order, excluding only the
+      // newly added contact/strike metadata from this legacy hash. Commands,
+      // bodies, loads, control and the next execution RNG draw stay exact.
+      const historicalReport = { ...report,
+        contacts: report.contacts.map(({ first: _first, ...physical }) => physical),
+        strikes: report.strikes.map(({ requestedAt: _requestedAt, first: _first,
+          contactAnatomy: _contactAnatomy, ...physical }) => physical),
+      };
       trace.push({ intents, control: f.engagement.control,
-        bodies: f.sim.agents.map(a => structuredClone(a.body)), report });
+        bodies: f.sim.agents.map(a => structuredClone(a.body)), report: historicalReport });
     }
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng: f.sim.rng.nextU32() })).digest('hex');
     const baseline = type === 'run'
