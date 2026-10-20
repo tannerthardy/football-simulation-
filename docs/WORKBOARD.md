@@ -1,5 +1,24 @@
 # Current work ownership
 
+## Run contact coherent combination — 2026-10-20
+
+Run owns the already claimed offensive `stepRunRep` request and its acquired
+`RunBlocker.contactMotion`/typed hook, composing #172 solo-runoff and #174
+drive connection on `codex/run-contact-composition`. Current accepted source
+remains `2c98bed94adad8087c65f381d4090444ad283985`; latest queue `f64db250`.
+User explicitly requires assessing coherent combinations, not requiring each
+component to improve football independently. Compare accepted, runoff-only,
+drive-only and both on saved strong OZ/Ace/Over3 pair11/77 and weak WZ/Ace/Over2
+pair31/1. Reuse compatible #172 original traces. Named transfer/opposing case:
+Power strong Ace/Under3 pair31/77, chosen before current results; runoff is
+inactive there by responsibility/branch. At most seven new native prefixes
+(initial 8 s cap), all 22 reacting normally. Judge achieved leverage/load and
+defender access through runner arrival, traffic and transition costs, not gain
+or standalone success. Preserve physics/capacities/rosters/flags, defensive
+work-off, mesh, spacing and release gates. Integration owns combined suite.
+Source-only drive and original-runoff PRs/holds remain separately preserved.
+
+
 ## Drive-connection completion — 2026-10-20
 
 Run owns only the non-stretch `stepRunRep` forward request in
