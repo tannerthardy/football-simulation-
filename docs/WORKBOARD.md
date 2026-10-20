@@ -16,6 +16,11 @@ Composed-preview candidate8d9da7f stays separate, not a parent/dependency.
 Integration owns combined verification. Judge actual safe progress and finish,
 not removal of all necessary teammate braking or reduced yardage alone.
 
+Independent local approval and complete focused receipts are published;
+no full-game realism or long-run distribution improvement is claimed. Source
+and football limits/adverse controls remain explicit in the linked report.
+Integration owns combined verification; no further selected-play variant.
+
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 
 Integration owns only minimal extraction/composition and exact verification on
