@@ -1,0 +1,41 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source 5e944c656bd366d5432fbf86c0c9d225c97a2fc9bea4c08bffe7c7ec7c34e23c
+Running /workspace/.football-tools/node-v22.23.3-linux-x64/bin/node node_modules/vitest/vitest.mjs run --project core test/qb-rusher-recording.test.ts -t records a native pass-call scramble
+
+ RUN  v3.2.4 /workspace/football-latest-gait-contract-triage
+
+ ❯ |core| test/qb-rusher-recording.test.ts (5 tests | 1 failed | 4 skipped) 638ms
+   ↓ recording the actual rushing player > attributes an unexchanged snap from its actual segment without inventing a fumble or scramble
+   ↓ recording the actual rushing player > records achieved catch depth without replacing the intended target or aim depth
+   × recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness 637ms
+     → expected false to be true // Object.is equality
+   ↓ recording the actual rushing player > does not label an ordinary native pass as a rush
+   ↓ recording the actual rushing player > keeps an actual handoff credited to the receiving back
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/qb-rusher-recording.test.ts > recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/qb-rusher-recording.test.ts:85:42
+     83|     const actual = observedRun(recorded), control = observedRun(unreco…
+     84|     expect(actual.result.kind).toBe('pass');
+     85|     expect(actual.result.stats.scramble).toBe(true);
+       |                                          ^
+     86|     expect(actual.result.stats.attempted).toBe(false);
+     87|     expect(actual.result.stats.rusher).toBe(recorded.qb.player.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  00:54:01
+   Duration  1.81s (transform 638ms, setup 0ms, collect 832ms, tests 638ms, environment 0ms, prepare 69ms)
+
+Validation receipt: /tmp/latest-gait-qb-reverse-receipt.json; exit 1
