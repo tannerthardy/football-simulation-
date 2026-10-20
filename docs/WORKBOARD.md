@@ -19,6 +19,13 @@ Candidate boundary also includes the typed `Behavior.contactMotion` work
 selector and `RunBlocker.contactMotion`'s existing acquired-intention hook;
 no route, climb, navigation or shared movement-file changes. Diagnose bounded
 solo runoff work only, keeping parked reach-track behavior independently off.
+Runtime859d025/source573bc9c supplies that bounded work; [review/evidence](reviews/zone-contact-execution.md).
+Nonauthor source review passes.33 focused checks/typecheck, with final13
+direct checks after guard cleanup; A018 earned keeper/climb retained. Weak C
+earns seal2.10; strong line transports more but DT contacts RB earlier; Tite
+C loses late Will collection by3s. All costs retained, three paired inputs,
+15.639s collector/41.473s all command time, no games/full suite/Physics changes.
+Recommend narrow independent integration review, no package activation.
 
 ## Verified latest-reviewed integration checkpoint — 2026-10-19 America/Phoenix
 

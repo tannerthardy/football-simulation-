@@ -15,6 +15,7 @@ import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../src/playbook/defense.js';
 import {PlaySim} from '../../src/sim/playsim.js';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.js';
 import {runContactObservers} from '../../src/sim/run-contact-observer.js';
+import {runReadObservers} from '../../src/sim/run-read-observer.js';
 import type {DefensivePlayCall} from '../../src/playbook/types.js';
 const arg=(n:string,d='')=>{const i=process.argv.indexOf(n);return i<0?d:process.argv[i+1]};
 const id=arg('--case'),until=Number(arg('--until','3')),output=arg('--out');
@@ -36,6 +37,8 @@ const sim=new PlaySim(structuredClone(setup));
 const hash=(b:string|Buffer)=>createHash('sha256').update(b).digest('hex');
 const inputSha256=hash(JSON.stringify(setup));
 const frames:any[]=[],moves:any[]=[];
+const runnerReads:any[]=[];
+if(process.argv.includes('--runner-read'))runReadObservers.set(sim,e=>runnerReads.push(structuredClone(e)));
 const plan=(a:any)=>{if(!(a.behavior instanceof RunBlocker))return null;const p=a.behavior.plan;return{kind:p.kind,target:p.target?.slot,drive:p.drive,
  combination:p.combination?{members:p.combination.members.map((p:any)=>p.slot),defender:p.combination.defender.slot,backer:p.combination.backer?.slot,released:p.combination.released}:null,
  zoneRead:a.behavior.zoneRead,track:a.behavior.calledMotion?.()};};
@@ -70,6 +73,6 @@ const profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
 const outputData={case:id,inputSha256,setup,slots:sim.agents.map(a=>a.slot),profiles:sim.agents.map(a=>a.profile),
  commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),
  node:process.version,dt:sim.dt,until,terminal:sim.phase!=='live',censored:sim.phase==='live',passiveObserverVerified,
- result:result?{gain:result.offenseYards,outcome:result.outcome}:null,events:sim.events,moves,frames};
+ result:result?{gain:result.offenseYards,outcome:result.outcome}:null,events:sim.events,moves,runnerReads,frames};
 const bytes=Buffer.from(JSON.stringify(outputData));mkdirSync(dirname(output),{recursive:true});writeFileSync(output,gzipSync(bytes,{mtime:0} as any));
 console.log(JSON.stringify({output,case:id,frames:frames.length,passiveObserverVerified,sha256:hash(bytes),terminal:outputData.terminal}));
