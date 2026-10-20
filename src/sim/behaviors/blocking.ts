@@ -780,6 +780,10 @@ const DEPART_TEMPO = process.env.DEPART_TEMPO === '1';
  * sim fullback ran straight up the QB's drop line at his man's intercept, so
  * the two met head-on 0.85 yd apart and both stalled in the spacing layer. */
 const FB_TRACK = process.env.FB_TRACK === '1';
+/** Experimental (COMBO_LEAVE=1, off): a double's climber does not wait on
+ * the hand fight's hidden control value; the observable keeper checks
+ * (torso on the man, loaded hands within reach, base) still apply. */
+const COMBO_LEAVE = process.env.COMBO_LEAVE === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
@@ -1719,8 +1723,11 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
   const control = contactControl(e, keeper);
+  // COMBO_LEAVE: the climber judges his partner from what he can see (chest
+  // on the man, hands on with load, base); the hand fight's hidden control
+  // value is not his evidence.
   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
-    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
+    || (!COMBO_LEAVE && control <= -.12 + .12 * (.5 - climber.mind.urgency))) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 

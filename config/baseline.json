@@ -11,6 +11,7 @@
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
+    "COMBO_LEAVE": "0",
     "DEEP_CAP": "0",
     "DEF_GETOFF": "1",
     "DEPART_TEMPO": "0",

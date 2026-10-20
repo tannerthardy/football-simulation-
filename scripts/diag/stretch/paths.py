@@ -21,7 +21,7 @@ ids = random.sample(sorted(set(A) & set(B)), n); nids = random.sample(sorted(N),
 fig, axes = plt.subplots(n, 3, figsize=(18, 5.2 * n))
 col = {'O': '#1f6fd1', 'D': '#d1421f'}
 for row, (i, j) in enumerate(zip(ids, nids)):
-    for c, (lab, r) in enumerate([(f'current body  {i}', A[i]), (f'GAIT_STEP=0.3  {i}', B[i]), (f'NFL {j}', N[j])]):
+    for c, (lab, r) in enumerate([(f'A  {i}', A[i]), (f'B  {i}', B[i]), (f'NFL {j}', N[j])]):
         ax = axes[row][c]; xy, dt = r['xy'], r['dt']; k1 = min(len(xy) - 1, int(3 / dt))
         x0 = [v for v in xy[0][0::2] if v is not None]; los = sorted(x0)[len(x0) // 2]
         flip = 1

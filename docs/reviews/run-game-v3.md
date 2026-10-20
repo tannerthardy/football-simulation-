@@ -1367,3 +1367,121 @@ them. Both are measured above.
   - TE/FB re-latch reversals.
   - Gap-run DL scribbles.
   - The deep pursuit tail.
+
+## Part 9 — after #168: a stalk regression, and getting the line to flow (2026-10-20)
+
+This branch merged accepted develop `2c98bed` (#168) as `ece674aa`. Receipts
+are in [`part9/`](run-game-v3/part9/). Zone arms are 1,200 lab plays, gap
+arms 1,600; outcomes are in `outcomes.txt`.
+
+### #168 raised the long-run tail; the stalk change accounts for nearly all of it
+
+Lab arms with no flags, before (`6184040f`, develop `f414627` plus inert
+flags) and after the merge, then with one merged change reverted at a time
+on a scratch copy:
+
+| Arm | Zone 40+ | Zone mean | Gap 40+ |
+|---|---|---|---|
+| Pre-merge | 3.75% | 6.19 | 4.00% |
+| Post-merge | 9.42% | 9.65 | 9.00% |
+| Revert #148/#149 (stalk) | **4.08%** | 6.25 | **4.31%** |
+| Revert #159 | 7.83% | 8.76 | |
+| Revert #159 + disable #160's interior flow | 7.58% | 8.49 | |
+| Revert #141 | 8.25% | 9.01 | |
+| Disable #160 / revert #152 / revert #150 | 9.33 / 9.42 / 10.00% | | |
+
+For reference, NFL60 40+ is 1.18%. Once a zone run passed 20 yards, it
+went 40+ 94% of the time after the merge (75% before, NFL 39%).
+
+`stalkreps.ts`:
+- **Pre-merge**, a perimeter stalk stopped 1.2 yd short of the DB and
+  rarely touched him: 0.19 receiver-on-DB run reps per play.
+- **After #148**, receivers engage DBs 2.11 times per play (236 of 240
+  plays).
+- **Stalked DBs reach the carrier** on 42 of 432 reps. All 16 runs of 20+
+  yards had a stalked DB.
+- **First contact** moves from mid-depth DBs (13.9% → 6.4% of runs) to deep
+  DBs (10.0% → 18.0%).
+
+The stalk correction is real football: receivers should reach and block
+DBs. What is missing is the DB's answer to the stalk. He should keep
+leverage on it and get off it toward the ball. Recommendation: hold the
+perimeter-stalk scope until that answer exists, or pair the two. Either
+belongs to the DB/run-support owner.
+
+### Lateral flow on outside zone
+
+`timeline.py` (trench timeline), `firststeps.py`, `flowpair.ts` and
+`readtime.ts` locate the remaining gap.
+
+**Defenders recognize run on time** (median 0.35–0.6 s, all correctly),
+but early on they move straight downhill, not sideways. NFL linebackers
+also come downhill 0.8 yd by 1.0 s; the difference is entirely lateral:
+
+| At 1.0 s, toward the play | NFL | Develop + package |
+|---|---|---|
+| DL | 1.33 yd | 0.36 yd |
+| LB | 1.17 yd | 0.32 yd |
+
+**The engaged lateral law is circular.**
+- The blocker asks for the defender's lateral speed plus a correction to
+  the seal offset, capped by the pass-set mirror trait (about 2.6 yd/s
+  for OL).
+- The defender asks for the blocker's lateral speed, sampled at his
+  decision read (up to 0.3 s old), plus a shoulder correction.
+- Neither leads. With a responsive body, the cap binds 31–77% of the time;
+  NFL engaged OL flow at 3.0 yd/s (median).
+
+Candidates, all flags (default off):
+
+| Flag | Change |
+|---|---|
+| `GAIT_STEP=0.3` (physics; Part 8) | Responsive speed-up |
+| `RUN_LATERAL` (existing) | Engaged lateral bound = the body's square lateral speed (vmax × shuffle) |
+| `DL_FEEL` (new) | While touching, the defender's flow cue is the blocker's motion felt through the hands each tick (`test/dl-feel.test.ts`) |
+| `LB_GLIDE` (restored) | A free fit's lateral work follows its landmark's own velocity: the gap's bounding bodies, the back's declared track, or an adopted pull |
+| `ZONE_TE` (existing) | The inline tight end runs the zone track |
+| `COMBO_LEAVE` (new) | A double's climber judges his partner from observable keeper checks, not the hand fight's hidden control value |
+
+Outside zone, lateral yards toward the play side (median):
+
+| | NFL | Develop + package | + `GAIT_STEP` | + `RUN_LATERAL` + `DL_FEEL` | Full stack |
+|---|---|---|---|---|---|
+| OL at 2.0 s / 3.0 s | 4.94 / 7.52 | 2.06 / — | 3.16 / 5.62 | 3.58 / 6.68 | 3.76 / 6.78 |
+| DL at 2.0 / 3.0 | 4.45 / 7.23 | 1.47 / — | 2.10 / 4.45 | 2.72 / 5.60 | 2.83 / 5.88 |
+| LB at 2.0 / 3.0 | 4.83 / 7.60 | 2.70 / — | 3.00 / 6.00 | 3.20 / 6.60 | 3.67 / 7.00 |
+| Engaged OL lateral speed (yd/s) | 3.00 | 1.00 | 1.75 | 2.00 | 2.25 |
+| Double duration (s) | 1.10 | 1.70 | 1.90 | 2.10 | 2.00 |
+
+The full stack is `GAIT_STEP RUN_LATERAL DL_FEEL LB_GLIDE ZONE_TE
+COMBO_LEAVE` (`m12co`).
+
+**What changes for engaged pairs** (`flowpair.ts`, singles 1.6–2.4 s):
+the pair moves at 3.3 / 3.2 yd/s with `DL_FEEL`, against 2.6 / 2.5
+without it.
+
+**What did not help:**
+- The first 0.5 s did not move under any change: DL and LB lateral stay
+  near 0 against NFL 0.3.
+- `LB_KEY`, `DEF_GETOFF=0.5`, `RUN_CONTACT_TRACK` and a live-gap rush lane
+  (tried and removed) left the first second unchanged.
+- `COMBO_LEAVE` shortens doubles only slightly. Combo reads are held by
+  hidden control in 34–48% of reads, by an unhelpful helper in 15–28%, and
+  by the keeper not yet touching early.
+
+**Outcomes and the open question.** With the defense flowing, zone gains
+fall below tracking:
+- 4+ yards: 34.9% → 24.6%, against NFL 46–50%.
+- Linebacker first contacts: 41.9% → 49.0%, at the line.
+- Gap runs: negatives 8.6 → 8.1% and 4+ yards 50.3 → 45.6%. `DL_FEEL`
+  alone leaves gap runs unchanged (negatives 8.4%, 4+ 52.1%), so feeling
+  a down block does not wash the defender out.
+
+The offense has not caught up with the flow. In tracking, the climb
+reaches the flowing backer at about 1.8 s (doubles start at 0.7 s and last
+1.1 s); ours are still on the double at 2.5 s. Next questions:
+- the combo's helper and touching gates;
+- the back's cutback read against an over-flowing front.
+
+The lateral-flow film (`flow-review.html`) is the same 10 random ordinary
+cases, develop + package against the full stack, beside 12 NFL clips.
