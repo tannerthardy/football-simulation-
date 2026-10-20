@@ -3,7 +3,9 @@
  * the line), EDGE_SQUEEZE (an edge/force fit pursues a runner inside him at
  * the line instead of holding his landmark square to it) and SHED_AWAY (a
  * blocked defender whose runner is past the line on the far side from his
- * blocker asks for his own pursuit instead of the rep's work-off). */
+ * blocker asks for his own pursuit instead of the rep's work-off) and LB_DEPTH
+ * (a stack backer reads at his alignment depth less one step until the back
+ * threatens his gap, rather than sprinting to a landmark on the line). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -113,5 +115,35 @@ describe('SHED_AWAY', () => {
     const { tagged, matched } = await awayTicks(true);
     expect(tagged).toBeGreaterThan(0);
     expect(matched).toBe(tagged);
+  });
+});
+
+/** The middle backer's shallowest depth on a power play before the back's
+ * path threatens his gap (no fit-threat tag yet, not declared). */
+async function backerReadDepth(on: boolean) {
+  const sim = await play({ LB_DEPTH: on ? '1' : '0' }, 'power');
+  const lb = sim.slot('LB_M')!;
+  const home = sim.defAlign.spots.LB_M!.pos.x - sim.los;
+  let least = Infinity, lateral = 0;
+  const y0 = lb.pos.y;
+  while (sim.phase === 'live' && sim.t < 1.6) {
+    lb.tags.delete('fit-threat-read');
+    sim.tick();
+    if (lb.tags.has('fit-threat-read') || lb.engagement) break;
+    if (lb.runFit?.kind === 'insert') least = Math.min(least, lb.pos.x - sim.los);
+    lateral = Math.max(lateral, Math.abs(lb.pos.y - y0));
+  }
+  return { home, least, lateral };
+}
+
+describe('LB_DEPTH', () => {
+  it('off: the stack backer runs toward a landmark near the line before the back threatens his gap', async () => {
+    const { home, least } = await backerReadDepth(false);
+    expect(home).toBeGreaterThanOrEqual(3);
+    expect(least).toBeLessThan(home - 1.5);
+  });
+  it('on: he holds his read depth (alignment less one step) until then', async () => {
+    const { home, least } = await backerReadDepth(true);
+    expect(least).toBeGreaterThan(home - 1.25);
   });
 });

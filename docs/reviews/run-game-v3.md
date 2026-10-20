@@ -1744,3 +1744,134 @@ as a package.
      limiting step is the front seven's arrival, which waits on the physics
      items above.
    - Re-test `DEEP_CAP` + `v2` once pursuer start-up changes.
+
+## Part 12 — fixing the tail: pursuit that arrives, a deep safety that stays deep, backers that read (2026-10-20)
+
+The user took on the physics items from Part 11 ("you'll handle it"). Receipts
+are in [`part12/`](run-game-v3/part12/):
+- `outcomes.txt`: every arm, bands, survival and paired tests.
+- `mechanisms-zone.txt`: NFL vs develop vs candidate, same operators.
+- `LABEL.manifest.json`: flags and provenance per arm.
+
+### Candidate
+
+All flags stay default-off. The candidate is:
+
+`EDGE_SQUEEZE SHED_PURSUE MAN_RUN_COMMIT BLOCK_FRONT DEEP_CAP LB_DEPTH ZONE_TE UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD GAIT_STEP=0.5`
+
+Total variation distance (TVD) from NFL60, by gain band (`bands.py`):
+
+| Set | NFL 40+ | Develop 40+ / TVD | Candidate 40+ / TVD | Without `GAIT_STEP` 40+ / TVD |
+|---|---|---|---|---|
+| Ace zone (1,200) | 0.8% | 9.4% / 15.2 | **1.8% / 7.2** | 2.1% / 10.6 |
+| Gap schemes (1,600) | 2.0% | 9.0% / 11.2 | **4.4% / 4.0** | 5.4% / 10.9 |
+| Shotgun doubles zone (600) | 0.8% | 6.8% / 15.1 | 2.0% / 16.9 | 4.2% / **11.1** |
+
+Paired against develop on the same cases (`paired.py`):
+
+| Set | 40+ | 20+ | Negatives | 4+ |
+|---|---|---|---|---|
+| Ace zone | 113 → 22 | 120 → 31 | 170 → 117 | 516 → 623 |
+| Gap | 144 → 70 | 158 → 98 | 171 → 129 | 826 → 892 |
+| Shotgun | 41 → 12 | 53 → 19 | **49 → 103** | **235 → 192** |
+
+Every change in this table has p ≤ 0.013. The ace zone candidate is close to
+NFL in every band:
+
+| Ace zone | <0 | 0–3 | 4–9 | 10–19 | 20–39 | 40+ |
+|---|---|---|---|---|---|---|
+| NFL | 7.6 | 44.7 | 36.8 | 8.6 | 1.5 | 0.8 |
+| Develop | 14.2 | 42.8 | 29.9 | 3.1 | 0.6 | 9.4 |
+| Candidate | 9.8 | 38.3 | 40.3 | 9.0 | 0.8 | 1.8 |
+
+### Why it works (`mechanisms-zone.txt`)
+
+The Part 11 mechanisms moved toward NFL:
+
+| | NFL | Develop | Candidate |
+|---|---|---|---|
+| Defenders who can cut off the runner from +10, per run | 2.16 | 0.80 | 1.31 |
+| Encounters within a yard past +8, per run | 1.88 | 0.58 | 1.31 |
+| Runner at +12 on runs reaching 10: speed / nearest defender | 6.6 yd/s / 1.3 yd | 8.4 / 3.6 | 7.1 / 1.2 |
+| Deepest defender when the runner crosses | 13.8 yd | 7.1 | 12.2 |
+| Free DL speed 0.5 s after the crossing | 3.64 yd/s | 1.9 | 3.51 |
+| Free LB closing on the runner then | +0.83 yd/s | −1.30 | +0.84 |
+| Gap backers' depth at the handoff / at the crossing | 3.5 / 2.5 yd | 2.9 / 1.8 | 3.9 / 3.0 |
+
+Each piece:
+- **`DEEP_CAP`** keeps the last level deep. NFL deep defenders hold or gain
+  depth until the run is confirmed, in every coverage shell.
+- **`GAIT_STEP=0.5`** (the existing physics flag) lets a freed defender reach
+  the speed he asks for. Pursuit after the crossing becomes NFL-like.
+  - It is not a better fit of the body: the acceleration envelope fit
+    (`gaitfit.py`) gets worse, 0.42 → 0.53. Linemen improve; DBs and
+    linebackers speed up faster than NFL ones at low speed.
+  - Without it, `DEEP_CAP` leaks 5–9 yd runs into 10–19.
+- **`LB_DEPTH`** (new) is the largest single gain on gap runs:
+  - A stack backer used to sprint at a landmark on the line before the back
+    showed his gap.
+  - NFL backers read at about 3.5 yd and flow with the pull at 1.75–2.0 yd/s
+    from the handoff. Ours flowed at 0.
+  - Now he holds his alignment depth less one step until the back threatens
+    his gap.
+- **`ZONE_TE`** lets an inline tight end take a slanting end inside instead
+  of running his track past him. Ace zone TVD 15.6 → 12.1 on top of the
+  stack.
+- **The mesh package** (Part 6) times the exchange like the NFL. On gap runs,
+  TVD 11.1 → 4.0.
+- **`EDGE_SQUEEZE SHED_PURSUE MAN_RUN_COMMIT BLOCK_FRONT`** (Parts 10–11) remove
+  pursuit stalls: edge fits holding the line, the re-block loop, the man cue
+  lapsing, blocks in the back.
+
+Film: `out/film/tail-review.html` (not committed). It shows the same 20 cases
+for develop and the candidate, plus 10 NFL clips:
+- 8 develop 40+ witnesses and 12 random ordinary plays, drawn with
+  `random.Random(20261020)` before any candidate outcome was seen
+  (`scripts/diag/stretch/film-tail-cases.txt`).
+- The 8 witnesses end at −0.5 to 11.2 yd under the candidate. The mesh
+  package changes each play from the snap, so these are not the same play
+  caught later.
+
+### What is still wrong
+
+1. **Shotgun stretch stuffs** (negatives 8.2 → 17.2%; outside and wide zone
+   21–28%), and strong-side stretch on ace (outside zone 13%, wide zone 23%;
+   the weak side is 8–10%, NFL-like).
+   - The gait drives it: without it, shotgun negatives are 12.8%.
+   - Engaged linemen out-quick the reach and go into the backfield under it.
+     A strong-side end ends 1.6 yd deep by 1.8 s. NFL engaged linemen are
+     driven back about 1 yd by 3 s on outside zone; ours stay at 0.
+   - Outside-zone DL lateral at 1 s: 0.37 yd vs NFL 1.32.
+   - This is the engaged-pair trench law (Part 9 lateral flow), next in line.
+2. **Contact still ends plays or does nothing** (97% / 0% slowed past +8; NFL
+   71% / 20%). A broken hold costs the runner 0.5 yd/s.
+   - That is the grip law. Not changed here: raising grip strength to rescue
+     a statistic is out of bounds.
+3. **Linemen finish 2% of 5–9 yd runs** (NFL 20%).
+4. **Gap 10–19 yd runs** are 12.2% (NFL 11.3%) and 20–39 yd runs 1.8% (3.3%).
+
+### Tried and removed
+
+- **`ENGAGED_REACH`**: a blocked defender's free arm reaches a runner with no
+  blocker between them. Zone 40+ fell to 7.6%, but block-origin holds doubled,
+  mostly in the backfield, and negatives rose to 17.7%.
+- **`SHED_CLEAR`**: `SHED_AWAY` for any clear path. Blocked backers' reach
+  rate was unchanged at 36–40%; the hands hold them.
+- **`RUN_READ`** (existing): the back's press-and-read.
+  - TVD 20.8 alone and 21.2 on the stack.
+  - It does not spread the back's widths. The stretch width problem is the
+    edge, not the read.
+- **Other flags tried:**
+  - `LB_GLIDE` and the Part 9 flow stack: more stuffs.
+  - `RUN_LATERAL`, `COMBO_LEAVE`, `STRETCH_FLAT`, `PULL_CUE`: no gain.
+  - `FORCE_DEPTH` and `SHED_AWAY`: neutral on zone, worse on gap.
+- **`GAIT_STEP` 0.3 and 0.7**: worse than 0.5 on outcomes. No value fits the
+  NFL acceleration envelope better than the current body.
+
+### Next decision
+
+Choose between the candidate (best on ace zone and gap, adverse in shotgun)
+and the same flags without `GAIT_STEP` (better than develop on all three
+sets, weaker tail). Then repair the engaged reach on stretch plays: linemen
+driven back and flowing as in NFL. That is what the gait exposes, and what
+keeps shotgun from improving.

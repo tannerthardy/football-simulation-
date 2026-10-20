@@ -1,0 +1,23 @@
+# Film cases for the Part 12 long-run review. Witnesses: develop runs of 40+ (labelled),
+# then a random ordinary sample drawn with Python random.Random(20261020) before any candidate outcome was looked at.
+# The same cases run in every arm.
+iz/weak/ace_12/mike1/pair31/1	Develop 40+ witness
+iz/strong/ace_12/under3/pair11/8	Develop 40+ witness
+wz/strong/ace_12/under3/pair11/4	Develop 40+ witness
+oz/strong/ace_12/under3/pair11/7	Develop 40+ witness
+trap/weak/ace_12/off1/pair31/1	Develop 40+ witness
+counter/weak/ace_12/bear1/pair11/2	Develop 40+ witness
+counter/weak/ace_12/mike1/pair11/71001	Develop 40+ witness
+counter/strong/ace_12/bear1/pair31/1	Develop 40+ witness
+iz/strong/ace_12/off1/pair11/6	Random ordinary
+iz/strong/ace_12/off1/pair31/77	Random ordinary
+oz/strong/ace_12/over4/pair11/71001	Random ordinary
+iz/weak/ace_12/over4/pair11/2	Random ordinary
+oz/strong/ace_12/bear1/pair11/7	Random ordinary
+oz/strong/ace_12/wide9/pair31/8	Random ordinary
+trap/strong/i_pro_21/over2/pair31/2	Random ordinary
+duo/strong/ace_12/under3/pair11/1	Random ordinary
+counter/strong/i_pro_21/over2/pair11/77	Random ordinary
+counter/strong/ace_12/odd3/pair11/71001	Random ordinary
+power/weak/ace_12/over2/pair31/71001	Random ordinary
+power/strong/i_pro_21/over2/pair31/77	Random ordinary
