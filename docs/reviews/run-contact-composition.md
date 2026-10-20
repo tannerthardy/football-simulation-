@@ -5,6 +5,13 @@ normal combined verification.** This supersedes #174's earlier current-adoption
 hold; the historical Claude tail attribution remains qualified below. #172's
 runoff correction is included once in this candidate, not stacked twice.
 
+The [Run/Catching source reconciliation](run-contact-workoff-reconciliation.md)
+is complete: exact reference68e7241 preserves #169's first-attempt cadence,
+#171's acquired inputs, #177's current support objective and this offensive
+pair.56 affected checks/typecheck pass on the reconciled runtime; zero new
+native continuations. #174's production runtime below is unchanged, #172 must
+not be applied again, and #185 remains separate. Integration owns final assembly.
+
 Accepted comparison: `2c98bed94adad8087c65f381d4090444ad283985`.
 Drive-only runtime/diagnostic checkpoint: `5bc7605f01e7af0623ac681b066bfc0bdca53e8b`
 (source `ef9934bdcea4fd7691e560d7c4496a3ebd61f53883828fae658e00bfb8c2c6a9`).

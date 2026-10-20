@@ -1,0 +1,37 @@
+{
+  "src/sim/agent.ts": {
+    "sha256": "d4ba7fd1abd39ed34a8ebc0827708e2144b7d4b9902a247dd0798decd5fbad87",
+    "gitBlob": "54dd83cd7ecfa351937ac03e71d6f98521b38011",
+    "owner": "#174 (includes172 once)"
+  },
+  "src/sim/behaviors/blocking.ts": {
+    "sha256": "ec006b2699c5410e9781468983bd5d9892c93e3c6393c8d16b9a14bd03994ed8",
+    "gitBlob": "13a97d8f272959e90148e52ca121e9ba2262c0eb",
+    "owner": "#174 (includes172 once)"
+  },
+  "src/sim/behaviors/defense.ts": {
+    "sha256": "2c380109fc9fef7b5983e8bcc1fe236434008b347887392e6d30c7ef37d52403",
+    "gitBlob": "ee9955a200d81ea34f88fd8660bee41d8b4b8ddf",
+    "owner": "#171 exact from Catching2302b48"
+  },
+  "src/sim/coverage-cues.ts": {
+    "sha256": "d377a93413434b7770982870c5ec2e05f99f3fbdfdfa7b7aa7cc5d03cb7b56d4",
+    "gitBlob": "83fd7ec7d69da8d15fa69f1bc190510fddc85f54",
+    "owner": "#171 exact from Catching2302b48"
+  },
+  "src/sim/coverage/reads.ts": {
+    "sha256": "6cb4a403ac90c221460ada8bbf80d16e4597411a010a2ae48c009c44df574559",
+    "gitBlob": "056cbf19efcd04fad299d5d4dd5c8e62e70aeebb",
+    "owner": "#171 exact from Catching2302b48"
+  },
+  "src/sim/engagement.ts": {
+    "sha256": "3f41b3373e7946f99bfcd437c3ec01f24da0be5676bb3e973dd6336ec4091c58",
+    "gitBlob": "ddbc4c4ea471aea0104a1fbbbdbfffd4c3962a37",
+    "owner": "shared frame, exact clean three-way merge"
+  },
+  "src/sim/run-fits.ts": {
+    "sha256": "4f79aded5e3fd60cff6edb8297e045166df7f91d689dd2d613b85469bc160033",
+    "gitBlob": "1abb8031733d6e8690d482764cfa54d8ae047b58",
+    "owner": "#171 exact from Catching2302b48"
+  }
+}
