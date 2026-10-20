@@ -934,9 +934,13 @@ export class RunBlocker implements Behavior {
         // so a heavy puller doesn't run through the waypoint and circle back.
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
-        // Progress is measured against the same observed landmark requested
-        // by the feet, rather than a different old snap-coordinate waypoint.
-        if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
+        if (read && this.pullCleared && plan.pullRole !== 'lead') {
+          // The current landmark and its outgoing turn belong to the same
+          // acquired picture. Preserve earned progression above; a new cue
+          // only revises the remaining work, not an arrival already achieved.
+          for (let i = this.pullIdx; i < plan.pullPath.length; i++)
+            plan.pullPath[i] = { ...plan.pullPath[i], y: read.seen.pos.y - ps * (i === 1 ? .65 : .45) };
+        }
         const nearWall = plan.pullSurface
           ? this.wrapTraffic.some(p => {
             // The delivered picture already includes observation age. Carry
@@ -946,7 +950,7 @@ export class RunBlocker implements Behavior {
           })
           : sim.offense.some(o => o !== a && isOL(o) && Math.hypot(o.pos.x-a.pos.x,o.pos.y-a.pos.y)<1.2 && o.pos.x>a.pos.x);
         if (this.pullIdx === 1 && nearWall) {
-          path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
+          path = { x: Math.min(wp.x, a.pos.x - 0.35), y: path.y };
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
