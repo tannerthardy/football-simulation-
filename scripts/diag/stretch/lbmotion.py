@@ -16,7 +16,8 @@ for line in gzip.open(path, 'rt'):
     raw = json.loads(line); raw = raw.get('common', raw) if 'common' in raw else raw
     if raw.get('kind') != 'run' or raw.get('carrier') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
-    if fam and CONCEPT_FAMILY.get((raw.get('cell') or {}).get('concept')) != fam: continue
+    concept = raw['id'].split('/')[0] if raw.get('source') == 'sim' else (raw.get('cell') or {}).get('concept')
+    if fam and CONCEPT_FAMILY.get(concept) != fam: continue
     p = Play(raw); c = raw['carrier']; ev = raw.get('events') or {}; by = raw['ball_y']
     end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     if ev.get('handoff') is None: continue

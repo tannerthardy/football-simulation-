@@ -5,7 +5,7 @@ of him), lateral offset |dy|, whether an offensive lineman/TE is within
 NEAR yd (a proximity proxy for being blocked), and his lateral speed toward
 the carrier's side. Bins: within 3 yd of the carrier, ahead within 6 yd
 laterally, beaten (behind him), or wide (more than 6 yd laterally).
-usage: lbspot.py FILE [--ytg60] [--concept iz|oz]"""
+usage: lbspot.py FILE [--ytg60] [--concept iz|oz|gap]"""
 import gzip, json, math, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play  # noqa: E402
@@ -20,8 +20,10 @@ for line in gzip.open(path, 'rt'):
     raw = json.loads(line); raw = raw.get('common', raw) if 'common' in raw else raw
     if raw.get('kind') != 'run' or raw.get('carrier') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
-    if want and raw.get('source') != 'sim' and (raw.get('cell') or {}).get('concept') != {'iz': 'INSIDE ZONE', 'oz': 'OUTSIDE ZONE'}[want]: continue
-    if want and raw.get('source') == 'sim' and not raw['id'].startswith(want + '/'): continue
+    if want == 'gap':
+        if raw.get('source') != 'sim' and (raw.get('cell') or {}).get('concept') not in ('POWER', 'COUNTER', 'DUO', 'TRAP'): continue
+    elif want and raw.get('source') != 'sim' and (raw.get('cell') or {}).get('concept') != {'iz': 'INSIDE ZONE', 'oz': 'OUTSIDE ZONE'}[want]: continue
+    elif want and raw.get('source') == 'sim' and not raw['id'].startswith(want + '/'): continue
     p = Play(raw); c = raw['carrier']; end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
     blockers = [i for i, pl in enumerate(p.players) if pl['side'] == 'O' and pl['group'] in ('OL', 'TE') and i != c]
     for ref in (0, 5):

@@ -38,6 +38,9 @@ for line in gzip.open(path, 'rt'):
             if math.hypot(cx - x0, cy - y0) <= peak * max(0, (k - k0) * p.dt - REACT) + REACH: feas = True; break
         if not feas: continue
         o['feas'] += 1
+        xs, ys = p.pos(d, 0); grp = p.players[d]['group']
+        if grp == 'DB': grp = 'DB-deep' if xs >= 10 else 'DB-offwide' if xs >= 5 and abs(ys - raw['ball_y']) > 8 else 'DB-midin' if xs >= 5 else 'DB-up'
+        o.setdefault('by', {}); o['by'][grp] = o['by'].get(grp, 0) + 1
         dmin, kmin = min((p.dist(c, d, k), k) for k, _ in later)
         k1 = min(end, k0 + 10)
         eff = sum(p.speed(d, k) for k in range(k0, k1 + 1)) / max(1, k1 - k0 + 1) / peak
@@ -51,4 +54,5 @@ for key in ('<40', '40+'):
     o = out.get(key)
     if not o: continue
     miss = o['feas'] - o['got']
+    print(f"  {key} feasible interceptors per run by group: " + '  '.join(f"{g} {v/o['runs']:.2f}" for g, v in sorted(o.get('by', {}).items())))
     print(f"  {key}: runs {o['runs']} | feasible interceptors {o['feas']/o['runs']:.2f}/run, got within 1.5 yd {100*o['got']/max(1,o['feas']):.0f}% | missed: closest while behind him {100*o['behind']/max(1,miss):.0f}%, level/ahead but wide {100*o['wide']/max(1,miss):.0f}% | next-second speed / peak: missed p50 {q(o['eff'])}, got p50 {q(o['gotEff'])}")

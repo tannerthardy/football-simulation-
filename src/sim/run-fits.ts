@@ -170,6 +170,12 @@ const EDGE_SQUEEZE = process.env.EDGE_SQUEEZE === '1';
  * the line of scrimmage first. The installed alignment, not the offense's
  * call, decides who he is. */
 const FORCE_DEPTH = process.env.FORCE_DEPTH === '1';
+/** Experimental (LB_DEPTH=1, off): a stack backer aligned off the ball (3+ yd)
+ * reads at depth: until the back's seen path threatens his gap, his landmark
+ * is his alignment depth less one read step, not the surface, so his first
+ * movement follows the flow and pull reads rather than a sprint at the line.
+ * The existing threat read decides when he fills. */
+const LB_DEPTH = process.env.LB_DEPTH === '1';
 
 /** Is this defender the installed deep cap on a run? Installed zone, not the
  * offense's call: a deep-zone defender with an alley fit. */
@@ -384,18 +390,22 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // line within reach of it (not merely where he stands now); he has
   // declared it when he is also at the surface. A back pressing wide still
   // threatens to bend back, so a disciplined fit holds until he commits.
-  let declared: boolean;
+  let declared: boolean, threat = false;
   if (THREAT_READ && !premesh) {
     const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
     const reachLos = clamp(toLos / Math.max(.5, seen.vel.x * dirX), 0, 1);
     const crossing = seen.pos.y + seen.vel.y * reachLos;
     const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
-    const threat = Math.abs(crossing - gy) < half + 1;
+    threat = Math.abs(crossing - gy) < half + 1;
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) a.tags.add('fit-threat-read');
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  let depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  if (LB_DEPTH && job.kind === 'insert' && job.pace === 'stack' && !threat) {
+    const home = (sim.defAlign.spots[a.slot as DefSlot]?.pos.x ?? sim.los) - sim.los;
+    if (home >= 3) depth = Math.max(depth, home - 1);
+  }
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
