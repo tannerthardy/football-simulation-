@@ -50,6 +50,11 @@ on the lab cases (zone `ace_12` iz/oz/wz 1,200 plays; gap
 | `STRETCH_AIM` | `carrier.ts` `liveAim` | Outside/wide-zone backs press the snap landmark; inside zone and gap runs keep the live gap. Where the line's flow opens a lane is the read's job. |
 | `FB_KICK` | `blocking.ts` `attack` | The power fullback's kick (`lead`, role `kick`) uses the kicker's fit: inside shoulder, matching the end's seen motion. |
 | `GAIT_STEP=0.3`, `PULL_STEP`, `MESH_POINT` | `kinematics.ts`, `blocking.ts`, `qb.ts`/`assign.ts` | Existing flags, on at the user's request; the gait law now respects direction, effort and holding ground (below). |
+| `RB_AWAY` | `assign.ts` `alignBackAway` (called in `playsim.ts` before the defense aligns) | On a shotgun zone call the offset back lines up away from the run and crosses the QB's face. |
+| `RUN_ARMS` | `carrier.ts` lane forecast | A block holds a defender's feet, not his arms: his release allowance applies only beyond his reach. |
+| `RUN_PROJECT` | `carrier.ts` `runReadAim` | The entry route check meets each body where his seen motion puts him (at most 0.6 s ahead). |
+| `LOG_READ` | `carrier.ts` `runReadAim` | Kick or log is read from the seen kicker against his installed end, not the kicker's own tag. |
+| `LANE_DEPTH` | `carrier.ts` `runReadAim` | A closed lane also costs the yards behind the line where the runner is met on the way. |
 
 No capacity, rating, contact law or defensive controller changed. The gait
 law (`locomotionAccel`) changed only under `GAIT_STEP`.
@@ -241,6 +246,66 @@ work, not reasons to turn it off):
   existing `STRETCH_FLAT` removes that and is being measured.
 - Shotgun stretch losses double. Not yet attributed.
 
+## What the gait exposed, first repairs
+
+All on in the pinned profile, defaults off. Same arms as above (`fc1co`,
+`rd1gap`, `fc1gun` = the new profile; `zte0co`, `gs0gap`, `zte0gun` = before
+the gait):
+
+| | before the gait | gait on | + repairs | NFL |
+|---|---|---|---|---|
+| Ace zone TVD / losses | 5.5 / 6.3% | 7.1 / 6.4% | 5.4 / 6.2% | 7.6% |
+| Ace stretch losses, inside-zone median | 9.2%, 4.1 | 8.0-9.8%, 3.6 | 8.2-8.5%, 4.4 | |
+| Gap TVD / losses | 14.5 / 2.8% | 12.2 / 7.4% | 15.9 / 6.4% | 7.4% |
+| Counter / power losses | 4.2 / 2.0% | 21.0 / 5.8% | 18.0 / 3.0% | |
+| Shotgun TVD / losses | 9.8 / 7.7% | 13.3 / 16.3% | 9.0 / 5.8% | 7.6% |
+
+8 games (`sim-fc1`): median run 3.72 → 3.95 yd (NFL 3.0), after contact 2.42
+(2.4).
+
+- **The shotgun back aligned on the play side (`RB_AWAY`).** Gun doubles puts
+  the back on the weak side, so every weak zone call was a same-side
+  exchange: he ran two yards back toward the QB for the ball, took it moving
+  backside at 3 yd/s and reversed (`out/rbmesh.ts`). Those runs lost 16-17%
+  before the gait and 30% with it; crossing runs 3% and 10-16%. Tracked
+  offenses align the back away from the run (`gun-mesh.py`: 231 of 250 stretch,
+  693 of 777 inside zone); the 19 tracked same-side stretches hand off 4.8 yd
+  outside the ball. With the back aligned away, same-side losses are gone
+  (30 → 3-4%) and shotgun losses 15.7 → 6.2%. The defense aligns to the moved
+  back. Same-side geometry itself (`meshFor`) is unchanged.
+- **Blocked defenders still have arms (`RUN_ARMS`).** Most losses with the
+  gait are tackles from a block (shotgun stretch 55 of 86, counter 54 of 84):
+  the lane forecast gave every engaged defender 0.7 s before he could touch
+  the runner, even for a lane brushing his chest. Small gains everywhere
+  (shotgun TVD 13.3 → 12.3, ace 7.1 → 6.9).
+- **Counter's entry read (`RUN_PROJECT LOG_READ LANE_DEPTH`).** On counter log
+  plays the end crosses the kicker's face after contact, so the kicker never
+  tags a log and the back's preferred lane was inside the kicker, where the
+  end is (`LOG_READ`, alone inert). The route check placed a penetrating end
+  where he stood, not where he would be (`RUN_PROJECT`). In traffic every lane
+  scores closed (risk 4-11) and the least bad was a far-outside dog-leg behind
+  the line; a closed lane now also costs the yards behind the line where the
+  runner is met (`LANE_DEPTH`). Together: counter losses 20.5 → 18.0%, power
+  5.2 → 3.0%, duo 0.5 → 0%, medians up 0.4-0.5 yd; ace zone TVD 6.9 → 5.4
+  (inside-zone median 3.6 → 4.4). Against: gap TVD 12.2 → 15.9 and shotgun
+  8.1 → 9.0. The gap runs' 4-9 yd band (already 46%, NFL 39%) grows to 49% and
+  the 40+ tail is the defense's pursuit; but these are decisions measured as
+  better football (fewer runs met behind the line), not tuned to a band.
+- `STRETCH_FLAT` (reach blocker never asks to retreat) measured with the gait:
+  nearly inert (shotgun losses 16.3 → 15.2%, DL depth at 2.5 s -1.37 → -1.25).
+  Absolute DL depth on shotgun stretch is at or shallower than tracking (median
+  -0.2/-0.3 yd at 2.0/2.5 s, NFL -0.2/+0.1; deepest tenth -1.6/-2.1, NFL
+  -2.2/-2.4; `out/dldepth.py`), so penetration itself is not the shotgun cause.
+  Off.
+
+Still open: counter at 18% losses. The end beats the log and penetrates 1.3 yd
+(the kicker meets him at 1.9 s outside and behind); the back's actual path
+curves about a yard shallower than the route he chose. Next.
+
+Contracts: `test/rb-away.test.ts`, `test/run-arms.test.ts`,
+`test/run-read-fixes.test.ts`. `run-reach` isolates the reach rule with
+`RUN_PROJECT` off; the FORCE_DEPTH witness in `long-run-tail` pins the new reads.
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
@@ -297,6 +362,8 @@ Same operator, current profile (`oz-flow-profile.py`, `oz-front.py`,
 node scripts/diag/open-field/arm.mjs gs1co
 node scripts/diag/open-field/arm.mjs gs0gap GAIT_STEP=0 PULL_STEP=0 MESH_POINT=0 -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/mechanics/sim-export.ts --out out/mechanics/sim-gs1.jsonl.gz
+node scripts/diag/open-field/arm.mjs fc1gun -- --formations gun_doubles_11 --concepts iz,oz,wz --seeds 77,71001,1,2,3
+python3 scripts/diag/runblock/gun-mesh.py out/open-field/all/fc1gun-common.jsonl.gz
 node scripts/diag/open-field/arm.mjs sa1co
 node scripts/diag/open-field/arm.mjs fk1gap -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
 node scripts/diag/open-field/arm.mjs sa1gun -- --formations gun_doubles_11 --concepts iz,oz,wz --seeds 77,71001,1,2,3
@@ -316,12 +383,13 @@ node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock
 Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 `test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`,
 `test/mesh-point.test.ts`, `test/gait-step.test.ts`, `test/pull-step.test.ts`,
-`test/run-game-flags.test.ts` (exchange package). 2,873 core tests pass with
-the profile; typecheck passes.
+`test/rb-away.test.ts`, `test/run-arms.test.ts`, `test/run-read-fixes.test.ts`,
+`test/run-game-flags.test.ts` (exchange package). 2,885 core tests pass with
+the profile and without it; typecheck passes.
 
 ## Next
 
-With the gait on: counter log plays (the end penetrating behind the log),
-reach blocks that give ground (`STRETCH_FLAT`), shotgun stretch losses, then
-the back's lane read in traffic. `GAIT_STEP` is a physics law: promotion
+Counter log plays (the end beating the log and penetrating; the back's
+executed path versus the route he chose), then the back's lane read in
+traffic beyond counter. `GAIT_STEP` is a physics law: promotion
 beyond this branch is the physics owner's decision.

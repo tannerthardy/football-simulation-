@@ -74,7 +74,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
-interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; reach?: number }
+interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; reach?: number; vel?: Vec2 }
 
 /** RUN_REACH=1 (default off; on in this branch's pinned profile): the
  * runner's path check gives a defender's body part of his arm's reach (0.4),
@@ -82,6 +82,29 @@ interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; reach?: number 
  * torso is not open: he reaches out and takes the runner. Most zone stuffs
  * end "reached from the block" (docs/reviews/run-game-v3.md, Part 15). */
 const RUN_REACH = process.env.RUN_REACH === '1';
+/** RUN_ARMS=1 (default off): a block holds a defender's feet, not his arms.
+ * The lane forecast gives an engaged defender his release allowance only for
+ * ground beyond his reach, regained over one arm's length of travel. A lane
+ * brushing past a blocked defender is not open: he reaches out from the
+ * block (most stuffs with the gait, docs/reviews/run-offense.md). */
+const RUN_ARMS = process.env.RUN_ARMS === '1';
+/** RUN_PROJECT=1 (default off): the entry route check meets each body where
+ * his seen motion puts him when the runner gets there (at most 0.6 s ahead,
+ * the lane forecast's blocker horizon), not where he stands now. A spilled
+ * end driving into the backfield closes the route behind the line that was
+ * clear when chosen (counter log plays, docs/reviews/run-offense.md). */
+const RUN_PROJECT = process.env.RUN_PROJECT === '1';
+/** LOG_READ=1 (default off): the back reads kick or log from where he sees
+ * the kicker against the end he was installed to kick, not from the kicker's
+ * own decision. An end who crosses the kicker's face after contact has been
+ * logged whatever the kicker planned; the run goes outside the kicker. */
+const LOG_READ = process.env.LOG_READ === '1';
+/** LANE_DEPTH=1 (default off): when the first defender reaches an entry
+ * before the runner, the lane also costs the yards behind the line where he
+ * meets the runner on the way. Being met going north at the line beats being
+ * met running sideways in the backfield; every lane closed in traffic left
+ * the far-outside dog-leg the least bad (docs/reviews/run-offense.md). */
+const LANE_DEPTH = process.env.LANE_DEPTH === '1';
 
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
@@ -95,7 +118,9 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   const kick = run.kick;
   if (kick) {
     const s = sim.see(a, kick);
-    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
+    const end = LOG_READ && kick.behavior instanceof RunBlocker ? kick.behavior.plan.target : null;
+    const log = end ? (s.pos.y - sim.see(a, end).pos.y) * run.side > 0 : kick.tags.has('block-log');
+    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (log ? run.side * .85 : -run.side * .85);
   }
   // Everything below is the runner's own picture: perceived positions, motion
   // and pose, and public body size and reach. Neither the engagement record
@@ -111,7 +136,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const { agent: o, seen: s, team } of pictures) {
     if (s.pose === 'down') continue;
     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
-    bodies.push({ pos: s.pos, radius: o.profile.radius, team, reach: team === 'D' && RUN_REACH ? o.profile.reach * .4 : 0 });
+    bodies.push({ pos: s.pos, radius: o.profile.radius, team, reach: team === 'D' && RUN_REACH ? o.profile.reach * .4 : 0, vel: s.vel });
   }
   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
   bodies.sort((p, q) => p.pos.y - q.pos.y);
@@ -140,30 +165,43 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
   let best: Vec2 | null = null, cost = Infinity;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
-  // Bodies on a segment block the run along it.
-  const blockedBy = (from: Vec2, to: Vec2): number => {
+  const cruise = Math.max(4, a.profile.vmax * .8);
+  // Bodies on a segment block the run along it. `t0`: when the runner starts it.
+  const blockedBy = (from: Vec2, to: Vec2, t0 = 0): number => {
     const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
     let r = 0;
     for (const b of bodies) {
-      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
+      let bp = b.pos;
+      if (RUN_PROJECT && b.vel) {
+        const along = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
+        const t = Math.min(.6, t0 + along * Math.sqrt(l2) / cruise);
+        bp = { x: b.pos.x + b.vel.x * t, y: b.pos.y + b.vel.y * t };
+      }
+      const u = clamp(((bp.x - from.x) * sx + (bp.y - from.y) * sy) / l2, 0, 1);
       // Include the endpoint: a route ending in a defender is still occupied.
       // At the start, only charge a body when the route approaches it; an
       // already touching runner must remain free to move away from that body.
-      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
-      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - (b.reach ?? 0) - a.profile.radius * .7;
+      if (u <= 0 && (bp.x - from.x) * sx + (bp.y - from.y) * sy <= 0) continue;
+      const miss = Math.hypot(from.x + u * sx - bp.x, from.y + u * sy - bp.y) - b.radius - (b.reach ?? 0) - a.profile.radius * .7;
       if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
     }
     return r;
   };
-  const cruise = Math.max(4, a.profile.vmax * .8);
   for (const p of candidates) {
     // Two ways to the entry: straight, or flatten behind the line first and
     // then turn up (the cutback's dog-leg). Each has its own arrival time.
-    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2; atW?: number }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
     if (depth(a.pos) < -1.6) {
       const w = { x: sim.los - 1.2 * dir, y: p.y };
-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+      const atW = timeToReach(me, w, 0);
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p, atW), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w, atW });
     }
+    // Depth along a route at time t (straight, or flat to the turn then up).
+    const depthAt = (route: { arrive: number; via: Vec2; atW?: number }, t: number): number => {
+      if (route.atW === undefined) return depth(a.pos) + (depth(p) - depth(a.pos)) * clamp(t / Math.max(route.arrive, 1e-6), 0, 1);
+      if (t < route.atW) return depth(a.pos) + (depth(route.via) - depth(a.pos)) * t / Math.max(route.atW, 1e-6);
+      return depth(route.via) + (depth(p) - depth(route.via)) * clamp((t - route.atW) / Math.max(route.arrive - route.atW, 1e-6), 0, 1);
+    };
     let risk = Infinity, via = p;
     const beyond = { x: p.x + 2 * dir, y: p.y };
     for (const route of routes) {
@@ -177,7 +215,8 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
       }
       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
-        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
+        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0)
+        + (LANE_DEPTH && m1 < 0 ? Math.max(0, -depthAt(route, Math.max(0, route.arrive + m1))) : 0);
       if (r < risk) { risk = r; via = route.via; }
     }
     const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
@@ -401,7 +440,7 @@ export class BallCarrier implements Behavior {
     const hurry = sim.hurry && a.team === 'O';
 
     // Perceived defenders (vision-filtered).
-    const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
+    const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number; block: number }> = [];
     const blockers = sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
     for (const d of sim.opponents(a)) {
       const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
@@ -415,8 +454,8 @@ export class BallCarrier implements Behavior {
       // never hidden support state/since or an exact recovery deadline.
       let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
         : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
-      if (d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
-      threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
+      const block = d.engagement ? d.engagement.win > 0.6 ? 0.25 : 0.7 : 0;
+      threats.push({ pos: seen.pos, vel: seen.vel, d, extra: RUN_ARMS ? extra : extra + block, block: RUN_ARMS ? block : 0 });
     }
 
     const cands: number[] = [];
@@ -476,7 +515,9 @@ export class BallCarrier implements Behavior {
         let minMargin = Infinity;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const arms = a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75;
+          let tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, arms) + th.extra;
+          if (th.block) tt += th.block * Math.min(1, Math.max(0, Math.hypot(q.x - th.pos.x, q.y - th.pos.y) - arms) / th.d.profile.reach);
           const m = tt - arrival;
           if (m < minMargin) {
             minMargin = m;

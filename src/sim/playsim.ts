@@ -32,7 +32,7 @@ import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
-import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
+import { alignBackAway, assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
@@ -228,6 +228,7 @@ export class PlaySim {
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
+    alignBackAway(this.offAlign, setup.offCall);
     // The secondary checks its call to the receiver distribution it sees.
     const zeus = setup.defCall.zeus;
     const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;

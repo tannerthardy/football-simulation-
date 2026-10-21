@@ -10,6 +10,10 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function entry(reach: boolean, m: 1 | -1) {
   vi.stubEnv('RUN_REACH', reach ? '1' : '0');
+  // The staged tackle is moving off the track; RUN_PROJECT (on in the pinned
+  // profile) would meet him where that motion takes him. This contract
+  // isolates the reach rule on the picture as it stands.
+  vi.stubEnv('RUN_PROJECT', '0');
   vi.resetModules();
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickOffense, pickDefense } = await import('../src/league/team.js');

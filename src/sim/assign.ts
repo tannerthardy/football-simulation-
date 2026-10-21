@@ -7,9 +7,9 @@ import { timeToReach } from '../physics/reach.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
-import { gapY, lineOffset } from '../playbook/alignment.js';
+import { gapY, lineOffset, type OffenseAlignment } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
-import type { Gap, RunConcept } from '../playbook/types.js';
+import type { Gap, OffensivePlayCall, RunConcept } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
@@ -293,6 +293,24 @@ export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
 /** Experimental (GUN_MESH_SIDE=1, off): the shotgun exchange spot is on the
  * offset back's own side of the QB (see meshFor). Geometry only. */
 export const GUN_MESH_SIDE = process.env.GUN_MESH_SIDE === '1';
+
+/** RB_AWAY=1 (default off): on a shotgun zone call the offset back lines up
+ * away from the run and takes the ball crossing the QB's face, as offenses
+ * do (2022 tracking, shotgun: 231 of 250 stretch and 693 of 777 inside-zone
+ * runs from an offset back). A formation that put him on the play side made
+ * every such call a same-side exchange: he ran back toward the QB for the
+ * ball and reversed (stretch losses 30%). The defense aligns to the moved
+ * back before the snap. */
+export const RB_AWAY = process.env.RB_AWAY === '1';
+export function alignBackAway(align: OffenseAlignment, call: OffensivePlayCall): void {
+  const run = call.kind === 'run' ? call.run : undefined, rb = align.spots.RB;
+  if (!RB_AWAY || !run || !rb || call.formation.qb !== 'gun' || !rb.backfield) return;
+  if (run.scheme !== 'insideZone' && run.scheme !== 'outsideZone' && run.scheme !== 'wideZone') return;
+  const ps = run.direction === 'strong' ? align.strongSign : -align.strongSign;
+  if ((rb.pos.y - align.ballY) * ps <= 0) return;
+  rb.pos = { x: rb.pos.x, y: 2 * align.ballY - rb.pos.y };
+  rb.side = rb.side === 'L' ? 'R' : rb.side === 'R' ? 'L' : rb.side;
+}
 
 
 /** Running back before the handoff: time the arrival at the mesh. */
