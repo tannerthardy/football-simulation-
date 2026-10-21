@@ -553,6 +553,45 @@ midfield) gives 47 of them, so report it apart (`bylook.py`). Operators take
 root. The runner's commitment (O5) is measured against the current defense,
 stated as having no D1.
 
+## The back's pace and the fit (on the tracked line, `f58cade4`)
+
+Games (`out/align/sim-ps3`, 16 games) against 2022 tracking: the back meets
+first contact at 6.0 yd/s (NFL 4.5; peak before it 6.7 vs 5.7), 1.5 yd past
+the ball (0.6), and yards after contact keep the NFL median (2.4) with a
+long tail (mean 5.2 vs 3.3, broken contact 18% vs 12%). In the lab
+(`scripts/diag/align/backpace.py`, under center), NFL inside-zone and power
+backs hold 4.8-5.2 yd/s, are slowest about 1.5 yd behind the ball 0.8 s
+after the handoff, and meet contact at 4.2-4.5 yd/s right at the line; ours
+are slowest at the handoff and meet contact at 6.3-6.5. Outside zone is
+close (NFL 4.9, ours 5.9).
+
+Tried and removed, `READ_PACE`: while his entry read is open (more than one
+entry scoring within his design margin), the back presses no faster than
+lets him brake and still cut, at the decision depth, to the sharpest open
+entry (corner speed on his own lateral envelope). First in the designed
+press only (no change: that phase ends 0.3-0.8 s after the handoff), then
+also in the ordinary entry phase: contact speed 6.3 -> 6.0 (inside zone),
+6.5 -> 6.1 (power), 5.9 -> 5.2 (outside zone); zone TVD 11.7 -> 18.7 (0-3 yd
+53 -> 57%), gap 12.4 -> 10.8. Two attempts did not move the slowest point
+toward the NFL's, so the law was removed and the cause re-diagnosed.
+
+The fit (`scripts/diag/align/lbfit.py`): our box backers come downhill
+about twice as fast in the first second (inside zone 2.95 yd/s at 1.0 s,
+NFL 1.45; power 2.65 vs 1.55) and are closer to the line at 2.0 s (1.6-1.8
+yd deep vs 2.2-2.5), yet first contact on power is later and deeper (3.0 s,
++1.6 yd; NFL 2.7 s, +0.3). They arrive early, get climbed on or overrun,
+and the back runs past them at speed. That is the backers' fit tempo
+(read, then fill), with the run-defense session (numbers sent). The lab
+also shows three box backers per snap (NFL two): six of its ten fixed
+looks are base 4-3, and the goal-line Bear at 60+ yd to go supplies a third
+of counter's 40+ runs. The harness should call the defensive caller by
+look and situation once it picks fronts that way (asked).
+
+Climbs on the tracked line are NFL-like under center
+(`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
+reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
+backer 4%, NFL 5%); shotgun doubles reach backers less (24% vs 30%).
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
