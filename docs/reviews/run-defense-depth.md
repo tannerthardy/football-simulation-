@@ -27,8 +27,9 @@ What else must change for it to help?
    gap 14.0 → 26.2, shotgun 10.2 → 17.4.
    - It keeps the safety deep, but the 5–9 yd runs he used to stop become
      10–19 yd runs, and 40+ runs do not fall.
-   - In the sim the deep man makes 61% of the stops on 5–9 yd zone runs. In
-     the NFL he makes 15%; linebackers and linemen make half.
+   - In the sim the deep man is the nearest defender at the end of 61% of
+     5–9 yd zone runs. In the NFL he is nearest at 15%, and linebackers and
+     linemen at 58%.
    - The box has to make those stops before the cap can stay deep.
 2. **`DEEP_CAP` had a hole at the mesh.** Before the cap saw the handoff, his
    fit fell through to the alley landmark (5–8 yd), so he walked down. Once he
@@ -58,7 +59,193 @@ What else must change for it to help?
      leaves 0.4–0.5 s later than an NFL puller (1 yd lateral at 1.1 s vs 0.7).
      Handed to the offense session.
 
-PENDING: PULL_FLOW, GAIT_STEP context, leave-one-out.
+## Where the contact build stands (baseline, pinned profile)
+
+Same operators on NFL60 and on the zone lab (`p0co`):
+
+| | NFL | Sim |
+|---|---|---|
+| Deepest defender when the runner crosses (`dbdepth.py`) | 13.8 yd | 7.0 |
+| Defenders ahead of the runner when he reaches +10, p50 | 3 | 0 |
+| Defenders who can still cut him off from +10 on 40+ runs (`angles.py`) | 1.94 | 0.16 |
+| 5–9 yd runs: deep DB nearest at the end (`stopper.py`) | 15% | 61% |
+| 5–9 yd runs: linebacker / lineman nearest | 38% / 20% | 20% / 2% |
+| DL tied up at the crossing → 1 s later (`release.py`) | 76 → 57% | 89 → 91% |
+| Free linebackers closing on the runner 0.5 s after the crossing | +0.83 yd/s | −0.46 |
+
+## `DEEP_CAP` alone
+
+| Arm | <0 | 0–3 | 4–9 | 10–19 | 20–39 | 40+ | TVD |
+|---|---|---|---|---|---|---|---|
+| NFL60 zone | 7.6 | 44.7 | 36.8 | 8.6 | 1.5 | 0.8 | |
+| Zone baseline `p0co` | 15.3 | 40.7 | 30.9 | 5.0 | 1.5 | 6.6 | 13.6 |
+| Zone `DEEP_CAP` `dcco` | 14.9 | 36.4 | 22.8 | 16.5 | 2.6 | 6.8 | 22.4 |
+| NFL60 gap | 7.4 | 36.8 | 39.2 | 11.3 | 3.3 | 2.0 | |
+| Gap baseline `p0gap` | 5.9 | 31.5 | 47.4 | 6.3 | 1.1 | 7.8 | 14.0 |
+| Gap `DEEP_CAP` `dcgap` | 6.1 | 24.8 | 26.8 | 28.2 | 2.9 | 11.2 | 26.2 |
+
+The safety now holds depth (11.6 yd at the crossing). With nobody else
+stopping runs at 5–9 yd, those runs continue to the safety at about 10 yd
+(10+ runs 157 → 311 of 1,200, p < 0.001). 40+ runs do not move (79 → 82).
+
+## The mesh hole (`CAP_MESH`)
+
+`executeRunFit` skipped `capFit` while the fit was "premesh", meaning the
+handoff was not yet seen. Premesh, the cap took the old alley branch, which
+tracks to `clamp(0.65·depth, 5, 8)` yd at 65% speed. So under `DEEP_CAP`,
+every deep defender walked down during the exchange and back up afterwards:
+
+| Two-high safeties (`sides.py`) | Snap | Handoff + 0.5 s | Crossing | Downhill at crossing |
+|---|---|---|---|---|
+| NFL playside / backside | 11.9 / 11.9 | 12.6 / 13.2 | 10.4 / 12.2 | +2.8 / +1.2 yd/s |
+| `DEEP_CAP` | 12 / 12 | 9.6 / 11.3 | 10.9 / 11.6 | −1.8 / 0.0 |
+| `DEEP_CAP CAP_MESH` | 12 / 12 | 12 / 12 | 12.0 / 12.0 | +0.2 / +0.2 |
+
+`CAP_MESH` runs `capFit` through the mesh too. There, the expected back is
+the picture he mirrors, and a back past the line without the ball is never
+chased (`test/deep-cap.test.ts`).
+
+## Zone: the cap with front-seven pursuit
+
+Pursuit flags from the run-game-v3 research, all default off. They are
+unchanged here except for the new contract test for `BLOCK_FRONT`.
+- `LB_DEPTH`: stack backers read at depth.
+- `EDGE_SQUEEZE`: an edge fit with the runner inside him pursues.
+- `SHED_PURSUE`: a blocked defender works off toward a runner past the line,
+  and is not re-latched at once.
+- `BLOCK_FRONT`: no run block taken on the back.
+
+| Zone arm | <0 | 0–3 | 4–9 | 10–19 | 20–39 | 40+ | TVD |
+|---|---|---|---|---|---|---|---|
+| Pursuit flags, no cap (`npco`) | 10.0 | 41.5 | 39.0 | 3.7 | 0.8 | 5.1 | 8.9 |
+| + `DEEP_CAP` (`dpco`) | 9.8 | 39.2 | 31.6 | 13.1 | 2.1 | 4.2 | 10.8 |
+| + `DEEP_CAP CAP_MESH` (`dqco`) | 9.8 | 38.8 | 33.0 | 13.8 | 2.5 | **2.1** | 9.7 |
+
+Paired, same 1,200 cases:
+
+| | 40+ | 20+ | 10+ | <0 |
+|---|---|---|---|---|
+| Baseline → `dqco` | 79 → 25 (p < 0.001) | 97 → 55 | 157 → 220 (p < 0.001) | 184 → 118 (p < 0.001) |
+| `npco` → `dqco` | 61 → 25 (p < 0.001) | 70 → 55 (p = 0.12) | 114 → 220 (p < 0.001) | 120 → 118 |
+| `dpco` → `dqco` (`CAP_MESH` alone) | 51 → 25 (p < 0.001) | 76 → 55 (p = 0.024) | 233 → 220 (p = 0.22) | 118 → 118 |
+
+What moved (`dqco` vs baseline; NFL in brackets):
+- Deepest defender at the crossing 7.0 → 13 yd (13.8). On 40+ runs the
+  defenders who can still cut the runner off go 0.16 → 0.80 per run (1.94).
+- Free linebackers close at +0.60 yd/s (+0.83). The deep DB is nearest at the
+  end of 10% of 5–9 yd runs (15%).
+- Survival past +10 is NFL-like:
+
+  | | 5→10 | 10→15 | 15→20 | 20→30 | 30→40 |
+  |---|---|---|---|---|---|
+  | NFL | 0.34 | 0.48 | 0.48 | 0.53 | 0.74 |
+  | Baseline | 0.38 | 0.72 | 0.86 | 0.88 | 0.93 |
+  | `dqco` | 0.44 | 0.45 | 0.56 | 0.56 | 0.81 |
+
+The deep man is still more involved than the NFL's (`deepfit.py`):
+
+| | NFL | `dqco` |
+|---|---|---|
+| Speed 0.5 / 1.0 / 1.5 s after the crossing | 4.7 / 4.7 / 4.1 yd/s | 4.8 / 6.0 / 6.3 |
+| Meets the runner on 4–9 yd runs | 12% | 25% |
+| Meets him on 10–19 yd runs, at | 52%, x 10.6 | 93%, x 9.1 |
+
+## Gap and shotgun: the front limits the cap
+
+| Arm | <0 | 0–3 | 4–9 | 10–19 | 20–39 | 40+ | TVD |
+|---|---|---|---|---|---|---|---|
+| Gap pursuit flags, no cap (`npgap`) | 5.1 | 31.6 | 51.3 | 4.8 | 1.2 | 6.1 | 16.2 |
+| Gap `dqgap` | 4.9 | 24.8 | 36.9 | 25.6 | 2.1 | 5.7 | 18.0 |
+| Gap `dqgap` + `PULL_FLOW` (`pfgap`) | 4.7 | 24.8 | 38.6 | 24.6 | 1.9 | 5.5 | 16.8 |
+| NFL60 zone (for shotgun) | 7.6 | 44.7 | 36.8 | 8.6 | 1.5 | 0.8 | |
+| Shotgun baseline `p0gun` | 9.2 | 49.0 | 29.3 | 5.8 | 1.7 | 5.0 | 10.2 |
+| Shotgun `dqgun` | 7.8 | 36.3 | 32.8 | 15.0 | 3.5 | 4.5 | 12.4 |
+
+- **Gap:** `CAP_MESH` again cuts the tail (vs `dpgap`: 40+ 114 → 91, p = 0.021;
+  20+ 156 → 124, p = 0.007), but 10–19 runs are 25%.
+- **Shotgun:** the tail does not move (40+ 30 → 27 of 600). On 40+ runs 1.59
+  defenders per run can still cut the runner off (NFL 1.94), and 63% get
+  within 1.5 yd (NFL 70%). The rest of that tail is the tackle at about
+  8.5 yd/s, not depth.
+
+### Who is missing: the front
+
+At the crossing, every DL within 3 yd of the runner (`nearreach.py`). "Reach"
+means he gets within 1.2 yd of the runner in the next second:
+
+| | Free DL per run, reach | Blocked DL per run, reach |
+|---|---|---|
+| NFL | 0.24, 65% | 1.35, 53% |
+| Zone `dqco` | 0.13, 28% | 1.07, 26% |
+| Gap `dqgap` | 0.07, 23% | 0.65, 14% |
+
+- NFL linemen make 42% of the stops on 0–3 yd runs and 20% on 5–9 yd runs
+  (nearest defender at the end, `stopper.py`). Sim linemen make 17–21% (zone)
+  and 10% (gap) of the short stops, and 2–5% of the 5–9 yd stops.
+- Free DL half a second after the crossing ask for 8.1 yd/s, within 18° of
+  the runner, and move at 1.9 yd/s, facing 62° away from him
+  (`stretch/dlpursuit.ts`). That is the start-up and turn law, not the
+  request.
+- The physics flag `GAIT_STEP=0.5` is context only, not proposed. On the zone
+  package (`gqco`) it takes 10–19 runs 13.8 → 8.8% (NFL 8.6), TVD 8.3, free-DL
+  reach 28 → 40%, 40+ 2.4%. But negatives rise 9.8 → 14.1% (the known
+  stretch-penetration side effect).
+
+### Gap linebackers and the late pull
+
+On gap runs the second level flows the wrong way (`lbdepth.py`, lateral yards
+toward the play side):
+
+| | 1.0 s | 1.5 s | 2.0 s | 2.5 s |
+|---|---|---|---|---|
+| NFL playside / backside | 0.3 / 0.7 | 1.0 / 1.9 | 1.8 / 3.3 | 2.5 / 4.6 |
+| `dqgap` playside / backside | −0.2 / −0.1 | −0.5 / −0.3 | −0.3 / −0.7 | 0.2 / −0.8 |
+
+Traced on power (`depth/lbtrace.ts`):
+- The backer's landmark first drifts backside with the down-blocking gap.
+- He reads the puller at 1.25–1.5 s, then flows at 1.5–2.2 yd/s (NFL backers
+  flow with the pull at 1.75–2.0).
+- The read is late because the pull is late (`depth/pulltime.py`):
+
+  | Playside puller lateral | 1 yd | 2 yd | 3 yd |
+  |---|---|---|---|
+  | NFL | 0.7 s | 1.0 s | 1.3 s, at 4.0 yd/s |
+  | Sim | 1.1 s | 1.5 s | 1.8 s, at 3.25 yd/s |
+
+`PULL_FLOW` removes the scrape against a read pull (a small gain: 10+ runs
+534 → 511, p = 0.022). The puller's timing belongs to the offense session and
+was sent to it with the reproduction commands.
+
+### Linebacker read depth (`LB_READ_STEP`)
+
+Eager & Seth (JQAS 2023, [doi:10.1515/jqas-2022-0091](https://doi.org/10.1515/jqas-2022-0091);
+bite distance introduced in their 2022 Sloan review) measure linebacker
+"bite": how far off-ball backers move toward the line. They find it is a
+stable trait that trades run aggressiveness against play-action. The same
+measure on the 2022 tracking (`depth/bite.py`), median yards toward the line:
+
+| | 1.0 s | 1.5 s | 2.0 s (IQR) |
+|---|---|---|---|
+| NFL runs | 0.6 | 1.4 | 1.9 (1.0–2.8) |
+| NFL play-action | 0.5 | 0.9 | 0.8 (−0.4–2.2) |
+| NFL other dropbacks | 0.0 | −0.3 | −0.7 |
+| Sim, no `LB_DEPTH` | 0.7 | 1.7 | 2.4 (1.6–2.9) |
+| Sim, `LB_DEPTH` | 0.4 | 0.9 | 1.2 (1.0–1.5) |
+| Sim, `LB_DEPTH LB_READ_STEP` | 0.5 | 1.4 | 1.9 (1.6–2.2) |
+
+`LB_READ_STEP` reads two steps inside the alignment instead of one. That
+matches the NFL median, but zone outcomes get worse (`rsco`): 40+ 25 → 43
+(p = 0.018), TVD 9.7 → 12.0.
+- Backers that low meet climbing blockers as often as NFL ones (within 1.5 yd
+  of an OL at 2.0 s: 56%, NFL 57%).
+- They do not come off them: tied up 1 s after the crossing 57% (NFL 49%);
+  free backers close at −0.02 yd/s (NFL +0.83).
+- `LB_DEPTH`'s extra depth is compensating for the release and start-up gap.
+  `LB_READ_STEP` stays off until that is fixed. The sim's bite is also far
+  more uniform than the NFL's (IQR 0.5 vs 1.8 yd). Per-player variation is a
+  candidate for later, with play-action in the game sim as its control.
+
+PENDING: gap/shotgun read-step, GAIT_STEP gap/shotgun, leave-one-out.
 
 ## Method
 
