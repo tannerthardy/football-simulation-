@@ -67,6 +67,16 @@ What else must change for it to help?
    → 1.6 / 3.7 / 2.5%). It adds stretch losses, which trace to linemen
    getting under reach blocks (offense's reach law), not the shed or the
    back's path.
+6. **At game level, scoring is high because drives are short and many**
+   (15.4 per team-game at 4.0 snaps; NFL 10.8 at 5.9), not because each drive
+   is too good. They end on 20+ yd snaps (11%, NFL 3.5) and turnovers (19% of
+   drives, NFL 11). Two findings outside the run game:
+   - Half the interceptions were a defender catching his own breakup;
+     `TIP_AWAY` removes that (7.4 → 5.0% of attempts, p ≈ 0.02).
+   - Long gains after the catch come from holds that break: defensive backs
+     reaching or lunging at fast receivers from behind, whom the runner then
+     drags. `LEG_BIND` (a hold on the legs takes the stride) helps runs, not
+     catches; the rest is the contact model's (handed off).
 
 **Candidate** (every flag default-off): `DEEP_CAP CAP_MESH LB_DEPTH
 EDGE_SQUEEZE SHED_PURSUE BLOCK_FRONT SHED_HANDS`, plus `PULL_FLOW` on gap
@@ -459,8 +469,101 @@ tests that and finds the reach block instead.
 - **`LB_READ_STEP` on gap with `SHED_HANDS`** (`rhgap`): TVD 13.3 → 17.8, 10+
   454 → 539. It stays off on both sets.
 
+## Game level: where the points come from
+
+The run lab cannot see scoring. `calibrate.ts` (16 games, two 8-team leagues,
+pinned profile) and new `depth/drives.ts` (8 games, seeds 101–108) can.
+
+| Calibrate, per team-game unless noted | NFL band | Pinned | Candidate |
+|---|---|---|---|
+| Points | 21–23.5 | 39.4 | 39.4 |
+| Total yards | 320–345 | 506 | 505 |
+| Yards per attempt | 6.8–7.2 | 10.4 | 10.7 |
+| YAC per reception | 4.8–5.6 | 8.4 | 7.8 |
+| 20+ yd completions per attempt | 7–9% | 15.5% | 16.6% |
+| INT rate | 2–2.5% | 6.8% | 5.9% |
+| Rush yards per carry | 4.1–4.5 | 7.9 | 7.3 |
+| Missed + broken tackles per play | 0.11–0.16 | 0.30 | 0.28 |
+
+Drives (`drives.ts`, candidate; NFL 2022 approximate):
+- 15.4 drives per team-game (NFL ~10.8) at 4.0 snaps each (5.9). Points per
+  drive are close to NFL (2.09 vs 1.95). **Scoring is high because drives are
+  short and many, not because each drive is too good.**
+- Drives end early two ways: 20+ yd snaps are 11% (NFL ~3.5%; half of all TDs
+  are scored on one), and turnovers end 19% of drives (NFL 11%).
+- Third-down conversion is low (30%, NFL ~39%): the offense is explosive or
+  three-and-out, with too few medium gains.
+
+### Interceptions: a breakup the same defender catches (`TIP_AWAY`)
+
+`depth/ints.ts` classifies every interception. 17–18% of attempts produce a
+touched ball (breakup, drop or bat). 14–23% of those were intercepted, most by
+**the defender who had just broken the pass up**: `catching.ts` let him play
+his own deflection 0.25 s later with up to a 40% catch roll. The contest had
+already decided he could not catch it cleanly. A breakup sends the ball away
+from his hands.
+
+`TIP_AWAY` (default off, `catching.ts`): the defender who breaks up or bats a
+pass cannot catch that deflection; teammates and the receiver still can.
+Candidate, 16 games each: interceptions 7.4 → 5.0% of attempts (82/1,112 →
+58/1,151, p ≈ 0.02); tipped share 46 → 33%; touched balls intercepted 18 → 8%.
+Drives (8 games): turnovers 19.1 → 12.6% of drives (NFL 11), interception
+return points 3.4 → 1.4 per team-game. Clean interceptions remain 3.4% of
+attempts (NFL total 2.2%): QB decisions and undercuts, not tips.
+
+### After the catch
+
+20+ yd completions are 18–21% of attempts in exported games (NFL 9.2%,
+`depth/longpass.py`). Completions caught 15+ yd downfield are only modestly
+high (10–11% vs 8.1%); **the excess is made after the catch**: 63–75% of the
+sim's 20+ yd completions have 10+ YAC (NFL 46%).
+
+- **Both halves of YAC are long** (`depth/yacsplit.py`, zone): catch to first
+  contact p50/p90 1.5/11.7 (NFL 1.5/7.9); after contact 2.1/9.5 (NFL 1.1/5.1).
+- **One defender in front** (`depth/infront.py`): 31–36% of sim zone catches
+  (NFL 14%), YAC p50/p90 5.7/36.9 (NFL 1.5/10.6). The NFL front defender is
+  already closing at 3.8 yd/s at the catch; the sim's at 1.6, reaching 3.5
+  only 0.6 s later (`depth/frontman.py`). His gap at +1.0 s is NFL-like, so
+  the tackle, not only the approach, decides it.
+- **`ZONE_ARM`** (default off, `defense.ts` `sawThrow`): match-zone defenders
+  with eyes on the quarterback break on his windup, as spot droppers do. Zone
+  defenders near the catch point move toward it at the throw 0.07 → 0.35 yd/s
+  and at +0.3 s 0.63 → 0.94 (NFL 1.31 / 2.20; `depth/zonebreak.py`). Zone YAC
+  p90 is unchanged (22.4 → 24.4, 8 games), so it stays off: the break was not
+  what lets receivers run.
+- **Holds that break decide the long gains** (`depth/aftercatch.ts`). On 20+
+  YAC catches the first act is a wrap at +1.3 s, 7.7 yd from the catch spot,
+  and it breaks 70% of the time. Broken holds are 0.17–0.22 per completion and
+  0.15–0.18 per run; calibrate's PFF band for all missed plus broken tackles is
+  0.11–0.16.
+- **Which holds break** (`depth/holds.ts`, full telemetry, 3 games): on runs
+  6% of holds; on catches 13%, concentrated in defensive backs reaching or
+  lunging at a fast receiver from behind (lunge behind 53%, reach 56%, reach
+  behind 24% even at grip 0.91; carrier 5.5–6.6 yd/s). Form wraps 0–4%.
+- **Why** (`depth/holdtrace.ts`, the 1v1 panel's setup): a held runner keeps
+  asking for his full stride. A 102 kg holder with a leg wrap (grip 1.0, legs
+  0.61) is dragged 13 yd on the ground at 4–7 yd/s; a corner with a full grip
+  at the hips loads 600–700 N (his traction) while the receiver's legs push
+  nearly as hard, and is dragged 8 yd in 1.5 s. A man hanging on a runner
+  loads his legs; the 2D model has no such load.
+- **`LEG_BIND`** (default off, `tackle.ts` carrier request, offered to the
+  contact owner): the legs share of each hold times its grip limits the speed
+  the carrier's gait may ask for. Panel: 135° / 6 yd/s yards after contact 8.7
+  → 5.9, 180° / 8 yd/s 19.7 → 7.2 (unfinished 50 → 33%), head-on unchanged.
+  Games (6, candidate): yards per carry 7.2 → 5.3, 40+ runs 5.2 → 2.4%,
+  broken holds per run 0.18 → 0.14; catches unchanged (0.17 → 0.19). With
+  `TIP_AWAY` (8-game export): catch broke contact 25.8 → 23.1% (NFL 12.5),
+  YAC p90 22.0 → 20.6, run broke contact 13.8 → 11.5% (ok). Waist holds and a
+  tackler's weight are untouched; that is the support model's.
+- `REAR_PLANT` (a holder behind the runner plants at any arm extension) made
+  no panel difference and was removed: the limit is the runner, not the
+  holder's request.
+
 ## Evidence against and unresolved risk
 
+- **Game-level reads are noisy.** Games diverge after the first changed play;
+  8 games are about 1,000 snaps and 40–80 interceptions. The interception
+  change is significant (16 games each); the YAC changes are not tested.
 - **10–19 yd runs overshoot whenever the cap holds** (zone 13.8%, gap 25%,
   shotgun 15%; NFL 8.6 / 11.3 / 8.6). The cap is right and the box is short.
   The package trades a TD-producing tail for medium gains. That is closer to
@@ -491,20 +594,25 @@ tests that and finds the reach block instead.
 | Offense (`claude/run-game-v3`, sent) | Gap pullers leave 0.4–0.5 s late (1 yd lateral at 1.1 s vs 0.7; 3.25 vs 4.0 yd/s). Linebackers read the pull, so their flow inherits the delay. | `depth/pulltime.py`, `lbdepth.py gap_pull` |
 | Offense (reach blocking, sent) | Stretch losses: OZ/WZ 10.8/15.0% on the depth package (NFL OZ 9.5%), 14.5/20.0% with `SHED_HANDS`, higher with the mesh package. DL hand control is the same as on inside zone; linemen get under the reach into the backfield (NFL OZ DL are driven back about 1 yd by 3 s). | `depth/stretchpace.py`, `mqco`/`mhco` arms |
 | Contact (tackling) | The cap's first encounter on 20+ yd zone runs: side wraps on a 7.8 yd/s runner that break (37%) or drag; shotgun the same at 8.5 yd/s from behind. | `depth/capmeet.py` |
+| Contact / physics (sent) | Held runners keep their stride: broken holds 0.15–0.22 per play; DB reach/lunge holds from behind on fast receivers break 24–56%; a wrapped holder is dragged 8–13 yd. `LEG_BIND` covers the legs share only; waist holds and the holder's weight are not modelled. | `depth/holds.ts`, `depth/holdtrace.ts --carrier X --tackler CB` |
+| Passing (QB decisions) | Clean interceptions 3.4% of attempts with `TIP_AWAY` (NFL total 2.2%); about half undercut away from the receiver. | `depth/ints.ts` |
 | Engaged release (defender side of run reps, this branch) | Defenders stay near blockers after the runner passes: DL 74–80% within 1.2 yd of an offensive player at +1 s (NFL 57%). But with `SHED_PURSUE`, DL still in a rep 0.5 s after the crossing are 79 → 56%, below the NFL's proximity rate (66%). The excess is freed linemen who cannot accelerate away, i.e. the start-up row above. | `release.py` rows in `mechanisms.txt`; `dlpursuit.txt` |
 
 ## Next
 
-1. **Release after the runner passes** (this branch, defender side of run
-   reps). The decision side is in place (`SHED_PURSUE`). What remains is
-   mostly start-up (physics), so the next defense-side step waits on it,
-   apart from the 56% still in a rep, which can be split by why the rep
-   continues.
-2. Re-measure the package once the puller timing (offense) or start-up
-   (physics) changes. `LB_READ_STEP` (NFL bite) is the first thing to re-test
-   then.
-3. Per-player linebacker aggressiveness (bite as a trait, per Eager & Seth),
-   validated against play-action in the game sim, not the run lab.
+1. **Held runners** (contact owner): the support model's answer to a man
+   hanging on the runner (waist holds, the holder's weight). `LEG_BIND` is the
+   technique-level part and can be promoted with it or replaced.
+2. **Clean interceptions** (QB decisions): 3.4% of attempts with `TIP_AWAY`.
+3. **Run-defense reads from the offense session's operators**
+   (`scripts/diag/runblock/` on `claude/run-game-v3`): outside-zone defensive
+   linemen barely flow laterally (0.01/0.12/0.43 yd at 0.5/1.0/1.5 s vs
+   0.27/1.12/2.47); backers fill early (1.8 yd deep at handoff + 1 s vs
+   2.3–2.5); the play-side end aligns 3.3–4.1 yd wide (5.5); a stalked corner
+   is in on 20% of gap-run tackles (10%). Re-measure with this branch's flags.
+4. Release after the runner passes (defender side of run reps): mostly
+   start-up (physics); re-test `LB_READ_STEP` once puller timing or start-up
+   changes. Per-player linebacker bite (Eager & Seth) belongs in the game sim.
 
 ## Reproduce
 
@@ -526,13 +634,22 @@ python3 scripts/diag/depth/sides.py out/open-field/all/dqco.jsonl.gz --shell 2
 python3 scripts/diag/depth/bite.py out/mechanics/nfl-plays.jsonl.gz --ytg60
 python3 scripts/diag/depth/pulltime.py out/open-field/all/dqgap-common.jsonl.gz
 node scripts/baseline.mjs --candidate --flag DEEP_CAP=1 -- node --import tsx scripts/diag/stretch/dlpursuit.ts
+# game level (C = the candidate flags, e.g. --flag DEEP_CAP=1 ... --flag PLANT_TRAVEL=1)
+node scripts/baseline.mjs --candidate $C -- node --import tsx scripts/calibrate.ts 16 7 2
+node scripts/baseline.mjs --candidate $C -- node --import tsx scripts/diag/depth/drives.ts --games 8
+node scripts/baseline.mjs --candidate $C --flag TIP_AWAY=1 -- node --import tsx scripts/diag/depth/ints.ts --games 8
+node scripts/baseline.mjs --candidate $C --flag LEG_BIND=1 -- node --import tsx scripts/diag/depth/holds.ts --games 3
+node scripts/baseline.mjs --candidate --flag LEG_BIND=1 -- node --import tsx scripts/diag/tackle/panel.ts --seeds 6
+node scripts/baseline.mjs --candidate --flag LEG_BIND=1 -- node --import tsx scripts/diag/depth/holdtrace.ts --angle 120 --speed 6 --seed 3001 --carrier X --tackler CB
+for f in nfl-plays sim-lb; do python3 scripts/diag/depth/yacsplit.py out/mechanics/$f.jsonl.gz; python3 scripts/diag/depth/longpass.py out/mechanics/$f.jsonl.gz; done
 ```
 
 Receipts: [`run-defense-depth/`](run-defense-depth/): `outcomes.txt` (bands,
 survival, paired tests), `mechanisms.txt` (NFL vs arms), `dlpursuit.txt`,
 and every arm's manifest. Tests: `test/deep-cap.test.ts` (`CAP_MESH`),
 `test/run-defense-depth.test.ts` (`PULL_FLOW`, `LB_READ_STEP`) and
-`test/block-front.test.ts`. All 2,870 core tests pass on the pinned profile,
+`test/block-front.test.ts`, `test/zone-arm.test.ts`, `test/tip-away.test.ts`
+and `test/leg-bind.test.ts`. All 2,881 core tests pass on the pinned profile,
 and typecheck passes.
 
 ## Method

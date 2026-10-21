@@ -2,7 +2,8 @@
  * from the first grip: both speeds, their gap, the hold's grip/legs/force/
  * capacity, whether it slips, the holder's request and support state.
  * Observation only; flags from the environment.
- * node --import tsx scripts/diag/depth/holdtrace.ts [--angle 135] [--speed 6] [--seed 3000] [--side 1] */
+ * node --import tsx scripts/diag/depth/holdtrace.ts [--angle 135] [--speed 6] [--seed 3000] [--side 1]
+ *   [--carrier RB] [--tackler LB] (slot, or a slot prefix for the tackler) */
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
 import type { GraspJoint } from '../../../src/physics/world.js';
@@ -14,6 +15,7 @@ import { chase } from '../../../src/sim/behaviors/common.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 
 const arg = (n: string, f: string) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : f; };
+const carrierSlot = arg('--carrier', 'RB'), tacklerSlot = arg('--tackler', 'LB');
 const angle = Number(arg('--angle', '135')), speed = Number(arg('--speed', '6')), seed = Number(arg('--seed', '3000')), side = Number(arg('--side', '1'));
 const offense = generateTeam(new Rng(61), 'Panel O', 'PO', { strength: .55 });
 const defense = generateTeam(new Rng(62), 'Panel D', 'PD', { strength: .55 });
@@ -23,7 +25,7 @@ const sim = new PlaySim({
   defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'panel' },
   los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
 });
-const c = sim.slot('RB')!, d = sim.defense.find((a) => a.slot === 'MLB' || a.slot.startsWith('LB'))!;
+const c = sim.slot(carrierSlot)!, d = sim.defense.find((a) => a.slot === tacklerSlot || a.slot.startsWith(tacklerSlot))!;
 for (const a of sim.agents) {
   a.body.pos = { x: 5 + a.idx * .1, y: 1 + a.idx * 2 }; a.body.vel = { x: 0, y: 0 };
   a.downUntil = 99; a.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) } as never;
