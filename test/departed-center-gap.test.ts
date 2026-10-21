@@ -1,4 +1,8 @@
-import {describe,expect,it} from 'vitest';
+import {describe,expect,it,vi} from 'vitest';
+// Recorded on the installed flat line (1.3 yd splits, 0.55 yd depth): its
+// saved geometry, landmarks and plans are that line's. The tracked line
+// (OL_ALIGN, docs/reviews/presnap.md) moves every body; pin it off here.
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 import {readFileSync} from 'node:fs';
 import {alignOffense} from '../src/playbook/alignment.js';
 import {liveAim} from '../src/sim/behaviors/carrier.js';

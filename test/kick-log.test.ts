@@ -3,6 +3,10 @@
  * LOG_CONTACT    a kicker whose end crossed his face as they met logs him.
  * docs/reviews/run-offense.md ("What the gait exposed"). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// These compare the flag on and off on plays recorded on the installed flat
+// line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
+// the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

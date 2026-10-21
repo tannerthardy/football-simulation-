@@ -2,6 +2,10 @@
  * side and gains depth on the way, with the hips toward the play side,
  * instead of dropping straight back and turning to face his own backfield. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// These compare the flag on and off on plays recorded on the installed flat
+// line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
+// the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 

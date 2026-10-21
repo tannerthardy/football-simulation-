@@ -6,6 +6,10 @@
  * with the kick fit he still has the end, kicked wider, when the back
  * arrives. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// These compare the flag on and off on plays recorded on the installed flat
+// line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
+// the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 // These witnesses predate the under-center exchange package (UC_MESH
 // MESH_TEMPO QB_CARRYOUT PACE_LEAD) and are timed on the installed exchange;
 // pin it off here. test/run-game-flags.test.ts covers the package itself.

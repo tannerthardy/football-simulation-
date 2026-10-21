@@ -1,4 +1,8 @@
 import {describe, expect, it, vi} from 'vitest';
+// Recorded on the installed flat line (1.3 yd splits, 0.55 yd depth): its
+// saved geometry, landmarks and plans are that line's. The tracked line
+// (OL_ALIGN, docs/reviews/presnap.md) moves every body; pin it off here.
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 // Recorded under the default gait, pull and gun-exchange laws. GAIT_STEP,
 // PULL_STEP and MESH_POINT (on in the pinned profile) change its timing or
 // first command; pin them off here. test/gait-step.test.ts and

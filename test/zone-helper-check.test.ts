@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
+// Recorded on the installed flat line (1.3 yd splits, 0.55 yd depth): its
+// saved geometry, landmarks and plans are that line's. The tracked line
+// (OL_ALIGN, docs/reviews/presnap.md) moves every body; pin it off here.
+vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 // These witnesses exercise the help check/climb mechanism on the legacy
 // pairing (an uncovered guard doubling his play-side neighbor's man).
 // COMBO_GAP pairs these fronts' guard with the center's shade instead, so
