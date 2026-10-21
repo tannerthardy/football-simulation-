@@ -271,7 +271,9 @@ export function inspectInstalledSnap(sim: PlaySim,
       reportedEligibility: reports[a.player.id],
       // These are sufficient represented torso crossings, not a declaration
       // that unrepresented helmet/feet geometry is proven legal otherwise.
-      inNeutralZone: a.team === 'D' ? snapX - radius < sim.los : snapX + radius > sim.los,
+      // The snapper may be over the ball (his hand is on it); tracked
+      // centers stand 0.29 yd behind the ball's spot (OL_ALIGN).
+      inNeutralZone: a.team === 'D' ? snapX - radius < sim.los : a.slot !== 'C' && snapX + radius > sim.los,
       tFormationQB: a.team === 'O' && a.slot === 'QB' && sim.offCall.formation.qb === 'under' };
   });
   //The current install explicitly supplies a legal stationary set, rather

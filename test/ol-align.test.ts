@@ -120,3 +120,15 @@ describe('OL_ALIGN: the called line', () => {
     }
   });
 });
+
+describe('OL_ALIGN: the tracked line is a legal set', () => {
+  it('the snapper over the ball is not offside; the rest of the line is behind it', async () => {
+    vi.stubEnv('OL_ALIGN', '1'); vi.resetModules();
+    const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
+    const { inspectInstalledSnap } = await import('../src/game/presnap-rules.js');
+    const sim = makeSim({ concept: 'iz', dir: 'strong', formation: 'ace_12', look: 'over3', roster: 'pair11', seed: 77 } as never, rosters());
+    const center = sim.offense.find(a => a.slot === 'C')!;
+    expect(sim.los - center.pos.x).toBeCloseTo(.29, 6);
+    expect(inspectInstalledSnap(sim).fouls.filter(f => f.kind === 'offside')).toEqual([]);
+  }, 60000);
+});
