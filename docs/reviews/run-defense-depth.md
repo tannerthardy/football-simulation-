@@ -84,7 +84,21 @@ Without `SHED_PURSUE` the zone set is better (TVD 7.9) and gap/shotgun are
 slightly worse (15.1 / 9.4, not significant). It is kept as sound football;
 see the section on it below.
 
-GAMES_PENDING
+**Full games** (`depth/games.ts`, 8 games, seeds 101–108; games diverge, so
+this is a game-level read, not a paired test):
+
+| | Contact build | Candidate | NFL (approx.) |
+|---|---|---|---|
+| Points per team-game | 38.7 | 35.1 | ~22 |
+| Yards per carry | 7.46 | 5.67 | ~4.4 |
+| Runs 20+ / 40+ | 7.3 / 4.9% | 3.8 / 2.7% | ~3 / ~0.6% |
+| Runs for a loss | 17.0% | 21.6% | ~8–10% |
+| Completions 20+ / 40+ | 18.8 / 4.8% | 21 / 3.7% | ~13 / ~2% |
+
+Game play mixes more stretch and shotgun runs than the lab, so the stretch
+losses (reach blocks) show up more. Scoring is still high, from both runs
+and explosive passing.
+
 
 ## Where the contact build stands (baseline, pinned profile)
 
