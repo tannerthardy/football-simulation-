@@ -227,7 +227,7 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
-    this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
+    this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY, setup.offCall.line);
     alignBackAway(this.offAlign, setup.offCall);
     // The secondary checks its call to the receiver distribution it sees.
     const zeus = setup.defCall.zeus;

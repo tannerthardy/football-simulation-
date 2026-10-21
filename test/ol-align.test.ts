@@ -81,3 +81,39 @@ describe('OL_ALIGN line alignment', () => {
     expect(lineOffset(8, true)).toBeCloseTo(4.62 + 4.1, 9);
   });
 });
+
+/** The line a team calls: its line coach's split rule and the situation
+ * (tracked team medians 1.46-1.74 yd; short yardage 0.2 yd narrower and
+ * 0.05 yd shallower). Defensive techniques follow the line that is there. */
+describe('OL_ALIGN: the called line', () => {
+  it('sets from the team split and tightens in short yardage; off ignores it', async () => {
+    vi.stubEnv('OL_ALIGN', '0'); vi.resetModules();
+    const off = await import('../src/playbook/alignment.js');
+    expect(off.lineSet(1.7, false)).toBeUndefined();
+    const flat = off.alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y);
+    const wide = off.alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, { cg: 1.7, gt: 1.7, tte: 1.5, depth: { C: .3, G: .9, T: 1, TE: 1.2 } });
+    expect(wide.spots).toEqual(flat.spots);
+
+    vi.stubEnv('OL_ALIGN', '1'); vi.resetModules();
+    const { lineSet, alignOffense, alignDefense } = await import('../src/playbook/alignment.js');
+    const normal = lineSet(1.7, false)!, short = lineSet(1.7, true)!;
+    expect(normal.cg + normal.gt).toBeCloseTo(3.4, 9);
+    expect((normal.cg + normal.gt) - (short.cg + short.gt)).toBeCloseTo(.1, 9);
+    expect(short.depth.T).toBeLessThan(normal.depth.T);
+    const narrow = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, lineSet(1.44, false));
+    const broad = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, normal);
+    const width = (o: typeof broad) => Math.abs(o.spots.LT.pos.y - o.spots.RT.pos.y);
+    expect(width(broad) - width(narrow)).toBeCloseTo(4 * (1.7 - 1.44), 9);
+    // The 3 technique stays outside the strong guard and inside the tackle of
+    // the line that is there, whatever its splits (where on that shoulder is
+    // the defense's technique definition, not asserted here).
+    for (const o of [narrow, broad]) {
+      const def = alignDefense({ personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over' },
+        o, Object.keys(DEF_PERSONNEL.base43) as DefSlot[]);
+      const s = o.strongSign, at = (p: { y: number }) => (p.y - CENTER_Y) * s;
+      const guard = Math.max(at(o.spots.LG.pos), at(o.spots.RG.pos)), tackle = Math.max(at(o.spots.LT.pos), at(o.spots.RT.pos));
+      expect(at(def.spots.DT_S!.pos)).toBeGreaterThan(guard);
+      expect(at(def.spots.DT_S!.pos)).toBeLessThan(tackle);
+    }
+  });
+});

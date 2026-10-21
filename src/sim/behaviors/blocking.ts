@@ -627,7 +627,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // GH installs the H's immediate backer before optional double-team jobs.
     // GT retains its existing count; these are separately installed calls.
     const holeTE = ps === sim.offAlign.strongSign ? sim.offAlign.hasTE.S : sim.offAlign.hasTE.W;
-    const hole = by + ps * lineOffset(concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6, holeTE);
+    const hole = by + ps * lineOffset(concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6, holeTE, sim.offAlign.line);
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
@@ -730,7 +730,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     }
     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
       plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }),
-        lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * lineOffset(1.95, false) } : undefined });
+        lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * lineOffset(1.95, false, sim.offAlign.line) } : undefined });
       claimedDL.add(emlos);
     }
     // LEAD_HIP: every lead knows the called kick-out (the pulling guard on

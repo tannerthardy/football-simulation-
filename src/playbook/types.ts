@@ -121,6 +121,15 @@ export interface RunConcept {
   beats: string[];
 }
 
+/** The offensive line's set for one snap (OL_ALIGN): centre-to-centre
+ * splits and each position's depth behind the ball, in yards. */
+export interface LineSet {
+  cg: number;
+  gt: number;
+  tte: number;
+  depth: { C: number; G: number; T: number; TE: number };
+}
+
 export interface OffensivePlayCall {
   formation: Formation;
   flip: boolean;
@@ -129,6 +138,9 @@ export interface OffensivePlayCall {
   run?: RunConcept;
   /** Display label. */
   label: string;
+  /** OL_ALIGN: the line's set called with the play (the team's split rule
+   * and the situation); the tracked median line when absent. */
+  line?: LineSet;
 }
 
 // ---------------------------------------------------------------- defense

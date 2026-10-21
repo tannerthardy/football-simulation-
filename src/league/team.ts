@@ -36,6 +36,9 @@ export interface Team {
     coverageSystem: CoverageSystem;
     /** Preferred trips check when a call offers several (e.g. Poach vs. Stubbie). */
     checkPick: number;
+    /** The line coach's base split, centre to centre, in yards (OL_ALIGN).
+     * Tracked team medians run 1.46-1.74 (2022; scripts/diag/align/olsplits.py). */
+    lineSplit?: number;
   };
 }
 
@@ -117,6 +120,8 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       matchRate: rng.range(0.3, 0.9),
       coverageSystem: rng.pick<CoverageSystem>(['single-high', 'quarters', 'two-high', 'tampa', 'pressure-man']),
       checkPick: rng.int(0, 1),
+      // A named stream: drawing it changes no other team trait.
+      lineSplit: rng.fork('line-split').range(1.44, 1.7),
     },
   };
 }
