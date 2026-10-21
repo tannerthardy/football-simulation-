@@ -177,7 +177,27 @@ In tracking a blocked defender meets a runner who is already past the line;
 the free-arm reach lets him meet the runner on the way there. Whether that
 comes from reach geometry (0.7 of an arm on every engaged defender, whatever
 his side) or from the blocker's body not taking that arm away is the next
-question. It is still not proposed.
+question. A temporary log of every attempt the flag adds (`BR_LOG`, same
+arms, not committed) answers it:
+
+- The reach is not through the blocker. On 94–95% of the added attempts the
+  blocker is not between the defender and the runner (cosine of the
+  defender→blocker and defender→runner directions ≤ 0.5). The reach used is
+  0.43–0.49 of an arm, with neutral hands (control p50 0.0–0.24).
+- On gap runs the runner is 0.65 yd behind the line (p50), passing a
+  defender blocked by a puller or the fullback: DE by a guard 125, DT by a
+  guard 74, DE by the fullback 48 of 363. Of the 341 not on the blocker's
+  side, 169 are the runner **outside** a man whose blocker is **inside**
+  him, 1.2–1.4 yd deep for kicked ends. The kick-out has inside-out
+  leverage and the runner bounces outside it within arm's length; 105 more
+  are the runner inside a man logged from outside.
+- On zone the runner is 0.4 yd past the line, beside a stalemated
+  interior lineman.
+
+So the added contacts are real ones: a runner who hugs or bounces around a
+kicked or logged man gets reached. That is the runner's path off the
+kick-out (run-offense session), not the gate. The flag stays off until
+that path is repaired, so that the share and the gain are judged together.
 
 **`PULL_EARLY` (`run-fits.ts` `pullers`).** Backers read run by 0.5–1.0 s
 (`lbtrace.ts`) but the pull read fires about 1.35 s, after the guard has
