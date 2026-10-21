@@ -625,8 +625,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
           gapPending.push(b);
         }
       } else {
-        // Backside: hinge/cutoff.
-        const cand = dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved).sort((p, q) => Math.abs(p.pos.y - b.pos.y) - Math.abs(q.pos.y - b.pos.y));
+        // Backside: hinge/cutoff. The playside gap the pullers vacated comes
+        // first; the man outside only when that gap is empty (Browns "post
+        // hinge", p. 33: inside B gap to outside C gap).
+        const open = dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved);
+        const inGap = open.filter((d) => (d.pos.y - b.pos.y) * ps > 0.3 && (d.pos.y - b.pos.y) * ps < 1.3);
+        const cand = (inGap.length ? inGap : open).sort((p, q) => Math.abs(p.pos.y - b.pos.y) - Math.abs(q.pos.y - b.pos.y));
         const d = cand[0] && Math.abs(cand[0].pos.y - b.pos.y) < 2.5 ? cand[0] : null;
         if (d) claimedDL.add(d);
         if (d) plans.set(b, { kind: 'cutoff', target: d, drive: up(ps * 0.8) });

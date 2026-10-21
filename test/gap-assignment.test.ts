@@ -47,3 +47,21 @@ describe('power linebacker ownership (spread playbook p. 66)', () => {
       expect(owners(sim.slot('LB_W')!)).toHaveLength(1);
     });
 });
+
+describe('backside cutoff priority (Browns post hinge, p. 33)', () => {
+  it.each(mirrors)('takes the defender in the vacated playside gap before the man outside, flip=$flip y=$ballY', ({ flip, ballY }) => {
+    const { by, rel, sim } = plan('counter', 'under', flip, ballY);
+    const y = by('Y'), end = sim.slot('DE_S')!, sam = sim.slot('LB_S')!, yRel = rel(sim.slot('Y')!);
+    expect(rel(end)).toBeGreaterThan(yRel);
+    expect(rel(sam)).toBeLessThan(yRel);
+    expect(y.kind).toBe('cutoff');
+    expect(y.target).toBe(end);
+  });
+  it.each(mirrors)('control: with the playside gap empty, still walls the man on or outside him, flip=$flip y=$ballY', ({ flip, ballY }) => {
+    const counter = plan('counter', 'over', flip, ballY), power = plan('power', 'over', flip, ballY);
+    expect(counter.by('Y').target).toBe(counter.sim.slot('DE_S'));
+    const bst = [...power.plans].find(([b, p]) => p.kind === 'cutoff' && (b.slot === 'LT' || b.slot === 'RT'))!;
+    expect(bst[1].target).toBe(power.sim.slot('DE_W'));
+    expect(power.rel(bst[1].target!)).toBeLessThan(power.rel(bst[0]));
+  });
+});
