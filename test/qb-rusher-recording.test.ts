@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 // These bookkeeping witnesses replay plays whose scramble and run outcomes
-// depend on the installed receiver splits; WR_ALIGN moves the receivers and
-// with them the QB's options. Pin the installed geometry (read at import).
-vi.hoisted(() => { process.env.WR_ALIGN = '0'; });
+// depend on the installed receiver and line splits; WR_ALIGN and OL_SPLITS
+// move those bodies and with them the QB's options. Pin the installed
+// geometry (read at import).
+vi.hoisted(() => { process.env.WR_ALIGN = '0'; process.env.OL_SPLITS = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';

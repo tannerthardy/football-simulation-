@@ -1,12 +1,14 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {describe,expect,it} from 'vitest';
+import {vi,describe,expect,it} from 'vitest';
 import {supportParams} from '../src/physics/support.js';
 import {World} from '../src/physics/world.js';
 import {PassProtector,ProtectionCoordinator} from '../src/sim/behaviors/blocking.js';
 import {ScoutingReport} from '../src/sim/recognition.js';
 import {CoverageScouting} from '../src/sim/qbmind.js';
 import {PlaySim} from '../src/sim/playsim.js';
+// Recorded at the installed line splits; OL_SPLITS stages a different play.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/pass-cutoff-inputs.json.gz')).toString());
 function saved(index:number):PlaySim {

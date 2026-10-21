@@ -50,6 +50,8 @@
     "TIP_AWAY": "0",
     "DEF_ALIGN": "0",
     "WR_ALIGN": "0",
+    "OL_SPLITS": "0",
+    "OL_STAGGER": "0",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
     "ZONE_FLOW": "1"

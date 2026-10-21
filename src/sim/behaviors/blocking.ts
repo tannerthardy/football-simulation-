@@ -31,6 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
+import { lineOffset } from '../../playbook/alignment.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -579,7 +580,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     }
     // GH installs the H's immediate backer before optional double-team jobs.
     // GT retains its existing count; these are separately installed calls.
-    const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
+    const holeTE = ps === sim.offAlign.strongSign ? sim.offAlign.hasTE.S : sim.offAlign.hasTE.W;
+    const hole = by + ps * lineOffset(concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6, holeTE);
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
