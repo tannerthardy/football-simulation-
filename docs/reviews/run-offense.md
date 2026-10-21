@@ -322,6 +322,119 @@ the reach rule with `RUN_PROJECT` off; the FORCE_DEPTH witness in
 `long-run-tail` pins the new reads; `motion-contact` (a split-zone H-back
 recorded unable to reach) pins the kick flags.
 
+## Gap schemes: the blocks that build the hole (user: "keep working on our gap scheme concepts")
+
+A diagnosis workflow (36 agents) found 29 candidate mechanisms on power,
+counter, trap and duo, and an adversarial verifier re-checked each with the
+same operator on 2022 tracking and lab film: 1 confirmed outright, 26
+"partly" (the symptom reproduced; the stated cause, size or fix did not), 2
+refuted. Its ranked synthesis (offense items O1-O7, defense D1-D6, contact and
+physics) drives this section. Then an adversarial code review (four lenses,
+each finding re-checked by a skeptic) of the first repairs found four real
+defects, repaired below before anything stayed on.
+
+### On in the profile (defaults off)
+
+- **`GAP_OUT`** (`planRunBlocking`): a play-side man aligned more than 0.3 yd
+  outside his blocker, and outside the hole, is blocked out (inside shoulder,
+  driven outward), not down. Down-blocking him drove him across the blocker's
+  face into the trap hole (trap weak I-pro: runs under 2 yd 12 -> 6 of 20).
+  Review repair: the first version ignored the hole and, on power, drove men
+  lined up inside the off-tackle hole across it.
+- **`CUTOFF_SEAL`** (`createEngagement`, gap schemes only): a solo backside
+  cutoff takes his rep from his man's play-side front (30 deg play side of
+  head-up), driving him away from the play. The installed cutoff drive's seal
+  side lay backside, so pairs drifted away from the play. Review repair: the
+  first version set only a seal angle in the old drive frame; that target was
+  no resting point of the feet law, blockers overshot past the man's flank
+  into the region read as a lost block (`win >= 0.6`), and the change leaked
+  into zone cutoffs. Now the front is the rep's axis (phi at +1 s 1.37 -> 0;
+  held reps 7 -> 11 of 36; the man 0.5 yd deeper). A skeptic's alternative
+  (install the front as a contact surface, no drive) held as well without
+  pushing the man; recorded, not taken.
+- **`GAP_FIT`** (`RunBlocker.attack`): first-level gap blocks by a lineman or
+  inline end on a man at the line close on his near surface on the zone
+  track's depth law instead of running through him. Down blocks met their man
+  at +1.07 yd/s upfield at 0.5 s (tracking +0.42) with the same lateral; with
+  the law +0.38. Review repairs: the depth target now allows for lateral
+  offset (double-team members had stalled at the line and climbed from behind
+  it; now they touch at -0.04 yd and leave at +0.46, as with the flag off), it
+  covers inline ends on the same jobs, and toss/draw (zone-planned) are out.
+- **`LANE_DEPTH` meeting point** (`runReadAim`): a closed lane costs the yards
+  behind the line where the runner and the first defender meet: a free
+  defender closes from the entry; one the runner sees body to body with an
+  upright blocker meets him at the entry. A contract test caught the first
+  version reading the engagement record; it reads pictures only.
+- **`FRONT_FIT`** (`team.ts pickDefense`): interior line slots weigh
+  familiarity at DT, as the edge slots weigh it at EDGE. Raw 3-technique
+  suitability (pass-rush finesse, burst, agility; no mass or strength) put a
+  109-114 kg EDGE at DT in 32 of 120 base 4-3 slots across 60 generated teams,
+  including the lab defense's DT_S; 60% of box defenders on gap runs were
+  under 125 kg (tracking 13%). The displaced edge may play SAM. Inside-zone
+  doubled DL driven back at 3 s +1.0 -> +0.4 yd (NFL +0.5).
+- **`TRAP_FIT`** (`RunBlocker.update`): a trapper on the last leg of his pull
+  fits his man, as the counter kicker already did. Across 40 trap cells he
+  engages 0.05-0.15 s earlier or the same; last-leg reversals 5 -> 0.
+
+| Lab arms on `1903df6a` (TVD to NFL60; losses) | zone | gap | shotgun |
+|---|---|---|---|
+| Profile before `FRONT_FIT TRAP_FIT` (`p5`) | 5.9; 6.0% | 16.2; 3.8% | 9.0; 5.3% |
+| + `FRONT_FIT` (`g5`) | 4.2; 8.8% | 13.3; 3.8% | 11.5; 8.2% |
+| + `FRONT_FIT TRAP_FIT` (`t5`, gap only) | | 13.4; 3.6% (trap 3.8 -> 3.0%) | |
+| + `FRONT_FIT OL_ALIGN` (`o5`) | 12.2; 9.8% | 10.5; 5.9% | 15.4; 9.0% |
+| NFL | 7.6% | 7.4% | 7.6% |
+
+With real tackles inside, shotgun stretch losses rise to 10-14% (tracked
+outside zone 10.9%) and its 4-9 yd band falls to 25% (NFL 37%).
+
+### Off, with reasons
+
+- **`OL_ALIGN`** (tracked line depths and splits) puts pullers on NFL lateral
+  timing by 1.5 s (3.5 yd, NFL 3.5) and gap runs closest to tracking (TVD
+  10.5), but doubles counter losses (13%; the kicked end tackles from his
+  block more) and crowds zone and shotgun runs into 0-3 yd (54-56%), partly
+  because backers fill early (the defense session's). Diagnose before on.
+- **`DOWN_SEAL`** (`stepRunRep`): the owner of a gap down block reads his man
+  from his own picture and mirrors only motion toward the hole. Down-rep wash
+  at +1 s -0.92/-0.89 -> -0.69/-0.69 yd (tracking +0.2/-0.1); the rest is the
+  defender's flow term (defense) and glued pairs (below). Arms pending.
+- **`LEAD_HIP`** (lead puller turns up on the hip of the kick he sees; no
+  private `block-log` read): won a three-design panel. On 120 fresh-seed
+  power/counter plays the lead blocks a backer before the back crosses 6 ->
+  34, losses 10 -> 5, gain p50 3.72 -> 4.11 (second seed set 9 -> 30, 3.27 ->
+  4.26). Adverse cell: weak-side power-I, where the back bounces outside the
+  kick 36 of 40 times either way. Skeptic review and arms pending.
+- `READ_BLOCKS` (an engaged defender must get off his block to cover ground
+  beyond his reach) left the runner's inside entries at 23-24% and read the
+  private block-win value: removed. `LEAD_READ` stays off (untouched backers
+  in on the tackle 34 -> 37%).
+
+### What the runner's read is not
+
+Tracked backs on power go inside the kick-out 69% of the time; ours 15%.
+Forcing the back inside whenever his read preferred the kick's inside surface
+(`scripts/diag/gap/forcein.ts`, run-read observer, no source edit) doubled
+inside entries but left power gains unchanged (p50 2.55 -> 2.89 on the 47
+changed plays) and made trap worse (losses 0 -> 7 of 70). The short runs
+inside are the MIKE filling and the kicked end: the lane is not open in the
+physics, so the read is roughly right about it.
+
+### Engaged pairs move as one body (physics, in progress)
+
+With `HAND_MOTOR=0` a hand joint's steer row drives the pair's relative
+tangential velocity to zero, whoever controls the hands: a DT who controls
+them and asks to slide across is braked by his own hands. Down blocks hold 85%
+of reps (tracking 53%), lose leverage 12% (32%) and flip 1% (11%); a backside
+DL asking +2.7 yd/s toward the play achieves -0.5. A diagnosis and three-law
+design panel are running.
+
+### For the defense session (taken there)
+
+The run-defense session took the linebacker fill (its pull read waits for the
+guard to be 0.5 yd deep and 1 yd across; backers flow 0.0 yd by 1.5 s on gap
+runs, tracking 1.6), the backside DL's early read of the pull, and the
+blocked-defender reach (`tryTackles`' `win >= 0.6` gate): flags on its branch.
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
@@ -394,21 +507,32 @@ python3 scripts/diag/runblock/oz-flow-profile.py out/open-field/all/sa1co-common
 python3 scripts/diag/runblock/handoff-speed.py out/open-field/all/mp1gap-common.jsonl.gz
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock/combo-owner.ts --concepts oz,wz --list
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock/lab-attrib.ts --out out/run-attrib/x.json
+# gap schemes (this round): arms p5/g5/o5 (zone, gap, shotgun) and t5 (gap) on 1903df6a
+node scripts/diag/open-field/arm.mjs g5gap FRONT_FIT=1 -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
+node scripts/diag/open-field/arm.mjs t5gap FRONT_FIT=1 TRAP_FIT=1 -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
+node scripts/diag/open-field/arm.mjs o5gap FRONT_FIT=1 OL_ALIGN=1 -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
+python3 scripts/diag/stretch/bands.py gap p5gap g5gap t5gap o5gap
+python3 scripts/diag/runblock/pullers.py NFL=out/mechanics/nfl-plays.jsonl.gz base=out/open-field/all/p5gap-common.jsonl.gz oa=out/open-field/all/o5gap-common.jsonl.gz
+# probes (scripts/diag/gap/, run under the launcher; EXTRA flags via --flag): leadprobe.ts +
+# leadsum.py (lead puller), downrep.ts (down-rep wash), cutrep.ts / cutgeo.ts (cutoff reps),
+# trapw.ts (trapper), combo.ts (double-team members), forcein.ts (forced-inside counterfactual)
 ```
 
 Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 `test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`,
 `test/mesh-point.test.ts`, `test/gait-step.test.ts`, `test/pull-step.test.ts`,
 `test/rb-away.test.ts`, `test/run-arms.test.ts`, `test/run-read-fixes.test.ts`,
-`test/kick-log.test.ts`, `test/run-game-flags.test.ts` (exchange package).
+`test/kick-log.test.ts`, `test/gap-blocks.test.ts`, `test/front-fit.test.ts`,
+`test/down-seal.test.ts`, `test/lead-hip.test.ts`,
+`test/run-game-flags.test.ts` (exchange package).
 2,888 core tests pass with the profile and without it; typecheck passes.
 
 ## Next
 
-Draws: 42% of lab draws lose yards without the gait, 48% with it, read flags
-or not (`dr2`/`dr0`/`dr1` arms, gun doubles and ace, 400 each; tracked draws
-gain a median 4 yd). Then the gap runs' consistency (too few short and long
-runs; NFL 0-3 yd 37%, ours 28%), the shotgun back's same-side exchange
-geometry when he is aligned there, and the back's lane read in traffic
-beyond counter. `GAIT_STEP` is a physics law: promotion
-beyond this branch is the physics owner's decision.
+Gap schemes, in order: glued engaged pairs (hand law panel running), then
+`DOWN_SEAL` and `LEAD_HIP` arms after `LEAD_HIP`'s skeptic review, then why
+counter's kicked end tackles from his block under `OL_ALIGN` (the alignment
+puts pullers on NFL timing but stays off until counter and zone hold), then
+the runner's commitment against a kick-out (synthesis O5, after the defense's
+force fix). Draws (42-48% losses in the lab) remain open. `GAIT_STEP` is a
+physics law: promotion beyond this branch is the physics owner's decision.
