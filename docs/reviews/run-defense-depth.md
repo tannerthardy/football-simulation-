@@ -46,7 +46,8 @@ What else must change for it to help?
      NFL 0.48 / 0.48 / 0.53).
    - The cost is 10–19 yd runs at 13.8% (NFL 8.6): 5→10 survival is 0.44
      (NFL 0.34).
-4. **Gap and shotgun are limited by the front, not by depth.** The package
+4. **Gap and shotgun are limited by the front, not by depth.** (Section
+   `SHED_HANDS` below changes this.) The package
    cuts the gap tail (40+ 7.8 → 5.7%, p = 0.01) but piles runs into 10–19
    (25.6%, NFL 11.3). Shotgun gets worse (TVD 10.2 → 12.4). The missing
    tacklers are the front:
@@ -58,6 +59,13 @@ What else must change for it to help?
      NFL +2.5 playside, +4.6 backside). They read the pull, but the puller
      leaves 0.4–0.5 s later than an NFL puller (1 yd lateral at 1.1 s vs 0.7).
      Handed to the offense session.
+5. **Linemen could not get off run blocks; `SHED_HANDS` lets one who has won
+   the hands do so.** In the lab no DL run rep ever ended in a shed, and
+   linemen took 15–21% of run tackle credit (NFL 34%). With `SHED_HANDS` the
+   package is closer to NFL than the contact build on all three sets (TVD
+   zone 13.6 → 10.1, gap 14.0 → 13.3, shotgun 10.2 → 8.4; 40+ 6.6 / 7.8 / 5.0
+   → 1.6 / 3.7 / 2.5%). It adds stretch losses, which trace to the stretch
+   back's shallow, slow path (offense).
 
 ## Where the contact build stands (baseline, pinned profile)
 
@@ -270,6 +278,85 @@ matches the NFL median, but zone outcomes get worse (`rsco`): 40+ 25 → 43
 - `EDGE_SQUEEZE` and `BLOCK_FRONT` help a little.
 - `SHED_PURSUE` is inert. It only changes when a blocked defender *tries*
   to get off, and no physical attempt ever succeeded (next section).
+
+## Linemen who win the hands get off the block (`SHED_HANDS`)
+
+**Finding.** In the zone lab no defensive lineman's run rep ended in a shed
+(`depth/freedl.ts`, `depth/simtacklers.ts`).
+- DL rep endings on the depth package, 240 plays: runner passed defender 875,
+  separation 146, leverage 37, body down 24, shed 0.
+- Under `SHED_PHYSICAL` the only physical exits are leverage (getting behind
+  the blocker's shoulders) or separation past arm's length. The blocker's
+  mirror and turn rate (7–10 rad/s) deny both, so a rep lasts until the
+  runner is 2.5 yd past the lineman.
+- Yet on DL shed attempts the defender held the hands (`control < 0`, his hands
+  inside on the blocker) on 31% of ticks, in 41% of reps. On 29% of shed ticks
+  the runner was within 2.5 yd.
+
+**Who makes the tackle on runs**, by tackle credit (solo 1, assist ½, shared
+on the play). NFL is BDB2025 `player_play.csv` on designed runs with 60+ yd
+to go (`depth/tacklers.py`); the sim is the lab's whistle tackler and assists
+(`depth/simtacklers.ts`):
+
+| | DL | LB | DB |
+|---|---|---|---|
+| NFL | 34% | 36% | 30% |
+| Pinned profile | 21% | 32% | 48% |
+| Depth package `dq` | 15% | 37% | 47% |
+| `dq` + `SHED_HANDS` | 26% | 35% | 38% |
+
+**Change.** `SHED_HANDS` (default off): a defender in a run-shed attempt who
+controls the hands sheds, through the existing `tryHold`/`beat(…, 'shed')`
+path. The blocker is thrown aside and cannot re-grab for 0.6 s; the bodies
+still collide in the World. A blocker who controls the hands keeps his man
+(`test/shed-hands.test.ts`). The attempt gate is unchanged: the runner
+threatens his area, or, with `SHED_PURSUE`, is past the line. Linebackers
+use the same run-rep code.
+
+| Set | Arm | <0 | 0–3 | 4–9 | 10–19 | 20–39 | 40+ | TVD |
+|---|---|---|---|---|---|---|---|---|
+| Zone | pinned + `SHED_HANDS` (`s0co`) | 15.9 | 44.7 | 28.2 | 4.9 | 1.3 | 5.0 | 12.6 |
+| Zone | `dq` + `SHED_HANDS` (`shco`) | 12.7 | 40.0 | 31.8 | 12.8 | 1.2 | 1.6 | 10.1 |
+| Gap | `pf` + `SHED_HANDS` (`shgap`) | 5.4 | 27.8 | 38.5 | 22.9 | 1.8 | 3.7 | 13.3 |
+| Shotgun | `dq` + `SHED_HANDS` (`shgun`) | 10.0 | 38.3 | 34.8 | 10.8 | 3.5 | 2.5 | 8.4 |
+
+Paired:
+- **Zone `dqco → shco`:** 20+ 55 → 33 (p = 0.005), 10+ 220 → 187 (p =
+  0.005), 40+ 25 → 19, negatives 118 → 152 (p < 0.001).
+- **Gap `pfgap → shgap`:** 40+ 88 → 59 (p = 0.001), 20+ 118 → 87 (p = 0.003),
+  10+ 511 → 454, negatives 75 → 86 (n.s.).
+- **Shotgun `dqgun → shgun`:** 40+ 27 → 15 (p = 0.036), 10+ 138 → 101
+  (p < 0.001), negatives 47 → 60 (p = 0.07).
+- **Pinned profile, `SHED_HANDS` alone (`p0co → s0co`):** 40+ 79 → 60,
+  20+ 97 → 76 (both p ≈ 0.05), negatives 184 → 191 (n.s.).
+
+The package with `SHED_HANDS` is closer to NFL than the contact build on all
+three sets: TVD zone 13.6 → 10.1, gap 14.0 → 13.3, shotgun 10.2 → 8.4.
+
+Mechanisms on zone (`shco` vs `dqco`; NFL in brackets):
+- Free DL near the hole reach the runner 28 → 54% (65%).
+- Free DL speed 0.5 s after the crossing 2.1 → 3.25 yd/s (3.64).
+- Free linebackers close at +0.84 yd/s (+0.83).
+- DL nearest at the end of 0–3 yd runs 21 → 29% (42%).
+
+**Where it is too strong: stretch losses.** The added zone negatives are all
+outside and wide zone. Inside zone is unchanged:
+
+| | Inside zone | Outside zone | Wide zone |
+|---|---|---|---|
+| NFL negatives (60+ yd to go) | 4.9% | 9.5% | (in OZ) |
+| Pinned profile | 4.5% | 19.8% | 21.8% |
+| `dq` | 3.8% | 10.8% | 15.0% |
+| `dq` + `SHED_HANDS` | 3.5% | 14.5% | 20.0% |
+
+The cause is the stretch back's path, not the shed (`depth/stretchpace.py`):
+- At handoff + 0.5 s the NFL outside-zone back is 3.3 yd deep moving 4.5 yd/s
+  toward the play side. The sim back is 2.2 yd deep at 2.75 yd/s, and crosses
+  0.3 s sooner.
+- A shallow, slow stretch back is what a lineman who beats a reach block runs
+  down. On stretch losses the first defender is a DL 84% of the time (NFL 48%),
+  catching him at −1.4 yd and 2.75 yd/s lateral (NFL −2.7 yd, 3.5).
+- The back's path is the offense session's; the evidence was sent to it.
 
 ## Evidence against and unresolved risk
 
