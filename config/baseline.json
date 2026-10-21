@@ -23,6 +23,7 @@
     "DL_FLOW": "1",
     "DL_HANDS": "0",
     "EDGE_SQUEEZE": "0",
+    "FB_KICK": "1",
     "FB_TRACK": "0",
     "FLOW_READ": "1",
     "FLOW_RELEASE": "1",

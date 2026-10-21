@@ -815,6 +815,15 @@ const LEAD_READ = process.env.LEAD_READ === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
+
+/** FB_KICK=1 (default off; on in this branch's pinned profile): the power
+ * fullback's kick-out uses the kicker's fit, as the pulling guard's does: his
+ * inside shoulder, matching his seen motion. Without it the fullback
+ * approached like a linebacker lead (full speed at the intercept of the end's
+ * center): he hit the end running upfield, carried past him, and the end
+ * slipped under into the backfield (48 of 73 power stuffs on the lab cases:
+ * the end, released from the fullback, 1.5 yd deep and inside him). */
+const FB_KICK = process.env.FB_KICK === '1';
 /** Experimental (ZONE_TE=1, off): an inline tight end on a zone call is part
  * of the surface and runs the same track, rather than sprinting straight at
  * his man's playside shoulder and meeting him with depth instead of width. */
@@ -1435,6 +1444,7 @@ export class RunBlocker implements Behavior {
     }else this.collectionRead=null;
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
+    const kickLead = FB_KICK && plan.kind === 'lead' && plan.pullRole === 'kick';
     if (contactFit) {
       const sep = a.profile.radius + target.profile.radius + .15;
       aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
@@ -1450,7 +1460,7 @@ export class RunBlocker implements Behavior {
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
-    else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+    else if (!kickLead && (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead'))) {
       // Climbs and leads intercept: aim where the backer will be when this
       // body can get there (his seen motion carried forward, our own reach
       // law), not a quarter second ahead of a flowing backer. CLIMB_INTERCEPT=0
@@ -1467,7 +1477,7 @@ export class RunBlocker implements Behavior {
     // A kick/trap is a fit on a moving shoulder, not a sprint through the
     // defender's old spot. Match his lateral motion and brake the offset;
     // ordinary drive blocks retain their downhill strike.
-    if (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
+    if ((plan.kind === 'pull' || kickLead) && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
       const side = Math.sign(plan.drive.y) || 1;
       const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
