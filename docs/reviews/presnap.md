@@ -39,12 +39,15 @@ and backs) and the shared measurement below.
 |---|---|---|---|
 | NFL 2022 (5,880) | 6.18 [5.95, 6.45] | 1.54 / 1.56 | 0.84 / 1.01 |
 | NFL 2017 (3,804) | 6.37 [6.12, 6.63] | 1.61 / 1.57 | 0.87 / 0.98 |
-| NFL 2022, 1-2 yd to go | 6.00 [5.65, 6.30] | 1.47 / 1.51 | 0.80 / 0.94 |
+| NFL 2022, 1-2 yd to go (any down) | 6.00 [5.65, 6.30] | 1.47 / 1.51 | 0.80 / 0.94 |
 | NFL 2022 team medians | 5.84 (TEN) .. 6.98 (GB) | | |
 | Ours, every snap | 5.20 | 1.30 / 1.30 | flat 0.55 |
 
 The team is the largest source of variation (1.1 yd of width between team
-medians), then the situation (short yardage tightens 0.2 yd); concept barely
+medians), then the situation: on third or fourth down with a yard or less
+to go the line stands 5.83 yd wide, against 6.13-6.23 in every other down
+and distance (first and second and a yard do not tighten; found by the
+run-defense session's `OL_SPLITS` work and confirmed here); concept barely
 moves it (zone play-side guard-tackle split 1.61 vs backside 1.53; gap 1.55
 both). Guards set about 0.55 yd and tackles 0.7 yd behind the center's
 depth, a little shallower in short yardage.

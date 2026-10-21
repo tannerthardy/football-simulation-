@@ -83,10 +83,10 @@ describe('OL_ALIGN line alignment', () => {
 });
 
 /** The line a team calls: its line coach's split rule and the situation
- * (tracked team medians 1.46-1.74 yd; short yardage 0.2 yd narrower and
- * 0.05 yd shallower). Defensive techniques follow the line that is there. */
+ * (tracked team medians 1.46-1.74 yd; third or fourth and a yard or less
+ * 0.3 yd narrower). Defensive techniques follow the line that is there. */
 describe('OL_ALIGN: the called line', () => {
-  it('sets from the team split and tightens in short yardage; off ignores it', async () => {
+  it('sets from the team split and tightens on third and short; off ignores it', async () => {
     vi.stubEnv('OL_ALIGN', '0'); vi.resetModules();
     const off = await import('../src/playbook/alignment.js');
     expect(off.lineSet(1.7, false)).toBeUndefined();
@@ -98,8 +98,7 @@ describe('OL_ALIGN: the called line', () => {
     const { lineSet, alignOffense, alignDefense } = await import('../src/playbook/alignment.js');
     const normal = lineSet(1.7, false)!, short = lineSet(1.7, true)!;
     expect(normal.cg + normal.gt).toBeCloseTo(3.4, 9);
-    expect((normal.cg + normal.gt) - (short.cg + short.gt)).toBeCloseTo(.1, 9);
-    expect(short.depth.T).toBeLessThan(normal.depth.T);
+    expect((normal.cg + normal.gt) - (short.cg + short.gt)).toBeCloseTo(.16, 9);
     const narrow = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, lineSet(1.44, false));
     const broad = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, normal);
     const width = (o: typeof broad) => Math.abs(o.spots.LT.pos.y - o.spots.RT.pos.y);

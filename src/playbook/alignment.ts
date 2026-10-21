@@ -33,15 +33,14 @@ export const TRACKED_LINE: LineSet = { cg: 1.54, gt: 1.56, tte: 1.52, depth: { C
 const LEGACY_LINE: LineSet = { cg: 1.3, gt: 1.3, tte: 1.3, depth: { C: .55, G: .55, T: .55, TE: NaN } };
 
 /** OL_ALIGN: the set a team calls: its base split (a coaching rule) for
- * every split, tightened in short yardage (2 yd or less to go, or the goal
- * line inside the 3), where tracked lines narrow 0.2 yd and set 0.05 yd
- * shallower. Undefined with the flag off (the installed line). */
+ * every split, tightened on third or fourth down with a yard or less to go,
+ * where tracked lines stand 5.83 yd tackle to tackle against 6.13-6.23 in
+ * every other down and distance (2022 runs and passes). Depths stay tracked.
+ * Undefined with the flag off (the installed line). */
 export function lineSet(split: number | undefined, shortYardage: boolean): LineSet | undefined {
   if (!OL_ALIGN) return undefined;
-  const base = split ?? (TRACKED_LINE.cg + TRACKED_LINE.gt) / 2, tight = shortYardage ? .05 : 0;
-  const d = TRACKED_LINE.depth, up = shortYardage ? .05 : 0;
-  return { cg: base - tight - .01, gt: base - tight + .01, tte: TRACKED_LINE.tte - tight,
-    depth: { C: d.C, G: d.G - up, T: d.T - up, TE: d.TE - up } };
+  const base = split ?? (TRACKED_LINE.cg + TRACKED_LINE.gt) / 2, tight = shortYardage ? .08 : 0;
+  return { cg: base - tight - .01, gt: base - tight + .01, tte: TRACKED_LINE.tte - tight, depth: { ...TRACKED_LINE.depth } };
 }
 
 /** Lateral offsets of the line's landmarks from the ball for a set. */

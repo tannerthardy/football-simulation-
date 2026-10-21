@@ -124,7 +124,7 @@ export class OffensiveCoordinator {
     const fieldLeft = s.ballY < CENTER_Y;
     const flip = rng.chance(0.7) ? fieldLeft : !fieldLeft;
     // OL_ALIGN: the line sets by the line coach's split rule and the situation.
-    const line = lineSet(coach.lineSplit, s.distance <= 2 || 100 - s.yardline <= 3);
+    const line = lineSet(coach.lineSplit, s.down >= 3 && s.distance <= 1);
     if (isPass) {
       const concept = this.choosePass(s, formation, defense);
       return { formation, flip, kind: 'pass', pass: concept, label: `${formation.name} — ${concept.name}`, ...(line ? { line } : {}) };
