@@ -266,6 +266,59 @@ the double-team release rule. Physical pages, our wording, short quotes.
   (Under). Pulling points (p. 119): step in the direction of the pull, low
   plane, dip the inside shoulder at the turn, accelerate on contact.
 
+## What the Ravens OL manual gives us (pass protection)
+
+Pages 42–91 and drills 105–113 of the same manual. The engine's
+`ProtectionCoordinator` re-matches blockers to rushers each tick; the
+manual instead **declares who blocks whom before the snap** and names an
+answer for every rusher the line does not block.
+
+- **Launch points** (p. 48, also p. 43): Quick (3-step) at 4½ yd, Firm
+  (5-step) at 6½ yd, D (7-step) at 8½ yd. Run action adds a lateral spot,
+  e.g. "8½ yards over PSG" (pp. 50–52).
+- **Set angle** (p. 46): flat (22°) for quick protection, 45° on the callside
+  of run action, angle (70°) when the turn comes to you, vertical for man and
+  pocket protections. **Set footwork by DL alignment** (p. 45): inside shade =
+  post/kick, head-up = post and hold the kick, outside shade = kick/post, a
+  defender off the pad = set by protection and launch point. Stay square until
+  the rusher clears your outside hip; hands above the elbows (p. 44).
+- **Mike declaration** (p. 54): against a four-down front the Mike is the
+  middle of the three linebackers by count from the strength call; against
+  three down, Mike and Jack are the inside two. The center makes the call
+  (p. 66); the QB can redeclare right or left ("Roger"/"Louie", pp. 49, 87).
+  Base: the five linemen take the four down linemen plus the Mike, and the
+  backs take the remaining linebackers. Dual (pp. 58–59): the line takes the
+  four down linemen plus Mike and Sam (or Will), and one lineman blocks "the
+  1st 2 of 3" (p. 68). "Big Dual": the tackle sets vertical and takes the near
+  linebacker or the end, whichever comes (p. 69).
+- **Turn and full turn** (pp. 70–83): backs block to the call and the line
+  turns away. The turn "starts with 1st uncovered inside" (p. 71); each
+  lineman takes the gap outside him and the last man takes the declared
+  defender. "Always block any defender that rushes through your gap
+  responsibility" (p. 79). A full turn starts with the playside tackle and
+  blocks every rusher to the backside out to the widest. On a full turn the
+  back does not scan and the QB never redeclares (pp. 51, 75–76).
+- **The unblocked rusher always has a named answer:** the back scans to #4
+  ("#4 Late = H scan to #4", p. 73), or a sight or hot read ("SITE vs Will +
+  #4", p. 56; "HOT = Off 2 of 3", pp. 61, 73; "HOT vs 2 Outside OT/TE",
+  p. 77). With a slot away from the call and a linebacker possibly topped by a
+  DB, "if in doubt … always turn to the slot" (p. 80). When an edge defender
+  shows in a force position, a "Lawn"/"Rake" call redeclares (p. 80).
+  Against Solid or Bear (all three interior linemen covered), base and dual
+  protections go "5 Down" and turn protections usually switch to a full turn
+  (p. 86).
+- **A gaps** (p. 47): "In" vs. "Hard" calls decide who takes an A-gap mug;
+  quick protection is always "In". **Twists:** "Zone off Twists / Games"
+  (p. 81); "Don't chase loopers" (p. 85); flatten the crossing defender and
+  pick up the looper (p. 112). No page gives punch timing in seconds.
+- **Screens** (pp. 88–91): the inside screen blocker's landmark is 3 yd
+  outside the TE.
+
+For the engine, a weak-side free rusher means the declaration left a rusher
+unaccounted for. In this system that is a declared hot or sight
+responsibility, or a missed scan. Telemetry should tell those apart from a
+blocker who lost his man.
+
 ## Extraction record
 
 ```yaml
