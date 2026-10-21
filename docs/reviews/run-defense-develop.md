@@ -124,6 +124,71 @@ start under a 0.15–0.3 s perception delay should allow that. This is
 coverage technique (Catching's on the workboard) plus turn and start
 physics. Handed off with the panel; no change made.
 
+## Run defense for the run-offense session (default off, not proposed)
+
+The run-offense session (`claude/run-game-v3`) listed defensive mechanisms its
+films keep showing. Two are tried here as default-off flags; one waits on
+physics. Measurement: `scripts/diag/runblock/` operators read NFL tracking and
+sim exports identically; lab = `run-blocking-lab.ts` (30 reps, seed 7);
+games = the 8-game mechanism export against develop with every flag off.
+
+**`BLOCKED_REACH` (`tackle.ts` `tryTackles`).** Off, a blocked defender may
+not reach for the carrier until he is winning the block (`win ≥ 0.6`). In
+tracking, a blocked defender (an offensive player within 1.2 yd) is the first
+contact on 46% of gap runs and 55% of zone runs; develop gives 32% / 41%
+(`blockedfirst.py`). A lineman whose blocker has his chest still has a free
+arm. On: an engaged defender reaches with `0.7 − 0.3·control` of his reach
+(latched inside hands pull it in to the installed 0.4); the ordinary engaged
+miss penalty is unchanged, nothing awards the tackle.
+
+| | develop off | `BLOCKED_REACH` | NFL |
+| --- | --- | --- | --- |
+| Blocked first contact, gap / zone | 32% / 41% | 48% / 51% | 46% / 55% |
+| Gain at a blocked first contact, gap / zone (p50) | 0.9 / 1.2 | 0.5 / 1.5 | 3.0 |
+| Broke contact | 16.0% | 12.7% | 12.5% |
+| Yards after contact p50 | 1.95 | 1.70 | 2.40 |
+| Run yards p99 | 27.0 | 12.2 | 10.0 |
+| Report flags (`off`) | 46 | 35 | |
+| Lab yards before contact, IZ/OZ/power/counter/trap | 1.82/1.78/1.55/1.06/1.71 | 1.29/1.16/1.35/0.80/1.29 | |
+
+Guard 12/12. Who makes first contact now matches tracking; where does not.
+The NFL blocked tackler meets the carrier 3 yd downfield, the sim's at the
+line, and that was already so off (0.9). Blocks stalemate at the line rather
+than moving the defender, which is a run-blocking question, not the gate.
+Yards after contact also move away from tracking. Not proposed until the
+blocking owner looks at where the block is when the reach happens.
+
+**`PULL_EARLY` (`run-fits.ts` `pullers`).** Backers read run by 0.5–1.0 s
+(`lbtrace.ts`) but the pull read fires about 1.35 s, after the guard has
+been seen a yard off his stance. A backer's key is the guard's first step:
+opening back and across. On: a surface lineman seen behind his stance
+(> 0.15 yd), not moving upfield, and moving across faster than 1.5 yd/s is
+a puller. A lineman stepping across at his own depth (a zone step) is not.
+
+| | develop off | `PULL_EARLY` | NFL |
+| --- | --- | --- | --- |
+| Gap runs: backer flow toward the play at 0.5/1.0/1.5/2.0 s (`lbfill.py`) | 0.0/0.0/0.0/0.2 | 0.0/0.0/0.2/0.6 | 0.1/0.6/1.6/2.8 |
+| Lab power flow at 1.5/2.0 s | −0.07/0.33 | 0.59/1.75 | |
+| Lab yards before contact, power / counter | 1.55 / 1.06 | 1.35 / 0.71 | |
+| Inside-zone runs of 15+ yd (games) | 5 of 52 | 11 of 48 | |
+| Report flags (`off`) | 46 | 46 | |
+
+Guard 12/12. Gap flow starts earlier but still trails tracking at 1.0 s:
+the guard himself pulls late (offense side, sent to the run-offense session).
+The inside-zone tail is the adverse result; its one diagnostic (`lbtrace.ts`
+iz_strong / oz_strong, both arms) shows zone backers' reads, requests and
+flow identical through 1.5 s with a few extra pull tags at 2.0 s, so the
+lab does not reproduce a mechanism. With about 50 runs a concept these counts
+are noisy (counter 10 of 39 off, 4 of 36 on), but it is not ruled out:
+games call zone against fronts the lab does not. Not proposed: unresolved risk.
+
+**Backside DL flow (no flag).** NFL backside linemen flow toward the play
+0.8/1.4/2.1 yd at 1.0/1.5/2.0 s on gap runs, 1.0/1.9/3.0 on zone
+(`dlflow.py`); develop's go −0.1/−0.5/−0.9 and about 0. `dltrace.ts`: they
+are held in an engagement from 1.0 s and request only 0.4–0.5 yd/s across.
+The request is low because the glued pair cannot move together; that is the
+run-offense session's glued-pair physics (its item 4). No controller change.
+
 ## Diagnostics (observation only)
 
 `scripts/diag/depth/`: `frontact.ts` (the defenders in front of the receiver after the catch), `drives.ts` (drives, results, points by scoring play),
@@ -132,12 +197,14 @@ physics. Handed off with the panel; no change made.
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`. `scripts/mechanics/nfl_ytg.py` writes the
-yards-to-goal filter their `--ytg60` option reads.
+yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
+`blockedfirst.py`, `lbfill.py`, `dlflow.py` (NFL and sim, one operator),
+`lbtrace.ts`, `dltrace.ts` (lab backers and backside DL over time).
 
 ## Reproduce
 
 ```sh
-npx vitest run test/tip-away.test.ts test/catch-caller-interval.test.ts
+npx vitest run test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
 node scripts/baseline.mjs --candidate --flag TIP_AWAY=1 -- npx vitest run --project core
 for a in "" "--flag TIP_AWAY=1"; do node scripts/baseline.mjs --candidate $a -- node --import tsx scripts/diag/depth/ints.ts --games 8; done
 ```
