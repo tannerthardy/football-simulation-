@@ -186,10 +186,21 @@ means he gets within 1.2 yd of the runner in the next second:
   the runner, and move at 1.9 yd/s, facing 62° away from him
   (`stretch/dlpursuit.ts`). That is the start-up and turn law, not the
   request.
-- The physics flag `GAIT_STEP=0.5` is context only, not proposed. On the zone
-  package (`gqco`) it takes 10–19 runs 13.8 → 8.8% (NFL 8.6), TVD 8.3, free-DL
-  reach 28 → 40%, 40+ 2.4%. But negatives rise 9.8 → 14.1% (the known
-  stretch-penetration side effect).
+- The physics flag `GAIT_STEP=0.5` (faster approach to the requested speed)
+  is context only, not proposed. On top of the package (`gq*`):
+
+  | | Zone | Gap | Shotgun |
+  |---|---|---|---|
+  | TVD: baseline → package → package + `GAIT_STEP` | 13.6 → 9.7 → 8.3 | 14.0 → 18.0 → 10.5 | 10.2 → 12.4 → 9.2 |
+  | 10–19 yd runs (NFL 8.6 / 11.3 / 8.6) | 13.8 → 8.8% | 25.6 → 19.8% | 15.0 → 11.5% |
+  | 40+ | 2.1 → 2.4% | 5.7 → 3.9% | 4.5 → 4.0% |
+  | Negatives (NFL 7.6 / 7.4 / 7.6) | 9.8 → 14.1% | 4.9 → 6.8% | 7.8 → 9.8% |
+
+  With a faster start-up the package beats baseline on all three sets, and
+  free-DL reach on zone goes 28 → 40%. But zone negatives rise (the known
+  stretch-penetration side effect), and the flag is not a better fit of the
+  NFL acceleration envelope (run-game-v3 Part 12). The physics owner needs a
+  start-up law, not this flag.
 
 ### Gap linebackers and the late pull
 
