@@ -103,6 +103,28 @@ habit applies only under its flag. Man press share also differs by team
 (14–74%); in the sim that comes from coverage selection (`manRate`,
 coverage system), not alignment.
 
+**Evidence for the scheme rules.** 8 games with `DEF_ALIGN`, `WR_ALIGN` and
+`OL_SPLITS` and each team's habits, the same seeds as the earlier arms:
+- Guard 12/12; flagged metrics 45 (42 for the averages pass).
+- Pressure 17% and time to throw 2.45 s, both unchanged; run yards p50 2.9.
+- Yards after catch p90 23.7 (27.5); contact broken on catches 21.8% (24.9).
+
+One row moved the wrong way: man separation at 1.5 s, 1.56 → 1.25 yd
+(develop 1.70, NFL 2.50). One targeted diagnostic, `scripts/coverage-matrix.ts`
+on Cover 0, Cover 1, Cover 1 Off and 2-Man (fixed rosters, seeds and calls,
+no team habits), gave this separation at the throw:
+
+| Laws | Separation at the throw (yd) |
+| --- | --- |
+| Earlier averages | 1.81–2.29 |
+| Scheme laws, `DEF_ALIGN` + `WR_ALIGN` | 1.85–2.34 |
+| Scheme laws, `DEF_ALIGN` only | 1.85–2.30 |
+
+The alignment rules do not tighten man coverage. The game-level shift is the
+games diverging once anything changes (other calls and matchups), not a
+mechanism. Sim man coverage is too sticky already on develop (1.70 against
+NFL 2.50); that belongs to the coverage technique, not to alignment.
+
 ## `DEF_ALIGN` (off): the secondary as on film
 
 *First pass; its single averages are replaced by the scheme rules above. Evidence below is for that pass.*
