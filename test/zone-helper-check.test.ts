@@ -1,4 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
+// These witnesses exercise the help check/climb mechanism on the legacy
+// pairing (an uncovered guard doubling his play-side neighbor's man).
+// COMBO_GAP pairs these fronts' guard with the center's shade instead, so
+// pin it off here; test/combo-gap.test.ts covers the pairing rule itself.
+vi.hoisted(() => { process.env.COMBO_GAP = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { norm } from '../src/core/vec.js';

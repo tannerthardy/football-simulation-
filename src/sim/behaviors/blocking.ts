@@ -479,6 +479,13 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
   return best?.targets ?? new Map();
 }
 
+/** Experimental (COMBO_GAP=1, off): an uncovered zone blocker doubles the
+ * man in the gap beside him. When his play-side neighbor's man is not in
+ * the gap between them but his backside neighbor's man is (a play-side shade
+ * on the center, for one), he helps there instead of on a man outside his
+ * neighbor: the uncovered player checks his adjacent near gap. */
+const COMBO_GAP = process.env.COMBO_GAP === '1';
+
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
   if (concept.pullers.includes('H') && concept.scheme !== 'counter')
     throw new Error('The off-ball H pull tag is installed only for Counter GH');
@@ -535,7 +542,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     for (const b of pending) {
       if (plans.has(b)) continue;
       const i = line.indexOf(b);
-      const neighbor = line[i - 1];
+      const free = (n: Agent | undefined) => { const q = n ? plans.get(n) : undefined;
+        return !!q?.target && !q.combination && (q.kind === 'drive' || q.kind === 'reach'); };
+      // His man lies in the gap between b and that neighbor.
+      const beside = (n: Agent) => { const y = plans.get(n)!.target!.pos.y;
+        return (y - b.pos.y) * (y - n.pos.y) < 0; };
+      let neighbor = line[i - 1];
+      if (COMBO_GAP && free(neighbor) && free(line[i + 1]) && !beside(neighbor) && beside(line[i + 1]))
+        neighbor = line[i + 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
         combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
@@ -784,6 +798,10 @@ const FB_TRACK = process.env.FB_TRACK === '1';
  * the hand fight's hidden control value; the observable keeper checks
  * (torso on the man, loaded hands within reach, base) still apply. */
 const COMBO_LEAVE = process.env.COMBO_LEAVE === '1';
+/** Optional observation of a joined double's reads (diagnostics only): the
+ * stage that held or released it and the values it already computed. */
+export const comboReadObservers = new WeakMap<PlaySim,
+  (observer: Agent, combo: Combination, stage: string, detail: Record<string, unknown>) => void>();
 /** Experimental (TRACK_FACING=1, off): the zone track's hip opening keeps a
  * continuous side when the man is nearly behind the track (no half-turn flip). */
 const TRACK_FACING = process.env.TRACK_FACING === '1';
@@ -1804,7 +1822,8 @@ function joinedEngagement(sim: PlaySim, combo: Combination): Engagement | null {
 }
 
 /** Evaluate only this player's departure; the partner's hands already exist. */
-function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: Engagement): Omit<CombinationProposal, 't' | 'cost'> | null {
+function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: Engagement,
+  why?: (detail: Record<string, unknown>) => void): Omit<CombinationProposal, 't' | 'cost'> | null {
   const keeper = combo.members.find((a) => a !== climber);
   if (!keeper || keeper.isDown(sim.t) || combo.defender.isDown(sim.t)) return null;
   const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
@@ -1832,7 +1851,11 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // on the man, hands on with load, base); the hand fight's hidden control
   // value is not his evidence.
   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
-    || (!COMBO_LEAVE && control <= -.12 + .12 * (.5 - climber.mind.urgency))) return null;
+    || (!COMBO_LEAVE && control <= -.12 + .12 * (.5 - climber.mind.urgency))) {
+    why?.({ chest: (KEEPER_TORSO ? off : Math.abs(phi)) >= .65, base: base <= .60, contact: !contact, touching: !touching,
+      useful: !useful, control: control === null || (!COMBO_LEAVE && control <= -.12 + .12 * (.5 - climber.mind.urgency)) });
+    return null;
+  }
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
@@ -1876,23 +1899,25 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   read.nextRead = sim.t + observer.mind.decisionInterval;
   read.readAt = sim.t;
   read.proposal = null;
-  const candidate = keeperCandidate(observer, sim, combo, e);
+  const watch = comboReadObservers.get(sim);
+  const candidate = keeperCandidate(observer, sim, combo, e, watch && ((d) => watch(observer, combo, 'keeper', d)));
   const surface = candidate && readJoinedSurface(observer, sim, candidate.keeper, e);
   if (!candidate || !surface) {
+    if (candidate) watch?.(observer, combo, 'surface', {});
     read.secureSince = -1;
     observer.tags.add('combo-held');
     return;
   }
   if (read.secureSince < 0) read.secureSince = sim.t;
-  if (sim.t - read.secureSince < .15) return;
+  if (sim.t - read.secureSince < .15) { watch?.(observer, combo, 'securing', {}); return; }
   const backer = sim.see(observer, combo.backer!);
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (!filling && !arriving) return;
+  if (!filling && !arriving) { watch?.(observer, combo, 'backer not showing', { distance: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) }); return; }
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
-  if (!route) { observer.tags.add('combo-held'); return; }
+  if (!route) { watch?.(observer, combo, 'no climb route', {}); observer.tags.add('combo-held'); return; }
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
     // A vertical double's acquired backer can still belong to the other
     // half of the surface. Permission for the keeper to stay does not give
@@ -1906,6 +1931,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     const nextPartner = partner + (surface.covered.vel.y - surface.down.vel.y) * dt;
     if (own * partner < 0 && own * key < 0 && partner * key > 0
       && own * nextKey < 0 && nextPartner * nextKey > 0) {
+      watch?.(observer, combo, 'duo surface', {});
       observer.tags.add('combo-held');
       return;
     }
