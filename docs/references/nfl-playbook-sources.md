@@ -386,6 +386,40 @@ the drop ends; tracked throw position also includes any hitch, climb or drift
 and the shotgun's deeper start. So compare like with like before changing
 anything.
 
+## What the Running Back Technique Book gives us
+
+User-supplied, 21 pp., Word document (2019, author field "Anthony"), SHA-256
+`a02320982e7b93dc614a58b2fcb8aa0295c73865f8ab3caece627fae8d0d383f`. It uses
+the Cowboys run install's play names (Slash 36/37, Ride, Jab), so it is
+probably the same system; authorship is not verified. It is the most
+explicit source on the **runner's reads and cut decisions**.
+
+- **Inside zone** (pp. 12–13): 7 yd (heels or toes by tempo);
+  open-crossover-roll with the shoulders square on the third step; aim at the
+  B gap; read the first down lineman head-up to playside, then the backside
+  down lineman. Cut mix to drill: jump cut about 60% (the primary read
+  crosses your face), cram cut 30–35% (stay on track), bounce about 10%
+  (feel the 4 or 5 technique spike). Against a backside 6 or 7 technique,
+  watch for the backdoor cut.
+- **Outside zone** (pp. 14–15): drop step opposite, then a **five-step
+  rhythm**. Know the cut by step 3, make it off step 5 (outside foot), and be
+  at the linemen's heels or a yard behind the line on step 5. Aim at the TE's
+  initial alignment. Read the playside end: a 9 means the ball won't reach the
+  perimeter, a 6 means it is probably going inside, a 7 means it probably
+  reaches the perimeter. Then read the next down lineman, and feel for the
+  wind-back.
+- **Power and counter** (pp. 16–18): drop step opposite, aim at the A gap,
+  enter A/B/C "inside the wrapper" and never the D gap; adjust tempo to the
+  puller's speed. Counter: shuffle-gather, read the fullback, and come
+  outside when the EMOL spills.
+- **Duo, sprint, toss, draw, misdirection** (pp. 18–20): duo reads the Mike's
+  flow; sprint aims 2 yd outside the TE and reads the puller; toss keys the
+  force player; draw aims at the playside guard's butt and reads his
+  technique; misdirection aligns at 8 yd.
+- **Contact and protection** (pp. 4–10): flat-back entry, "take half a man",
+  feet running on contact; RB pass protection closes space toward the line,
+  aims at the rusher's inside number, stays square and punches and recoils.
+
 ## Extraction record
 
 ```yaml
