@@ -87,8 +87,9 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * wide nine), never on the tackle's outside shoulder (tracked weak edges are
  * a 5 on 1-2% of runs); with one, at least on him (an uncovered end with a 5
  * outside the tackle is 1%), else the call's technique stands. His build
- * then moves him 0.025 yd wider per kg lighter than 118 kg, at most 0.4 yd,
- * never inside an end he is set on: half the tracked slope (about -0.05 yd
+ * then moves him 0.025 yd wider per kg lighter than 118 kg, at most 0.4 yd
+ * out and 0.2 in (0.4 from a wide nine), so his feet stay within the called
+ * technique, and never inside an end he is set on: half the tracked slope (about -0.05 yd
  * per kg; 235 lb ends 1.81 yd outside an end, 275 lb 1.03), since light ends
  * also draw the wide calls. A wide nine over an end stands 2.0 yd outside
  * him (the catalog counts a wide nine past 1.5). A called edge (tight,
@@ -646,7 +647,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // on. Half the tracked slope: the rest is the call (light ends get wide
     // calls), which the edge call already carries.
     const mass = style.mass?.[end];
-    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), -.4, .4),
+    // Build moves his feet within his technique, not into the next one: a
+    // heavy end on a 9 stays on the end's outside shoulder (a wide nine has
+    // room to come in).
+    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), tech === 'w9' ? -.4 : -.2, .4),
       hasTE ? -techniqueOffset(tech, true, off.line) + inlineOf(off.line) : -Infinity));
   }
   for (const slot of present) {

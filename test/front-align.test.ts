@@ -64,6 +64,10 @@ describe('the front aligns on bodies and its end men by who they are', () => {
     expect(-wide.y('DE_W') - wide.weakT).toBeCloseTo(2.3, 9);
     expect(wide.def.spots.DE_S!.gap).toBe(tight.def.spots.DE_S!.gap);
   });
+  it('on: a heavy end called on the outside shade stays on it', async () => {
+    const base = await front(true, 'over', 'base43', { DE_S: 140 }, 'base');
+    expect(base.y('DE_S') - base.E).toBeGreaterThanOrEqual(.37 - 1e-9);
+  });
 });
 
 describe('the coordinator calls the edge from the team\'s lean', () => {
