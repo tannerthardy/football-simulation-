@@ -134,12 +134,34 @@ slope (0.025 yd per kg, at most 0.4). A wide nine over an end now stands
 | develop | 30% | 12% | 17% | 0.07 |
 | front on bodies (`5220725`) | 54% | 21% | 3% | 0.10 |
 | + edge call (`34c4502`) | 39% | 23% | 19% | 0.35 |
+| + build within the technique (`e2a257f`) | 27% | 33% | 23% | 0.46 |
 | NFL | 13% | 31% | 46% | 1.46 |
 
-Guard 12/12; 39 flags (develop 46). Head-up ends are still three times
-tracking. That is the fourth adjustment to this one distribution, so it
-stops here to re-diagnose which end men stay head-up (two-end sets, front
-stems, or calls that never reach the end man) rather than tune further. After that comes the caller, a short-yardage
+Guard 12/12; 39 flags (develop 46). Head-up ends were still three times
+tracking, so the work stopped to re-diagnose rather than tune further. A
+scan of every front, edge call and mass gave the answer. The tight call
+(about 17%, matching tracking's 13% head-up) was not the excess. Heavy
+strong ends (130 kg and up, about a third of ours) on a base 9 were pulled
+by the build term into the head-up band. A 9 is the end's outside shoulder,
+so build now moves an end only within his called technique: at most 0.2 yd
+in (0.4 from a wide nine).
+
+The playbook session (`claude/great-mccarthy-85uf8b`) checked the front
+maps against the in-repo sources (HonestNFL front sheets HNFL-081/082/086/
+088/129; the generated textbook p. 29), at medium confidence:
+- no source shows a head-up 6 as the base Over strong end; it is a 7 or a 5
+  in base, with the Sam on the line outside the end or overhanging him;
+- in nickel the strong end takes the edge outside the end at a 9;
+- a head-up 6 appears only in a run-down nickel call (Flex).
+
+The installed Over map (DE_S 6, Sam 7 at 4.1) matches none of them. The
+edge call now overrides the end man's technique, so it no longer decides
+the end's alignment under the flag. The Sam's spot is still to revisit.
+
+With the change, guard 12/12 and 44 flags (game noise: 39 on the previous
+run, 46 on develop). Head-up ends are about double tracking and wide
+nines half. Wide calls are 46% of snaps, but only 23% read as a wide nine:
+that is the next diagnosis. After that comes the caller, a short-yardage
 package answering the offense's heavy personnel (six or more on the line,
 no deep safety: 27% of tracked snaps at 1–3 yd to go). Staged native
 witnesses pin `FRONT_ALIGN` off, as for the line flags; `test/front-align.test.ts`.
