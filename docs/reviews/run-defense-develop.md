@@ -251,12 +251,34 @@ it off: its recorded double does not release within 2 s once the force plays
 wider. Core suite 2,818 / 2,818 with it on. Not proposed yet: the 8-game
 mechanism report and the edge and front alignment come first.
 
-**Backside DL flow (no flag).** (Update: the run-offense session found the hands are not the cause. The down-blocked DL asks backside on 48% of ticks, following the blocker's seen flow through `DL_FLOW`'s held term; that is a controller item on this side, D2.) NFL backside linemen flow toward the play
-0.8/1.4/2.1 yd at 1.0/1.5/2.0 s on gap runs, 1.0/1.9/3.0 on zone
-(`dlflow.py`); develop's go −0.1/−0.5/−0.9 and about 0. `dltrace.ts`: they
-are held in an engagement from 1.0 s and request only 0.4–0.5 yd/s across.
-The request is low because the glued pair cannot move together; that is the
-run-offense session's glued-pair physics (its item 4). No controller change.
+**`DL_CHASE` (`engagement.ts` `runContactRead`): D2, the backside line.**
+NFL backside linemen move toward the play 0.8 / 1.4 / 2.1 yd at 1.0 / 1.5 /
+2.0 s on gap runs (`dlflow.py`). Develop's go −0.1 / −0.5 / −0.9. At 1.0 s
+they ask to move 2.5 yd/s away from the play (`dltrace.ts`):
+- an interior man holds a shoulder that slides with his cutoff blocker;
+- the backside end keeps his outside shoulder and widens with his.
+
+Neither reacts to the guard pulling beside him. Coaching's key for both is
+"close and follow the pull". On: a seen puller within 3 yd (an edge: 4.5 yd,
+and only a pull going away from his side) flips his shoulder across the
+blocker's face toward the pull and feeds its motion as his flow. `DL_FIGHT`
+(already on develop, off) holds his ground against a push away from the ball.
+
+| Gap arms (power/counter/trap), backside DL toward the play at 1.0 / 1.5 / 2.0 s | off | `DL_CHASE` | + `DL_FIGHT` | NFL |
+| --- | --- | --- | --- | --- |
+| develop | 0.1 / −0.5 / −1.1 | 0.1 / −0.5 / −0.8 | 0.1 / −0.3 / −0.4 | 0.8 / 1.4 / 2.1 |
+| develop + `PULL_EARLY` | 0.1 / −0.5 / −1.1 | | 0.1 / −0.2 / −0.2 | |
+| run-offense profile (`4723647`) | 0.1 / −0.3 / −0.9 | 0.1 / −0.1 / −0.2 | 0.1 / −0.1 / 0.0 | |
+
+The request turns toward the play from 1.5 s (−1.5 → +2.5 yd/s in the lab).
+At 1.0 s nothing changes: the pull is seen only around 1.0–1.5 s, and on
+develop the guard himself pulls late (0.2 yd across at 0.5 s, NFL 0.5).
+Tracked backside linemen are already moving by then, before any pull is
+visible, so the rest is not this cue. Outcomes on the run-offense profile
+are mild: median 4.96 → 4.74 yd, runs of 20+ 11.3 → 9.7%. On develop with
+all three flags the median falls 4.27 → 3.38 and stuffs rise 7.9 → 11.9%,
+while flow is still far from tracking. Not proposed: two attempts, stopped
+to re-diagnose the first second.
 
 ## Diagnostics (observation only)
 
