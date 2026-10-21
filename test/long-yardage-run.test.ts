@@ -19,7 +19,8 @@ describe('actual long-yardage run stress fixture contracts', () => {
         inside: { kind: 'edge', gap: 'C', side: -sim.offAlign.strongSign } });
       expect(dropper.initialRead).toBe('unsure');
       expect(sim.snapContext).toMatchObject({ down: 3, distance: 27, hurry: false });
-      expect(snap.defenders.filter(d => ['FS', 'SS'].includes(d.slot)).map(d => d.depth)).toEqual([12, 12]);
+      // Two-high safeties: 12 yd installed; 13 as tracked with DEF_ALIGN.
+      expect(snap.defenders.filter(d => ['FS', 'SS'].includes(d.slot)).map(d => d.depth)).toEqual(process.env.DEF_ALIGN === '1' ? [13, 13] : [12, 12]);
     }
   });
 

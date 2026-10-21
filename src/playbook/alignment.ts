@@ -18,6 +18,15 @@ export const OL_OFFSET: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = { LT: 
 const OL_DEPTH = 0.55;
 const INLINE_OFFSET = 3.9;
 const WING_OFFSET = 4.8;
+/** Experimental (DEF_ALIGN=1, off): the secondary aligns as it does on film
+ * (2022 tracking at the snap, scripts/diag/align/defsnap.py). A pressed corner
+ * sits about head-up at 1.3 yd; off, he gives 6 yd in man and 7 in zone and
+ * takes the shoulder his technique plays: outside in zone (the deep and
+ * outside routes are his), the called shoulder in man. A receiver within
+ * 8 yd of the sideline is played from inside: the sideline is the help.
+ * Two-high safeties sit 13 yd deep about 6.5 yd either side of the ball; a
+ * single-high safety 14 yd deep. Off: the installed spots. */
+const DEF_ALIGN = process.env.DEF_ALIGN === '1';
 
 export interface OffSpot {
   slot: OffSlot;
@@ -410,13 +419,22 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     return slot ? off.spots[slot].pos : null;
   };
   const shell = cov.look ?? cov.shell;
-  const cornerDepth = cov.press ? 1.2 : shell === 'one-high' ? 7 : 6;
+  const cornerDepth = DEF_ALIGN ? (cov.press ? 1.3 : cov.man ? 6 : 7) : cov.press ? 1.2 : shell === 'one-high' ? 7 : 6;
+  /** DEF_ALIGN: outward shade from the #1 (negative = inside). */
+  const cornerShade = (slot: DefSlot, r1: Vec2, sign: number): number => {
+    const room = sign > 0 ? FIELD_WIDTH - r1.y : r1.y;
+    if (room < 8) return -0.6;
+    if (cov.press) return 0.15;
+    if (!cov.man) return 0.7;
+    const lev = (cov.roles[slot] as { lev?: string } | undefined)?.lev;
+    return lev === 'outside' ? 0.6 : lev === 'head' ? 0 : -0.4;
+  };
 
   const placeCorner = (slot: DefSlot, side: 'S' | 'W') => {
     if (!has(slot)) return;
     const sign = side === 'S' ? s : -s;
     const r1 = rec(`${side}1` as ReceiverRef);
-    const y = r1 ? r1.y - sign * (cov.press ? 0.6 : shell === 'one-high' ? -0.8 : 0.8) : off.ballY + sign * 14;
+    const y = r1 ? (DEF_ALIGN ? r1.y + sign * cornerShade(slot, r1, sign) : r1.y - sign * (cov.press ? 0.6 : shell === 'one-high' ? -0.8 : 0.8)) : off.ballY + sign * 14;
     spots[slot] = { slot, pos: { x: los + cornerDepth, y: clamp(y, 1, FIELD_WIDTH - 1) }, role: { kind: 'rush' }, gap: 'D', gapSign: sign, press: cov.press };
   };
   placeCorner('CB_S', 'S');
@@ -444,10 +462,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // Safeties by shell.
   if (has('FS') || has('SS')) {
     if (shell === 'two-high') {
-      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + 12, y: off.ballY + s * 9 }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
-      if (has('FS')) spots.FS = { slot: 'FS', pos: { x: los + 12, y: off.ballY - s * 9 }, role: { kind: 'rush' }, gap: 'D', gapSign: -s };
+      const depth = DEF_ALIGN ? 13 : 12, width = DEF_ALIGN ? 6.5 : 9;
+      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + depth, y: off.ballY + s * width }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
+      if (has('FS')) spots.FS = { slot: 'FS', pos: { x: los + depth, y: off.ballY - s * width }, role: { kind: 'rush' }, gap: 'D', gapSign: -s };
     } else {
-      if (has('FS')) spots.FS = { slot: 'FS', pos: { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) }, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
+      if (has('FS')) spots.FS = { slot: 'FS', pos: { x: los + (DEF_ALIGN ? 14 : 13), y: clamp(off.ballY, 18, FIELD_WIDTH - 18) }, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
       if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + 7.5, y: off.coreEdge.S + s * 3 }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
     }
   }
@@ -609,9 +628,15 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const inside = Math.sign(off.ballY - tp.y) || 1;
     const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
     const press = (mr.press ?? cov.press) && !mr.overTop;
-    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? 1.2 : 6) : 4;
+    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
     const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
-    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + shade * 0.7, 1, FIELD_WIDTH - 1) };
+    // DEF_ALIGN: a corner presses about head-up, plays the called shoulder
+    // from off, and takes the inside against a receiver near the sideline.
+    const room = Math.min(tp.y, FIELD_WIDTH - tp.y);
+    const offset = DEF_ALIGN && isCorner && !off.spots[t].backfield
+      ? (room < 8 ? inside * 0.6 : press ? -inside * 0.15 : shade * (mr.lev === 'outside' ? 0.6 : 0.4))
+      : shade * 0.7;
+    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + offset, 1, FIELD_WIDTH - 1) };
     spots[d]!.press = press && isCorner && !off.spots[t].backfield;
   }
 
