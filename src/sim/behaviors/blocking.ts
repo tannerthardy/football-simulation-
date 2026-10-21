@@ -48,6 +48,13 @@ const GAP_FIT = process.env.GAP_FIT === '1';
  * hole (trap weak I-pro: median gain 1.2 yd, 8 of 20 losses; out block
  * 7.0 yd, 1 loss). A man inside an off-tackle hole is still blocked down. */
 const GAP_OUT = process.env.GAP_OUT === '1';
+/** GAP_ACCOUNT=1 (default off): gap-scheme accounting by the written rules
+ * (docs/reviews/run-blocking-assignment-audit.md). One count of box backers
+ * serves the lead puller and the doubles: the puller's playside backer is
+ * installed before any double or climb picks one. A backside cutoff takes
+ * the man in the gap the pullers vacate before the man outside him. A lead
+ * fullback with no backer left takes the most dangerous unblocked box man. */
+const GAP_ACCOUNT = process.env.GAP_ACCOUNT === '1';
 /** TRAP_FIT=1 (default off): a trapper on the last leg of his pull fits his
  * man, as the counter kicker already does (the fit gate had only the kick's
  * last-leg clause). An on-time trapper passed beneath a man outside 1.2 yd
@@ -635,6 +642,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
+    // GAP_ACCOUNT: the lead puller wraps for the first backer to show
+    // playside; the doubles then work to the backers that remain.
+    const fbBack = !!sim.slot('F') && !!sim.offAlign.spots.F?.backfield;
+    const leadPuller = [...pullers].find((p) => p !== h && (scheme === 'counter' ? p !== bsg : scheme === 'power' && fbBack));
+    let leadBacker: Agent | null | undefined;
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
@@ -677,7 +689,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       } else {
         // Backside: hinge/cutoff.
         const cand = dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved).sort((p, q) => Math.abs(p.pos.y - b.pos.y) - Math.abs(q.pos.y - b.pos.y));
-        const d = cand[0] && Math.abs(cand[0].pos.y - b.pos.y) < 2.5 * k ? cand[0] : null;
+        const near = cand.filter((d) => Math.abs(d.pos.y - b.pos.y) < 2.5 * k);
+        // GAP_ACCOUNT: his playside gap (head-up or inside) first.
+        const d = (GAP_ACCOUNT ? near.find((d) => (d.pos.y - b.pos.y) * ps > -.3) : undefined) ?? near[0] ?? null;
         if (d) claimedDL.add(d);
         if (d) plans.set(b, { kind: 'cutoff', target: d, drive: up(ps * 0.8) });
         else gapPending.push(b);
@@ -689,15 +703,24 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       claimedDL.add(d);
       plans.set(b,{kind:rel(b)<0?'cutoff':'down',target:d,drive:up(rel(b)<0 ? ps*.8 : downDrive(b, d))});
     }
+    // GAP_ACCOUNT: backers in one count. A direct climber takes the man on
+    // his path, the lead puller the next to show playside, the doubles the
+    // rest (backside first).
+    const doubles: [Agent, Agent, Agent][] = [];
+    const paired = new Set<Agent>();
     for (const b of gapPending.filter((b)=>!plans.has(b))) {
-      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0 * k)
+      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && !paired.has(p) && Math.abs(p.pos.y - b.pos.y) < 2.0 * k)
         .sort((p, q) => Math.abs(plans.get(p)!.target!.pos.y - b.pos.y) - Math.abs(plans.get(q)!.target!.pos.y - b.pos.y));
       const partner = partners[0];
       const target = partner ? plans.get(partner)!.target : null;
       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5 * k) {
-        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5 * k, true), plans.get(partner)!.drive);
+        if (GAP_ACCOUNT) { doubles.push([b, partner, target]); paired.add(partner); }
+        else combo(b, partner, target, lbNear(b.pos.y - ps * 0.5 * k, true), plans.get(partner)!.drive);
       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0 * k, true), drive: up(-ps * 0.5) });
     }
+    if (GAP_ACCOUNT && leadPuller) leadBacker = lbNear(hole);
+    for (const [b, partner, target] of doubles)
+      combo(b, partner, target, lbNear(b.pos.y - ps * 0.5 * k, true), plans.get(partner)!.drive);
     // End man on the line on the playside (kick-out target).
     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
     const trapTarget = trapReserved;
@@ -716,7 +739,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (scheme === 'trap') role = 'trap';
       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
       else role = fbIsBack ? 'lead' : 'kick';
-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
+      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker
+        : p === leadPuller && leadBacker !== undefined ? leadBacker : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
@@ -753,7 +777,20 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // Fullback lead (zone/iso) and receivers stalking.
   const fb = sim.slot('F');
   if (fb && sim.offAlign.spots.F?.backfield && !plans.has(fb)) {
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5), drive: up(0),
+    let target = lbNear(by + ps * 1.5);
+    if (GAP_ACCOUNT && !target) {
+      // Every backer is accounted for: take the most dangerous box man no
+      // plan names, the backside edge the pullers vacate first on counter
+      // and trap, else the man nearest the aiming point.
+      const named = new Set<Agent>([...claimedDL, ...claimedLB]);
+      for (const p of plans.values()) if (p.target) named.add(p.target);
+      const free = [...dl, ...lb].filter((d) => !named.has(d) && Math.abs(d.pos.y - by) < 6
+        && Math.abs(d.pos.x - sim.los) < 6);
+      const back = concept.scheme === 'counter' || concept.scheme === 'trap'
+        ? free.filter((d) => rel(d) < 0).sort((p, q) => rel(q) - rel(p))[0] : undefined;
+      target = back ?? free.sort((p, q) => Math.abs(rel(p) - 1.5) - Math.abs(rel(q) - 1.5))[0] ?? null;
+    }
+    plans.set(fb, { kind: 'lead', target, drive: up(0),
       lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * 1.5 } : undefined });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'

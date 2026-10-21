@@ -33,6 +33,7 @@
     "FORCE_DEPTH": "0",
     "FRONT_FIT": "1",
     "GAIT_STEP": "0.3",
+    "GAP_ACCOUNT": "0",
     "GAP_FIT": "1",
     "GAP_OUT": "1",
     "GUN_MESH_SIDE": "0",
