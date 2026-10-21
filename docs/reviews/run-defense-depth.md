@@ -578,6 +578,31 @@ sim's 20+ yd completions have 10+ YAC (NFL 46%).
   no panel difference and was removed: the limit is the runner, not the
   holder's request.
 
+### Passing: what is selection, not execution
+
+`docs/EVALUATION_ENVIRONMENT.md` (on the default branch) separates execution
+from call selection: full games are a check, not a tuning target, and
+execution must not be tuned to fix a coaching difference. Measured with one
+operator on the 8-game export and NFL 2022 tracking:
+
+- **Completion given the situation matches.** By depth at arrival and
+  separation, sim 10–20 yd targets complete 37 / 55 / 75 / 78% at < 1 / 1–2 /
+  2–3 / 3–5 yd separation (NFL 32 / 55 / 75 / 82%).
+- **Where the ball goes does not.** 33% of sim targets are 10–20 yd downfield
+  (NFL 22%) and 37% under 5 yd (NFL 47%). Against zone, catches behind the
+  line are 4.6% of completions (NFL 23.2%) and 10–15 yd catches 25.7%
+  (10.7%). Wide receivers' catches come at a median 11.4 yd (6.5); backs get
+  12% of targets (19%). The playbook has no screens, quick game is about 15% of
+  pass calls, and the QB throws to the first read that clears his completion
+  threshold. That is calling and progression (coaching), not coverage: zone
+  drop depths at the throw match (shallowest five cover defenders 5.2 / 7.0 /
+  8.4 / 9.9 / 12.7 yd vs 4.7 / 6.5 / 8.2 / 10.3 / 13.0).
+- **Pressure is the QB's setup, not the rush.** A defender within 2 yd before
+  the throw: 16% (NFL 30.5%); nearest defender at the throw 4.4 yd (3.0). Box
+  rushers are as deep at 2 s (2.5 vs 2.6 yd) and time to pressure matches
+  (2.7 s), but the QB sets at 7.9 yd almost every time (IQR 7.5–7.9; NFL 7.2,
+  6.1–8.3) and throws 0.2 s earlier.
+
 ## Evidence against and unresolved risk
 
 - **Game-level reads are noisy.** Games diverge after the first changed play;
@@ -615,6 +640,8 @@ sim's 20+ yd completions have 10+ YAC (NFL 46%).
 | Contact (tackling) | The cap's first encounter on 20+ yd zone runs: side wraps on a 7.8 yd/s runner that break (37%) or drag; shotgun the same at 8.5 yd/s from behind. | `depth/capmeet.py` |
 | Contact / physics (sent) | Held runners keep their stride: broken holds 0.15–0.22 per play; DB reach/lunge holds from behind on fast receivers break 24–56%; a wrapped holder is dragged 8–13 yd. `LEG_BIND` covers the legs share only; waist holds and the holder's weight are not modelled. | `depth/holds.ts`, `depth/holdtrace.ts --carrier X --tackler CB` |
 | Passing (QB decisions) | Clean interceptions 3.4% of attempts with `TIP_AWAY` (NFL total 2.2%); about half undercut away from the receiver. | `depth/ints.ts` |
+| Coaching / playbook (selection) | Target depth: 10–20 yd targets 33% (NFL 22), under 5 yd 37% (47); zone catches behind the line 4.6% (23.2); backs 12% of targets (19); no screens, quick game ~15% of pass calls. Completion given depth and separation matches. | section "Passing: what is selection" |
+| QB setup (offense) | Drop depth 7.9 yd almost every play (IQR 7.5–7.9; NFL 7.2, 6.1–8.3), throws 0.2 s earlier: pressure 16% vs 30.5% with rushers as deep at 2 s as NFL rushers. | `mech:sim` `pass.*` rows |
 | Engaged release (defender side of run reps, this branch) | Defenders stay near blockers after the runner passes: DL 74–80% within 1.2 yd of an offensive player at +1 s (NFL 57%). But with `SHED_PURSUE`, DL still in a rep 0.5 s after the crossing are 79 → 56%, below the NFL's proximity rate (66%). The excess is freed linemen who cannot accelerate away, i.e. the start-up row above. | `release.py` rows in `mechanisms.txt`; `dlpursuit.txt` |
 
 ## Next
