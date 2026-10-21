@@ -110,21 +110,22 @@ the engine wants a long-trap rule or a caller constraint.
 | power | Odd | DE_W (backside); **puller idle** | 4.6 | 7% | 34% | 13% | FS 40, LB_M 30 |
 | counter | Over | — | 5.3 | 3% | 39% | 20% | FS 47, LB_W 28 |
 | counter | Under | **DE_S (vacated gap)**; **FB idle** | 3.1 | 17% | 27% | 17% | **DE_W 30**, FS 28 |
-| counter | Odd | — | pending | | | | |
+| counter | Odd | — | 3.2 | 5% | 35% | 13% | FS 49, LB_W 28 |
 | trap | Over | — | 2.6 | 3% | 33% | 7% | LB_S 71, LB_M 19 |
 | trap | Under | — (traps the 5-tech) | 2.5 | 7% | 25% | 9% | LB_M 71, DE_S 23 |
-| trap | Odd | DE_W (backside); **FB idle** | pending | | | | |
+| trap | Odd | DE_W (backside); **FB idle** | 5.4 | 4% | 24% | 17% | LB_M 47, FS 33 |
 | inside zone | Over | — | 2.5 | 9% | 29% | 7% | LB_M 56, LB_S 23 |
 | inside zone | Under | — | 3.8 | 4% | 22% | 17% | LB_M 49, FS 33 |
-| inside zone | Odd | — | pending | | | | |
+| inside zone | Odd | — | 4.8 | 11% | 25% | 19% | FS 38, LB_M 28 |
 | outside zone | Over | — | 1.0 | 39% | 25% | 6% | DT_S 41, DE_S 23 |
 | outside zone | Under | — | 1.3 | 25% | 17% | 9% | LB_M 36, LB_S 24 |
-| outside zone | Odd | — | pending | | | | |
+| outside zone | Odd | — | 0.7 | 43% | 23% | 8% | DE_S 41, LB_W 26 |
 
-One cell stands out without an assignment explanation: outside zone vs. Over
-(39% at or behind the line, with the playside 3-technique the leading tackler).
-Its assignments match the zone rule (RG–C combo on the 3-technique), so look at
-reach technique and the back's bend/bounce read, not at the planner.
+Outside zone stands out without an assignment explanation: 39% of carries vs.
+Over and 43% vs. Odd end at or behind the line, with a playside lineman (the
+3-technique, or the 9-technique end) as the leading tackler. The assignments
+match the zone rule (reach plus an uncovered helper's combo), so look at reach
+technique and the back's bend/bounce read, not at the planner.
 
 An unblocked *backside* end on zone or power is often by design (cutback
 constraint, boot or read key). The findings above are about *playside* or
