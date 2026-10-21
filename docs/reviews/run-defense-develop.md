@@ -67,6 +67,67 @@ Default-off `DEF_ALIGN`, `WR_ALIGN`, `OL_SPLITS` (and research-only
 `OL_STAGGER`) in `alignment.ts`, at the user's request; see
 [pre-snap-alignment.md](pre-snap-alignment.md).
 
+## Defensive front alignment (`FRONT_ALIGN`, default off, not proposed)
+
+Pre-snap geometry is split with the run-offense session (the workboard has
+it). That session owns offensive alignment and the shared operators
+(`scripts/diag/align/fronts.py`, `presnap.py` on `claude/run-game-v3`, and
+its catalog `docs/reviews/presnap.md`). This side owns `alignDefense` and the
+defensive caller. The rule is the user's: alignment comes from the call
+against the look, the player and the situation, not from target values.
+
+Develop's 8-game runs against the catalog (2022 runs):
+- the weak end is a 5 on 33% (NFL 2%);
+- the strong end over a tight end is a 6 or 5 on 47% (NFL a 6 on 13%; a
+  wide nine 46%, a 9 31%);
+- the 1 and 3 techniques sit mid-gap;
+- every depth is a single value;
+- the caller draws the front from personnel only.
+
+Tracking at the snap (`nfl-snap.csv.gz`, front defenders under 2 yd off):
+- a shaded lineman sits 0.57 yd off his blocker's centre (C and G alike);
+- front depth is 0.9–1.0 yd off the ball, which develop already has (the
+  operator's 1.15 is measured from our flat offensive line);
+- end-man width outside the surface is 1.42 yd with an end there and 2.39
+  without. It varies with the player (about −0.025 yd per lb; 235 lb ends at
+  1.81 yd, 275 lb at 1.03) and by team (SD of team medians 0.3–0.4 yd), and
+  hardly with down and distance.
+
+On:
+- shaded techniques sit on their blocker's shoulder;
+- each side's end man sets the edge outside the surface: outside the tackle
+  with no end there, at least on an end with one;
+- his build moves him 0.05 yd per kg off 118 kg (at most 0.6 yd), never
+  inside an end he is set on;
+- the call's gap is unchanged;
+- `playsim` passes each defender's mass in the defensive style.
+
+A first version moved heavy ends a notch tighter, from a 6 to an inside 7
+(39% of strong edges); the continuous rule replaced it.
+
+| 8-game runs | develop | `FRONT_ALIGN` | NFL |
+| --- | --- | --- | --- |
+| Weak edge a 5 | 33% | 3% | 2% |
+| Weak edge wide nine / ghost | 42% / 6% | 40% / 33% | 56% / 32% |
+| Strong edge 6 / 9 / wide nine | 30% / 12% / 17% | 54% / 21% / 3% | 13% / 31% / 46% |
+| Edge outside the surface, strong / weak (`presnap.py`) | 0.07 / 0.93 | 0.10 / 1.76 | 1.46 / 2.05 |
+| Report flags (`off`), guard | 46, 12/12 | 36, 12/12 | |
+| Run yards p50 / p99 | 2.98 / 27.0 | 2.44 / 14.8 | 3.0 / 10.0 |
+| Yards after contact p50 | 1.95 | 1.52 | 2.40 |
+
+The weak side now looks like tracking. The strong side stays tight because
+the front calls themselves put the strong end on the tight end (Over's 6).
+Next is an edge call within the front: tight, 9 or wide by team habit, the
+end man and the situation. After that comes the caller, a short-yardage
+package answering the offense's heavy personnel (six or more on the line,
+no deep safety: 27% of tracked snaps at 1–3 yd to go). Staged native
+witnesses pin `FRONT_ALIGN` off, as for the line flags; `test/front-align.test.ts`.
+Core suite 2,828 / 2,828 with it on.
+
+`OL_SPLITS` and `OL_STAGGER` (above) are superseded by the run-offense
+session's `OL_ALIGN` as the one line source when the branches meet. It
+folds in `OL_STAGGER`'s pass-set depths.
+
 ## Defense after the catch on develop (diagnosis, no engine change)
 
 **Question.** On the develop candidate (`TIP_AWAY`, `DEF_ALIGN`, `WR_ALIGN`,
