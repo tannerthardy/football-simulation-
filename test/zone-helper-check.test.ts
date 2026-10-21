@@ -15,7 +15,9 @@ import { PlaySim } from '../src/sim/playsim.js';
 // The helper witnesses are staged on the installed line. On OL_SPLITS's
 // tracked splits the Tite scene forms a different, sound combination (RG+RT
 // on the B-gap tackle, Y alone on the edge); OL_STAGGER also changes it.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
+// FORCE_BOUNCE moves the Split Zone Bear force, and the recorded double no
+// longer releases within its 2 s window.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });
