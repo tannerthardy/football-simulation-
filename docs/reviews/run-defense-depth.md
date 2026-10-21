@@ -358,6 +358,38 @@ The cause is the stretch back's path, not the shed (`depth/stretchpace.py`):
   catching him at −1.4 yd and 2.75 yd/s lateral (NFL −2.7 yd, 3.5).
 - The back's path is the offense session's; the evidence was sent to it.
 
+### What did not fix the stretch losses
+
+- **The offense session's mesh package** (`UC_MESH MESH_TEMPO QB_CARRYOUT
+  PACE_LEAD`, existing default-off flags) moves the stretch back toward the
+  NFL path (handoff + 0.5 s: 2.6 yd deep at 3.5 yd/s, NFL 3.3 / 4.5). But
+  stretch losses rise further, with or without `SHED_HANDS`:
+
+  | | OZ | WZ |
+  |---|---|---|
+  | `dq` | 10.8% | 15.0% |
+  | + mesh (`mqco`) | 18.8% | 23.8% |
+  | + `SHED_HANDS` (`shco`) | 14.5% | 20.0% |
+  | + both (`mhco`) | 20.0% | 29.2% |
+
+  So the back's path is not the cause; a deeper back only gives a lineman
+  who got under the reach more time.
+- **DL hand control is the same on stretch as on inside zone.** The defender
+  controls the hands at some point in 47–53% of DL reps, 36–39% of rep time,
+  on iz/oz/wz alike.
+- So the stretch losses come from linemen getting into the backfield under the
+  reach (NFL outside-zone DL are driven back about 1 yd by 3 s; ours
+  penetrate). That is the reach-block law, the offense session's (correction
+  sent).
+- **`SHED_CLEAN`** (tried and removed): shed only once the blocker's hands
+  are fully off (`control < -0.4`, the line `tryHold` uses for "no hands on
+  him"). Sheds 402 → 132 per 240 plays; DL tackle credit 26 → 19% (NFL 34%).
+  Too weak: the plain `SHED_HANDS` matches the NFL tackle split better.
+- **`LB_READ_STEP` with `SHED_HANDS`** (`rhco`) is still worse than without
+  it: 20+ runs 33 → 53 (p = 0.019), negatives 152 → 177, TVD 10.1 → 13.1.
+  Backers at NFL depth are tied up at the NFL rate at the crossing (61% vs
+  62%), but freed backers do not close (+0.11 yd/s vs +0.83). It stays off.
+
 ## Evidence against and unresolved risk
 
 - **10–19 yd runs overshoot whenever the cap holds** (zone 13.8%, gap 25%,
