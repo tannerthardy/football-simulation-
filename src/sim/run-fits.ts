@@ -167,12 +167,6 @@ const PULL_READ = process.env.PULL_READ !== '0';
  * stepping inside moves the gap away from the play) cannot carry him against
  * the pull he flows with. */
 const PULL_FLOW = process.env.PULL_FLOW === '1';
-/** Experimental (LINE_SCRAPE=1, off): a fit scrapes with the flow of the line
- * he sees (the surface's mean lateral motion), not with his own gap's two
- * bounding bodies. On zone both move with the play; on a gap scheme the
- * playside down blocks step inside, so the gap's bodies drift away from where
- * the hole will be while the line as a whole does not flow. */
-const LINE_SCRAPE = process.env.LINE_SCRAPE === '1';
 /** Diagnostic pull acquisition from observed departure, independent of an
  * opponent's current engagement. Default off pending matched controls. */
 const PULL_CUE = process.env.PULL_CUE === '1';
@@ -434,8 +428,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // The back no longer pulls the landmark; he decides when to attack it.
   // SCRAPE=0 restores the old lean toward the back's lateral position.
   const gap = liveGap(sim, a, job.gap, job.side);
-  const scrapeVel = LINE_SCRAPE ? lineFlow(linePicture(sim, a)) : gap.vel;
-  const flow = SCRAPE ? clamp(scrapeVel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
+  const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
   let pullSide = 0, pullVel = 0;
   if (PULL_READ) {

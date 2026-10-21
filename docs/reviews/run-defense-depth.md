@@ -391,6 +391,22 @@ tests that and finds the reach block instead.
   Backers at NFL depth are tied up at the NFL rate at the crossing (61% vs
   62%), but freed backers do not close (+0.11 yd/s vs +0.83). It stays off.
 
+### `SHED_PURSUE` once sheds can succeed; tried and removed
+
+- **`SHED_PURSUE` hurts when combined with `SHED_HANDS`.** Zone without it
+  (`nsco`): TVD 7.9 (with it 10.1), 10–19 yd runs 10.2% (NFL 8.6; with it
+  12.8%), 10+ 164 vs 187 (p = 0.012). Negatives and 40+ are unchanged. With
+  both flags on, defenders also shed when the runner is already 7 yd past
+  them, and more runs reach 10 yd; the mechanism is not traced. The
+  candidate drops `SHED_PURSUE`.
+- **`LINE_SCRAPE`** (removed): a fit scrapes with the line's mean flow instead
+  of his gap's two bounding bodies. Gap arm `lsgap` vs `shgap`: no paired
+  difference (10+ 454 → 464, 40+ 59 → 63), and linebacker flow is unchanged.
+  The wrong-way drift on gap schemes comes from the live gap's position moving
+  with the down blocks, not from the scrape term.
+- **`LB_READ_STEP` on gap with `SHED_HANDS`** (`rhgap`): TVD 13.3 → 17.8, 10+
+  454 → 539. It stays off on both sets.
+
 ## Evidence against and unresolved risk
 
 - **10–19 yd runs overshoot whenever the cap holds** (zone 13.8%, gap 25%,
