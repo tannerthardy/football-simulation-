@@ -64,8 +64,9 @@ What else must change for it to help?
    linemen took 15–21% of run tackle credit (NFL 34%). With `SHED_HANDS` the
    package is closer to NFL than the contact build on all three sets (TVD
    zone 13.6 → 10.1, gap 14.0 → 13.3, shotgun 10.2 → 8.4; 40+ 6.6 / 7.8 / 5.0
-   → 1.6 / 3.7 / 2.5%). It adds stretch losses, which trace to the stretch
-   back's shallow, slow path (offense).
+   → 1.6 / 3.7 / 2.5%). It adds stretch losses, which trace to linemen
+   getting under reach blocks (offense's reach law), not the shed or the
+   back's path.
 
 ## Where the contact build stands (baseline, pinned profile)
 
@@ -349,14 +350,14 @@ outside and wide zone. Inside zone is unchanged:
 | `dq` | 3.8% | 10.8% | 15.0% |
 | `dq` + `SHED_HANDS` | 3.5% | 14.5% | 20.0% |
 
-The cause is the stretch back's path, not the shed (`depth/stretchpace.py`):
+The stretch back is shallow and slow (`depth/stretchpace.py`):
 - At handoff + 0.5 s the NFL outside-zone back is 3.3 yd deep moving 4.5 yd/s
   toward the play side. The sim back is 2.2 yd deep at 2.75 yd/s, and crosses
   0.3 s sooner.
-- A shallow, slow stretch back is what a lineman who beats a reach block runs
-  down. On stretch losses the first defender is a DL 84% of the time (NFL 48%),
-  catching him at −1.4 yd and 2.75 yd/s lateral (NFL −2.7 yd, 3.5).
-- The back's path is the offense session's; the evidence was sent to it.
+- On stretch losses the first defender is a DL 84% of the time (NFL 48%).
+
+But the path is not the cause of the extra losses; the next subsection
+tests that and finds the reach block instead.
 
 ### What did not fix the stretch losses
 
