@@ -17,7 +17,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 // on the B-gap tackle, Y alone on the edge); OL_STAGGER also changes it.
 // FORCE_BOUNCE moves the Split Zone Bear force, and the recorded double no
 // longer releases within its 2 s window.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; });
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });

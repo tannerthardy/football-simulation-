@@ -78,6 +78,19 @@ const DEF_ALIGN = process.env.DEF_ALIGN === '1';
  * every #1 at 18 yd, 6 yd from the boundary sideline, and slots at a fixed
  * 8.4-8.6. Off: the installed spots. */
 const WR_ALIGN = process.env.WR_ALIGN === '1';
+/** Experimental (FRONT_ALIGN=1, off): the front aligns on bodies, not gaps,
+ * and its end men by who they are. A shaded technique sits on its blocker's
+ * shoulder, 0.57 yd off his centre in 2022 tracking for centres and guards
+ * alike (scripts/diag/align/, nfl-snap extract); the installed 1 and 3 sat in
+ * the middle of the gap. The end man on each side sets the edge outside the
+ * surface: with no inline end there he aligns outside the tackle (a 9 or a
+ * wide nine), never on the tackle's outside shoulder (tracked weak edges are
+ * a 5 on 1-2% of runs); with one, at least on him (an uncovered end with a 5
+ * outside the tackle is 1%), else the call's technique stands. His build
+ * then moves him a notch: a light end (under 111 kg) widens to rush, a heavy
+ * one (over 124 kg) tightens to play the run (tracked ends: 235 lb at 1.81 yd
+ * outside an end, 275 lb at 1.03). The call's gap is unchanged. */
+const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
 
 export interface OffSpot {
   slot: OffSlot;
@@ -112,7 +125,9 @@ export interface OffenseAlignment {
 /** A team's alignment habits on top of its scheme (see `alignStyle` in
  * league/team.ts): line width (share), the #1's room to his sideline (yd), zone
  * corners' and deep safeties' depth (yd). Each applies under its flag only. */
-export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: number; safetyDepth?: number }
+export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: number; safetyDepth?: number;
+  /** FRONT_ALIGN: the body mass (kg) of the player in each defensive slot. */
+  mass?: Partial<Record<DefSlot, number>> }
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -308,6 +323,11 @@ export function lineDepth(depth: number, stance?: number): number {
  * at 3.9 yd from the ball) placed on the actual line: interpolated between
  * the center, guard, tackle and (with one) inline end, and carried with the
  * outermost of them beyond it. The identity unless OL_SPLITS is on. */
+/** FRONT_ALIGN: a shade's offset from its blocker's centre (tracked). */
+const SHOULDER = .57;
+/** FRONT_ALIGN: the end man's techniques from tightest to widest. */
+const EDGE_NOTCH: Technique[] = ['7', '6', '9', 'w9'];
+
 export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BASE_LINE): number {
   if (!OL_SPLITS) return offset;
   const d = Math.abs(offset), from = [0, 1.3, 2.6, 3.9], to = [0, line.cg, tackleOf(line), inlineOf(line)];
@@ -319,6 +339,24 @@ export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BA
 
 /** y offset (absolute, ≥ 0) of a technique from the ball on a side. */
 function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BASE_LINE): number {
+  if (FRONT_ALIGN) {
+    // On the blocker: head-up on his centre or on a shoulder 0.57 yd off it.
+    const G = OL_SPLITS ? line.cg : 1.3, T = tackleOf(line), E = inlineOf(line), sh = SHOULDER;
+    switch (tech) {
+      case '0': return 0;
+      case '1': return sh;
+      case '2i': return G - sh;
+      case '2': return G;
+      case '3': return G + sh;
+      case '4i': return T - sh;
+      case '4': return T;
+      case '5': return T + sh;
+      case '6': return hasTE ? E : T + 1.0;
+      case '7': return hasTE ? E - sh : T + .8;
+      case '9': return hasTE ? E + sh : T + 1.6;
+      case 'w9': return hasTE ? E + 1.6 : T + 2.3;
+    }
+  }
   if (OL_SPLITS) {
     // The same shoulders and gaps, placed from the actual splits.
     const G = line.cg, T = tackleOf(line), E = inlineOf(line);
@@ -582,12 +620,28 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // --- front ---
   const frontSlots = call.front.slots;
+  // FRONT_ALIGN: each side's end man (the widest defender on the line) sets
+  // the edge; his technique comes from the surface and his build.
+  const edgeTech = new Map<DefSlot, Technique>();
+  if (FRONT_ALIGN) for (const side of ['S', 'W'] as const) {
+    const onLine = present.filter(slot => frontSlots[slot]?.side === side && frontSlots[slot]!.depth < 2);
+    const hasTE = side === 'S' ? off.hasTE.S : off.hasTE.W;
+    const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
+    if (!end) continue;
+    let tech = frontSlots[end]!.tech;
+    if (!EDGE_NOTCH.includes(tech)) tech = hasTE ? '6' : 'w9';
+    const mass = style.mass?.[end];
+    const notch = EDGE_NOTCH.indexOf(tech);
+    if (notch >= 0 && mass !== undefined)
+      tech = EDGE_NOTCH[clamp(notch + (mass < 111 ? 1 : mass > 124 ? -1 : 0), hasTE ? 0 : 1, EDGE_NOTCH.length - 1)];
+    edgeTech.set(end, tech);
+  }
   for (const slot of present) {
     const fa = frontSlots[slot];
     if (!fa) continue;
     const sign = fa.side === 'S' ? s : -s;
     const hasTE = fa.side === 'S' ? off.hasTE.S : off.hasTE.W;
-    const y = off.ballY + sign * techniqueOffset(fa.tech, hasTE, off.line);
+    const y = off.ballY + sign * techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line);
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? (fit.side === 'S' ? s : -s) : sign };

@@ -12,6 +12,8 @@ import type { Agent, Engagement } from '../src/sim/agent.js';
 import { RunBlocker, planRunBlocking, type RunBlockPlan } from '../src/sim/behaviors/blocking.js';
 import { axisOf, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });

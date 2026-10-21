@@ -239,8 +239,10 @@ export class PlaySim {
     const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;
     this.defCall = zeus ? called : applyCheck(called, formationKey(this.offAlign));
     const defSlots = Object.keys(setup.defense) as DefSlot[];
-    this.defStyle = setup.defStyle;
-    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, setup.defStyle);
+    // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
+    const mass = Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg]));
+    this.defStyle = { ...setup.defStyle, mass };
+    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {

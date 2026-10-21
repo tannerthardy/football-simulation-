@@ -8,7 +8,8 @@ import {ScoutingReport} from '../src/sim/recognition.js';
 import {CoverageScouting} from '../src/sim/qbmind.js';
 import {PlaySim} from '../src/sim/playsim.js';
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/pass-cutoff-inputs.json.gz')).toString());
 function saved(index:number):PlaySim {

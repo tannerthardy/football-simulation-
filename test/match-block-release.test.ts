@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { vi, describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
@@ -8,6 +8,8 @@ import type { MatchRule, ZoneId } from '../src/playbook/types.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 
 function stage(rule: MatchRule, zone: ZoneId) {
   const sim = new PlaySim({

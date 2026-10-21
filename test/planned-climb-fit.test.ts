@@ -7,7 +7,8 @@ import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import type {Perceived} from '../src/sim/perception.js';
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/planned-climb-fit.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
 function stage(t:number){

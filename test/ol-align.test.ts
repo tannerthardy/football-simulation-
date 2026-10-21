@@ -12,6 +12,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function line(splits: boolean, stagger = false) {
   vi.stubEnv('OL_SPLITS', splits ? '1' : '0');
   vi.stubEnv('OL_STAGGER', stagger ? '1' : '0');
+  // The installed Over front's techniques; FRONT_ALIGN has its own test.
+  vi.stubEnv('FRONT_ALIGN', '0');
   vi.resetModules();
   const { alignDefense, alignOffense, gapY } = await import('../src/playbook/alignment.js');
   const los = 40, off = alignOffense(FORMATION_BY_ID.i_pro_21, false, los, CENTER_Y);
