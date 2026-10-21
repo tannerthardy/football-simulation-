@@ -3,7 +3,8 @@
  * penetrating (docs/reviews/run-offense.md):
  * LOG_READ   kick or log from the seen kicker against his installed end;
  * RUN_PROJECT bodies met where their seen motion puts them;
- * LANE_DEPTH a closed lane costs the yards behind the line where he is met. */
+ * LANE_DEPTH a closed lane costs the yards behind the line where he is met
+ *            (by a free defender closing toward him, or at the entry). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });

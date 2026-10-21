@@ -10,6 +10,10 @@ vi.hoisted(() => { for (const k of ['UC_MESH', 'MESH_TEMPO', 'QB_CARRYOUT', 'PAC
 // first command; pin them off here. test/gait-step.test.ts and
 // test/pull-step.test.ts cover those laws.
 vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) process.env[k] = '0'; });
+// Recorded before the gap-scheme first-level blocks (GAP_FIT GAP_OUT
+// CUTOFF_SEAL, on in the pinned profile), which change when and where the
+// line meets its men; pin them off here. test/gap-blocks.test.ts covers them.
+vi.hoisted(() => { for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) process.env[k] = '0'; });
 import {CENTER_Y} from '../src/core/field.js';
 import type {Intent} from '../src/physics/world.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';

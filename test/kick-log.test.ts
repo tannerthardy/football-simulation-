@@ -10,6 +10,9 @@ async function meet(flags: Record<string, string>, look: string) {
   vi.stubEnv('GAIT_STEP', '0.3');
   vi.stubEnv('PULL_STEP', '1');
   for (const k of ['KICK_INTERCEPT', 'LOG_CONTACT']) vi.stubEnv(k, flags[k] ?? '0');
+  // The first-level gap blocks change where the line holds the end's
+  // neighbours; this witness isolates the kicker (test/gap-blocks.test.ts).
+  for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) vi.stubEnv(k, '0');
   vi.resetModules();
   const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
   const { RunBlocker, playSideSign } = await import('../src/sim/behaviors/blocking.js');

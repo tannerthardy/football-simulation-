@@ -257,6 +257,15 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     e.move = 'shed';
     // Reach blocks want the defender sealed on the backside.
     if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
+    // CUTOFF_SEAL: a backside cutoff walls his man off from the play. His
+    // objective is the man's play-side front, not the side he arrived on.
+    const plan = (blocker.behavior as { plan?: { kind?: string; target?: Agent | null; combination?: unknown } }).plan;
+    const run = sim.offCall.run;
+    if (CUTOFF_SEAL && !surface && run && plan?.kind === 'cutoff' && plan.target === defender && !plan.combination) {
+      const ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+      const front = { x: -sim.attackDir(blocker.team) * Math.cos(Math.PI / 6), y: ps * Math.sin(Math.PI / 6) };
+      e.sealTarget = Math.atan2(-(front.x * lat.x + front.y * lat.y), front.x * axis.x + front.y * axis.y) / (Math.PI / 2);
+    }
   }
   blocker.engagement = e;
   defender.engagement = e;
@@ -656,6 +665,12 @@ const BLOCK_FRONT = process.env.BLOCK_FRONT === '1', BLOCK_FRONT_ANGLE = 110 * M
 const STRETCH_FLAT = process.env.STRETCH_FLAT === '1';
 /** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
 const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
+/** CUTOFF_SEAL=1 (default off): a solo backside cutoff seals his man's
+ * play-side front (30 deg play side of head-up) instead of the side he
+ * arrived on, which in the cutoff's drive frame always lay backside: the
+ * pair drifted away from the play (-0.6 yd at +1 s; tracked cutoff reps
+ * +0.9 toward it). See docs/reviews/run-offense.md, gap schemes. */
+const CUTOFF_SEAL = process.env.CUTOFF_SEAL === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';

@@ -208,15 +208,23 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
       // Who is there first, at the entry and two yards beyond it: the
       // earliest defender decides, as in the open-field read.
-      let m1 = Infinity, m2 = Infinity;
+      let m1 = Infinity, m2 = Infinity, first: { agent: Agent; seen: Perceived } | null = null;
       for (const { agent: d, seen: s, team } of pictures) {
         if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
-        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
+        const t1 = threatTime(d, s, p) - arrive;
+        if (t1 < m1) { m1 = t1; first = { agent: d, seen: s }; }
         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
       }
+      // Where the runner meets the first defender: a free one closes from
+      // the entry toward him while he keeps coming; one he sees body to body
+      // with a blocker meets him at the entry.
+      const locked = !!first && pictures.some(({ agent: o, seen: s, team }) => team === 'O'
+        && Math.hypot(s.pos.x - first!.seen.pos.x, s.pos.y - first!.seen.pos.y) < o.profile.radius + first!.agent.profile.radius + .15);
+      const closing = first && !locked ? first.agent.profile.vmax * .8 : 0;
+      const meet = route.arrive + m1 * closing / (closing + cruise);
       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0)
-        + (LANE_DEPTH && m1 < 0 ? Math.max(0, -depthAt(route, Math.max(0, route.arrive + m1))) : 0);
+        + (LANE_DEPTH && m1 < 0 ? Math.max(0, -depthAt(route, Math.max(0, meet))) : 0);
       if (r < risk) { risk = r; via = route.via; }
     }
     const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
