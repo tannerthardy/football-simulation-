@@ -154,15 +154,24 @@ const PULL_CUE = process.env.PULL_CUE === '1';
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
+/** Experimental (PULL_EARLY=1, off): a backer keys the pull step itself. A
+ * lineman seen moving across at more than 1.5 yd/s while stepping back from
+ * his stance (not climbing) is pulling, before he has cleared a yard of
+ * ground. Coaching keys the guard's hips and first step; tracked gap-run
+ * backers are 0.6 yd toward the play at 1.0 s, while the displacement read
+ * fired near 1.35 s (scripts/diag/runblock/lbfill.py, lbtrace.ts). Same
+ * delayed picture; a kick-slide on play-action can fool him. */
+const PULL_EARLY = process.env.PULL_EARLY === '1';
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
 export function pullers(sim: PlaySim, a: Agent): Perceived[] {
   const picture = linePicture(sim, a);
-  const candidates = PULL_CUE ? [...picture.surface, ...picture.departed].filter(b => {
-    const home = sim.offAlign.spots[b.agent.slot]!.pos;
-    const depth = (b.seen.pos.x - home.x) * sim.attackDir(b.agent.team);
-    return depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1;
+  const candidates = PULL_CUE || PULL_EARLY ? [...picture.surface, ...picture.departed].filter(b => {
+    const home = sim.offAlign.spots[b.agent.slot]!.pos, dir = sim.attackDir(b.agent.team);
+    const depth = (b.seen.pos.x - home.x) * dir;
+    if (PULL_EARLY && depth < -.15 && b.seen.vel.x * dir <= .5 && Math.abs(b.seen.vel.y) > 1.5) return true;
+    return PULL_CUE && (depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1);
   }) : picture.departed;
   return candidates.map((b) => b.seen)
     .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
