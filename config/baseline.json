@@ -29,6 +29,7 @@
     "FLOW_READ": "1",
     "FLOW_RELEASE": "1",
     "FORCE_DEPTH": "0",
+    "FRONT_FIT": "0",
     "GAIT_STEP": "0.3",
     "GAP_FIT": "1",
     "GAP_OUT": "1",

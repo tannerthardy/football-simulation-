@@ -7,7 +7,7 @@
 import type { Rng } from '../core/rng.js';
 import { generatePlayer } from '../players/generator.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
-import type { Player, Position } from '../players/types.js';
+import { familiarityAt, type Player, type Position } from '../players/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL, type DefPersonnelId, type DefSlot, type OffSlot, type PersonnelId, type SkillSlot } from '../playbook/types.js';
 
 export type OffScheme = 'west-coast' | 'air-raid' | 'spread' | 'power' | 'wide-zone';
@@ -168,6 +168,13 @@ function pickBest(cands: Player[], score: (p: Player) => number, av: Availabilit
 const role = (id: string) => (p: Player) => roleSuitability(p, ROLE_BY_ID[id]);
 const at = (pos: Position) => (p: Player) => overallAt(p, pos);
 
+/** FRONT_FIT=1 (default off): interior line slots weigh familiarity at DT,
+ * as overallAt does and the edge slots already do. Raw 3-technique
+ * suitability (pass-rush finesse, burst, agility; no mass or strength) put a
+ * 109-114 kg EDGE at DT in 32 of 120 base 4-3 slots across 60 generated
+ * teams, and on the lab defense's DT_S (docs/reviews/run-offense.md). */
+const FRONT_FIT = process.env.FRONT_FIT === '1';
+
 export function pickOffense(team: Team, personnel: PersonnelId, av: Availability = {}): Record<OffSlot, Player> {
   const taken = new Set<string>();
   const out = {} as Record<OffSlot, Player>;
@@ -218,7 +225,11 @@ export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availabil
   take('NT', ['DT'], best('DT_NOSE'));
   take('DE_W', ['EDGE', 'DT', 'LB'], (p) => best('EDGE_SPEED', 'EDGE_POWER')(p) * 0.6 + at('EDGE')(p) * 0.4);
   take('DE_S', ['EDGE', 'DT', 'LB'], (p) => best('EDGE_RUN', 'EDGE_POWER')(p) * 0.5 + at('EDGE')(p) * 0.5);
-  const interior = personnel === 'base34' ? best('DT_5TECH', 'DT_3TECH') : best('DT_3TECH', 'DT_NOSE', 'DT_5TECH');
+  const inside = personnel === 'base34' ? best('DT_5TECH', 'DT_3TECH') : best('DT_3TECH', 'DT_NOSE', 'DT_5TECH');
+  // FRONT_FIT: an inside spot is scored like the edges, on how well he plays
+  // the position (the role scaled by his familiarity at DT), so a light edge
+  // rusher with a high 3-technique score does not displace the tackles.
+  const interior = FRONT_FIT ? (p: Player) => inside(p) * (0.7 + 0.3 * familiarityAt(p, 'DT')) : inside;
   take('DT_S', ['DT', 'EDGE'], interior);
   take('DT_W', ['DT', 'EDGE'], interior);
   take('LB_M', ['LB'], best('LB_MIKE'));
