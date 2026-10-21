@@ -278,13 +278,15 @@ LOO_PENDING
 | Physics (gait) | Free defenders near the hole: request 8.1 yd/s within 18° of the runner, achieve 1.8, facing 62° away. Free DL within 3 yd of the runner reach him 23–28% (NFL 65%). | `run-defense-depth/dlpursuit.txt`, `nearreach.py` rows in `mechanisms.txt`. `GAIT_STEP=0.5` context arms `gq*`. |
 | Offense (`claude/run-game-v3`, sent) | Gap pullers leave 0.4–0.5 s late (1 yd lateral at 1.1 s vs 0.7; 3.25 vs 4.0 yd/s). Linebackers read the pull, so their flow inherits the delay. | `depth/pulltime.py`, `lbdepth.py gap_pull` |
 | Contact (tackling) | The cap's first encounter on 20+ yd zone runs: side wraps on a 7.8 yd/s runner that break (37%) or drag; shotgun the same at 8.5 yd/s from behind. | `depth/capmeet.py` |
-| Engaged release (defender side of run reps, this branch next) | Blocked defenders stay tied up after the runner passes: DL 74–80% at +1 s (NFL 57%), LB 51–57% (NFL 49%), even with `SHED_PURSUE`. | `release.py` rows in `mechanisms.txt` |
+| Engaged release (defender side of run reps, this branch) | Defenders stay near blockers after the runner passes: DL 74–80% within 1.2 yd of an offensive player at +1 s (NFL 57%). But with `SHED_PURSUE`, DL still in a rep 0.5 s after the crossing are 79 → 56%, below the NFL's proximity rate (66%). The excess is freed linemen who cannot accelerate away, i.e. the start-up row above. | `release.py` rows in `mechanisms.txt`; `dlpursuit.txt` |
 
 ## Next
 
 1. **Release after the runner passes** (this branch, defender side of run
-   reps). Measure why a DL that decides to shed does not separate; the
-   proximity proxy may still count a freed lineman who cannot accelerate.
+   reps). The decision side is in place (`SHED_PURSUE`). What remains is
+   mostly start-up (physics), so the next defense-side step waits on it,
+   apart from the 56% still in a rep, which can be split by why the rep
+   continues.
 2. Re-measure the package once the puller timing (offense) or start-up
    (physics) changes. `LB_READ_STEP` (NFL bite) is the first thing to re-test
    then.
