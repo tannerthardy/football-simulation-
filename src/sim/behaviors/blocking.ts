@@ -492,11 +492,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   line.sort((p, q) => rel(q) - rel(p));
   const claimedDL = new Set<Agent>();
   const claimedLB = new Set<Agent>();
-  const lbNear = (y: number, preferBackside = false): Agent | null => {
+  const lbNear = (y: number, preferBackside = false, reach = Infinity): Agent | null => {
     let best: Agent | null = null;
     let bd = Infinity;
     for (const l of lb) {
-      if (claimedLB.has(l)) continue;
+      if (claimedLB.has(l) || Math.abs(l.pos.y - y) > reach) continue;
       let d = Math.abs(l.pos.y - y);
       if (preferBackside && (l.pos.y - y) * ps > 0) d += 1.5;
       if (d < bd) {
@@ -583,6 +583,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
+    const fb = sim.slot('F');
+    const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+    // Power's lead puller wraps for the first linebacker to show playside,
+    // read inside-out; the PST/PSG combo works to the backside backer
+    // (spread playbook p. 66). Count his backer before combos and climbs do.
+    const leadBacker = scheme === 'power' && fbIsBack && pullers.size
+      ? lb.filter((l) => !claimedLB.has(l) && rel(l) > -0.5).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    if (leadBacker) claimedLB.add(leadBacker);
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
@@ -637,14 +645,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const partner = partners[0];
       const target = partner ? plans.get(partner)!.target : null;
       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
-        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+        // With the playside backer counted for the puller, the double works
+        // to the backside box backer; with none left it stays a double.
+        combo(b, partner, target, leadBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
     }
     // End man on the line on the playside (kick-out target).
     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
     const trapTarget = trapReserved;
-    const fb = sim.slot('F');
-    const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
     // PULL_STEP (experimental, off): the pull step opens to the play side and
     // gains depth on the way, rather than dropping straight back first.
     const pullStep = PULL_STEP ? ps * 0.9 : 0;
@@ -658,7 +666,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (scheme === 'trap') role = 'trap';
       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
       else role = fbIsBack ? 'lead' : 'kick';
-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
+      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
         { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
