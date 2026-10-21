@@ -469,8 +469,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const home = (sim.defAlign.spots[a.slot as DefSlot]?.pos.x ?? sim.los) - sim.los;
     if (home >= 3) depth = Math.max(depth, home - (LB_READ_STEP ? 2 : 1));
   }
-  const scrape = PULL_FLOW && pullSide && flow * pullSide < 0 ? 0 : flow;
-  const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+scrape+a.mind.placementError},sim.t);
+  const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+pullScrape(flow,pullSide)+a.mind.placementError},sim.t);
   const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
   // chased with lateral work planned with his own body (the law every
@@ -501,6 +500,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const facing = job.kind === 'insert' && flowing && Math.abs(vy) > Math.abs(fit.vel.x)
     ? Math.atan2(vy, fit.vel.x) : fit.facing;
   return { ...fit, vel: { x: fit.vel.x, y: vy }, facing };
+}
+
+/** The scrape a fit keeps once he has read a pull toward `pullSide` (0: none).
+ * PULL_FLOW: no scrape against the pull; otherwise unchanged. */
+export function pullScrape(flow: number, pullSide: number): number {
+  return PULL_FLOW && pullSide && flow * pullSide < 0 ? 0 : flow;
 }
 
 /** Counterfactual free fit (diagnostic): `hold` keeps the snap landmark with no
