@@ -158,6 +158,27 @@ than moving the defender, which is a run-blocking question, not the gate.
 Yards after contact also move away from tracking. Not proposed until the
 blocking owner looks at where the block is when the reach happens.
 
+On the run-offense session's blocking (`claude/run-game-v3@4723647` plus this
+patch, its pinned profile, `open-field/arm.mjs`, ace zone 1,200 plays and
+gap 1,600 plays), blocked contacts are not at the line. With the flag off the
+gain at a blocked first contact is 2.7 on gap runs and 2.2 on zone (NFL 3.0).
+With it on:
+
+| | off | `BLOCKED_REACH` | NFL |
+| --- | --- | --- | --- |
+| Blocked first contact, gap / zone | 35% / 40% | 41% / 45% | 46% / 55% |
+| Gain at a blocked first contact, gap / zone (p50) | 2.7 / 2.2 | 2.0 / 2.0 | 3.0 / 3.0 |
+| Run yards p50, gap / zone | 5.11 / 3.75 | 4.72 / 3.50 | |
+| Stuffs, gap / zone | 3.7% / 8.8% | 5.1% / 8.2% | |
+
+The share moves about halfway to tracking, but the contacts it adds come
+earlier than tracking's blocked contacts, so the gain at that contact drops.
+In tracking a blocked defender meets a runner who is already past the line;
+the free-arm reach lets him meet the runner on the way there. Whether that
+comes from reach geometry (0.7 of an arm on every engaged defender, whatever
+his side) or from the blocker's body not taking that arm away is the next
+question. It is still not proposed.
+
 **`PULL_EARLY` (`run-fits.ts` `pullers`).** Backers read run by 0.5–1.0 s
 (`lbtrace.ts`) but the pull read fires about 1.35 s, after the guard has
 been seen a yard off his stance. A backer's key is the guard's first step:
