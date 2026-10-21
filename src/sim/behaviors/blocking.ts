@@ -2033,6 +2033,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
     combo.checkNextRead = sim.t + helper.mind.decisionInterval;
   } else {
     if (combo.helpPolicy) combo.checkSince = -1;
+    if (COMBO_SOLO && !combo.helpPolicy) { readSoloHold(observer, sim, combo); return; }
     if (sim.t < combo.nextRead) return;
     combo.nextRead = sim.t + observer.mind.decisionInterval;
     // A joined pair belongs exclusively to the personal read path. Legacy
@@ -2072,6 +2073,40 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   const candidate = keeperCandidate(observer, sim, combo, e);
   if (candidate) applyCombinationRelease({ ...candidate, t: sim.t,
     cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) + (observer === e.blocker ? .30 : 0) }, sim, combo, true);
+}
+
+/** COMBO_SOLO=1 (default off; on in this branch's pinned profile): the man
+ * decides who stays. A stretch double has no check installation, and its
+ * unjoined state never released: when the man worked into one member (often
+ * the backside one, as the play-side member ran the track past a man who did
+ * not flow), that member held him alone while the other ran the track
+ * touching nobody and the backer the double owed ran free. With the flag, a
+ * free member who sees his partner holding the man alone and securely,
+ * through his own read beat, climbs to the backer once the backer shows (the
+ * joined read's keeper and backer evidence). Inside/split-zone doubles keep
+ * their check installation. */
+const COMBO_SOLO = process.env.COMBO_SOLO === '1';
+
+function readSoloHold(observer: Agent, sim: PlaySim, combo: Combination): void {
+  const e = combo.defender.engagement, keeper = e?.blocker;
+  // The read belongs to the free member's eyes; the holder's ticks leave it.
+  if (keeper === observer) return;
+  if (!e || e.type !== 'run' || !keeper || !combo.members.includes(keeper) || e.helpers.length
+    || keeper.engagement !== e || observer.engagement || observer.isDown(sim.t) || keeper.isDown(sim.t)
+    || combo.defender.isDown(sim.t) || sim.world.joints.some((j) => j.a === observer.body || j.b === observer.body)) {
+    combo.checkSince = -1;
+    return;
+  }
+  if (sim.t < (combo.checkNextRead ?? 0)) return;
+  combo.checkNextRead = sim.t + observer.mind.decisionInterval;
+  const candidate = keeperCandidate(observer, sim, combo, e);
+  if (!candidate) { combo.checkSince = -1; return; }
+  if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
+  if (sim.t - combo.checkSince! < .15) return;
+  const backer = sim.see(observer, combo.backer!);
+  if (!backerShows(observer, sim, backer)) return;
+  applyCombinationRelease({ ...candidate, t: sim.t,
+    cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) }, sim, combo, true);
 }
 
 /** A release changes jobs/contact ownership, never a player's body or capacity. */
