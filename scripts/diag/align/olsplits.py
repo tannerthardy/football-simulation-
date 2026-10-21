@@ -6,7 +6,7 @@ formation (gun, under center) and the team, or is it one fixed set?
 Splits are centre-to-centre lateral gaps between adjacent OL (and tackle to
 inline TE); depth is yards behind the ball (centre's front +0.3). Play side
 = the runner's lateral move from handoff to handoff + 1 s (runs only).
-usage: olsplits.py FILE [FILE ...]"""
+usage: olsplits.py FILE [FILE ...] [--kind run|pass]"""
 import csv, glob, gzip, json, sys
 from collections import defaultdict
 
@@ -20,11 +20,12 @@ for path in glob.glob('data/raw/bdb2025/**/plays.csv', recursive=True) + glob.gl
     for r in csv.DictReader(open(path)):
         ctx[f"{r['gameId']}-{r['playId']}"] = r
 
-for path in sys.argv[1:]:
+KIND = sys.argv[sys.argv.index('--kind') + 1] if '--kind' in sys.argv else 'run'
+for path in [a for a in sys.argv[1:] if a.endswith('.gz')]:
     g = defaultdict(lambda: defaultdict(list))
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
-        if raw.get('kind') != 'run': continue
+        if raw.get('kind') != KIND: continue
         xy, P = raw['xy'][0], raw['players']
         pos = lambda i, k=0: (raw['xy'][k][2 * i], raw['xy'][k][2 * i + 1]) if k < len(raw['xy']) and raw['xy'][k][2 * i] is not None else None
         ol = sorted([i for i, p in enumerate(P) if p['side'] == 'O' and p['group'] == 'OL' and pos(i)], key=lambda i: pos(i)[1])
@@ -44,6 +45,7 @@ for path in sys.argv[1:]:
         cell = raw.get('cell') or {}
         keys = ['all', f"concept {FAM(cell.get('concept'))}", 'gun' if gun else 'under center']
         if cx: keys.append('short (1-2 to go)' if togo <= 2 else 'normal')
+        if cx and cx.get('down') in ('3', '4') and togo >= 7: keys.append('3rd/4th, 7+ to go')
         if cx.get('possessionTeam'): keys.append('team ' + cx['possessionTeam'])
         sp = [pos(ol[k + 1])[1] - pos(ol[k])[1] for k in range(4)]  # left to right
         depth = [los - pos(i)[0] for i in ol]

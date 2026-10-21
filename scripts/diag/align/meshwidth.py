@@ -53,6 +53,9 @@ for path in files:
             for t in (.3, 1.0):
                 p = pos(i, kh + int(round(t / dt)))
                 if p: st[f'{nm} lat +{t}s'].append((p[1] - pos(i, 0)[1]) * ps)
+            for t in (.5, 1.0, 1.5):  # from the snap
+                p = pos(i, int(round(t / dt)))
+                if p: st[f'{nm} lat snap+{t}s'].append((p[1] - pos(i, 0)[1]) * ps)
         st['back depth at handoff'].append(los - pos(car, kh)[0])
         st['handoff s'].append(h)
     n = len(st['handoff s'])

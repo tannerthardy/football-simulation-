@@ -100,6 +100,14 @@ describe('OL_ALIGN: the called line', () => {
     expect(lineTightening(true, 1, 1)).toBeGreaterThan(lineTightening(false, 3, 1));
     expect(lineTightening(false, 3, 1)).toBeGreaterThan(lineTightening(false, 1, 1));
     expect(lineTightening(false, 1, 1)).toBe(0);
+    const { lineDepth } = await import('../src/playbook/alignment.js');
+    // Under center the stance does not tip run or pass; off the ball a
+    // pass sets the tackles deeper; a passing down sets deeper for both.
+    expect(lineDepth(false, true, 1, 10)).toEqual(lineDepth(false, false, 1, 10));
+    expect(lineDepth(true, true, 1, 10).T).toBeGreaterThan(lineDepth(true, false, 1, 10).T + .1);
+    expect(lineDepth(true, false, 3, 8).G).toBeGreaterThan(lineDepth(true, false, 1, 10).G);
+    expect(lineDepth(false, false, 3, 1).T).toBeLessThan(lineDepth(false, false, 1, 10).T);
+    expect(lineSet(1.7, 0, lineDepth(true, true, 3, 8))!.depth.T).toBeCloseTo(1.19, 9);
     const normal = lineSet(1.7)!, short = lineSet(1.7, .08)!;
     expect(normal.cg + normal.gt).toBeCloseTo(3.4, 9);
     expect((normal.cg + normal.gt) - (short.cg + short.gt)).toBeCloseTo(.16, 9);

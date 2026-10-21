@@ -34,12 +34,29 @@ const LEGACY_LINE: LineSet = { cg: 1.3, gt: 1.3, tte: 1.3, depth: { C: .55, G: .
 
 /** OL_ALIGN: the set a team calls: its base split (a coaching rule) for
  * every split, tightened by `tight` yd per split for the package and the
- * situation (see `lineTightening`). Depths stay tracked. Undefined with the
- * flag off (the installed line). */
-export function lineSet(split: number | undefined, tight = 0): LineSet | undefined {
+ * situation (see `lineTightening`), at the depth the call sets (see
+ * `lineDepth`; the tracked under-center depth when none is given).
+ * Undefined with the flag off (the installed line). */
+export function lineSet(split: number | undefined, tight = 0, depth?: LineSet['depth']): LineSet | undefined {
   if (!OL_ALIGN) return undefined;
   const base = split ?? (TRACKED_LINE.cg + TRACKED_LINE.gt) / 2;
-  return { cg: base - tight - .01, gt: base - tight + .01, tte: TRACKED_LINE.tte - tight, depth: { ...TRACKED_LINE.depth } };
+  return { cg: base - tight - .01, gt: base - tight + .01, tte: TRACKED_LINE.tte - tight, depth: { ...(depth ?? TRACKED_LINE.depth) } };
+}
+
+/** How deep the line sets, from the call. Tracked depths behind the ball
+ * (2022, guard / tackle; scripts/diag/align/olsplits.py --kind run|pass):
+ * under center the same for runs and passes (0.83 / 0.98 and 0.83 / 1.00),
+ * so the stance does not tip the play. Off the ball the line sits deeper
+ * (gun runs 0.85 / 1.04), deeper again when it will pass (0.92 / 1.15: the
+ * tackles' head start on the rush), deeper on third or fourth and 7+ for
+ * runs and passes alike (0.93 / 1.10, 0.97 / 1.18) and shallower in short
+ * yardage (runs 0.80 / 0.94). */
+export function lineDepth(gun: boolean, pass: boolean, down: number, distance: number): LineSet['depth'] {
+  const long = down >= 3 && distance >= 7, short = distance <= 2;
+  const g = (gun ? .02 : 0) + (gun && pass ? .07 : 0) + (long ? .06 : 0) - (short ? .03 : 0);
+  const t = (gun ? .06 : 0) + (gun && pass ? .11 : 0) + (long ? .04 : 0) - (short ? .04 : 0);
+  const d = TRACKED_LINE.depth;
+  return { C: d.C, G: d.G + g, T: d.T + t, TE: d.TE };
 }
 
 /** How much a line tightens per split, from the call. Tracked widths (2022,
