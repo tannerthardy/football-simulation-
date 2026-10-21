@@ -217,6 +217,55 @@ calls without definitions; rules decoded with the Rams glossary
 - **Not given anywhere:** release timing, pistol depth, bang/bend/bounce
   criteria, and lineman step and pull mechanics.
 
+## What the Ravens OL manual gives us (run game)
+
+A PowerPoint export titled "94 - OL Individual Section" (created 2018,
+120 pp., text layer). A technique manual: it states footwork, landmarks and
+the double-team release rule. Physical pages, our wording, short quotes.
+
+- **Stance** (p. 8): guard stagger, kick toe to the midpoint of the post foot;
+  tackle stagger, kick toes to the post heel or deeper; at most 20% weight on
+  the down hand; "We cannot tip run or pass." Two-point stance for tackles to
+  an open end, in two-minute and in the gun.
+- **Splits** (p. 8): lateral *normal* 18 in, *tite* 1 ft (goal line and short
+  yardage), *wide* 2–2½ ft (game plan). That is about a foot narrower than
+  the Browns (2½ ft) and Rams (2 ft) templates; systems differ. Vertical:
+  "Off" = eyes through the center's beltline (normal), "On" = down hand on the
+  center's toe, "Crowd" for goal line.
+- **Drive block** (p. 9): "2 Step Down, Strike", with the second step on the
+  ground before contact.
+- **Outside zone** (pp. 17–18): 18-inch splits, aligned off the ball.
+  Landmarks: covered man the DL's playside armpit, uncovered man the middle
+  of the DL. **"Usually 3 step timing on Zone combos up to 2nd level."** The
+  uncovered man watches the linebacker peripherally and overtakes the DL; if
+  there is "no color of DL to overtake by 3rd step", he feeds the DL over and
+  drives up to the linebacker's playside number. If the DL hangs inside, the
+  roles flip: the covered man feeds the DL inside and drives to the
+  linebacker, and the uncovered man overtakes the DL. Back: 8 yd, timing
+  step, landmark the outside butt of the (ghost) TE, read the first DL
+  outside-in to the next DL inside, press the line, one cut.
+- **Inside zone** (p. 20): the covered man takes a lateral or lead step to get
+  his helmet past the DL's midline; the uncovered man keys the DL's head for a
+  slant or pinch and works straight up to cover the linebacker square. If the
+  DL hangs inside, the uncovered man one-hand feeds him to the covered man;
+  if the DL plays toward the uncovered man, the covered man carries the DL
+  down to him.
+- **Vertical double team** (lead and power, p. 33; drill p. 102): both
+  blockers "Eyes off hip of DL for LB"; **"LB to Me – Feed (push) DL to
+  partner and climb LB square. LB Away from Me – accelerate feet to drive
+  eyes across and overtake DL."** So whichever blocker the linebacker flows
+  toward climbs, and the other keeps the DL. The drill asks for "4 hands to
+  defenders chest".
+- **Gap scheme backside** (p. 30): the covered man slams the inside half, then
+  works through the heels of the next DL inside to the backside linebacker.
+  "Always block PSLB run through and force BSLB over top."
+- **Power pull** (p. 31): a 1-foot step with the backside foot to the crotch
+  midline, crossover with hips square, "Eyes on Mike LB", enter vertically
+  through the first hole past the PSG and block the linebacker's inside
+  number; the puller must know whether the guard is covered (Over) or not
+  (Under). Pulling points (p. 119): step in the direction of the pull, low
+  plane, dip the inside shoulder at the turn, accelerate on contact.
+
 ## Extraction record
 
 ```yaml
