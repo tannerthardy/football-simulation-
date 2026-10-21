@@ -101,4 +101,31 @@ describe('OL_SPLITS / OL_STAGGER line alignment', () => {
     expect(lineDepth(.6, .83)).toBeCloseTo(.88, 12);
     expect(lineDepth(.65, .98) - .98).toBeCloseTo(.1, 12);
   });
+
+  it.each([false, true])('splits=%s: the line tightens on third or fourth and a yard, not on first', async (on) => {
+    vi.stubEnv('OL_SPLITS', on ? '1' : '0');
+    vi.resetModules();
+    const { alignOffense } = await import('../src/playbook/alignment.js');
+    const width = (down: number, distance: number) => {
+      const a = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y, { kind: 'run', down, distance });
+      return Math.abs(a.spots.LT.pos.y - a.spots.RT.pos.y);
+    };
+    expect(width(1, 1)).toBeCloseTo(on ? 6.2 : 5.2, 9);
+    expect(width(3, 1)).toBeCloseTo(on ? 2 * (1.45 + 1.47) : 5.2, 9);
+  });
+
+  it.each([false, true])('stagger=%s: guards and tackles stand deeper to pass than to run', async (on) => {
+    vi.stubEnv('OL_STAGGER', on ? '1' : '0');
+    vi.resetModules();
+    const { alignOffense } = await import('../src/playbook/alignment.js');
+    const depth = (kind: 'pass' | 'run', down = 1, distance = 10) => {
+      const a = alignOffense(FORMATION_BY_ID.gun_doubles_11, false, 40, CENTER_Y, { kind, down, distance });
+      return [40 - a.spots.LG.pos.x, 40 - a.spots.LT.pos.x, 40 - a.spots.C.pos.x];
+    };
+    if (!on) { expect(depth('pass', 3, 8)).toEqual(depth('run')); return; }
+    const [pg, pt] = depth('pass'), [lg, lt] = depth('pass', 3, 8), [rg, rt, rc] = depth('run');
+    expect([pg, pt]).toEqual([.9, 1.1].map(v => expect.closeTo(v, 9)));
+    expect([lg, lt]).toEqual([.9, 1.17].map(v => expect.closeTo(v, 9)));
+    expect([rg, rt, rc]).toEqual([.82, .97, .43].map(v => expect.closeTo(v, 9)));
+  });
 });

@@ -172,13 +172,13 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
       aimY = gapY(sim.offAlign, 'B', ps);
       break;
     case 'C':
-      aimY = by + ps * lineOffset(teOnPlayside ? 4.3 : 3.4, teOnPlayside);
+      aimY = by + ps * lineOffset(teOnPlayside ? 4.3 : 3.4, teOnPlayside, sim.offAlign.line);
       break;
     case 'D':
       aimY = gapY(sim.offAlign, 'D', ps);
       break;
     case 'edge':
-      aimY = by + ps * lineOffset(8, teOnPlayside);
+      aimY = by + ps * lineOffset(8, teOnPlayside, sim.offAlign.line);
       break;
   }
   const aim = { x: los + 0.6, y: aimY };

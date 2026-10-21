@@ -26,7 +26,7 @@ import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { applyCheck, resolveZeus } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -73,6 +73,9 @@ export interface PlaySetup {
   recordEvery?: number;
   /** Down (for the QB's pre-snap checks). */
   down?: number;
+  /** Each team's alignment habits (league/team.ts `alignStyle`); none = the scheme alone. */
+  offStyle?: AlignStyle;
+  defStyle?: AlignStyle;
   /** Rule 8 fumble context at the snap; the warning must already have occurred. */
   afterTwoMinuteWarning?: boolean;
   isTry?: boolean;
@@ -99,6 +102,8 @@ export class PlaySim {
   readonly agents: Agent[] = [];
   readonly offense: Agent[] = [];
   readonly defense: Agent[] = [];
+  /** The defense's alignment habits, kept for its pre-snap stem. */
+  private readonly defStyle?: AlignStyle;
   readonly bySlot = new Map<string, Agent>();
   readonly los: number;
   readonly ballY: number;
@@ -227,13 +232,15 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
-    this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
+    this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     const zeus = setup.defCall.zeus;
     const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;
     this.defCall = zeus ? called : applyCheck(called, formationKey(this.offAlign));
     const defSlots = Object.keys(setup.defense) as DefSlot[];
-    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs);
+    this.defStyle = setup.defStyle;
+    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, setup.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {
@@ -321,7 +328,7 @@ export class PlaySim {
     if (stem && !stem.from.personnel.includes(this.defCall.personnel)) throw new Error('Stem front requires compatible defensive personnel');
     const targets = new Map<Agent,Vec2>();
     if (stem) {
-      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs);
+      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};

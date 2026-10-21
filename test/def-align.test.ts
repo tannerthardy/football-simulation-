@@ -1,14 +1,16 @@
-/** DEF_ALIGN (experimental, off): the secondary aligns as tracked. Pure
- * alignment from gun doubles at midfield: corners over the #1s, safeties by
- * shell. Measured shade is outward from the #1 (negative = inside). */
+/** DEF_ALIGN (experimental, off): the secondary aligns by its job, as
+ * tracked by PFF coverage assignment. Pure alignment from gun doubles:
+ * corners over the #1s, safeties by role. Shade is outward from the #1
+ * (negative = inside). Receivers stand as WR_ALIGN tracks them unless a case
+ * needs the installed 18 yd split. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y } from '../src/core/field.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function align(flag: string, coverage: string, ballY = 26.65) {
+async function align(flag: string, coverage: string, ballY = 26.65, wr = '1') {
   vi.stubEnv('DEF_ALIGN', flag);
-  // The installed receiver splits; WR_ALIGN moves the #1s off the sideline.
-  vi.stubEnv('WR_ALIGN', '0');
+  vi.stubEnv('WR_ALIGN', wr);
   vi.resetModules();
   const { alignOffense, alignDefense } = await import('../src/playbook/alignment.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
@@ -26,30 +28,53 @@ async function align(flag: string, coverage: string, ballY = 26.65) {
 
 describe('DEF_ALIGN', () => {
   it('off: installed spots (two-high corners 6 yd and inside, safeties 12 yd and 18 apart)', async () => {
-    const f = await align('0', 'cover4');
+    const f = await align('0', 'cover4', 26.65, '0');
     expect(f.cs).toEqual({ depth: 6, shade: -0.8 });
     expect(f.fs.x - 40).toBe(12);
     expect(Math.abs(f.fs.y - f.ss.y)).toBeCloseTo(18, 6);
   });
 
-  it('on: off zone corners give 7 yd and align outside; two-high safeties 13 yd, 13 apart', async () => {
+  it('on: quarters corners 7.3 and outside; quarters safeties 12 deep, 13.3 apart', async () => {
     const f = await align('1', 'cover4');
-    expect(f.cs).toEqual({ depth: 7, shade: 0.7 });
-    expect(f.cw).toEqual({ depth: 7, shade: 0.7 });
-    expect(f.fs.x - 40).toBe(13);
-    expect(Math.abs(f.fs.y - f.ss.y)).toBeCloseTo(13, 6);
+    expect(f.cs).toEqual({ depth: 7.3, shade: 0.8 });
+    expect(f.cw).toEqual({ depth: 7.3, shade: 0.8 });
+    expect(f.fs.x - 40).toBe(12);
+    expect(Math.abs(f.fs.y - f.ss.y)).toBeCloseTo(13.3, 6);
   });
 
-  it('on: a pressed man corner sits about head-up at 1.3 yd; the single-high safety at 14', async () => {
-    const f = await align('1', 'cover1');
-    expect(f.cs).toEqual({ depth: 1.3, shade: 0.15 });
+  it('on: Cover 2 hard corners 4 yd and outside; halves safeties 14 deep, 13.8 apart', async () => {
+    const f = await align('1', 'cover2');
+    expect(f.cs).toEqual({ depth: 4, shade: 0.5 });
     expect(f.fs.x - 40).toBe(14);
+    expect(Math.abs(f.fs.y - f.ss.y)).toBeCloseTo(13.8, 6);
+  });
+
+  it('on: Cover 3 corners 7.3 and outside; the middle safety stays in the middle on either hash', async () => {
+    for (const ballY of [HASH_LEFT_Y, HASH_RIGHT_Y]) {
+      const f = await align('1', 'cover3', ballY);
+      expect(f.cs).toEqual({ depth: 7.3, shade: 0.8 });
+      expect(f.fs.x - 40).toBeCloseTo(14.5, 9);
+      expect(f.fs.y).toBeCloseTo(CENTER_Y, 9);
+    }
+  });
+
+  it('on: two-high safeties hold the field, shading only part way to the ball', async () => {
+    const mid = await align('1', 'cover2', CENTER_Y), hash = await align('1', 'cover2', HASH_LEFT_Y);
+    const centre = (g: typeof mid) => (g.fs.y + g.ss.y) / 2;
+    expect(centre(hash) - centre(mid)).toBeCloseTo(.36 * (HASH_LEFT_Y - CENTER_Y), 9);
+  });
+
+  it('on: a pressed man corner sits about head-up at 1.3 yd; the man-free safety 14.7 deep, shading to the ball', async () => {
+    const f = await align('1', 'cover1', HASH_LEFT_Y);
+    expect(f.cs).toEqual({ depth: 1.3, shade: 0.15 });
+    expect(f.fs.x - 40).toBeCloseTo(14.7, 9);
+    expect(f.fs.y - CENTER_Y).toBeCloseTo(.34 * (HASH_LEFT_Y - CENTER_Y), 9);
   });
 
   it('on: against a receiver near the sideline the corner takes the inside', async () => {
     const f = await align('1', 'cover4', 16);
-    // The ball on the left hash puts the weak #1 within 8 yd of the near sideline.
+    // The ball outside the left hash leaves the weak #1 within 9 yd of the near sideline.
     const near = [f.cs, f.cw].find(c => c.shade < 0)!;
-    expect(near.shade).toBe(-0.6);
+    expect(near.shade).toBe(-0.2);
   });
 });

@@ -29,7 +29,83 @@ allows, i.e. helmets breaking the center's waist).
 | Two-high safeties | ~13 deep, ~13 apart | 12 deep, 18 apart |
 | Single-high safety | 14.6 | 13 |
 
+## Scheme-sound alignment (user request: "people do it differently")
+
+The first pass placed bodies at all-snap averages. Alignment is a coaching
+decision made per call and per team, so the averages hid scheme. The 2022
+snap frame now carries each player's PFF coverage assignment, route, run
+concept, down and distance, formation and team. It comes from
+`scripts/diag/align/nfl_snapframe.py`, raw data read once into ignored
+`out/align/`. `scripts/diag/align/nfl_scheme.py` summarizes it; the sim side
+is `scripts/diag/align/sim_scheme.ts`. Coaching sources agree on the rules
+the numbers show.
+
+**Varies with the call (now modeled, under the existing flags):**
+
+| Job (PFF assignment) | NFL depth, shade | Rule |
+| --- | --- | --- |
+| Hard / flat corner (FL/FR: Cover 2, Tampa, half side of 6) | 4.0, +0.5; pressed 25% | reroute #1, funnel inside |
+| Deep-third / outside-quarter corner (3L/R, 4OL/R) | 7.3, +0.8 | inside help: take away outside |
+| Deep-half corner (2L/R) | 8.2, ~0 | a coverage's explicit preset still wins |
+| Curl-flat corner (CFL/R) | 4.5, 0 | |
+| Hook seat (slot) (HCL/R) | 4.5, −0.5 | |
+| Man corner | press 1.3–1.6 (+0.15); off ~6 (2-Man inside −0.2) | |
+| Any corner, #1 within 9 yd of the sideline | shade −0.2 | the sideline is the help |
+| Halves safety (2L/R) | 14.0 deep, 6.9 off the middle, shading 0.36 of the ball's offset | |
+| Quarters safety (4IL/R) | 12.0 deep, 6.65 off the middle, shading 0.45 | the run-fitting safety |
+| Deep-middle (thirds) safety (3M) | 14.4, in the middle whatever the hash | |
+| Man-free safety (DF) | 14.7, shading 0.34 toward the ball | |
+
+Receivers set the #1's split by his route. The table is room to his
+sideline, alone on his side / with other receivers:
+
+| Route | Room (yd) |
+| --- | --- |
+| go, fade, comeback | 10.9 / 10.0 |
+| slant | 10.2 / 9.9 |
+| hitch, curl, stick | 14.0 / 10.6 |
+| in, dig | 14.6 / 10.4 |
+| post, seam | 14.6 / 11.2 |
+| out | 14.7 / 15.8 |
+| corner | 15.4 / 15.3 |
+| crossers | 15.8 / 16.8 |
+| flat, arrow | 15.1 / 17.6 |
+| runs | 15.0 / 10.8 |
+
+That is the coaching rule: wide to run vertical or inside, reduced to break
+out or across. #2 stands at 0.61 of the #1's split.
+
+The line tightens only on third or fourth down and a yard or less: tackle to
+tackle 5.85 against 6.2 (×0.94; on first and second down and a yard, no
+change). Under the stagger, guards and tackles stand deeper to pass:
+
+| Line depth (stagger) | Dropback | Run |
+| --- | --- | --- |
+| Tackles | 1.10 (1.17 on 3rd/4th and long) | 0.97 |
+| Guards | 0.90 | 0.82 |
+
+**Constant on purpose:** line splits by run concept and on dropbacks
+(inside zone, outside zone, power, counter, dropback all 1.54 ± 0.05 yd C–G).
+Teams do not tip the call with the line. Defensive linemen 0.93–0.98 yd in
+every situation. Off-ball backers 4.4–4.6 yd except 3rd/4th and short (4.0;
+not modeled yet).
+
+**People do it differently (team habits):** after removing the scheme, team
+medians still differ by one sd of:
+- receivers' room 0.8 yd;
+- line width 4.9%;
+- zone corners' depth 0.85 yd (press-bail teams to off teams: −2.5 to +1.2);
+- deep safeties' depth 0.95 yd.
+
+`alignStyle(team)` gives each team one fixed draw of each, seeded by its id
+so roster generation is untouched. `game.ts` passes it to every snap; each
+habit applies only under its flag. Man press share also differs by team
+(14–74%); in the sim that comes from coverage selection (`manRate`,
+coverage system), not alignment.
+
 ## `DEF_ALIGN` (off): the secondary as on film
+
+*First pass; its single averages are replaced by the scheme rules above. Evidence below is for that pass.*
 
 A pressed corner sits about head-up at 1.3 yd; off, he gives 6 yd in man and
 7 in zone and takes the shoulder his technique plays (outside in zone, the
@@ -46,6 +122,8 @@ metrics, guard 12/12; pass rows unchanged within noise (separation at 1.5 s
 2.58 → 2.53, time to throw 2.40 → 2.45, pressure 20 → 18%).
 
 ## `WR_ALIGN` (off): receivers split as tracked
+
+*First pass; its single averages are replaced by the scheme rules above. Evidence below is for that pass.*
 
 A lone #1 keeps about 13.5 yd from his sideline wherever the ball is, about 11
 with others to his side (minimum 8 from the ball); a #2 stands at 0.58 of the

@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 // These bookkeeping witnesses replay plays whose scramble and run outcomes
-// depend on the installed receiver splits and line; WR_ALIGN, OL_SPLITS and
-// OL_STAGGER move those bodies and with them the QB's options. Pin the installed
-// geometry (read at import).
-vi.hoisted(() => { process.env.WR_ALIGN = '0'; process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
+// depend on the installed alignment; WR_ALIGN, OL_SPLITS, OL_STAGGER and
+// DEF_ALIGN move those bodies and with them the QB's options. Pin the
+// installed geometry (read at import).
+vi.hoisted(() => { process.env.WR_ALIGN = '0'; process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.DEF_ALIGN = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';
