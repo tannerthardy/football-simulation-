@@ -16,8 +16,8 @@ for line in gzip.open(path, 'rt'):
     raw = json.loads(line); raw = raw.get('common', raw) if 'common' in raw else raw
     if raw.get('kind') != 'pass' or raw.get('target') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
-    tc = (raw.get('events') or {}).get('catch')
-    if tc is None: continue
+    tc = (raw.get('events') or {}).get('catch'); tt = (raw.get('events') or {}).get('pass_forward')
+    if tc is None or tt is None or tc <= tt: continue
     fam = coverage_family((raw.get('cell') or {}).get('coverage'))
     if fam != 'zone': continue
     p = Play(raw); r = raw['target']; k = p.k(tc); end = min(p.frames - 1, int(p.end / p.dt + 1e-9))
@@ -30,14 +30,15 @@ for line in gzip.open(path, 'rt'):
     yac = (p.pos(r, end)[0] or rx) - rx
     g = o.setdefault('1 in front' if len(front) == 1 else '2+ in front', {'dist': [], 'yac': [], 'rows': {}})
     g['dist'].append(p.dist(d, r, k)); g['yac'].append(yac)
-    for tag, dt in (('catch', 0), ('+0.3', .3), ('+0.6', .6), ('+1.0', 1.0)):
-        kk = p.k(tc + dt)
+    for tag, at in (('throw', tt), ('throw+0.3', tt + .3), ('catch', tc), ('+0.3', tc + .3), ('+0.6', tc + .6), ('+1.0', tc + 1.0)):
+        if tag == 'throw+0.3' and at >= tc: continue
+        kk = p.k(at)
         if kk > end - 1: continue
         a, b = max(0, kk - 2), min(end, kk + 2)
         (xa, ya), (xb, yb) = p.pos(d, a), p.pos(d, b)
         if None in (xa, xb): continue
         vx, vy = (xb - xa) / ((b - a) * p.dt), (yb - ya) / ((b - a) * p.dt)
-        cx, cy = p.pos(r, kk); x, y = p.pos(d, kk)
+        cx, cy = p.pos(r, max(kk, k)) if tag.startswith('throw') else p.pos(r, kk); x, y = p.pos(d, kk)
         if cx is None: continue
         L = math.hypot(cx - x, cy - y) or 1
         row = g['rows'].setdefault(tag, {'to': [], 'down': [], 'gap': []})
@@ -46,7 +47,7 @@ print(path.split('/')[-1][:26], '(zone catches; nearest defender in front of the
 for key in sorted(o):
     g = o[key]
     print(f"  {key}: {len(g['yac'])} catches, distance at catch p50 {q(g['dist'])}, YAC p50/p90 {q(g['yac'])}/{q(g['yac'], .9)}")
-    for tag in ('catch', '+0.3', '+0.6', '+1.0'):
+    for tag in ('throw', 'throw+0.3', 'catch', '+0.3', '+0.6', '+1.0'):
         if tag in g['rows']:
             r = g['rows'][tag]
-            print(f"    {tag:5s} toward the receiver p25/50/75 {q(r['to'], .25)}/{q(r['to'])}/{q(r['to'], .75)} yd/s | downfield (retreating) p50 {q(r['down'])} | gap p50 {q(r['gap'])}")
+            print(f"    {tag:9s} toward the receiver p25/50/75 {q(r['to'], .25)}/{q(r['to'])}/{q(r['to'], .75)} yd/s | downfield (retreating) p50 {q(r['down'])} | gap p50 {q(r['gap'])}")
