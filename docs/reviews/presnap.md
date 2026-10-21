@@ -61,6 +61,27 @@ Concept barely moves the line (zone play-side guard-tackle split 1.61 vs
 backside 1.53; gap 1.55 both). Guards set about 0.55 yd and tackles 0.7 yd behind the center's
 depth, a little shallower in short yardage.
 
+### The tracked line in games (`OL_ALIGN=1`, 16 games each, seeds 301-316)
+
+The first export with the tracked line ended near 14-12: the installed-snap
+neutral-zone check flagged the center whenever his body reached the ball's
+line, so nearly every snap drew offside on the offense (201 in one game).
+The snapper may be over the ball; with that exemption (`presnap-rules.ts`,
+no change with the installed line):
+
+| Branch profile, games | installed line | tracked line by team |
+|---|---|---|
+| Points per game (both teams) | 83.6 | 70.8 |
+| Runs: mean / median / losses / 20+ | 8.83 / 4.19 / 11.7% / 10.1% | 8.26 / 3.98 / 8.8% / 7.4% |
+| Passes: mean / median / negative | 8.01 / 4.34 / 12.3% | 7.26 / 3.38 / 15.3% |
+| Nearest defender to the QB at the throw | 3.86 yd | 2.90 (NFL 2.96) |
+| Line depth given at 2 s | 2.90 | 2.48 (NFL 3.04) |
+
+By concept (about 100 runs each, noisy): counter losses 24 -> 15%, trap
+11 -> 1%, draw 47 -> 31%, wide zone 11 -> 6%; power 10 -> 15% and inside
+zone 4 -> 8%. Scoring stays far above the NFL's (about 44) either way; the
+long-run tail is a separate, known problem.
+
 ## The defense: NFL fronts by shape, and ours by the front called
 
 NFL runs (2022, 6,222): four men on the line on 50% of snaps, five on 37%
