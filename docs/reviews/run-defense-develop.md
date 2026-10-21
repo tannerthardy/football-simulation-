@@ -61,6 +61,12 @@ measured here, then withdrawn from this branch (normal revert `cb53813`).
   (panel cells, `depth/holdtrace.ts`, `depth/holds.ts`, this contract) is
   handed to the contact/physics owner. The flag stays on the research host.
 
+## Pre-snap alignment
+
+Default-off `DEF_ALIGN`, `WR_ALIGN`, `OL_SPLITS` (and research-only
+`OL_STAGGER`) in `alignment.ts`, at the user's request; see
+[pre-snap-alignment.md](pre-snap-alignment.md).
+
 ## Diagnostics (observation only)
 
 `scripts/diag/depth/`: `drives.ts` (drives, results, points by scoring play),
