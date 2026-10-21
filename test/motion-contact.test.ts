@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Recorded with the flat kick track aimed at the end's seen spot. KICK_INTERCEPT
+// and LOG_CONTACT (on in the pinned profile) aim it where he will be and can
+// reach him; test/kick-log.test.ts covers them. Pin them off here.
+vi.hoisted(() => { for (const k of ['KICK_INTERCEPT', 'LOG_CONTACT']) process.env[k] = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { motionContact, motionContactLoads, type MotionContactInput } from '../src/lab/motion-contact.js';
 import type { Body } from '../src/physics/kinematics.js';

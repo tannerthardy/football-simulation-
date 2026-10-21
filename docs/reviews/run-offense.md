@@ -55,6 +55,8 @@ on the lab cases (zone `ace_12` iz/oz/wz 1,200 plays; gap
 | `RUN_PROJECT` | `carrier.ts` `runReadAim` | The entry route check meets each body where his seen motion puts him (at most 0.6 s ahead). |
 | `LOG_READ` | `carrier.ts` `runReadAim` | Kick or log is read from the seen kicker against his installed end, not the kicker's own tag. |
 | `LANE_DEPTH` | `carrier.ts` `runReadAim` | A closed lane also costs the yards behind the line where the runner is met on the way. |
+| `KICK_INTERCEPT` | `blocking.ts` pull track | A kick/trap puller's flat track aims where the end will be when he can get there (the climbs' intercept law). |
+| `LOG_CONTACT` | `blocking.ts` `readLogAtContact` | A kicker whose end crossed his face as they met logs him: the drive turns inward. |
 
 No capacity, rating, contact law or defensive controller changed. The gait
 law (`locomotionAccel`) changed only under `GAIT_STEP`.
@@ -256,8 +258,8 @@ the gait):
 |---|---|---|---|---|
 | Ace zone TVD / losses | 5.5 / 6.3% | 7.1 / 6.4% | 5.4 / 6.2% | 7.6% |
 | Ace stretch losses, inside-zone median | 9.2%, 4.1 | 8.0-9.8%, 3.6 | 8.2-8.5%, 4.4 | |
-| Gap TVD / losses | 14.5 / 2.8% | 12.2 / 7.4% | 15.9 / 6.4% | 7.4% |
-| Counter / power losses | 4.2 / 2.0% | 21.0 / 5.8% | 18.0 / 3.0% | |
+| Gap TVD / losses | 14.5 / 2.8% | 12.2 / 7.4% | 18.1 / 3.5% | 7.4% |
+| Counter / power losses (median) | 4.2 / 2.0% (4.6 / 6.3) | 21.0 / 5.8% (4.1 / 4.7) | 6.0 / 3.0% (5.6 / 5.3) | |
 | Shotgun TVD / losses | 9.8 / 7.7% | 13.3 / 16.3% | 9.0 / 5.8% | 7.6% |
 
 8 games (`sim-fc1`): median run 3.72 → 3.95 yd (NFL 3.0), after contact 2.42
@@ -298,13 +300,27 @@ the gait):
   -2.2/-2.4; `out/dldepth.py`), so penetration itself is not the shotgun cause.
   Off.
 
-Still open: counter at 18% losses. The end beats the log and penetrates 1.3 yd
-(the kicker meets him at 1.9 s outside and behind); the back's actual path
-curves about a yard shallower than the route he chose. Next.
+- **The counter kicker overran his man (`KICK_INTERCEPT LOG_CONTACT`).** The
+  flat pull track aimed 0.65 yd inside the end's *seen* spot. Against a
+  squeezing end that station slides toward a puller already running flat at
+  3.6 yd/s, so he arrived 0.3-0.8 yd outside the end: a log nobody called.
+  The approach's log check (a delayed picture, a quarter yard ahead of
+  contact) never fired, and the engagement kept the kick-out drive from
+  outside the man, so the end slid past into the backfield and took the back
+  from the block. The track now aims where the end will be (the climbs'
+  intercept law); a kicker the end still crosses at contact logs him and
+  drives him inside. Counter losses 18.0 → 9.8% (intercept) → 6.0% (both),
+  median 4.6 → 5.6 yd (`out/counterprobe.ts`: log plays 26 → 3% lost).
+  Meeting geometry stays on tracking (`kickout-timing.py`: kicker inside the
+  end at the meeting 97%, NFL 84%; met at 2.0 s, NFL 1.8). Gap TVD 15.9 →
+  18.1: losses now fall below tracking (3.5%, NFL 7.4) and the 4-9 yd band
+  stays at 50% (NFL 39%); the 40+ tail (8.9%, NFL 2.0) is pursuit.
 
 Contracts: `test/rb-away.test.ts`, `test/run-arms.test.ts`,
-`test/run-read-fixes.test.ts`. `run-reach` isolates the reach rule with
-`RUN_PROJECT` off; the FORCE_DEPTH witness in `long-run-tail` pins the new reads.
+`test/run-read-fixes.test.ts`, `test/kick-log.test.ts`. `run-reach` isolates
+the reach rule with `RUN_PROJECT` off; the FORCE_DEPTH witness in
+`long-run-tail` pins the new reads; `motion-contact` (a split-zone H-back
+recorded unable to reach) pins the kick flags.
 
 ## Evidence against and unresolved risk
 
@@ -384,12 +400,12 @@ Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 `test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`,
 `test/mesh-point.test.ts`, `test/gait-step.test.ts`, `test/pull-step.test.ts`,
 `test/rb-away.test.ts`, `test/run-arms.test.ts`, `test/run-read-fixes.test.ts`,
-`test/run-game-flags.test.ts` (exchange package). 2,885 core tests pass with
-the profile and without it; typecheck passes.
+`test/kick-log.test.ts`, `test/run-game-flags.test.ts` (exchange package).
+2,888 core tests pass with the profile and without it; typecheck passes.
 
 ## Next
 
-Counter log plays (the end beating the log and penetrating; the back's
-executed path versus the route he chose), then the back's lane read in
-traffic beyond counter. `GAIT_STEP` is a physics law: promotion
+The gap runs' consistency (too few short and long runs; NFL 0-3 yd 37%, ours
+28%) and the shotgun back's same-side exchange geometry when he is aligned
+there; the back's lane read in traffic beyond counter. `GAIT_STEP` is a physics law: promotion
 beyond this branch is the physics owner's decision.

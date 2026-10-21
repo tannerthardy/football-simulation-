@@ -11,7 +11,9 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 type Aim = { t: number; preferred: number; candidates: Array<{ entry: { x: number; y: number }; risk: number }>; side: number; kickY: number; endY: number };
 
 async function aims(flags: Record<string, string>, until = 2.3): Promise<Aim[]> {
-  for (const k of ['LOG_READ', 'RUN_PROJECT', 'LANE_DEPTH', 'RUN_ARMS']) vi.stubEnv(k, flags[k] ?? '0');
+  // KICK_INTERCEPT/LOG_CONTACT change the kicker himself (LOG_CONTACT tags
+  // the late log); this witness isolates the runner's read of it.
+  for (const k of ['LOG_READ', 'RUN_PROJECT', 'LANE_DEPTH', 'RUN_ARMS', 'KICK_INTERCEPT', 'LOG_CONTACT']) vi.stubEnv(k, flags[k] ?? '0');
   vi.resetModules();
   const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
   const { RunBlocker, playSideSign } = await import('../src/sim/behaviors/blocking.js');

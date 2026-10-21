@@ -33,6 +33,14 @@ import {collectionCommand,readCollectionApproach,type CollectionApproach} from '
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 
+/** KICK_INTERCEPT=1 (default off): a kick/trap puller's flat track aims
+ * where the end will be when he can get there (the climbs' intercept law),
+ * not at the end's seen spot. Against a squeezing end the seen-spot station
+ * slides toward a puller already at full flat speed and he overruns the
+ * inside shoulder (counter log plays, docs/reviews/run-offense.md). */
+const KICK_INTERCEPT = process.env.KICK_INTERCEPT === '1';
+/** LOG_CONTACT=1 (default off): see RunBlocker.readLogAtContact. */
+const LOG_CONTACT = process.env.LOG_CONTACT === '1';
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -906,6 +914,7 @@ export class RunBlocker implements Behavior {
     if (plan.combination) readCombination(a, sim, plan.combination);
     if (a.engagement) {
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
+      if (LOG_CONTACT) this.readLogAtContact(a, sim, a.engagement);
       return stand();
     }
     // Sell pass until just before the handoff.
@@ -999,6 +1008,13 @@ export class RunBlocker implements Behavior {
         const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+        // KICK_INTERCEPT: the flat track heads for where the squeezing end
+        // will be when this body can get there, not where he was seen.
+        const endY = read && KICK_INTERCEPT && plan.pullRole !== 'lead'
+          ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+            (tt) => ({ x: read.seen.pos.x + read.seen.vel.x * tt, y: read.seen.pos.y + read.seen.vel.y * tt }),
+            { horizon: 1, step: .05, radius: a.profile.radius + read.target.profile.radius }).point.y
+          : read?.seen.pos.y;
         if (read) {
           const clearNow = read.clearanceX === null || a.pos.x + a.profile.radius <= read.clearanceX;
           this.pullCleared ||= clearNow;
@@ -1007,7 +1023,7 @@ export class RunBlocker implements Behavior {
           // waypoint, or add another retreat solely for being near a teammate.
           // An actually obstructed rear surface still requires gaining depth.
           const stationY = this.pullCleared && plan.pullRole !== 'lead'
-            ? read.seen.pos.y - ps * .65 : wp.y;
+            ? endY! - ps * .65 : wp.y;
           if (observedCorner && this.pullIdx === 1 &&
               clearNow && (stationY-a.pos.y)*ps < .65) {
             this.pullIdx++;
@@ -1026,7 +1042,7 @@ export class RunBlocker implements Behavior {
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
-        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: endY! - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
@@ -1375,6 +1391,24 @@ export class RunBlocker implements Behavior {
         clearanceX, nextRead: sim.t + a.mind.decisionInterval };
     }
     return this.pullRead;
+  }
+
+  /** LOG_CONTACT: a kicker whose end crossed his face as they met logs him.
+   * The approach decides kick or log from a delayed picture a quarter yard
+   * ahead of contact; an end still squeezing reaches the kicker's inside
+   * after the hands are on. Driving him out from his outside shoulder only
+   * opens the inside, so the kicker turns the drive inward and seals. */
+  private readLogAtContact(a: Agent, sim: PlaySim, e: Engagement): void {
+    const plan = this.plan;
+    if (plan.kind !== 'pull' || (plan.pullRole !== 'kick' && plan.pullRole !== 'trap') || a.tags.has('block-log')) return;
+    if (e.blocker !== a || e.defender !== plan.target || sim.t - e.start > .5) return;
+    const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+    const seen = sim.see(a, e.defender);
+    if ((seen.pos.y - a.pos.y) * ps >= -.1 || seen.pos.x >= sim.los + .8) return;
+    plan.drive = norm({ x: .45, y: -ps });
+    e.drive = { ...plan.drive };
+    a.tags.add('block-log');
+    sim.event('block_log', a, e.defender, 'kick target crossed inside after contact');
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): MoveCommand {
