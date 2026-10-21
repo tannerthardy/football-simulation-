@@ -18,6 +18,9 @@ export type PersonnelId = '10' | '11' | '12' | '13' | '21' | '22';
 export type Side = 'L' | 'R';
 export const sideSign = (s: Side): number => (s === 'L' ? 1 : -1);
 export const flipSide = (s: Side): Side => (s === 'L' ? 'R' : 'L');
+/** Run schemes blocked on zone rules (reach, zone doubles, backside cutoff). */
+export const zoneLikeScheme = (scheme: RunScheme): boolean => scheme === 'insideZone' || scheme === 'outsideZone'
+  || scheme === 'wideZone' || scheme === 'splitZone' || scheme === 'toss' || scheme === 'draw' || scheme === 'qbDraw';
 
 /**
  * Horizontal alignment of a skill player:

@@ -217,8 +217,8 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       }
       // Where the runner meets the first defender: a free one closes from
       // the entry toward him while he keeps coming; one he sees body to body
-      // with a blocker meets him at the entry.
-      const locked = !!first && pictures.some(({ agent: o, seen: s, team }) => team === 'O'
+      // with an upright blocker meets him at the entry.
+      const locked = !!first && pictures.some(({ agent: o, seen: s, team }) => team === 'O' && s.pose !== 'down'
         && Math.hypot(s.pos.x - first!.seen.pos.x, s.pos.y - first!.seen.pos.y) < o.profile.radius + first!.agent.profile.radius + .15);
       const closing = first && !locked ? first.agent.profile.vmax * .8 : 0;
       const meet = route.arrive + m1 * closing / (closing + cruise);

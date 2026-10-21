@@ -94,6 +94,7 @@
     "TETHER": "1",
     "THREAT_READ": "1",
     "TRACK_FACING": "0",
+    "TRAP_FIT": "0",
     "TRAP_READ": "0",
     "UC_MESH": "1",
     "WRAP_BIND": "1",

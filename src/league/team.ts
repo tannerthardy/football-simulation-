@@ -172,7 +172,8 @@ const at = (pos: Position) => (p: Player) => overallAt(p, pos);
  * as overallAt does and the edge slots already do. Raw 3-technique
  * suitability (pass-rush finesse, burst, agility; no mass or strength) put a
  * 109-114 kg EDGE at DT in 32 of 120 base 4-3 slots across 60 generated
- * teams, and on the lab defense's DT_S (docs/reviews/run-offense.md). */
+ * teams, and on the lab defense's DT_S (docs/reviews/run-offense.md). The
+ * edge it displaces may then play SAM (picked later from LBs and edges). */
 const FRONT_FIT = process.env.FRONT_FIT === '1';
 
 export function pickOffense(team: Team, personnel: PersonnelId, av: Availability = {}): Record<OffSlot, Player> {

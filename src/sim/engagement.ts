@@ -34,6 +34,7 @@ import { G } from '../core/units.js';
 import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
+import { zoneLikeScheme } from '../playbook/types.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
@@ -143,6 +144,17 @@ function measurePhi(axis: Vec2, d: Agent, b: Agent): number {
   return Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
 }
 
+/** CUTOFF_SEAL: the drive line of a solo backside cutoff taken from his
+ * man's play-side front, or null when this rep is not one. */
+function cutoffDrive(sim: PlaySim, blocker: Agent, defender: Agent): Vec2 | null {
+  const plan = (blocker.behavior as { plan?: { kind?: string; target?: Agent | null; combination?: unknown } }).plan;
+  const run = sim.offCall.run;
+  // Zone cutoffs keep their own contact frames (zone reads, installed walls).
+  if (!run || zoneLikeScheme(run.scheme) || plan?.kind !== 'cutoff' || plan.target !== defender || plan.combination) return null;
+  const ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+  return { x: sim.attackDir(blocker.team) * Math.cos(Math.PI / 6), y: -ps * Math.sin(Math.PI / 6) };
+}
+
 /** Balance available to a player's technique, from his body. */
 function baseOf(a: Agent): number {
   const sup = a.body.support;
@@ -182,6 +194,12 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     return null;
   }
 
+  // CUTOFF_SEAL: a backside cutoff walls his man off from the play. The rep
+  // is taken from the man's play-side front (30 deg play side of head-up) and
+  // drives him away from the play, so that front is the rep's axis: a blocker
+  // who gets there is winning the rep, one still beside or behind him is not.
+  const cutoffFront = CUTOFF_SEAL && type === 'run' && !surface ? cutoffDrive(sim, blocker, defender) : null;
+  if (cutoffFront) drive = cutoffFront;
   const rng = sim.rng;
   const tb = traits(blocker, type);
   const td = traits(defender, type);
@@ -255,17 +273,9 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     const strike = 0.5 * td.hands + 0.5 * defender.r('strength') - 0.12 * armEdge + rng.normal(0, 0.18);
     e.control = HAND_FIGHT ? firstHands(blocker, defender, tb, td, rng) : clamp(punchB - strike + 0.1, -0.8, 0.8);
     e.move = 'shed';
-    // Reach blocks want the defender sealed on the backside.
-    if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
-    // CUTOFF_SEAL: a backside cutoff walls his man off from the play. His
-    // objective is the man's play-side front, not the side he arrived on.
-    const plan = (blocker.behavior as { plan?: { kind?: string; target?: Agent | null; combination?: unknown } }).plan;
-    const run = sim.offCall.run;
-    if (CUTOFF_SEAL && !surface && run && plan?.kind === 'cutoff' && plan.target === defender && !plan.combination) {
-      const ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
-      const front = { x: -sim.attackDir(blocker.team) * Math.cos(Math.PI / 6), y: ps * Math.sin(Math.PI / 6) };
-      e.sealTarget = Math.atan2(-(front.x * lat.x + front.y * lat.y), front.x * axis.x + front.y * axis.y) / (Math.PI / 2);
-    }
+    // Reach blocks want the defender sealed on the backside. A sealed
+    // cutoff's front is already the rep's axis.
+    if (drive && !surface && !cutoffFront) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
   }
   blocker.engagement = e;
   defender.engagement = e;
@@ -665,11 +675,12 @@ const BLOCK_FRONT = process.env.BLOCK_FRONT === '1', BLOCK_FRONT_ANGLE = 110 * M
 const STRETCH_FLAT = process.env.STRETCH_FLAT === '1';
 /** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
 const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
-/** CUTOFF_SEAL=1 (default off): a solo backside cutoff seals his man's
- * play-side front (30 deg play side of head-up) instead of the side he
- * arrived on, which in the cutoff's drive frame always lay backside: the
- * pair drifted away from the play (-0.6 yd at +1 s; tracked cutoff reps
- * +0.9 toward it). See docs/reviews/run-offense.md, gap schemes. */
+/** CUTOFF_SEAL=1 (default off): on gap schemes a solo backside cutoff takes
+ * his rep from his man's play-side front (30 deg play side of head-up),
+ * driving him away from the play, instead of the cutoff's installed drive,
+ * whose seal side always lay backside: the pair drifted away from the play
+ * (-0.6 yd at +1 s; tracked cutoff reps +0.9 toward it). See
+ * docs/reviews/run-offense.md. */
 const CUTOFF_SEAL = process.env.CUTOFF_SEAL === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */

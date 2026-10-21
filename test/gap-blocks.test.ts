@@ -2,12 +2,14 @@
  * GAP_OUT     a playside man aligned outside his blocker is blocked out, not
  *             down across the blocker's face into the trap hole
  *             (src/sim/behaviors/blocking.ts planRunBlocking);
- * CUTOFF_SEAL a solo backside cutoff seals his man's play-side front, so the
- *             pair walls toward the play instead of drifting away from it
- *             (src/sim/engagement.ts createEngagement);
- * GAP_FIT     a first-level down block closes on his man's near surface on
- *             the zone track's depth law instead of running through him
- *             (RunBlocker.attack). */
+ * CUTOFF_SEAL a solo backside cutoff takes his rep from his man's play-side
+ *             front, driving him away from the play (src/sim/engagement.ts
+ *             createEngagement);
+ * GAP_FIT     a first-level down block by a lineman or inline end closes on
+ *             his man's near surface on the zone track's depth law instead of
+ *             running through him (RunBlocker.attack);
+ * TRAP_FIT    a trapper on the last leg of his pull fits his man, as the
+ *             counter kicker does (RunBlocker.update). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
@@ -15,7 +17,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 /** Each first-level block's planned drive and its pair one second after the
  * blocker first engaged his man (play-side frame: y > 0 toward the play). */
 async function blocks(flags: Record<string, string>, id: string) {
-  for (const k of ['GAP_OUT', 'CUTOFF_SEAL', 'GAP_FIT']) vi.stubEnv(k, flags[k] ?? '0');
+  for (const k of ['GAP_OUT', 'CUTOFF_SEAL', 'GAP_FIT', 'TRAP_FIT']) vi.stubEnv(k, flags[k] ?? '0');
   vi.resetModules();
   const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
   const { RunBlocker, playSideSign } = await import('../src/sim/behaviors/blocking.js');
@@ -25,7 +27,8 @@ async function blocks(flags: Record<string, string>, id: string) {
   const plans = new Map(sim.offense.filter(b => b.behavior instanceof RunBlocker)
     .map(b => [b.slot, { b, plan: (b.behavior as InstanceType<typeof RunBlocker>).plan }]));
   const y0 = new Map(sim.agents.map(a => [a, a.pos.y]));
-  const out = new Map<string, { kind: string; target: string; drive: number; seal?: number; mid?: number; depth?: number; vx?: number; vy?: number }>();
+  const out = new Map<string, { kind: string; target: string; drive: number; seal?: number; mid?: number; depth?: number; vx?: number; vy?: number;
+    ahead?: number; side?: number; phi?: number; repDrive?: { x: number; y: number }; engaged?: number }>();
   const engaged = new Map<string, number>();
   for (const [slot, { plan }] of plans) if (plan.target) out.set(slot, { kind: plan.kind, target: plan.target.slot, drive: (plan.drive?.y ?? 0) * ps });
   while (sim.phase === 'live' && sim.t < 2.5) {
@@ -35,11 +38,17 @@ async function blocks(flags: Record<string, string>, id: string) {
       if (!d || !r) continue;
       if (!engaged.has(slot) && b.engagement?.defender === d) {
         engaged.set(slot, sim.t);
-        Object.assign(r, { seal: b.engagement.sealTarget, vx: b.vel.x * ad, vy: b.vel.y * ps });
+        Object.assign(r, { engaged: sim.t, seal: b.engagement.sealTarget, vx: b.vel.x * ad, vy: b.vel.y * ps,
+          repDrive: b.engagement.drive && { x: b.engagement.drive.x * ad, y: b.engagement.drive.y * ps } });
       }
       if (engaged.has(slot) && r.mid === undefined && sim.t >= engaged.get(slot)! + 1) {
         r.mid = ((b.pos.y + d.pos.y) - (y0.get(b)! + y0.get(d)!)) / 2 * ps;
         r.depth = (d.pos.x - sim.los) * ad;
+        // Blocker relative to his man: ahead > 0 in front of him (toward our
+        // backfield), side > 0 on his play side; phi in the rep's own frame.
+        r.ahead = (d.pos.x - b.pos.x) * ad;
+        r.side = (b.pos.y - d.pos.y) * ps;
+        r.phi = b.engagement?.defender === d ? b.engagement.phi * ps : undefined;
       }
     }
   }
@@ -64,30 +73,70 @@ describe('gap-scheme first-level blocks', () => {
     expect(on.get('C')!.drive).toBeLessThan(0);
   }, 60000);
 
-  it.each(['counter/weak/i_pro_21/wide9', 'power/strong/i_pro_21/over3', 'counter/strong/ace_12/over3'])(
-    'CUTOFF_SEAL: the backside cutoff walls his man toward the play (%s)', async id => {
+  it('GAP_OUT: a man inside an off-tackle hole is still blocked down', async () => {
+    // Power weak against odd3: the tackle's man is 0.78 yd outside him but
+    // inside the C-gap hole; blocking him out would drive him across it.
+    const on = await blocks({ GAP_OUT: '1' }, 'power/weak/i_pro_21/odd3');
+    const lt = on.get('LT')!;
+    expect(lt.kind).toBe('down');
+    expect(lt.drive).toBeLessThan(0);
+  }, 60000);
+
+  it.each(['power/strong/i_pro_21/over3', 'counter/strong/ace_12/over3'])(
+    'CUTOFF_SEAL: the backside cutoff works to his man\'s play-side front and walls him there (%s)', async id => {
       const off = await blocks({}, id), on = await blocks({ CUTOFF_SEAL: '1' }, id);
-      const cut = [...off].find(([, r]) => r.kind === 'cutoff')!;
-      const a = cut[1], b = on.get(cut[0])!;
+      const cut = [...on].find(([, r]) => r.kind === 'cutoff')!;
+      const a = off.get(cut[0])!, b = cut[1];
       expect(b.target).toBe(a.target);
-      // Same assignment and drive; only the seal objective changes.
+      // Same assignment and approach; the rep's drive line changes from the
+      // installed play-side push to one through the man away from the play.
       expect(b.drive).toBe(a.drive);
-      expect(Math.sign(b.seal!)).toBe(-Math.sign(a.seal!));
-      expect(a.mid!).toBeLessThan(0);
-      expect(b.mid!).toBeGreaterThan(0);
+      expect(a.repDrive!.y).toBeGreaterThan(0);
+      expect(b.repDrive!.x).toBeGreaterThan(.8);
+      expect(b.repDrive!.y).toBeLessThan(-.4);
+      // A second after contact he is in front of his man, not on his
+      // backside, and within 67 deg of the rep's axis: not beside or past him
+      // (|phi| >= 1, where the earlier seal-only objective left him).
+      expect(b.ahead!).toBeGreaterThan(.1);
+      expect(b.side!).toBeGreaterThan(-.3);
+      expect(Math.abs(b.phi!)).toBeLessThan(.75);
     }, 60000);
 
-  it.each(['power/strong/ace_12/over3', 'trap/weak/i_pro_21/wide9'])(
+  it.each(['power/strong/ace_12/over3', 'trap/weak/i_pro_21/wide9', 'trap/strong/i_pro_21/wide9'])(
     'GAP_FIT: down blocks meet their man slower upfield, still working across (%s)', async id => {
       const off = await blocks({}, id), on = await blocks({ GAP_FIT: '1' }, id);
-      let n = 0;
+      let n = 0, slower = 0;
       for (const [slot, a] of off) {
         const b = on.get(slot)!;
         if (a.kind !== 'down' || a.vx === undefined || b.vx === undefined) continue;
         n++;
-        expect(b.vx).toBeLessThan(a.vx - .05);
+        slower += a.vx - b.vx;
+        // A blocker coming in from well to the side may close to the man's
+        // hip, so the law need not slow him; it never speeds him up.
+        expect(b.vx).toBeLessThan(a.vx + .1);
         expect(Math.abs(b.vy!)).toBeGreaterThan(Math.abs(a.vy!) * .8);
       }
       expect(n).toBeGreaterThan(0);
+      expect(slower / n).toBeGreaterThan(.05);
     }, 60000);
+
+  it('GAP_FIT: an inline end on a down block approaches on the same law', async () => {
+    const off = await blocks({}, 'trap/strong/i_pro_21/wide9'), on = await blocks({ GAP_FIT: '1' }, 'trap/strong/i_pro_21/wide9');
+    expect(off.get('Y')!.kind).toBe('down');
+    expect(on.get('Y')!.vx!).toBeLessThan(off.get('Y')!.vx! - .3);
+  }, 60000);
+
+  it('TRAP_FIT: on his last leg the trapper fits his man, never later than before', async () => {
+    let earlier = 0;
+    for (const look of ['over2', 'off1', 'over3']) {
+      const id = `trap/weak/i_pro_21/${look}`;
+      const off = await blocks({}, id), on = await blocks({ TRAP_FIT: '1' }, id);
+      const trap = [...off].find(([, r]) => r.kind === 'pull')!;
+      const a = trap[1], b = on.get(trap[0])!;
+      expect(b.target).toBe(a.target);
+      expect(b.engaged!).toBeLessThanOrEqual(a.engaged!);
+      if (b.engaged! < a.engaged!) earlier++;
+    }
+    expect(earlier).toBeGreaterThan(0);
+  }, 120000);
 });

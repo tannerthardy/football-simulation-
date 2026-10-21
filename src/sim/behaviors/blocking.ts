@@ -19,7 +19,7 @@ import { previewFreeMovement } from '../../physics/movement-preview.js';
 import { requestToCover } from '../motion-plan.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint, Intent } from '../../physics/world.js';
-import type { DefSlot, RunConcept } from '../../playbook/types.js';
+import { zoneLikeScheme, type DefSlot, type RunConcept } from '../../playbook/types.js';
 import { lineOffset } from '../../playbook/alignment.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -34,18 +34,25 @@ import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } fro
 import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 
 /** GAP_FIT=1 (default off): first-level gap/duo blocks (drive, down, double,
- * cutoff) on a man at the line approach on the zone track's depth law,
+ * cutoff) by a lineman or inline end on a man at the line, on schemes not
+ * blocked by zone rules, approach on the zone track's depth law,
  * forward = clamp(2.5 * distance to his near surface, -1, 2.5), instead of a
  * full-speed run through his body. Linemen arrived with 2-4x the tracked
  * upfield speed (down request +5 yd/s upfield; 76% of the approach speed
  * upfield vs 32% tracked) and pushed the contact line downfield. */
 const GAP_FIT = process.env.GAP_FIT === '1';
 /** GAP_OUT=1 (default off): on gap schemes a playside lineman whose man is
- * aligned more than 0.3 yd outside him blocks him out (inside shoulder, drive
- * outward, first step toward him) instead of down. Down-blocking a man
- * outside the blocker drove him inward into the trap hole (trap weak I-pro:
- * median gain 1.2 yd, 8 of 20 losses; out block 7.0 yd, 1 loss). */
+ * aligned more than 0.3 yd outside him, and outside the hole, blocks him out
+ * (inside shoulder, drive outward, first step toward him) instead of down.
+ * Down-blocking a man outside the blocker drove him inward into the trap
+ * hole (trap weak I-pro: median gain 1.2 yd, 8 of 20 losses; out block
+ * 7.0 yd, 1 loss). A man inside an off-tackle hole is still blocked down. */
 const GAP_OUT = process.env.GAP_OUT === '1';
+/** TRAP_FIT=1 (default off): a trapper on the last leg of his pull fits his
+ * man, as the counter kicker already does (the fit gate had only the kick's
+ * last-leg clause). An on-time trapper passed beneath a man outside 1.2 yd
+ * and was pulled back by the inside station (docs/reviews/run-offense.md). */
+const TRAP_FIT = process.env.TRAP_FIT === '1';
 /** KICK_INTERCEPT=1 (default off): a kick/trap puller's flat track aims
  * where the end will be when he can get there (the climbs' intercept law),
  * not at the end's seen spot. Against a squeezing end the seen-spot station
@@ -549,7 +556,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   };
 
   const scheme = concept.scheme;
-  const zoneLike = scheme === 'insideZone' || scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'splitZone' || scheme === 'toss' || scheme === 'draw' || scheme === 'qbDraw';
+  const zoneLike = zoneLikeScheme(scheme);
 
   if (zoneLike) {
     // Covered/uncovered ownership includes either shade and accounts for the
@@ -628,11 +635,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
-    // GAP_OUT: a playside man aligned outside his blocker is blocked out
-    // (inside shoulder, driven outward), not down: washing him inward across
-    // the blocker's face carries him into the hole.
+    // GAP_OUT: a playside man aligned outside his blocker and outside the
+    // hole is blocked out (inside shoulder, driven outward), not down:
+    // washing him inward across the blocker's face carries him into the hole.
+    // A man between the blocker and an off-tackle hole is still blocked down.
     const downDrive = (b: Agent, d: Agent): number =>
-      GAP_OUT && (d.pos.y - b.pos.y) * ps > .3 ? ps : -ps;
+      GAP_OUT && (d.pos.y - b.pos.y) * ps > .3 && (d.pos.y - hole) * ps > 0 ? ps : -ps;
     // Account for immediate inside threats first. Outside-in assignment can
     // send the tackle across a guard's covered man and expose the mesh.
     const gapLine = line.filter((b) => !pullers.has(b)).sort((a, b) => Math.abs(rel(a)) - Math.abs(rel(b)));
@@ -1053,8 +1061,11 @@ export class RunBlocker implements Behavior {
           // The wrapper's existing near-target transition uses the same
           // acquired picture as its eventual approach, not private live
           // distance. Preserve the installed track and normal clearance.
+          // TRAP_FIT: on his last leg the trapper fits the man as the kicker
+          // does, rather than running on to an inside station beneath him.
+          const lastLeg = this.pullIdx >= 2 && (plan.pullRole === 'kick' || (TRAP_FIT && plan.pullRole === 'trap'));
           const fit = plan.pullRole === 'lead' ? distance < 1.2
-            : (plan.pullRole === 'kick' && this.pullIdx >= 2) || approachingDepth < sim.los || distance < 1.2;
+            : lastLeg || approachingDepth < sim.los || distance < 1.2;
           if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
         }
@@ -1560,13 +1571,18 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     let original = runThrough(a, aim, { speed: 1 });
-    const gapRun = sim.offCall.run && !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(sim.offCall.run.scheme);
-    if (GAP_FIT && gapRun && isOL(a) && ['drive', 'down', 'combo', 'cutoff'].includes(plan.kind)
+    const gapRun = !!sim.offCall.run && !zoneLikeScheme(sim.offCall.run.scheme);
+    const firstLevel = isOL(a) || (sim.offAlign.spots[a.slot]?.inline ?? false);
+    if (GAP_FIT && gapRun && firstLevel && ['drive', 'down', 'combo', 'cutoff'].includes(plan.kind)
       && (seen.pos.x - sim.los) * sim.attackDir(a.team) <= 1.5) {
       // A first-level gap block arrives on its man with its feet under it: the
       // depth it closes follows the distance to his near surface (the zone
-      // track's law); the lateral work toward the shoulder is unchanged.
-      const dir = sim.attackDir(a.team), fitX = seen.pos.x - dir * (a.profile.radius + target.profile.radius);
+      // track's law); the lateral work toward the shoulder is unchanged. The
+      // depth at which the bodies would touch allows for his lateral offset:
+      // one coming in from the side may close to the man's hip.
+      const dir = sim.attackDir(a.team), sep = a.profile.radius + target.profile.radius;
+      const offset = Math.abs(seen.pos.y - a.pos.y);
+      const fitX = seen.pos.x - dir * Math.sqrt(Math.max(0, sep * sep - offset * offset));
       const forward = clamp((fitX - a.pos.x) * dir * 2.5, -1, 2.5);
       if (original.vel.x * dir > forward) original = { ...original, vel: { x: forward * dir, y: original.vel.y } };
     }
