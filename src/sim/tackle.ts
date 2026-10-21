@@ -76,6 +76,12 @@ const HOLD_POINT = process.env.HOLD_POINT === '1';
  * who plants drops behind and swings into rear leverage; the grip, his
  * traction and the runner's legs decide what that achieves. */
 const PLANT_TRAVEL = process.env.PLANT_TRAVEL === '1';
+/** Experimental (LEG_BIND=1, off): arms wrapped round a runner's legs take
+ * his stride. The share of each hold on his legs times its grip limits the
+ * speed his gait can ask for (both legs bound and gripped: no stride; a
+ * fingertip on an ankle: most of it). His own gait, balance and the holds'
+ * loads decide how fast he actually slows or goes down. */
+const LEG_BIND = process.env.LEG_BIND === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -460,6 +466,10 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];
   intents[c.idx] = { ...own, push: 1, posture: Math.max(own.posture ?? 0, 0.5) };
+  if (LEG_BIND) {
+    const bound = clamp(bond.tacklers.reduce((sum, d) => sum + holds.get(d)!.legs * clamp(grip.get(d) ?? 0, 0, 1), 0), 0, 1);
+    intents[c.idx].effort = (own.effort ?? 1) * (1 - bound);
+  }
 
   // In the grasp: a quarterback held firmly behind the line before he throws
   // is ruled down at once (the rule protects him).
