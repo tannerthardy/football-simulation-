@@ -75,8 +75,10 @@ What else must change for it to help?
      `TIP_AWAY` removes that (7.4 → 5.0% of attempts, p ≈ 0.02).
    - Long gains after the catch come from holds that break: defensive backs
      reaching or lunging at fast receivers from behind, whom the runner then
-     drags. `LEG_BIND` (a hold on the legs takes the stride) helps runs, not
-     catches; the rest is the contact model's (handed off).
+     drags. `LEG_BIND` (a hold beside or behind, at the thighs or lower, takes
+     the stride) brings catch broke-contact 25.8 → 17.4% (NFL 12.5) and run
+     yards to NFL; the waist hold and the holder's weight are the contact
+     model's (handed off).
 
 **Candidate** (every flag default-off): `DEEP_CAP CAP_MESH LB_DEPTH
 EDGE_SQUEEZE SHED_PURSUE BLOCK_FRONT SHED_HANDS`, plus `PULL_FLOW` on gap
@@ -547,14 +549,31 @@ sim's 20+ yd completions have 10+ YAC (NFL 46%).
   nearly as hard, and is dragged 8 yd in 1.5 s. A man hanging on a runner
   loads his legs; the 2D model has no such load.
 - **`LEG_BIND`** (default off, `tackle.ts` carrier request, offered to the
-  contact owner): the legs share of each hold times its grip limits the speed
-  the carrier's gait may ask for. Panel: 135° / 6 yd/s yards after contact 8.7
-  → 5.9, 180° / 8 yd/s 19.7 → 7.2 (unfinished 50 → 33%), head-on unchanged.
-  Games (6, candidate): yards per carry 7.2 → 5.3, 40+ runs 5.2 → 2.4%,
-  broken holds per run 0.18 → 0.14; catches unchanged (0.17 → 0.19). With
-  `TIP_AWAY` (8-game export): catch broke contact 25.8 → 23.1% (NFL 12.5),
-  YAC p90 22.0 → 20.6, run broke contact 13.8 → 11.5% (ok). Waist holds and a
-  tackler's weight are untouched; that is the support model's.
+  contact owner): a hold beside or behind the runner, at or below his thighs
+  (legs share 0.5, a form tackler's wrap in `attempt()`), times its grip,
+  limits the speed his gait can hold; a higher hold binds proportionally less.
+  A tackler in front is left to the existing drive-through: the runner falls
+  forward over him. Versions measured on the way:
+  - Legs share times grip, every hold: panel 135° / 6 yd/s 8.7 → 5.9; runs
+    improve in games (yards per carry 7.2 → 5.3) but catches do not.
+  - Bound at thigh height, every hold: catch broke contact 19.5%, but run
+    yards after contact fall below NFL in every family (outside zone 1.44,
+    NFL 2.6): a head-on tackle should be driven back, not bind.
+  - Bound legs coasting (no drive, no plant): worse; 6–8 yd/s runners carry a
+    lone holder because the hold's load alone does not stop them.
+  - **Kept: thigh height, beside or behind only.** Panel: head-on unchanged,
+    135° / 6 yd/s 8.7 → 4.2, 180° / 8 yd/s 19.7 → 5.2, no unfinished reps.
+    8-game export with `TIP_AWAY`, vs the pinned profile with `PLANT_TRAVEL`:
+    off metrics 32 → 30; catch broke contact 25.8 → 17.4% (NFL 12.5); catch
+    yards after contact p50/p90 2.45/9.8 → 1.94/7.4 (1.6/6.1); `run.yards`
+    check → ok (p50 2.83, p90 10.5; NFL 3.0, 10.0); run broke contact 13.8 →
+    8.4% and run yards after contact 1.90 → 1.78 (2.4), both check. Games (6):
+    yards per carry 5.2, 40+ runs 1.1%, points per team-game 38 → 30. Drives
+    (8): 14.3 per team-game, third-down conversion 37.8% (NFL ~39).
+  - Man-coverage YAC is now NFL-like (p50/p90 1.6/11.4; NFL 2.8/14.3). Zone
+    YAC is not (4.2/20.5; NFL 3.4/11.9): yards after contact are close (1.7/6.5
+    vs 1.1/5.1); the excess is free running before contact (p90 11.8 vs 7.9),
+    with fewer defenders in front at the catch (3+ in front 42%, NFL 59%).
 - `REAR_PLANT` (a holder behind the runner plants at any arm extension) made
   no panel difference and was removed: the limit is the runner, not the
   holder's request.
@@ -603,14 +622,17 @@ sim's 20+ yd completions have 10+ YAC (NFL 46%).
 1. **Held runners** (contact owner): the support model's answer to a man
    hanging on the runner (waist holds, the holder's weight). `LEG_BIND` is the
    technique-level part and can be promoted with it or replaced.
-2. **Clean interceptions** (QB decisions): 3.4% of attempts with `TIP_AWAY`.
-3. **Run-defense reads from the offense session's operators**
+2. **Zone YAC before contact** (this branch: zone structure and rally): zone
+   catches are made with fewer defenders in front (3+ in front 42%, NFL 59%),
+   and the deep defender in front is still bailing at the release.
+3. **Clean interceptions** (QB decisions): 3.4% of attempts with `TIP_AWAY`.
+4. **Run-defense reads from the offense session's operators**
    (`scripts/diag/runblock/` on `claude/run-game-v3`): outside-zone defensive
    linemen barely flow laterally (0.01/0.12/0.43 yd at 0.5/1.0/1.5 s vs
    0.27/1.12/2.47); backers fill early (1.8 yd deep at handoff + 1 s vs
    2.3–2.5); the play-side end aligns 3.3–4.1 yd wide (5.5); a stalked corner
    is in on 20% of gap-run tackles (10%). Re-measure with this branch's flags.
-4. Release after the runner passes (defender side of run reps): mostly
+5. Release after the runner passes (defender side of run reps): mostly
    start-up (physics); re-test `LB_READ_STEP` once puller timing or start-up
    changes. Per-player linebacker bite (Eager & Seth) belongs in the game sim.
 
@@ -649,7 +671,7 @@ survival, paired tests), `mechanisms.txt` (NFL vs arms), `dlpursuit.txt`,
 and every arm's manifest. Tests: `test/deep-cap.test.ts` (`CAP_MESH`),
 `test/run-defense-depth.test.ts` (`PULL_FLOW`, `LB_READ_STEP`) and
 `test/block-front.test.ts`, `test/zone-arm.test.ts`, `test/tip-away.test.ts`
-and `test/leg-bind.test.ts`. All 2,881 core tests pass on the pinned profile,
+and `test/leg-bind.test.ts`. All 2,883 core tests pass on the pinned profile,
 and typecheck passes.
 
 ## Method
