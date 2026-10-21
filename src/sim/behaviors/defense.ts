@@ -791,6 +791,13 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
+/** Experimental (ZONE_ARM=1, off): every zone defender whose eyes are on the
+ * quarterback reads his arm and shoulders, not only spot droppers. Match
+ * defenders also break on the throwing motion rather than on the released
+ * ball (2022 tracking: zone defenders near the catch point are already moving
+ * toward it at the release; scripts/diag/depth/zonebreak.py). */
+const ZONE_ARM = process.env.ZONE_ARM === '1';
+
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const ball = sim.ball;
   if (ball.kind !== 'air') return false;
@@ -806,7 +813,7 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // Spot droppers key the quarterback: his arm and body action give the
   // throw away before the ball is out, so their reaction starts there.
   const style = a.behavior instanceof ZoneCoverage ? a.behavior.style : (a.behavior as { style?: ZoneStyle }).style;
-  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && style === 'spot';
+  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && (style === 'spot' || ZONE_ARM);
   if (keysQB && sim.t - sim.windupAt >= react) {
     a.tags.add('readArm');
     return true;

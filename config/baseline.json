@@ -84,6 +84,7 @@
     "TRAP_READ": "0",
     "UC_MESH": "0",
     "WRAP_BIND": "1",
+    "ZONE_ARM": "0",
     "ZONE_FLOW": "1",
     "ZONE_TE": "0"
   },
