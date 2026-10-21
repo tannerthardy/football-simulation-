@@ -144,6 +144,17 @@ function measurePhi(axis: Vec2, d: Agent, b: Agent): number {
   return Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
 }
 
+/** DOWN_SEAL: the hole's side along lat for the owner of a gap-scheme down
+ * block (the play is called; the hole is the play side), else 0. */
+function downBlockHoleSide(sim: PlaySim, e: Engagement, lat: Vec2): number {
+  const run = sim.offCall.run;
+  if (e.type !== 'run' || e.surfaceAxis || !run || zoneLikeScheme(run.scheme)) return 0;
+  const plan = (e.blocker.behavior as { plan?: { kind?: string; target?: Agent | null } }).plan;
+  if (plan?.kind !== 'down' || plan.target !== e.defender) return 0;
+  const ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+  return Math.sign(lat.y * ps) || 1;
+}
+
 /** CUTOFF_SEAL: the drive line of a solo backside cutoff taken from his
  * man's play-side front, or null when this rep is not one. */
 function cutoffDrive(sim: PlaySim, blocker: Agent, defender: Agent): Vec2 | null {
@@ -682,6 +693,17 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
  * (-0.6 yd at +1 s; tracked cutoff reps +0.9 toward it). See
  * docs/reviews/run-offense.md. */
 const CUTOFF_SEAL = process.env.CUTOFF_SEAL === '1';
+/** DOWN_SEAL=1 (default off): the owner of a gap-scheme down block reads his
+ * man's motion from his own picture (not the man's true velocity), answers
+ * only motion toward the hole and works to the man's hole side. Mirroring the
+ * man's motion either way chased the motion his own push made: down-blocked
+ * pairs washed 1.0-1.1 yd backside in a second, where tracked down blocks are
+ * a stalemate (+0.2/-0.1), with the center 1.6 yd backside at 1.5 s
+ * (tracking 0.4). See docs/reviews/run-offense.md. */
+const DOWN_SEAL = process.env.DOWN_SEAL === '1';
+/** DOWN_SEAL's offset of the blocker toward the hole, as a seal angle (the
+ * installed down block's magnitude, 0.45 x the 45 deg drive's lateral). */
+const DOWN_SEAL_TARGET = 0.45 * Math.SQRT1_2;
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
@@ -1196,16 +1218,23 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Actual hand normal, ground traction and work remain physical constraints.
   const drive = e.drive ?? { x: -axis.x, y: -axis.y };
   const sep = b.profile.radius + d.profile.radius;
-  const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
+  // DOWN_SEAL: a gap down block reads his man from his own picture and keeps
+  // him out of the hole: he answers motion toward the hole and works to the
+  // man's hole side, but does not chase motion away from it (the motion his
+  // own push makes). hole: the hole's side along lat, or 0.
+  const hole = DOWN_SEAL ? downBlockHoleSide(sim, e, lat) : 0;
+  const dVel = hole ? sim.see(b, d).vel : d.vel;
+  const dLat = dVel.x * lat.x + dVel.y * lat.y;
   // Seal target as a lateral offset of the blocker from the defender, where
   // the defender is heading in a beat.
   const lead = 0.15 + 0.15 * tb.read;
-  const offset = (b.pos.x - d.pos.x - d.vel.x * lead) * lat.x + (b.pos.y - d.pos.y - d.vel.y * lead) * lat.y;
-  const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
+  const offset = (b.pos.x - d.pos.x - dVel.x * lead) * lat.x + (b.pos.y - d.pos.y - dVel.y * lead) * lat.y;
+  const wantOffset = hole ? hole * Math.sin(DOWN_SEAL_TARGET * Math.PI / 2) * sep : -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = runLateral(b, tb.lateral * (0.75 + 0.35 * tb.feet)) * (e.helpers.length ? 1.3 : 1);
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
   const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
-  const seal = clamp(dLat + feedback + correction, -mirror, mirror);
+  const follow = hole ? hole * Math.max(0, dLat * hole) : dLat;
+  const seal = clamp(follow + feedback + correction, -mirror, mirror);
   // Anchor against felt lost depth. A stretch keeps its shoulder footwork;
   // drive blocks reduce it. Locomotion and lean share one physical budget.
   // On a stretch play the reach is a race for the playside shoulder, not a
