@@ -79,6 +79,7 @@ outcomes.
 | ↳ Lions defense (2017 per file name), 214 pp. | Scanned. SHA-256 `96661181149c7098745052a98d00245157d27f97fa55ded5779e3b990a1708dc` | Alignment/key/responsibility with depths | Indexed (light) |
 | ↳ 2018 Eagles training-camp installs, 52 pp. | Scanned. SHA-256 `3960aaeeb8ed6cea2320004912054b4416dc0e24cb202b4b8ae35a815f0444e8` | Gap-scheme blocking vs. labelled fronts | Indexed (light) |
 | ↳ Buccaneers defense, Tampa-2 era (year unknown), 73 pp. | Scanned. SHA-256 `be0bae688ebb103f5f6edabaeaf02ebd21f7b399ef44809173db54d2c5658b3d` | Front technique table; zone landmarks | Indexed (light) |
+| 1999 Buccaneers DL manual (Dungy/Kiffin), 62 pp. — user-supplied | **Scanned**; OCR'd page by page for reading. SHA-256 `bc950ad4c904dd753a4435420153d47115240c3caf2e5c497480a391c87aec80` | DL philosophy, get-off, run rules, alignments, block reactions by position, pass rush, nickel games | **Read** (block reactions; section below) |
 | [Other footballplaybooks.net items](https://footballplaybooks.net/document-tag/nfl-playbooks/) | **Locked** behind an email/sign-up gate | Attributed team material | Needs the user |
 | [2014 49ers (Roman) preview](https://pdfcoffee.com/2014-49ers-greg-roman-playbook-pdf-free.html) | HTTP 403 through the proxy | Marked "Confidential Property" | Not used |
 | [FootballXOs offense clinics](https://www.footballxos.com/downloads/offense/?cp=2), [NDSU run-fit analysis](https://www.footballxos.com/how-north-dakota-state-executes-their-run-fits/) | Public pages | Clinic and analysis articles | Good next reads for zone technique and fits |
@@ -420,6 +421,45 @@ explicit source on the **runner's reads and cut decisions**.
   feet running on contact; RB pass protection closes space toward the line,
   aims at the rusher's inside number, stays square and punches and recoils.
 
+## What the 1999 Buccaneers DL manual gives us
+
+A 62-page scan (OCR'd; quotes are from OCR, checked for sense). It is the
+defensive counterpart to the Ravens OL manual: for each position it gives
+the stance, alignment, key, run responsibility and a reaction to every block
+type. Physical pages.
+
+- **Get-off and keys** (pp. 5–6): crowd the ball ("credit card" alignment),
+  go on ball movement, not sound; the first step attacks the near shoulder of
+  the blocker; "Key head of the lineman you're on"; "get your hat in the
+  crack" and play your gap.
+- **Alignments** (p. 8): 9, 6 (stack), 5, loose 5, 3, 1; "Loose 5 can turn
+  into a 6 tech". The under end's **loose 5 is "one yard outside tackle"**,
+  keyed on the tackle's head (p. 24).
+- **Run responsibility:** the 1 technique has the A gap, squeezing the A gap
+  when the run goes away (p. 9); 3 technique the B gap, squeezing and
+  releasing to A (p. 13); 5 technique the C gap, releasing to B (p. 18); the
+  7 technique (stack end, inside shade of the TE) has the C gap, "power
+  through TE block" (p. 28).
+- **Reactions:**
+  - *Reach/hook:* flatten the blocker on the line and keep outside leverage
+    (pp. 13, 18). Against an outside-cylinder hook, wheel back door and
+    replace the linebacker. From a loose 5, "widen and give ground … can never
+    be hooked" (p. 24).
+  - *Scoop/zone combo:* get in the seam, "make guard push you into the play
+    (hold on to center as long as you can) … can not allow center off on LB"
+    (pp. 9, 14, 21).
+  - *Double team:* drop the hip, turn the shoulder to the second blocker and
+    split it, staying low.
+  - *Down block:* "DOWN BLOCK = TRAP!": redirect, close and spill the trapper
+    with the upfield shoulder; the guard's course tells trap (flat) from BIM
+    (deep), and "if in doubt, play trap" (p. 23).
+  - *Cutoff:* squeeze the blocker inside, protect your gap, shed when there
+    is no threat.
+  - *Pass and draw:* "High hat = pass!" Rush in your lane; against a draw set,
+    retrace your steps and divert the back.
+- Also present, not yet summarized: rush principles and moves (pp. 29–39),
+  tackling (p. 40), and nickel/dime fronts and games (pp. 57–62).
+
 ## Extraction record
 
 ```yaml
@@ -479,3 +519,23 @@ Sam at 7 off the ball) supported?
   The Colts "Auto" call (p. 13) picks between them by the back: "Any Dot or
   Far RB = 9 Tech", "Any Near Back = 6 Tech". HonestNFL HNFL-081/082 show
   the same Cheat/Flex split, with Flex labelled "Over family for run downs".
+
+**Front details for the run-defense session (2026-10-21).** From the 2016 and
+2017 Colts and 2012 Raiders books, with key quotes re-checked:
+
+- *Nickel "Auto":* the closed call goes to the TE when the TE is attached or
+  the RB is at home, to the RB when the TE is off the ball or detached
+  (2017 p. 13). A near back gets a 6, a dot or far back a 9; in the gun,
+  "Near Gun = 6 Tech", "Far Gun = 9 Tech" (2016 p. 436).
+- *Open-side 5 width* is set by the call, often with a stunt: the Raiders
+  print "LOOSE 5" (p. 33), "WIDE 5 … PIRATE STUNT" (p. 37) and "TITE 5"
+  (p. 81). The Bucs define the loose 5 as one yard outside the tackle
+  (p. 24). No book ties width to down, distance or the tackle's split.
+- *Under vs. Over:* the Colts' base is Under; "Any 2-Back with Y in Normal
+  Alignment = Reduce", "Everything Else = Check Under" (2017 p. 82). Over has
+  no selection rule in these books.
+- *Goal line:* a six-man line with both safeties as edge "supports" (2016
+  pp. 505–511); the Raiders goal-line Banjo is "6 DL, 4 LB and 1 DB"
+  (p. 232). Triggers are by personnel.
+- *Linebacker depths in yards:* none in any book; only alignment numbers
+  such as the Raiders' Over 40 / 10 / 40.
