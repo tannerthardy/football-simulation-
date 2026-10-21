@@ -859,11 +859,18 @@ const LEAD_READ = process.env.LEAD_READ === '1';
  * landmark or on the kicker's private log tag. While the kicker is seen
  * inside the kicked man, the corner is just inside the kicker (or, before the
  * kicker gets there, just inside where he will meet that man's inside
- * surface), no wider than the called hole, at the down wall's rear depth.
- * Only a seen log (kicker outside the man) moves it outside the kick. After
- * he turns up he fits the first defender he sees unblocked in the hole,
- * scanned inside-out (no alignment table, no engagement records). The
- * kicker and kicked man are the installed call. GH keeps its surface read. */
+ * surface), never wider than the man's inside surface or the called hole, at
+ * the down wall's rear depth. He keeps reading the kick while he is behind
+ * the line and short of the kicker's body: a log (the kicker seen joined
+ * with his man and outside him, held one beat) moves the corner outside the
+ * kick and, if he has already turned up inside it, sends him back around
+ * behind the pair. After he turns up he fits the first defender he sees
+ * unblocked in the hole, scanned inside-out (no alignment table, no
+ * engagement records), and stays with him until that man leaves the hole or
+ * is seen blocked for a beat, or another stands in his
+ * way. With nobody to fit he continues up through the hole on the runner's
+ * track. The kicker and kicked man are the installed call. GH keeps its
+ * surface read. */
 const LEAD_HIP = process.env.LEAD_HIP === '1';
 
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
@@ -903,11 +910,15 @@ export class RunBlocker implements Behavior {
   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
   private wrapTrafficAt = 0;
   /** LEAD_HIP: which side of the seen kick he wraps (-1 inside, +1 a seen
-   * log), held once he turns up; the hole defender he chose to fit. */
+   * log, held once seen); consecutive reads that showed the log; the hole
+   * defender he chose to fit; defenders he has seen a teammate's body on
+   * (consecutive reads) and those he holds as blocked. */
   private hipSide = -1;
   private nextHipRead = 0;
+  private hipLogReads = 0;
   private hipFit: Agent | null = null;
-  private installedLead: Agent | null = null;
+  private hipOn = new Map<Agent, number>();
+  private hipBlocked = new Set<Agent>();
   private hipFlatX: number | null = null;
   private hipHole: number | null = null;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
@@ -1101,7 +1112,10 @@ export class RunBlocker implements Behavior {
           const lastLeg = this.pullIdx >= 2 && (plan.pullRole === 'kick' || (TRAP_FIT && plan.pullRole === 'trap'));
           const fit = plan.pullRole === 'lead' ? distance < 1.2
             : lastLeg || approachingDepth < sim.los || distance < 1.2;
-          if (this.pullCleared && fit)
+          // LEAD_HIP: turned up with nobody to fit, a man near him is not
+          // his work merely for still being named; the hole read decides.
+          const hipOpen = LEAD_HIP && !!plan.leadKick && plan.pullRole === 'lead' && this.pullIdx >= 2 && !this.hipFit;
+          if (this.pullCleared && fit && !hipOpen)
             return this.attack(a, sim, read.target, read.seen);
         }
         // Clear the line before turning up; approach the corner under control
@@ -1136,6 +1150,11 @@ export class RunBlocker implements Behavior {
           facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
     }
+    // LEAD_HIP: through the turn-up with nobody in the hole to fit, he keeps
+    // going up through it on the runner's track rather than returning to a
+    // man his own read set aside.
+    if (LEAD_HIP && plan.leadKick && plan.kind === 'pull' && plan.pullRole === 'lead' && this.pullIdx >= 2 && !this.hipFit)
+      return this.hipTrack(a, sim);
     if (!target) {
       const ref = this.workReference(a, sim);
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
@@ -1301,11 +1320,11 @@ export class RunBlocker implements Behavior {
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) {
       if (LEAD_HIP && plan.leadKick && this.pullIdx >= 2 && t >= this.nextLeadRead) {
         this.nextLeadRead = t + a.mind.decisionInterval;
-        this.installedLead ??= target;
         const fit = this.hipThreat(a, sim, plan.leadKick, this.hipFit);
-        // With no color in the hole he keeps the installed job.
-        const next = fit ?? this.installedLead;
-        if (next !== target) { plan.target = target = next; this.pullRead = null; }
+        // With nobody in the hole his man stays named but is not pursued: he
+        // continues up through the hole (update), not back to an installed
+        // man his own read set aside.
+        if (fit && fit !== target) { plan.target = target = fit; this.pullRead = null; }
         this.hipFit = fit;
       }
       if (LEAD_READ && !(LEAD_HIP && plan.leadKick) && this.pullIdx > 0 && t >= this.nextLeadRead) {
@@ -1370,62 +1389,148 @@ export class RunBlocker implements Behavior {
    * installed kick. While the kicker is seen inside his man (kicking out, or
    * still on his way there) the corner is just inside the kicker's body, or
    * just inside where the kick will land (the man's inside surface) before
-   * the kicker gets there, and never wider than the called hole: a kick
-   * widened past the hole leaves the wrap turning up tight in it. Only a seen
-   * log (kicker outside his man) moves the corner just outside the kicker,
-   * the flat leg then passing behind the pair. The side is read on the flat
-   * leg and held once he turns up. The flat leg still resolves its depth
-   * against the down wall's seen rear surface. */
+   * the kicker gets there, and never wider than the man's inside surface or
+   * the called hole: a kick widened past the hole leaves the wrap turning up
+   * tight in it, and a kicker seen outside his man has not moved the man's
+   * body out of the lane. He reads the kick while he can still act on it:
+   * behind the line and not yet past the kicker's body. A log is the kicker
+   * seen joined with his man (within his strike reach, the GH wrap's test)
+   * and outside him on two consecutive reads (held one beat); once seen it is
+   * held, the corner goes just outside the kicker and the flat leg behind
+   * the pair, and a lead already turned up inside the pair goes back to that
+   * flat leg. The flat leg still resolves its depth against the down wall's
+   * seen rear surface. */
   private readKickHip(a: Agent, sim: PlaySim, kick: { blocker: Agent; defender: Agent }): void {
-    const path = this.plan.pullPath!, side = playSideSign(sim, sim.offCall.run!);
+    const path = this.plan.pullPath!, side = playSideSign(sim, sim.offCall.run!), dir = sim.attackDir(a.team);
     const flatX = this.hipFlatX ??= path[1].x, hole = this.hipHole ??= path[path.length - 1].y;
     const k = sim.see(a, kick.blocker), m = sim.see(a, kick.defender), rK = kick.blocker.profile.radius;
-    const rM = kick.defender.profile.radius, hip = rK + a.profile.radius + .15;
-    if (this.pullIdx < 2) this.hipSide = (k.pos.y - m.pos.y) * side > .25 ? 1 : -1;
-    let y: number, x = sim.los + .5, fx = flatX;
+    const rM = kick.defender.profile.radius, rA = a.profile.radius, hip = rK + rA + .15;
+    const depth = (x: number) => (x - sim.los) * dir;
+    if (this.hipSide < 0) {
+      const reading = depth(a.pos.x) < 0 && depth(a.pos.x) - depth(k.pos.x) < rK;
+      const reach = rK + rM + .1 + kick.blocker.player.measurables.armIn / 36 * .45;
+      const log = reading && Math.hypot(k.pos.x - m.pos.x, k.pos.y - m.pos.y) <= reach && (k.pos.y - m.pos.y) * side > .25;
+      this.hipLogReads = log ? this.hipLogReads + 1 : 0;
+      if (this.hipLogReads >= 2) {
+        this.hipSide = 1;
+        // Already turned up inside the pair: back to the flat leg behind it,
+        // unless the pair has been driven deeper than him and the way over
+        // its front to the outside corner is the shorter one.
+        // Bodies (his own and the seen pair) are carried one beat ahead.
+        if (this.pullIdx >= 2 && (a.pos.y - k.pos.y) * side < hip) {
+          const beat = a.mind.decisionInterval, at = (p: Perceived) => depth(p.pos.x + p.vel.x * beat);
+          const own = depth(a.pos.x + a.vel.x * beat);
+          const front = Math.max(at(k) + rK, at(m) + rM) + rA + .1, rear = Math.min(at(k) - rK, at(m) - rM) - rA - .1;
+          if (own - rear < front - own) this.pullIdx = 1;
+          this.hipFit = null;
+        }
+      }
+    }
+    let y: number, d = .5, fd = depth(flatX);
     if (this.hipSide > 0) {
       y = k.pos.y + side * hip;
-      x = Math.max(x, k.pos.x + .6);
-      fx = Math.min(flatX, Math.min(k.pos.x - rK, m.pos.x - rM) - a.profile.radius - .1);
+      d = Math.max(d, depth(k.pos.x) + .6);
+      fd = Math.min(fd, Math.min(depth(k.pos.x) - rK, depth(m.pos.x) - rM) - rA - .1);
       a.tags.add('wrap-log');
     } else {
-      const meet = m.pos.y - side * (rM + rK);
+      const meet = m.pos.y - side * (rM + rK), inside = m.pos.y - side * (rM + rA + .15);
       y = ((k.pos.y - meet) * side > 0 ? k.pos.y : meet) - side * hip;
+      if ((y - inside) * side > 0) y = inside;
       if ((y - hole) * side > 0) y = hole;
     }
     // The installed flat leg ends half a yard short of the turn-up.
-    path[1] = { x: fx, y: y - side * .5 };
-    path[path.length - 1] = { x, y };
+    path[1] = { x: sim.los + dir * fd, y: y - side * .5 };
+    path[path.length - 1] = { x: sim.los + dir * d, y };
   }
 
-  /** LEAD_HIP: after the turn-up, the first defender this lead sees in the
-   * hole whom no teammate's seen body is on, scanned inside-out. The hole runs
-   * from the kicker's body to 2.5 yd inside the wrap (outside it on a log),
-   * from 1.5 yd behind the line to 5 yd past it, for each picture carried one
-   * decision beat ahead. The installed kicked man stays the kicker's. A man
-   * he is about to strike stays his while he is still in the hole. */
+  /** LEAD_HIP: after the turn-up, the defender this lead fits in the hole.
+   * The hole runs from the kicker's seen body to 2.5 yd inside the wrap
+   * (outside it on a log), from 1.5 yd behind the line to 5 yd past it (5 yd
+   * past the seen runner once he is beyond the line), for each picture carried
+   * one decision beat ahead. Men the seen runner has passed, or who sit behind
+   * this lead with the runner beyond them, are behind the play. Each seen
+   * teammate is on at most one man, the one nearest him; a man is held as
+   * blocked once a teammate's body is seen on him (within .3 yd) on two
+   * consecutive reads, and released once no teammate is within .6 yd. A new
+   * man must show free now (nobody within .35 yd; the installed kicked man
+   * only once no offensive body is within .6 yd of him), scanned inside-out.
+   * His chosen man stays his while he is in a half-yard wider hole and not
+   * held as blocked, unless another stands in his way to him within 2 yd.
+   * Null: nobody to fit. */
   private hipThreat(a: Agent, sim: PlaySim, kick: { blocker: Agent; defender: Agent }, current: Agent | null): Agent | null {
-    const side = playSideSign(sim, sim.offCall.run!), corner = this.plan.pullPath!.at(-1)!;
-    const hip = kick.blocker.profile.radius + a.profile.radius + .15, beat = a.mind.decisionInterval;
+    const side = playSideSign(sim, sim.offCall.run!), dir = sim.attackDir(a.team), corner = this.plan.pullPath!.at(-1)!;
+    const rA = a.profile.radius, hip = kick.blocker.profile.radius + rA + .15, beat = a.mind.decisionInterval;
     // The hole's outer wall is the kicker's seen body (inner wall on a log).
     const kicker = (sim.see(a, kick.blocker).pos.y - corner.y) * side;
     const [low, high] = this.hipSide > 0 ? [Math.min(-hip, kicker), 2.5] : [-2.5, Math.max(hip, kicker)];
-    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o !== sim.carrier)
-      .map(o => ({ seen: sim.see(a, o), r: o.profile.radius }));
-    const threats: { d: Agent; lateral: number; dist: number }[] = [];
-    for (const d of sim.defense) {
-      if (d === kick.defender) continue;
-      const s = sim.see(a, d);
-      if (s.pose === 'down' || s.pose === 'rising') continue;
-      if (mates.some(m => Math.hypot(m.seen.pos.x - s.pos.x, m.seen.pos.y - s.pos.y) < m.r + d.profile.radius + .35)) continue;
-      const p = { x: s.pos.x + s.vel.x * beat, y: s.pos.y + s.vel.y * beat };
-      const lateral = (p.y - corner.y) * side, depth = p.x - sim.los;
-      if (lateral < low || lateral > high || depth < -1.5 || depth > 5) continue;
-      threats.push({ d, lateral, dist: Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y) });
+    const foes = sim.defense.map(d => ({ d, s: sim.see(a, d) }));
+    const on = new Map<Agent, number>();
+    let kickedGap = Infinity;
+    for (const o of sim.offense) {
+      if (o === a || o === sim.qb) continue;
+      const s = sim.see(a, o);
+      if (s.carrying) continue;
+      let near: Agent | null = null, gap = Infinity;
+      for (const f of foes) {
+        const g = Math.hypot(s.pos.x - f.s.pos.x, s.pos.y - f.s.pos.y) - o.profile.radius - f.d.profile.radius;
+        if (f.d === kick.defender) kickedGap = Math.min(kickedGap, g);
+        if (g < gap) { gap = g; near = f.d; }
+      }
+      if (near && gap < (on.get(near) ?? Infinity)) on.set(near, gap);
     }
-    const held = threats.find(c => c.d === current);
-    if (held && held.dist < 2) return held.d;
-    return threats.sort((p, q) => p.lateral - q.lateral)[0]?.d ?? null;
+    for (const { d } of foes) {
+      const g = on.get(d) ?? Infinity;
+      if (g <= .3) {
+        const reads = (this.hipOn.get(d) ?? 0) + 1;
+        this.hipOn.set(d, reads);
+        if (reads >= 2) this.hipBlocked.add(d);
+      } else {
+        this.hipOn.delete(d);
+        if (g > .6) this.hipBlocked.delete(d);
+      }
+    }
+    const work = readBlockerWorkPicture(a, sim);
+    const runner = work.carrier !== null && work.carrier !== sim.qb.idx ? work.pos : null;
+    const deep = runner ? Math.max(5, (runner.x - sim.los) * dir + 5) : 5;
+    type Fit = { d: Agent; s: Perceived; lateral: number; depth: number };
+    const free: Fit[] = [];
+    let held: Fit | null = null;
+    for (const { d, s } of foes) {
+      if (s.pose === 'down' || s.pose === 'rising' || this.hipBlocked.has(d)) continue;
+      if (runner && ((runner.x - s.pos.x) * dir > d.profile.radius + .35
+        || ((a.pos.x - s.pos.x) * dir > 0 && (runner.x - s.pos.x) * dir > 0))) continue;
+      const p = { x: s.pos.x + s.vel.x * beat, y: s.pos.y + s.vel.y * beat };
+      const c: Fit = { d, s, lateral: (p.y - corner.y) * side, depth: (p.x - sim.los) * dir };
+      if (d === current) {
+        if (c.lateral >= low - .5 && c.lateral <= high + .5 && c.depth >= -2 && c.depth <= deep + .5) held = c;
+        continue;
+      }
+      if ((on.get(d) ?? Infinity) <= .35 || (d === kick.defender && kickedGap <= .6)) continue;
+      if (c.lateral < low || c.lateral > high || c.depth < -1.5 || c.depth > deep) continue;
+      free.push(c);
+    }
+    free.sort((p, q) => p.lateral - q.lateral);
+    if (!held) return free[0]?.d ?? null;
+    const h = held, to = { x: h.s.pos.x - a.pos.x, y: h.s.pos.y - a.pos.y }, len = Math.hypot(to.x, to.y) || 1;
+    // A man flowing across the hole changes the inside-out order every beat;
+    // only one standing in his way to his man takes the fit from him.
+    const switchTo = free.find(c => {
+      const rx = c.s.pos.x - a.pos.x, ry = c.s.pos.y - a.pos.y;
+      const along = (rx * to.x + ry * to.y) / len, off = Math.abs(rx * to.y - ry * to.x) / len;
+      return along > 0 && along < Math.min(2, len - .5) && off < rA + c.d.profile.radius + .3;
+    });
+    return switchTo?.d ?? h.d;
+  }
+
+  /** LEAD_HIP: through the turn-up with nobody in the hole to fit, he keeps
+   * going up through it on the seen runner's track (the corner's lane until
+   * he sees the back with the ball), looking for the next man. */
+  private hipTrack(a: Agent, sim: PlaySim): MoveCommand {
+    const dir = sim.attackDir(a.team), corner = this.plan.pullPath!.at(-1)!;
+    const work = readBlockerWorkPicture(a, sim);
+    const y = work.carrier !== null && work.carrier !== sim.qb.idx
+      ? work.pos.y + work.vel.y * a.mind.decisionInterval : corner.y;
+    return goTo(a, { x: a.pos.x + dir * 2, y: clamp(y, .5, FIELD_WIDTH - .5) }, { speed: .9 });
   }
 
   private withBase(a: Agent, command: MoveCommand): Intent {

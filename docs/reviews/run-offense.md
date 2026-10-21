@@ -417,7 +417,20 @@ outside zone 10.9%) and its 4-9 yd band falls to 25% (NFL 37%).
   teammate as a block, and changed men about 4 times per play (off: 0.1).
   The probe stopped at 8 s and scored 19-28% of plays, mostly long runs, as
   0 yd. Gap arm: TVD 13.4 -> 14.6, counter losses 6.8 -> 7.5%, power 4.5 ->
-  3.5%; with `DOWN_SEAL` too, TVD 15.8 and counter 9.2%. Repair in progress.
+  3.5%; with `DOWN_SEAL` too, TVD 15.8 and counter 9.2%. Repair (two
+  attempts, then stopped for re-diagnosis as the rules ask): the probe now
+  finishes every play and splits kick-out from log geometry; the lead keeps
+  reading the kick behind the line, holds his man until that man is seen
+  blocked, leaves the hole or someone steps into his path, and with nobody
+  to fit continues up the runner's track instead of returning to the man
+  his read set aside; every depth term follows the attack direction. On 240
+  plays (seeds 2,71001,1,3; off -> on): backers blocked before the back
+  crosses 15 -> 53, A-B-A returns 137 (first version) -> 70, gain p50 5.33
+  -> 5.46, losses 16 -> 14. The log read still fails live: on log plays his
+  turn-up ends 1.5 yd inside the kicker (outside on 4 of 94), so the seen
+  log does not move him. In both arms the back crosses 1.3-2.1 yd outside the
+  kicker, so the lead's side waits on the runner's path (O5) and the
+  outside force (D1). Flag-off results are identical (120 plays).
 - `READ_BLOCKS` (an engaged defender must get off his block to cover ground
   beyond his reach) left the runner's inside entries at 23-24% and read the
   private block-win value: removed. `LEAD_READ` stays off (untouched backers

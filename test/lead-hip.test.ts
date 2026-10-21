@@ -47,7 +47,13 @@ async function stage(flag: string, dir: 'weak' | 'strong', kick: 'out' | 'log' |
     return { command, corner: { ...controller.plan.pullPath!.at(-1)! }, target: controller.plan.target };
   };
   const hip = kicker.profile.radius + lead.profile.radius + .15;
-  return { sim, side, lead, controller, kicker, man, place, hip, hole, update };
+  // A log is read on two consecutive decisions (held one beat).
+  const updateTwice = () => {
+    update();
+    sim.t += lead.mind.decisionInterval + 1e-3; sim.world.time = sim.t;
+    return update();
+  };
+  return { sim, side, lead, controller, kicker, man, place, hip, hole, update, updateTwice };
 }
 
 describe('LEAD_HIP: the wrap turns up on the kick he sees', () => {
@@ -56,8 +62,8 @@ describe('LEAD_HIP: the wrap turns up on the kick he sees', () => {
     expect((await stage('1', dir, 'out', true)).update()).toEqual(kick);
     expect((kick.corner.y - (out.kicker.pos.y - out.side * out.hip)) * out.side).toBeCloseTo(0, 6);
 
-    const logged = await stage('1', dir, 'log', false), log = logged.update();
-    expect((await stage('1', dir, 'log', true)).update()).toEqual(log);
+    const logged = await stage('1', dir, 'log', false), log = logged.updateTwice();
+    expect((await stage('1', dir, 'log', true)).updateTwice()).toEqual(log);
     expect((log.corner.y - logged.kicker.pos.y) * logged.side).toBeCloseTo(logged.hip, 6);
     expect(log.corner.x).toBeGreaterThan(logged.kicker.pos.x);
 
