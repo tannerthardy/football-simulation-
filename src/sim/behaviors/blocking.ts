@@ -824,9 +824,11 @@ const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
  * slipped under into the backfield (48 of 73 power stuffs on the lab cases:
  * the end, released from the fullback, 1.5 yd deep and inside him). */
 const FB_KICK = process.env.FB_KICK === '1';
-/** Experimental (ZONE_TE=1, off): an inline tight end on a zone call is part
- * of the surface and runs the same track, rather than sprinting straight at
- * his man's playside shoulder and meeting him with depth instead of width. */
+/** ZONE_TE=1 (default off; on in this branch's pinned profile): an inline
+ * tight end on a zone call is part of the surface and runs the same track,
+ * rather than sprinting straight at his man's playside shoulder and meeting
+ * him with depth instead of width (a backside end walked toward the man he
+ * was cutting off, away from the play). */
 const ZONE_TE = process.env.ZONE_TE === '1';
 
 export class RunBlocker implements Behavior {
@@ -926,8 +928,8 @@ export class RunBlocker implements Behavior {
     // coordination (checks, help, climb), as do all doubles once joined.
     const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
-    const surface = isOL(a) || (ZONE_TE && !!sim.offAlign.spots[a.slot]?.inline);
-    if (ZONE_FLOW && surface && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
+    if (ZONE_FLOW && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated
+      && (isOL(a) || (ZONE_TE && !!sim.offAlign.spots[a.slot]?.inline))) {
       const flow = this.zoneFlow(a, sim);
       if (flow) return this.withBase(a, flow);
     }

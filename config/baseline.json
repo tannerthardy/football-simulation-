@@ -87,7 +87,7 @@
     "UC_MESH": "1",
     "WRAP_BIND": "1",
     "ZONE_FLOW": "1",
-    "ZONE_TE": "0"
+    "ZONE_TE": "1"
   },
   "worldDefaults": {
     "handContact": "center",

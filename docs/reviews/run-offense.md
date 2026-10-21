@@ -126,6 +126,55 @@ Five scenario witnesses timed on the installed exchange pin the package off
 (`combo-strike-access`, `long-run-tail`, `planned-climb-fit`, `trap-read`,
 `fb-kick`); `run-game-flags` covers the package.
 
+## Stretch width (user: "our lateral movement on wz/oz has not been wide enough")
+
+The deficit has been on record since the live-gaps work (2026-10-12: "the
+ball was narrow") at about the same size, deferred each time as the
+engaged-pair problem. One scorecard now measures every group by the side it
+stood on (`stretch-width.py`, yd toward the play side at 2.0 s):
+
+| | NFL | before | `ZONE_TE` (profile) | + `GAIT_STEP=0.3` |
+|---|---|---|---|---|
+| Carrier (crosses the line at) | 5.7 (7.3) | 4.7 (6.0) | (6.5) | 5.1 (7.4) |
+| Play-side OL / middle / backside | 4.6 / 5.2 / 5.5 | ~1.5 | | 2.6 / 2.2 / 2.2 |
+| Play-side TE / backside TE | 4.2 / 4.8 | 0.4 overall | 3.3 / −0.5 | 3.9 / −0.6 (0.3 with `ZONE_TE`) |
+| Play-side DL / middle / backside | 3.4 / 4.7 / 5.1 | 1.0 overall | | 2.2 / 2.0 / 0.8 |
+| Backers | 5.0 | 2.5 | | 2.6–3.8 |
+
+What it says:
+
+- **The ball carrier is at NFL width** once the exchange package and
+  `STRETCH_AIM` are in; the gait puts his crossing on tracking (7.4 vs 7.3).
+- **The backside barely moves.** Tracked backside defenders chase 5 yd by
+  2.0 s and the backside blockers flow with them; ours stay home (0.8 yd), so
+  the backside tight end has nobody to run with. That is defensive pursuit
+  (sent to the defense session).
+- **The offensive line is half of tracking** even with the gait. Engaged
+  reach blockers match the defender's play-side speed once they have the
+  shoulder (`stepRunRep`); with linemen who do not flow, pairs stand still.
+- `ZONE_TE` (existing): the inline end runs the zone track. Ace zone TVD
+  6.7 → 5.5, outside/wide-zone losses 10.0/12.5 → 9.2/9.2%, medians 3.2/3.1 →
+  3.7/3.7; shotgun 9.6 → 9.8. **On in the profile.** A mock-sim stalk test
+  exposed the surface check reading the alignment for every kind; the kind
+  check now comes first (same behavior).
+- **`GAIT_STEP` (the speed-up law) is right for the trench but not yet for
+  the game.** On the current offense it improves ace zone (TVD 6.7 → 6.2,
+  losses 7.7 → 6.0%, medians up 0.4–0.7) and the gap distribution (14.5 →
+  9.1) and doubles line flow, but 8-game collectors (`mech:sim`, with and
+  without, plus 0.5 s) show it lifts peak speeds and accelerations above
+  tracking for nearly every position (WR max speed 7.0 → 7.65 yd/s, NFL 6.45;
+  DB max accel 4.6 → 5.7, NFL 4.2; QB 3.8 → 5.3, NFL 3.8), at 0.3 and 0.5 s
+  alike. The old law hid controllers that ask for near-top speed; those
+  requests need fixing before the law can be on. Off.
+- `MESH_POINT` (new, off): the shotgun exchange at the tracked spot instead
+  of at arm's length (`gun-mesh.py`): stretch handoff 1.15 s, 0.5 yd own side,
+  4.1 yd/s (tracking 1.1 s, 0.2, 4.7). Shotgun stretch losses fall
+  18.5/24.5 → 12.5/17.5% with the gait (tracking 12% for this alignment) but
+  rise on the pinned body (6.0 → 16.0% outside zone): the back now hits a line
+  that has not moved. Waits on the gait.
+- `RUN_LATERAL DL_FEEL` with the gait (Part 9's stack) make the defense flow
+  more and the offense lose more (ace TVD 12.5); not kept.
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
