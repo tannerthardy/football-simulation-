@@ -136,68 +136,53 @@ games = the 8-game mechanism export against develop with every flag off.
 not reach for the carrier until he is winning the block (`win ≥ 0.6`). In
 tracking, a blocked defender (an offensive player within 1.2 yd) is the first
 contact on 46% of gap runs and 55% of zone runs; develop gives 32% / 41%
-(`blockedfirst.py`). A lineman whose blocker has his chest still has a free
-arm. On: an engaged defender reaches with `0.7 − 0.3·control` of his reach
-(latched inside hands pull it in to the installed 0.4); the ordinary engaged
-miss penalty is unchanged, nothing awards the tackle.
+(`blockedfirst.py`). A lineman whose blocker has one side of him still has
+the other arm. On: when the runner passes on the defender's free side (his
+blocker offset at least 0.25 yd to the other side), the defender reaches
+with `0.7 − 0.3·control` of his reach; latched inside hands pull it in to
+the installed 0.4. A blocker head-up or on the runner's side occupies that
+arm and the installed gate holds. The engaged miss penalty is unchanged and
+nothing awards the tackle.
 
-| | develop off | `BLOCKED_REACH` | NFL |
-| --- | --- | --- | --- |
-| Blocked first contact, gap / zone | 32% / 41% | 48% / 51% | 46% / 55% |
-| Gain at a blocked first contact, gap / zone (p50) | 0.9 / 1.2 | 0.5 / 1.5 | 3.0 |
-| Broke contact | 16.0% | 12.7% | 12.5% |
-| Yards after contact p50 | 1.95 | 1.70 | 2.40 |
-| Run yards p99 | 27.0 | 12.2 | 10.0 |
-| Report flags (`off`) | 46 | 35 | |
-| Lab yards before contact, IZ/OZ/power/counter/trap | 1.82/1.78/1.55/1.06/1.71 | 1.29/1.16/1.35/0.80/1.29 | |
+Correction: an earlier version of this section reported "gain at a blocked
+first contact" from `blockedfirst.py`. That column was the play's final
+yards, not where the contact happened (the run-offense session found it).
+The operator now reports both, and the numbers below use them.
 
-Guard 12/12. Who makes first contact now matches tracking; where does not.
-The NFL blocked tackler meets the carrier 3 yd downfield, the sim's at the
-line, and that was already so off (0.9). Blocks stalemate at the line rather
-than moving the defender, which is a run-blocking question, not the gate.
-Yards after contact also move away from tracking. Not proposed until the
-blocking owner looks at where the block is when the reach happens.
+*First version (any side), 8 games against develop.* Blocked first contact
+went 32 / 41% → 48 / 51% (NFL 46 / 55%), broke contact 16.0 → 12.7% (NFL
+12.5%), and report flags 46 → 35, guard 12/12. Develop's blocked first
+contacts already come 1.0 yd behind the line on gap runs (NFL 0.4 past it).
+The flag took them to 1.4 behind.
 
-On the run-offense session's blocking (`claude/run-game-v3@4723647` plus this
-patch, its pinned profile, `open-field/arm.mjs`, ace zone 1,200 plays and
-gap 1,600 plays), blocked contacts are not at the line. With the flag off the
-gain at a blocked first contact is 2.7 on gap runs and 2.2 on zone (NFL 3.0).
-With it on:
+*Leverage at the pass.* On the run-offense blocking
+(`claude/run-game-v3@4723647` plus this patch, its pinned profile,
+`open-field/arm.mjs`: gap 1,600 plays, ace zone 1,200), its
+`leverage-pass.py` sorts each engaged defender the runner passes by side.
+How often he then makes first contact, under-centre gap runs:
 
-| | off | `BLOCKED_REACH` | NFL |
-| --- | --- | --- | --- |
-| Blocked first contact, gap / zone | 35% / 40% | 41% / 45% | 46% / 55% |
-| Gain at a blocked first contact, gap / zone (p50) | 2.7 / 2.2 | 2.0 / 2.0 | 3.0 / 3.0 |
-| Run yards p50, gap / zone | 5.11 / 3.75 | 4.72 / 3.50 | |
-| Stuffs, gap / zone | 3.7% / 8.8% | 5.1% / 8.2% | |
+| | off | any side | free side only | NFL |
+| --- | --- | --- | --- | --- |
+| Runner on the blocker's side (covered) | 11% | 17% | 13% | 11% |
+| Runner on the defender's free side | 18% | 23% | 23% | 24% |
+| Zone: covered / free | 12% / 18% | 15% / 21% | 13% / 21% | 15% / 26% |
+| Blocked first contact, gap / zone | 35% / 40% | 41% / 45% | 40% / 43% | 46% / 55% |
+| Blocked contact depth, gap / zone (p50) | 0.0 / 0.1 | −0.5 / −0.2 | −0.4 / −0.1 | 0.4 / 0.4 |
+| Run yards p50, gap / zone | 5.11 / 3.75 | 4.72 / 3.50 | 4.76 / 3.51 | |
+| Stuffs, gap / zone | 3.7% / 8.8% | 5.1% / 8.2% | 4.6% / 8.5% | |
 
-The share moves about halfway to tracking, but the contacts it adds come
-earlier than tracking's blocked contacts, so the gain at that contact drops.
-In tracking a blocked defender meets a runner who is already past the line;
-the free-arm reach lets him meet the runner on the way there. Whether that
-comes from reach geometry (0.7 of an arm on every engaged defender, whatever
-his side) or from the blocker's body not taking that arm away is the next
-question. A temporary log of every attempt the flag adds (`BR_LOG`, same
-arms, not committed) answers it:
-
-- The reach is not through the blocker. On 94–95% of the added attempts the
-  blocker is not between the defender and the runner (cosine of the
-  defender→blocker and defender→runner directions ≤ 0.5). The reach used is
-  0.43–0.49 of an arm, with neutral hands (control p50 0.0–0.24).
-- On gap runs the runner is 0.65 yd behind the line (p50), passing a
-  defender blocked by a puller or the fullback: DE by a guard 125, DT by a
-  guard 74, DE by the fullback 48 of 363. Of the 341 not on the blocker's
-  side, 169 are the runner **outside** a man whose blocker is **inside**
-  him, 1.2–1.4 yd deep for kicked ends. The kick-out has inside-out
-  leverage and the runner bounces outside it within arm's length; 105 more
-  are the runner inside a man logged from outside.
-- On zone the runner is 0.4 yd past the line, beside a stalemated
-  interior lineman.
-
-So the added contacts are real ones: a runner who hugs or bounces around a
-kicked or logged man gets reached. That is the runner's path off the
-kick-out (run-offense session), not the gate. The flag stays off until
-that path is repaired, so that the share and the gain are judged together.
+The first version reached through the blocker's body: a covered man converted
+17% against tracking's 11%. Restricted to the free side, conversion on each
+side is within a few points of tracking. A temporary attempt log on the first
+version showed where the added reaches happen on gap runs: the runner behind
+the line, outside an end kicked from inside (169 of 341) or inside a man
+logged from outside (105). The run-offense session's `coverside.ts` shows the
+runner passes on the side his read chose (covered 18 of 18, free 36 of 39),
+and that the covered side is closed by the next man, usually an untouched
+backer. The blocked contacts that remain come earlier than tracking's
+(−0.4 vs 0.4 yd): the runner meets these men behind the line. That is the
+back's path and the backers' fill, not the reach. Not proposed until those
+two are repaired, so the share and the depth can be judged together.
 
 **`PULL_EARLY` (`run-fits.ts` `pullers`).** Backers read run by 0.5–1.0 s
 (`lbtrace.ts`) but the pull read fires about 1.35 s, after the guard has
