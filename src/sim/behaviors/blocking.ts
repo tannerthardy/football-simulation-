@@ -700,7 +700,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // Fullback lead (zone/iso) and receivers stalking.
   const fb = sim.slot('F');
   if (fb && sim.offAlign.spots.F?.backfield && !plans.has(fb)) {
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5), drive: up(0) });
+    // With every backer owned, the lead takes the most dangerous free box
+    // defender, nearest the mesh; on counter and trap, the backside one the
+    // pullers vacated first.
+    const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
+    const backsideFirst = scheme === 'counter' || scheme === 'trap';
+    const free = [...dl, ...lb].filter((d) => !owned.has(d))
+      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || Math.abs(rel(p)) - Math.abs(rel(q)));
+    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5) ?? free[0] ?? null, drive: up(0) });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));

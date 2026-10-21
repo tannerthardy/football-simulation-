@@ -65,3 +65,22 @@ describe('backside cutoff priority (Browns post hinge, p. 33)', () => {
     expect(power.rel(bst[1].target!)).toBeLessThan(power.rel(bst[0]));
   });
 });
+
+describe('fullback lead with every backer owned', () => {
+  it.each([
+    { concept: 'counter', front: 'under', edge: 'LB_S' },
+    { concept: 'trap', front: 'odd', edge: 'DE_W' },
+  ].flatMap((c) => mirrors.map((m) => ({ ...c, ...m }))))(
+    'takes the free backside edge on $concept vs $front, flip=$flip y=$ballY', ({ concept, front, edge, flip, ballY }) => {
+      const { by, rel, sim, box, owners } = plan(concept, front, flip, ballY);
+      const f = by('F');
+      expect(f.kind).toBe('lead');
+      expect(f.target).toBe(sim.slot(edge));
+      expect(rel(f.target!)).toBeLessThan(0);
+      for (const x of box) expect(owners(x).length).toBeGreaterThan(0);
+    });
+  it.each(mirrors)('control: a free backer is still the first choice, flip=$flip y=$ballY', ({ flip, ballY }) => {
+    const { by, sim } = plan('counter', 'over', flip, ballY);
+    expect(by('F').target).toBe(sim.slot('LB_S'));
+  });
+});
