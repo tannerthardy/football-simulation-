@@ -196,6 +196,11 @@ const FORCE_DEPTH = process.env.FORCE_DEPTH === '1';
  * movement follows the flow and pull reads rather than a sprint at the line.
  * The existing threat read decides when he fills. */
 const LB_DEPTH = process.env.LB_DEPTH === '1';
+/** Experimental (LB_READ_STEP=1, off; acts with LB_DEPTH): the read is two
+ * steps inside his alignment, not one. NFL off-ball backers on runs come down
+ * 1.9 yd by 2.0 s (median; 1.0-2.8 IQR, 2022 tracking), between LB_DEPTH's
+ * 1.2 and the surface fit's 2.5 (scripts/diag/depth/bite.py). */
+const LB_READ_STEP = process.env.LB_READ_STEP === '1';
 /** Experimental (TRAP_READ=1, off): an interior defender meets an arriving
  * trapper the way an edge meets a kick-out (wrong-arm or box his near half at
  * his depth) instead of holding his gap landmark at the line. A trapper is an
@@ -462,7 +467,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   let depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
   if (LB_DEPTH && job.kind === 'insert' && job.pace === 'stack' && !threat) {
     const home = (sim.defAlign.spots[a.slot as DefSlot]?.pos.x ?? sim.los) - sim.los;
-    if (home >= 3) depth = Math.max(depth, home - 1);
+    if (home >= 3) depth = Math.max(depth, home - (LB_READ_STEP ? 2 : 1));
   }
   const scrape = PULL_FLOW && pullSide && flow * pullSide < 0 ? 0 : flow;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+scrape+a.mind.placementError},sim.t);
