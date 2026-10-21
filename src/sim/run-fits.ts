@@ -162,6 +162,11 @@ const LB_KEY = process.env.LB_KEY === '1', KEY_STEP = .3;
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
+/** Experimental (PULL_FLOW=1, off): once a fit has read a pull, the pull
+ * decides his flow. The scrape with his gap's own motion (a down block
+ * stepping inside moves the gap away from the play) cannot carry him against
+ * the pull he flows with. */
+const PULL_FLOW = process.env.PULL_FLOW === '1';
 /** Diagnostic pull acquisition from observed departure, independent of an
  * opponent's current engagement. Default off pending matched controls. */
 const PULL_CUE = process.env.PULL_CUE === '1';
@@ -459,7 +464,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const home = (sim.defAlign.spots[a.slot as DefSlot]?.pos.x ?? sim.los) - sim.los;
     if (home >= 3) depth = Math.max(depth, home - 1);
   }
-  const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
+  const scrape = PULL_FLOW && pullSide && flow * pullSide < 0 ? 0 : flow;
+  const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+scrape+a.mind.placementError},sim.t);
   const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
   // chased with lateral work planned with his own body (the law every

@@ -51,6 +51,7 @@
     "PASS_SINK": "0",
     "PLANT_TRAVEL": "0",
     "PULL_CUE": "0",
+    "PULL_FLOW": "0",
     "PULL_PLAN": "0",
     "PULL_READ": "1",
     "PULL_STEP": "0",
