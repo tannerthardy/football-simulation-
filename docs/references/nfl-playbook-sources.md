@@ -183,3 +183,26 @@ Per the [handbook's chain](../football-handbook/README.md#how-to-turn-a-teaching
 a record fixes the *installed responsibility* and the *cue* that changes it.
 Technique, achieved movement and contact belong to the controller and physics
 layers.
+
+## Checked questions
+
+Answers given to other sessions, kept here so they are not re-derived.
+Technique numbers follow the Browns OL manual p. 11: 6 = head-up on the TE,
+7 = inside shade, 9 = outside shade.
+
+**4-3 Over strong side against an inline TE (2026-10-21, for the run-defense
+session).** The question: is our Over map (DE_S at 6, Sam at 7 off the ball)
+supported?
+
+- *Strong end:* not head-up in any base source. HonestNFL HNFL-129 (Over
+  panel, read from the image's shading) puts it on the TE's inside shade (7),
+  over a strong 3 and a weak 1. The generated defense textbook (p. 29, C1)
+  says "strong 5-tech". Confidence: medium.
+- *Sam:* on the line outside the TE at 9 (HNFL-086/088 base "Roll" fronts; the
+  HNFL-129 Bear panel's "Dubs" 9-tech) or an off-ball overhang outside the TE
+  (textbook p. 29). None of these put him stacked inside at 7. Confidence:
+  medium-low; the Roll front is a Fangio-family hybrid.
+- *Nickel:* HNFL-082 (Cowboys; labels the families) and HNFL-081 (Eagles).
+  The all-purpose "Over family" fronts Cheat and Cassie put the strong end at
+  9 outside the TE over a 3 and a 2i. Only "Flex" ("Over family for run
+  downs") has a head-up 6. Confidence: medium.
