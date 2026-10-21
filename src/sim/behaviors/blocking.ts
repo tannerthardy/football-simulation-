@@ -483,7 +483,7 @@ export function playSideSign(sim: PlaySim, concept: RunConcept): number {
  * At most seven inline blockers: a small mask search avoids a greedy tackle
  * stealing a shaded guard's man and leaving the wide end without an owner.
  */
-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
+function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, space = 1): Map<Agent, Agent> {
   type Choice = { missed: number; distance: number; targets: Map<Agent, Agent> };
   let choices = new Map<number, Choice>([[0, { missed: 0, distance: 0, targets: new Map() }]]);
   const better = (a: Choice, b?: Choice) => !b || a.missed < b.missed || (a.missed === b.missed && a.distance < b.distance);
@@ -496,7 +496,7 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
         if (mask & (1 << i)) continue;
         const b = line[i];
         const distance = Math.abs(d.pos.y - b.pos.y);
-        if (distance >= (reachLimit ?? (i === 0 || i === line.length - 1 ? 4.5 : 2.2))) continue;
+        if (distance >= (reachLimit ?? (i === 0 || i === line.length - 1 ? 4.5 : 2.2)) * space) continue;
         const targets = new Map(choice.targets);
         targets.set(b, d);
         keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + distance, targets });
@@ -524,6 +524,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const { dl, lb, db } = classify(sim);
   const by = sim.ballY;
   const rel = (a: Agent) => (a.pos.y - by) * ps; // + = playside
+  // Lateral windows below were installed on 1.3 yd splits. Measure them in
+  // the line's own spacing, so a man keeps his gap and his blocker whatever
+  // split the line takes (OL_ALIGN; exactly 1 on the installed line).
+  const k = (sim.offAlign.line.cg + sim.offAlign.line.gt) / 2.6;
   const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB')
     && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < 6 && a.pos.x < sim.los-.9) : null;
   if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB');
@@ -563,7 +567,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   if (zoneLike) {
     // Covered/uncovered ownership includes either shade and accounts for the
     // whole front before an uncovered blocker is available to help or climb.
-    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd))) {
+    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd), undefined, k)) {
       claimedDL.add(d);
       const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
@@ -582,9 +586,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         neighbor = line[i + 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
-        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
+        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5 * k, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
       } else {
-        plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0), drive: up(ps * 0.4) });
+        plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0 * k), drive: up(ps * 0.4) });
       }
     }
     // Backside end of the line walls off (cutoff).
@@ -598,12 +602,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   } else if (scheme === 'duo') {
     // Duo uses vertical displacement and adjacent doubles to the inside
     // backers. It has no zone-side reach step and no pulling guard.
-    for (const [b,d] of zoneOwnership(line,dl)) {
+    for (const [b,d] of zoneOwnership(line,dl,undefined,k)) {
       claimedDL.add(d);
       plans.set(b,{kind:'drive',target:d,drive:up(0)});
     }
     for (const b of line.filter((b) => !plans.has(b))) {
-      const partner = line.filter((p) => plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y-b.pos.y)<2)
+      const partner = line.filter((p) => plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y-b.pos.y)<2*k)
         .sort((p,q) => Math.abs(plans.get(p)!.target!.pos.y-b.pos.y)-Math.abs(plans.get(q)!.target!.pos.y-b.pos.y))[0];
       if (partner) combo(b,partner,plans.get(partner)!.target!,lbNear(b.pos.y,true),up(0));
       else plans.set(b,{kind:'climb',target:lbNear(b.pos.y),drive:up(0)});
@@ -634,7 +638,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
-    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05 * k).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // GAP_OUT: a playside man aligned outside his blocker and outside the
@@ -652,14 +656,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const r = rel(b);
       if (r >= -0.2) {
         const coverPull = b.slot === 'C' && bsg && pullers.has(bsg)
-          ? dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved && rel(d)<.2 && Math.abs(d.pos.y - bsg.pos.y) < 2.3)
+          ? dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved && rel(d)<.2 && Math.abs(d.pos.y - bsg.pos.y) < 2.3 * k)
             .sort((p, q) => Math.abs(p.pos.y - bsg.pos.y) - Math.abs(q.pos.y - bsg.pos.y))[0]
           : undefined;
         const cand = dl
           .filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved)
           .filter((d) => {
             const off = (d.pos.y - b.pos.y) * ps;
-            return off > -2.0 && off < 0.6;
+            return off > -2.0 * k && off < 0.6 * k;
           })
           .sort((p, q) => rel(p) - rel(q));
         // Trap: leave the first DL past the center on the playside for the trapper.
@@ -673,7 +677,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       } else {
         // Backside: hinge/cutoff.
         const cand = dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved).sort((p, q) => Math.abs(p.pos.y - b.pos.y) - Math.abs(q.pos.y - b.pos.y));
-        const d = cand[0] && Math.abs(cand[0].pos.y - b.pos.y) < 2.5 ? cand[0] : null;
+        const d = cand[0] && Math.abs(cand[0].pos.y - b.pos.y) < 2.5 * k ? cand[0] : null;
         if (d) claimedDL.add(d);
         if (d) plans.set(b, { kind: 'cutoff', target: d, drive: up(ps * 0.8) });
         else gapPending.push(b);
@@ -681,18 +685,18 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     }
     // A widened odd/reduced front can put an on-man outside the down-block
     // window. Account for that nearby body before assigning a spare double.
-    for(const [b,d] of zoneOwnership(gapPending,dl.filter((d)=>!claimedDL.has(d)&&d!==trapReserved&&d!==kickReserved),2.6)) {
+    for(const [b,d] of zoneOwnership(gapPending,dl.filter((d)=>!claimedDL.has(d)&&d!==trapReserved&&d!==kickReserved),2.6,k)) {
       claimedDL.add(d);
       plans.set(b,{kind:rel(b)<0?'cutoff':'down',target:d,drive:up(rel(b)<0 ? ps*.8 : downDrive(b, d))});
     }
     for (const b of gapPending.filter((b)=>!plans.has(b))) {
-      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0)
+      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0 * k)
         .sort((p, q) => Math.abs(plans.get(p)!.target!.pos.y - b.pos.y) - Math.abs(plans.get(q)!.target!.pos.y - b.pos.y));
       const partner = partners[0];
       const target = partner ? plans.get(partner)!.target : null;
-      if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
-        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
-      } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+      if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5 * k) {
+        combo(b, partner, target, lbNear(b.pos.y - ps * 0.5 * k, true), plans.get(partner)!.drive);
+      } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0 * k, true), drive: up(-ps * 0.5) });
     }
     // End man on the line on the playside (kick-out target).
     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
