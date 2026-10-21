@@ -99,6 +99,26 @@ Game play mixes more stretch and shotgun runs than the lab, so the stretch
 losses (reach blocks) show up more. Scoring is still high, from both runs
 and explosive passing.
 
+**Mechanism report on games** (`mech:sim` operators, `sim-export.ts --seed 101
+--games 8`, its fixed team pair; `measure.py` + `compare.py` against the
+committed 2022 reference):
+- Metrics flagged off: 38 (contact build) → 32 (candidate). Check 74 → 80;
+  ok 39 → 39.
+- `run.yards`: median 3.86 → 3.02, p90 13.98 → 11.51 (NFL 3.0 / 10.0), flag
+  off → check.
+- `contact.run.broke_contact`: 17.1 → 13.5% (NFL 12.5), check → ok.
+- The largest remaining gaps are after the catch:
+
+  | | NFL | Contact build | Candidate |
+  |---|---|---|---|
+  | `contact.catch.broke_contact` | 12.5% | 34.1% | 31.7% |
+  | `contact.catch.yards_after_contact@headon` p90 | 6.3 | 31.7 | 37.4 |
+  | `contact.catch.yards_after_contact` p90 | 6.1 | 17.8 | 14.4 |
+  | `catch.yards_after_catch` p90 | 12.5 | 31.9 | 22.7 |
+  | carrier / tackler speed at contact, p50 | 4.85 / 4.83 | 5.25 / 4.61 | 4.96 / 4.60 |
+
+  The approach matches the NFL; the tackle after the catch does not.
+
 
 ## Where the contact build stands (baseline, pinned profile)
 
