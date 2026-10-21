@@ -245,7 +245,80 @@ matches the NFL median, but zone outcomes get worse (`rsco`): 40+ 25 → 43
   more uniform than the NFL's (IQR 0.5 vs 1.8 yd). Per-player variation is a
   candidate for later, with play-action in the game sim as its control.
 
-PENDING: gap/shotgun read-step, GAIT_STEP gap/shotgun, leave-one-out.
+LOO_PENDING
+
+## Evidence against and unresolved risk
+
+- **10–19 yd runs overshoot whenever the cap holds** (zone 13.8%, gap 25%,
+  shotgun 15%; NFL 8.6 / 11.3 / 8.6). The cap is right and the box is short.
+  The package trades a TD-producing tail for medium gains. That is closer to
+  NFL scoring, but not closer in every band.
+- **Shotgun is worse with the package** (TVD 10.2 → 12.4) and its tail does
+  not move. Shotgun long runs come from Cover 1 outside/wide zone, where the
+  runner bounces past the man defenders and the cap meets him from behind at
+  about 8.5 yd/s.
+- **The cap still tackles more than the NFL's** (meets 4–9 yd runs 25% vs 12%)
+  and closes faster after the crossing (6 vs 4.7 yd/s). Making him approach
+  under control would match the NFL motion and lengthen runs until the box
+  improves. Not attempted.
+- **Two-high playside safety.** NFL playside safeties come down to 10.4 yd
+  by the crossing at 2.8 yd/s; the cap holds 12 at 0.2. Not modelled: both
+  two-high safeties get the same cap.
+- **Not run:** 8-game `mech:sim` and `test:integration`. The integration owner
+  checks any combined candidate.
+- **Provenance:** a few arms launched with a behaviour-neutral working
+  patch; their manifests record it (`dirty`). Flag-off identity holds: the
+  pinned-profile arms reproduce `cmF*` exactly, and every new flag is
+  default-off.
+
+## Handoffs
+
+| To | What | Evidence |
+|---|---|---|
+| Physics (gait) | Free defenders near the hole: request 8.1 yd/s within 18° of the runner, achieve 1.8, facing 62° away. Free DL within 3 yd of the runner reach him 23–28% (NFL 65%). | `run-defense-depth/dlpursuit.txt`, `nearreach.py` rows in `mechanisms.txt`. `GAIT_STEP=0.5` context arms `gq*`. |
+| Offense (`claude/run-game-v3`, sent) | Gap pullers leave 0.4–0.5 s late (1 yd lateral at 1.1 s vs 0.7; 3.25 vs 4.0 yd/s). Linebackers read the pull, so their flow inherits the delay. | `depth/pulltime.py`, `lbdepth.py gap_pull` |
+| Contact (tackling) | The cap's first encounter on 20+ yd zone runs: side wraps on a 7.8 yd/s runner that break (37%) or drag; shotgun the same at 8.5 yd/s from behind. | `depth/capmeet.py` |
+| Engaged release (defender side of run reps, this branch next) | Blocked defenders stay tied up after the runner passes: DL 74–80% at +1 s (NFL 57%), LB 51–57% (NFL 49%), even with `SHED_PURSUE`. | `release.py` rows in `mechanisms.txt` |
+
+## Next
+
+1. **Release after the runner passes** (this branch, defender side of run
+   reps). Measure why a DL that decides to shed does not separate; the
+   proximity proxy may still count a freed lineman who cannot accelerate.
+2. Re-measure the package once the puller timing (offense) or start-up
+   (physics) changes. `LB_READ_STEP` (NFL bite) is the first thing to re-test
+   then.
+3. Per-player linebacker aggressiveness (bite as a trait, per Eager & Seth),
+   validated against play-action in the game sim, not the run lab.
+
+## Reproduce
+
+```sh
+# NFL reference (raw data per data/README.md; 1.2 GB archive)
+python3 -I scripts/data/fetch_nfl_data.py bdb2025-2022
+python3 -I scripts/mechanics/nfl_bdb2025.py --plays-out out/mechanics/nfl-plays.jsonl.gz --out out/mechanics/nfl-bdb2022.json
+python3 -I scripts/mechanics/nfl_ytg.py
+# arms (Node 22.23.3), e.g. the zone package and its gap/shotgun sets
+P="DEEP_CAP=1 CAP_MESH=1 LB_DEPTH=1 EDGE_SQUEEZE=1 SHED_PURSUE=1 BLOCK_FRONT=1"
+node scripts/diag/open-field/arm.mjs dqco $P
+node scripts/diag/open-field/arm.mjs dqgap $P -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
+node scripts/diag/open-field/arm.mjs dqgun $P -- --formations gun_doubles_11 --concepts iz,oz,wz --seeds 77,71001,1,2,3
+for l in dqco dqgap dqgun; do bash scripts/diag/open-field/common.sh $l; done
+# scoring
+python3 scripts/diag/stretch/bands.py zone p0co dqco; python3 scripts/diag/stretch/paired.py p0co dqco
+bash scripts/diag/depth/card.sh zone p0co dqco
+python3 scripts/diag/depth/sides.py out/open-field/all/dqco.jsonl.gz --shell 2
+python3 scripts/diag/depth/bite.py out/mechanics/nfl-plays.jsonl.gz --ytg60
+python3 scripts/diag/depth/pulltime.py out/open-field/all/dqgap-common.jsonl.gz
+node scripts/baseline.mjs --candidate --flag DEEP_CAP=1 -- node --import tsx scripts/diag/stretch/dlpursuit.ts
+```
+
+Receipts: [`run-defense-depth/`](run-defense-depth/): `outcomes.txt` (bands,
+survival, paired tests), `mechanisms.txt` (NFL vs arms), `dlpursuit.txt`,
+and every arm's manifest. Tests: `test/deep-cap.test.ts` (`CAP_MESH`),
+`test/run-defense-depth.test.ts` (`PULL_FLOW`, `LB_READ_STEP`) and
+`test/block-front.test.ts`. All 2,870 core tests pass on the pinned profile,
+and typecheck passes.
 
 ## Method
 
