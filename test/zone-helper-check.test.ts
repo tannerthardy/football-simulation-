@@ -12,10 +12,10 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
 import { updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
-// The helper witnesses are staged on the installed 1.3 yd line splits. On
-// OL_SPLITS's tracked splits the Tite scene forms a different, sound
-// combination (RG+RT on the B-gap tackle, Y alone on the edge).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; });
+// The helper witnesses are staged on the installed line. On OL_SPLITS's
+// tracked splits the Tite scene forms a different, sound combination (RG+RT
+// on the B-gap tackle, Y alone on the edge); OL_STAGGER also changes it.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });

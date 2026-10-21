@@ -31,10 +31,12 @@ import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
-import { lineOffset } from '../../playbook/alignment.js';
+import { lineDepth, lineOffset } from '../../playbook/alignment.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
+/** How far behind the line this player's installed stance stands. */
+const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
@@ -243,7 +245,7 @@ export class PassProtector implements Behavior {
       const depth = isOL(a) ? passSetDepth(sim, a) : 0;
       // A back steps up beside the QB's launch point, not toward the line:
       // from under center the QB starts at the line and drops away.
-      let set = isOL(a) ? { x: sim.los - 0.6 - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
+      let set = isOL(a) ? { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
       if (runLook(a, sim)) set = { x: sim.los - 0.2, y: set.y };
       return goTo(a, set, { speed: 0.7, facing: 0 });
     }
@@ -651,8 +653,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // gains depth on the way, rather than dropping straight back first.
     const pullStep = PULL_STEP ? ps * 0.9 : 0;
     const pullPath = (b: Agent): Vec2[] => [
-      { x: sim.los - 1.25, y: b.pos.y + pullStep },
-      { x: sim.los - 1.15, y: hole - ps * 0.5 },
+      { x: sim.los - lineDepth(1.25), y: b.pos.y + pullStep },
+      { x: sim.los - lineDepth(1.15), y: hole - ps * 0.5 },
       { x: sim.los + 0.5, y: hole },
     ];
     for (const p of pullers) {
@@ -663,8 +665,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
-        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
-        { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
+        { x: sim.los - lineDepth(role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
+        { x: sim.los - lineDepth(role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
       // An off-ball wrapper already has his entry depth. Do not make him

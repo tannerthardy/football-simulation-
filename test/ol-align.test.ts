@@ -42,7 +42,7 @@ describe('OL_SPLITS / OL_STAGGER line alignment', () => {
 
   it('stagger: tracked depths, heads still on the line; splits unchanged', async () => {
     const { depth, y } = await line(false, true);
-    expect(depth('C')).toBeCloseTo(.29, 9);
+    expect(depth('C')).toBeCloseTo(.43, 9); // clear of the line for the widest body (0.42)
     for (const s of ['LG', 'RG']) expect(depth(s)).toBeCloseTo(.83, 9);
     for (const s of ['LT', 'RT']) expect(depth(s)).toBeCloseTo(.98, 9);
     expect(depth('Y')).toBeCloseTo(1.19, 9);
@@ -87,5 +87,18 @@ describe('OL_SPLITS / OL_STAGGER line alignment', () => {
     // Outside the last body, carried with it.
     expect(lineOffset(3.4, false)).toBeCloseTo(3.10 + .8, 9);
     expect(lineOffset(8, true)).toBeCloseTo(4.62 + 4.1, 9);
+  });
+
+  it.each([false, true])('stagger=%s: depth landmarks stand behind the actual line', async (on) => {
+    vi.stubEnv('OL_STAGGER', on ? '1' : '0');
+    vi.resetModules();
+    const { lineDepth } = await import('../src/playbook/alignment.js');
+    for (const d of [.1, .3, .55]) expect(lineDepth(d)).toBe(d);
+    if (!on) { for (const d of [.6, 1.25, 1.4]) { expect(lineDepth(d)).toBe(d); expect(lineDepth(d, .83)).toBe(d); } return; }
+    // A pull path behind the flat line's heels stays as far behind the tackles'.
+    expect(lineDepth(1.25)).toBeCloseTo(1.25 - .55 + .98, 12);
+    // A set measured from the lineman's own stance.
+    expect(lineDepth(.6, .83)).toBeCloseTo(.88, 12);
+    expect(lineDepth(.65, .98) - .98).toBeCloseTo(.1, 12);
   });
 });

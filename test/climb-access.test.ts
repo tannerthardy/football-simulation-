@@ -5,6 +5,8 @@ import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
 import { RunBlocker } from '../src/sim/behaviors/blocking.js';
 import type { ClimbAccess } from '../src/sim/climb-access.js';
 import type { Perceived } from '../src/sim/perception.js';
+// Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
 
 const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/climb-traffic.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
 function stage(at: number) {

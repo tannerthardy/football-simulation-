@@ -1,7 +1,7 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
 import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { gapY, isDeepZone } from '../playbook/alignment.js';
+import { gapY, isDeepZone, lineDepth } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
@@ -177,7 +177,7 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
       && homeSpot.pos.x<sim.los-.9 && Math.abs(homeSpot.pos.y-sim.ballY)<6;
     if (!guard && !slice) continue;
     const s = sim.see(a, o), home = sim.offAlign.spots[o.slot].pos;
-    if (s.pos.x > sim.los - (guard ? .65 : 1) || Math.abs(s.vel.y) < 1.5 || Math.abs(s.pos.y-home.y) < .6) continue;
+    if (s.pos.x > sim.los - (guard ? lineDepth(.65, sim.los - home.x) : 1) || Math.abs(s.vel.y) < 1.5 || Math.abs(s.pos.y-home.y) < .6) continue;
     return { side: Math.sign(s.vel.y), kind: guard ? 'pull' : 'slice', pos: s.pos };
   }
   return null;

@@ -23,17 +23,21 @@ import { sideSign } from './types.js';
  * 1.3 yd table are placed from the actual splits (`lineOffset`). */
 const OL_SPLITS = process.env.OL_SPLITS === '1';
 /** Experimental (OL_STAGGER=1, off): the line stands off the ball as tracked.
- * The center 0.29 yd behind the ball, guards 0.83, tackles 0.98 and an inline
- * end 1.19 (body centres; their helmets break the center's waist, the legal
- * limit for a lineman on the line). The sim line stood flat at 0.55. */
+ * Guards 0.83 yd behind the ball, tackles 0.98 and an inline end 1.19 (body
+ * centres; their helmets break the center's waist, the legal limit for a
+ * lineman on the line). The center is tracked at 0.29, over the ball; here
+ * the line of scrimmage has no ball length and a body is a disc, so he
+ * stands at 0.43, just clear of it for the widest body (radius 0.42). The
+ * sim line stood flat at 0.55. */
 const OL_STAGGER = process.env.OL_STAGGER === '1';
 const SPLIT_CG = OL_SPLITS ? 1.54 : 1.3, SPLIT_GT = OL_SPLITS ? 1.56 : 1.3, SPLIT_TTE = OL_SPLITS ? 1.52 : 1.3;
 const TACKLE_OFFSET = OL_SPLITS ? SPLIT_CG + SPLIT_GT : 2.6;
 export const OL_OFFSET: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = OL_SPLITS
   ? { LT: TACKLE_OFFSET, LG: SPLIT_CG, C: 0, RG: -SPLIT_CG, RT: -TACKLE_OFFSET }
   : { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
+const FLAT_DEPTH = .55;
 const OL_DEPTH: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = OL_STAGGER
-  ? { LT: .98, LG: .83, C: .29, RG: .83, RT: .98 } : { LT: .55, LG: .55, C: .55, RG: .55, RT: .55 };
+  ? { LT: .98, LG: .83, C: .43, RG: .83, RT: .98 } : { LT: FLAT_DEPTH, LG: FLAT_DEPTH, C: FLAT_DEPTH, RG: FLAT_DEPTH, RT: FLAT_DEPTH };
 const INLINE_OFFSET = OL_SPLITS ? TACKLE_OFFSET + SPLIT_TTE : 3.9;
 const WING_OFFSET = OL_SPLITS ? INLINE_OFFSET + .9 : 4.8;
 /** OL_STAGGER: an inline end's tracked depth (formations install 0.6). */
@@ -216,6 +220,17 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
 }
 
 // ------------------------------------------------------------------ defense
+
+/** A depth behind the line of scrimmage installed against the flat 0.55 yd
+ * line, placed behind the actual line. `stance` (a lineman's own depth)
+ * measures it from that lineman's stance: a set or a drop. Without one it is
+ * carried behind the deepest lineman: a pull path behind the tackles. Depths
+ * at or in front of the flat line are unchanged. The identity unless
+ * OL_STAGGER is on. */
+export function lineDepth(depth: number, stance?: number): number {
+  if (!OL_STAGGER || depth <= FLAT_DEPTH) return depth;
+  return depth - FLAT_DEPTH + (stance ?? OL_DEPTH.LT);
+}
 
 /** A landmark installed against the legacy line (1.3 yd splits, inline end
  * at 3.9 yd from the ball) placed on the actual line: interpolated between
