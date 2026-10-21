@@ -115,10 +115,31 @@ A first version moved heavy ends a notch tighter, from a 6 to an inside 7
 | Run yards p50 / p99 | 2.98 / 27.0 | 2.44 / 14.8 | 3.0 / 10.0 |
 | Yards after contact p50 | 1.95 | 1.52 | 2.40 |
 
-The weak side now looks like tracking. The strong side stays tight because
-the front calls themselves put the strong end on the tight end (Over's 6).
-Next is an edge call within the front: tight, 9 or wide by team habit, the
-end man and the situation. After that comes the caller, a short-yardage
+The weak side now looks like tracking. The strong side stayed tight
+because the front calls themselves put the strong end on the tight end
+(Over's 6). So the call now carries an edge (tight, base, wide). The
+coordinator picks it per snap from the team's fixed lean (around the
+tracked 46 / 31 / 17% over an end), in its own forked stream so that every
+other choice draws as before. The coordinator does not use down and
+distance: tracked width barely moves with them.
+
+With the build term at the full tracked slope, our heavy strong ends
+(median 124 kg) pulled every call back in. Tracked light ends are wider
+partly because they get the wide calls, so the build term is now half the
+slope (0.025 yd per kg, at most 0.4). A wide nine over an end now stands
+2.0 yd outside him; the catalog counts a wide nine past 1.5.
+
+| 8-game runs, strong edge | 6 | 9 | wide nine | edge outside the surface |
+| --- | --- | --- | --- | --- |
+| develop | 30% | 12% | 17% | 0.07 |
+| front on bodies (`5220725`) | 54% | 21% | 3% | 0.10 |
+| + edge call (`34c4502`) | 39% | 23% | 19% | 0.35 |
+| NFL | 13% | 31% | 46% | 1.46 |
+
+Guard 12/12; 39 flags (develop 46). Head-up ends are still three times
+tracking. That is the fourth adjustment to this one distribution, so it
+stops here to re-diagnose which end men stay head-up (two-end sets, front
+stems, or calls that never reach the end man) rather than tune further. After that comes the caller, a short-yardage
 package answering the offense's heavy personnel (six or more on the line,
 no deep safety: 27% of tracked snaps at 1–3 yd to go). Staged native
 witnesses pin `FRONT_ALIGN` off, as for the line flags; `test/front-align.test.ts`.
