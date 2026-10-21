@@ -42,9 +42,20 @@ export interface CarrierOptions {
   aimGap?: { gap: Gap; side: number; offset: number };
 }
 
+/** STRETCH_AIM=1 (default off; on in this branch's pinned profile): on
+ * outside and wide zone the back presses the snap landmark; the live gap
+ * does not follow the end. The live C/D gap is bounded by the inline end, so
+ * an end who drives the tight end wide while penetrating drags the back's
+ * landmark outward onto himself: sim backs ran at the play-side end on 19-29%
+ * of stretch runs, losing yards on 36-54% of those (tracking: 13%, 22%), and
+ * cut inside him on 28-53% (tracking 65%). Where the line's flow opens a lane
+ * is the read's job. */
+const STRETCH_AIM = process.env.STRETCH_AIM === '1';
+
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
   if (!opts.aim || !opts.aimGap || process.env.LIVE_AIM === '0') return opts.aim;
+  if (STRETCH_AIM && (opts.run?.scheme === 'outsideZone' || opts.run?.scheme === 'wideZone')) return opts.aim;
   const g = opts.aimGap;
   return { x: opts.aim.x, y: liveGapY(sim, a, g.gap, g.side) + g.offset };
 }
