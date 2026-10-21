@@ -49,7 +49,15 @@ outcomes.
 | [2008 Alabama defense (Saban/Smart)](https://www.footballxos.com/download/alabama-crimson-tide-defense-2008-nick-saban-kirby-smart/), 430 pp. | Direct link. **Scanned, no text layer.** SHA-256 `34a10ccfbc5c3d793a6614133eb60db8aa06f22156aa84b6ce80c85caa4015fd` | Team-internal manual (staff/player material in the opening pages) | Rights unclear; only pp. 1–8 viewed; not extracted |
 | [2002 Broncos offense](https://www.footballxos.com/download/2002-denver-broncos-mike-shanahan-pdf/) (33.31 MB), [2010 Jets defense](https://www.footballxos.com/download/2010-ny-jets-defense-rex-ryan-pdf/) (10.61 MB), [Cowboys 4-3 Over Stack LB fits](https://www.footballxos.com/download/dallas-cowboys-43-over-stack-lb-fits-pdf/) | Direct download links present | Attributed team material | Not downloaded; same caution |
 | [2020 Browns OL manual (attributed to Bill Callahan)](https://footballplaybooks.net/download/2020-cleveland-browns-ol-manual-bill-callahan/), 51 pp. | Locked on the site; **the user supplied the file** 2026-10-21. Text layer. SHA-256 `a5974dbf25c1b53a5a1e44eb20ab5147ed95573d73b2304bbbf714e37ef1c953` | OL terminology and line-call system; pp. 1–4 are the host site's ads. Attribution not independently verified | **Read**; summarized below. File kept outside Git |
-| [2013 Seahawks defense](https://footballplaybooks.net/download/2013-seattle-seahawks-defense-pete-carroll/) (19.66 MB), [Cowboys run install](https://footballplaybooks.net/download/dallas-cowboys-run-install-mike-mccarthy/) (7.94 MB) and other footballplaybooks.net items | **Locked** behind an email/sign-up gate | Attributed team material | Needs the user |
+| User-shared Google Drive folder (2026-10-21): seven files, mostly footballplaybooks.net compilations (ads on pp. 1–4) | Downloaded with the user's share link | Attributed team material | Read as listed below; files kept outside Git |
+| ↳ Cowboys run install, 325 pp. | Text layer. SHA-256 `196efc034efa590c2c0cf1c024dedde04b1fc8472d8b0a64bb8f259ff7c5bc1c` | Wristband-card style run install; uses Rams-style calls without a glossary | **Read** (run game) |
+| ↳ "2018 49ers offense — Kyle Shanahan", 753 pp. | Text layer. SHA-256 `b5ef1e2fe2ec6f36d7e2eb20837dfa26686972d2b9a4e4a4b0cd1e9766dfe416` | **Mislabelled:** content is Shanahan's 2015 Falcons training-camp install ("2015 TRAINING CAMP" p. 391; "ATLANTA FALCONS HUDDLE PROCEDURE" p. 508) | **Read** (zone and power) |
+| ↳ 2022 Rams offense (McVay), 515 pp. | Text layer. SHA-256 `a6cc12c416db0f5fba6c3f800743a561567c3c1c7f58e4f0c775ba6d7bf5a193` | Full install with an OL glossary (pp. 106–127) | **Read** (OL glossary, run tracks) |
+| ↳ 2013 Seahawks defense, 347 pp. | Text layer. SHA-256 `686fefc6a10c13f676047cb7bf99f441c406522e568244591b1215a328623d4e` | Coverages, pressures, fronts (diagrams, little technique text) | **Read** (fronts) |
+| ↳ 2017 Colts defense, 1,405 pp. | Text layer. SHA-256 `dac7fd23e1da1ae55fe040b5ddbe08cc301a0db14af22578a59e1910d00c78fd` | Full install; fronts stated in technique numbers | **Read** (fronts) |
+| ↳ 2020 Ravens defense (Macdonald), 320 pp. | Weak text layer. SHA-256 `9193f86e7552d1faa5da95c8c5a5f9d361761724b769e5fc67cbda74bd98d72b` | Install by coverage family; front pages have text | **Read** (fronts) |
+| ↳ Andy Reid Chiefs pass install, 140 pp. | **Scanned, no text layer.** SHA-256 `b30ce7e0b1da2d29c8dd23ac9b02069ddf831a30517e47407e4a1286d78c86e4` | Pass install | Not yet read |
+| [Other footballplaybooks.net items](https://footballplaybooks.net/document-tag/nfl-playbooks/) | **Locked** behind an email/sign-up gate | Attributed team material | Needs the user |
 | [2014 49ers (Roman) preview](https://pdfcoffee.com/2014-49ers-greg-roman-playbook-pdf-free.html) | HTTP 403 through the proxy | Marked "Confidential Property" | Not used |
 | [FootballXOs offense clinics](https://www.footballxos.com/downloads/offense/?cp=2), [NDSU run-fit analysis](https://www.footballxos.com/how-north-dakota-state-executes-their-run-fits/) | Public pages | Clinic and analysis articles | Good next reads for zone technique and fits |
 
@@ -158,6 +166,57 @@ but a coverage strength call in Saban-family defenses. "H (over)" is a formation
 not the Over front. HonestNFL's term finder records similar collisions; keep
 source terms in records and map them to engine ids explicitly.
 
+## What the NFL run installs give us
+
+Cowboys run install, the Shanahan file (really the 2015 Falcons) and the 2022
+Rams offense. Physical pages; our wording. The Cowboys cards use Rams-style
+calls without definitions; rules decoded with the Rams glossary
+(pp. 106–127) are reasonably interpreted.
+
+- **Double-team release:** no book gives a trigger (time, backer depth or a
+  named keeper). Combos are named by pair, down lineman and a *pre-snap
+  declared* linebacker: "[pair] on [DL] to Declared LB" (Falcons pp. 742–747;
+  Rams pp. 117–120). The target is shifted by Push/Pull (Falcons p. 745) or
+  Pulse/Shove (Rams p. 126). Release speed follows the declared backer's
+  leverage: "Tite" = the backer behind the DL, "Rico" = stacked or playside,
+  and on Rico the playside man "will be quick off combo" (Falcons pp. 743,
+  746). Chip-then-climb: the center "chips DT then climbs for Sam" (Falcons
+  p. 751). Rams "Chip Double" has the PST "stab and slam the 3 Tech" (p. 118),
+  like Browns "Rake". HonestNFL HNFL-320 (Duo): "surface the block to
+  displace the DL, then climb."
+- **Back alignment and track (under center unless noted):**
+  - *Outside or wide zone:* 7½ yd; aim at the outside hip or leg of the TE
+    (a ghost TE when weak); key the EMOL; one cut (Cowboys pp. 6, 35;
+    Falcons pp. 177, 184). The Rams track the D gap (p. 233).
+  - *Inside or tight zone:* 7½ yd, a 6-inch lead step to the inside hip of
+    the PSG, read the first covered lineman playside (Cowboys p. 19). The
+    Falcons attack the inside hip of the playside tackle (p. 200), as does
+    HonestNFL HNFL-126/127. Rams from the gun: the inside leg on the guard's
+    outside leg (p. 305).
+  - *Duo:* track the B gap and read the first playside linebacker (Rams
+    p. 329). HNFL-319/321: 7 yd, aim at the PSG's outside leg.
+  - *Power:* 7½ yd, aim at the inside hip of the PSG, "press A gap; if no A
+    gap, read pulling guard"; from the gun, straddle the guard's outside leg
+    (Cowboys p. 166).
+  - *Counter:* aim at the inside hip of the PSG (Cowboys p. 170); the Rams
+    read the trapper, then the wrapper (p. 346).
+  - *Toss:* "chase outside hip" of the FB or puller (Cowboys pp. 240, 248).
+  - *Draw:* "Heels at 6" (Cowboys p. 162).
+- **Line splits and depth:** the Rams use the Browns template with a 2 ft
+  normal split, 3 ft wide and 6 in tite (p. 109), and the same three depth
+  levels (p. 108). The Cowboys tie the depth level to the concept: level 3
+  (deepest) for wide zone, level 2 for tight zone and duo, level 1 for gap
+  plays.
+- **Gap schemes:** on Cowboys Post (power), the BSG pulls "for No. 2" and
+  wraps for the first defender inside, and the BST hinges (p. 166). On Load
+  Power the FB kicks the EMOL and the puller takes the "1st opposite color"
+  (pp. 236, 265). Falcons power: the FB kicks the first defender outside the
+  TE, the center blocks back and the BST hinges (pp. 304–305). Cowboys
+  counter: the guard kicks the EMOL and the FB or Y wraps for the first
+  linebacker (pp. 170, 174).
+- **Not given anywhere:** release timing, pistol depth, bang/bend/bounce
+  criteria, and lineman step and pull mechanics.
+
 ## Extraction record
 
 ```yaml
@@ -191,18 +250,29 @@ Technique numbers follow the Browns OL manual p. 11: 6 = head-up on the TE,
 7 = inside shade, 9 = outside shade.
 
 **4-3 Over strong side against an inline TE (2026-10-21, for the run-defense
-session).** The question: is our Over map (DE_S at 6, Sam at 7 off the ball)
-supported?
+session; corrected the same day).** The question: is our Over map (DE_S at 6,
+Sam at 7 off the ball) supported?
 
-- *Strong end:* not head-up in any base source. HonestNFL HNFL-129 (Over
-  panel, read from the image's shading) puts it on the TE's inside shade (7),
-  over a strong 3 and a weak 1. The generated defense textbook (p. 29, C1)
-  says "strong 5-tech". Confidence: medium.
-- *Sam:* on the line outside the TE at 9 (HNFL-086/088 base "Roll" fronts; the
-  HNFL-129 Bear panel's "Dubs" 9-tech) or an off-ball overhang outside the TE
-  (textbook p. 29). None of these put him stacked inside at 7. Confidence:
-  medium-low; the Roll front is a Fangio-family hybrid.
-- *Nickel:* HNFL-082 (Cowboys; labels the families) and HNFL-081 (Eagles).
-  The all-purpose "Over family" fronts Cheat and Cassie put the strong end at
-  9 outside the TE over a 3 and a 2i. Only "Flex" ("Over family for run
-  downs") has a head-up 6. Confidence: medium.
+- *Strong end:* **head-up (6) in the NFL team installs.** Colts p. 77: "Over
+  Front = 3 Technique & 6 Technique to Closed Call. Shade & 5 Technique
+  away", moving to a 9 against a pair of TEs (p. 79). The Seahawks
+  Over-family diagrams agree, and against motion: "STAY IN 6 TECH" (p. 85).
+  The first answer said "not head-up", from HonestNFL HNFL-129 (a generic
+  recognition sheet, read as a 7) and the generated textbook (p. 29, "strong
+  5-tech"). The team installs outrank both. Confidence: high for these
+  installs.
+- *Sam:* Colts p. 77, "Vs. single TE align at LB depth in a 90", i.e. outside
+  the TE at linebacker depth, tightening to the line head-up on a wing. The
+  Seahawks put the Sam weak and the strong safety down outside the TE (p. 5).
+  Neither stacks him inside at 7. Confidence: medium-high.
+- *Under, the more common base front:* Colts p. 6 has the strong end at 5 and
+  the Sam on the line at 9 ("Tough" = 4 technique). Ravens p. 98 has "Sam - 9
+  Tech", "End - 4 Tech or Heavy 5". Seahawks p. 121: "ROCK SEATTLE IS A BASE
+  UNDER FRONT". The Colts book has about 4 Over call sheets against about 50
+  Under, so a head-up strong end should be uncommon in league tracking even
+  though Over itself uses a 6.
+- *Nickel:* the Colts and Ravens use Plus (9 and 3 closed), Flex (6 and 3
+  closed) and Rush (9 and 3 closed, 2i open) (Colts p. 5; Ravens pp. 12–17).
+  The Colts "Auto" call (p. 13) picks between them by the back: "Any Dot or
+  Far RB = 9 Tech", "Any Near Back = 6 Tech". HonestNFL HNFL-081/082 show
+  the same Cheat/Flex split, with Flex labelled "Over family for run downs".
