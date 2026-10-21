@@ -2,8 +2,9 @@
 
 Branch work from accepted develop `d91c9014fe5e088f3f43e38236e967d68bd388b0`.
 The user asked for realistic pre-snap alignment, the offensive line first.
-Every change is a default-off flag in `src/playbook/alignment.ts`; no
-controller, World, capacity or rating changes. Alignment places bodies; what
+Every change is a default-off flag in `src/playbook/alignment.ts`, with
+identity-when-off landmark call sites in `assign.ts`, `blocking.ts` and
+`run-fits.ts`; no World, capacity or rating changes. Alignment places bodies; what
 they then do is still decided by the existing controllers and physics.
 
 **Question.** Where does the installed alignment put bodies that film does
@@ -97,36 +98,53 @@ and nothing was tuned toward these numbers.
 
 ## `OL_STAGGER` (off): the line stands off the ball as tracked
 
-Center 0.29 behind the ball, guards 0.83, tackles 0.98, an inline end 1.19.
-This is what makes the line look like a line on film. With the flag on, 60
-core contracts fail in 20 files (`OL_SPLITS` with its pins: none):
-- 30 run-blocking scenes: pull clearance, observed-pull planner and cue,
-  climb access, combo access, outside-gap outer body, center climb
-  renumbering, the Tite helper and the P019 cutoff.
-- 29 recorded native rules and game witnesses whose seeded events no longer
-  occur: teammate contact, endzone provenance, official credit, Game rule
-  composition, pass-contact foul, ball rules, catch caller, holding,
-  grounding and the rusher recording.
-- 1 installed contract: "seven on the line" counts bodies within 0.6 yd of
-  the line, so a legal end at 1.19 reads as off it.
+Guards 0.83 yd behind the ball, tackles 0.98, an inline end 1.19 (tracked
+body centres; their helmets break the center's waist). The center is
+tracked at 0.29, over the ball. Here the line of scrimmage has no ball length
+and a body is a disc (radius up to 0.42), so at 0.29 he stood in the neutral
+zone and every snap drew offside (7-4-5). He stands at 0.43, just clear of it.
 
-The flag is preserved for the run-game owner. It is not proposed for
-integration.
+The first census had 60 core failures in 20 files. Three causes:
+- **The center's offside.** That alone produced all 29 rules and game
+  witness failures (teammate contact, endzone provenance, official credit,
+  holding, grounding and others): every snap was a foul.
+- **Absolute depth landmarks tuned for the flat 0.55 line.** `lineDepth`
+  now places them behind the actual line. Pass sets are measured from the
+  lineman's own stance. Pull and trap paths run behind the tackles' heels,
+  where before they ran through them. The defense's pull indicator
+  (`blockingIndicator`) measures a guard's or tackle's drop from his own
+  stance; at the flat `los - 0.65` a staggered guard already read as
+  pulling. The draw presentation set (`los - 1.2`) stays: it is still
+  behind every lineman.
+- **Body depth read as rule status.** "Seven on the line" now reads the
+  installed depth, as `presnap-rules` does. `pull-fit-plan` stages its
+  pulling guard 0.65 behind his stance (38.8 on the installed line,
+  unchanged). Eight recorded fixtures pin the installed line.
 
-What the stagger needs is identifiable: depth landmarks are absolute and tuned
-for a flat line at 0.55.
-- `blocking.ts` pull paths run at `los - 1.15` to `los - 1.4`, through
-  staggered tackles whose backs sit near 1.3.
-- The defense's pull indicator (`blockingIndicator` in `run-fits.ts`) reads a
-  guard or tackle deeper than `los - 0.65` moving laterally as pulling. A
-  staggered guard at 0.83 already stands deeper than that, so a zone step can
-  read as a pull. `pullers` in the same file measures depth from the home spot
-  and is unaffected.
-- Pass sets step to `los - 0.6 - depth`.
+Core suite: 2,793 / 2,793 with `OL_STAGGER=1`, and with every flag on.
 
-These want line-relative depths (the depth analog of `lineOffset`). The
-on-the-line contract wants a rule that does not read body depth. That is
-controller work in the run-game owner's files.
+**Not proposed for promotion.** 8 games with all four alignment flags,
+compared with the same three without the stagger:
+- Guard 12/12; flagged metrics 42 → 46.
+- Pass pressure 17 → 25%; time to pressure 2.8 → 2.5 s.
+- OL depth given at 2 s 2.58 → 2.28; run rows unchanged within noise.
+
+One targeted diagnostic (`scripts/diag/align/edgeset.py`, the same code on both
+sources) finds the mechanism. The sim's tackles step **forward** to meet the
+edge rusher:
+
+| Tackle vs edge rusher | Meet time | Tackle depth at meeting |
+| --- | --- | --- |
+| Sim, flat line | 0.7 s | 0.3 yd (from 0.6) |
+| Sim, staggered | 0.7 s | 0.4 yd (from 1.0) |
+| NFL (18,181 reps) | 1.4 s | 3.5 yd (from 1.1; rusher 4.1 yd/s) |
+
+So the stagger lengthens a forward trip the tackle should not be making.
+`cutOffPoint` in `blocking.ts` sets at the earliest point on the rusher's
+arc the tackle can reach first: an interception at the line, not a
+vertical set that uses depth. That is a pass-protection decision that
+predates this work. It belongs to the controller (and to the cutoff
+owner's review), not to alignment. Promote the stagger after it.
 
 ## Not changed
 
@@ -138,9 +156,10 @@ defensive-line depth variety (0.9 fixed vs 0.7–1.3) remain.
 
 `test/def-align.test.ts`, `test/wr-align.test.ts`, `test/ol-align.test.ts`
 (off: the installed spots exactly; on: the tracked spots, and techniques and
-gaps between their blockers). Core suite on this branch (with `TIP_AWAY`):
-2,791 / 2,791 with every flag off and with `TIP_AWAY`, `DEF_ALIGN`,
-`WR_ALIGN` and `OL_SPLITS` all on (`baseline.mjs --candidate`); typecheck
+gaps between their blockers; `lineDepth` identity off and placement on).
+Core suite on this branch (with `TIP_AWAY`): 2,793 / 2,793 with every flag
+off, with `OL_STAGGER` alone, and with `TIP_AWAY`, `DEF_ALIGN`, `WR_ALIGN`,
+`OL_SPLITS` and `OL_STAGGER` all on (`baseline.mjs --candidate`); typecheck
 passes. Not run: `test:integration`, `test:all`, `test:data`.
 
 ## Reproduce
@@ -151,4 +170,6 @@ python3 scripts/diag/align/snap.py out/mechanics/sim-align.jsonl.gz
 python3 scripts/diag/align/defsnap.py out/mechanics/sim-align.jsonl.gz
 python3 -I scripts/mechanics/measure.py out/mechanics/sim-align.jsonl.gz out/mechanics/sim-align.json
 python3 -I scripts/mechanics/compare.py --sim out/mechanics/sim-align.json --out out/mechanics/report-align.md --guard data/reviews/mechanics/guard.json
+# the stagger arm adds --flag OL_SPLITS=1 --flag OL_STAGGER=1; the edge set operator on both sources:
+python3 scripts/diag/align/edgeset.py out/mechanics/nfl-plays.jsonl.gz out/mechanics/sim-align.jsonl.gz
 ```
