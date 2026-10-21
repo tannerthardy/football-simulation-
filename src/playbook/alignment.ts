@@ -89,8 +89,11 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * outside the tackle is 1%), else the call's technique stands. His build
  * then moves him: 0.05 yd wider per kg lighter than 118 kg, at most 0.6 yd,
  * and never inside an end he is set on (tracked ends: about -0.025 yd per lb;
- * 235 lb ends 1.81 yd outside an end, 275 lb 1.03). The call's gap is
- * unchanged. */
+ * 235 lb ends 1.81 yd outside an end, 275 lb 1.03). A called edge (tight,
+ * base, wide) sets his technique; the coordinator calls it from the team's
+ * lean, which varies by team as tracked team medians do (SD 0.3-0.4 yd), not
+ * by down and distance (tracked width barely moves with them). The call's
+ * gap is unchanged. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
 
 export interface OffSpot {
@@ -128,7 +131,10 @@ export interface OffenseAlignment {
  * corners' and deep safeties' depth (yd). Each applies under its flag only. */
 export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: number; safetyDepth?: number;
   /** FRONT_ALIGN: the body mass (kg) of the player in each defensive slot. */
-  mass?: Partial<Record<DefSlot, number>> }
+  mass?: Partial<Record<DefSlot, number>>;
+  /** FRONT_ALIGN: the team's lean toward wide edges (shift in the share of
+   * wide calls). */
+  edgeWide?: number }
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -328,6 +334,8 @@ export function lineDepth(depth: number, stance?: number): number {
 const SHOULDER = .57;
 /** FRONT_ALIGN: techniques an end man can hold outside the tackle. */
 const EDGE_TECH: Technique[] = ['7', '6', '9', 'w9'];
+/** FRONT_ALIGN: the called edge over an end (with none: a 9 or a wide nine). */
+const EDGE_CALL_TE: Record<'tight' | 'base' | 'wide', Technique> = { tight: '6', base: '9', wide: 'w9' };
 
 export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BASE_LINE): number {
   if (!OL_SPLITS) return offset;
@@ -629,7 +637,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const hasTE = side === 'S' ? off.hasTE.S : off.hasTE.W;
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
-    const tech = EDGE_TECH.includes(frontSlots[end]!.tech) ? frontSlots[end]!.tech : hasTE ? '6' : 'w9';
+    const called = call.edge && (hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9');
+    const tech = called || (EDGE_TECH.includes(frontSlots[end]!.tech) ? frontSlots[end]!.tech : hasTE ? '6' : 'w9');
     edgeTech.set(end, tech);
     // His build: lighter ends stand wider (tracked: -0.05 yd per kg about a
     // 118 kg end), never inside a tight end he is set on.

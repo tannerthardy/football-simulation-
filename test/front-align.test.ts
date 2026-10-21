@@ -11,12 +11,12 @@ import { DEF_PERSONNEL, type DefSlot } from '../src/playbook/types.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function front(on: boolean, frontId = 'over', personnel: 'base43' | 'nickel' = 'base43', mass: Partial<Record<DefSlot, number>> = {}) {
+async function front(on: boolean, frontId = 'over', personnel: 'base43' | 'nickel' = 'base43', mass: Partial<Record<DefSlot, number>> = {}, edge?: 'tight' | 'base' | 'wide') {
   vi.stubEnv('FRONT_ALIGN', on ? '1' : '0');
   vi.resetModules();
   const { alignDefense, alignOffense } = await import('../src/playbook/alignment.js');
   const los = 40, off = alignOffense(FORMATION_BY_ID.i_pro_21, false, los, CENTER_Y);
-  const def = alignDefense({ personnel, front: FRONT_BY_ID[frontId], coverage: COVERAGE_BY_ID.cover3, pressure: null, label: frontId },
+  const def = alignDefense({ personnel, front: FRONT_BY_ID[frontId], coverage: COVERAGE_BY_ID.cover3, pressure: null, label: frontId, edge },
     off, Object.keys(DEF_PERSONNEL[personnel]) as DefSlot[], {}, { mass });
   // Across the field from the ball, strong (the end's side) positive.
   const y = (slot: string) => ((off.spots[slot] ?? def.spots[slot as DefSlot])!.pos.y - CENTER_Y) * off.strongSign;
@@ -53,5 +53,35 @@ describe('the front aligns on bodies and its end men by who they are', () => {
   it('on: a heavy end set on a tight end does not slide inside him', async () => {
     const heavy = await front(true, 'over', 'base43', { DE_S: 140 });
     expect(heavy.y('DE_S')).toBeGreaterThanOrEqual(heavy.E - 1e-9);
+  });
+  it('on: the called edge sets the end man over an end and away from one', async () => {
+    const tight = await front(true, 'over', 'base43', {}, 'tight'), base = await front(true, 'over', 'base43', {}, 'base');
+    const wide = await front(true, 'over', 'base43', {}, 'wide');
+    expect(tight.y('DE_S')).toBeCloseTo(tight.E, 9);
+    expect(base.y('DE_S')).toBeCloseTo(base.E + .57, 9);
+    expect(wide.y('DE_S')).toBeCloseTo(wide.E + 1.6, 9);
+    expect(-tight.y('DE_W') - tight.weakT).toBeCloseTo(1.6, 9);
+    expect(-wide.y('DE_W') - wide.weakT).toBeCloseTo(2.3, 9);
+    expect(wide.def.spots.DE_S!.gap).toBe(tight.def.spots.DE_S!.gap);
+  });
+});
+
+describe('the coordinator calls the edge from the team\'s lean', () => {
+  async function calls(on: boolean, id: string, n = 60) {
+    vi.stubEnv('FRONT_ALIGN', on ? '1' : '0');
+    vi.resetModules();
+    const { Rng } = await import('../src/core/rng.js');
+    const { generateTeam, pickOffense } = await import('../src/league/team.js');
+    const { DefensiveCoordinator } = await import('../src/game/playcaller.js');
+    const team = generateTeam(new Rng(5), id, id), offense = generateTeam(new Rng(6), 'OFF', 'OFF');
+    const dc = new DefensiveCoordinator(team, new Rng(7));
+    const s = { down: 1, distance: 10, yardline: 35, quarter: 1, clock: 900, scoreDiff: 0, ballY: CENTER_Y, hurry: false };
+    return Array.from({ length: n }, () => dc.call(s, '11', offense, pickOffense(offense, '11')).call);
+  }
+  it('off: no edge call; on: every other choice draws exactly as before', async () => {
+    const off = await calls(false, 'ONE'), on = await calls(true, 'ONE');
+    expect(off.every(c => c.edge === undefined)).toBe(true);
+    expect(on.map(c => ({ ...c, edge: undefined }))).toEqual(off);
+    expect(new Set(on.map(c => c.edge)).size).toBeGreaterThan(1);
   });
 });
