@@ -1961,3 +1961,13 @@ inelastic leg-hold request in the solver (`TETHER`) and the holder judging his
 wrap by the point he holds (`HOLD_POINT`) make the earlier hip-brace/roll/
 binding set usable; all seven are on in this branch's pinned profile.
 
+
+## Part 15 — run offense: the blocks and reads the offense should make (2026-10-21)
+
+Moved to its own document: [run offense](run-offense.md). Zone doubles help
+the man in the gap beside the uncovered player (`COMBO_GAP`), the back reads
+a defender's arms (`RUN_REACH`), the free member of a stretch double climbs
+when his partner holds the man alone (`COMBO_SOLO`), outside/wide-zone backs
+press the snap landmark (`STRETCH_AIM`) and the power fullback kicks the end
+out from his inside shoulder (`FB_KICK`); all on in this branch's pinned
+profile. Ace zone losses 15.3 → 6.4%, shotgun 9.2 → 5.5%, power 12.2 → 7.5%.
