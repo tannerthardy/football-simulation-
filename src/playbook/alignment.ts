@@ -87,9 +87,10 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * wide nine), never on the tackle's outside shoulder (tracked weak edges are
  * a 5 on 1-2% of runs); with one, at least on him (an uncovered end with a 5
  * outside the tackle is 1%), else the call's technique stands. His build
- * then moves him a notch: a light end (under 111 kg) widens to rush, a heavy
- * one (over 124 kg) tightens to play the run (tracked ends: 235 lb at 1.81 yd
- * outside an end, 275 lb at 1.03). The call's gap is unchanged. */
+ * then moves him: 0.05 yd wider per kg lighter than 118 kg, at most 0.6 yd,
+ * and never inside an end he is set on (tracked ends: about -0.025 yd per lb;
+ * 235 lb ends 1.81 yd outside an end, 275 lb 1.03). The call's gap is
+ * unchanged. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
 
 export interface OffSpot {
@@ -325,8 +326,8 @@ export function lineDepth(depth: number, stance?: number): number {
  * outermost of them beyond it. The identity unless OL_SPLITS is on. */
 /** FRONT_ALIGN: a shade's offset from its blocker's centre (tracked). */
 const SHOULDER = .57;
-/** FRONT_ALIGN: the end man's techniques from tightest to widest. */
-const EDGE_NOTCH: Technique[] = ['7', '6', '9', 'w9'];
+/** FRONT_ALIGN: techniques an end man can hold outside the tackle. */
+const EDGE_TECH: Technique[] = ['7', '6', '9', 'w9'];
 
 export function lineOffset(offset: number, hasTE: boolean, line: LineSplits = BASE_LINE): number {
   if (!OL_SPLITS) return offset;
@@ -622,26 +623,26 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const frontSlots = call.front.slots;
   // FRONT_ALIGN: each side's end man (the widest defender on the line) sets
   // the edge; his technique comes from the surface and his build.
-  const edgeTech = new Map<DefSlot, Technique>();
+  const edgeTech = new Map<DefSlot, Technique>(), edgeShift = new Map<DefSlot, number>();
   if (FRONT_ALIGN) for (const side of ['S', 'W'] as const) {
     const onLine = present.filter(slot => frontSlots[slot]?.side === side && frontSlots[slot]!.depth < 2);
     const hasTE = side === 'S' ? off.hasTE.S : off.hasTE.W;
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
-    let tech = frontSlots[end]!.tech;
-    if (!EDGE_NOTCH.includes(tech)) tech = hasTE ? '6' : 'w9';
-    const mass = style.mass?.[end];
-    const notch = EDGE_NOTCH.indexOf(tech);
-    if (notch >= 0 && mass !== undefined)
-      tech = EDGE_NOTCH[clamp(notch + (mass < 111 ? 1 : mass > 124 ? -1 : 0), hasTE ? 0 : 1, EDGE_NOTCH.length - 1)];
+    const tech = EDGE_TECH.includes(frontSlots[end]!.tech) ? frontSlots[end]!.tech : hasTE ? '6' : 'w9';
     edgeTech.set(end, tech);
+    // His build: lighter ends stand wider (tracked: -0.05 yd per kg about a
+    // 118 kg end), never inside a tight end he is set on.
+    const mass = style.mass?.[end];
+    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.05 * (mass - 118), -.6, .6),
+      hasTE ? -techniqueOffset(tech, true, off.line) + inlineOf(off.line) : -Infinity));
   }
   for (const slot of present) {
     const fa = frontSlots[slot];
     if (!fa) continue;
     const sign = fa.side === 'S' ? s : -s;
     const hasTE = fa.side === 'S' ? off.hasTE.S : off.hasTE.W;
-    const y = off.ballY + sign * techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line);
+    const y = off.ballY + sign * (techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0));
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? (fit.side === 'S' ? s : -s) : sign };

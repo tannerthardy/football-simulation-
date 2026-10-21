@@ -1,7 +1,8 @@
 /** FRONT_ALIGN (alignment.ts alignDefense, the front): shaded techniques sit
  * on their blocker's shoulder; each side's end man sets the edge outside the
  * surface (outside the tackle with no end there, at least on an end with
- * one), and his build moves him a notch. Off: the installed spots. */
+ * one), and his build moves him: lighter wider, never inside an end he is
+ * set on. Off: the installed spots. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
@@ -48,5 +49,9 @@ describe('the front aligns on bodies and its end men by who they are', () => {
     expect(light.y('DE_S')).toBeGreaterThan(heavy.y('DE_S'));
     expect(-light.y('DE_W')).toBeGreaterThan(-heavy.y('DE_W'));
     expect(light.def.spots.DE_W!.gap).toBe(heavy.def.spots.DE_W!.gap);
+  });
+  it('on: a heavy end set on a tight end does not slide inside him', async () => {
+    const heavy = await front(true, 'over', 'base43', { DE_S: 140 });
+    expect(heavy.y('DE_S')).toBeGreaterThanOrEqual(heavy.E - 1e-9);
   });
 });
