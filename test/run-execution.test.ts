@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Recorded on the lab/generated rosters before FRONT_FIT (on in the pinned
+// profile) put real tackles at DT_S/DT_W; the changed bodies change this
+// scenario. Pin it off here. test/front-fit.test.ts covers the depth chart.
+vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

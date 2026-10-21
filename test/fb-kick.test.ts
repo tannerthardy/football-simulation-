@@ -19,6 +19,10 @@ vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) pro
 // CUTOFF_SEAL, on in the pinned profile), which change when and where the
 // line meets its men; pin them off here. test/gap-blocks.test.ts covers them.
 vi.hoisted(() => { for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) process.env[k] = '0'; });
+// Recorded on the lab/generated rosters before FRONT_FIT (on in the pinned
+// profile) put real tackles at DT_S/DT_W; the changed bodies change this
+// scenario. Pin it off here. test/front-fit.test.ts covers the depth chart.
+vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

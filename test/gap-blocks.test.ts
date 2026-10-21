@@ -18,6 +18,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
  * blocker first engaged his man (play-side frame: y > 0 toward the play). */
 async function blocks(flags: Record<string, string>, id: string) {
   for (const k of ['GAP_OUT', 'CUTOFF_SEAL', 'GAP_FIT', 'TRAP_FIT']) vi.stubEnv(k, flags[k] ?? '0');
+  // Witness bodies are the lab roster before FRONT_FIT (test/front-fit.test.ts).
+  vi.stubEnv('FRONT_FIT', '0');
   vi.resetModules();
   const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
   const { RunBlocker, playSideSign } = await import('../src/sim/behaviors/blocking.js');

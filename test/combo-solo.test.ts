@@ -6,6 +6,10 @@
  * flag the unjoined double never releases and the tackle drifts with no
  * one to block; with it he climbs to the double's linebacker. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// Recorded on the lab/generated rosters before FRONT_FIT (on in the pinned
+// profile) put real tackles at DT_S/DT_W; the changed bodies change this
+// scenario. Pin it off here. test/front-fit.test.ts covers the depth chart.
+vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
