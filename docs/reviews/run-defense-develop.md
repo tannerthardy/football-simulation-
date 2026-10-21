@@ -234,7 +234,7 @@ bodies sit inside the seen surface there.
 | Free inside the bounce point | 0.28 | 0.11 | 0.23 | 0.06 | 0.20 |
 | Outside-aligned deep DBs, lateral outside the surface | | | 0.6 | 2.7 | 4.1 |
 | Force width outside the edge at the kick-out (`force.py`, power) | 8.8 | 3.4 | | | 2.4 |
-| Runs of 40+ yd | 130 | 129 | 117 | 104 | |
+| Runs of 40+ yd | 128 | 127 | 117 | 104 | |
 | Power / counter yards p50 | 3.97 / 3.69 | 4.07 / 3.60 | 4.82 / 4.76 | 4.45 / 4.53 | |
 
 Develop's back seldom bounces (inside the kicker 90%, `force.py`), so
