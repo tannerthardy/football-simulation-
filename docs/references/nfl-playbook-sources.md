@@ -319,6 +319,48 @@ unaccounted for. In this system that is a declared hot or sight
 responsibility, or a missed scan. Telemetry should tell those apart from a
 blocker who lost his man.
 
+## What the 2012 Ravens QB manual gives us
+
+111 pp., text layer; title page "2012 BALTIMORE RAVENS QB MANUAL". Contents
+(p. 2): philosophy, preparation, system (cadence, audibles, run checks),
+technique (drops pp. 44–45, passing pp. 46–47), drills, reads and
+progressions (pp. 75–78), 24 route concepts (pp. 79–107), coverage
+recognition (pp. 108–111).
+
+- **Drops** (pp. 44–45): before the snap, shift 80–90% of the weight to the
+  pivot foot. Three-step is "a one step drop with two 'stopping steps'",
+  planting on step three with no hitch for timing routes. Five-step depth is
+  "6½ - 7 yards", either with a hitch or planting on time for timing routes.
+  Seven-step is 3 acceleration steps, 1 sustained and 3 stopping steps at
+  about 8½ yd; no seven-step from the gun (p. 65). These match the OL
+  manual's launch points (4½ / 6½ / 8½ yd).
+- **Timing words, not seconds:** the go route is thrown on the hitch, never
+  held (p. 71); seam throws go 18–22 yd (p. 70); "windows open and close
+  rapidly", so throw with anticipation (p. 55). No page gives a time or
+  trigger for moving to the next read.
+- **Pre-snap process** (pp. 52, 108–111): a walk-to-line checklist of front,
+  linebackers, safeties, corners, audible and hot/sight receivers. Disguise
+  shows in defenders' eyes, depth and width (p. 109). Audibles avoid a bad
+  play rather than chase a better one (p. 8); four kinds: Alert, Check, Kill,
+  Opposite (pp. 31–32).
+- **Read families** (pp. 74, 77–78): Straight, Right/Left, High/Low, In/Out,
+  Triangle, 1A-to-1B and "Is He Open". Each concept names its key on
+  pp. 80–82: Stick reads the flat defender, Middle Read reads the open or
+  closed middle plus safety leverage and Mike depth, Verticals read the
+  safety, Smash and Delays take the best-look side, Naked reads the contain
+  player.
+- **Pocket and mechanics** (pp. 46–47, 71–72): feel the rush rather than look
+  at it, slide compactly, never square the shoulders to the line; hips before
+  shoulders, about a 45° shoulder turn, step to where ball and receiver meet.
+
+**Compared with the engine** (`dropSpec` in `src/sim/behaviors/qb.ts`):
+under-center depths are 5.0 yd quick, 8.0 yd five-step and 9.5 yd seven-step,
+which its comment ties to tracked QB depth at the throw (median 7.9 yd). The
+manual's launch points are about a yard shallower. A launch point is where
+the drop ends; tracked throw position also includes any hitch, climb or drift
+and the shotgun's deeper start. So compare like with like before changing
+anything.
+
 ## Extraction record
 
 ```yaml
