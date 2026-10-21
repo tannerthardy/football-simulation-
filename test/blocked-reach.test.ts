@@ -1,7 +1,9 @@
 /** BLOCKED_REACH (tackle.ts tryTackles): a blocked defender who has not beaten
  * the block may still reach for a carrier passing him with his free arm. The
  * reach shrinks as the blocker's inside hands are latched; the attempt itself
- * keeps the ordinary engaged miss penalty. Off: the installed win gate. */
+ * keeps the ordinary engaged miss penalty. Only the arm away from the blocker
+ * is free: a blocker head-up or on the runner's side leaves the installed
+ * gate. Off: the installed win gate. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -13,7 +15,7 @@ import type { Engagement } from '../src/sim/agent.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 /** The carrier passes a blocked tackle 0.55 of an arm beyond body contact. */
-function stage(control: number) {
+function stage(control: number, blocker: 'free' | 'covered' | 'square') {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'O'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'D'), 'base43'),
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.power, label: 'reach' },
@@ -25,18 +27,20 @@ function stage(control: number) {
   const gap = c.profile.radius + d.profile.radius + .55 * d.profile.reach;
   d.body.pos = { x: 41, y: CENTER_Y }; d.body.facing = Math.PI / 2;
   c.body.pos = { x: 41, y: CENTER_Y + gap }; c.body.vel = { x: 1, y: 0 };
+  // In front of him, offset away from the runner, toward him, or head-up.
+  b.body.pos = { x: 40.2, y: CENTER_Y + { free: -.6, covered: .6, square: 0 }[blocker] };
   d.engagement = { blocker: b, defender: d, helpers: [], start: 0, type: 'run', win: .3, control, phi: .1, side: 1,
     baseB: 1, baseD: 1 } as unknown as Engagement;
   sim.t = sim.world.time = 1.2; sim.ball = { kind: 'held', carrier: c };
   sim.intents[d.idx] = { vel: { x: 0, y: 0 }, facing: Math.PI / 2 };
   return { sim, c, d };
 }
-async function reach(enabled: boolean, control: number) {
+async function reach(enabled: boolean, control: number, blocker: 'free' | 'covered' | 'square' = 'free') {
   vi.stubEnv('BLOCKED_REACH', enabled ? '1' : '0');
   vi.stubEnv('TACKLE_TOUCH', '0'); vi.stubEnv('REACH_CONTACT', '0');
   vi.resetModules();
   const { tryTackles } = await import('../src/sim/tackle.js');
-  const f = stage(control);
+  const f = stage(control, blocker);
   const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(true);
   const strike = vi.spyOn(f.sim, 'lungeAt');
   tryTackles(f.sim);
@@ -53,5 +57,8 @@ describe('a blocked defender reaches with his free arm', () => {
   });
   it('on: latched inside hands pull that arm in', async () => {
     expect((await reach(true, 1)).reached).toBe(false);
+  });
+  it.each(['covered', 'square'] as const)('on: a blocker %s occupies that arm', async blocker => {
+    expect((await reach(true, 0, blocker)).reached).toBe(false);
   });
 });

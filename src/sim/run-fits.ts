@@ -162,12 +162,14 @@ const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
  * fired near 1.35 s (scripts/diag/runblock/lbfill.py, lbtrace.ts). Same
  * delayed picture; a kick-slide on play-action can fool him. */
 const PULL_EARLY = process.env.PULL_EARLY === '1';
-/** Experimental (FORCE_BOUNCE=1, off): the force keeps his outside shoulder on
- * the bodies at the point of attack, not on the offensive surface. A kick-out
- * or lead block outside the tight end, and the defender it meets, move the
- * place a runner bounces; a force aimed half a yard outside the end is inside
- * it. Seen bodies within 4 yd outside the surface and near the line (blockers,
- * and defenders already engaged) set his boundary. */
+/** Experimental (FORCE_BOUNCE=1, off): the force keeps the ball on his inside
+ * shoulder until it declares. While the runner he sees is still behind the
+ * line, his boundary stays outside the outermost body at the point of attack
+ * (the line and inline ends as seen, plus blockers and engaged defenders
+ * within 4 yd outside them near the line) by the ground that runner covers
+ * at full speed in this defender's reaction time; a force half a yard outside
+ * the surface has already given up the bounce. Once the runner is at the
+ * line the installed track applies. */
 const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
@@ -295,6 +297,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
           if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }
         }
       }
+      // Behind the line nothing has declared; keep a runner's outward cut inside
+      // the reach of his own reaction.
+      if (FORCE_BOUNCE && (premesh || seen.pos.x < sim.los - .5)) line += job.side * a.profile.reactionTime * (premesh && back ? back : c).profile.vmax;
       const desired = forceTrack(a,seen,x,line,lineVel,job.side);
       desired.point.y += a.mind.placementError;
       const held = retainedForceTrack(a,desired,sim.t);

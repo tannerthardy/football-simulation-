@@ -3,7 +3,7 @@ Runs: at first contact, the defender nearest the carrier is the first tackler;
 he counts as blocked when an offensive player other than the carrier is within
 1.2 yd of him at that frame. Share of first contacts by blocked defenders, by
 concept family (gap / zone / other), and for blocked vs free first tacklers
-the yards gained. One operator for NFL tracking and sim exports."""
+the carrier's depth past the line at that contact and the play's final yards. One operator for NFL tracking and sim exports."""
 import gzip, json, sys, re
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play
@@ -26,6 +26,6 @@ for path in sys.argv[1:]:
         if not ds: continue
         d = min(ds, key=lambda d: p.dist(d, c, k))
         blocked = any(o != c and p.pos(o, k)[0] is not None and p.dist(o, d, k) < 1.2 for o in p.who('O'))
-        g = out.setdefault(fam((raw.get('cell') or {}).get('concept')), {'b': [], 'f': []})
-        g['b' if blocked else 'f'].append(raw['yards'])
-    print(path.split('/')[-1], ' | '.join(f"{k}: blocked first {100*len(v['b'])/max(1,len(v['b'])+len(v['f'])):.0f}% of {len(v['b'])+len(v['f'])} (gain p50 blocked {q(v['b'])} / free {q(v['f'])})" for k, v in sorted(out.items())))
+        g = out.setdefault(fam((raw.get('cell') or {}).get('concept')), {'b': [], 'f': [], 'bd': [], 'fd': []})
+        g['b' if blocked else 'f'].append(raw['yards']); g['bd' if blocked else 'fd'].append(p.pos(c, k)[0])
+    print(path.split('/')[-1], ' | '.join(f"{k}: blocked first {100*len(v['b'])/max(1,len(v['b'])+len(v['f'])):.0f}% of {len(v['b'])+len(v['f'])} (contact depth p50 blocked {q(v['bd'])} / free {q(v['fd'])}; final yards p50 blocked {q(v['b'])} / free {q(v['f'])})" for k, v in sorted(out.items())))
