@@ -1952,3 +1952,12 @@ AFTER-04/14 attribution (the possession gate, not the interception lead,
 turns AFTER-04 on #176), the completed TRAP_READ arm (trap negatives
 25 → 40 of 200, p 0.001) and the unrun `SPACE_STEER=2` arms are in
 [run-game-v3/handoff](run-game-v3/handoff/README.md).
+
+## Part 14 — contact model: tackles that slow and hold up the runner (2026-10-21)
+
+Moved to its own document: [contact model](contact-model.md). One leg
+force-velocity budget (`LEG_FV`), anchoring against a pull (`LEAN_AXIS`), an
+inelastic leg-hold request in the solver (`TETHER`) and the holder judging his
+wrap by the point he holds (`HOLD_POINT`) make the earlier hip-brace/roll/
+binding set usable; all seven are on in this branch's pinned profile.
+

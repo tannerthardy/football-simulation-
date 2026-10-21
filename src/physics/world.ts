@@ -302,6 +302,23 @@ const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
 const LEG_BRACE = process.env.LEG_BRACE === '1';
+/** TETHER=1 (on in the pinned profile): a passive hold on the legs is an inelastic
+ * tether at the point it holds. It stops that point separating from the
+ * holder, within the grip and the passive work budget, and never pulls the
+ * two together. The spring's restoring request otherwise overshoots: through
+ * the yielding foot its first impulse spends the whole passive budget, every
+ * later iteration is refused, and the held leg is stepped forward under the
+ * holder while the hold stretches at a fraction of its grip. */
+const TETHER = process.env.TETHER === '1';
+/** LEAN_AXIS=1 (on in the pinned profile): a lean's leg strength depends on how he
+ * faces the load's line, not on which way along it he pushes. Facing a load
+ * that pulls him, he sits back against it (an anchor) as strongly as he
+ * drives into one; only a load across his body gets the side-on share. */
+const LEAN_AXIS = process.env.LEAN_AXIS === '1';
+/** One force-velocity budget for propulsion (LEG_FV=1): the forward share of
+ * a lean into a load spends what the planned gait drive leaves at his actual
+ * speed, instead of stacking a second full push on top of the gait. */
+const LEG_FV = process.env.LEG_FV === '1';
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
 const KNEE = 0.5;
 /** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
@@ -796,6 +813,12 @@ export class World {
     return value;
   }
 
+  /** How far the holder's arms reach to the point they hold, yd. */
+  graspDistance(jt: GraspJoint): number {
+    const point = this.graspPoint(jt);
+    return Math.hypot(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
+  }
+
   private graspPoint(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const attachment = foot ? this.attachments.get(jt) : undefined;
@@ -893,7 +916,9 @@ export class World {
         const point = this.graspPoint(jt);
         // Only actual held geometry can invalidate a grip, not how far the
         // common correction chart has accumulated under a small leg share.
-        if (!this.attachments.get(jt)!.bounded && Math.hypot(point.x - b.pos.x, point.y - b.pos.y) > reach) {
+        // A point at the bound is still held; only one beyond it (past
+        // rounding of the reconstructed geometry) is released.
+        if (!this.attachments.get(jt)!.bounded && Math.hypot(point.x - b.pos.x, point.y - b.pos.y) > reach + 1e-9) {
           jt.broken = true; this.report.lowerHoldReleases++;
         }
       }
@@ -1581,8 +1606,22 @@ export class World {
           if (ex > 0) {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
-            const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
+            const delta = this.facingDelta(b.facing, Math.atan2(uy, ux));
+            const dir = directionalSpeedFactor(p, LEAN_AXIS ? Math.min(Math.abs(delta), Math.PI - Math.abs(delta)) : delta);
+            let capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
+            const speed = Math.hypot(b.vel.x, b.vel.y);
+            if (LEG_FV && speed > 1e-6) {
+              // Propulsion has one force-velocity budget at his actual speed.
+              // The share of this lean along his travel spends what the
+              // gait's planned drive (and a strike) leaves of it; braking and
+              // cornering shares stay bounded by the axis envelope and traction.
+              const vx = b.vel.x / speed, vy = b.vel.y / speed, along = ux * vx + uy * vy;
+              if (along > 1e-6) {
+                const drive = sp.pushForce * directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(vy, vx)))
+                  * clamp(1 - speed / p.vmax, 0, 1) * fat * a;
+                capacity = Math.min(capacity, Math.max(0, drive - Math.max(0, lx * vx + ly * vy)) / along);
+              }
+            }
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
             tx = ux * mag; ty = uy * mag;
           }
@@ -1636,7 +1675,11 @@ export class World {
         // Leg drive is directional: full straight ahead, a shuffle's or a
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
-        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
+        // An anchoring lean is as strong as a driving one (LEAN_AXIS); the
+        // gait's own share is protected by max(|l|, ...) below either way.
+        const totalDelta = this.facingDelta(b.facing, Math.atan2(tfy, tfx));
+        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, LEAN_AXIS && (leanX !== 0 || leanY !== 0)
+          ? Math.min(Math.abs(totalDelta), Math.PI - Math.abs(totalDelta)) : totalDelta) : 1;
         const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
@@ -2246,8 +2289,12 @@ export class World {
     }
     // Ordinary grasps are tension-only. An explicitly acquired brace can
     // resist compression at finite arm force; it cannot exclude body impact.
-    const imp = -r.mn * soft.massScale * (vn + soft.biasRate * r.c) - soft.impulseScale * r.ln;
     const compression = jt.brace !== undefined && r.mode > 0;
+    const tether = TETHER && !compression && !!b.support!.foot && jt.legs > 0;
+    // A tether stops separation at the held point; it has no spring to
+    // restore an earlier stretch and never closes the bodies.
+    const imp = tether ? -r.mn * vn
+      : -r.mn * soft.massScale * (vn + soft.biasRate * r.c) - soft.impulseScale * r.ln;
     let ln = compression ? Math.max(0, r.ln + imp) : Math.min(0, r.ln + imp);
     // Shared grip budget with the sliding (tangential) resistance.
     const lim = r.limit;

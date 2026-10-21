@@ -67,6 +67,15 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** HOLD_POINT=1 (on in the pinned profile): a holder judges his wrap by how far his
+ * arms reach to the point they hold (a bound leg sits behind the runner's
+ * center), not by the distance to the runner's center. */
+const HOLD_POINT = process.env.HOLD_POINT === '1';
+/** Experimental (PLANT_TRAVEL=1, off): a holder with a grip sits his weight
+ * down against the runner's travel, not only along his arms. A side holder
+ * who plants drops behind and swings into rear leverage; the grip, his
+ * traction and the runner's legs decide what that achieves. */
+const PLANT_TRAVEL = process.env.PLANT_TRAVEL === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -371,7 +380,8 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // A holder on the ground is stretched out behind his arms; the arms
     // themselves are as close as they were.
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const arms = HOLD_POINT ? sim.world.graspDistance(joint) : distance;
+    const quality = clamp(1 - (arms - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const g = grip.get(d) ?? available;
     const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling'))) : available;
@@ -407,7 +417,9 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // motion. Braking across an extended side hold would mostly swing the
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
-      let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
+      let vel = PLANT_TRAVEL
+        ? { x: c.vel.x * (1 - quality * clamp(next, 0, 1)) + tx * close, y: c.vel.y * (1 - quality * clamp(next, 0, 1)) + ty * close }
+        : { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
       intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: own?.dive, lunge: own?.lunge };
     }
@@ -428,7 +440,8 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // his held legs limit the step that would catch him. Ground, grip and
   // balance decide whether he goes down; a loose or extended hold is unchanged.
   if (TACKLE_ROLL && c.body.support?.state === 'up') for (const d of bond.tacklers) {
-    const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+    const joint = holds.get(d)!;
+    const distance = HOLD_POINT ? sim.world.graspDistance(joint) : Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const torso = c.profile.radius + d.profile.radius;
     const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
