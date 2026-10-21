@@ -448,6 +448,29 @@ The run-defense session took the linebacker fill (its pull read waits for the
 guard to be 0.5 yd deep and 1 yd across; backers flow 0.0 yd by 1.5 s on gap
 runs, tracking 1.6), the backside DL's early read of the pull, and the
 blocked-defender reach (`tryTackles`' `win >= 0.6` gate): flags on its branch.
+Its log of the reach's added attempts puts most of them on the back's path off
+the kick-out (outside an end kicked from inside, or inside a man logged from
+outside): the runner's commitment below, not the gate.
+
+**D1, the outside on power, counter and trap (handed over, not built).** At
+the moment the back reaches 2 yd short of the line, defenders aligned outside
+the play-side surface who are free outside the bounce point (1 yd past the
+line, 2 yd outside the wider of the edge and the kicker): tracking 0.52 per
+play, the lab 0.00 at `47236478` (`scripts/diag/gap/force/outfate.py`). The
+outside-aligned backs collapse from 2.9 yd outside the surface at the snap to
+0.6 by then (tracking holds 4.1; `blat.py`). In the code: `forceTrack`
+aims at the greater of the runner + 0.7 and the surface + 0.5, at depth
+`clamp(0.55 x homeDepth, 1.5, 6)` (`run-fits.ts executeRunFit`); `buildRunFits`
+gives `tite4` no play-side force, `over4`'s Sam plays his inside gap first,
+the cover-1 SS lines up inside the end; and the kicked end asks to widen away
+from the hole (-1.9 yd/s; tracked ends squeeze, -0.6 to -1.6). End alignment
+is not the cause (`edgealign.py`: in `wide9` the end stands 1.6 yd outside
+the tight end and the bounce point is still free). Bounces average 16 yd and
+make 104 of 120 gap runs of 40+ yd; `bear1` (goal line, no deep safety at
+midfield) gives 47 of them, so report it apart (`bylook.py`). Operators take
+`out/mechanics/nfl-plays.jsonl.gz` and an arm's `-common` file, from the repo
+root. The runner's commitment (O5) is measured against the current defense,
+stated as having no D1.
 
 ## Evidence against and unresolved risk
 
