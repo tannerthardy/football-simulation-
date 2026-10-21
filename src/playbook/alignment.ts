@@ -87,9 +87,11 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * wide nine), never on the tackle's outside shoulder (tracked weak edges are
  * a 5 on 1-2% of runs); with one, at least on him (an uncovered end with a 5
  * outside the tackle is 1%), else the call's technique stands. His build
- * then moves him: 0.05 yd wider per kg lighter than 118 kg, at most 0.6 yd,
- * and never inside an end he is set on (tracked ends: about -0.025 yd per lb;
- * 235 lb ends 1.81 yd outside an end, 275 lb 1.03). A called edge (tight,
+ * then moves him 0.025 yd wider per kg lighter than 118 kg, at most 0.4 yd,
+ * never inside an end he is set on: half the tracked slope (about -0.05 yd
+ * per kg; 235 lb ends 1.81 yd outside an end, 275 lb 1.03), since light ends
+ * also draw the wide calls. A wide nine over an end stands 2.0 yd outside
+ * him (the catalog counts a wide nine past 1.5). A called edge (tight,
  * base, wide) sets his technique; the coordinator calls it from the team's
  * lean, which varies by team as tracked team medians do (SD 0.3-0.4 yd), not
  * by down and distance (tracked width barely moves with them). The call's
@@ -363,7 +365,7 @@ function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BAS
       case '6': return hasTE ? E : T + 1.0;
       case '7': return hasTE ? E - sh : T + .8;
       case '9': return hasTE ? E + sh : T + 1.6;
-      case 'w9': return hasTE ? E + 1.6 : T + 2.3;
+      case 'w9': return hasTE ? E + 2.0 : T + 2.3;
     }
   }
   if (OL_SPLITS) {
@@ -640,10 +642,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const called = call.edge && (hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9');
     const tech = called || (EDGE_TECH.includes(frontSlots[end]!.tech) ? frontSlots[end]!.tech : hasTE ? '6' : 'w9');
     edgeTech.set(end, tech);
-    // His build: lighter ends stand wider (tracked: -0.05 yd per kg about a
-    // 118 kg end), never inside a tight end he is set on.
+    // His build: lighter ends stand wider, never inside a tight end he is set
+    // on. Half the tracked slope: the rest is the call (light ends get wide
+    // calls), which the edge call already carries.
     const mass = style.mass?.[end];
-    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.05 * (mass - 118), -.6, .6),
+    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), -.4, .4),
       hasTE ? -techniqueOffset(tech, true, off.line) + inlineOf(off.line) : -Infinity));
   }
   for (const slot of present) {

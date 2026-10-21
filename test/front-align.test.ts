@@ -59,7 +59,7 @@ describe('the front aligns on bodies and its end men by who they are', () => {
     const wide = await front(true, 'over', 'base43', {}, 'wide');
     expect(tight.y('DE_S')).toBeCloseTo(tight.E, 9);
     expect(base.y('DE_S')).toBeCloseTo(base.E + .57, 9);
-    expect(wide.y('DE_S')).toBeCloseTo(wide.E + 1.6, 9);
+    expect(wide.y('DE_S')).toBeCloseTo(wide.E + 2.0, 9);
     expect(-tight.y('DE_W') - tight.weakT).toBeCloseTo(1.6, 9);
     expect(-wide.y('DE_W') - wide.weakT).toBeCloseTo(2.3, 9);
     expect(wide.def.spots.DE_S!.gap).toBe(tight.def.spots.DE_S!.gap);
