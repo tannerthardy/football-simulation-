@@ -317,8 +317,9 @@ export interface DefensivePlayCall {
   shown?: Coverage;
   /** Explicit run policy; support availability still comes from coverage. */
   runPolicy?: { edge: 'box' | 'spill'; linebacker: 'plug' | 'stack' };
-  /** FRONT_ALIGN: how the end men set the edge (tight on the end or a
-   * tackle's ghost, an outside shade, or wide); absent = the front's own map. */
+  /** FRONT_ALIGN: an explicit edge call for the end men (tight on the end or
+   * a tackle's ghost, an outside shade, or wide); absent = the installs'
+   * rules from the look. */
   edge?: 'tight' | 'base' | 'wide';
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };

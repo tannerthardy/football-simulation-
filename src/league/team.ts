@@ -246,6 +246,5 @@ export function specialist(team: Team, pos: 'K' | 'P'): Player {
 export function alignStyle(team: Pick<Team, 'id'>): AlignStyle {
   const rng = new Rng(`align:${team.id}`);
   return { wrRoom: rng.normalClamped(0, .8, -1.6, 1.6), olWidth: rng.normalClamped(0, .049, -.1, .1),
-    cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9),
-    edgeWide: rng.normalClamped(0, .15, -.3, .3) };
+    cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9) };
 }

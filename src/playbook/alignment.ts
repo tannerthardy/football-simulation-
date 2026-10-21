@@ -92,11 +92,13 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * technique, and never inside an end he is set on: half the tracked slope (about -0.05 yd
  * per kg; 235 lb ends 1.81 yd outside an end, 275 lb 1.03), since light ends
  * also draw the wide calls. A wide nine over an end stands 2.0 yd outside
- * him (the catalog counts a wide nine past 1.5). A called edge (tight,
- * base, wide) sets his technique; the coordinator calls it from the team's
- * lean, which varies by team as tracked team medians do (SD 0.3-0.4 yd), not
- * by down and distance (tracked width barely moves with them). The call's
- * gap is unchanged. */
+ * him (the catalog counts a wide nine past 1.5). Over an end, the technique
+ * comes from the call against the look, as team installs write it (2017
+ * Colts pp. 13, 77, 79): vs a pair of ends a 9; in nickel ("Auto") a 6 vs
+ * a near back and a 9 vs a dot or far one; base fronts keep their map; the
+ * Over Sam is a "90" (outside shade at linebacker depth), on the line
+ * head-up on a wing. An explicit edge call (tight, base, wide) overrides.
+ * The call's gap is unchanged. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
 
 export interface OffSpot {
@@ -134,10 +136,7 @@ export interface OffenseAlignment {
  * corners' and deep safeties' depth (yd). Each applies under its flag only. */
 export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: number; safetyDepth?: number;
   /** FRONT_ALIGN: the body mass (kg) of the player in each defensive slot. */
-  mass?: Partial<Record<DefSlot, number>>;
-  /** FRONT_ALIGN: the team's lean toward wide edges (shift in the share of
-   * wide calls). */
-  edgeWide?: number }
+  mass?: Partial<Record<DefSlot, number>> }
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -333,6 +332,7 @@ export function lineDepth(depth: number, stance?: number): number {
  * at 3.9 yd from the ball) placed on the actual line: interpolated between
  * the center, guard, tackle and (with one) inline end, and carried with the
  * outermost of them beyond it. The identity unless OL_SPLITS is on. */
+const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** FRONT_ALIGN: a shade's offset from its blocker's centre (tracked). */
 const SHOULDER = .57;
 /** FRONT_ALIGN: techniques an end man can hold outside the tackle. */
@@ -633,23 +633,36 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // --- front ---
   const frontSlots = call.front.slots;
   // FRONT_ALIGN: each side's end man (the widest defender on the line) sets
-  // the edge; his technique comes from the surface and his build.
+  // the edge; his technique comes from the call against the look and his build.
   const edgeTech = new Map<DefSlot, Technique>(), edgeShift = new Map<DefSlot, number>();
+  const sideSign = (side: 'S' | 'W') => side === 'S' ? s : -s;
+  // A wing: an attached receiver just outside the inline end, off the ball.
+  const wingOn = (side: 'S' | 'W') => Object.values(off.spots).find(sp => !sp.inline && !sp.backfield
+    && !OL_SLOTS.has(sp.slot) && (sp.pos.y - off.ballY) * sideSign(side) > inlineOf(off.line) + .3
+    && (sp.pos.y - off.ballY) * sideSign(side) < inlineOf(off.line) + 2 && los - sp.pos.x < 2.5);
+  // A back offset to that side (installs: "near"), not behind the QB or away.
+  const nearBack = (side: 'S' | 'W') => Object.values(off.spots).some(sp => sp.backfield && sp.slot !== 'QB'
+    && (sp.pos.y - off.ballY) * sideSign(side) > .5);
+  const nickel = !present.includes('LB_S');
   if (FRONT_ALIGN) for (const side of ['S', 'W'] as const) {
     const onLine = present.filter(slot => frontSlots[slot]?.side === side && frontSlots[slot]!.depth < 2);
     const hasTE = side === 'S' ? off.hasTE.S : off.hasTE.W;
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
-    const called = call.edge && (hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9');
-    const tech = called || (EDGE_TECH.includes(frontSlots[end]!.tech) ? frontSlots[end]!.tech : hasTE ? '6' : 'w9');
+    let tech = frontSlots[end]!.tech;
+    if (call.edge) tech = hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9';
+    else if (!hasTE) tech = EDGE_TECH.includes(tech) ? tech : 'w9';
+    // Installs (2017 Colts pp. 13, 79): vs a pair of ends the end plays a 9;
+    // in nickel ("Auto") a 6 vs a near back, a 9 vs a dot or far back. Base
+    // fronts keep their own map, at least on the end.
+    else if (wingOn(side)) tech = '9';
+    else if (nickel && end.startsWith('DE')) tech = nearBack(side) ? '6' : '9';
+    else if (!EDGE_TECH.includes(tech)) tech = '6';
     edgeTech.set(end, tech);
-    // His build: lighter ends stand wider, never inside a tight end he is set
-    // on. Half the tracked slope: the rest is the call (light ends get wide
-    // calls), which the edge call already carries.
+    // His build moves his feet within his technique, not into the next one,
+    // and never inside a tight end he is set on (a wide nine has room to
+    // come in). Half the tracked slope: light ends also draw the wide calls.
     const mass = style.mass?.[end];
-    // Build moves his feet within his technique, not into the next one: a
-    // heavy end on a 9 stays on the end's outside shoulder (a wide nine has
-    // room to come in).
     if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), tech === 'w9' ? -.4 : -.2, .4),
       hasTE ? -techniqueOffset(tech, true, off.line) + inlineOf(off.line) : -Infinity));
   }
@@ -744,9 +757,18 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   }
 
   // Off-ball LBs walk out to apex vs. spread looks in two-high shells.
+  let apex = false;
   if (!has('NB') && off.counts.S >= 2 && has('LB_S') && frontSlots.LB_S && frontSlots.LB_S.depth > 2) {
     const r2 = rec('S2');
-    if (r2 && !off.spots[off.numbering.S2!].inline) spots.LB_S!.pos = { x: los + 4.5, y: (r2.y + off.coreEdge.S) / 2 };
+    if (r2 && !off.spots[off.numbering.S2!].inline) { spots.LB_S!.pos = { x: los + 4.5, y: (r2.y + off.coreEdge.S) / 2 }; apex = true; }
+  }
+  // FRONT_ALIGN: the Over Sam is a "90", the end's outside shade at
+  // linebacker depth; a wing is attached, not spread, so vs one he tightens
+  // to the line head-up on him (2017 Colts p. 77). A detached #2 keeps the apex.
+  if (FRONT_ALIGN && call.front.id === 'over' && spots.LB_S && off.hasTE.S) {
+    const wing = wingOn('S'), sam = spots.LB_S;
+    if (wing) sam.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: wing.pos.y };
+    else if (!apex) sam.pos = { x: los + frontSlots.LB_S!.depth, y: off.ballY + s * (inlineOf(off.line) + SHOULDER) };
   }
 
   // --- roles ---

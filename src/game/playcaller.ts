@@ -24,11 +24,21 @@ import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
-import { alignStyle, type Team } from '../league/team.js';
-import { clamp } from '../core/vec.js';
+import type { Team } from '../league/team.js';
 
-/** FRONT_ALIGN (experimental, off): the coordinator calls the front's edge (see alignment.ts). */
+/** FRONT_ALIGN (experimental, off): fronts are called as team installs use
+ * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
+ * Under is the base front and Over a secondary call; nickel lines up in the
+ * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+function installWeight(id: string, personnel: DefPersonnelId, passingDown: boolean, scheme: string): number {
+  if (personnel === 'base43') return id === 'under' ? 3 : id === 'over' ? 1 : 0;
+  if (personnel === 'nickel' || personnel === 'dime') {
+    if (id === 'wide9') return passingDown ? 3 : scheme === 'nickel-heavy' ? 1 : .5;
+    return id === 'over' ? passingDown ? 1 : 3 : id === 'under' ? passingDown ? .25 : 1 : 0;
+  }
+  return 1;
+}
 
 export interface Situation {
   down: number;
@@ -261,7 +271,6 @@ const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.le
 
 export class DefensiveCoordinator {
   private readonly learn = new Map<string, Learn>();
-  private edgeCalls = 0;
   constructor(
     readonly team: Team,
     private readonly rng: Rng,
@@ -299,7 +308,8 @@ export class DefensiveCoordinator {
     const fronts = FRONTS.filter((f) => f.personnel.includes(personnel));
     const front = pickWeighted(
       rng,
-      fronts.map((f) => [f, scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
+      fronts.map((f) => [f, FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
+        : scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
     );
 
     // Coverage: family from NFL situational shares (2022 dropbacks, PFF
@@ -421,17 +431,8 @@ export class DefensiveCoordinator {
     const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;
-    // FRONT_ALIGN: the edge call, from the team's lean (2022 edges over an
-    // end: wide 46%, a 9 31%, on or inside him 17%). Its own stream, so the
-    // other calls draw exactly as before.
-    let edge: DefensivePlayCall['edge'];
-    if (FRONT_ALIGN) {
-      const wide = clamp(.46 + (alignStyle(this.team).edgeWide ?? 0), .1, .85), tight = .17 * (1 - wide) / .54;
-      const u = rng.fork(`edge:${this.edgeCalls++}`).next();
-      edge = u < wide ? 'wide' : u < wide + tight ? 'tight' : 'base';
-    }
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus, edge,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
