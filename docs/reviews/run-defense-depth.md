@@ -574,6 +574,13 @@ sim's 20+ yd completions have 10+ YAC (NFL 46%).
     YAC is not (4.2/20.5; NFL 3.4/11.9): yards after contact are close (1.7/6.5
     vs 1.1/5.1); the excess is free running before contact (p90 11.8 vs 7.9),
     with fewer defenders in front at the catch (3+ in front 42%, NFL 59%).
+- **Withdrawn from integration (2026-10-21).** Ported to accepted develop
+  (PR #190), `LEG_BIND=1` fails the existing contract `tackle-support-choice`
+  "a rear finish transmits braking load through center/patch physics" (planted
+  rear holder 3775 vs co-moving 4043 load): the bound runner brakes himself,
+  so the tackle's braking no longer goes through the hold. The contract is
+  right; the repair belongs in physics (bound legs, the holder's weight).
+  Handed to the contact/physics owner; the flag stays here as research only.
 - `REAR_PLANT` (a holder behind the runner plants at any arm extension) made
   no panel difference and was removed: the limit is the runner, not the
   holder's request.
