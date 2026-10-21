@@ -405,7 +405,10 @@ Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 
 ## Next
 
-The gap runs' consistency (too few short and long runs; NFL 0-3 yd 37%, ours
-28%) and the shotgun back's same-side exchange geometry when he is aligned
-there; the back's lane read in traffic beyond counter. `GAIT_STEP` is a physics law: promotion
+Draws: 42% of lab draws lose yards without the gait, 48% with it, read flags
+or not (`dr2`/`dr0`/`dr1` arms, gun doubles and ace, 400 each; tracked draws
+gain a median 4 yd). Then the gap runs' consistency (too few short and long
+runs; NFL 0-3 yd 37%, ours 28%), the shotgun back's same-side exchange
+geometry when he is aligned there, and the back's lane read in traffic
+beyond counter. `GAIT_STEP` is a physics law: promotion
 beyond this branch is the physics owner's decision.
