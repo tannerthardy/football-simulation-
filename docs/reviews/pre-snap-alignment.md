@@ -157,6 +157,38 @@ line geometry (its recorded scramble depends on it).
 
 ## `OL_SPLITS` (off): the line splits as tracked
 
+*Origin: `OL_ALIGN` by the run-offense session on `claude/run-game-v3`
+(tracked splits and depths, `scripts/diag/stretch/olalign.py` there). Ported
+here and split into `OL_SPLITS` and `OL_STAGGER`.* That session's measurement of
+`OL_ALIGN` (splits and stagger together) on its own profile, lab arms of 1,600
+gap plays plus zone and shotgun:
+
+- **Gap runs improve:** TVD vs NFL 18.1 → 12.9; pullers' lateral travel at
+  0.5 / 1.0 / 1.5 s 0.3 / 1.4 / 3.1 → 0.3 / 1.7 / 3.5 yd (NFL 0.5 / 1.9 / 3.5).
+- **Counter gets worse:** losses 6.0 → 11.2%.
+- **Zone and shotgun get worse:** ace zone TVD 5.4 → 10.5; outside / wide
+  zone medians 3.8 / 3.7 → 3.0 / 2.9; shotgun losses 5.8 → 8.7% (NFL 7.6).
+
+Its reading is that zone blocking was built around the old, tighter splits.
+
+**On develop the lab agrees, so `OL_SPLITS` is not proposed for
+promotion.** `scripts/run-blocking-lab.ts` (30 reps per cell; ace, I-pro and
+gun doubles; Over and Under; both flips; seed 7), `OL_SPLITS` off → on:
+
+| Concept | Stuffs | Yards before contact | 10+ yd runs |
+| --- | --- | --- | --- |
+| Inside zone | 16.4 → 33.3% | 1.82 → 1.31 | |
+| Outside zone | | 1.78 → 1.01 | 19.2 → 8.9% |
+| Counter | 19.2 → 29.4% | 1.06 → 0.46 | |
+| Power | | 1.55 → 1.41 | |
+| Trap | 18.6 → 9.7% | | |
+
+NFL zone and gap runs use the same 1.54 yd splits (scheme table above), so
+zone works at those splits in the NFL. The sim's zone and counter blocking
+do not yet: their landmarks, combinations and timing were built and checked
+at 1.3 yd. That is run-blocking work (run-game owner), not alignment. The
+flag waits on it. Lab means are raw physical plays, not league rates.
+
 Center–guard 1.54, guard–tackle 1.56, tackle–inline end 1.52 (6.2 yd tackle to
 tackle). Defensive techniques, gap landmarks (`gapY`) and the run-aiming points
 installed against the 1.3 yd table (`lineOffset` in `assign.ts` mesh aim and
