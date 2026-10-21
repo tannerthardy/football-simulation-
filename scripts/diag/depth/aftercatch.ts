@@ -24,8 +24,11 @@ for (let g = 0; g < games; g++) {
     if (!c) continue;
     const after = ev.filter(e => e.t >= c.t && e.a !== undefined && players[e.a!]?.team === 'D');
     const first = after.find(e => ['tackle_wrap', 'missed_tackle', 'hit'].includes(e.type));
-    // Air yards from the catch spot: the offense attacks +x unless flipped.
-    const dir = p.replay.flip ? -1 : 1, air = c.pos ? (c.pos.x - p.replay.los) * dir : 0;
+    // Air yards from the catch spot, oriented as sim-export does: the offense
+    // lines up behind the line at the first frame.
+    const f0 = p.replay.frames[0].agents, off = players.map((q, i) => q.team === 'O' ? f0[i * 3] : NaN).filter(Number.isFinite);
+    const dir = off.reduce((a, b) => a + b, 0) / off.length < p.replay.los ? 1 : -1;
+    const air = c.pos ? (c.pos.x - p.replay.los) * dir : 0;
     const dFirst = first?.pos && c.pos ? Math.hypot(first.pos.x - c.pos.x, first.pos.y - c.pos.y) : NaN;
     rows.push({ gain: p.yards, yac: p.yards - air, tFirst: first ? first.t - c.t : NaN, dFirst, first: first ? first.type : 'none', by: first ? fam(players[first.a!].pos) : '-',
       broke: ev.some(e => e.t >= c.t && e.type === 'broken_tackle'),
