@@ -67,6 +67,18 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** Experimental (LEG_BIND=1, off): arms wrapped round a runner's legs take
+ * his stride. Each hold at or below his thighs, times its grip, is the share
+ * of his stride that is bound (a locked thigh wrap: all of it; a fingertip on
+ * an ankle: a little; a hold higher on his body, proportionally less), and
+ * limits the speed his gait can hold. Only holds beside or behind him count;
+ * a tackler in front is driven back as the runner falls forward over him.
+ * His gait, balance and the holds' loads decide how fast he slows or falls.
+ * Letting bound legs coast instead (no drive, no plant) left 6-8 yd/s runners
+ * carrying a lone holder: the hold's load alone does not stop them. */
+const LEG_BIND = process.env.LEG_BIND === '1';
+/** Legs share of a hold at thigh height (`attempt`: a sure form tackler's wrap). */
+const LEG_BIND_THIGH = 0.5;
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -447,6 +459,21 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];
   intents[c.idx] = { ...own, push: 1, posture: Math.max(own.posture ?? 0, 0.5) };
+  if (LEG_BIND) {
+    // The stride comes from the hips and thighs: a wrap at thigh height
+    // (legs share 0.5, a form tackler's hold) or lower binds all of it.
+    // A tackler in front is driven back as the runner falls forward over him
+    // (the existing drive-through); only holds beside or behind him pull his
+    // legs back against his travel.
+    const cs = Math.hypot(c.vel.x, c.vel.y);
+    const pulling = (d: Agent) => cs <= .5 || (c.vel.x * (c.pos.x - d.pos.x) + c.vel.y * (c.pos.y - d.pos.y))
+      / (cs * (Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y) || 1)) >= -.3;
+    const bound = clamp(bond.tacklers.reduce((sum, d) => sum + (pulling(d)
+      ? clamp(holds.get(d)!.legs / LEG_BIND_THIGH, 0, 1) * clamp(grip.get(d) ?? 0, 0, 1) : 0), 0), 0, 1);
+    // Bound legs take short, choppy steps: the speed his gait can hold falls
+    // with the bound share, so he slows or goes down within a few steps.
+    intents[c.idx].effort = (own.effort ?? 1) * (1 - bound);
+  }
 
   // In the grasp: a quarterback held firmly behind the line before he throws
   // is ruled down at once (the rule protects him).
