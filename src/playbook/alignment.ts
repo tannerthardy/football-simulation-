@@ -33,14 +33,25 @@ export const TRACKED_LINE: LineSet = { cg: 1.54, gt: 1.56, tte: 1.52, depth: { C
 const LEGACY_LINE: LineSet = { cg: 1.3, gt: 1.3, tte: 1.3, depth: { C: .55, G: .55, T: .55, TE: NaN } };
 
 /** OL_ALIGN: the set a team calls: its base split (a coaching rule) for
- * every split, tightened on third or fourth down with a yard or less to go,
- * where tracked lines stand 5.83 yd tackle to tackle against 6.13-6.23 in
- * every other down and distance (2022 runs and passes). Depths stay tracked.
- * Undefined with the flag off (the installed line). */
-export function lineSet(split: number | undefined, shortYardage: boolean): LineSet | undefined {
+ * every split, tightened by `tight` yd per split for the package and the
+ * situation (see `lineTightening`). Depths stay tracked. Undefined with the
+ * flag off (the installed line). */
+export function lineSet(split: number | undefined, tight = 0): LineSet | undefined {
   if (!OL_ALIGN) return undefined;
-  const base = split ?? (TRACKED_LINE.cg + TRACKED_LINE.gt) / 2, tight = shortYardage ? .08 : 0;
+  const base = split ?? (TRACKED_LINE.cg + TRACKED_LINE.gt) / 2;
   return { cg: base - tight - .01, gt: base - tight + .01, tte: TRACKED_LINE.tte - tight, depth: { ...TRACKED_LINE.depth } };
+}
+
+/** How much a line tightens per split, from the call. Tracked widths (2022,
+ * tackle to tackle): a heavy package (two or more ends) with a yard or less
+ * to go sets 5.70-5.84 on any down, against 6.22-6.23 for regular
+ * personnel elsewhere: the package carries most of it. Regular personnel
+ * on third or fourth and a yard or less still sets 5.95 (shotgun 6.04): the
+ * must-have yard adds some. Heavy personnel at other distances: 6.14. */
+export function lineTightening(heavy: boolean, down: number, distance: number): number {
+  if (distance <= 1 && heavy) return .11;
+  if (distance <= 1 && down >= 3) return .07;
+  return heavy ? .02 : 0;
 }
 
 /** Lateral offsets of the line's landmarks from the ball for a set. */

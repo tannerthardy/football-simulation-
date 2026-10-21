@@ -22,7 +22,7 @@ import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
-import { lineSet } from '../playbook/alignment.js';
+import { lineSet, lineTightening } from '../playbook/alignment.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
@@ -123,8 +123,10 @@ export class OffensiveCoordinator {
     // Strength to the field (wide side) most of the time.
     const fieldLeft = s.ballY < CENTER_Y;
     const flip = rng.chance(0.7) ? fieldLeft : !fieldLeft;
-    // OL_ALIGN: the line sets by the line coach's split rule and the situation.
-    const line = lineSet(coach.lineSplit, s.down >= 3 && s.distance <= 1);
+    // OL_ALIGN: the line sets by the line coach's split rule, the package
+    // called and the situation.
+    const heavy = ['12', '13', '22', '23'].includes(formation.personnel);
+    const line = lineSet(coach.lineSplit, lineTightening(heavy, s.down, s.distance));
     if (isPass) {
       const concept = this.choosePass(s, formation, defense);
       return { formation, flip, kind: 'pass', pass: concept, label: `${formation.name} — ${concept.name}`, ...(line ? { line } : {}) };

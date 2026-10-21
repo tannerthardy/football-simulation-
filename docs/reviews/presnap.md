@@ -44,12 +44,21 @@ and backs) and the shared measurement below.
 | Ours, every snap | 5.20 | 1.30 / 1.30 | flat 0.55 |
 
 The team is the largest source of variation (1.1 yd of width between team
-medians), then the situation: on third or fourth down with a yard or less
-to go the line stands 5.83 yd wide, against 6.13-6.23 in every other down
-and distance (first and second and a yard do not tighten; found by the
-run-defense session's `OL_SPLITS` work and confirmed here); concept barely
-moves it (zone play-side guard-tackle split 1.61 vs backside 1.53; gap 1.55
-both). Guards set about 0.55 yd and tackles 0.7 yd behind the center's
+medians), then the package called for the situation, not the down alone
+(tackle-to-tackle width, 2022):
+
+| | heavy (2+ ends or a sixth lineman) | regular personnel |
+|---|---|---|
+| 1st/2nd down, a yard or less | 5.84 | 6.22 |
+| 3rd/4th down, a yard or less | 5.70 | 5.95 (shotgun 6.04) |
+| everything else | 6.14 | 6.23 |
+
+A short-yardage package sets tight on any down (I formation 5.63, jumbo
+5.97 elsewhere); a must-have yard tightens regular personnel a little.
+Averaged over packages, first and second down with a yard to go looked
+untightened (6.13) only because half those snaps are regular personnel.
+Concept barely moves the line (zone play-side guard-tackle split 1.61 vs
+backside 1.53; gap 1.55 both). Guards set about 0.55 yd and tackles 0.7 yd behind the center's
 depth, a little shallower in short yardage.
 
 ## The defense: NFL fronts by shape, and ours by the front called
