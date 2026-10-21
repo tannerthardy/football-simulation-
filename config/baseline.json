@@ -47,6 +47,7 @@
     "STRETCH_REACH": "1",
     "TACKLE_ROLL": "0",
     "TACKLE_TOUCH": "0",
+    "TIP_AWAY": "0",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
     "ZONE_FLOW": "1"
