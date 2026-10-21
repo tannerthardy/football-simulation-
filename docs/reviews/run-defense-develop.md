@@ -208,7 +208,50 @@ lab does not reproduce a mechanism. With about 50 runs a concept these counts
 are noisy (counter 10 of 39 off, 4 of 36 on), but it is not ruled out:
 games call zone against fronts the lab does not. Not proposed: unresolved risk.
 
-**Backside DL flow (no flag).** NFL backside linemen flow toward the play
+**`FORCE_BOUNCE` (`run-fits.ts` `executeRunFit`, force fit): D1, the
+outside on power, counter and trap.** The run-offense session's spec
+(`claude/run-game-v3`, `docs/reviews/run-offense.md`, "D1"): at the moment
+the back reaches 2 yd short of the line, tracking has 0.52 defenders a play
+free outside the bounce point (`outfate.py`), and the outside-aligned
+backs hold about 4.1 yd outside the surface (`blat.py`). Develop has 0.00,
+the same as that branch. `forcejobs.ts` shows the force holds the job; the
+landmark is wrong. `forceTrack` aims at the greater of the runner + 0.7 and
+the seen surface + 0.5, and the force walks onto it from 0.5 s, before the
+handoff (the surface already contains a pulling guard).
+
+On: while the runner he sees is still behind the line, the force keeps
+outside the outermost body at the point of attack by the ground the back
+covers at full speed in this defender's reaction time (about 2 yd). Bodies
+at the point of attack are the line and inline ends as seen, plus blockers
+and engaged defenders within 4 yd outside them near the line. Once the
+runner is at the line the installed track applies. A first version that
+used only the point-of-attack bodies changed nothing in the lab: those
+bodies sit inside the seen surface there.
+
+| Gap arms (power/counter/trap, 1,200 plays) | develop off | develop on | run-offense off | run-offense on | NFL |
+| --- | --- | --- | --- | --- | --- |
+| Free outside the bounce point, per play | 0.00 | 0.18 | 0.00 | 0.15 | 0.52 |
+| Free inside the bounce point | 0.28 | 0.11 | 0.23 | 0.06 | 0.20 |
+| Outside-aligned deep DBs, lateral outside the surface | | | 0.6 | 2.7 | 4.1 |
+| Force width outside the edge at the kick-out (`force.py`, power) | 8.8 | 3.4 | | | 2.4 |
+| Runs of 40+ yd | 130 | 129 | 117 | 104 | |
+| Power / counter yards p50 | 3.97 / 3.69 | 4.07 / 3.60 | 4.82 / 4.76 | 4.45 / 4.53 | |
+
+Develop's back seldom bounces (inside the kicker 90%, `force.py`), so
+develop's outcomes do not move. On the run-offense blocking, where backs
+bounce, strong-side bounces fall:
+- power: ace 55 → 39%, I 54 → 30%;
+- counter: ace 29 → 17%, I 31 → 24%.
+
+Weak-side bounces stay at about 80%. That is the weak side's alignment and
+assignment, now part of the front work below.
+
+The native Split Zone Bear helper witness (`zone-helper-check.test.ts`) pins
+it off: its recorded double does not release within 2 s once the force plays
+wider. Core suite 2,818 / 2,818 with it on. Not proposed yet: the 8-game
+mechanism report and the edge and front alignment come first.
+
+**Backside DL flow (no flag).** (Update: the run-offense session found the hands are not the cause. The down-blocked DL asks backside on 48% of ticks, following the blocker's seen flow through `DL_FLOW`'s held term; that is a controller item on this side, D2.) NFL backside linemen flow toward the play
 0.8/1.4/2.1 yd at 1.0/1.5/2.0 s on gap runs, 1.0/1.9/3.0 on zone
 (`dlflow.py`); develop's go −0.1/−0.5/−0.9 and about 0. `dltrace.ts`: they
 are held in an engagement from 1.0 s and request only 0.4–0.5 yd/s across.
