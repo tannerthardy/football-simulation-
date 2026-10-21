@@ -5,13 +5,14 @@ the edge = the widest line defender on the play side at the snap (x
 largest play-side lateral move by 1.2 s. When the kicker first comes within
 1.3 yd of the edge: time, the edge's depth and lateral move then, and the
 kicker's depth. Also the runner's depth when he passes the edge's lateral
-position. usage: kickout-timing.py SIM_COMMON.jsonl.gz [...]"""
+position, the kicker's side of the edge at the meeting (+ = outside him, a
+log) and how far the edge moves outward over the next 0.6 s. usage: kickout-timing.py SIM_COMMON.jsonl.gz [...]"""
 import gzip, json, sys, math
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play
 q = lambda v, f=.5: round(sorted(v)[int(f * (len(v) - 1))], 2) if v else None
 def kick(rows, label, concepts):
-    T, ED, EL, KD, RD, met, n = [], [], [], [], [], 0, 0
+    T, ED, EL, KD, RD, KL, EO, met, n = [], [], [], [], [], [], [], 0, 0
     for raw in rows:
         if raw.get('kind') != 'run' or (raw.get('cell') or {}).get('concept') not in concepts: continue
         p = Play(raw); c = raw.get('carrier'); h = p.events.get('handoff')
@@ -33,13 +34,18 @@ def kick(rows, label, concepts):
             a, b = p.pos(kicker, k), p.pos(edge, k)
             if a[0] is None or b[0] is None: continue
             if math.hypot(a[0] - b[0], a[1] - b[1]) <= 1.3:
-                met += 1; T.append(k * p.dt); ED.append(b[0]); EL.append((b[1] - p.pos(edge, 0)[1]) * s); KD.append(a[0]); break
+                met += 1; T.append(k * p.dt); ED.append(b[0]); EL.append((b[1] - p.pos(edge, 0)[1]) * s); KD.append(a[0])
+                KL.append((a[1] - b[1]) * s)
+                k6 = min(p.frames - 1, k + int(round(.6 / p.dt)))
+                if p.live(k6 * p.dt) and p.pos(edge, k6)[0] is not None: EO.append((p.pos(edge, k6)[1] - b[1]) * s)
+                break
         ey = (p.pos(edge, 0)[1] - by) * s
         for k in range(p.k(h), p.frames):
             cx, cy = p.pos(c, k)
             if cx is None: continue
             if (cy - by) * s >= ey - .5: RD.append(cx); break
     print(f"{label:24s} n={n} met {met/max(1,n):.2f} | at meeting: t {q(T,.25)}/{q(T)}/{q(T,.75)} s, edge depth {q(ED,.25)}/{q(ED)}/{q(ED,.75)}, edge lateral move {q(EL)}, kicker depth {q(KD)} | runner depth reaching edge's lane {q(RD)}")
+    if KL: print(f"{'':24s} kicker vs edge at meeting (+ outside him) p25/50/75 {q(KL,.25)}/{q(KL)}/{q(KL,.75)}: inside {100*sum(1 for v in KL if v < -.3)/len(KL):.0f}% level {100*sum(1 for v in KL if -.3 <= v <= .3)/len(KL):.0f}% outside {100*sum(1 for v in KL if v > .3)/len(KL):.0f}% | edge moved out over the next 0.6 s p25/50/75 {q(EO,.25)}/{q(EO)}/{q(EO,.75)}")
 nfl = [json.loads(l) for l in gzip.open('out/mechanics/nfl-plays.jsonl.gz', 'rt')]
 kick(nfl, 'NFL power', ('POWER',)); kick(nfl, 'NFL counter', ('COUNTER',))
 for path in sys.argv[1:]:

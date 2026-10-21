@@ -2,6 +2,10 @@
  * trapper at the trapper's depth instead of waiting for him at his gap
  * landmark on the line. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// These witnesses predate the under-center exchange package (UC_MESH
+// MESH_TEMPO QB_CARRYOUT PACE_LEAD) and are timed on the installed exchange;
+// pin it off here. test/run-game-flags.test.ts covers the package itself.
+vi.hoisted(() => { for (const k of ['UC_MESH', 'MESH_TEMPO', 'QB_CARRYOUT', 'PACE_LEAD']) process.env[k] = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

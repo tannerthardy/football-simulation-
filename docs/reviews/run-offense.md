@@ -94,6 +94,38 @@ With `GAIT_STEP=0.3` (Part 8's responsive body, not in the profile) the same
 flags cut outside/wide-zone losses 17.0/19.8 → 13.2/12.2% (`COMBO_SOLO` plus
 `STRETCH_AIM`) and power losses 18.0 → 11.2% (`FB_KICK`).
 
+## The under-center exchange package (Part 6), now on
+
+Part 6's `UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD` (the under-center
+exchange at tracked depth and time, the back taking the ball at tempo, the
+QB's carry-out, the back pacing a lead from his real motion) was held at
+review and never in the pinned profile. Re-measured on top of the five
+flags above (`mp1*`), it is on now. Same operator (`handoff-speed.py`,
+`mech.py`):
+
+| | before | package | NFL |
+|---|---|---|---|
+| Back's speed at the handoff, under center gap / zone (yd/s) | 2.1 / 4.3 | **4.0 / 4.8** | 4.1 / 5.3 |
+| Same at handoff + 0.5 s | 3.1 / 4.5 | 4.6 / 5.2 | 5.1 / 5.6 |
+| Handoff time, zone / gap (s) | 1.55 / 1.56 | 1.45 / 1.40 | 1.30 |
+| Line crossing, zone / gap (s) | 2.70 / 3.09 | 2.51 / 2.66 | 2.59 |
+| Ace zone TVD / lost | 9.8 / 6.4% | **6.7** / 7.7% | 7.6% lost |
+| Ace zone 40+ | 7.2% | 4.5% | 0.8% |
+| Gap TVD / lost | 17.4 / 5.3% | **14.5** / 2.8% | 7.4% lost |
+| Power / counter lost | 7.5 / 10.0% | **2.0 / 4.2%** | |
+| Shotgun zone TVD / lost | 7.2 / 5.5% | 9.6 / 6.7% | |
+
+`MESH_TEMPO` carries the gap gain (without it power loses 8.5%) and is also
+the only flag of the four that touches shotgun (a reviewed contract: tempo
+engages in shotgun on its own). There it lifts the handoff speed only
+2.1 → 2.5 yd/s (tracking 4.1); with `GUN_MESH_SIDE` as well it reaches 3.5,
+but shotgun stretch is structurally off before the exchange: the back takes
+the ball 1 yd on the backside and crosses 2–3 yd outside the ball (tracking
+7.3), the shotgun alignment issue noted in Part 6. `GUN_MESH_SIDE` stays off.
+Five scenario witnesses timed on the installed exchange pin the package off
+(`combo-strike-access`, `long-run-tail`, `planned-climb-fit`, `trap-read`,
+`fb-kick`); `run-game-flags` covers the package.
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
@@ -158,13 +190,15 @@ python3 scripts/diag/runblock/second-level.py out/open-field/all/sa1co-common.js
 python3 scripts/diag/runblock/stalk.py out/open-field/all/fk1gap-common.jsonl.gz
 python3 scripts/diag/runblock/kickout-timing.py out/open-field/all/fk1gap-common.jsonl.gz
 python3 scripts/diag/runblock/oz-flow-profile.py out/open-field/all/sa1co-common.jsonl.gz
+python3 scripts/diag/runblock/handoff-speed.py out/open-field/all/mp1gap-common.jsonl.gz
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock/combo-owner.ts --concepts oz,wz --list
 node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock/lab-attrib.ts --out out/run-attrib/x.json
 ```
 
 Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
-`test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`.
-2,865 core tests pass with the profile; typecheck passes.
+`test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`,
+`test/run-game-flags.test.ts` (exchange package). 2,865 core tests pass with
+the profile; typecheck passes.
 
 ## Next
 

@@ -1971,3 +1971,7 @@ when his partner holds the man alone (`COMBO_SOLO`), outside/wide-zone backs
 press the snap landmark (`STRETCH_AIM`) and the power fullback kicks the end
 out from his inside shoulder (`FB_KICK`); all on in this branch's pinned
 profile. Ace zone losses 15.3 → 6.4%, shotgun 9.2 → 5.5%, power 12.2 → 7.5%.
+Part 6's under-center exchange package (`UC_MESH MESH_TEMPO QB_CARRYOUT
+PACE_LEAD`) is now on too: the back takes the handoff at tracked speed (gap
+2.1 → 4.0 yd/s, NFL 4.1), ace zone TVD 9.8 → 6.7, power/counter losses
+7.5/10.0 → 2.0/4.2%.
