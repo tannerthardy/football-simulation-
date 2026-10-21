@@ -1,0 +1,29 @@
+# stretch/dlpursuit.ts (zone lab, seeds 77,1; observation only)
+## pinned profile
+Profile candidate: run-game-2026-10-13, commit d72fe96a1018ecd5680e180f2cb91fdead107da7, source 9e6519343f2cb1b2b7049040b68224f4e3c3c1891345044e427ba06e992d9dd9
+DL at crossing+0.5s: n 828, engaged 658, in tackle 15, free 155 (down/not up 13)
+  free & up: requested speed p25/p50/p75 3.2/6.6/8.1 | achieved 0.9/1.8/2.5 | request off carrier bearing p50 20.0 deg | facing off carrier bearing p50 77.4 deg | dist p50 5.7 | carrier past him 99%
+  behaviors: rush/edge 93, rush/interior 49
+  free & up requesting a facing > 45 deg off their requested travel: 41 (29%) | achieved p50 1.5 vs others 2.0 | rush/edge 41
+  free & up requesting < 3 yd/s: 33 | facing off p50 44.1 dist p50 5.9
+  free & up requesting >= 5 yd/s: 98 | achieved p50 1.5 facing off p50 80.8
+LB at crossing+0.5s: n 523, engaged 207, in tackle 101, free 215 (down/not up 35)
+  free & up: requested speed p25/p50/p75 4.4/8.5/9.2 | achieved 1.8/3.1/4.2 | request off carrier bearing p50 31.4 deg | facing off carrier bearing p50 18.7 deg | dist p50 3.4 | carrier past him 58%
+  behaviors: zone/insert 51, zone/force 47, man/force 40, man/insert 32, blitz/insert 8, rush/edge 2
+  free & up requesting a facing > 45 deg off their requested travel: 31 (17%) | achieved p50 2.2 vs others 3.2 | zone/insert 7, zone/force 7, man/force 12, man/insert 5
+  free & up requesting < 3 yd/s: 19 | facing off p50 34.4 dist p50 5.1
+  free & up requesting >= 5 yd/s: 130 | achieved p50 3.3 facing off p50 19.7
+## dq package: DEEP_CAP CAP_MESH LB_DEPTH EDGE_SQUEEZE SHED_PURSUE BLOCK_FRONT
+Profile candidate: run-game-2026-10-13, commit d72fe96a1018ecd5680e180f2cb91fdead107da7, source 9e6519343f2cb1b2b7049040b68224f4e3c3c1891345044e427ba06e992d9dd9
+DL at crossing+0.5s: n 900, engaged 500, in tackle 15, free 385 (down/not up 15)
+  free & up: requested speed p25/p50/p75 7.7/8.1/8.8 | achieved 1.2/1.8/2.3 | request off carrier bearing p50 17.6 deg | facing off carrier bearing p50 62.7 deg | dist p50 6.4 | carrier past him 100%
+  behaviors: rush/edge 244, rush/interior 126
+  free & up requesting a facing > 45 deg off their requested travel: 8 (2%) | achieved p50 2.0 vs others 1.8 | rush/edge 6, rush/interior 2
+  free & up requesting < 3 yd/s: 47 | facing off p50 90.4 dist p50 4.9
+  free & up requesting >= 5 yd/s: 321 | achieved p50 1.8 facing off p50 60.0
+LB at crossing+0.5s: n 563, engaged 211, in tackle 105, free 247 (down/not up 17)
+  free & up: requested speed p25/p50/p75 4.1/7.4/9.1 | achieved 2.6/3.3/4.6 | request off carrier bearing p50 42.9 deg | facing off carrier bearing p50 14.7 deg | dist p50 2.7 | carrier past him 19%
+  behaviors: zone/insert 92, zone/force 59, man/force 36, man/insert 30, rush/edge 7, blitz/insert 6
+  free & up requesting a facing > 45 deg off their requested travel: 75 (33%) | achieved p50 3.4 vs others 3.3 | zone/insert 29, zone/force 21, man/insert 13, rush/edge 1, man/force 9, blitz/insert 2
+  free & up requesting < 3 yd/s: 32 | facing off p50 13.0 dist p50 2.2
+  free & up requesting >= 5 yd/s: 151 | achieved p50 3.4 facing off p50 20.5
