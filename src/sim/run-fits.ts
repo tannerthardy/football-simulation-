@@ -162,6 +162,13 @@ const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
  * fired near 1.35 s (scripts/diag/runblock/lbfill.py, lbtrace.ts). Same
  * delayed picture; a kick-slide on play-action can fool him. */
 const PULL_EARLY = process.env.PULL_EARLY === '1';
+/** Experimental (FORCE_BOUNCE=1, off): the force keeps his outside shoulder on
+ * the bodies at the point of attack, not on the offensive surface. A kick-out
+ * or lead block outside the tight end, and the defender it meets, move the
+ * place a runner bounces; a force aimed half a yard outside the end is inside
+ * it. Seen bodies within 4 yd outside the surface and near the line (blockers,
+ * and defenders already engaged) set his boundary. */
+const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -278,7 +285,17 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (job.kind === 'force') {
       const boundary = core.reduce((p,q) => job.side*(p.pos.y+job.side*p.radius)
         >= job.side*(q.pos.y+job.side*q.radius) ? p : q);
-      const desired = forceTrack(a,seen,x,surface,boundary.vel.y,job.side);
+      let line = surface, lineVel = boundary.vel.y;
+      if (FORCE_BOUNCE) {
+        const dir = sim.attackDir(sim.offense[0].team);
+        for (const o of sim.agents) {
+          if (o === a || o === c || o === sim.qb || (o.team === a.team && !o.engagement)) continue;
+          const b = sim.see(a,o), outer = b.pos.y + job.side*o.profile.radius, depth = (b.pos.x - sim.los)*dir;
+          if (depth < -2.5 || depth > 1.5 || job.side*(outer-surface) <= 0 || job.side*(outer-surface) > 4) continue;
+          if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }
+        }
+      }
+      const desired = forceTrack(a,seen,x,line,lineVel,job.side);
       desired.point.y += a.mind.placementError;
       const held = retainedForceTrack(a,desired,sim.t);
       aim = held.point; motion = held.velocity;

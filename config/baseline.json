@@ -56,7 +56,8 @@
     "PULL_EARLY": "0",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
-    "ZONE_FLOW": "1"
+    "ZONE_FLOW": "1",
+    "FORCE_BOUNCE": "0"
   },
   "worldDefaults": {
     "handContact": "center",
