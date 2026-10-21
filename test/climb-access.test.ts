@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { describe, expect, it, vi } from 'vitest';
+// Recorded under the default gait, pull and gun-exchange laws. GAIT_STEP,
+// PULL_STEP and MESH_POINT (on in the pinned profile) change its timing or
+// first command; pin them off here. test/gait-step.test.ts and
+// test/pull-step.test.ts cover those laws.
+vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) process.env[k] = '0'; });
 import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
 import { RunBlocker } from '../src/sim/behaviors/blocking.js';
 import type { ClimbAccess } from '../src/sim/climb-access.js';

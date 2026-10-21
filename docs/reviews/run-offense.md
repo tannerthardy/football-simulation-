@@ -49,8 +49,10 @@ on the lab cases (zone `ace_12` iz/oz/wz 1,200 plays; gap
 | `COMBO_SOLO` | `blocking.ts` `readUnjoinedCombination` | A free member of an unjoined stretch double who sees his partner holding the man alone and securely (the joined read's keeper evidence, 0.15 s on his own beat) climbs when the backer shows. Inside/split zone keep their check installation. |
 | `STRETCH_AIM` | `carrier.ts` `liveAim` | Outside/wide-zone backs press the snap landmark; inside zone and gap runs keep the live gap. Where the line's flow opens a lane is the read's job. |
 | `FB_KICK` | `blocking.ts` `attack` | The power fullback's kick (`lead`, role `kick`) uses the kicker's fit: inside shoulder, matching the end's seen motion. |
+| `GAIT_STEP=0.3`, `PULL_STEP`, `MESH_POINT` | `kinematics.ts`, `blocking.ts`, `qb.ts`/`assign.ts` | Existing flags, on at the user's request; the gait law now respects direction, effort and holding ground (below). |
 
-No capacity, rating, contact law or defensive controller changed.
+No capacity, rating, contact law or defensive controller changed. The gait
+law (`locomotionAccel`) changed only under `GAIT_STEP`.
 
 ## Results
 
@@ -157,23 +159,87 @@ What it says:
   3.7/3.7; shotgun 9.6 → 9.8. **On in the profile.** A mock-sim stalk test
   exposed the surface check reading the alignment for every kind; the kind
   check now comes first (same behavior).
-- **`GAIT_STEP` (the speed-up law) is right for the trench but not yet for
-  the game.** On the current offense it improves ace zone (TVD 6.7 → 6.2,
-  losses 7.7 → 6.0%, medians up 0.4–0.7) and the gap distribution (14.5 →
-  9.1) and doubles line flow, but 8-game collectors (`mech:sim`, with and
-  without, plus 0.5 s) show it lifts peak speeds and accelerations above
-  tracking for nearly every position (WR max speed 7.0 → 7.65 yd/s, NFL 6.45;
-  DB max accel 4.6 → 5.7, NFL 4.2; QB 3.8 → 5.3, NFL 3.8), at 0.3 and 0.5 s
-  alike. The old law hid controllers that ask for near-top speed; those
-  requests need fixing before the law can be on. Off.
-- `MESH_POINT` (new, off): the shotgun exchange at the tracked spot instead
-  of at arm's length (`gun-mesh.py`): stretch handoff 1.15 s, 0.5 yd own side,
-  4.1 yd/s (tracking 1.1 s, 0.2, 4.7). Shotgun stretch losses fall
-  18.5/24.5 → 12.5/17.5% with the gait (tracking 12% for this alignment) but
-  rise on the pinned body (6.0 → 16.0% outside zone): the back now hits a line
-  that has not moved. Waits on the gait.
+- **`GAIT_STEP` (the speed-up law)**: first measured here as right for the
+  trench but lifting peak speeds above tracking. Now on; see "Gait and pull
+  step on" below.
+- `MESH_POINT`: the shotgun exchange at the tracked spot instead of at arm's
+  length (`gun-mesh.py`): stretch handoff 1.15 s, 0.5 yd own side, 4.1 yd/s
+  (tracking 1.1 s, 0.2, 4.7). Without the gait it raised shotgun outside-zone
+  losses (6.0 → 16.0%: the back hits a line that has not moved). On with the
+  gait (below).
 - `RUN_LATERAL DL_FEEL` with the gait (Part 9's stack) make the defense flow
   more and the offense lose more (ace TVD 12.5); not kept.
+
+## Gait and pull step on (user: "turn the gait on and add the pull step")
+
+`GAIT_STEP=0.3`, `PULL_STEP=1` and `MESH_POINT=1` are on in the pinned profile.
+Two corrections to the gait law first (`locomotionAccel`, `kinematics.ts`):
+
+- **Direction and effort.** The law pushed on the full-sprint force-velocity
+  line whatever the direction or effort, so a backpedal, a shuffle or a
+  half-effort start accelerated like a forward sprint. It now pushes on the
+  line of the speed he can reach in the wanted direction at that effort (the
+  same directional cap the default law uses).
+- **Holding ground.** Near standstill the law eased every correction over the
+  0.3 s step, so a planted blocker answered a push softly. Only building speed
+  along the wanted line is eased now; recovering lost ground and shedding
+  drift are leg force, as fast as the legs allow (braking above 0.35 yd/s
+  was already immediate).
+
+Contracts: `test/gait-step.test.ts` (levels off at a wanted half speed within
+a second without overshoot; backpedal and half effort accelerate less;
+holding ground is not eased), `test/pull-step.test.ts` (power/counter, both
+sides: the puller is 0.25-0.30 yd toward the hole at 0.5 s, 0.10-0.16 without
+the open step; hips open, never past 100 deg toward his backfield). The pass
+anchor fixture (`pass-contact`) scaled only the end's power, leaving him a
+first step 2.3 times stronger than his own push (every generated roster has
+first-step force below push force, EDGE at most 0.94); its weakened bodies now
+lose first-step force with their push, and the anchor holds (0.03 yd) while a
+clear drive advantage moves it (0.47-0.80 yd) under both laws. Nineteen timed
+witnesses and exact replays are pinned to the laws they were recorded under.
+`tackle-support-choice` is pinned for a different reason: under the default
+gait the pinned contact package (`LEG_FV WRAP_BIND TETHER`; any one off removes
+it) already splits that rear-finish fixture by 0.25 yd/s between 12 and 48
+substeps when the carrier asks 6.1-6.2 yd/s (the fixture asks 6.0). The gait's
+stronger drive crosses that threshold. It is a contact-solver discontinuity,
+recorded for the physics owner, not a gait property.
+
+Lab arms against the committed profile (same bodies and seeds; `gs1*` new,
+`zte0co`/`zte0gun`/`gs0gap` before):
+
+| | before | gait + pull step + gun mesh | NFL |
+|---|---|---|---|
+| Ace zone TVD / losses / 10-19 | 5.5 / 6.3% / 5.8% | 7.1 / 6.4% / 2.9% | 7.6% / 8.6% |
+| Gap TVD / losses | 14.5 / 2.8% | 12.2 / 7.4% | 7.4% |
+| Counter / power losses | 4.2 / 2.0% | 21.0 / 5.8% | |
+| Shotgun zone TVD / losses | 9.8 / 7.7% | 13.3 / 16.3% | 7.6% |
+| Shotgun outside / wide zone losses | 9.5 / 10.0% | 20.0 / 23.0% | |
+| Stretch: play-side OL at 2.0 s, carrier crossing | 1.6, 6.5 yd | 2.5, 7.3 yd | 4.6, 7.3 yd |
+
+8 games (`mech:sim`, `sim-gs1`), against the earlier gait law at the same
+step (`sim-g1`): DB max acceleration 5.66 → 5.04 yd/s² (NFL 4.24), LB 5.27 →
+4.88 (4.42), QB 5.33 → 5.03 (3.84); DL max speed 4.45 → 4.12 yd/s (4.07), OL
+3.76 → 3.58 (3.26). Receivers and defensive backs still exceed tracked top
+speeds (WR 7.75, NFL 6.45; 7.00 already without the gait): those controllers
+ask for near-top speed on routes and in coverage (route/coverage owners).
+Median run 3.7 yd (NFL 3.0).
+
+What the gait exposes (the old law hid these; they are this branch's next
+work, not reasons to turn it off):
+
+- **Counter log plays.** With the pull on time, the kicker meets a squeezing
+  end earlier (1.90 s) and more often ends outside him: logs 37 → 55% of
+  counters (`out/counterprobe.ts`). The end keeps penetrating to about 1.3 yd
+  deep, and the back's path outside the log runs behind him, within his arms:
+  he tackles from the block (54 of 84 counter losses). Log plays lose 26%
+  (5% before).
+- **Reach blocks give ground.** Engaged DL are 1.2 yd in our backfield at 3 s
+  (tracking: driven back 0.2). On outside zone ours keep penetrating after
+  2.0 s (-1.06 → -1.37 yd at 2.5 s) where tracked DL are pushed back (-1.20 →
+  -0.93; `oz-flow-profile.py`, now with DL depth). A stretch rep's normal
+  request follows an attacking defender backward (up to about 1 yd/s); the
+  existing `STRETCH_FLAT` removes that and is being measured.
+- Shotgun stretch losses double. Not yet attributed.
 
 ## Evidence against and unresolved risk
 
@@ -228,6 +294,9 @@ Same operator, current profile (`oz-flow-profile.py`, `oz-front.py`,
 
 ```sh
 # arms (pinned profile; launcher flags for the before/after)
+node scripts/diag/open-field/arm.mjs gs1co
+node scripts/diag/open-field/arm.mjs gs0gap GAIT_STEP=0 PULL_STEP=0 MESH_POINT=0 -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
+node scripts/baseline.mjs --candidate -- node --import tsx scripts/mechanics/sim-export.ts --out out/mechanics/sim-gs1.jsonl.gz
 node scripts/diag/open-field/arm.mjs sa1co
 node scripts/diag/open-field/arm.mjs fk1gap -- --formations i_pro_21,ace_12 --concepts power,counter,duo,trap --seeds 77,71001,1,2,3
 node scripts/diag/open-field/arm.mjs sa1gun -- --formations gun_doubles_11 --concepts iz,oz,wz --seeds 77,71001,1,2,3
@@ -246,10 +315,13 @@ node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/runblock
 
 Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 `test/combo-solo.test.ts`, `test/stretch-aim.test.ts`, `test/fb-kick.test.ts`,
-`test/run-game-flags.test.ts` (exchange package). 2,865 core tests pass with
+`test/mesh-point.test.ts`, `test/gait-step.test.ts`, `test/pull-step.test.ts`,
+`test/run-game-flags.test.ts` (exchange package). 2,873 core tests pass with
 the profile; typecheck passes.
 
 ## Next
 
-The counter pull (arrival and the log read), the back's lane read in traffic,
-and the line's start-up (with the physics owner's decision on `GAIT_STEP`).
+With the gait on: counter log plays (the end penetrating behind the log),
+reach blocks that give ground (`STRETCH_FLAT`), shotgun stretch losses, then
+the back's lane read in traffic. `GAIT_STEP` is a physics law: promotion
+beyond this branch is the physics owner's decision.

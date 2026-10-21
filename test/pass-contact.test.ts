@@ -60,6 +60,15 @@ describe('pass contact momentum and anchor', () => {
       // this heavier tackle's push capacity; that is not a clear advantage.
       b.profile.power *= 0.4;
       d.profile.power *= drive;
+      // Weaker legs are weaker in the gait too: a first step cannot drive
+      // harder than the legs push (mass·vmax/tau ≤ push force, as in every
+      // generated roster). Scaling power alone left the end a sprint start
+      // stronger than his own push once the gait drives on the full
+      // force-velocity line.
+      for (const a of [b, d]) {
+        const push = supportParams(a.profile).pushForce;
+        a.profile.tau = Math.max(a.profile.tau, a.profile.massKg * a.profile.vmax / push);
+      }
       const e = createEngagement(sim, b, d, 'pass', null)!;
       e.nextMoveAt = Infinity; e.move = 'bull'; e.phi = 0; e.control = 0;
       const start = b.pos.x;

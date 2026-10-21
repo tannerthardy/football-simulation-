@@ -148,9 +148,15 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const dmag = len(dv0);
   const fat = fatigueFactor(body.energy);
   let desired = dv0;
+  // GAIT_STEP: the force-velocity line he pushes on is that of the speed he
+  // can reach in the wanted direction at this effort (facing, shoulder turn,
+  // endurance): a backpedal or a narrowed body does not accelerate like a
+  // full forward sprint.
+  let ceiling = p.vmax * fat * effort;
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
     const cap = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * effort;
+    ceiling = cap;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
   }
 
@@ -162,9 +168,21 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
-    ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
-    ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
+    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? ceiling : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
+    ax = dvx / dt;
+    ay = dvy / dt;
+    if (GAIT_STEP && cap > 1e-6) {
+      // Only building speed along the wanted line levels off over the step;
+      // holding ground against a push or shedding drift across it is leg
+      // force, answered as fast as the legs allow.
+      const ux = desired.x / cap, uy = desired.y / cap;
+      const build = cap - Math.max(0, body.vel.x * ux + body.vel.y * uy);
+      if (build > 0) {
+        const slow = build / Math.max(dt, GAIT_STEP) - build / dt;
+        ax += slow * ux;
+        ay += slow * uy;
+      }
+    }
     const a = Math.hypot(ax, ay);
     if (a > amax) {
       ax *= amax / a;
@@ -197,7 +215,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // force-velocity curve allows and levels off over about two steps,
     // instead of approaching every wanted speed on the sprint time constant.
     const ease = GAIT_STEP
-      ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
+      ? Math.min(driveAccel(p, speed, ceiling) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
       : driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
     if (at > ease) {
       at = ease;

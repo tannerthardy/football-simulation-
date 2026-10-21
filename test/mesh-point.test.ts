@@ -3,6 +3,13 @@
  * of the QB (inside 0.4 up / 0.7 over; stretch 0.6 up / 0.2 over), and the
  * ball is given when his body reaches it, not at the QB's arm's length. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// Recorded against the previous handoff trigger on the installed exchange
+// package (UC_MESH MESH_TEMPO QB_CARRYOUT PACE_LEAD) under the default gait
+// and pull laws (GAIT_STEP, PULL_STEP); pin both regardless of environment.
+vi.hoisted(() => {
+  for (const k of ['UC_MESH', 'MESH_TEMPO', 'QB_CARRYOUT', 'PACE_LEAD']) process.env[k] = '1';
+  for (const k of ['GAIT_STEP', 'PULL_STEP', 'GUN_MESH_SIDE']) process.env[k] = '0';
+});
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
