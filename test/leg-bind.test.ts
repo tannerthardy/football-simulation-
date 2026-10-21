@@ -61,5 +61,5 @@ describe('LEG_BIND', () => {
   it('on: a hold on his upper body leaves the stride alone', async () => {
     const f = await held('1', 0);
     expect(f.effort ?? 1).toBe(1);
-});
+  });
 });
