@@ -397,13 +397,27 @@ outside zone 10.9%) and its 4-9 yd band falls to 25% (NFL 37%).
 - **`DOWN_SEAL`** (`stepRunRep`): the owner of a gap down block reads his man
   from his own picture and mirrors only motion toward the hole. Down-rep wash
   at +1 s -0.92/-0.89 -> -0.69/-0.69 yd (tracking +0.2/-0.1); the rest is the
-  defender's flow term (defense) and glued pairs (below). Arms pending.
+  defender's flow term (defense) and glued pairs (below). Gap arms on
+  `47236478` (1,600 paired plays): TVD 13.4 -> 14.5, losses 3.6 -> 4.3%; on
+  the 357 counter plays whose result changed, 20 new losses and 13 losses
+  gone (trap 11 and 7, power 9 and 9), median change +0.24 yd: no outcome
+  change beyond chance. Off until the glued-pair law lands, which holds the
+  larger part of the wash.
 - **`LEAD_HIP`** (lead puller turns up on the hip of the kick he sees; no
   private `block-log` read): won a three-design panel. On 120 fresh-seed
   power/counter plays the lead blocks a backer before the back crosses 6 ->
   34, losses 10 -> 5, gain p50 3.72 -> 4.11 (second seed set 9 -> 30, 3.27 ->
   4.26). Adverse cell: weak-side power-I, where the back bounces outside the
-  kick 36 of 40 times either way. Skeptic review and arms pending.
+  kick 36 of 40 times either way. Two skeptics rated it flawed: the lead
+  fixes his side before he turns up, and on every play he turns up before
+  the kick lands, so the seen-log branch fired on 1 of 480 plays while
+  counter kickers log about 90 of 160; he stays inside while the back goes
+  outside (lead-carrier lateral at the cross -1.35 -> -2.7 yd). He also fell
+  back to the installed backer his read had rejected, counted any nearby
+  teammate as a block, and changed men about 4 times per play (off: 0.1).
+  The probe stopped at 8 s and scored 19-28% of plays, mostly long runs, as
+  0 yd. Gap arm: TVD 13.4 -> 14.6, counter losses 6.8 -> 7.5%, power 4.5 ->
+  3.5%; with `DOWN_SEAL` too, TVD 15.8 and counter 9.2%. Repair in progress.
 - `READ_BLOCKS` (an engaged defender must get off his block to cover ground
   beyond his reach) left the runner's inside entries at 23-24% and read the
   private block-win value: removed. `LEAD_READ` stays off (untouched backers
@@ -530,9 +544,11 @@ Contracts: `test/combo-gap.test.ts`, `test/run-reach.test.ts`,
 ## Next
 
 Gap schemes, in order: glued engaged pairs (hand law panel running), then
-`DOWN_SEAL` and `LEAD_HIP` arms after `LEAD_HIP`'s skeptic review, then why
-counter's kicked end tackles from his block under `OL_ALIGN` (the alignment
-puts pullers on NFL timing but stays off until counter and zone hold), then
+`DOWN_SEAL` on top of it; `LEAD_HIP`'s repair (the log read after the
+turn-up, commitment to a fit, a fallback that stays in the hole) with its
+adversarial re-check; why counter's kicked end tackles from his block under
+`OL_ALIGN` and zone crowds into 0-3 yd (diagnosis running; the alignment
+puts pullers on NFL timing but stays off until counter and zone hold); then
 the runner's commitment against a kick-out (synthesis O5, after the defense's
 force fix). Draws (42-48% losses in the lab) remain open. `GAIT_STEP` is a
 physics law: promotion beyond this branch is the physics owner's decision.
