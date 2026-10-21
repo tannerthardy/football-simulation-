@@ -68,6 +68,24 @@ What else must change for it to help?
    getting under reach blocks (offense's reach law), not the shed or the
    back's path.
 
+**Candidate** (every flag default-off): `DEEP_CAP CAP_MESH LB_DEPTH
+EDGE_SQUEEZE SHED_PURSUE BLOCK_FRONT SHED_HANDS`, plus `PULL_FLOW` on gap
+schemes. Lab arms `shco` / `shgap` / `shgun`:
+
+| | Zone | Gap | Shotgun |
+|---|---|---|---|
+| TVD from NFL: contact build → candidate | 13.6 → 10.1 | 14.0 → 13.3 | 10.2 → 8.4 |
+| 40+ runs (NFL 0.8 / 2.0 / 0.8%) | 6.6 → 1.6% | 7.8 → 3.7% | 5.0 → 2.5% |
+| 20+ runs, paired | 97 → 33 | 142 → 87 | 40 → 36 |
+| Negatives (NFL 7.6 / 7.4 / 7.6%) | 15.3 → 12.7% | 5.9 → 5.4% | 9.2 → 10.0% |
+| 10–19 yd runs (NFL 8.6 / 11.3 / 8.6%) | 5.0 → 12.8% | 6.3 → 22.9% | 5.8 → 10.8% |
+
+Without `SHED_PURSUE` the zone set is better (TVD 7.9) and gap/shotgun are
+slightly worse (15.1 / 9.4, not significant). It is kept as sound football;
+see the section on it below.
+
+GAMES_PENDING
+
 ## Where the contact build stands (baseline, pinned profile)
 
 Same operators on NFL60 and on the zone lab (`p0co`):
