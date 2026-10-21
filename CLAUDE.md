@@ -9,6 +9,12 @@ Start with these shared project references:
 - [Evaluation environment](docs/EVALUATION_ENVIRONMENT.md): how to test without
   play-calling and roster selection bias — NFL context replay, coaching
   validated separately, league structure, and the order to tune in.
+- [Playbook references](docs/PLAYBOOK_REFERENCES.md): which coaching playbook
+  or clinic to read for each backlog area, access and rights status, a shared
+  doctrine vocabulary, and the record format for extracted assignment rules.
+- [Run-blocking doctrine audit](docs/reviews/2026-10-21-run-blocking-doctrine-audit.md):
+  assignment errors behind the worst-stuffed gap and zone cells, with a
+  reproducible diagnostic (`scripts/diag/run-plans.ts`).
 - [Data guide](data/README.md) and [source catalog](data/sources.json): dataset
   coverage, provenance, access instructions, and summary reproduction commands.
 - [Big Data Bowl 2027 review](docs/reviews/bdb2027-data-review.md): linked combine
