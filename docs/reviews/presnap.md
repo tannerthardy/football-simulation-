@@ -131,8 +131,8 @@ By concept (losses %, median yd), `b8` -> `o8` -> `p8`: counter 6.8 / 4.8 ->
 14.0 / 4.6 -> 8.8 / 4.7; power 4.5 / 4.8 -> 6.0 / 4.2 -> 7.2 / 4.3; trap and
 duo about unchanged; outside zone 10.5 / 3.8 -> 14.8 / 2.5; wide zone 12.5 /
 3.8 -> 13.2 / 2.7; inside zone unchanged. Shotgun zone: inside zone 1.0 /
-3.8 -> 6.0 / 3.0; outside and wide zone about unchanged. The gun inside-zone
-change is unexplained so far. All arms ran with the source unchanged.
+3.8 -> 6.0 / 3.0; outside and wide zone about unchanged. All arms ran with
+the source unchanged.
 Gap-run TVD is not the criterion: `GAP_ACCOUNT` installs the written
 assignments, and its effect is judged by who is left unblocked.
 
@@ -174,13 +174,66 @@ What moved, and why:
   the alignment. Keeping the old line would tune zone on a base that hides
   it.
 
+  Who limits it (`scripts/diag/zone/reach-flow.ts`, play-side guard, tackle
+  and end on the lab's outside-zone cases): from the snap the NFL play-side
+  guard keeps accelerating sideways (0.55 / 1.72 / 3.23 yd at 0.5 / 1.0 /
+  1.5 s; tackle 0.48 / 1.66 / 3.08); ours levels off near 1.6 yd/s (guard
+  0.37 / 1.16 / 1.98, tackle 0.39 / 1.50 / 2.44). The deficit builds after
+  the first second, mostly while engaged: solo reach, runoff and seal and
+  helping blockers request about 2 yd/s and achieve 1.6-1.9, and their
+  defensive linemen request 1.6-2.0. A climbing guard requesting motion
+  back toward the backside (about a fifth of his ticks then) accounts for
+  about 0.25 of the guard's 1.25 yd. A pair's motion resolves both
+  requests, so the blocker's tempo alone cannot reproduce NFL flow against
+  a man who does not widen. The run-defense session owns the defensive
+  lineman's read of the blocker's first step (press and widen on a reach);
+  the blocker's tempo on the angle of the back (Ravens OL manual pp. 17-18,
+  via the playbook session) is judged after it, on the same operators.
+- **Shotgun inside zone** losses 1.0% -> 6.0% (2 -> 12 of 200): 9 of the 12
+  are within 1.3 yd of the line, and the two large paired differences are
+  chaotic divergences. NFL backs stay about 1.8 yd inside the play-side
+  tackle 1.0 s after the handoff; ours drift out to him on both lines
+  (installed +0.04, tracked -0.44), and on the tracked line the ends meet
+  them there. That is the inside-zone bounce read (R9), not the line.
+
+### Depth set by the call (`OL_ALIGN`)
+
+Concept does not move the line's depth (2022 runs, guard / tackle: zone
+0.84 / 1.02, gap 0.87 / 1.02, duo 0.81 / 0.96; Ravens: "we cannot tip run
+or pass"). Formation, call and situation do (`olsplits.py --kind run|pass`):
+
+| Guard / tackle depth | runs | passes |
+|---|---|---|
+| under center | 0.83 / 0.98 | 0.83 / 1.00 |
+| shotgun | 0.85 / 1.04 | 0.92 / 1.15 |
+| 1-2 yd to go | 0.80 / 0.94 | 0.87 / 1.09 |
+| 3rd or 4th and 7+ | 0.93 / 1.10 | 0.97 / 1.18 |
+
+Under center the stance is the same for both; off the ball a pass sets the
+tackles about 0.1 yd deeper for the rush. `lineDepth` adds formation, pass
+off the ball, passing down and short yardage (every cell within 0.02 yd)
+and the caller puts it on the call with the splits.
+
+Games on the current profile (`sim-ps3` at `28c782f3`, seeds
+301-316, vs `sim-ps2`, the tracked line before the spacing fix, gap
+accounting and called depth): points per game 70.8 -> 66.5; runs median
+3.99 -> 4.14, mean 8.20 -> 7.87. Pass protection: the line's retreat by 2 s
+2.48 -> 2.30 yd (NFL 3.04) is expected, since the set aims at a fixed point
+and a deeper start reaches it sooner; rushers' depth at 2 s is unchanged
+(2.90 -> 2.92); nearest defender at the throw 2.90 -> 2.69 (NFL 2.96) and
+pressure share 42% -> 46% move within about two standard errors, with
+every run play also changed. No isolated pass-protection effect is
+claimed.
+
 ## Next
 
 - Offense (this session): the play-side linemen's lateral flow on stretch
   runs (reach and bucket requests vs what the bodies achieve), measured with
   `meshwidth.py`; the defensive linemen's flow is the run-defense
-  session's fit controller (numbers sent). Then the called split and depth
-  levels on the play call (normal / wide / tight; pass-set depths).
+  session's fit controller (numbers sent); the blocker's tempo after it.
+  Called split levels beyond the team rule and the package (manuals: tight
+  / normal / wide by game plan) wait for tracking evidence that teams vary
+  them within a game; team and package explain the measured spread.
 - Defense (run-defense session): technique placement, width and depth per
   front with variation from the player, the call and the situation;
   adjustments to the end's side, wings, trips and motion; the caller's front
